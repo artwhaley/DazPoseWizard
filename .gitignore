@@ -1,0 +1,14 @@
+.vs/
+**/bin/
+**/obj/
+TestResults/
+artifacts/win-x64/
+output/*
+!output/.gitkeep
+fixtures/private/*
+!fixtures/private/.gitkeep
+G8F-Base/
+G8F-inCherishReferencePose/
+*.fbx
+*.duf
+*.dsf

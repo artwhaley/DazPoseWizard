@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DazPose.App.MainWindow"
+        Title="DazPoseTool V0"
+        Width="760" Height="620" MinWidth="650" MinHeight="540">
+  <ScrollViewer>
+    <StackPanel Margin="24" Spacing="18">
+      <TextBlock Text="DazPoseTool V0" FontSize="23" FontWeight="SemiBold" />
+
+      <Grid ColumnDefinitions="180,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="14">
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="DAZ Figure Definition" VerticalAlignment="Center" />
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="FigurePathBox" PlaceholderText="Select a Genesis figure .dsf" TextChanged="PathChanged" />
+        <Button Grid.Row="0" Grid.Column="2" Content="Browse..." Click="BrowseFigure" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="DAZ Pose Preset" VerticalAlignment="Center" />
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="PosePathBox" PlaceholderText="Select a static pose .duf" TextChanged="PathChanged" />
+        <Button Grid.Row="1" Grid.Column="2" Content="Browse..." Click="BrowsePose" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Output Folder" VerticalAlignment="Center" />
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="OutputPathBox" PlaceholderText="Select an existing output folder" TextChanged="PathChanged" />
+        <Button Grid.Row="2" Grid.Column="2" Content="Browse..." Click="BrowseOutput" />
+      </Grid>
+
+      <Button x:Name="ConvertButton" Content="Convert" HorizontalAlignment="Center" Padding="32,9" IsEnabled="False" Click="ConvertClicked" />
+
+      <TextBlock Text="Status / Diagnostics" FontWeight="SemiBold" />
+      <Border BorderBrush="#888888" BorderThickness="1" CornerRadius="3" Padding="10" MinHeight="250">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <TextBlock x:Name="DiagnosticsText" Text="Choose a figure, pose, and output folder to begin." TextWrapping="Wrap" />
+        </ScrollViewer>
+      </Border>
+
+      <Button x:Name="OpenOutputButton" Content="Open Output Folder" HorizontalAlignment="Left" IsEnabled="False" Click="OpenOutputFolder" />
+    </StackPanel>
+  </ScrollViewer>
+</Window>
