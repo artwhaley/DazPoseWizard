@@ -23,6 +23,8 @@ namespace DazPose.UnityValidation
         public AnimationClip poseC;
         [Min(0f)] public float blendDurationSeconds = 0.7f;
         public DazPoseBlendEase blendEase = DazPoseBlendEase.SmoothStep;
+        [Range(0f, 0.30f)] public float windupFraction;
+        [Range(0f, 0.30f)] public float overshootFraction;
 
         private LocalTransformState[] _startingPose;
         private Transform _outerPlacementRoot;
@@ -31,8 +33,11 @@ namespace DazPose.UnityValidation
         private Vector3 _outerLossyScale;
         private bool _validationRunning;
         private string _blendDurationInput;
+        private bool _blendDurationInputValid = true;
 
         private const string BlendDurationControlName = "DazPoseBlendDurationSeconds";
+        private const string WindupControlName = "DazPoseWindupFraction";
+        private const string OvershootControlName = "DazPoseOvershootFraction";
 
         private void Start()
         {
@@ -48,45 +53,72 @@ namespace DazPose.UnityValidation
                 return;
             }
 
-            player.BlendEase = blendEase;
-            player.SetPose(poseA, 0f);
+            player.SetPose(poseA, new DazPoseTransitionOptions(0f, blendEase, 0f, 0f));
         }
 
         private void Update()
         {
             if (_validationRunning) return;
-            if (string.Equals(GUI.GetNameOfFocusedControl(), BlendDurationControlName, StringComparison.Ordinal)) return;
-            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) RequestPose(poseA);
-            if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) RequestPose(poseB);
-            if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) RequestPose(poseC);
+            var focusedControl = GUI.GetNameOfFocusedControl();
+            if (IsTransitionControlFocused(focusedControl)) return;
+            if (_blendDurationInputValid && (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))) RequestPose(poseA);
+            if (_blendDurationInputValid && (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))) RequestPose(poseB);
+            if (_blendDurationInputValid && (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))) RequestPose(poseC);
             if (Input.GetKeyDown(KeyCode.F5)) StartEndpointAndLeakValidation();
         }
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(12f, 12f, 380f, 285f), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(12f, 12f, 430f, 390f), GUI.skin.box);
             GUILayout.Label("G8F Runtime Pose Blend Test");
+
+            var previousEnabled = GUI.enabled;
+            var canEditTransition = previousEnabled && !_validationRunning && (player == null || !player.IsBlending);
+            GUI.enabled = canEditTransition;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Blend time (seconds)", GUILayout.Width(140f));
             GUI.SetNextControlName(BlendDurationControlName);
             _blendDurationInput = GUILayout.TextField(_blendDurationInput ?? string.Empty, GUILayout.Width(90f));
             GUILayout.EndHorizontal();
-            var validDuration = float.TryParse(_blendDurationInput, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedDuration)
+            _blendDurationInputValid = float.TryParse(_blendDurationInput, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedDuration)
                 && !float.IsNaN(parsedDuration) && !float.IsInfinity(parsedDuration) && parsedDuration >= 0f;
-            if (validDuration) blendDurationSeconds = parsedDuration;
-            GUILayout.Label(validDuration
+            if (_blendDurationInputValid) blendDurationSeconds = parsedDuration;
+            GUILayout.Label(_blendDurationInputValid
                 ? "Next pose change: " + blendDurationSeconds.ToString("0.###", CultureInfo.InvariantCulture) + " sec | Ease: " + blendEase
-                : "Enter a valid number of seconds (0 or greater).");
+                : "Enter a valid number of seconds (0 or greater).", GUILayout.Width(400f));
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Windup", GUILayout.Width(140f));
+            GUI.SetNextControlName(WindupControlName);
+            windupFraction = RoundSliderFraction(GUILayout.HorizontalSlider(windupFraction, 0f, 0.30f));
+            GUILayout.Label(windupFraction.ToString("P0", CultureInfo.InvariantCulture), GUILayout.Width(40f));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Overshoot", GUILayout.Width(140f));
+            GUI.SetNextControlName(OvershootControlName);
+            overshootFraction = RoundSliderFraction(GUILayout.HorizontalSlider(overshootFraction, 0f, 0.30f));
+            GUILayout.Label(overshootFraction.ToString("P0", CultureInfo.InvariantCulture), GUILayout.Width(40f));
+            GUILayout.EndHorizontal();
+            GUI.enabled = previousEnabled;
+
+            GUILayout.Label("Next command: " + FormatTransition(blendDurationSeconds, blendEase,
+                RoundSliderFraction(windupFraction), RoundSliderFraction(overshootFraction)), GUILayout.Width(410f));
             GUILayout.Label("Current: " + DisplayName(player == null ? null : player.CurrentPose));
             GUILayout.Label("Target: " + DisplayName(player == null ? null : player.TargetPose)
                 + " | progress " + (player == null ? 0f : player.BlendProgress).ToString("P0"));
-            GUILayout.Label("Pending: " + DisplayName(player == null ? null : player.PendingPose));
+            GUILayout.Label(player != null && player.IsBlending
+                ? "Active: " + FormatTransition(player.ActiveTransitionOptions)
+                : "Active: <idle>", GUILayout.Width(410f));
+            GUILayout.Label(player != null && player.HasPendingPose
+                ? "Pending: " + DisplayName(player.PendingPose) + " | " + FormatTransition(player.PendingTransitionOptions)
+                : "Pending: <none>", GUILayout.Width(410f));
 
-            var previousEnabled = GUI.enabled;
-            GUI.enabled = previousEnabled && !_validationRunning;
+            GUI.enabled = previousEnabled && !_validationRunning && _blendDurationInputValid;
             if (poseA != null && GUILayout.Button("1 - Pose A: " + poseA.name)) RequestPose(poseA);
             if (poseB != null && GUILayout.Button("2 - Pose B: " + poseB.name)) RequestPose(poseB);
             if (poseC != null && GUILayout.Button("3 - Pose C: " + poseC.name)) RequestPose(poseC);
+            GUI.enabled = previousEnabled && !_validationRunning;
             if (poseA != null && poseB != null && GUILayout.Button("F5 - Check endpoints and repeat A/B 20 times"))
                 StartEndpointAndLeakValidation();
             GUI.enabled = previousEnabled;
@@ -106,8 +138,15 @@ namespace DazPose.UnityValidation
                 return;
             }
 
-            player.BlendEase = blendEase;
-            player.SetPose(clip, blendDurationSeconds);
+            if (!_blendDurationInputValid)
+            {
+                Debug.LogWarning("Enter a valid blend duration before requesting a pose.", this);
+                return;
+            }
+
+            var options = new DazPoseTransitionOptions(blendDurationSeconds, blendEase,
+                RoundSliderFraction(windupFraction), RoundSliderFraction(overshootFraction));
+            player.SetPose(clip, options);
         }
 
         private void StartEndpointAndLeakValidation()
@@ -130,17 +169,28 @@ namespace DazPose.UnityValidation
         {
             _validationRunning = true;
             var failures = new List<string>();
+            ValidateTrajectoryMath(failures);
             var referenceA = SampleReferencePose(poseA);
             var referenceB = SampleReferencePose(poseB);
             RestorePose(_startingPose);
 
-            player.BlendEase = blendEase;
-            player.SetPose(poseA, 0f);
+            var validationOptions = new DazPoseTransitionOptions(ValidationBlendSeconds, blendEase, 0.08f, 0.10f);
+            player.SetPose(poseA, new DazPoseTransitionOptions(0f, blendEase, 0f, 0f));
             yield return new WaitForEndOfFrame();
             CheckEndpoint("Pose A initial endpoint", referenceA, failures);
             CheckOuterPlacement("Pose A initial endpoint", failures);
 
-            player.SetPose(poseB, ValidationBlendSeconds);
+            var instantShapedOptions = new DazPoseTransitionOptions(0f, blendEase, 0.10f, 0.10f);
+            player.SetPose(poseB, instantShapedOptions);
+            yield return new WaitForEndOfFrame();
+            CheckEndpoint("Zero-duration shaped Pose B endpoint", referenceB, failures);
+            if (player.IsBlending || player.TargetPose != null)
+                failures.Add("A zero-duration request entered a transition instead of snapping to its endpoint.");
+            player.SetPose(poseA, instantShapedOptions);
+            yield return new WaitForEndOfFrame();
+            CheckEndpoint("Zero-duration shaped Pose A endpoint", referenceA, failures);
+
+            player.SetPose(poseB, validationOptions);
             var reached = false;
             yield return WaitForTransition(ok => reached = ok);
             if (!reached) failures.Add("A-to-B transition did not finish before the validation timeout.");
@@ -152,7 +202,7 @@ namespace DazPose.UnityValidation
 
             if (reached)
             {
-                player.SetPose(poseA, ValidationBlendSeconds);
+                player.SetPose(poseA, validationOptions);
                 reached = false;
                 yield return WaitForTransition(ok => reached = ok);
                 if (!reached) failures.Add("B-to-A transition did not finish before the validation timeout.");
@@ -169,7 +219,7 @@ namespace DazPose.UnityValidation
                 for (var index = 0; index < 20; index++)
                 {
                     var target = index % 2 == 0 ? poseB : poseA;
-                    player.SetPose(target, ValidationBlendSeconds);
+                    player.SetPose(target, validationOptions);
                     reached = false;
                     yield return WaitForTransition(ok => reached = ok);
                     if (!reached)
@@ -194,14 +244,141 @@ namespace DazPose.UnityValidation
             }
             if (player.GraphPlayableCount != steadyPlayableCount)
                 failures.Add("Final graph playable count changed from " + steadyPlayableCount + " to " + player.GraphPlayableCount + ".");
+            if (!player.MixerWeightsStayedInRange)
+                failures.Add("An AnimationMixerPlayable input weight left the documented 0-to-1 range during repeated transitions.");
+
+            if (reached)
+            {
+                var activeOptions = new DazPoseTransitionOptions(0.12f, DazPoseBlendEase.Linear, 0.04f, 0.05f);
+                var pendingOptions = new DazPoseTransitionOptions(0.18f, DazPoseBlendEase.SmoothStep, 0.12f, 0.08f);
+                var latestPendingOptions = new DazPoseTransitionOptions(0.10f, DazPoseBlendEase.Linear, 0.03f, 0.14f);
+                player.SetPose(poseB, activeOptions);
+                player.SetPose(poseA, pendingOptions);
+                player.SetPose(poseA, latestPendingOptions);
+
+                if (player.ActiveTransitionOptions != activeOptions)
+                    failures.Add("Submitting or replacing a pending command changed the active transition options.");
+                if (!player.HasPendingPose || player.PendingPose != poseA || player.PendingTransitionOptions != latestPendingOptions)
+                    failures.Add("The latest pending pose request did not replace the pending command's captured options.");
+
+                reached = false;
+                var queuedBecameActive = false;
+                yield return WaitForActiveCommand(poseA, latestPendingOptions, ok => queuedBecameActive = ok);
+                if (!queuedBecameActive)
+                    failures.Add("The pending pose did not start with its captured options after the active transition finished.");
+                else
+                {
+                    if (player.HasPendingPose || player.ActiveTransitionOptions != latestPendingOptions)
+                        failures.Add("The queued command's options changed when it became active.");
+                    reached = false;
+                    yield return WaitForTransition(ok => reached = ok);
+                    if (!reached) failures.Add("The queued transition did not finish before the validation timeout.");
+                    else
+                    {
+                        CheckEndpoint("Latest queued Pose A endpoint", referenceA, failures);
+                        CheckOuterPlacement("Latest queued Pose A endpoint", failures);
+                    }
+                }
+            }
+
+            if (reached)
+            {
+                for (var cycle = 0; cycle < 2; cycle++)
+                {
+                    player.enabled = false;
+                    if (player.GraphPlayableCount != 0)
+                        failures.Add("Playable graph remained alive after disabling DazPoseBlendPlayer (cycle " + (cycle + 1) + ").");
+
+                    player.enabled = true;
+                    yield return new WaitForEndOfFrame();
+                    if (player.GraphPlayableCount < 2)
+                        failures.Add("Playable graph was not recreated after reenabling DazPoseBlendPlayer (cycle " + (cycle + 1) + ").");
+                    player.SetPose(poseA, new DazPoseTransitionOptions(0f, blendEase, 0f, 0f));
+                    yield return new WaitForEndOfFrame();
+                    CheckEndpoint("Pose A after graph lifecycle cycle " + (cycle + 1), referenceA, failures);
+                }
+            }
+
+            if (!player.MixerWeightsStayedInRange)
+                failures.Add("An AnimationMixerPlayable input weight left the documented 0-to-1 range.");
 
             _validationRunning = false;
             if (failures.Count == 0)
-                Debug.Log("PASS DAZ Pose runtime blend validation: A/B endpoints match direct clip samples; 20 repeated transitions completed; steady playable count stayed at "
-                    + steadyPlayableCount + "; Lara's outer placement stayed unchanged. Ease tested: " + blendEase + ".", this);
+                Debug.Log("PASS DAZ Pose runtime blend validation: shaped A/B endpoints match direct clip samples; trajectory math and immutable pending options passed; "
+                    + "20 repeated transitions completed; graph enable/disable cycles were clean; mixer weights stayed in range; Lara's outer placement stayed unchanged. Ease tested: "
+                    + blendEase + ".", this);
             else
                 Debug.LogError("FAIL DAZ Pose runtime blend validation:\n- " + string.Join("\n- ", failures), this);
         }
+
+        private static void ValidateTrajectoryMath(List<string> failures)
+        {
+            var shaped = new DazPoseTransitionOptions(1f, DazPoseBlendEase.SmoothStep, 0.10f, 0.12f);
+            if (!Approximately(DazPoseTransitionTrajectory.Evaluate(0f, shaped), 0f))
+                failures.Add("Shaped transition trajectory did not start at zero.");
+            if (!(DazPoseTransitionTrajectory.Evaluate(0.075f, shaped) < 0f))
+                failures.Add("Windup trajectory never moved behind the source pose.");
+            if (!Approximately(DazPoseTransitionTrajectory.Evaluate(0.15f, shaped), -0.10f))
+                failures.Add("Windup phase did not reach the requested negative fraction.");
+            if (!Approximately(DazPoseTransitionTrajectory.Evaluate(0.80f, shaped), 1.12f))
+                failures.Add("Main drive did not reach the requested overshoot fraction.");
+            if (!(DazPoseTransitionTrajectory.Evaluate(0.90f, shaped) > 1f))
+                failures.Add("Settle phase did not remain beyond the target before returning to it.");
+            if (!Approximately(DazPoseTransitionTrajectory.Evaluate(1f, shaped), 1f))
+                failures.Add("Shaped transition trajectory did not finish exactly at the target.");
+
+            ExpectInvalidOptions(failures, -0.01f, DazPoseBlendEase.Linear, 0f, 0f, "negative duration");
+            ExpectInvalidOptions(failures, float.NaN, DazPoseBlendEase.Linear, 0f, 0f, "non-finite duration");
+            ExpectInvalidOptions(failures, 1f, DazPoseBlendEase.Linear, 0f, float.PositiveInfinity, "non-finite overshoot");
+            ExpectInvalidOptions(failures, 1f, DazPoseBlendEase.Linear, 0f, 1.01f, "overshoot over 100 percent");
+
+            foreach (var ease in new[] { DazPoseBlendEase.Linear, DazPoseBlendEase.SmoothStep })
+            {
+                var unshaped = new DazPoseTransitionOptions(1f, ease, 0f, 0f);
+                foreach (var time in new[] { 0f, 0.25f, 0.5f, 0.75f, 1f })
+                {
+                    var expected = ease == DazPoseBlendEase.Linear
+                        ? time
+                        : time * time * (3f - 2f * time);
+                    if (!Approximately(DazPoseTransitionTrajectory.Evaluate(time, unshaped), expected))
+                    {
+                        failures.Add("Zero-shaping trajectory changed the existing " + ease + " blend at t=" + time + ".");
+                        break;
+                    }
+                }
+            }
+        }
+
+        private static void ExpectInvalidOptions(List<string> failures, float duration, DazPoseBlendEase ease,
+            float windup, float overshoot, string label)
+        {
+            try
+            {
+                new DazPoseTransitionOptions(duration, ease, windup, overshoot);
+                failures.Add("Transition options accepted invalid " + label + ".");
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+            }
+        }
+
+        private IEnumerator WaitForActiveCommand(AnimationClip pose, DazPoseTransitionOptions options, Action<bool> result)
+        {
+            var deadline = Time.realtimeSinceStartup + 3f;
+            yield return new WaitForEndOfFrame();
+            while (Time.realtimeSinceStartup < deadline)
+            {
+                if (player.IsBlending && player.TargetPose == pose && player.ActiveTransitionOptions == options)
+                {
+                    result(true);
+                    yield break;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            result(false);
+        }
+
+        private static bool Approximately(float left, float right) => Mathf.Abs(left - right) <= 1e-5f;
 
         private IEnumerator WaitForTransition(Action<bool> result)
         {
@@ -296,6 +473,32 @@ namespace DazPose.UnityValidation
         {
             StopAllCoroutines();
             _validationRunning = false;
+        }
+
+        private static bool IsTransitionControlFocused(string controlName)
+        {
+            return string.Equals(controlName, BlendDurationControlName, StringComparison.Ordinal)
+                || string.Equals(controlName, WindupControlName, StringComparison.Ordinal)
+                || string.Equals(controlName, OvershootControlName, StringComparison.Ordinal);
+        }
+
+        private static float RoundSliderFraction(float value)
+        {
+            if (float.IsNaN(value) || float.IsInfinity(value)) return 0f;
+            return Mathf.Clamp(Mathf.Round(value * 100f) / 100f, 0f, 0.30f);
+        }
+
+        private static string FormatTransition(DazPoseTransitionOptions options)
+        {
+            return FormatTransition(options.DurationSeconds, options.Ease, options.WindupFraction, options.OvershootFraction);
+        }
+
+        private static string FormatTransition(float durationSeconds, DazPoseBlendEase ease,
+            float windup, float overshoot)
+        {
+            return durationSeconds.ToString("0.###", CultureInfo.InvariantCulture) + " sec | " + ease
+                + " | windup " + windup.ToString("P0", CultureInfo.InvariantCulture)
+                + " | overshoot " + overshoot.ToString("P0", CultureInfo.InvariantCulture);
         }
 
         private static string DisplayName(AnimationClip clip) => clip == null ? "<none>" : clip.name;

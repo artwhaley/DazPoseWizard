@@ -97,24 +97,28 @@ This experiment blends ordinary sparse G8F `.anim` pose clips through a two-inpu
 ### Configure and start the demo
 
 1. Select **Lara**, then choose **Tools > DAZ Pose > Setup Runtime Blend Demo**. The command puts or reuses the Animator, `DazPoseBlendPlayer`, and `DazPoseBlendDemo` on Lara's direct child `Genesis8Female` animation root. It selects that root afterward.
-2. In the Inspector, find **Daz Pose Blend Demo**. Assign the generated `.anim` assets to **Pose A**, **Pose B**, and optionally **Pose C** by dragging them from the Project window. Leave Pose C empty for a two-pose test. Set **Blend Duration Seconds** and **Blend Ease**; the initial values are 0.7 seconds and SmoothStep.
+2. In the Inspector, find **Daz Pose Blend Demo**. Assign the generated `.anim` assets to **Pose A**, **Pose B**, and optionally **Pose C** by dragging them from the Project window. Leave Pose C empty for a two-pose test. Set **Blend Ease**; the default is SmoothStep.
 3. Save the scene with **Ctrl+S** while still in Edit Mode.
 4. Click Unity's **Play** button. The character snaps to Pose A as its known starting pose; there is no neutral-to-A blend.
 5. In the Game view's **G8F Runtime Pose Blend Test** panel, click **2 - Pose B**, then **1 - Pose A** to test both directions. If using Pose C, click **3 - Pose C** as well. Keyboard keys **1**, **2**, and **3** select the corresponding slots when the Game view has focus.
 
-Requests made during a blend are queued deterministically: the current transition finishes, then the latest queued pose request starts. Asking for the current target does not restart its transition; asking for the already steady pose does nothing.
+The Game view panel contains a blend-duration text field and Windup/Overshoot sliders. The sliders range from 0% to 30% in one-percent steps and start at 0%. Each pose button or 1/2/3 key snapshots the duration, ease, windup, and overshoot as one command. The input controls lock while a transition runs; pose requests can still be queued. A queued request carries its own snapshot, and the latest request for a pose already in the queue replaces that command's options. Asking for the active target does not restart the transition, and asking for the already steady pose does nothing.
 
-### Compare easing and duration
+### Compare transition parameters
 
-1. While still in Play Mode, select the `Genesis8Female` root in the Hierarchy and edit **Blend Duration Seconds** on **Daz Pose Blend Demo** in the Inspector.
-2. Try `0.15`, `0.35`, `0.70`, and `1.20` seconds. After each change, click the opposite pose button (1 or 2) and let that transition finish before starting the next one.
-3. Change **Blend Ease** between **SmoothStep** and **Linear**, then trigger the same A↔B direction at the same duration to compare.
+Set values in the Game view panel, then click the opposite pose button (1 or 2). Let each transition finish before starting the next comparison. Suggested trials:
 
-The Console logs each transition once, including source pose, target pose, duration, and easing. The Game view panel displays current pose, target, progress, and any pending pose.
+- `0.15`, `0.35`, `0.70`, and `1.20` seconds with both sliders at 0% for the existing baseline.
+- `0.70` seconds with 10% windup and 0% overshoot.
+- `0.70` seconds with 0% windup and 10% overshoot.
+- `0.70` seconds with 8% windup and 12% overshoot.
+- Repeat the combined setting at `0.25` and `1.20` seconds.
+
+The current transition's captured settings appear as **Active**; the next request's settings appear as **Pending**. These values stay fixed for each request. The Console logs source, target, duration, easing, windup, and overshoot once per transition.
 
 ### Endpoint and repeated-transition check
 
-With Pose A and Pose B assigned and no blend in progress, click **F5 - Check endpoints and repeat A/B 20 times** in the Game view panel. This performs direct-clip endpoint comparisons for A and B, checks that Lara's outer world position/rotation/scale stay fixed, and runs 20 short A/B transitions while checking the playable count. The Console should print `PASS DAZ Pose runtime blend validation`. It is a brief validation run and returns to Pose A.
+With Pose A and Pose B assigned and no blend in progress, click **F5 - Check endpoints and repeat A/B 20 times** in the Game view panel. This checks trajectory math, shaped A/B endpoints against direct clip samples, captured active and queued options, Lara's outer world transform, mixer weight limits, 20 repeated transitions, and two graph disable/enable cycles. The Console should print `PASS DAZ Pose runtime blend validation`. It is a brief validation run and returns to Pose A.
 
 ### Compare sparse bindings after a visible snap
 
@@ -123,7 +127,7 @@ In Edit Mode, choose **Tools > DAZ Pose > Compare AnimationClip Bindings A vs B*
 ### What to report back
 
 - Which Pose A, Pose B, and (if used) Pose C clips you tested.
-- Which duration looked best, and whether Linear or SmoothStep looked better.
+- Which duration, windup, and overshoot values looked best, and whether Linear or SmoothStep looked better.
 - Any shoulder, wrist/finger, hip, knee/foot, or spine movement that looked wrong.
 - Whether a snap happened at the beginning or end of a transition.
 - `TestOutput\pose-binding-comparison.json` if a snap occurred, plus any Unity Console error.
