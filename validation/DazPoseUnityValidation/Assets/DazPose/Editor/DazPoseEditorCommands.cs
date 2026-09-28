@@ -242,8 +242,7 @@ namespace DazPose.UnityValidation
         {
             var characterRoot = RequireSelectedRoot();
             var animationRoot = FindAnimationRoot(characterRoot);
-            if (animationRoot.GetComponent<DazPosePlayableValidationDriver>() != null)
-                throw new InvalidOperationException("A Phase 2 validation-only Playables driver is still attached to " + animationRoot.name + ". The runtime blend demo will not share its Animator output.");
+            RemovePhase2ValidationDriverForBlendDemo(animationRoot, characterRoot.gameObject.scene);
             var animator = animationRoot.GetComponent<Animator>();
             if (animator == null)
             {
@@ -276,8 +275,7 @@ namespace DazPose.UnityValidation
 
             var characterRoot = character.transform;
             var animationRoot = FindAnimationRoot(characterRoot);
-            if (animationRoot.GetComponent<DazPosePlayableValidationDriver>() != null)
-                throw new InvalidOperationException("Remove the Phase 2 validation-only Playables driver from " + animationRoot.name + " before setting up the runtime blend demo.");
+            RemovePhase2ValidationDriverForBlendDemo(animationRoot, scene);
 
             var sourceDirectory = Path.GetFullPath(Path.Combine(ProjectRoot, "..", "..", "stack3 poses"));
             var poseFileNames = new[]
@@ -337,6 +335,20 @@ namespace DazPose.UnityValidation
             Debug.Log("Three converted Stack3 poses are ready on " + animationRoot.name + ": Pose A=" + clips[0].name
                 + ", Pose B=" + clips[1].name + ", Pose C=" + clips[2].name
                 + ". Enter Play Mode and use 1/2/3 or the on-screen buttons to switch poses; F5 validates repeated A/B blending.");
+        }
+
+        private static void RemovePhase2ValidationDriverForBlendDemo(Transform animationRoot, Scene scene)
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("Exit Play Mode before switching " + animationRoot.name + " from the Phase 2 smoke test to the runtime blend demo.");
+
+            var phase2Driver = animationRoot.GetComponent<DazPosePlayableValidationDriver>();
+            if (phase2Driver == null) return;
+
+            Undo.DestroyObjectImmediate(phase2Driver);
+            EditorSceneManager.MarkSceneDirty(scene);
+            Debug.Log("Removed the Phase 2 validation-only Playables driver from " + animationRoot.name
+                + "; its Animator remains available for runtime blending.");
         }
 
         [MenuItem("Tools/DAZ Pose/Restore Captured Rest Pose")]
