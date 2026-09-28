@@ -3,6 +3,7 @@
 **/obj/
 TestResults/
 artifacts/win-x64/
+.dazposewizard/
 output/*
 !output/.gitkeep
 fixtures/private/*
@@ -25,8 +26,13 @@ validation/DazPoseUnityValidation/UserSettings/
 validation/DazPoseUnityValidation/Build/
 validation/DazPoseUnityValidation/Builds/
 validation/DazPoseUnityValidation/TestOutput/
+validation/DazPoseUnityValidation/Assets/Animations/
+validation/DazPoseUnityValidation/Assets/Animations.meta
+validation/DazPoseUnityValidation/Assets/DazPoseImports/
+validation/DazPoseUnityValidation/Assets/DazPoseImports.meta
 validation/DazPoseUnityValidation/Assets/TestCharacter/lara.images/
 validation/DazPoseUnityValidation/Assets/TestData/
+unity/
 validation/DazPoseUnityValidation/Assets/Generated/
 *.csproj
 *.sln

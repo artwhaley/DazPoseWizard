@@ -112,3 +112,13 @@ public sealed class ConversionResult
     public required string ReportPath { get; init; }
     public required IReadOnlyList<ConversionDiagnostic> Diagnostics { get; init; }
 }
+
+public sealed class CanonicalConversionResult
+{
+    public required DazFigureDefinition Figure { get; init; }
+    public required DazPose Pose { get; init; }
+    public required DazPoseEvaluation Evaluation { get; init; }
+    public required DazPoseEvaluation RestEvaluation { get; init; }
+    public required string JsonPath { get; init; }
+    public required IReadOnlyList<ConversionDiagnostic> Diagnostics { get; init; }
+}

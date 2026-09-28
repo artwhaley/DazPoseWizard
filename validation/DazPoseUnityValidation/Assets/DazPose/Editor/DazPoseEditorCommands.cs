@@ -471,10 +471,19 @@ namespace DazPose.UnityValidation
         }
 
         private static bool TryResolvePose(Transform root, string jsonPath, out ResolvedUnityPose resolvedPose)
+            => TryResolvePose(root, jsonPath, out resolvedPose, out _, false);
+
+        internal static bool TryResolvePoseForPipeline(Transform root, string jsonPath,
+            out ResolvedUnityPose resolvedPose, out string failure)
+            => TryResolvePose(root, jsonPath, out resolvedPose, out failure, true);
+
+        private static bool TryResolvePose(Transform root, string jsonPath, out ResolvedUnityPose resolvedPose,
+            out string failure, bool temporaryReference)
         {
             resolvedPose = null;
+            failure = null;
             var pose = DazPoseJsonLoader.Load(jsonPath);
-            var state = CaptureRestPose(root, false);
+            var state = CaptureRestPose(root, false, !temporaryReference);
             var originalTransformsByPath = root.GetComponentsInChildren<Transform>(true)
                 .ToDictionary(item => DazPoseTransformPath.Get(root, item), StringComparer.Ordinal);
             GameObject evaluationRootObject = null;
@@ -536,7 +545,7 @@ namespace DazPose.UnityValidation
 
             var report = BuildReport(evaluationRoot, pose, resolutions, poseTargetIds, RestCalibrationBoneIds, warnings, fit);
             var reportPath = Path.Combine(ProjectRoot, "TestOutput", "pose-application-report.json");
-            WriteReport(reportPath, report);
+            if (!temporaryReference) WriteReport(reportPath, report);
             var missingCount = resolutions.Count(item => item.Status == "missing");
             var ambiguousCount = resolutions.Count(item => item.Status == "ambiguous");
             var summary = "Pose: " + DazPoseJsonLoader.PoseName(pose.source.poseFile, pose.source.poseAssetId)
@@ -544,11 +553,14 @@ namespace DazPose.UnityValidation
                 + " | resolved bones: " + resolved.Length + "/" + pose.bones.Length
                 + " | missing: " + missingCount + " | ambiguous: " + ambiguousCount
                 + " | rest-fit RMS: " + (fit == null ? "unavailable" : (fit.RmsErrorMeters * 1000).ToString("F1") + " mm")
-                + " | report: " + reportPath;
+                + (temporaryReference ? string.Empty : " | report: " + reportPath);
 
             if (missingTargets.Length > 0 || missingCalibration.Length > 0 || fit == null || fit.RmsErrorMeters > RestFitWarningThresholdMeters || warnings.Any(value => value.StartsWith("Could not derive", StringComparison.Ordinal)))
             {
-                Debug.LogError(summary + " | Pose resolution stopped: target mapping or rest calibration failed. Review the report; no axis settings were changed.");
+                failure = summary + (temporaryReference
+                    ? " | Pose resolution stopped: target mapping or rest calibration failed. No scene object was changed."
+                    : " | Pose resolution stopped: target mapping or rest calibration failed. Review the report; no axis settings were changed.");
+                if (!temporaryReference) Debug.LogError(failure);
                 return false;
             }
 
@@ -910,9 +922,13 @@ namespace DazPose.UnityValidation
         }
 
         private static DazPoseCharacterState CaptureRestPose(Transform root, bool force)
+            => CaptureRestPose(root, force, true);
+
+        private static DazPoseCharacterState CaptureRestPose(Transform root, bool force, bool recordUndo)
         {
             var state = root.GetComponent<DazPoseCharacterState>();
-            if (state == null) state = Undo.AddComponent<DazPoseCharacterState>(root.gameObject);
+            if (state == null)
+                state = recordUndo ? Undo.AddComponent<DazPoseCharacterState>(root.gameObject) : root.gameObject.AddComponent<DazPoseCharacterState>();
             if (state.hasCapturedRestPose && !force) return state;
             var transforms = root.GetComponentsInChildren<Transform>(true);
             state.transforms = transforms.Select(item => new DazPoseRestTransform
@@ -923,7 +939,7 @@ namespace DazPose.UnityValidation
                 localScale = item.localScale
             }).ToArray();
             state.hasCapturedRestPose = true;
-            EditorUtility.SetDirty(state);
+            if (recordUndo) EditorUtility.SetDirty(state);
             return state;
         }
 

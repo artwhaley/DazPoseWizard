@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DazPose.App.SettingsWindow"
+        Title="DazPoseWizard Settings"
+        Width="760" Height="610" MinWidth="650" MinHeight="530"
+        WindowStartupLocation="CenterOwner">
+  <Grid RowDefinitions="*,Auto" Margin="22" RowSpacing="14">
+    <ScrollViewer Grid.Row="0">
+      <StackPanel Spacing="13">
+        <TextBlock Text="Library and Unity project" FontSize="22" FontWeight="SemiBold" />
+        <TextBlock Text="The DAZ library is only read. Pose conversions write canonical JSON into the Unity project's import root." TextWrapping="Wrap" Opacity="0.8" />
+
+        <TextBlock Text="DAZ content root" FontWeight="SemiBold" />
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+          <TextBox x:Name="DazRootBox" Grid.Column="0" PlaceholderText="D:\DAZ 3D\My DAZ 3D Library" />
+          <Button Grid.Column="1" Content="Browse…" Click="BrowseDazRoot" />
+        </Grid>
+
+        <TextBlock Text="Genesis 8 Female DAZ figure definition (.dsf)" FontWeight="SemiBold" />
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+          <TextBox x:Name="FigureDefinitionBox" Grid.Column="0" PlaceholderText="Select the Genesis8Female.dsf file" />
+          <Button Grid.Column="1" Content="Browse…" Click="BrowseFigureDefinition" />
+        </Grid>
+
+        <TextBlock Text="Unity project root" FontWeight="SemiBold" />
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+          <TextBox x:Name="UnityProjectBox" Grid.Column="0" PlaceholderText="C:\Projects\MyUnityProject" />
+          <Button Grid.Column="1" Content="Browse…" Click="BrowseUnityProject" />
+        </Grid>
+
+        <TextBlock Text="Final Unity pose asset root (inside Assets)" FontWeight="SemiBold" />
+        <TextBox x:Name="OutputRootBox" PlaceholderText="Assets/Animations/DazPoses" />
+
+        <TextBlock Text="Canonical import root (inside Assets)" FontWeight="SemiBold" />
+        <TextBox x:Name="ImportRootBox" PlaceholderText="Assets/DazPoseImports" />
+
+        <Border Background="#20FFFFFF" CornerRadius="4" Padding="10">
+          <TextBlock Text="The Unity project also needs its G8F reference model configured in Unity's Tools → DAZ Pose → Pipeline Settings menu. That setting lives in the project and is separate from these Windows app settings." TextWrapping="Wrap" />
+        </Border>
+        <TextBlock x:Name="ErrorText" Foreground="#E74856" TextWrapping="Wrap" IsVisible="False" />
+      </StackPanel>
+    </ScrollViewer>
+    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Content="Cancel" MinWidth="90" Click="CancelClicked" />
+      <Button Content="Save" MinWidth="90" IsDefault="True" Click="SaveClicked" />
+    </StackPanel>
+  </Grid>
+</Window>

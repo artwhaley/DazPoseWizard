@@ -14,6 +14,62 @@ public static class PoseConversionService
         if (!File.Exists(posePath)) throw new DazConversionException($"Pose file does not exist: '{posePath}'.");
         if (!Directory.Exists(outputDirectory)) throw new DazConversionException($"Output folder does not exist: '{outputDirectory}'.");
 
+        var evaluated = Evaluate(figurePath, posePath);
+        var figure = evaluated.Figure;
+        var pose = evaluated.Pose;
+        var evaluation = evaluated.Evaluation;
+        var restEvaluation = evaluated.RestEvaluation;
+
+        var outputBase = Path.Combine(Path.GetFullPath(outputDirectory), pose.PoseName);
+        var jsonPath = outputBase + ".dazpose.json";
+        var bvhPath = outputBase + ".bvh";
+        var reportPath = outputBase + ".report.txt";
+        var warnings = new List<string> { BvhWarning };
+        warnings.AddRange(pose.Diagnostics);
+        DazPoseExporter.WriteJson(jsonPath, figure, pose, evaluation, restEvaluation, warnings);
+        DazPoseExporter.WriteBvh(bvhPath, figure, evaluation);
+        File.WriteAllText(reportPath, BuildReport(figure, pose, jsonPath, bvhPath, reportPath, warnings), new UTF8Encoding(false));
+
+        var diagnostics = BuildDiagnostics(pose, includeBvhWarning: true);
+        return new ConversionResult
+        {
+            Figure = figure, Pose = pose, Evaluation = evaluation, RestEvaluation = restEvaluation, JsonPath = jsonPath, BvhPath = bvhPath,
+            ReportPath = reportPath, Diagnostics = diagnostics
+        };
+    }
+
+    /// <summary>
+    /// Parses, validates, and evaluates a pose using the same pipeline as <see cref="Convert"/>,
+    /// then writes only the canonical pose JSON. Callers should write to a staging path and
+    /// publish the finished file atomically into Unity's Assets tree.
+    /// </summary>
+    public static CanonicalConversionResult ConvertCanonical(string figurePath, string posePath, string canonicalOutputPath)
+    {
+        if (!File.Exists(figurePath)) throw new DazConversionException($"Figure file does not exist: '{figurePath}'.");
+        if (!File.Exists(posePath)) throw new DazConversionException($"Pose file does not exist: '{posePath}'.");
+        if (string.IsNullOrWhiteSpace(canonicalOutputPath)) throw new ArgumentException("A canonical output path is required.", nameof(canonicalOutputPath));
+
+        var evaluated = Evaluate(figurePath, posePath);
+        var fullOutputPath = Path.GetFullPath(canonicalOutputPath);
+        var outputDirectory = Path.GetDirectoryName(fullOutputPath)
+            ?? throw new DazConversionException($"Canonical output path has no parent directory: '{canonicalOutputPath}'.");
+        Directory.CreateDirectory(outputDirectory);
+        DazPoseExporter.WriteJson(fullOutputPath, evaluated.Figure, evaluated.Pose, evaluated.Evaluation,
+            evaluated.RestEvaluation, evaluated.Pose.Diagnostics);
+
+        return new CanonicalConversionResult
+        {
+            Figure = evaluated.Figure,
+            Pose = evaluated.Pose,
+            Evaluation = evaluated.Evaluation,
+            RestEvaluation = evaluated.RestEvaluation,
+            JsonPath = fullOutputPath,
+            Diagnostics = BuildDiagnostics(evaluated.Pose, includeBvhWarning: false)
+        };
+    }
+
+    private static EvaluatedConversion Evaluate(string figurePath, string posePath)
+    {
         using var figureDocument = DsonFileReader.ReadJson(figurePath);
         using var poseDocument = DsonFileReader.ReadJson(posePath);
         var figure = DazFigureParser.Parse(figurePath, figureDocument);
@@ -26,29 +82,22 @@ public static class PoseConversionService
             AssetId = pose.AssetId,
             Channels = Array.Empty<DazPoseChannel>()
         });
+        return new EvaluatedConversion(figure, pose, evaluation, restEvaluation);
+    }
 
-        var outputBase = Path.Combine(Path.GetFullPath(outputDirectory), pose.PoseName);
-        var jsonPath = outputBase + ".dazpose.json";
-        var bvhPath = outputBase + ".bvh";
-        var reportPath = outputBase + ".report.txt";
-        var warnings = new List<string> { BvhWarning };
-        warnings.AddRange(pose.Diagnostics);
-        DazPoseExporter.WriteJson(jsonPath, figure, pose, evaluation, restEvaluation, warnings);
-        DazPoseExporter.WriteBvh(bvhPath, figure, evaluation);
-        File.WriteAllText(reportPath, BuildReport(figure, pose, jsonPath, bvhPath, reportPath, warnings), new UTF8Encoding(false));
-
+    private static IReadOnlyList<ConversionDiagnostic> BuildDiagnostics(DazPose pose, bool includeBvhWarning)
+    {
         var diagnostics = new List<ConversionDiagnostic>
         {
             new("Info", $"Ignored {pose.NeutralUnsupportedChannels.Count} neutral unsupported channels.")
         };
         diagnostics.AddRange(pose.Diagnostics.Select(message => new ConversionDiagnostic("Warning", message)));
-        diagnostics.Add(new ConversionDiagnostic("Warning", BvhWarning));
-        return new ConversionResult
-        {
-            Figure = figure, Pose = pose, Evaluation = evaluation, RestEvaluation = restEvaluation, JsonPath = jsonPath, BvhPath = bvhPath,
-            ReportPath = reportPath, Diagnostics = diagnostics
-        };
+        if (includeBvhWarning) diagnostics.Add(new ConversionDiagnostic("Warning", BvhWarning));
+        return diagnostics;
     }
+
+    private sealed record EvaluatedConversion(DazFigureDefinition Figure, DazPose Pose,
+        DazPoseEvaluation Evaluation, DazPoseEvaluation RestEvaluation);
 
     public static void ValidatePose(DazPose pose)
     {

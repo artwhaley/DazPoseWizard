@@ -1,36 +1,192 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:DazPose.App.Models"
+        xmlns:vm="clr-namespace:DazPose.App.ViewModels"
         x:Class="DazPose.App.MainWindow"
-        Title="DazPoseTool V0"
-        Width="760" Height="620" MinWidth="650" MinHeight="540">
-  <ScrollViewer>
-    <StackPanel Margin="24" Spacing="18">
-      <TextBlock Text="DazPoseTool V0" FontSize="23" FontWeight="SemiBold" />
+        Title="DazPoseWizard"
+        Width="1480" Height="940" MinWidth="1050" MinHeight="680">
+  <Grid RowDefinitions="Auto,*,Auto,Auto,Auto">
+    <Menu Grid.Row="0">
+      <MenuItem Header="_File">
+        <MenuItem Header="Settings…" Click="SettingsClicked" />
+        <Separator />
+        <MenuItem Header="E_xit" Click="ExitClicked" />
+      </MenuItem>
+      <MenuItem Header="_Tools">
+        <MenuItem Header="Refresh library and Unity status" Click="RefreshClicked" />
+        <MenuItem Header="Retry failed conversions" Click="RetryFailedClicked" />
+        <MenuItem Header="Clear completed queue items" Click="ClearQueueClicked" />
+      </MenuItem>
+    </Menu>
 
-      <Grid ColumnDefinitions="180,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="14">
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="DAZ Figure Definition" VerticalAlignment="Center" />
-        <TextBox Grid.Row="0" Grid.Column="1" x:Name="FigurePathBox" PlaceholderText="Select a Genesis figure .dsf" TextChanged="PathChanged" />
-        <Button Grid.Row="0" Grid.Column="2" Content="Browse..." Click="BrowseFigure" />
-
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="DAZ Pose Preset" VerticalAlignment="Center" />
-        <TextBox Grid.Row="1" Grid.Column="1" x:Name="PosePathBox" PlaceholderText="Select a static pose .duf" TextChanged="PathChanged" />
-        <Button Grid.Row="1" Grid.Column="2" Content="Browse..." Click="BrowsePose" />
-
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Output Folder" VerticalAlignment="Center" />
-        <TextBox Grid.Row="2" Grid.Column="1" x:Name="OutputPathBox" PlaceholderText="Select an existing output folder" TextChanged="PathChanged" />
-        <Button Grid.Row="2" Grid.Column="2" Content="Browse..." Click="BrowseOutput" />
+    <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*" Margin="14,10,14,8" RowSpacing="10">
+      <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+        <TextBox x:Name="SearchBox" Grid.Column="0" PlaceholderText="Search file, pose, folder, or DAZ label…" TextChanged="SearchChanged" />
+        <RadioButton x:Name="CurrentFolderRadio" Grid.Column="1" GroupName="SearchScope" Content="Current Folder"
+                     IsChecked="{Binding IsCurrentFolderScope, Mode=TwoWay}" Click="CurrentFolderChecked" VerticalAlignment="Center" />
+        <RadioButton x:Name="IncludeChildrenRadio" Grid.Column="2" GroupName="SearchScope" Content="Include Children"
+                     IsChecked="{Binding IsIncludeChildrenScope, Mode=TwoWay}" Click="IncludeChildrenChecked" VerticalAlignment="Center" />
+        <Button Grid.Column="3" Content="Clear" ToolTip.Tip="Clear the search query" Click="ClearSearchClicked" />
+        <Button Grid.Column="4" Content="Settings…" Click="SettingsClicked" />
       </Grid>
 
-      <Button x:Name="ConvertButton" Content="Convert" HorizontalAlignment="Center" Padding="32,9" IsEnabled="False" Click="ConvertClicked" />
+      <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+        <TextBlock Text="FIGURE:" FontSize="12" FontWeight="SemiBold" Opacity="0.7" VerticalAlignment="Center" Margin="0,0,8,0" />
+        <CheckBox Content="G8F" IsChecked="{Binding ShowG8Female, Mode=TwoWay}" Margin="0,0,10,0" />
+        <CheckBox Content="G8.1F" IsChecked="{Binding ShowG81Female, Mode=TwoWay}" Margin="0,0,10,0" />
+        <CheckBox Content="G8M" IsChecked="{Binding ShowG8Male, Mode=TwoWay}" Margin="0,0,10,0" />
+        <CheckBox Content="G8.1M" IsChecked="{Binding ShowG81Male, Mode=TwoWay}" Margin="0,0,10,0" />
+        <CheckBox Content="G9" IsChecked="{Binding ShowGenesis9, Mode=TwoWay}" Margin="0,0,10,0"
+                  ToolTip.Tip="Genesis 9 pose presets, including female or male labels when present" />
+        <CheckBox Content="Other" IsChecked="{Binding ShowOtherFigures, Mode=TwoWay}"
+                  ToolTip.Tip="Earlier Genesis generations and presets whose target figure cannot be inferred" />
+      </WrapPanel>
 
-      <TextBlock Text="Status / Diagnostics" FontWeight="SemiBold" />
-      <Border BorderBrush="#888888" BorderThickness="1" CornerRadius="3" Padding="10" MinHeight="250">
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-          <TextBlock x:Name="DiagnosticsText" Text="Choose a figure, pose, and output folder to begin." TextWrapping="Wrap" />
-        </ScrollViewer>
-      </Border>
+      <Grid Grid.Row="2" ColumnDefinitions="255,*,290" ColumnSpacing="10">
+        <Border Grid.Column="0" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="8">
+          <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+              <TextBlock Text="DAZ LIBRARY" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" />
+              <Button Grid.Column="1" Content="↻" ToolTip.Tip="Refresh the DAZ pose index" Click="RefreshClicked" />
+            </Grid>
+            <TextBlock Grid.Row="1" Text="{Binding CurrentSourceFolderLabel}" Opacity="0.7" TextTrimming="CharacterEllipsis" />
+            <TreeView x:Name="SourceTree" Grid.Row="2" ItemsSource="{Binding SourceFolders}" SelectedItem="{Binding SelectedSourceFolder, Mode=TwoWay}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+              <TreeView.Styles>
+                <Style Selector="TreeViewItem">
+                  <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                </Style>
+              </TreeView.Styles>
+              <TreeView.ItemTemplate>
+                <TreeDataTemplate DataType="{x:Type models:FolderNode}" ItemsSource="{Binding Children}">
+                  <TextBlock Text="{Binding Name}" />
+                </TreeDataTemplate>
+              </TreeView.ItemTemplate>
+            </TreeView>
+          </Grid>
+        </Border>
 
-      <Button x:Name="OpenOutputButton" Content="Open Output Folder" HorizontalAlignment="Left" IsEnabled="False" Click="OpenOutputFolder" />
+        <Border Grid.Column="1" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="10">
+          <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="8">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+              <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <TextBlock Text="POSE PREVIEWS" FontSize="14" FontWeight="Bold" />
+                <TextBlock Text="{Binding PageSummary}" Opacity="0.65" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="Drag selected poses to a Unity destination folder →" Opacity="0.7" VerticalAlignment="Center" />
+            </Grid>
+            <TextBlock Grid.Row="1" Text="{Binding ScanProgress}" Foreground="#79C0FF" TextWrapping="Wrap" />
+            <ListBox x:Name="PoseGrid" Grid.Row="2" ItemsSource="{Binding PoseCards}" SelectionMode="Multiple"
+                     KeyDown="PoseGridKeyDown">
+              <ListBox.Styles>
+                <Style Selector="ListBoxItem:selected Border.PoseCard">
+                  <Setter Property="BorderBrush" Value="#79C0FF" />
+                  <Setter Property="BorderThickness" Value="2" />
+                  <Setter Property="Background" Value="#303943" />
+                </Style>
+              </ListBox.Styles>
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:PoseCardViewModel}">
+                  <Border Classes="PoseCard" Width="164" Height="224" Margin="5" Padding="5" BorderBrush="#70757D" BorderThickness="1" CornerRadius="5"
+                          Background="#25282D" Cursor="Hand">
+                    <ToolTip.Tip>
+                      <Border Background="#202328" BorderBrush="#70757D" BorderThickness="1" CornerRadius="6" Padding="9">
+                        <StackPanel Width="360" Spacing="7">
+                          <Border Height="360" Background="#333840" CornerRadius="4" ClipToBounds="True">
+                            <Grid>
+                              <Image Source="{Binding PreviewImage}" Stretch="Uniform" Opacity="{Binding ThumbnailOpacity}" />
+                              <TextBlock Text="DAZ POSE" Opacity="0.35" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                         IsHitTestVisible="False" IsVisible="{Binding HasNoPreview}" />
+                            </Grid>
+                          </Border>
+                          <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" />
+                          <TextBlock Text="{Binding StatusToolTip}" FontSize="12" Opacity="0.75" TextWrapping="Wrap" />
+                        </StackPanel>
+                      </Border>
+                    </ToolTip.Tip>
+                    <Grid RowDefinitions="150,*,Auto" RowSpacing="5">
+                      <Border Grid.Row="0" Background="#333840" CornerRadius="3" ClipToBounds="True">
+                        <Grid>
+                          <Image Source="{Binding PreviewImage}" Stretch="UniformToFill" Opacity="{Binding ThumbnailOpacity}" />
+                          <TextBlock Text="DAZ POSE" Opacity="0.35" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" IsVisible="{Binding HasNoPreview}" />
+                          <Border Background="#AA1F2329" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" CornerRadius="3" Padding="4,2"
+                                  IsVisible="{Binding IsConverted}">
+                            <TextBlock Text="✓" Foreground="#63D297" FontWeight="Bold" />
+                          </Border>
+                        </Grid>
+                      </Border>
+                      <TextBlock Grid.Row="1" Text="{Binding Title}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxLines="2" FontWeight="Medium" />
+                      <TextBlock Grid.Row="2" Text="{Binding StateLabel}" FontSize="11" Foreground="{Binding StatusBrush}" TextTrimming="CharacterEllipsis" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+              <TextBlock Text="{Binding EmptyMessage}" IsVisible="{Binding IsEmpty}" TextWrapping="Wrap" />
+              <Button Content="Previous page" IsVisible="{Binding HasPreviousPoses}" Click="LoadPreviousClicked" />
+              <Button Content="Next page" IsVisible="{Binding HasMorePoses}" Click="LoadMoreClicked" />
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <Border Grid.Column="2" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="8"
+                DragDrop.AllowDrop="True" DragDrop.DragOver="DestinationDragOver" DragDrop.Drop="DestinationDrop">
+          <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+              <TextBlock Text="UNITY POSE ASSETS" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" />
+              <Button Grid.Column="1" Content="＋" FontSize="17" ToolTip.Tip="Create a matching Unity destination and import folder" Click="CreateFolderClicked" />
+            </Grid>
+            <TextBlock Grid.Row="1" Text="{Binding Settings.FinalPoseAssetRoot}" Opacity="0.7" TextTrimming="CharacterEllipsis" />
+            <TreeView x:Name="DestinationTree" Grid.Row="2" ItemsSource="{Binding DestinationFolders}" SelectedItem="{Binding SelectedDestinationFolder, Mode=TwoWay}"
+                      DragDrop.AllowDrop="True" DragDrop.DragOver="DestinationDragOver" DragDrop.Drop="DestinationDrop">
+              <TreeView.ItemTemplate>
+                <TreeDataTemplate DataType="{x:Type models:FolderNode}" ItemsSource="{Binding Children}">
+                  <TextBlock Text="{Binding Name}" />
+                </TreeDataTemplate>
+              </TreeView.ItemTemplate>
+            </TreeView>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6" Margin="0,0,0,8">
+      <RadioButton x:Name="AllFilter" GroupName="ConversionFilter" Content="All" IsChecked="True" Click="AllFilterChecked" />
+      <RadioButton x:Name="UnconvertedFilter" GroupName="ConversionFilter" Content="Unconverted" Click="UnconvertedFilterChecked" />
+      <RadioButton x:Name="ConvertedFilter" GroupName="ConversionFilter" Content="Converted" Click="ConvertedFilterChecked" />
     </StackPanel>
-  </ScrollViewer>
+
+    <Border Grid.Row="3" Padding="10,7" Background="#25282D">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock x:Name="StatusMessageText" Text="{Binding StatusMessage}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+        <Button Grid.Column="1" Content="{Binding QueueSummary}" Click="QueueSummaryClicked" />
+      </Grid>
+    </Border>
+    <Border Grid.Row="4" IsVisible="{Binding IsQueueDrawerOpen}" MaxHeight="240" Padding="10" BorderBrush="#50545C" BorderThickness="1,0,0,0">
+      <Grid RowDefinitions="Auto,*" RowSpacing="6">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto">
+          <TextBlock Text="Conversion queue" FontWeight="SemiBold" />
+          <Button Grid.Column="1" Content="Retry failed" Click="RetryFailedClicked" Margin="0,0,6,0" />
+          <Button Grid.Column="2" Content="Clear completed" Click="ClearQueueClicked" />
+        </Grid>
+        <ListBox Grid.Row="1" ItemsSource="{Binding QueueJobs}">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="{x:Type models:ConversionJob}">
+              <Grid ColumnDefinitions="2*,*,Auto" Margin="2">
+                <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1" Text="{Binding Request.DestinationRelativeFolder}" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="2" Text="{Binding State}" ToolTip.Tip="{Binding ErrorMessage}" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Grid>
+    </Border>
+  </Grid>
 </Window>

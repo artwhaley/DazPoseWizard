@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "importRoot": "Assets/DazPoseImports",
+  "outputRoot": "Assets/Animations/DazPoses"
+}

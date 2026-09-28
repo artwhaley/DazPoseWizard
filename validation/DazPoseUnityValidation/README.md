@@ -15,6 +15,16 @@ Copy-Item '.\output\Cherish Genesis 8 Female 16.dazpose.json' .\validation\DazPo
 
 `G8F-Base\Genesis8Female.dsf` is byte-identical to `fixtures\private\Genesis8Female.dsf` in the current local checkout. Convert the pose with the standalone app first if the `.dazpose.json` is absent or old; regenerate it after changes to the canonical schema.
 
+## Browser drag-to-Unity imports
+
+The editor scripts in this harness also exercise the Phase 4 browser bridge. In Unity, choose **Tools > DAZ Pose > Pipeline Settings** and assign the neutral `Assets/TestCharacter/lara.fbx` model to **G8F Reference Model**. Its importer should be **Generic** with **Optimize Game Objects** disabled. The selected model GUID is stored in `ProjectSettings/DazPoseWizardSettings.json`.
+
+In DazPoseWizard, open **File > Settings…** and set the DAZ content root and `Genesis8Female.dsf`, set this harness as the Unity project root, and choose separate Assets-relative roots such as `Assets/Animations/DazPoses` and `Assets/DazPoseImports`. Save, then drag one or more pose cards onto a folder in **UNITY POSE ASSETS**. The app writes only canonical JSON into the mirrored import hierarchy; the source `.duf` and preview image stay in the DAZ library.
+
+Unity detects imported canonical files after the AssetDatabase callback settles, then processes them one at a time from an isolated preview scene. **Tools > DAZ Pose > Process Pending Browser Imports** scans for new, changed, failed, or missing-output jobs. Final clips use the canonical file's basename in the matching output folder. Reports and per-job status stay outside `Assets` under `.dazposewizard`; status JSON is written atomically for the browser to observe. The processor calls the same `TryResolvePose` adapter and `DazPoseAnimationClipGenerator` used by the manual converter, including clip parity checks and in-place GUID-preserving regeneration.
+
+The automatic pipeline does not require a selected character or open validation scene. It does not parse DAZ source files or modify scene objects. If the reference model is missing or a pose cannot resolve against G8F, that job receives a **Failed** status with the error in the Unity Console and browser card; the rest of the queue continues.
+
 ## Open and inspect
 
 1. Open `validation\DazPoseUnityValidation` in Unity `6000.5.9f1`.

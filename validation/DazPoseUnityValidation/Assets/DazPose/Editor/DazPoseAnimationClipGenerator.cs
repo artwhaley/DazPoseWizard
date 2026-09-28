@@ -13,13 +13,23 @@ namespace DazPose.UnityValidation
         public const float DurationSeconds = 1f;
         public static DazPoseAnimationClipReport Generate(ResolvedUnityPose pose, bool replaceExisting)
         {
+            if (pose == null || pose.Definition == null)
+                throw new ArgumentNullException(nameof(pose), "A resolved G8F pose is required.");
+            var assetPath = AssetPathFor(pose);
+            var safeName = SanitizeAssetName(DazPoseJsonLoader.PoseName(pose.Definition.source.poseFile, pose.Definition.source.poseAssetId));
+            return Generate(pose, assetPath, OutputFolder + "/" + safeName + ".report.json", replaceExisting);
+        }
+
+        public static DazPoseAnimationClipReport Generate(ResolvedUnityPose pose, string assetPath, string reportPath, bool replaceExisting)
+        {
             if (pose == null || pose.Definition == null || pose.AnimationRoot == null)
                 throw new ArgumentNullException(nameof(pose), "A resolved G8F pose and stable animation root are required.");
 
-            var safeName = SanitizeAssetName(DazPoseJsonLoader.PoseName(pose.Definition.source.poseFile, pose.Definition.source.poseAssetId));
-            var assetPath = OutputFolder + "/" + safeName + ".anim";
-            var reportPath = OutputFolder + "/" + safeName + ".report.json";
-            Directory.CreateDirectory(Path.Combine(ProjectRoot, OutputFolder.Replace('/', Path.DirectorySeparatorChar)));
+            assetPath = NormalizeAssetPath(assetPath);
+            reportPath = NormalizeProjectRelativePath(reportPath);
+            var safeName = Path.GetFileNameWithoutExtension(assetPath);
+            var fullAssetPath = Path.Combine(ProjectRoot, assetPath.Replace('/', Path.DirectorySeparatorChar));
+            Directory.CreateDirectory(Path.GetDirectoryName(fullAssetPath));
             AssetDatabase.Refresh();
 
             var existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
@@ -326,5 +336,25 @@ namespace DazPose.UnityValidation
         }
 
         private static string ProjectRoot => Directory.GetParent(Application.dataPath).FullName;
+
+        private static string NormalizeAssetPath(string assetPath)
+        {
+            var normalized = (assetPath ?? string.Empty).Trim().Replace('\\', '/');
+            if (!normalized.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase)
+                || !normalized.EndsWith(".anim", StringComparison.OrdinalIgnoreCase)
+                || normalized.Split('/').Any(part => part.Length == 0 || part == "." || part == ".."))
+                throw new InvalidOperationException("Animation output must be an Assets-relative .anim path without traversal segments.");
+            return normalized;
+        }
+
+        private static string NormalizeProjectRelativePath(string relativePath)
+        {
+            var normalized = (relativePath ?? string.Empty).Trim().Replace('\\', '/');
+            if (string.IsNullOrEmpty(normalized) || normalized.StartsWith("/", StringComparison.Ordinal)
+                || Path.IsPathRooted(normalized)
+                || normalized.Split('/').Any(part => part.Length == 0 || part == "." || part == ".."))
+                throw new InvalidOperationException("Animation report path must be project-relative and cannot contain traversal segments.");
+            return normalized;
+        }
     }
 }
