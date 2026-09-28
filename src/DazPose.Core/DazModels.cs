@@ -83,6 +83,12 @@ public sealed record EvaluatedBonePose(
     Vector3 EvaluatedGlobalScale,
     Matrix4x4 EvaluatedGlobalScaleMatrix);
 
+public static class DazPoseUnits
+{
+    public static float CentimetersToMeters(float centimeters) => centimeters * 0.01f;
+    public static Vector3 CentimetersToMeters(Vector3 centimeters) => centimeters * 0.01f;
+}
+
 public sealed class DazPoseEvaluation
 {
     public required IReadOnlyList<EvaluatedBonePose> Bones { get; init; }
@@ -96,6 +102,7 @@ public sealed class ConversionResult
     public required DazFigureDefinition Figure { get; init; }
     public required DazPose Pose { get; init; }
     public required DazPoseEvaluation Evaluation { get; init; }
+    public required DazPoseEvaluation RestEvaluation { get; init; }
     public required string JsonPath { get; init; }
     public required string BvhPath { get; init; }
     public required string ReportPath { get; init; }

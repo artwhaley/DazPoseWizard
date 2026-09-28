@@ -12,3 +12,18 @@ G8F-inCherishReferencePose/
 *.fbx
 *.duf
 *.dsf
+
+# Unity validation harness generated content
+validation/DazPoseUnityValidation/Library/
+validation/DazPoseUnityValidation/Temp/
+validation/DazPoseUnityValidation/Obj/
+validation/DazPoseUnityValidation/Logs/
+validation/DazPoseUnityValidation/UserSettings/
+validation/DazPoseUnityValidation/Build/
+validation/DazPoseUnityValidation/Builds/
+validation/DazPoseUnityValidation/TestOutput/
+validation/DazPoseUnityValidation/Assets/TestCharacter/lara.images/
+validation/DazPoseUnityValidation/Assets/TestData/
+*.csproj
+*.sln
+*.slnx

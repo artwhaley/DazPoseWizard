@@ -1,6 +1,6 @@
 # DazPoseTool V0
 
-Standalone Genesis 8 Female pose conversion proof of concept. It writes a canonical `.dazpose.json`, an experimental `.bvh`, and a readable `.report.txt`.
+Standalone Genesis 8 Female pose conversion proof of concept. It writes a canonical `.dazpose.json`, an approximate `.bvh` interoperability preview, and a readable `.report.txt`.
 
 ## Run
 
@@ -12,6 +12,6 @@ Standalone Genesis 8 Female pose conversion proof of concept. It writes a canoni
 6. Click **Convert**.
 7. Read the diagnostics.
 8. Click **Open Output Folder**.
-9. Follow [docs/VALIDATION.md](docs/VALIDATION.md) for Blender comparison.
+9. Follow [the Unity validation guide](validation/DazPoseUnityValidation/README.md) to apply the canonical JSON directly to the neutral DAZ-exported G8F FBX.
 
-Run automated tests with `dotnet test .\DazPoseTool.sln -c Release`. Local proprietary fixtures belong in `fixtures\private`; they are not committed.
+Run automated tests with `dotnet test .\DazPoseTool.sln -c Release`. Local proprietary fixtures belong in `fixtures\private`, `G8F-Base`, and `G8F-inCherishReferencePose`; they are not committed.

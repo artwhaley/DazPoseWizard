@@ -1,4 +1,5 @@
 using DazPose.Core;
+using System.Globalization;
 using System.Numerics;
 using System.Text.Json;
 
@@ -29,6 +30,13 @@ public sealed class TransformAndOutputTests
         var xyz = DazTransformEvaluator.EulerToQuaternion(new Vector3(30, 40, 50), "XYZ");
         var zyx = DazTransformEvaluator.EulerToQuaternion(new Vector3(30, 40, 50), "ZYX");
         Assert.True(MathF.Abs(Quaternion.Dot(xyz, zyx)) < 0.9999f);
+    }
+
+    [Fact]
+    public void DazCentimetersConvertToUnityAndBvhMeters()
+    {
+        Assert.Equal(1f, DazPoseUnits.CentimetersToMeters(100f), 6);
+        Assert.Equal(new Vector3(1, -0.25f, 0.5f), DazPoseUnits.CentimetersToMeters(new Vector3(100, -25, 50)));
     }
 
     [Fact]
@@ -97,11 +105,22 @@ public sealed class TransformAndOutputTests
             using var json = JsonDocument.Parse(File.ReadAllText(result.JsonPath));
             Assert.Equal("DazPoseTool", json.RootElement.GetProperty("format").GetString());
             Assert.Equal(170, json.RootElement.GetProperty("bones").GetArrayLength());
+            var hip = json.RootElement.GetProperty("bones").EnumerateArray().Single(bone => bone.GetProperty("id").GetString() == "hip");
+            Assert.Equal(3, hip.GetProperty("restWorldPositionCm").GetArrayLength());
+            Assert.Equal(4, hip.GetProperty("restWorldRotation").GetArrayLength());
             var bvh = File.ReadAllText(result.BvhPath);
             Assert.Contains("HIERARCHY", bvh);
             Assert.Contains("ROOT hip", bvh);
             Assert.Contains("MOTION", bvh);
             Assert.Contains("Frames: 1", bvh);
+            var hipOffsetLine = bvh.Split('\n').First(line => line.StartsWith("  OFFSET ", StringComparison.Ordinal));
+            var expectedHipOffset = DazPoseUnits.CentimetersToMeters(
+                result.Figure.NodesById["hip"].CenterPoint - result.Figure.NodesById[result.Figure.NodesById["hip"].ParentId!].CenterPoint);
+            var outputOffset = hipOffsetLine.Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1)
+                .Select(value => float.Parse(value, CultureInfo.InvariantCulture)).ToArray();
+            Assert.Equal(expectedHipOffset.X, outputOffset[0], 5);
+            Assert.Equal(expectedHipOffset.Y, outputOffset[1], 5);
+            Assert.Equal(expectedHipOffset.Z, outputOffset[2], 5);
             Assert.Contains(PoseConversionService.BvhWarning, File.ReadAllText(result.ReportPath));
             Assert.Equal(97, result.Pose.ResolvedSkeletalTargetCount);
             Assert.Equal(74, result.Pose.NeutralUnsupportedChannels.Count);

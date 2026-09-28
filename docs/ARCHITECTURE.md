@@ -16,6 +16,10 @@ Node scale values and `inherits_scale` are retained and included in the evaluate
 
 ## Export
 
-The deterministic `.dazpose.json` is canonical and contains source asset IDs, source bone fields, raw pose channels, ignored neutral channels, and evaluated local/world rotations and positions. The `.bvh` is a one-frame preview rooted at `hip`, uses centimeter offsets, and declares X/Y/Z rotation channels after XYZ quaternion decomposition. It may lose joint orientation and bone-roll detail, so it must not be used to revise the canonical pose values.
+The deterministic `.dazpose.json` is canonical and contains source asset IDs, source bone fields, raw pose channels, ignored neutral channels, and evaluated rest and pose local/world rotations and positions. The rest snapshot is the minimum information needed to compare DAZ coordinates with the actual Unity-imported FBX skeleton. The `.bvh` is a one-frame, approximate interoperability preview rooted at `hip`; linear offsets and translations are converted from DAZ centimeters to meters. It may lose joint orientation and bone-roll detail, so it must not be used to revise canonical pose values.
 
 Every successful conversion also creates a text report with source/output paths, asset IDs, node/target counts, ignored channels, timestamp, and warnings.
+
+## Unity validation boundary
+
+`validation/DazPoseUnityValidation` consumes only `.dazpose.json`; it does not parse DSON. It inspects the actual imported G8F Transform hierarchy, resolves exact DAZ names/IDs with the exact parent chain to disambiguate duplicate FBX transforms, and fits one 3×3 DAZ-to-Unity basis from major rest-bone positions. The fit is allowed to have determinant -1 when the paired imported positions establish a reflected basis. It reports residuals for every bone and uses the same basis to convert world rotation deltas and centimeter position deltas. Missing active targets and a poor major-landmark fit stop pose application.

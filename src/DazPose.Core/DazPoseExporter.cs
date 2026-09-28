@@ -10,7 +10,7 @@ public static class DazPoseExporter
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     public static void WriteJson(string path, DazFigureDefinition figure, DazPose pose, DazPoseEvaluation evaluation,
-        IReadOnlyList<string> warnings)
+        DazPoseEvaluation restEvaluation, IReadOnlyList<string> warnings)
     {
         var data = new
         {
@@ -52,6 +52,10 @@ public static class DazPoseExporter
                 sourceGeneralScale = item.Bone.GeneralScale,
                 poseRotationDegrees = V(item.PoseRotationDegrees),
                 poseTranslationCm = V(item.PoseTranslationCm),
+                restLocalRotation = Q(restEvaluation.BonesById[item.Bone.Id].EvaluatedLocalRotation),
+                restWorldRotation = Q(restEvaluation.BonesById[item.Bone.Id].EvaluatedWorldRotation),
+                restWorldPositionCm = V(restEvaluation.BonesById[item.Bone.Id].EvaluatedWorldPositionCm),
+                restGlobalScaleMatrix = M(restEvaluation.BonesById[item.Bone.Id].EvaluatedGlobalScaleMatrix),
                 evaluatedLocalRotation = Q(item.EvaluatedLocalRotation),
                 evaluatedWorldRotation = Q(item.EvaluatedWorldRotation),
                 evaluatedWorldPositionCm = V(item.EvaluatedWorldPositionCm),
@@ -85,7 +89,7 @@ public static class DazPoseExporter
         builder.AppendLine("ROOT hip");
         builder.AppendLine("{");
         var rootOffset = hip.CenterPoint - figure.NodesById[hip.ParentId!].CenterPoint;
-        builder.Append("  OFFSET ").AppendLine(VText(rootOffset));
+        builder.Append("  OFFSET ").AppendLine(VText(DazPoseUnits.CentimetersToMeters(rootOffset)));
         builder.AppendLine("  CHANNELS 6 Xposition Yposition Zposition Xrotation Yrotation Zrotation");
         if (children.TryGetValue(hip.Id, out var rootChildren))
             foreach (var child in rootChildren) WriteJoint(builder, child, hip, children);
@@ -96,9 +100,10 @@ public static class DazPoseExporter
 
         var outputValues = new List<float>();
         var rootPose = evaluation.BonesById[hip.Id];
-        outputValues.Add(rootPose.PoseTranslationCm.X);
-        outputValues.Add(rootPose.PoseTranslationCm.Y);
-        outputValues.Add(rootPose.PoseTranslationCm.Z);
+        var rootTranslationMeters = DazPoseUnits.CentimetersToMeters(rootPose.PoseTranslationCm);
+        outputValues.Add(rootTranslationMeters.X);
+        outputValues.Add(rootTranslationMeters.Y);
+        outputValues.Add(rootTranslationMeters.Z);
         AddEuler(outputValues, rootPose.EvaluatedLocalRotation);
         foreach (var node in ordered.Skip(1)) AddEuler(outputValues, evaluation.BonesById[node.Id].EvaluatedLocalRotation);
         builder.AppendLine(string.Join(' ', outputValues.Select(Number)));
@@ -110,7 +115,7 @@ public static class DazPoseExporter
     {
         builder.Append("  JOINT ").AppendLine(SafeBvhName(node.Name));
         builder.AppendLine("  {");
-        builder.Append("    OFFSET ").AppendLine(VText(node.CenterPoint - parent.CenterPoint));
+        builder.Append("    OFFSET ").AppendLine(VText(DazPoseUnits.CentimetersToMeters(node.CenterPoint - parent.CenterPoint)));
         builder.AppendLine("    CHANNELS 3 Xrotation Yrotation Zrotation");
         if (children.TryGetValue(node.Id, out var descendants) && descendants.Length > 0)
         {
@@ -120,7 +125,7 @@ public static class DazPoseExporter
         {
             builder.AppendLine("    End Site");
             builder.AppendLine("    {");
-            builder.Append("      OFFSET ").AppendLine(VText(node.EndPoint - node.CenterPoint));
+            builder.Append("      OFFSET ").AppendLine(VText(DazPoseUnits.CentimetersToMeters(node.EndPoint - node.CenterPoint)));
             builder.AppendLine("    }");
         }
         builder.AppendLine("  }");

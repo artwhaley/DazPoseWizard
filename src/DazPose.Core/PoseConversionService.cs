@@ -20,6 +20,12 @@ public static class PoseConversionService
         var pose = DazPoseParser.Parse(posePath, poseDocument, figure);
         ValidatePose(pose);
         var evaluation = DazTransformEvaluator.Evaluate(figure, pose);
+        var restEvaluation = DazTransformEvaluator.Evaluate(figure, new DazPose
+        {
+            FilePath = pose.FilePath,
+            AssetId = pose.AssetId,
+            Channels = Array.Empty<DazPoseChannel>()
+        });
 
         var outputBase = Path.Combine(Path.GetFullPath(outputDirectory), pose.PoseName);
         var jsonPath = outputBase + ".dazpose.json";
@@ -27,7 +33,7 @@ public static class PoseConversionService
         var reportPath = outputBase + ".report.txt";
         var warnings = new List<string> { BvhWarning };
         warnings.AddRange(pose.Diagnostics);
-        DazPoseExporter.WriteJson(jsonPath, figure, pose, evaluation, warnings);
+        DazPoseExporter.WriteJson(jsonPath, figure, pose, evaluation, restEvaluation, warnings);
         DazPoseExporter.WriteBvh(bvhPath, figure, evaluation);
         File.WriteAllText(reportPath, BuildReport(figure, pose, jsonPath, bvhPath, reportPath, warnings), new UTF8Encoding(false));
 
@@ -39,7 +45,7 @@ public static class PoseConversionService
         diagnostics.Add(new ConversionDiagnostic("Warning", BvhWarning));
         return new ConversionResult
         {
-            Figure = figure, Pose = pose, Evaluation = evaluation, JsonPath = jsonPath, BvhPath = bvhPath,
+            Figure = figure, Pose = pose, Evaluation = evaluation, RestEvaluation = restEvaluation, JsonPath = jsonPath, BvhPath = bvhPath,
             ReportPath = reportPath, Diagnostics = diagnostics
         };
     }
@@ -82,6 +88,8 @@ public static class PoseConversionService
             "Unresolved skeletal target count: 0",
             $"Unsupported neutral channel count: {pose.NeutralUnsupportedChannels.Count}",
             $"Unsupported non-neutral channel count: {pose.NonNeutralUnsupportedChannels.Count}",
+            "Canonical format: .dazpose.json (DAZ centimeter coordinates; includes evaluated rest and pose world transforms).",
+            "BVH format: approximate interoperability export (linear values converted from centimeters to meters; Genesis joint orientation may be lost).",
             "Unsupported neutral channels:",
             ..unsupportedNames.Select(name => $"  {name}"),
             "Warnings:",
