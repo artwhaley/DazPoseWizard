@@ -44,10 +44,16 @@ public sealed class TransformAndOutputTests
             NodesById = new Dictionary<string, DazBoneDefinition> { ["Figure"] = figureRoot, ["joint"] = bone },
             NodesByName = new Dictionary<string, DazBoneDefinition> { ["Figure"] = figureRoot, ["joint"] = bone }
         };
-        var pose = new DazPose.Core.DazPose { FilePath = "synthetic.duf", AssetId = "", Channels = [] };
+        var poseRotation = new Vector3(15, 25, -5);
+        var channels = new[] { ("x", poseRotation.X), ("y", poseRotation.Y), ("z", poseRotation.Z) }
+            .Select(item => new DazPoseChannel(
+                $"name://@selection/joint:?rotation/{item.Item1}/value",
+                new DazPropertyUrl("name", "@selection/joint", "joint", null, "rotation", item.Item1, "value"),
+                [new DazPoseKey(0, item.Item2)], bone, false)).ToArray();
+        var pose = new DazPose.Core.DazPose { FilePath = "synthetic.duf", AssetId = "", Channels = channels };
         var evaluation = DazTransformEvaluator.Evaluate(figure, pose);
         var orientation = DazTransformEvaluator.EulerToQuaternion(bone.Orientation, "XYZ");
-        var rotation = DazTransformEvaluator.EulerToQuaternion(bone.Rotation, bone.RotationOrder);
+        var rotation = DazTransformEvaluator.EulerToQuaternion(poseRotation, bone.RotationOrder);
         var expected = Quaternion.Normalize(orientation * rotation * Quaternion.Inverse(orientation));
         AssertQuaternionEquivalent(expected, evaluation.BonesById["joint"].EvaluatedLocalRotation);
     }
