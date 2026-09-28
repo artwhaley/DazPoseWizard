@@ -8,9 +8,10 @@ namespace DazPose.UnityValidation
     [InitializeOnLoad]
     public static class DazPosePlayableBatchMonitor
     {
-        private const string PendingKey = "DazPose.Phase2.PlayableSmoke.Pending";
-        private const string PassedKey = "DazPose.Phase2.PlayableSmoke.Passed";
-        private const string StartedAtKey = "DazPose.Phase2.PlayableSmoke.StartedAt";
+        private const string PendingKey = "DazPose.PlayableSmoke.Pending";
+        private const string PassedKey = "DazPose.PlayableSmoke.Passed";
+        private const string StartedAtKey = "DazPose.PlayableSmoke.StartedAt";
+        private const string OwnerKey = "DazPose.PlayableSmoke.Owner";
         private const double TimeoutSeconds = 120;
 
         static DazPosePlayableBatchMonitor()
@@ -19,8 +20,21 @@ namespace DazPose.UnityValidation
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
-        public static void Arm()
+        public static string CreateOwnerId()
         {
+            return Guid.NewGuid().ToString("N");
+        }
+
+        public static void RegisterOwner(string ownerId)
+        {
+            if (string.IsNullOrEmpty(ownerId)) throw new ArgumentException("A smoke-test ownership token is required.", nameof(ownerId));
+            SessionState.SetString(OwnerKey, ownerId);
+        }
+
+        public static void Arm(string ownerId)
+        {
+            if (string.IsNullOrEmpty(ownerId)) throw new ArgumentException("A smoke-test ownership token is required.", nameof(ownerId));
+            RegisterOwner(ownerId);
             SessionState.SetBool(PendingKey, true);
             SessionState.SetBool(PassedKey, false);
             SessionState.SetFloat(StartedAtKey, (float)EditorApplication.timeSinceStartup);
@@ -38,8 +52,25 @@ namespace DazPose.UnityValidation
             }
             if (!EditorApplication.isPlaying) return;
 
-            var driver = Resources.FindObjectsOfTypeAll<DazPosePlayableValidationDriver>()
-                .FirstOrDefault(item => item != null && item.gameObject.scene.IsValid() && !EditorUtility.IsPersistent(item));
+            var ownerId = SessionState.GetString(OwnerKey, string.Empty);
+            if (string.IsNullOrEmpty(ownerId))
+            {
+                Debug.LogError("DAZ Pose batch Play Mode smoke test has no ownership token; it will not inspect or commandeer any validation driver.");
+                SessionState.SetBool(PassedKey, false);
+                EditorApplication.isPlaying = false;
+                return;
+            }
+            var ownedDrivers = Resources.FindObjectsOfTypeAll<DazPosePlayableValidationDriver>()
+                .Where(item => item != null && item.gameObject.scene.IsValid() && !EditorUtility.IsPersistent(item)
+                    && string.Equals(item.validationSmokeTestOwner, ownerId, StringComparison.Ordinal)).ToArray();
+            if (ownedDrivers.Length > 1)
+            {
+                Debug.LogError("DAZ Pose batch Play Mode smoke test found multiple drivers with its ownership token.");
+                SessionState.SetBool(PassedKey, false);
+                EditorApplication.isPlaying = false;
+                return;
+            }
+            var driver = ownedDrivers.FirstOrDefault();
             if (driver == null || !driver.validationComplete) return;
             if (!driver.validationPassed)
             {
@@ -66,14 +97,34 @@ namespace DazPose.UnityValidation
 
         private static void CleanupTemporaryComponents()
         {
-            foreach (var driver in Resources.FindObjectsOfTypeAll<DazPosePlayableValidationDriver>()
-                         .Where(item => item != null && item.gameObject.scene.IsValid() && !EditorUtility.IsPersistent(item)).ToArray())
+            var ownerId = SessionState.GetString(OwnerKey, string.Empty);
+            if (string.IsNullOrEmpty(ownerId)) return;
+
+            var ownedDrivers = Resources.FindObjectsOfTypeAll<DazPosePlayableValidationDriver>()
+                .Where(item => item != null && item.gameObject.scene.IsValid() && !EditorUtility.IsPersistent(item)
+                    && string.Equals(item.validationSmokeTestOwner, ownerId, StringComparison.Ordinal)).ToArray();
+            if (ownedDrivers.Length > 1)
             {
-                var animator = driver.GetComponent<Animator>();
-                var addedAnimator = driver.validationAddedAnimator;
-                UnityEngine.Object.DestroyImmediate(driver);
-                if (addedAnimator && animator != null) UnityEngine.Object.DestroyImmediate(animator);
+                Debug.LogError("DAZ Pose smoke-test cleanup found multiple components with its ownership token; it left them untouched.");
+                if (SessionState.GetBool(PendingKey, false)) SessionState.SetBool(PassedKey, false);
+                return;
             }
+            if (ownedDrivers.Length == 0)
+            {
+                if (SessionState.GetBool(PendingKey, false))
+                {
+                    Debug.LogError("DAZ Pose smoke-test cleanup could not find its owned driver.");
+                    SessionState.SetBool(PassedKey, false);
+                }
+                SessionState.SetString(OwnerKey, string.Empty);
+                return;
+            }
+
+            var ownedDriver = ownedDrivers[0];
+            var ownedAnimator = ownedDriver.validationAddedAnimator ? ownedDriver.validationOwnedAnimator : null;
+            UnityEngine.Object.DestroyImmediate(ownedDriver);
+            if (ownedAnimator != null) UnityEngine.Object.DestroyImmediate(ownedAnimator);
+            SessionState.SetString(OwnerKey, string.Empty);
         }
     }
 }

@@ -29,6 +29,8 @@ namespace DazPose.UnityValidation
         public AnimationClip clip;
         public DazPoseRuntimeExpectedTransform[] expectedTransforms = Array.Empty<DazPoseRuntimeExpectedTransform>();
         public bool validationAddedAnimator;
+        public Animator validationOwnedAnimator;
+        public string validationSmokeTestOwner;
         [NonSerialized] public bool validationComplete;
         [NonSerialized] public bool validationPassed;
 

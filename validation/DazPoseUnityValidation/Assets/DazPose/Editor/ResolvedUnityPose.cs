@@ -49,7 +49,10 @@ namespace DazPose.UnityValidation
         public string sourcePoseAssetId;
         public string sourceFigureAssetId;
         public string generatedClipPath;
+        public string assetGuid;
         public string clipName;
+        public bool generationPassed;
+        public string generationFailure;
         public float durationSeconds;
         public int resolvedBoneCount;
         public int poseTargetBoneCount;

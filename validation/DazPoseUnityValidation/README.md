@@ -41,6 +41,10 @@ The **Tools > DAZ Pose > Run Adapter Self Tests** command runs nine checks for c
 
 The user visually reviewed multiple G8F direct-pose applications and confirmed they worked correctly on 2026-09-27. That is the accepted Phase 1 baseline. The clip generator reuses the same resolved local transforms captured from the existing direct-apply conversion; it does not add a second DAZ-to-Unity conversion path.
 
+## Phase 2 review record
+
+The user confirmed the Phase 2 native clip, editor preview, and Play Mode animation smoke test all worked. This is the accepted Phase 2 baseline for the runtime blending experiment.
+
 ## Generate a native Unity AnimationClip
 
 1. Open `Assets/Scenes/PoseValidation.unity` and select the **Lara** root in the Hierarchy.
@@ -78,6 +82,51 @@ From Unity batch mode, `DazPose.UnityValidation.DazPoseEditorCommands.RunBatchVa
 `DazPose.UnityValidation.DazPoseEditorCommands.RunBatchPlayableSmokeTest` runs that suite and then enters Play Mode to verify Unity's Animator/Playables path. The editor monitor exits batch mode only after the runtime driver passes, and returns a failure exit code on a parity or timeout error.
 
 The repository currently contains one local pose fixture (`Cherish Genesis 8 Female 16.dazpose.json`). The Phase 2 batch runner automatically adds any second known-good G8F `.dazpose.json` copied into `Assets/TestData`.
+
+## Phase 3 runtime pose blending
+
+This experiment blends ordinary sparse G8F `.anim` pose clips through a two-input Playables mixer on the stable `Genesis8Female` root. It does not use BVH, retargeting, or an Animator Controller state machine. The Animator's root motion is disabled by the setup command; Lara remains the outer scene-placement object.
+
+### Prepare three poses
+
+1. Convert the three selected poses with DazPoseTool V0 using the same `Genesis8Female.dsf` figure. Keep each generated `.dazpose.json` output.
+2. Copy the three JSON files into `validation\DazPoseUnityValidation\Assets\TestData` (the Unity project will import them).
+3. In Unity, open `C:\Users\artwh\OneDrive\Documents\DazPoseWizard\validation\DazPoseUnityValidation` with Unity `6000.5.9f1`, then open `Assets\Scenes\PoseValidation.unity` with **Tools > DAZ Pose > Open Validation Scene**.
+4. Select **Lara** in the Hierarchy. For each JSON file, choose **Tools > DAZ Pose > Generate AnimationClip from Pose** and select that file. Confirm **Regenerate** if Unity asks about an existing clip. The `.anim` files are written to `Assets\Generated\DazPoses\G8F`.
+
+### Configure and start the demo
+
+1. Select **Lara**, then choose **Tools > DAZ Pose > Setup Runtime Blend Demo**. The command puts or reuses the Animator, `DazPoseBlendPlayer`, and `DazPoseBlendDemo` on Lara's direct child `Genesis8Female` animation root. It selects that root afterward.
+2. In the Inspector, find **Daz Pose Blend Demo**. Assign the generated `.anim` assets to **Pose A**, **Pose B**, and optionally **Pose C** by dragging them from the Project window. Leave Pose C empty for a two-pose test. Set **Blend Duration Seconds** and **Blend Ease**; the initial values are 0.7 seconds and SmoothStep.
+3. Save the scene with **Ctrl+S** while still in Edit Mode.
+4. Click Unity's **Play** button. The character snaps to Pose A as its known starting pose; there is no neutral-to-A blend.
+5. In the Game view's **G8F Runtime Pose Blend Test** panel, click **2 - Pose B**, then **1 - Pose A** to test both directions. If using Pose C, click **3 - Pose C** as well. Keyboard keys **1**, **2**, and **3** select the corresponding slots when the Game view has focus.
+
+Requests made during a blend are queued deterministically: the current transition finishes, then the latest queued pose request starts. Asking for the current target does not restart its transition; asking for the already steady pose does nothing.
+
+### Compare easing and duration
+
+1. While still in Play Mode, select the `Genesis8Female` root in the Hierarchy and edit **Blend Duration Seconds** on **Daz Pose Blend Demo** in the Inspector.
+2. Try `0.15`, `0.35`, `0.70`, and `1.20` seconds. After each change, click the opposite pose button (1 or 2) and let that transition finish before starting the next one.
+3. Change **Blend Ease** between **SmoothStep** and **Linear**, then trigger the same A↔B direction at the same duration to compare.
+
+The Console logs each transition once, including source pose, target pose, duration, and easing. The Game view panel displays current pose, target, progress, and any pending pose.
+
+### Endpoint and repeated-transition check
+
+With Pose A and Pose B assigned and no blend in progress, click **F5 - Check endpoints and repeat A/B 20 times** in the Game view panel. This performs direct-clip endpoint comparisons for A and B, checks that Lara's outer world position/rotation/scale stay fixed, and runs 20 short A/B transitions while checking the playable count. The Console should print `PASS DAZ Pose runtime blend validation`. It is a brief validation run and returns to Pose A.
+
+### Compare sparse bindings after a visible snap
+
+In Edit Mode, choose **Tools > DAZ Pose > Compare AnimationClip Bindings A vs B**. Select the exact two `.anim` clips tested. Unity reports the shared, only-in-A, and only-in-B binding counts and saves the full path/property comparison to `TestOutput\pose-binding-comparison.json`. Send that JSON if a transition snaps at its start or end; do not expand the clips to the full skeleton during this experiment.
+
+### What to report back
+
+- Which Pose A, Pose B, and (if used) Pose C clips you tested.
+- Which duration looked best, and whether Linear or SmoothStep looked better.
+- Any shoulder, wrist/finger, hip, knee/foot, or spine movement that looked wrong.
+- Whether a snap happened at the beginning or end of a transition.
+- `TestOutput\pose-binding-comparison.json` if a snap occurred, plus any Unity Console error.
 
 ## Evidence for a corrective pass
 

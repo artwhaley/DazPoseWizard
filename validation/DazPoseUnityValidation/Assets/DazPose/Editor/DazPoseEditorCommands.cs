@@ -231,8 +231,36 @@ namespace DazPose.UnityValidation
             if (string.IsNullOrEmpty(absolutePath)) return;
             var clip = DazPoseAnimationClipGenerator.LoadClipFromAbsolutePath(absolutePath);
             if (clip == null) throw new InvalidOperationException("Unity could not load the selected .anim asset.");
-            ConfigurePlayableSmokeTest(root, clip);
+            var ownerId = DazPosePlayableBatchMonitor.CreateOwnerId();
+            ConfigurePlayableSmokeTest(root, clip, ownerId);
+            DazPosePlayableBatchMonitor.RegisterOwner(ownerId);
             EditorApplication.isPlaying = true;
+        }
+
+        [MenuItem("Tools/DAZ Pose/Setup Runtime Blend Demo")]
+        public static void SetupRuntimeBlendDemo()
+        {
+            var characterRoot = RequireSelectedRoot();
+            var animationRoot = FindAnimationRoot(characterRoot);
+            if (animationRoot.GetComponent<DazPosePlayableValidationDriver>() != null)
+                throw new InvalidOperationException("A Phase 2 validation-only Playables driver is still attached to " + animationRoot.name + ". The runtime blend demo will not share its Animator output.");
+            var animator = animationRoot.GetComponent<Animator>();
+            if (animator == null)
+            {
+                animator = Undo.AddComponent<Animator>(animationRoot.gameObject);
+            }
+            animator.applyRootMotion = false;
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+
+            var player = animationRoot.GetComponent<DazPoseBlendPlayer>();
+            if (player == null) player = Undo.AddComponent<DazPoseBlendPlayer>(animationRoot.gameObject);
+            var demo = animationRoot.GetComponent<DazPoseBlendDemo>();
+            if (demo == null) demo = Undo.AddComponent<DazPoseBlendDemo>(animationRoot.gameObject);
+            demo.player = player;
+            EditorUtility.SetDirty(demo);
+            EditorSceneManager.MarkSceneDirty(characterRoot.gameObject.scene);
+            Selection.activeGameObject = animationRoot.gameObject;
+            Debug.Log("Runtime pose-blend demo is set up on " + animationRoot.name + ". Assign Pose A and Pose B on DazPoseBlendDemo, then enter Play Mode. Lara's outer scene object is not animated.");
         }
 
         [MenuItem("Tools/DAZ Pose/Restore Captured Rest Pose")]
@@ -255,6 +283,11 @@ namespace DazPose.UnityValidation
 
         public static void RunBatchValidation()
         {
+            RunBatchValidationCore();
+        }
+
+        private static AnimationClip RunBatchValidationCore()
+        {
             OpenValidationScene();
             var character = GameObject.Find("Lara");
             if (character == null) throw new InvalidOperationException("Validation scene does not contain the Lara root. Run Setup Validation Scene first.");
@@ -264,6 +297,7 @@ namespace DazPose.UnityValidation
             var posePaths = Directory.Exists(testFolder) ? Directory.GetFiles(testFolder, "*.dazpose.json").OrderBy(path => path, StringComparer.Ordinal).ToArray() : Array.Empty<string>();
             if (posePaths.Length == 0) throw new FileNotFoundException("No local G8F .dazpose.json fixture is available under " + testFolder + ".");
 
+            AnimationClip firstGeneratedClip = null;
             foreach (var posePath in posePaths)
             {
                 if (!TryResolvePose(character.transform, posePath, out var resolved))
@@ -274,28 +308,67 @@ namespace DazPose.UnityValidation
                     throw new InvalidOperationException("The refactored direct Apply result differs from the captured proven adapter output. " + directParity.Summary);
 
                 var assetPath = DazPoseAnimationClipGenerator.AssetPathFor(resolved);
-                var replacing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath) != null;
-                var clipReport = DazPoseAnimationClipGenerator.Generate(resolved, replacing);
-                if (!clipReport.directApplyParityPassed)
+                var clipReport = RegenerateAndVerifyAssetIdentity(resolved, assetPath);
+                if (!clipReport.generationPassed || !clipReport.directApplyParityPassed)
                     throw new InvalidOperationException("Generated clip parity failed for " + Path.GetFileName(posePath) + ".");
+                if (firstGeneratedClip == null) firstGeneratedClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
                 Debug.Log("PASS DAZ Pose Phase 2 regression: direct local transforms match the preserved adapter output; clip parity passed for " + Path.GetFileName(posePath) + ".");
             }
             Debug.Log("DAZ Pose Phase 2 batch validation passed for " + posePaths.Length + " available G8F pose fixture(s).");
+            return firstGeneratedClip;
         }
 
         public static void RunBatchPlayableSmokeTest()
         {
-            RunBatchValidation();
-            var generated = Directory.GetFiles(Path.Combine(ProjectRoot, DazPoseAnimationClipGenerator.OutputFolder.Replace('/', Path.DirectorySeparatorChar)), "*.anim")
-                .OrderBy(path => path, StringComparer.Ordinal).FirstOrDefault();
-            if (generated == null) throw new FileNotFoundException("Phase 2 validation did not generate a native AnimationClip.");
-            var clip = DazPoseAnimationClipGenerator.LoadClipFromAbsolutePath(generated);
+            var clip = RunBatchValidationCore();
             var character = GameObject.Find("Lara");
             if (clip == null || character == null) throw new InvalidOperationException("Could not load Lara or the generated .anim for the Play Mode smoke test.");
-            ConfigurePlayableSmokeTest(character.transform, clip);
-            DazPosePlayableBatchMonitor.Arm();
+            var ownerId = DazPosePlayableBatchMonitor.CreateOwnerId();
+            ConfigurePlayableSmokeTest(character.transform, clip, ownerId);
+            DazPosePlayableBatchMonitor.Arm(ownerId);
             EditorApplication.isPlaying = true;
             Debug.Log("DAZ Pose batch Play Mode smoke test entered Play Mode with validation-only Playables driver.");
+        }
+
+        private static DazPoseAnimationClipReport RegenerateAndVerifyAssetIdentity(ResolvedUnityPose pose, string assetPath)
+        {
+            var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+            if (clip == null)
+            {
+                DazPoseAnimationClipGenerator.Generate(pose, false);
+                clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+            }
+            if (clip == null) throw new InvalidOperationException("AnimationClip generation did not create " + assetPath + ".");
+
+            var guidBefore = AssetDatabase.AssetPathToGUID(assetPath);
+            var sentinelPath = "__DazPoseP3RegenerationProbe_" + Guid.NewGuid().ToString("N");
+            var sentinelBinding = EditorCurveBinding.FloatCurve(sentinelPath, typeof(Transform), "m_LocalPosition.x");
+            AnimationUtility.SetEditorCurve(clip, sentinelBinding, AnimationCurve.Constant(0f, 1f, 0f));
+            EditorUtility.SetDirty(clip);
+            AssetDatabase.SaveAssets();
+
+            try
+            {
+                var report = DazPoseAnimationClipGenerator.Generate(pose, true);
+                var regenerated = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+                var guidAfter = AssetDatabase.AssetPathToGUID(assetPath);
+                if (!string.Equals(guidBefore, guidAfter, StringComparison.Ordinal))
+                    throw new InvalidOperationException("Regenerating " + assetPath + " changed its asset GUID from " + guidBefore + " to " + guidAfter + ".");
+                if (regenerated == null || AnimationUtility.GetCurveBindings(regenerated).Any(binding => binding.path == sentinelPath))
+                    throw new InvalidOperationException("Regeneration left an obsolete test curve in " + assetPath + ".");
+                Debug.Log("PASS DAZ Pose regeneration regression: asset GUID stayed " + guidBefore + " and obsolete curves were removed from " + assetPath + ".");
+                return report;
+            }
+            finally
+            {
+                var regenerated = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+                if (regenerated != null && AnimationUtility.GetCurveBindings(regenerated).Any(binding => binding.path == sentinelPath))
+                {
+                    AnimationUtility.SetEditorCurve(regenerated, sentinelBinding, null);
+                    EditorUtility.SetDirty(regenerated);
+                    AssetDatabase.SaveAssets();
+                }
+            }
         }
 
         private static bool ApplyPose(Transform root, string jsonPath)
@@ -529,9 +602,15 @@ namespace DazPose.UnityValidation
             return candidates[0];
         }
 
-        private static void ConfigurePlayableSmokeTest(Transform characterRoot, AnimationClip clip)
+        private static void ConfigurePlayableSmokeTest(Transform characterRoot, AnimationClip clip, string ownerId)
         {
+            if (string.IsNullOrEmpty(ownerId)) throw new ArgumentException("A smoke-test owner id is required.", nameof(ownerId));
             var animationRoot = FindAnimationRoot(characterRoot);
+            if (animationRoot.GetComponent<DazPosePlayableValidationDriver>() != null)
+                throw new InvalidOperationException("A DAZ Pose smoke-test driver already exists on " + animationRoot.name + ". Remove or inspect it before starting another test; the command will not commandeer it.");
+            if (animationRoot.GetComponent<DazPoseBlendPlayer>() != null)
+                throw new InvalidOperationException("A runtime DazPoseBlendPlayer is attached to " + animationRoot.name + ". Stop or remove it before running the separate Phase 2 smoke test.");
+
             var animator = animationRoot.GetComponent<Animator>();
             var addedAnimator = animator == null;
             if (addedAnimator) animator = Undo.AddComponent<Animator>(animationRoot.gameObject);
@@ -541,12 +620,23 @@ namespace DazPose.UnityValidation
                 animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
             }
 
-            var driver = animationRoot.GetComponent<DazPosePlayableValidationDriver>();
-            if (driver == null) driver = Undo.AddComponent<DazPosePlayableValidationDriver>(animationRoot.gameObject);
-            driver.clip = clip;
-            driver.validationAddedAnimator = addedAnimator;
-            driver.expectedTransforms = BuildRuntimeExpectations(clip);
-            EditorUtility.SetDirty(driver);
+            DazPosePlayableValidationDriver driver = null;
+            try
+            {
+                driver = Undo.AddComponent<DazPosePlayableValidationDriver>(animationRoot.gameObject);
+                driver.clip = clip;
+                driver.validationAddedAnimator = addedAnimator;
+                driver.validationOwnedAnimator = addedAnimator ? animator : null;
+                driver.validationSmokeTestOwner = ownerId;
+                driver.expectedTransforms = BuildRuntimeExpectations(clip);
+                EditorUtility.SetDirty(driver);
+            }
+            catch
+            {
+                if (driver != null) Undo.DestroyObjectImmediate(driver);
+                if (addedAnimator && animator != null) Undo.DestroyObjectImmediate(animator);
+                throw;
+            }
             EditorSceneManager.MarkSceneDirty(characterRoot.gameObject.scene);
             Selection.activeGameObject = characterRoot.gameObject;
             Debug.Log("Prepared validation-only Animator/Playables smoke test on stable root '" + animationRoot.name + "' using '" + clip.name

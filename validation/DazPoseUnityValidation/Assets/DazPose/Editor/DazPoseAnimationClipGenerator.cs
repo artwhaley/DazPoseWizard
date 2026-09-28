@@ -25,8 +25,6 @@ namespace DazPose.UnityValidation
             var existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
             if (existing != null && !replaceExisting)
                 throw new InvalidOperationException("AnimationClip already exists at " + assetPath + ". Confirm regeneration before replacing it.");
-            if (existing != null && !AssetDatabase.DeleteAsset(assetPath))
-                throw new IOException("Unity could not replace the existing animation asset at " + assetPath + ".");
 
             var clip = new AnimationClip
             {
@@ -37,96 +35,91 @@ namespace DazPose.UnityValidation
             var bindings = new List<EditorCurveBinding>();
             var curves = new List<AnimationCurve>();
             var diagnostics = new List<DazPoseAnimationBindingDiagnostic>();
-
-            foreach (var bone in pose.Bones.Where(item => item.HasPosition || item.HasRotation || item.HasScale)
-                         .OrderBy(item => item.AnimationPath, StringComparer.Ordinal))
-            {
-                ValidateAnimationPath(pose, bone);
-                var properties = new List<string>();
-                if (bone.HasRotation)
-                {
-                    var rotation = Normalize(bone.LocalRotation, bone.DazBoneId);
-                    AddVector4(bindings, curves, bone.AnimationPath, "m_LocalRotation", rotation);
-                    properties.Add("m_LocalRotation.x/y/z/w");
-                }
-                if (bone.HasPosition)
-                {
-                    RequireFinite(bone.LocalPosition, bone.DazBoneId + " local position");
-                    AddVector3(bindings, curves, bone.AnimationPath, "m_LocalPosition", bone.LocalPosition);
-                    properties.Add("m_LocalPosition.x/y/z");
-                }
-                if (bone.HasScale)
-                {
-                    RequireFinite(bone.LocalScale, bone.DazBoneId + " local scale");
-                    AddVector3(bindings, curves, bone.AnimationPath, "m_LocalScale", bone.LocalScale);
-                    properties.Add("m_LocalScale.x/y/z");
-                }
-
-                diagnostics.Add(new DazPoseAnimationBindingDiagnostic
-                {
-                    dazBoneId = bone.DazBoneId,
-                    dazBoneName = bone.DazBoneName,
-                    unityPath = bone.AnimationPath,
-                    properties = properties.ToArray(),
-                    rotationSource = bone.HasRotation ? (bone.HasDazRotationChannel ? "DAZ-supported rotation channel, resolved as a complete local quaternion" : "resolved local rotation required by the proven world-pose conversion") : string.Empty,
-                    positionSource = bone.HasPosition ? (bone.HasDazTranslationChannel ? "DAZ-supported translation channel, resolved to Unity local meters" : "resolved local position required by the proven world-center conversion") : string.Empty
-                });
-            }
-
-            AnimationUtility.SetEditorCurves(clip, bindings.ToArray(), curves.ToArray());
-            clip.EnsureQuaternionContinuity();
-            EditorUtility.SetDirty(clip);
+            AnimationClip backup = null;
+            DazPoseAnimationClipReport report = null;
+            var existingGuid = existing == null ? string.Empty : AssetDatabase.AssetPathToGUID(assetPath);
+            var createdAsset = false;
 
             try
             {
-                AssetDatabase.CreateAsset(clip, assetPath);
+                foreach (var bone in pose.Bones.Where(item => item.HasPosition || item.HasRotation || item.HasScale)
+                             .OrderBy(item => item.AnimationPath, StringComparer.Ordinal))
+                {
+                    ValidateAnimationPath(pose, bone);
+                    var properties = new List<string>();
+                    if (bone.HasRotation)
+                    {
+                        var rotation = Normalize(bone.LocalRotation, bone.DazBoneId);
+                        AddVector4(bindings, curves, bone.AnimationPath, "m_LocalRotation", rotation);
+                        properties.Add("m_LocalRotation.x/y/z/w");
+                    }
+                    if (bone.HasPosition)
+                    {
+                        RequireFinite(bone.LocalPosition, bone.DazBoneId + " local position");
+                        AddVector3(bindings, curves, bone.AnimationPath, "m_LocalPosition", bone.LocalPosition);
+                        properties.Add("m_LocalPosition.x/y/z");
+                    }
+                    if (bone.HasScale)
+                    {
+                        RequireFinite(bone.LocalScale, bone.DazBoneId + " local scale");
+                        AddVector3(bindings, curves, bone.AnimationPath, "m_LocalScale", bone.LocalScale);
+                        properties.Add("m_LocalScale.x/y/z");
+                    }
+
+                    diagnostics.Add(new DazPoseAnimationBindingDiagnostic
+                    {
+                        dazBoneId = bone.DazBoneId,
+                        dazBoneName = bone.DazBoneName,
+                        unityPath = bone.AnimationPath,
+                        properties = properties.ToArray(),
+                        rotationSource = bone.HasRotation ? (bone.HasDazRotationChannel ? "DAZ-supported rotation channel, resolved as a complete local quaternion" : "resolved local rotation required by the proven world-pose conversion") : string.Empty,
+                        positionSource = bone.HasPosition ? (bone.HasDazTranslationChannel ? "DAZ-supported translation channel, resolved to Unity local meters" : "resolved local position required by the proven world-center conversion") : string.Empty
+                    });
+                }
+
+                AnimationUtility.SetEditorCurves(clip, bindings.ToArray(), curves.ToArray());
+                clip.EnsureQuaternionContinuity();
+
+                var candidateParity = DazPoseClipParityValidator.Validate(pose, clip);
+                report = BuildReport(pose, clip, diagnostics, candidateParity, assetPath);
+                if (!candidateParity.Passed)
+                {
+                    report.generationFailure = "In-memory candidate failed parity: " + candidateParity.Summary;
+                    WriteReport(reportPath, report);
+                    throw new InvalidOperationException("Candidate AnimationClip failed direct-pose parity. The existing saved asset was left untouched. Detailed report: " + reportPath + ". " + candidateParity.Summary);
+                }
+
+                if (existing == null)
+                {
+                    AssetDatabase.CreateAsset(clip, assetPath);
+                    createdAsset = true;
+                    clip = null;
+                }
+                else
+                {
+                    backup = UnityEngine.Object.Instantiate(existing);
+                    backup.hideFlags = HideFlags.HideAndDontSave;
+                    CopyClipContents(clip, existing);
+                    EditorUtility.SetDirty(existing);
+                }
+
                 AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
+                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
                 var savedClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
                 if (savedClip == null) throw new InvalidOperationException("Unity saved the clip but could not reload " + assetPath + ".");
 
                 var parity = DazPoseClipParityValidator.Validate(pose, savedClip);
-                var curveBindings = AnimationUtility.GetCurveBindings(savedClip);
-                var report = new DazPoseAnimationClipReport
-                {
-                    generatedAtUtc = DateTime.UtcNow.ToString("O"),
-                    figureGeneration = "Genesis 8 Female",
-                    character = pose.CharacterName,
-                    animationRoot = pose.AnimationRoot.name,
-                    sourcePoseJson = pose.SourcePoseJsonPath,
-                    sourceDazPosePath = pose.Definition.source.poseFile,
-                    sourcePoseAssetId = pose.Definition.source.poseAssetId,
-                    sourceFigureAssetId = pose.Definition.source.figureAssetId,
-                    generatedClipPath = assetPath,
-                    clipName = savedClip.name,
-                    durationSeconds = savedClip.length,
-                    resolvedBoneCount = pose.Bones.Count,
-                    poseTargetBoneCount = pose.PoseTargetBoneCount,
-                    rotationBoneCount = pose.Bones.Count(item => item.HasRotation),
-                    positionBoneCount = pose.Bones.Count(item => item.HasPosition),
-                    scaleBoneCount = pose.Bones.Count(item => item.HasScale),
-                    rotationCurveCount = curveBindings.Count(item => item.propertyName.StartsWith("m_LocalRotation.", StringComparison.Ordinal)),
-                    positionCurveCount = curveBindings.Count(item => item.propertyName.StartsWith("m_LocalPosition.", StringComparison.Ordinal)),
-                    scaleCurveCount = curveBindings.Count(item => item.propertyName.StartsWith("m_LocalScale.", StringComparison.Ordinal)),
-                    totalCurveCount = curveBindings.Length,
-                    unresolvedRequiredBones = pose.UnresolvedRequiredBoneCount,
-                    ambiguousBones = pose.AmbiguousBoneCount,
-                    directApplyParityPassed = parity.Passed,
-                    maximumRotationErrorDegrees = parity.MaximumRotationErrorDegrees,
-                    maximumPositionErrorMeters = parity.MaximumPositionErrorMeters,
-                    maximumScaleError = parity.MaximumScaleError,
-                    paritySampleTimes = parity.SampleTimes,
-                    warnings = pose.Warnings,
-                    bindings = diagnostics.ToArray()
-                };
-
-                var reportFullPath = Path.Combine(ProjectRoot, reportPath.Replace('/', Path.DirectorySeparatorChar));
-                File.WriteAllText(reportFullPath, JsonUtility.ToJson(report, true));
                 if (!parity.Passed)
-                    throw new InvalidOperationException("Generated clip failed direct-pose parity. Detailed report: " + reportPath + ". " + parity.Summary);
+                    throw new InvalidOperationException("Saved AnimationClip failed direct-pose parity. Detailed report: " + reportPath + ". " + parity.Summary);
 
-                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
-                AssetDatabase.SaveAssets();
+                var currentGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                if (!string.IsNullOrEmpty(existingGuid) && !string.Equals(existingGuid, currentGuid, StringComparison.Ordinal))
+                    throw new InvalidOperationException("AnimationClip asset identity changed during in-place regeneration. Previous GUID " + existingGuid + ", current GUID " + currentGuid + ".");
+
+                report = BuildReport(pose, savedClip, diagnostics, parity, assetPath);
+                report.assetGuid = currentGuid;
+                report.generationPassed = true;
+                WriteReport(reportPath, report);
                 Debug.Log("DAZ Pose → Unity AnimationClip\n"
                     + "Source: " + Path.GetFileName(pose.SourcePoseJsonPath) + "\n"
                     + "Character: " + pose.CharacterName + " (Genesis 8 Female)\n"
@@ -137,12 +130,106 @@ namespace DazPose.UnityValidation
                     + "Output: " + assetPath + " | report: " + reportPath);
                 return report;
             }
-            catch
+            catch (Exception exception)
             {
-                if (AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath) == null && clip != null)
-                    UnityEngine.Object.DestroyImmediate(clip);
+                if (report == null) report = BuildReport(pose, clip, diagnostics, new DazPoseClipParityResult(), assetPath);
+                report.generationPassed = false;
+                if (string.IsNullOrEmpty(report.generationFailure)) report.generationFailure = exception.Message;
+                try { WriteReport(reportPath, report); }
+                catch (Exception reportException) { Debug.LogError("Could not write DAZ Pose generation failure report: " + reportException.Message); }
+
+                if (existing != null && backup != null)
+                {
+                    try
+                    {
+                        var assetToRestore = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+                        if (assetToRestore == null) throw new InvalidOperationException("The existing AnimationClip could not be reloaded for rollback.");
+                        CopyClipContents(backup, assetToRestore);
+                        EditorUtility.SetDirty(assetToRestore);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+                    }
+                    catch (Exception restoreException)
+                    {
+                        Debug.LogError("Could not restore the previous DAZ Pose AnimationClip after a failed regeneration: " + restoreException);
+                    }
+                }
+                else if (createdAsset)
+                {
+                    AssetDatabase.DeleteAsset(assetPath);
+                }
                 throw;
             }
+            finally
+            {
+                if (clip != null) UnityEngine.Object.DestroyImmediate(clip);
+                if (backup != null) UnityEngine.Object.DestroyImmediate(backup);
+            }
+        }
+
+        private static DazPoseAnimationClipReport BuildReport(ResolvedUnityPose pose, AnimationClip clip,
+            List<DazPoseAnimationBindingDiagnostic> diagnostics, DazPoseClipParityResult parity, string assetPath)
+        {
+            var curveBindings = clip == null ? Array.Empty<EditorCurveBinding>() : AnimationUtility.GetCurveBindings(clip);
+            return new DazPoseAnimationClipReport
+            {
+                generatedAtUtc = DateTime.UtcNow.ToString("O"),
+                figureGeneration = "Genesis 8 Female",
+                character = pose.CharacterName,
+                animationRoot = pose.AnimationRoot.name,
+                sourcePoseJson = pose.SourcePoseJsonPath,
+                sourceDazPosePath = pose.Definition.source.poseFile,
+                sourcePoseAssetId = pose.Definition.source.poseAssetId,
+                sourceFigureAssetId = pose.Definition.source.figureAssetId,
+                generatedClipPath = assetPath,
+                clipName = clip == null ? Path.GetFileNameWithoutExtension(assetPath) : clip.name,
+                durationSeconds = clip == null ? 0f : clip.length,
+                resolvedBoneCount = pose.Bones.Count,
+                poseTargetBoneCount = pose.PoseTargetBoneCount,
+                rotationBoneCount = pose.Bones.Count(item => item.HasRotation),
+                positionBoneCount = pose.Bones.Count(item => item.HasPosition),
+                scaleBoneCount = pose.Bones.Count(item => item.HasScale),
+                rotationCurveCount = curveBindings.Count(item => item.propertyName.StartsWith("m_LocalRotation.", StringComparison.Ordinal)),
+                positionCurveCount = curveBindings.Count(item => item.propertyName.StartsWith("m_LocalPosition.", StringComparison.Ordinal)),
+                scaleCurveCount = curveBindings.Count(item => item.propertyName.StartsWith("m_LocalScale.", StringComparison.Ordinal)),
+                totalCurveCount = curveBindings.Length,
+                unresolvedRequiredBones = pose.UnresolvedRequiredBoneCount,
+                ambiguousBones = pose.AmbiguousBoneCount,
+                directApplyParityPassed = parity.Passed,
+                maximumRotationErrorDegrees = parity.MaximumRotationErrorDegrees,
+                maximumPositionErrorMeters = parity.MaximumPositionErrorMeters,
+                maximumScaleError = parity.MaximumScaleError,
+                paritySampleTimes = parity.SampleTimes,
+                warnings = pose.Warnings,
+                bindings = diagnostics.ToArray()
+            };
+        }
+
+        private static void CopyClipContents(AnimationClip source, AnimationClip destination)
+        {
+            var oldFloatBindings = AnimationUtility.GetCurveBindings(destination);
+            if (oldFloatBindings.Length > 0)
+                AnimationUtility.SetEditorCurves(destination, oldFloatBindings, new AnimationCurve[oldFloatBindings.Length]);
+
+            foreach (var oldReferenceBinding in AnimationUtility.GetObjectReferenceCurveBindings(destination))
+                AnimationUtility.SetObjectReferenceCurve(destination, oldReferenceBinding, null);
+
+            var newBindings = AnimationUtility.GetCurveBindings(source);
+            var newCurves = newBindings.Select(binding => AnimationUtility.GetEditorCurve(source, binding)).ToArray();
+            AnimationUtility.SetEditorCurves(destination, newBindings, newCurves);
+            destination.events = source.events;
+            destination.frameRate = source.frameRate;
+            destination.legacy = source.legacy;
+            destination.wrapMode = source.wrapMode;
+            destination.name = source.name;
+            destination.EnsureQuaternionContinuity();
+        }
+
+        private static void WriteReport(string reportPath, DazPoseAnimationClipReport report)
+        {
+            var reportFullPath = Path.Combine(ProjectRoot, reportPath.Replace('/', Path.DirectorySeparatorChar));
+            Directory.CreateDirectory(Path.GetDirectoryName(reportFullPath));
+            File.WriteAllText(reportFullPath, JsonUtility.ToJson(report, true));
         }
 
         public static AnimationClip LoadClipFromAbsolutePath(string absolutePath)

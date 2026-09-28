@@ -2,6 +2,8 @@
 
 On this Windows machine, the default sandbox PowerShell runs as `CodexSandboxOffline`. Starting the GUI from that shell can put the window on an invisible desktop, so a running process alone does not mean the user can test it.
 
+Before each manual run, publish the current source with `.\scripts\publish-win-x64.ps1` from the repository root. Do not launch an old `artifacts\win-x64` build after source changes. If the sandbox cannot read the signed-in user's NuGet config, use a temporary offline NuGet config backed by the already populated package cache; set `AVALONIA_TELEMETRY_OPTOUT=1` for the publish command so Avalonia does not try writing its build log under the protected user profile. Keep the temporary config out of Git.
+
 Launch `artifacts\win-x64\DazPose.App.exe` with `Start-Process` through `exec_command` using `sandbox_permissions: "require_escalated"`. State in the justification that the sandbox account cannot show the GUI and the app needs to run in the signed-in user's desktop. For example:
 
 ```powershell

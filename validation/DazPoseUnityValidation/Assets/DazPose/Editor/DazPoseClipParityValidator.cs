@@ -34,6 +34,9 @@ namespace DazPose.UnityValidation
 
             var bindings = AnimationUtility.GetCurveBindings(clip);
             var structureErrors = ValidateBindings(pose, clip, bindings);
+            var objectReferenceBindings = AnimationUtility.GetObjectReferenceCurveBindings(clip);
+            if (objectReferenceBindings.Length > 0)
+                structureErrors.Add("Generated static pose clips must not contain object-reference curves.");
             if (structureErrors.Count > 0)
             {
                 result.Summary = string.Join(" ", structureErrors);
