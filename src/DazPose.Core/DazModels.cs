@@ -39,7 +39,11 @@ public sealed record DazPropertyUrl(
     string? ControlId,
     string Property,
     string? Axis,
-    string LeafProperty);
+    string LeafProperty)
+{
+    public bool IsSelectedFigureRoot => Address == "@selection" && TargetNodeName is null && ControlId is null;
+    public bool IsFigureControlAddress => ControlId is not null;
+}
 
 public sealed record DazPoseChannel(
     string Url,

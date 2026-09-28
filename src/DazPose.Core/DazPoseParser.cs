@@ -82,24 +82,33 @@ public static class DazPoseParser
                 if (parsed.Property is "rotation" or "translation")
                 {
                     if (parsed.TargetNodeName is null)
-                        throw new DazConversionException($"Skeletal channel '{url}' does not address a target node.");
-                    if (!string.Equals(parsed.AddressScheme, "name", StringComparison.Ordinal))
-                        throw new DazConversionException($"Skeletal channel '{url}' uses unsupported address scheme '{parsed.AddressScheme}'. Expected name://.");
-                    if (!figure.NodesByName.TryGetValue(parsed.TargetNodeName, out targetBone))
                     {
-                        if (figure.NodesById.TryGetValue(parsed.TargetNodeName, out targetBone))
-                        {
-                            usedIdFallback = true;
-                            diagnostics.Add($"Resolved '{parsed.TargetNodeName}' through node ID '{targetBone.Id}' after name lookup failed.");
-                        }
-                        else
-                        {
-                            throw new DazConversionException($"Unresolved skeletal target '{parsed.TargetNodeName}' in '{url}'.");
-                        }
+                        if (!parsed.IsSelectedFigureRoot && !parsed.IsFigureControlAddress)
+                            throw new DazConversionException($"Skeletal channel '{url}' does not address a target node or selected figure/control property.");
                     }
-                    if (targetBone.Type != "bone")
-                        throw new DazConversionException($"Skeletal target '{parsed.TargetNodeName}' resolves to a '{targetBone.Type}' node, not a bone.");
+                    else
+                    {
+                        if (!string.Equals(parsed.AddressScheme, "name", StringComparison.Ordinal))
+                            throw new DazConversionException($"Skeletal channel '{url}' uses unsupported address scheme '{parsed.AddressScheme}'. Expected name://.");
+                        if (!figure.NodesByName.TryGetValue(parsed.TargetNodeName, out targetBone))
+                        {
+                            if (figure.NodesById.TryGetValue(parsed.TargetNodeName, out targetBone))
+                            {
+                                usedIdFallback = true;
+                                diagnostics.Add($"Resolved '{parsed.TargetNodeName}' through node ID '{targetBone.Id}' after name lookup failed.");
+                            }
+                            else
+                            {
+                                throw new DazConversionException($"Unresolved skeletal target '{parsed.TargetNodeName}' in '{url}'.");
+                            }
+                        }
+                        if (targetBone.Type != "bone")
+                            throw new DazConversionException($"Skeletal target '{parsed.TargetNodeName}' resolves to a '{targetBone.Type}' node, not a bone.");
+                    }
                 }
+
+                if (parsed.IsSelectedFigureRoot && (parsed.Property is "rotation" or "translation"))
+                    diagnostics.Add($"Recognized targetless selected-figure {parsed.Property} channel '{url}' as an unsupported figure-root property.");
 
                 channels.Add(new DazPoseChannel(url, parsed, keys, targetBone, usedIdFallback));
             }

@@ -62,8 +62,12 @@ public static class PoseConversionService
         if (activeUnsupported is not null)
         {
             var value = activeUnsupported.Keys.First(key => Math.Abs(key.Value) > 1e-7f).Value;
+            var channelKind = activeUnsupported.ParsedUrl.IsSelectedFigureRoot
+                ? "figure-root property"
+                : activeUnsupported.ParsedUrl.IsFigureControlAddress ? "figure/control property" : null;
+            var channelContext = channelKind is null ? string.Empty : $" ({channelKind})";
             throw new DazConversionException(
-                $"Unsupported non-neutral channel '{activeUnsupported.Url}' has value {value.ToString("G9", CultureInfo.InvariantCulture)}. Conversion stopped to avoid dropping authored pose data.");
+                $"Unsupported non-neutral channel '{activeUnsupported.Url}'{channelContext} has value {value.ToString("G9", CultureInfo.InvariantCulture)}. Conversion stopped to avoid dropping authored pose data.");
         }
     }
 

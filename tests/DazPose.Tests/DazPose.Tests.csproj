@@ -17,5 +17,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\fixtures\private\**\*" Link="fixtures\private\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\stack3 poses\Vintage Glamour Genesis 8 Female 03.duf"
+             Link="fixtures\private\Vintage Glamour Genesis 8 Female 03.duf"
+             CopyToOutputDirectory="PreserveNewest"
+             Condition="Exists('..\..\stack3 poses\Vintage Glamour Genesis 8 Female 03.duf')" />
   </ItemGroup>
 </Project>
