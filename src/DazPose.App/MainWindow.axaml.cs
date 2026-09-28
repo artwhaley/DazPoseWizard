@@ -28,42 +28,83 @@ public partial class MainWindow : Window
 
     private async void BrowseFigure(object? sender, RoutedEventArgs e)
     {
-        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        try
         {
-            Title = "Select a DAZ Figure Definition",
-            AllowMultiple = false,
-            FileTypeFilter =
-            [
-                new FilePickerFileType("DSON Support File (*.dsf)") { Patterns = ["*.dsf"] },
-                FilePickerFileTypes.All
-            ]
-        });
-        if (files.Count > 0) FigurePathBox.Text = files[0].Path.LocalPath;
+            var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Select a DAZ Figure Definition",
+                AllowMultiple = false,
+                FileTypeFilter =
+                [
+                    new FilePickerFileType("DSON Support File (*.dsf)") { Patterns = ["*.dsf"] },
+                    FilePickerFileTypes.All
+                ]
+            });
+            if (files.Count > 0 && GetLocalPath(files[0], "figure file") is { } path)
+                FigurePathBox.Text = path;
+        }
+        catch (Exception ex)
+        {
+            DiagnosticsText.Text = $"Could not open the figure file picker.\n\n{ex.Message}";
+        }
     }
 
     private async void BrowsePose(object? sender, RoutedEventArgs e)
     {
-        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        try
         {
-            Title = "Select a DAZ Pose Preset",
-            AllowMultiple = false,
-            FileTypeFilter =
-            [
-                new FilePickerFileType("DSON User File (*.duf)") { Patterns = ["*.duf"] },
-                FilePickerFileTypes.All
-            ]
-        });
-        if (files.Count > 0) PosePathBox.Text = files[0].Path.LocalPath;
+            var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Select a DAZ Pose Preset",
+                AllowMultiple = false,
+                FileTypeFilter =
+                [
+                    new FilePickerFileType("DSON User File (*.duf)") { Patterns = ["*.duf"] },
+                    FilePickerFileTypes.All
+                ]
+            });
+            if (files.Count > 0 && GetLocalPath(files[0], "pose file") is { } path)
+                PosePathBox.Text = path;
+        }
+        catch (Exception ex)
+        {
+            DiagnosticsText.Text = $"Could not open the pose file picker.\n\n{ex.Message}";
+        }
     }
 
     private async void BrowseOutput(object? sender, RoutedEventArgs e)
     {
-        var folders = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+        try
         {
-            Title = "Select an Output Folder",
-            AllowMultiple = false
-        });
-        if (folders.Count > 0) OutputPathBox.Text = folders[0].Path.LocalPath;
+            var folders = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+            {
+                Title = "Select an Output Folder",
+                AllowMultiple = false
+            });
+            if (folders.Count > 0 && GetLocalPath(folders[0], "output folder") is { } path)
+                OutputPathBox.Text = path;
+        }
+        catch (Exception ex)
+        {
+            DiagnosticsText.Text = $"Could not open the output folder picker.\n\n{ex.Message}";
+        }
+    }
+
+    private string? GetLocalPath(IStorageItem item, string description)
+    {
+        try
+        {
+            if (item.TryGetLocalPath() is { Length: > 0 } path)
+                return path;
+
+            DiagnosticsText.Text = $"The selected {description} does not provide a local file-system path. Select it from a local folder.";
+        }
+        catch (Exception ex)
+        {
+            DiagnosticsText.Text = $"Could not get a local path for the selected {description}.\n\n{ex.Message}";
+        }
+
+        return null;
     }
 
     private async void ConvertClicked(object? sender, RoutedEventArgs e)
