@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
@@ -29,6 +30,9 @@ namespace DazPose.UnityValidation
         private Quaternion _outerWorldRotation;
         private Vector3 _outerLossyScale;
         private bool _validationRunning;
+        private string _blendDurationInput;
+
+        private const string BlendDurationControlName = "DazPoseBlendDurationSeconds";
 
         private void Start()
         {
@@ -36,6 +40,7 @@ namespace DazPose.UnityValidation
             _outerPlacementRoot = transform.parent;
             CaptureOuterPlacement();
             _startingPose = CaptureLocalPose();
+            _blendDurationInput = blendDurationSeconds.ToString("0.##", CultureInfo.InvariantCulture);
 
             if (poseA == null)
             {
@@ -50,6 +55,7 @@ namespace DazPose.UnityValidation
         private void Update()
         {
             if (_validationRunning) return;
+            if (string.Equals(GUI.GetNameOfFocusedControl(), BlendDurationControlName, StringComparison.Ordinal)) return;
             if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) RequestPose(poseA);
             if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) RequestPose(poseB);
             if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) RequestPose(poseC);
@@ -58,9 +64,19 @@ namespace DazPose.UnityValidation
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(12f, 12f, 330f, 250f), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(12f, 12f, 380f, 285f), GUI.skin.box);
             GUILayout.Label("G8F Runtime Pose Blend Test");
-            GUILayout.Label("Set Blend Duration and Ease in the Inspector during Play Mode.");
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Blend time (seconds)", GUILayout.Width(140f));
+            GUI.SetNextControlName(BlendDurationControlName);
+            _blendDurationInput = GUILayout.TextField(_blendDurationInput ?? string.Empty, GUILayout.Width(90f));
+            GUILayout.EndHorizontal();
+            var validDuration = float.TryParse(_blendDurationInput, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedDuration)
+                && !float.IsNaN(parsedDuration) && !float.IsInfinity(parsedDuration) && parsedDuration >= 0f;
+            if (validDuration) blendDurationSeconds = parsedDuration;
+            GUILayout.Label(validDuration
+                ? "Next pose change: " + blendDurationSeconds.ToString("0.###", CultureInfo.InvariantCulture) + " sec | Ease: " + blendEase
+                : "Enter a valid number of seconds (0 or greater).");
             GUILayout.Label("Current: " + DisplayName(player == null ? null : player.CurrentPose));
             GUILayout.Label("Target: " + DisplayName(player == null ? null : player.TargetPose)
                 + " | progress " + (player == null ? 0f : player.BlendProgress).ToString("P0"));
