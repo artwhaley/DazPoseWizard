@@ -24,6 +24,7 @@ validation/DazPoseUnityValidation/Builds/
 validation/DazPoseUnityValidation/TestOutput/
 validation/DazPoseUnityValidation/Assets/TestCharacter/lara.images/
 validation/DazPoseUnityValidation/Assets/TestData/
+validation/DazPoseUnityValidation/Assets/Generated/
 *.csproj
 *.sln
 *.slnx

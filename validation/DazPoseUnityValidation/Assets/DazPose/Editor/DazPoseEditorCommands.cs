@@ -14,6 +14,9 @@ namespace DazPose.UnityValidation
         private const string CharacterAssetPath = "Assets/TestCharacter/lara.fbx";
         private const string PoseAssetFolder = "Assets/TestData";
         private const float RestFitWarningThresholdMeters = 0.02f;
+        private static bool _ownsPreviewAnimationMode;
+        private static Transform _previewAnimationRoot;
+        private static AnimationClip _previewClip;
         private static readonly HashSet<string> RestCalibrationBoneIds = new HashSet<string>(StringComparer.Ordinal)
         {
             "hip", "pelvis", "abdomenLower", "abdomen2", "chest", "chest_2", "neck", "neck_2", "head",
@@ -143,9 +146,99 @@ namespace DazPose.UnityValidation
             ApplyPose(root, jsonPath);
         }
 
+        [MenuItem("Tools/DAZ Pose/Generate AnimationClip from Pose")]
+        public static void GenerateAnimationClipFromPose()
+        {
+            var root = RequireSelectedRoot();
+            var startFolder = Path.Combine(ProjectRoot, PoseAssetFolder.Replace('/', Path.DirectorySeparatorChar));
+            if (!Directory.Exists(startFolder)) startFolder = Path.Combine(ProjectRoot, "output");
+            var jsonPath = EditorUtility.OpenFilePanel("Select canonical DAZ pose JSON", startFolder, "json");
+            if (string.IsNullOrEmpty(jsonPath)) return;
+            if (!TryResolvePose(root, jsonPath, out var resolved)) return;
+
+            var assetPath = DazPoseAnimationClipGenerator.AssetPathFor(resolved);
+            var existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+            var replace = existing != null;
+            if (replace && !EditorUtility.DisplayDialog("Regenerate DAZ Pose AnimationClip?",
+                    "The existing asset will be replaced with a deterministic regeneration:\n\n" + assetPath,
+                    "Regenerate", "Cancel")) return;
+
+            DazPoseAnimationClipGenerator.Generate(resolved, replace);
+            var generated = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+            Selection.activeObject = generated;
+            EditorGUIUtility.PingObject(generated);
+        }
+
+        [MenuItem("Tools/DAZ Pose/Preview AnimationClip on Selected Character")]
+        public static void PreviewAnimationClipOnSelectedCharacter()
+        {
+            if (_ownsPreviewAnimationMode) StopAnimationClipPreview();
+            if (AnimationMode.InAnimationMode())
+                throw new InvalidOperationException("Unity is already previewing another animation. Stop that preview before starting the DAZ Pose preview.");
+
+            var root = RequireSelectedRoot();
+            var startFolder = Path.Combine(ProjectRoot, DazPoseAnimationClipGenerator.OutputFolder.Replace('/', Path.DirectorySeparatorChar));
+            if (!Directory.Exists(startFolder)) startFolder = Path.Combine(ProjectRoot, "Assets");
+            var absolutePath = EditorUtility.OpenFilePanel("Select generated Unity AnimationClip", startFolder, "anim");
+            if (string.IsNullOrEmpty(absolutePath)) return;
+            var clip = DazPoseAnimationClipGenerator.LoadClipFromAbsolutePath(absolutePath);
+            if (clip == null) throw new InvalidOperationException("Unity could not load the selected .anim. Select a generated clip inside this project's Assets folder.");
+
+            var animationRoot = FindAnimationRoot(root);
+            var state = CaptureRestPose(root, false);
+            RestoreSnapshot(root, state);
+            AnimationMode.StartAnimationMode();
+            _ownsPreviewAnimationMode = true;
+            _previewAnimationRoot = animationRoot;
+            _previewClip = clip;
+            try
+            {
+                AnimationMode.BeginSampling();
+                AnimationMode.SampleAnimationClip(animationRoot.gameObject, clip, 0.5f);
+                AnimationMode.EndSampling();
+            }
+            catch
+            {
+                if (AnimationMode.InAnimationMode()) AnimationMode.StopAnimationMode();
+                _ownsPreviewAnimationMode = false;
+                _previewAnimationRoot = null;
+                _previewClip = null;
+                throw;
+            }
+            Debug.Log("Previewing '" + clip.name + "' on " + root.name + " using stable animation root '" + animationRoot.name
+                + "' at 0.5 seconds. Choose Tools > DAZ Pose > Stop Preview / Restore Pose to return Lara to the captured import rest pose.");
+        }
+
+        [MenuItem("Tools/DAZ Pose/Stop Preview / Restore Pose")]
+        public static void StopAnimationClipPreview()
+        {
+            if (_ownsPreviewAnimationMode && AnimationMode.InAnimationMode()) AnimationMode.StopAnimationMode();
+            _ownsPreviewAnimationMode = false;
+            var clipName = _previewClip == null ? "animation" : "'" + _previewClip.name + "'";
+            var rootName = _previewAnimationRoot == null ? "selected character" : "'" + _previewAnimationRoot.name + "'";
+            _previewAnimationRoot = null;
+            _previewClip = null;
+            Debug.Log("Stopped DAZ Pose preview for " + clipName + " on " + rootName + ". Unity restored the pre-preview transform state.");
+        }
+
+        [MenuItem("Tools/DAZ Pose/Run Play Mode AnimationClip Smoke Test")]
+        public static void RunPlayModeAnimationClipSmokeTest()
+        {
+            var root = RequireSelectedRoot();
+            var startFolder = Path.Combine(ProjectRoot, DazPoseAnimationClipGenerator.OutputFolder.Replace('/', Path.DirectorySeparatorChar));
+            if (!Directory.Exists(startFolder)) startFolder = Path.Combine(ProjectRoot, "Assets");
+            var absolutePath = EditorUtility.OpenFilePanel("Select generated Unity AnimationClip", startFolder, "anim");
+            if (string.IsNullOrEmpty(absolutePath)) return;
+            var clip = DazPoseAnimationClipGenerator.LoadClipFromAbsolutePath(absolutePath);
+            if (clip == null) throw new InvalidOperationException("Unity could not load the selected .anim asset.");
+            ConfigurePlayableSmokeTest(root, clip);
+            EditorApplication.isPlaying = true;
+        }
+
         [MenuItem("Tools/DAZ Pose/Restore Captured Rest Pose")]
         public static void RestoreCapturedRestPose()
         {
+            if (_ownsPreviewAnimationMode) StopAnimationClipPreview();
             var root = RequireSelectedRoot();
             var state = root.GetComponent<DazPoseCharacterState>();
             if (state == null || !state.hasCapturedRestPose || state.transforms == null || state.transforms.Length == 0)
@@ -167,17 +260,71 @@ namespace DazPose.UnityValidation
             if (character == null) throw new InvalidOperationException("Validation scene does not contain the Lara root. Run Setup Validation Scene first.");
             InspectSelectedCharacter();
             RunAdapterSelfTests();
-            var posePath = Path.Combine(ProjectRoot, PoseAssetFolder.Replace('/', Path.DirectorySeparatorChar), "Cherish Genesis 8 Female 16.dazpose.json");
-            if (!ApplyPose(character.transform, posePath))
-                throw new InvalidOperationException("Batch validation stopped; inspect TestOutput/pose-application-report.json and the Unity Console log.");
+            var testFolder = Path.Combine(ProjectRoot, PoseAssetFolder.Replace('/', Path.DirectorySeparatorChar));
+            var posePaths = Directory.Exists(testFolder) ? Directory.GetFiles(testFolder, "*.dazpose.json").OrderBy(path => path, StringComparer.Ordinal).ToArray() : Array.Empty<string>();
+            if (posePaths.Length == 0) throw new FileNotFoundException("No local G8F .dazpose.json fixture is available under " + testFolder + ".");
+
+            foreach (var posePath in posePaths)
+            {
+                if (!TryResolvePose(character.transform, posePath, out var resolved))
+                    throw new InvalidOperationException("Batch validation stopped during pose resolution; inspect TestOutput/pose-application-report.json and the Unity Console log.");
+                ApplyResolvedPose(resolved);
+                var directParity = ValidateDirectApply(resolved);
+                if (!directParity.Passed)
+                    throw new InvalidOperationException("The refactored direct Apply result differs from the captured proven adapter output. " + directParity.Summary);
+
+                var assetPath = DazPoseAnimationClipGenerator.AssetPathFor(resolved);
+                var replacing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath) != null;
+                var clipReport = DazPoseAnimationClipGenerator.Generate(resolved, replacing);
+                if (!clipReport.directApplyParityPassed)
+                    throw new InvalidOperationException("Generated clip parity failed for " + Path.GetFileName(posePath) + ".");
+                Debug.Log("PASS DAZ Pose Phase 2 regression: direct local transforms match the preserved adapter output; clip parity passed for " + Path.GetFileName(posePath) + ".");
+            }
+            Debug.Log("DAZ Pose Phase 2 batch validation passed for " + posePaths.Length + " available G8F pose fixture(s).");
+        }
+
+        public static void RunBatchPlayableSmokeTest()
+        {
+            RunBatchValidation();
+            var generated = Directory.GetFiles(Path.Combine(ProjectRoot, DazPoseAnimationClipGenerator.OutputFolder.Replace('/', Path.DirectorySeparatorChar)), "*.anim")
+                .OrderBy(path => path, StringComparer.Ordinal).FirstOrDefault();
+            if (generated == null) throw new FileNotFoundException("Phase 2 validation did not generate a native AnimationClip.");
+            var clip = DazPoseAnimationClipGenerator.LoadClipFromAbsolutePath(generated);
+            var character = GameObject.Find("Lara");
+            if (clip == null || character == null) throw new InvalidOperationException("Could not load Lara or the generated .anim for the Play Mode smoke test.");
+            ConfigurePlayableSmokeTest(character.transform, clip);
+            DazPosePlayableBatchMonitor.Arm();
+            EditorApplication.isPlaying = true;
+            Debug.Log("DAZ Pose batch Play Mode smoke test entered Play Mode with validation-only Playables driver.");
         }
 
         private static bool ApplyPose(Transform root, string jsonPath)
         {
+            if (!TryResolvePose(root, jsonPath, out var resolved)) return false;
+            ApplyResolvedPose(resolved);
+            var activeWarnings = resolved.Warnings;
+            if (activeWarnings.Length == 0)
+                Debug.Log("Applied the resolved DAZ pose to " + root.name + " using the same local transform result used by AnimationClip generation.");
+            else Debug.LogWarning("Applied the resolved DAZ pose to " + root.name + " with warnings: " + string.Join(" ", activeWarnings));
+            return true;
+        }
+
+        private static bool TryResolvePose(Transform root, string jsonPath, out ResolvedUnityPose resolvedPose)
+        {
+            resolvedPose = null;
             var pose = DazPoseJsonLoader.Load(jsonPath);
             var state = CaptureRestPose(root, false);
-            RestoreSnapshot(root, state);
-            var resolutions = DazPoseSkeletonResolver.Resolve(root, pose);
+            var originalTransformsByPath = root.GetComponentsInChildren<Transform>(true)
+                .ToDictionary(item => DazPoseTransformPath.Get(root, item), StringComparer.Ordinal);
+            GameObject evaluationRootObject = null;
+            try
+            {
+                evaluationRootObject = UnityEngine.Object.Instantiate(root.gameObject, root.parent, false);
+                evaluationRootObject.name = root.name;
+                evaluationRootObject.hideFlags = HideFlags.HideAndDontSave;
+                var evaluationRoot = evaluationRootObject.transform;
+                RestoreSnapshot(evaluationRoot, state);
+                var resolutions = DazPoseSkeletonResolver.Resolve(evaluationRoot, pose);
             var poseTargetIds = new HashSet<string>((pose.poseChannels ?? Array.Empty<DazPoseChannel>())
                 .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
                 .Select(channel => channel.targetId), StringComparer.Ordinal);
@@ -186,9 +333,9 @@ namespace DazPose.UnityValidation
             var resolved = resolutions.Where(item => item.Status == "resolved").ToArray();
 
             var warnings = new List<string>();
-            if (root.lossyScale.x <= 0 || root.lossyScale.y <= 0 || root.lossyScale.z <= 0)
+            if (evaluationRoot.lossyScale.x <= 0 || evaluationRoot.lossyScale.y <= 0 || evaluationRoot.lossyScale.z <= 0)
                 warnings.Add("Character root has a non-positive scale; the pose was not applied.");
-            if (!ApproximatelyUniformOne(root.lossyScale))
+            if (!ApproximatelyUniformOne(evaluationRoot.lossyScale))
                 warnings.Add("Character root world scale is not approximately (1,1,1); DAZ centimeters to Unity meters may not match.");
             foreach (var item in resolutions.Where(item => item.Status != "resolved"))
                 warnings.Add(item.Status + " bone mapping: DAZ id='" + item.Definition.id + "', name='" + item.Definition.name + "', expected parent id='" + item.Definition.parentId + "'.");
@@ -226,7 +373,7 @@ namespace DazPose.UnityValidation
                 }
             }
 
-            var report = BuildReport(root, pose, resolutions, poseTargetIds, RestCalibrationBoneIds, warnings, fit);
+            var report = BuildReport(evaluationRoot, pose, resolutions, poseTargetIds, RestCalibrationBoneIds, warnings, fit);
             var reportPath = Path.Combine(ProjectRoot, "TestOutput", "pose-application-report.json");
             WriteReport(reportPath, report);
             var missingCount = resolutions.Count(item => item.Status == "missing");
@@ -240,11 +387,11 @@ namespace DazPose.UnityValidation
 
             if (missingTargets.Length > 0 || missingCalibration.Length > 0 || fit == null || fit.RmsErrorMeters > RestFitWarningThresholdMeters || warnings.Any(value => value.StartsWith("Could not derive", StringComparison.Ordinal)))
             {
-                Debug.LogError(summary + " | Application stopped: target mapping or rest calibration failed. Review the report; no axis settings were changed.");
+                Debug.LogError(summary + " | Pose resolution stopped: target mapping or rest calibration failed. Review the report; no axis settings were changed.");
                 return false;
             }
 
-            var targets = new List<PoseTarget>();
+            var targets = new List<PoseTarget>(resolved.Length);
             foreach (var item in resolved)
             {
                 var bone = item.Definition;
@@ -259,14 +406,187 @@ namespace DazPose.UnityValidation
                 targets.Add(new PoseTarget { Transform = item.Transform, Position = targetPosition, Rotation = targetRotation });
             }
 
-            Undo.RecordObjects(targets.Select(item => item.Transform).Cast<UnityEngine.Object>().ToArray(), "Apply DAZ Pose");
-            foreach (var target in targets.OrderBy(item => DazPoseTransformPath.DepthFrom(root, item.Transform)))
+            foreach (var target in targets.OrderBy(item => DazPoseTransformPath.DepthFrom(evaluationRoot, item.Transform)))
                 target.Transform.SetPositionAndRotation(target.Position, target.Rotation);
-            EditorSceneManager.MarkSceneDirty(root.gameObject.scene);
-            var activeWarnings = warnings.Where(value => !value.StartsWith("missing bone mapping", StringComparison.Ordinal)).ToArray();
-            if (activeWarnings.Length == 0) Debug.Log(summary + " | DAZ translation cm → Unity meters at ×0.01.");
-            else Debug.LogWarning(summary + " | warnings: " + string.Join(" ", activeWarnings));
+
+            var channelTargets = (pose.poseChannels ?? Array.Empty<DazPoseChannel>())
+                .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
+                .GroupBy(channel => channel.targetId, StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => new
+                {
+                    Rotation = group.Any(channel => channel.property == "rotation"),
+                    Translation = group.Any(channel => channel.property == "translation")
+                }, StringComparer.Ordinal);
+            var animationRootEvaluation = FindAnimationRoot(evaluationRoot);
+            var animationRootPath = DazPoseTransformPath.Get(evaluationRoot, animationRootEvaluation);
+            if (!originalTransformsByPath.TryGetValue(animationRootPath, out var animationRootOriginal))
+                throw new InvalidOperationException("The stable Genesis8Female animation root could not be mapped back to the selected character.");
+
+            var restByPath = state.transforms.ToDictionary(item => item.path, StringComparer.Ordinal);
+            var resolvedBones = new List<ResolvedBonePose>(resolved.Length);
+            foreach (var item in resolved)
+            {
+                var instancePath = DazPoseTransformPath.Get(evaluationRoot, item.Transform);
+                if (!originalTransformsByPath.TryGetValue(instancePath, out var originalTransform))
+                    throw new InvalidOperationException("Could not map resolved DAZ bone '" + item.Definition.id + "' back to the selected character at " + instancePath + ".");
+                if (!item.Transform.IsChildOf(animationRootEvaluation) && item.Transform != animationRootEvaluation)
+                    throw new InvalidOperationException("Resolved DAZ bone '" + item.Definition.id + "' is outside the stable Genesis8Female animation root: " + instancePath + ".");
+                var animationPath = AnimationUtility.CalculateTransformPath(item.Transform, animationRootEvaluation);
+                if (!restByPath.TryGetValue(instancePath, out var restTransform))
+                    throw new InvalidOperationException("The captured import rest pose has no entry for resolved DAZ bone '" + item.Definition.id + "'.");
+                channelTargets.TryGetValue(item.Definition.id, out var channels);
+                var localRotation = item.Transform.localRotation;
+                var localPosition = item.Transform.localPosition;
+                var localScale = item.Transform.localScale;
+                resolvedBones.Add(new ResolvedBonePose
+                {
+                    DazBoneId = item.Definition.id,
+                    DazBoneName = item.Definition.name,
+                    InstancePath = instancePath,
+                    AnimationPath = animationPath,
+                    MappingMethod = item.Method,
+                    Transform = originalTransform,
+                    HasPosition = Vector3.Distance(restTransform.localPosition, localPosition) > 1e-5f,
+                    HasRotation = Quaternion.Angle(restTransform.localRotation, localRotation) > 0.001f,
+                    HasScale = false,
+                    HasDazTranslationChannel = channels != null && channels.Translation,
+                    HasDazRotationChannel = channels != null && channels.Rotation,
+                    LocalPosition = localPosition,
+                    LocalRotation = localRotation,
+                    LocalScale = localScale
+                });
+            }
+
+            resolvedPose = new ResolvedUnityPose
+            {
+                CharacterRoot = root,
+                AnimationRoot = animationRootOriginal,
+                Definition = pose,
+                RestState = state,
+                SourcePoseJsonPath = jsonPath,
+                CharacterName = root.name,
+                PoseTargetBoneCount = poseTargetIds.Count,
+                UnresolvedRequiredBoneCount = missingTargets.Length + missingCalibration.Length,
+                AmbiguousBoneCount = ambiguousCount,
+                Bones = resolvedBones,
+                Warnings = warnings.Where(value => !value.StartsWith("missing bone mapping", StringComparison.Ordinal)).ToArray()
+            };
+            Debug.Log(summary + " | captured " + resolvedBones.Count(item => item.HasRotation) + " driven local rotations and "
+                + resolvedBones.Count(item => item.HasPosition) + " local positions from the existing direct-apply conversion.");
             return true;
+            }
+            finally
+            {
+                if (evaluationRootObject != null) UnityEngine.Object.DestroyImmediate(evaluationRootObject);
+            }
+        }
+
+        private static void ApplyResolvedPose(ResolvedUnityPose pose)
+        {
+            RestoreSnapshot(pose.CharacterRoot, pose.RestState);
+            var transforms = pose.Bones.Select(item => item.Transform).Where(item => item != null).Cast<UnityEngine.Object>().ToArray();
+            Undo.RecordObjects(transforms, "Apply DAZ Pose");
+            foreach (var bone in pose.Bones.OrderBy(item => DazPoseTransformPath.DepthFrom(pose.CharacterRoot, item.Transform)))
+            {
+                bone.Transform.localPosition = bone.LocalPosition;
+                bone.Transform.localRotation = bone.LocalRotation;
+                bone.Transform.localScale = bone.LocalScale;
+            }
+            EditorSceneManager.MarkSceneDirty(pose.CharacterRoot.gameObject.scene);
+        }
+
+        private static DazPoseClipParityResult ValidateDirectApply(ResolvedUnityPose pose)
+        {
+            var maxPosition = 0f;
+            var maxRotation = 0f;
+            var maxScale = 0f;
+            foreach (var bone in pose.Bones)
+            {
+                maxPosition = Mathf.Max(maxPosition, Vector3.Distance(bone.LocalPosition, bone.Transform.localPosition));
+                maxRotation = Mathf.Max(maxRotation, Quaternion.Angle(bone.LocalRotation, bone.Transform.localRotation));
+                maxScale = Mathf.Max(maxScale, Vector3.Distance(bone.LocalScale, bone.Transform.localScale));
+            }
+            var result = new DazPoseClipParityResult
+            {
+                MaximumPositionErrorMeters = maxPosition,
+                MaximumRotationErrorDegrees = maxRotation,
+                MaximumScaleError = maxScale,
+                Passed = maxPosition <= 1e-5f && maxRotation <= 0.001f && maxScale <= 1e-5f,
+                Summary = "resolved direct-output comparison: max local position " + maxPosition.ToString("G6") + " m, rotation "
+                    + maxRotation.ToString("G6") + " deg, scale " + maxScale.ToString("G6") + "."
+            };
+            Debug.Log((result.Passed ? "PASS" : "FAIL") + " DAZ Pose direct Apply regression: " + result.Summary);
+            return result;
+        }
+
+        private static Transform FindAnimationRoot(Transform characterRoot)
+        {
+            var candidates = characterRoot.GetComponentsInChildren<Transform>(true)
+                .Where(item => item.name == "Genesis8Female" && item.parent == characterRoot).ToArray();
+            if (candidates.Length != 1)
+                throw new InvalidOperationException("Expected exactly one direct child named Genesis8Female under selected character '" + characterRoot.name
+                    + "', found " + candidates.Length + ". The clip needs a stable figure root separate from scene placement.");
+            return candidates[0];
+        }
+
+        private static void ConfigurePlayableSmokeTest(Transform characterRoot, AnimationClip clip)
+        {
+            var animationRoot = FindAnimationRoot(characterRoot);
+            var animator = animationRoot.GetComponent<Animator>();
+            var addedAnimator = animator == null;
+            if (addedAnimator) animator = Undo.AddComponent<Animator>(animationRoot.gameObject);
+            if (addedAnimator)
+            {
+                animator.applyRootMotion = false;
+                animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            }
+
+            var driver = animationRoot.GetComponent<DazPosePlayableValidationDriver>();
+            if (driver == null) driver = Undo.AddComponent<DazPosePlayableValidationDriver>(animationRoot.gameObject);
+            driver.clip = clip;
+            driver.validationAddedAnimator = addedAnimator;
+            driver.expectedTransforms = BuildRuntimeExpectations(clip);
+            EditorUtility.SetDirty(driver);
+            EditorSceneManager.MarkSceneDirty(characterRoot.gameObject.scene);
+            Selection.activeGameObject = characterRoot.gameObject;
+            Debug.Log("Prepared validation-only Animator/Playables smoke test on stable root '" + animationRoot.name + "' using '" + clip.name
+                + "'. It will hold the static pose during Play Mode and compare every generated animated local transform.");
+        }
+
+        private static DazPoseRuntimeExpectedTransform[] BuildRuntimeExpectations(AnimationClip clip)
+        {
+            var groups = AnimationUtility.GetCurveBindings(clip).GroupBy(binding => binding.path, StringComparer.Ordinal);
+            var expectations = new List<DazPoseRuntimeExpectedTransform>();
+            foreach (var group in groups)
+            {
+                var curves = group.ToDictionary(binding => binding.propertyName, binding => AnimationUtility.GetEditorCurve(clip, binding), StringComparer.Ordinal);
+                var expectation = new DazPoseRuntimeExpectedTransform { path = group.Key, localRotation = Quaternion.identity, localScale = Vector3.one };
+                if (curves.TryGetValue("m_LocalPosition.x", out var positionX)
+                    && curves.TryGetValue("m_LocalPosition.y", out var positionY)
+                    && curves.TryGetValue("m_LocalPosition.z", out var positionZ))
+                {
+                    expectation.hasPosition = true;
+                    expectation.localPosition = new Vector3(positionX.Evaluate(0.5f), positionY.Evaluate(0.5f), positionZ.Evaluate(0.5f));
+                }
+                if (curves.TryGetValue("m_LocalRotation.x", out var rotationX)
+                    && curves.TryGetValue("m_LocalRotation.y", out var rotationY)
+                    && curves.TryGetValue("m_LocalRotation.z", out var rotationZ)
+                    && curves.TryGetValue("m_LocalRotation.w", out var rotationW))
+                {
+                    expectation.hasRotation = true;
+                    expectation.localRotation = Quaternion.Normalize(new Quaternion(rotationX.Evaluate(0.5f), rotationY.Evaluate(0.5f), rotationZ.Evaluate(0.5f), rotationW.Evaluate(0.5f)));
+                }
+                if (curves.TryGetValue("m_LocalScale.x", out var scaleX)
+                    && curves.TryGetValue("m_LocalScale.y", out var scaleY)
+                    && curves.TryGetValue("m_LocalScale.z", out var scaleZ))
+                {
+                    expectation.hasScale = true;
+                    expectation.localScale = new Vector3(scaleX.Evaluate(0.5f), scaleY.Evaluate(0.5f), scaleZ.Evaluate(0.5f));
+                }
+                if (expectation.hasPosition || expectation.hasRotation || expectation.hasScale) expectations.Add(expectation);
+            }
+            if (expectations.Count == 0) throw new InvalidOperationException("Selected AnimationClip has no supported local Transform curves to validate.");
+            return expectations.ToArray();
         }
 
         private static DazPoseValidationReport BuildReport(Transform root, DazPoseDefinition pose,
@@ -429,7 +749,7 @@ namespace DazPose.UnityValidation
             return state;
         }
 
-        private static void RestoreSnapshot(Transform root, DazPoseCharacterState state)
+        internal static void RestoreSnapshot(Transform root, DazPoseCharacterState state)
         {
             var byPath = state.transforms.ToDictionary(item => item.path, StringComparer.Ordinal);
             foreach (var item in root.GetComponentsInChildren<Transform>(true).OrderBy(value => DazPoseTransformPath.DepthFrom(root, value)))

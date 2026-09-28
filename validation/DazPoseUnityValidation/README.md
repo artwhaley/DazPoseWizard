@@ -37,12 +37,55 @@ The calibration fits DAZ rest-bone positions (centimeters) for the pelvis/spine/
 
 The **Tools > DAZ Pose > Run Adapter Self Tests** command runs nine checks for calibration math, centimeter conversion, reflected-basis conversion, neutral rotation identity, normalized quaternion output, `lThigh` → `lThighBend` exact-name resolution, and explicit missing-bone diagnostics.
 
+## Phase 1 review record
+
+The user visually reviewed multiple G8F direct-pose applications and confirmed they worked correctly on 2026-09-27. That is the accepted Phase 1 baseline. The clip generator reuses the same resolved local transforms captured from the existing direct-apply conversion; it does not add a second DAZ-to-Unity conversion path.
+
+## Generate a native Unity AnimationClip
+
+1. Open `Assets/Scenes/PoseValidation.unity` and select the **Lara** root in the Hierarchy.
+2. Choose **Tools > DAZ Pose > Generate AnimationClip from Pose**.
+3. Select the canonical `*.dazpose.json` file. Unity resolves the figure on a hidden temporary copy restored to the captured import rest pose, leaving the visible Lara unchanged.
+4. If the same clip already exists, confirm **Regenerate**. Unity replaces it deterministically only after this explicit prompt.
+5. Unity writes a non-Legacy, one-second clip to `Assets/Generated/DazPoses/G8F/<pose name>.anim`, plus a neighboring `<pose name>.report.json` with source provenance, stable bone paths, emitted properties, curve counts, and parity errors.
+6. Inspect the Console summary. Rotation data uses complete `m_LocalRotation.x/y/z/w` quaternion curves. Local position curves are emitted only for resolved positions changed by this pose. The character/scene placement root is not a binding target.
+
+The Console reports and adjacent JSON report include the exact clip path. Generated assets are local outputs and are ignored by Git in this validation harness.
+
+## Preview and restore
+
+1. Select **Lara** in the Hierarchy.
+2. Choose **Tools > DAZ Pose > Preview AnimationClip on Selected Character**.
+3. In the file picker, choose the generated `.anim` under `Assets/Generated/DazPoses/G8F/`.
+4. Unity restores the captured import rest transforms and samples the clip at 0.5 seconds relative to the stable `Genesis8Female` figure root.
+5. Choose **Tools > DAZ Pose > Stop Preview / Restore Pose**. Unity exits its Animation Mode and restores the pre-preview rest state.
+
+For a direct-versus-clip visual comparison, first apply the same `.dazpose.json` with **Apply Pose to Selected Character** and inspect Lara. Then preview the corresponding `.anim`. Stop the preview when finished.
+
+## Play Mode smoke test
+
+1. Select **Lara** and choose **Tools > DAZ Pose > Run Play Mode AnimationClip Smoke Test**.
+2. Select the generated `.anim` asset. Unity adds a validation-only Animator and Playables driver to the stable `Genesis8Female` root and enters Play Mode.
+3. Confirm the Console prints `PASS DAZ Pose runtime smoke test` with low local transform errors. The static clip stays active while Play Mode is running.
+4. Stop Play Mode. The temporary driver and an Animator added by the validation command are removed automatically.
+
+The smoke test uses a `PlayableGraph` and `AnimationClipPlayable`; it does not use a Legacy Animation component or a production Animator Controller.
+
+## Automated Phase 2 validation
+
+From Unity batch mode, `DazPose.UnityValidation.DazPoseEditorCommands.RunBatchValidation` runs the nine adapter tests, refactored direct-apply regression, native clip generation, binding inspection, and parity checks at 0.0, 0.5, and 1.0 seconds for every `*.dazpose.json` currently present in `Assets/TestData`.
+
+`DazPose.UnityValidation.DazPoseEditorCommands.RunBatchPlayableSmokeTest` runs that suite and then enters Play Mode to verify Unity's Animator/Playables path. The editor monitor exits batch mode only after the runtime driver passes, and returns a failure exit code on a parity or timeout error.
+
+The repository currently contains one local pose fixture (`Cherish Genesis 8 Female 16.dazpose.json`). The Phase 2 batch runner automatically adds any second known-good G8F `.dazpose.json` copied into `Assets/TestData`.
+
 ## Evidence for a corrective pass
 
 If the result is wrong, restore neutral and send back:
 
 - `TestOutput\lara-unity-skeleton.json`
 - `TestOutput\pose-application-report.json`
+- `Assets\Generated\DazPoses\G8F\<pose name>.report.json`
 - Unity Console errors/warnings from the operation
 - a screenshot showing Lara and the incorrect body regions
 
