@@ -13,6 +13,9 @@ G8F-inCherishReferencePose/
 *.duf
 *.dsf
 
+# Licensed local DAZ poses and their generated conversion outputs
+stack3 poses/
+
 # Unity validation harness generated content
 validation/DazPoseUnityValidation/Library/
 validation/DazPoseUnityValidation/Temp/

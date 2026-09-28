@@ -207,7 +207,7 @@ namespace DazPose.UnityValidation
             try
             {
                 _graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
-                _mixer = AnimationMixerPlayable.Create(_graph, 2, true);
+                _mixer = AnimationMixerPlayable.Create(_graph, 2);
                 _clipPlayables = new AnimationClipPlayable[2];
                 _mixer.SetInputWeight(0, 0f);
                 _mixer.SetInputWeight(1, 0f);

@@ -263,6 +263,82 @@ namespace DazPose.UnityValidation
             Debug.Log("Runtime pose-blend demo is set up on " + animationRoot.name + ". Assign Pose A and Pose B on DazPoseBlendDemo, then enter Play Mode. Lara's outer scene object is not animated.");
         }
 
+        [MenuItem("Tools/DAZ Pose/Import Three Stack3 Poses and Setup Blend Test")]
+        public static void ImportThreeStack3PosesAndSetupBlendTest()
+        {
+            const string validationScenePath = "Assets/Scenes/PoseValidation.unity";
+            var scene = SceneManager.GetActiveScene();
+            if (!string.Equals(scene.path, validationScenePath, StringComparison.Ordinal))
+                throw new InvalidOperationException("Open " + validationScenePath + " before importing the three local Stack3 poses.");
+
+            var character = GameObject.Find("Lara");
+            if (character == null) throw new InvalidOperationException("The validation scene does not contain Lara. Run Setup Validation Scene first.");
+
+            var characterRoot = character.transform;
+            var animationRoot = FindAnimationRoot(characterRoot);
+            if (animationRoot.GetComponent<DazPosePlayableValidationDriver>() != null)
+                throw new InvalidOperationException("Remove the Phase 2 validation-only Playables driver from " + animationRoot.name + " before setting up the runtime blend demo.");
+
+            var sourceDirectory = Path.GetFullPath(Path.Combine(ProjectRoot, "..", "..", "stack3 poses"));
+            var poseFileNames = new[]
+            {
+                "Vintage Glamour Genesis 8 Female 03.dazpose.json",
+                "Vintage Glamour Genesis 8 Female 22.dazpose.json",
+                "Vintage Glamour Genesis 8 Female 25.dazpose.json"
+            };
+            var testDataDirectory = Path.Combine(ProjectRoot, PoseAssetFolder.Replace('/', Path.DirectorySeparatorChar));
+            Directory.CreateDirectory(testDataDirectory);
+
+            var posePaths = new string[poseFileNames.Length];
+            for (var index = 0; index < poseFileNames.Length; index++)
+            {
+                var sourcePath = Path.Combine(sourceDirectory, poseFileNames[index]);
+                if (!File.Exists(sourcePath))
+                    throw new FileNotFoundException("Convert the three Vintage Glamour poses and place their .dazpose.json outputs in the repository's stack3 poses folder.", sourcePath);
+
+                posePaths[index] = Path.Combine(testDataDirectory, poseFileNames[index]);
+                File.Copy(sourcePath, posePaths[index], true);
+            }
+            AssetDatabase.Refresh();
+
+            var clips = new AnimationClip[posePaths.Length];
+            for (var index = 0; index < posePaths.Length; index++)
+            {
+                if (!TryResolvePose(characterRoot, posePaths[index], out var resolved))
+                    throw new InvalidOperationException("Pose resolution failed for " + poseFileNames[index] + ". Inspect TestOutput/pose-application-report.json and the Unity Console.");
+
+                var assetPath = DazPoseAnimationClipGenerator.AssetPathFor(resolved);
+                var existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+                DazPoseAnimationClipGenerator.Generate(resolved, existing != null);
+                clips[index] = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+                if (clips[index] == null)
+                    throw new InvalidOperationException("AnimationClip generation did not create " + assetPath + ".");
+            }
+
+            Selection.activeGameObject = character;
+            SetupRuntimeBlendDemo();
+            animationRoot = FindAnimationRoot(characterRoot);
+            var demo = animationRoot.GetComponent<DazPoseBlendDemo>();
+            var player = animationRoot.GetComponent<DazPoseBlendPlayer>();
+            if (demo == null || player == null)
+                throw new InvalidOperationException("The runtime blend demo components were not attached to " + animationRoot.name + ".");
+
+            Undo.RecordObject(demo, "Assign Three Stack3 Blend Test Poses");
+            demo.player = player;
+            demo.poseA = clips[0];
+            demo.poseB = clips[1];
+            demo.poseC = clips[2];
+            EditorUtility.SetDirty(demo);
+            EditorSceneManager.MarkSceneDirty(scene);
+            AssetDatabase.SaveAssets();
+            if (!EditorSceneManager.SaveScene(scene))
+                throw new InvalidOperationException("Unity could not save the three-pose runtime blend setup to " + validationScenePath + ".");
+
+            Debug.Log("Three converted Stack3 poses are ready on " + animationRoot.name + ": Pose A=" + clips[0].name
+                + ", Pose B=" + clips[1].name + ", Pose C=" + clips[2].name
+                + ". Enter Play Mode and use 1/2/3 or the on-screen buttons to switch poses; F5 validates repeated A/B blending.");
+        }
+
         [MenuItem("Tools/DAZ Pose/Restore Captured Rest Pose")]
         public static void RestoreCapturedRestPose()
         {
