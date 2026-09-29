@@ -861,6 +861,16 @@ namespace DazPose.Performer
             if (!sawEyeEvent) failures.Add("Deterministic attention-life progression did not produce a nonzero fixation event.");
             if (!heldCheckPassed) failures.Add("Eye fixation changed between held events instead of remaining stable.");
 
+            var authoredHead = Quaternion.Euler(7f, -11f, 3f);
+            var gazeCorrection = Quaternion.Euler(-2f, 9f, 0f);
+            var sideTiltBias = Quaternion.AngleAxis(10f, Vector3.forward);
+            var gazeOnlyHead = PerformerGazeJob.ComposeHeadRotation(authoredHead, gazeCorrection,
+                Quaternion.identity);
+            var attendedHead = PerformerGazeJob.ComposeHeadRotation(authoredHead, gazeCorrection,
+                sideTiltBias);
+            if (Quaternion.Angle(gazeOnlyHead, attendedHead) < 9.9f)
+                failures.Add("Head Attention Life side tilt was canceled by semantic gaze composition.");
+
             var firstBlinkIntervals = PerformerBlink.SampleIntervalsForAcceptance(246813, 3.5f, 6.5f, 12);
             var secondBlinkIntervals = PerformerBlink.SampleIntervalsForAcceptance(246813, 3.5f, 6.5f, 12);
             for (var index = 0; index < firstBlinkIntervals.Length; index++)

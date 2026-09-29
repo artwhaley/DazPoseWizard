@@ -110,20 +110,22 @@ namespace DazPose.Performer
             var authoredLeftEyeRotation = LeftEye.GetRotation(stream);
             var authoredRightEyeRotation = RightEye.GetRotation(stream);
 
-            var biasedHeadRotation = authoredHeadRotation * PreferredHeadBias;
             var headDelta = Quaternion.identity;
             if (applyGaze && HeadEnabled && HeadWeight > 0f)
             {
-                var headAimCorrection = SolveClampedCorrection(biasedHeadRotation, HeadLocalAim, HeadLocalUp,
+                var headAimCorrection = SolveClampedCorrection(authoredHeadRotation, HeadLocalAim, HeadLocalUp,
                     HeadAimDirection, HeadMaxYaw, HeadMaxPitch);
                 var weight = Mathf.Clamp01(GazeWeight * HeadWeight);
                 var weightedCorrection = Quaternion.Slerp(Quaternion.identity, headAimCorrection, weight);
-                var finalHeadRotation = weightedCorrection * biasedHeadRotation;
+                var finalHeadRotation = ComposeHeadRotation(authoredHeadRotation, weightedCorrection,
+                    PreferredHeadBias);
                 headDelta = finalHeadRotation * Quaternion.Inverse(authoredHeadRotation);
                 Head.SetRotation(stream, finalHeadRotation);
             }
             else if (applyHeadBias)
             {
+                var biasedHeadRotation = ComposeHeadRotation(authoredHeadRotation,
+                    Quaternion.identity, PreferredHeadBias);
                 headDelta = biasedHeadRotation * Quaternion.Inverse(authoredHeadRotation);
                 Head.SetRotation(stream, biasedHeadRotation);
             }
@@ -143,6 +145,14 @@ namespace DazPose.Performer
                 Quaternion.Slerp(Quaternion.identity, leftCorrection, eyeWeight) * leftEyeAfterHead);
             RightEye.SetRotation(stream,
                 Quaternion.Slerp(Quaternion.identity, rightCorrection, eyeWeight) * rightEyeAfterHead);
+        }
+
+        internal static Quaternion ComposeHeadRotation(Quaternion authoredRotation,
+            Quaternion gazeCorrection, Quaternion preferredHeadBias)
+        {
+            // Solve semantic gaze against the authored pose, then retain the local attention bias.
+            // Solving against an already-biased pose cancels that bias when the target is in range.
+            return gazeCorrection * authoredRotation * preferredHeadBias;
         }
 
         private static Quaternion SolveClampedCorrection(Quaternion boneWorldRotation, Vector3 localAim,

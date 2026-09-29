@@ -71,13 +71,19 @@ namespace DazPose.Editor.Importing
                 return;
             }
 
-            var referenceModel = DazPosePipelineSettings.LoadReferenceModel(out var referenceAssetPath);
-            var referenceWasImported = referenceModel != null && importedAssets.Any(importedPath =>
-                string.Equals(NormalizeAssetPath(importedPath), referenceAssetPath.Replace('\\', '/'), StringComparison.OrdinalIgnoreCase));
-
+            var assetPaths = new List<string>(importedAssets.Length);
             foreach (var importedPath in importedAssets)
             {
-                var assetPath = NormalizeAssetPath(importedPath);
+                if (TryNormalizeImportedAssetPath(importedPath, out var assetPath))
+                    assetPaths.Add(assetPath);
+            }
+
+            var referenceModel = DazPosePipelineSettings.LoadReferenceModel(out var referenceAssetPath);
+            var referenceWasImported = referenceModel != null && assetPaths.Any(assetPath =>
+                string.Equals(assetPath, referenceAssetPath.Replace('\\', '/'), StringComparison.OrdinalIgnoreCase));
+
+            foreach (var assetPath in assetPaths)
+            {
                 if (assetPath.EndsWith(CanonicalSuffix, StringComparison.OrdinalIgnoreCase)
                     && IsWithinRoot(assetPath, importRoot)) Enqueue(assetPath, false);
             }
@@ -497,6 +503,24 @@ namespace DazPose.Editor.Importing
                 || normalized.Split('/').Any(part => part.Length == 0 || part == "." || part == ".."))
                 throw new InvalidDataException("Expected an Assets-relative path without traversal segments.");
             return normalized;
+        }
+
+        private static bool TryNormalizeImportedAssetPath(string path, out string normalized)
+        {
+            normalized = null;
+            if (string.IsNullOrWhiteSpace(path)) return false;
+
+            var candidate = path.Trim().Replace('\\', '/');
+            if (!candidate.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase)) return false;
+            try
+            {
+                normalized = NormalizeAssetPath(candidate);
+                return true;
+            }
+            catch (InvalidDataException)
+            {
+                return false;
+            }
         }
 
         private static bool IsWithinRoot(string path, string root)

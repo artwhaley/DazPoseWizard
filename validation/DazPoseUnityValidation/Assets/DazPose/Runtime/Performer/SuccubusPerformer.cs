@@ -63,8 +63,10 @@ namespace DazPose.Performer
         [SerializeField, Min(0.05f)] private float eyeFixationMaximumHoldSeconds = 4.5f;
         [SerializeField, Range(1f, 4f)] private float eyeFixationCenterBias = 2.4f;
         [SerializeField] private bool headAttentionLifeEnabled = true;
-        [SerializeField, Range(0f, 15f)] private float headAttentionMaxTiltDegrees = 1.25f;
-        [SerializeField, Range(0f, 12f)] private float headAttentionMaxChinDegrees = 1f;
+        [SerializeField, Range(0f, 15f), InspectorName("Head Attention Max Side Tilt Degrees")]
+        private float headAttentionMaxTiltDegrees = 1.25f;
+        [SerializeField, Range(0f, 12f), InspectorName("Head Attention Max Chin Nod Degrees")]
+        private float headAttentionMaxChinDegrees = 1f;
         [SerializeField, Min(0.1f)] private float headAttentionMinimumHoldSeconds = 8f;
         [SerializeField, Min(0.1f)] private float headAttentionMaximumHoldSeconds = 16f;
         [SerializeField, Min(0f)] private float headAttentionTransitionResponse = 0.35f;

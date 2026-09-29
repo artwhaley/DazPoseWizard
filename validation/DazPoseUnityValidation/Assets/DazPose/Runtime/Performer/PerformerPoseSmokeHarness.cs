@@ -189,9 +189,9 @@ namespace DazPose.Performer
             GUILayout.Label("Head Attention Life");
             performer.HeadAttentionLifeEnabled = GUILayout.Toggle(
                 performer.HeadAttentionLifeEnabled, "Head attention enabled");
-            DrawSlider("Max tilt (deg)", performer.HeadAttentionMaxTiltDegrees, 0f, 15f,
+            DrawSlider("Max side tilt (deg)", performer.HeadAttentionMaxTiltDegrees, 0f, 15f,
                 value => performer.HeadAttentionMaxTiltDegrees = value);
-            DrawSlider("Max chin (deg)", performer.HeadAttentionMaxChinDegrees, 0f, 12f,
+            DrawSlider("Max chin nod (deg)", performer.HeadAttentionMaxChinDegrees, 0f, 12f,
                 value => performer.HeadAttentionMaxChinDegrees = value);
             DrawSlider("Hold min (s)", performer.HeadAttentionMinimumHoldSeconds, 0.1f, 30f,
                 value => performer.HeadAttentionMinimumHoldSeconds = value);
@@ -199,8 +199,8 @@ namespace DazPose.Performer
                 value => performer.HeadAttentionMaximumHoldSeconds = value);
             DrawSlider("Transition response", performer.HeadAttentionTransitionResponse, 0f, 2f,
                 value => performer.HeadAttentionTransitionResponse = value);
-            GUILayout.Label("Current tilt " + performer.HeadAttentionTilt.ToString("F2")
-                            + "°  chin " + performer.HeadAttentionChin.ToString("F2")
+            GUILayout.Label("Current side tilt " + performer.HeadAttentionTilt.ToString("F2")
+                            + "°  chin nod " + performer.HeadAttentionChin.ToString("F2")
                             + "°    next event " + performer.HeadAttentionEventCountdown.ToString("F1") + " s");
 
             GUILayout.Label("Autonomous Blink");
