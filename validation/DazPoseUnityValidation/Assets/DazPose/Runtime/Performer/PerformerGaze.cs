@@ -101,7 +101,10 @@ namespace DazPose.Performer
 
         public void ProcessAnimation(AnimationStream stream)
         {
-            if (!stream.isValid || !BindingsValid || !GazeEnabled || GazeWeight <= 0f) return;
+            if (!stream.isValid || !BindingsValid) return;
+            var applyGaze = GazeEnabled && GazeWeight > 0f;
+            var applyHeadBias = Quaternion.Angle(Quaternion.identity, PreferredHeadBias) > 0.001f;
+            if (!applyGaze && !applyHeadBias) return;
 
             var authoredHeadRotation = Head.GetRotation(stream);
             var authoredLeftEyeRotation = LeftEye.GetRotation(stream);
@@ -109,7 +112,7 @@ namespace DazPose.Performer
 
             var biasedHeadRotation = authoredHeadRotation * PreferredHeadBias;
             var headDelta = Quaternion.identity;
-            if (HeadEnabled && HeadWeight > 0f)
+            if (applyGaze && HeadEnabled && HeadWeight > 0f)
             {
                 var headAimCorrection = SolveClampedCorrection(biasedHeadRotation, HeadLocalAim, HeadLocalUp,
                     HeadAimDirection, HeadMaxYaw, HeadMaxPitch);
@@ -119,13 +122,13 @@ namespace DazPose.Performer
                 headDelta = finalHeadRotation * Quaternion.Inverse(authoredHeadRotation);
                 Head.SetRotation(stream, finalHeadRotation);
             }
-            else if (PreferredHeadBias != Quaternion.identity)
+            else if (applyHeadBias)
             {
                 headDelta = biasedHeadRotation * Quaternion.Inverse(authoredHeadRotation);
                 Head.SetRotation(stream, biasedHeadRotation);
             }
 
-            if (!EyesEnabled || EyeWeight <= 0f) return;
+            if (!applyGaze || !EyesEnabled || EyeWeight <= 0f) return;
 
             var leftEyeAfterHead = headDelta * authoredLeftEyeRotation;
             var rightEyeAfterHead = headDelta * authoredRightEyeRotation;
@@ -188,6 +191,7 @@ namespace DazPose.Performer
 
         private readonly Animator _animator;
         private readonly PlayableGraph _graph;
+        private PerformerAttentionLife _attentionLife;
         private readonly List<string> _diagnostics = new List<string>();
         private Transform _head;
         private Transform _leftEye;
@@ -202,6 +206,9 @@ namespace DazPose.Performer
         private Vector3 _headAimDirection;
         private Vector3 _leftEyeAimDirection;
         private Vector3 _rightEyeAimDirection;
+        private Vector3 _semanticHeadAimDirection;
+        private Vector3 _semanticLeftEyeAimDirection;
+        private Vector3 _semanticRightEyeAimDirection;
         private Vector3 _lastResolvedTarget;
         private float _gazeWeight;
         private bool _aimsInitialized;
@@ -217,6 +224,7 @@ namespace DazPose.Performer
         public Vector3 RawTargetPosition => _lastResolvedTarget;
         public Vector3 EffectiveHeadTargetPosition => _effectiveInput.HeadTargetWorldPosition;
         public Vector3 EffectiveEyeTargetPosition => _effectiveInput.EyeTargetWorldPosition;
+        public Quaternion EffectivePreferredHeadBias => _effectiveInput.PreferredHeadBias;
         public Vector3 SmoothedHeadAimDirection => _headAimDirection;
         public Vector3 SmoothedLeftEyeAimDirection => _leftEyeAimDirection;
         public Vector3 SmoothedRightEyeAimDirection => _rightEyeAimDirection;
@@ -262,9 +270,19 @@ namespace DazPose.Performer
             UpdateJobData();
         }
 
+        public void AttachAttentionLife(PerformerAttentionLife attentionLife)
+        {
+            _attentionLife = attentionLife ?? throw new ArgumentNullException(nameof(attentionLife));
+            _attentionLife.SetGazeActive(_settings.GazeEnabled && _intention != null);
+            _effectiveInput = CreateEffectiveInput(_lastResolvedTarget);
+            UpdateJobData();
+        }
+
         public void Configure(PerformerGazeSettings settings)
         {
             _settings = settings;
+            _attentionLife?.SetGazeActive(_settings.GazeEnabled && _intention != null);
+            _effectiveInput = CreateEffectiveInput(_lastResolvedTarget);
             UpdateJobData();
         }
 
@@ -291,6 +309,8 @@ namespace DazPose.Performer
             _intention = null;
             _isAcquired = false;
             _intentionGeneration++;
+            _attentionLife?.SetGazeActive(false);
+            _effectiveInput = CreateEffectiveInput(_lastResolvedTarget);
             if (!_settings.GazeEnabled) _gazeWeight = 0f;
             UpdateJobData();
             CompleteWaiters(previous, GazeCompletion.Superseded);
@@ -307,6 +327,8 @@ namespace DazPose.Performer
                 _intention = null;
                 _isAcquired = false;
                 _intentionGeneration++;
+                _attentionLife?.SetGazeActive(false);
+                _effectiveInput = CreateEffectiveInput(_lastResolvedTarget);
                 if (!_settings.GazeEnabled) _gazeWeight = 0f;
                 UpdateJobData();
                 CompleteWaiters(lost, GazeCompletion.TargetLost);
@@ -315,6 +337,7 @@ namespace DazPose.Performer
 
             if (_intention == null)
             {
+                _effectiveInput = CreateEffectiveInput(_lastResolvedTarget);
                 if (_settings.GazeEnabled)
                     _gazeWeight = SmoothScalar(_gazeWeight, 0f, _settings.ReleaseResponse, deltaTime);
                 UpdateJobData();
@@ -324,6 +347,7 @@ namespace DazPose.Performer
             if (!_settings.GazeEnabled)
             {
                 _isAcquired = false;
+                _effectiveInput = CreateEffectiveInput(_lastResolvedTarget);
                 UpdateJobData();
                 return;
             }
@@ -337,6 +361,12 @@ namespace DazPose.Performer
             var rawHeadDirection = DirectionTo(_effectiveInput.HeadTargetWorldPosition, headOrigin, _headAimDirection);
             var rawLeftDirection = DirectionTo(_effectiveInput.EyeTargetWorldPosition, leftEyeOrigin, _leftEyeAimDirection);
             var rawRightDirection = DirectionTo(_effectiveInput.EyeTargetWorldPosition, rightEyeOrigin, _rightEyeAimDirection);
+            var rawSemanticLeftDirection = DirectionTo(_lastResolvedTarget, leftEyeOrigin,
+                _semanticLeftEyeAimDirection);
+            var rawSemanticRightDirection = DirectionTo(_lastResolvedTarget, rightEyeOrigin,
+                _semanticRightEyeAimDirection);
+            var rawSemanticHeadDirection = DirectionTo(_lastResolvedTarget, headOrigin,
+                _semanticHeadAimDirection);
 
             _headAimDirection = SmoothDirection(_headAimDirection, rawHeadDirection,
                 _settings.HeadResponse, deltaTime, _head.up);
@@ -344,15 +374,21 @@ namespace DazPose.Performer
                 _settings.EyeResponse, deltaTime, _leftEye.up);
             _rightEyeAimDirection = SmoothDirection(_rightEyeAimDirection, rawRightDirection,
                 _settings.EyeResponse, deltaTime, _rightEye.up);
+            _semanticHeadAimDirection = SmoothDirection(_semanticHeadAimDirection,
+                rawSemanticHeadDirection, _settings.HeadResponse, deltaTime, _head.up);
+            _semanticLeftEyeAimDirection = SmoothDirection(_semanticLeftEyeAimDirection,
+                rawSemanticLeftDirection, _settings.EyeResponse, deltaTime, _leftEye.up);
+            _semanticRightEyeAimDirection = SmoothDirection(_semanticRightEyeAimDirection,
+                rawSemanticRightDirection, _settings.EyeResponse, deltaTime, _rightEye.up);
 
             var acquireResponse = Mathf.Max(_settings.HeadResponse, _settings.EyeResponse);
             _gazeWeight = SmoothScalar(_gazeWeight, 1f, acquireResponse, deltaTime);
 
             var tolerance = Mathf.Max(0.1f, _settings.AcquireToleranceDegrees);
             var error = Mathf.Max(
-                Vector3.Angle(_headAimDirection, rawHeadDirection),
-                Mathf.Max(Vector3.Angle(_leftEyeAimDirection, rawLeftDirection),
-                    Vector3.Angle(_rightEyeAimDirection, rawRightDirection)));
+                Vector3.Angle(_semanticHeadAimDirection, rawSemanticHeadDirection),
+                Mathf.Max(Vector3.Angle(_semanticLeftEyeAimDirection, rawSemanticLeftDirection),
+                    Vector3.Angle(_semanticRightEyeAimDirection, rawSemanticRightDirection)));
             var threshold = _isAcquired ? tolerance * TargetJitterHysteresisMultiplier : tolerance;
             _isAcquired = _gazeWeight >= AcquiredWeightThreshold && error <= threshold;
             if (_isAcquired && _intention.Waiters.Count > 0)
@@ -383,6 +419,7 @@ namespace DazPose.Performer
             var previous = _intention;
             _intention = null;
             _isAcquired = false;
+            _attentionLife?.SetGazeActive(false);
             _disposed = true;
             CompleteWaiters(previous, GazeCompletion.PerformerDisabled);
             if (_gazePlayable.IsValid()) _gazePlayable.Destroy();
@@ -413,6 +450,7 @@ namespace DazPose.Performer
             _intention = next;
             _isAcquired = false;
             _intentionGeneration++;
+            _attentionLife?.SetGazeActive(_settings.GazeEnabled);
             if (completion != null) _intention.Waiters.Add(completion);
             if (_intention.TryResolve(out _lastResolvedTarget))
             {
@@ -428,22 +466,43 @@ namespace DazPose.Performer
             if (!_isAcquired || !_settings.GazeEnabled || _gazeWeight < AcquiredWeightThreshold
                 || _intention == null || !_intention.TryResolve(out var rawTarget)) return false;
 
-            var effective = CreateEffectiveInput(rawTarget);
-            var headDirection = DirectionTo(effective.HeadTargetWorldPosition, _head.position, _headAimDirection);
-            var leftDirection = DirectionTo(effective.EyeTargetWorldPosition, _leftEye.position, _leftEyeAimDirection);
-            var rightDirection = DirectionTo(effective.EyeTargetWorldPosition, _rightEye.position, _rightEyeAimDirection);
+            var headDirection = DirectionTo(rawTarget, _head.position, _semanticHeadAimDirection);
+            var leftDirection = DirectionTo(rawTarget, _leftEye.position, _semanticLeftEyeAimDirection);
+            var rightDirection = DirectionTo(rawTarget, _rightEye.position, _semanticRightEyeAimDirection);
             var tolerance = Mathf.Max(0.1f, _settings.AcquireToleranceDegrees)
                             * TargetJitterHysteresisMultiplier;
-            return Vector3.Angle(_headAimDirection, headDirection) <= tolerance
-                   && Vector3.Angle(_leftEyeAimDirection, leftDirection) <= tolerance
-                   && Vector3.Angle(_rightEyeAimDirection, rightDirection) <= tolerance;
+            return Vector3.Angle(_semanticHeadAimDirection, headDirection) <= tolerance
+                   && Vector3.Angle(_semanticLeftEyeAimDirection, leftDirection) <= tolerance
+                   && Vector3.Angle(_semanticRightEyeAimDirection, rightDirection) <= tolerance;
         }
 
         private EffectiveGazeInput CreateEffectiveInput(Vector3 rawTarget)
         {
-            // P0.7 attention-life modifiers belong between raw intent and this deterministic solve.
-            // In P0.6 the effective head and eye targets are the raw target, with no head bias.
-            return new EffectiveGazeInput(rawTarget, rawTarget, Quaternion.identity);
+            var life = _attentionLife == null ? default : _attentionLife.CurrentOutput;
+            var eyeTarget = rawTarget;
+            if (_head != null && _leftEye != null && _rightEye != null
+                && (life.EyeHorizontalOffsetDegrees != 0f || life.EyeVerticalOffsetDegrees != 0f))
+            {
+                var eyeOrigin = (_leftEye.position + _rightEye.position) * 0.5f;
+                var rawDirection = rawTarget - eyeOrigin;
+                var distance = rawDirection.magnitude;
+                if (distance > MinimumTargetDistance)
+                {
+                    rawDirection /= distance;
+                    var right = (_head.rotation * _headCalibration.LocalRight).normalized;
+                    var up = (_head.rotation * _headCalibration.LocalUp).normalized;
+                    var offsetDirection = Quaternion.AngleAxis(life.EyeHorizontalOffsetDegrees, up)
+                                          * rawDirection;
+                    offsetDirection = Quaternion.AngleAxis(-life.EyeVerticalOffsetDegrees, right)
+                                      * offsetDirection;
+                    eyeTarget = eyeOrigin + offsetDirection.normalized * distance;
+                }
+            }
+
+            // The head continues tracking semantic intent; only the eye target receives
+            // angular fixation variation. Preferred bias is consumed before the P0.6 solve.
+            var preferredBias = _attentionLife == null ? Quaternion.identity : life.PreferredHeadBias;
+            return new EffectiveGazeInput(rawTarget, eyeTarget, preferredBias);
         }
 
         private void InitializeAimDirections()
@@ -451,6 +510,9 @@ namespace DazPose.Performer
             _headAimDirection = (_head.rotation * _headCalibration.LocalAim).normalized;
             _leftEyeAimDirection = (_leftEye.rotation * _leftEyeCalibration.LocalAim).normalized;
             _rightEyeAimDirection = (_rightEye.rotation * _rightEyeCalibration.LocalAim).normalized;
+            _semanticHeadAimDirection = _headAimDirection;
+            _semanticLeftEyeAimDirection = _leftEyeAimDirection;
+            _semanticRightEyeAimDirection = _rightEyeAimDirection;
             _aimsInitialized = true;
         }
 

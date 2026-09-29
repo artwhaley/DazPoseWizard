@@ -14,6 +14,7 @@ namespace DazPose.Performer
         [SerializeField] private PerformerPoseAcceptanceHarness acceptanceHarness;
         [SerializeField] private Transform gazeTarget;
         private Vector2 _scrollPosition;
+        private string _seedText = string.Empty;
 
         private void Reset()
         {
@@ -31,7 +32,7 @@ namespace DazPose.Performer
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(12f, 12f, 400f, 820f), "Performer Pose Smoke Test", GUI.skin.window);
+            GUILayout.BeginArea(new Rect(12f, 12f, 430f, 900f), "Performer Pose Smoke Test", GUI.skin.window);
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
             GUILayout.Label("1 / 2 / 3 also selects these persistent poses.");
             DrawPoseButton("Pose A", poseA);
@@ -43,6 +44,7 @@ namespace DazPose.Performer
             {
                 DrawBreathingControls();
                 DrawGazeControls();
+                DrawAttentionLifeControls();
                 var desired = performer.DesiredPose == null ? "none" : performer.DesiredPose.name;
                 GUILayout.Label("Desired: " + desired + (performer.IsTransitioning
                     ? "  " + (performer.TransitionProgress * 100f).ToString("F0") + "%"
@@ -135,6 +137,123 @@ namespace DazPose.Performer
                 value => performer.EyeGazeMaxPitch = value);
             DrawSlider("Release response", performer.GazeReleaseResponse, 0f, 20f,
                 value => performer.GazeReleaseResponse = value);
+        }
+
+        private void DrawAttentionLifeControls()
+        {
+            GUILayout.Space(8f);
+            GUILayout.Label("P0.7 Attention Life");
+            performer.AttentionLifeEnabled = GUILayout.Toggle(
+                performer.AttentionLifeEnabled, "Attention life enabled");
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Seed", GUILayout.Width(150f));
+            var seedValue = GUILayout.TextField(performer.AttentionLifeSeed.ToString(), GUILayout.Width(100f));
+            if (seedValue != _seedText) _seedText = seedValue;
+            if (int.TryParse(_seedText, out var seed) && seed != performer.AttentionLifeSeed)
+                performer.AttentionLifeSeed = seed;
+            if (GUILayout.Button("Reset seed", GUILayout.Width(85f)))
+            {
+                performer.AttentionLifeSeed = 12345;
+                _seedText = "12345";
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("P0.6 baseline")) SetComparisonMode(false, false, false, false);
+            if (GUILayout.Button("Fixation only")) SetComparisonMode(true, true, false, false);
+            if (GUILayout.Button("Head only")) SetComparisonMode(true, false, true, false);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Blink only")) SetComparisonMode(false, false, false, true);
+            if (GUILayout.Button("Full P0.7")) SetComparisonMode(true, true, true, true);
+            if (GUILayout.Button("Exaggerate")) SetExaggeratedSettings();
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("Eye Fixation");
+            performer.EyeFixationLifeEnabled = GUILayout.Toggle(
+                performer.EyeFixationLifeEnabled, "Eye fixation enabled");
+            DrawSlider("Max horizontal (deg)", performer.EyeFixationMaxHorizontalDegrees, 0f, 8f,
+                value => performer.EyeFixationMaxHorizontalDegrees = value);
+            DrawSlider("Max vertical (deg)", performer.EyeFixationMaxVerticalDegrees, 0f, 6f,
+                value => performer.EyeFixationMaxVerticalDegrees = value);
+            DrawSlider("Hold min (s)", performer.EyeFixationMinimumHoldSeconds, 0.1f, 10f,
+                value => performer.EyeFixationMinimumHoldSeconds = value);
+            DrawSlider("Hold max (s)", performer.EyeFixationMaximumHoldSeconds, 0.1f, 15f,
+                value => performer.EyeFixationMaximumHoldSeconds = value);
+            DrawSlider("Center bias", performer.EyeFixationCenterBias, 1f, 4f,
+                value => performer.EyeFixationCenterBias = value);
+            GUILayout.Label("Offset H " + performer.EyeFixationHorizontalOffset.ToString("F2")
+                            + "°  V " + performer.EyeFixationVerticalOffset.ToString("F2")
+                            + "°    next event " + performer.EyeFixationEventCountdown.ToString("F1") + " s");
+
+            GUILayout.Label("Head Attention Life");
+            performer.HeadAttentionLifeEnabled = GUILayout.Toggle(
+                performer.HeadAttentionLifeEnabled, "Head attention enabled");
+            DrawSlider("Max tilt (deg)", performer.HeadAttentionMaxTiltDegrees, 0f, 15f,
+                value => performer.HeadAttentionMaxTiltDegrees = value);
+            DrawSlider("Max chin (deg)", performer.HeadAttentionMaxChinDegrees, 0f, 12f,
+                value => performer.HeadAttentionMaxChinDegrees = value);
+            DrawSlider("Hold min (s)", performer.HeadAttentionMinimumHoldSeconds, 0.1f, 30f,
+                value => performer.HeadAttentionMinimumHoldSeconds = value);
+            DrawSlider("Hold max (s)", performer.HeadAttentionMaximumHoldSeconds, 0.1f, 45f,
+                value => performer.HeadAttentionMaximumHoldSeconds = value);
+            DrawSlider("Transition response", performer.HeadAttentionTransitionResponse, 0f, 2f,
+                value => performer.HeadAttentionTransitionResponse = value);
+            GUILayout.Label("Current tilt " + performer.HeadAttentionTilt.ToString("F2")
+                            + "°  chin " + performer.HeadAttentionChin.ToString("F2")
+                            + "°    next event " + performer.HeadAttentionEventCountdown.ToString("F1") + " s");
+
+            GUILayout.Label("Autonomous Blink");
+            performer.BlinkEnabled = GUILayout.Toggle(performer.BlinkEnabled, "Blink enabled");
+            DrawSlider("Strength", performer.BlinkStrength, 0f, 1f,
+                value => performer.BlinkStrength = value);
+            DrawSlider("Interval min (s)", performer.BlinkMinimumIntervalSeconds, 0.5f, 15f,
+                value => performer.BlinkMinimumIntervalSeconds = value);
+            DrawSlider("Interval max (s)", performer.BlinkMaximumIntervalSeconds, 0.5f, 20f,
+                value => performer.BlinkMaximumIntervalSeconds = value);
+            DrawSlider("Close (s)", performer.BlinkCloseDurationSeconds, 0.02f, 0.4f,
+                value => performer.BlinkCloseDurationSeconds = value);
+            DrawSlider("Closed (s)", performer.BlinkClosedDurationSeconds, 0.01f, 0.25f,
+                value => performer.BlinkClosedDurationSeconds = value);
+            DrawSlider("Open (s)", performer.BlinkOpenDurationSeconds, 0.02f, 0.5f,
+                value => performer.BlinkOpenDurationSeconds = value);
+            GUILayout.Label("State " + performer.BlinkState + "    closure "
+                            + performer.BlinkClosure.ToString("F2") + "    next blink "
+                            + performer.BlinkCountdown.ToString("F1") + " s");
+            var blink = performer.BlinkRuntime;
+            GUILayout.Label("Morph binding " + (performer.BlinkResolutionAvailable ? "resolved" : "MISSING"));
+            if (blink != null)
+            {
+                foreach (var binding in blink.Bindings)
+                    GUILayout.Label(binding.SemanticName + ": " + binding.ImportedBlendShapeName
+                                    + " @ " + binding.RendererPath + " (max "
+                                    + binding.PositiveMaximumWeight.ToString("F2") + ")");
+            }
+        }
+
+        private void SetComparisonMode(bool attention, bool fixation, bool head, bool blink)
+        {
+            performer.AttentionLifeEnabled = attention;
+            performer.EyeFixationLifeEnabled = fixation;
+            performer.HeadAttentionLifeEnabled = head;
+            performer.BlinkEnabled = blink;
+        }
+
+        private void SetExaggeratedSettings()
+        {
+            performer.EyeFixationMaxHorizontalDegrees = 4f;
+            performer.EyeFixationMaxVerticalDegrees = 3f;
+            performer.EyeFixationMinimumHoldSeconds = 0.8f;
+            performer.EyeFixationMaximumHoldSeconds = 1.8f;
+            performer.HeadAttentionMaxTiltDegrees = 10f;
+            performer.HeadAttentionMaxChinDegrees = 8f;
+            performer.HeadAttentionMinimumHoldSeconds = 2f;
+            performer.HeadAttentionMaximumHoldSeconds = 4f;
+            performer.BlinkMinimumIntervalSeconds = 2f;
+            performer.BlinkMaximumIntervalSeconds = 4f;
+            performer.BlinkCloseDurationSeconds = 0.22f;
+            performer.BlinkClosedDurationSeconds = 0.12f;
+            performer.BlinkOpenDurationSeconds = 0.4f;
         }
 
         private static void DrawSlider(string label, float current, float minimum, float maximum,

@@ -53,10 +53,37 @@ namespace DazPose.Performer
         [SerializeField, Range(0f, 89f)] private float eyeGazeMaxPitch = 22f;
         [SerializeField, Range(0f, 20f)] private float gazeReleaseResponse = 4f;
 
+        [Header("Attention Life")]
+        [SerializeField] private bool attentionLifeEnabled = true;
+        [SerializeField] private int attentionLifeSeed = 12345;
+        [SerializeField] private bool eyeFixationLifeEnabled = true;
+        [SerializeField, Range(0f, 8f)] private float eyeFixationMaxHorizontalDegrees = 0.9f;
+        [SerializeField, Range(0f, 6f)] private float eyeFixationMaxVerticalDegrees = 0.6f;
+        [SerializeField, Min(0.05f)] private float eyeFixationMinimumHoldSeconds = 2.2f;
+        [SerializeField, Min(0.05f)] private float eyeFixationMaximumHoldSeconds = 4.5f;
+        [SerializeField, Range(1f, 4f)] private float eyeFixationCenterBias = 2.4f;
+        [SerializeField] private bool headAttentionLifeEnabled = true;
+        [SerializeField, Range(0f, 15f)] private float headAttentionMaxTiltDegrees = 1.25f;
+        [SerializeField, Range(0f, 12f)] private float headAttentionMaxChinDegrees = 1f;
+        [SerializeField, Min(0.1f)] private float headAttentionMinimumHoldSeconds = 8f;
+        [SerializeField, Min(0.1f)] private float headAttentionMaximumHoldSeconds = 16f;
+        [SerializeField, Min(0f)] private float headAttentionTransitionResponse = 0.35f;
+
+        [Header("Autonomous Blink")]
+        [SerializeField] private bool blinkEnabled = true;
+        [SerializeField, Range(0f, 1f)] private float blinkStrength = 1f;
+        [SerializeField, Min(0.1f)] private float blinkMinimumIntervalSeconds = 3.5f;
+        [SerializeField, Min(0.1f)] private float blinkMaximumIntervalSeconds = 6.5f;
+        [SerializeField, Min(0.005f)] private float blinkCloseDurationSeconds = 0.08f;
+        [SerializeField, Min(0.005f)] private float blinkClosedDurationSeconds = 0.045f;
+        [SerializeField, Min(0.005f)] private float blinkOpenDurationSeconds = 0.13f;
+
         private PlayableGraph _graph;
         private PerformerBodyPose _bodyPose;
         private PerformerBreathing _breathing;
         private PerformerGaze _gaze;
+        private PerformerAttentionLife _attentionLife;
+        private PerformerBlink _blink;
         private PerformerPose _lastDesiredPose;
         private PerformerPose _lastSettledPose;
         private PerformerPoseSnapshot _neutralPoseState;
@@ -113,6 +140,99 @@ namespace DazPose.Performer
             get => gazeAcquireToleranceDegrees;
             set => gazeAcquireToleranceDegrees = Mathf.Max(0.1f, value);
         }
+        public bool AttentionLifeEnabled { get => attentionLifeEnabled; set => attentionLifeEnabled = value; }
+        public int AttentionLifeSeed { get => attentionLifeSeed; set => attentionLifeSeed = value; }
+        public bool EyeFixationLifeEnabled { get => eyeFixationLifeEnabled; set => eyeFixationLifeEnabled = value; }
+        public float EyeFixationMaxHorizontalDegrees
+        {
+            get => eyeFixationMaxHorizontalDegrees;
+            set => eyeFixationMaxHorizontalDegrees = Mathf.Clamp(value, 0f, 8f);
+        }
+        public float EyeFixationMaxVerticalDegrees
+        {
+            get => eyeFixationMaxVerticalDegrees;
+            set => eyeFixationMaxVerticalDegrees = Mathf.Clamp(value, 0f, 6f);
+        }
+        public float EyeFixationMinimumHoldSeconds
+        {
+            get => eyeFixationMinimumHoldSeconds;
+            set => eyeFixationMinimumHoldSeconds = Mathf.Max(0.05f, value);
+        }
+        public float EyeFixationMaximumHoldSeconds
+        {
+            get => eyeFixationMaximumHoldSeconds;
+            set => eyeFixationMaximumHoldSeconds = Mathf.Max(eyeFixationMinimumHoldSeconds, value);
+        }
+        public float EyeFixationCenterBias
+        {
+            get => eyeFixationCenterBias;
+            set => eyeFixationCenterBias = Mathf.Clamp(value, 1f, 4f);
+        }
+        public bool HeadAttentionLifeEnabled { get => headAttentionLifeEnabled; set => headAttentionLifeEnabled = value; }
+        public float HeadAttentionMaxTiltDegrees
+        {
+            get => headAttentionMaxTiltDegrees;
+            set => headAttentionMaxTiltDegrees = Mathf.Clamp(value, 0f, 15f);
+        }
+        public float HeadAttentionMaxChinDegrees
+        {
+            get => headAttentionMaxChinDegrees;
+            set => headAttentionMaxChinDegrees = Mathf.Clamp(value, 0f, 12f);
+        }
+        public float HeadAttentionMinimumHoldSeconds
+        {
+            get => headAttentionMinimumHoldSeconds;
+            set => headAttentionMinimumHoldSeconds = Mathf.Max(0.1f, value);
+        }
+        public float HeadAttentionMaximumHoldSeconds
+        {
+            get => headAttentionMaximumHoldSeconds;
+            set => headAttentionMaximumHoldSeconds = Mathf.Max(headAttentionMinimumHoldSeconds, value);
+        }
+        public float HeadAttentionTransitionResponse
+        {
+            get => headAttentionTransitionResponse;
+            set => headAttentionTransitionResponse = Mathf.Max(0f, value);
+        }
+        public bool BlinkEnabled { get => blinkEnabled; set => blinkEnabled = value; }
+        public float BlinkStrength { get => blinkStrength; set => blinkStrength = Mathf.Clamp01(value); }
+        public float BlinkMinimumIntervalSeconds
+        {
+            get => blinkMinimumIntervalSeconds;
+            set => blinkMinimumIntervalSeconds = Mathf.Max(0.1f, value);
+        }
+        public float BlinkMaximumIntervalSeconds
+        {
+            get => blinkMaximumIntervalSeconds;
+            set => blinkMaximumIntervalSeconds = Mathf.Max(blinkMinimumIntervalSeconds, value);
+        }
+        public float BlinkCloseDurationSeconds
+        {
+            get => blinkCloseDurationSeconds;
+            set => blinkCloseDurationSeconds = Mathf.Max(0.005f, value);
+        }
+        public float BlinkClosedDurationSeconds
+        {
+            get => blinkClosedDurationSeconds;
+            set => blinkClosedDurationSeconds = Mathf.Max(0.005f, value);
+        }
+        public float BlinkOpenDurationSeconds
+        {
+            get => blinkOpenDurationSeconds;
+            set => blinkOpenDurationSeconds = Mathf.Max(0.005f, value);
+        }
+        public float EyeFixationHorizontalOffset => _attentionLife == null
+            ? 0f : _attentionLife.CurrentOutput.EyeHorizontalOffsetDegrees;
+        public float EyeFixationVerticalOffset => _attentionLife == null
+            ? 0f : _attentionLife.CurrentOutput.EyeVerticalOffsetDegrees;
+        public float HeadAttentionTilt => _attentionLife == null ? 0f : _attentionLife.CurrentOutput.HeadTiltDegrees;
+        public float HeadAttentionChin => _attentionLife == null ? 0f : _attentionLife.CurrentOutput.HeadChinDegrees;
+        public float EyeFixationEventCountdown => _attentionLife == null ? 0f : _attentionLife.EyeEventCountdown;
+        public float HeadAttentionEventCountdown => _attentionLife == null ? 0f : _attentionLife.HeadEventCountdown;
+        public float BlinkClosure => _blink == null ? 0f : _blink.Closure;
+        public float BlinkCountdown => _blink == null ? 0f : _blink.Countdown;
+        public string BlinkState => _blink == null ? "Unavailable" : _blink.State.ToString();
+        public bool BlinkResolutionAvailable => _blink != null && _blink.IsAvailable;
         public bool HasGazeTarget => _gaze != null && _gaze.HasGazeTarget;
         public bool IsGazeAcquired => _gaze != null && _gaze.IsGazeAcquired;
         public float GazeWeight => _gaze == null ? 0f : _gaze.GazeWeight;
@@ -123,6 +243,8 @@ namespace DazPose.Performer
 
         internal PerformerBreathing BreathingRuntime => _breathing;
         internal PerformerGaze GazeRuntime => _gaze;
+        internal PerformerAttentionLife AttentionLifeRuntime => _attentionLife;
+        internal PerformerBlink BlinkRuntime => _blink;
         internal int RuntimePlayableCount => _graph.IsValid() ? _graph.GetPlayableCount() : 0;
 
         private void OnEnable()
@@ -143,10 +265,20 @@ namespace DazPose.Performer
                 _breathing.Advance(Time.deltaTime);
                 _lastBreathPhase = _breathing.BreathPhase;
             }
+            if (_attentionLife != null)
+            {
+                _attentionLife.Configure(CreateAttentionLifeSettings());
+                _attentionLife.Advance(Time.deltaTime);
+            }
             if (_gaze != null)
             {
                 _gaze.Configure(CreateGazeSettings());
                 _gaze.Advance(Time.deltaTime);
+            }
+            if (_blink != null)
+            {
+                _blink.Configure(CreateBlinkSettings());
+                _blink.Advance(Time.deltaTime);
             }
             PublishCurrentPoseState();
             if (request == null || !ReferenceEquals(_activePoseRequest, request)
@@ -351,11 +483,19 @@ namespace DazPose.Performer
                 _breathing.Advance(0f);
 
                 _gaze = new PerformerGaze(animator, _graph, _breathing.OutputPlayable);
+                _attentionLife = new PerformerAttentionLife(_gaze.HeadCalibration.LocalAim,
+                    _gaze.HeadCalibration.LocalRight, CreateAttentionLifeSettings());
+                _gaze.AttachAttentionLife(_attentionLife);
                 _gaze.Configure(CreateGazeSettings());
+                _attentionLife.Advance(0f);
                 _gaze.Advance(0f);
 
+                _blink = new PerformerBlink(animator, _graph, _gaze.OutputPlayable,
+                    _bodyPose, CreateBlinkSettings());
+                _blink.Advance(0f);
+
                 var output = AnimationPlayableOutput.Create(_graph, "Performer Animation", animator);
-                output.SetSourcePlayable(_gaze.OutputPlayable);
+                output.SetSourcePlayable(_blink.OutputPlayable);
                 _graph.Play();
 
                 var poseToRestore = _hasPoseCommand ? _lastDesiredPose : initialPose;
@@ -384,8 +524,11 @@ namespace DazPose.Performer
             _activePoseRequest = null;
             if (request != null) CompleteRequest(request, PoseCompletion.PerformerDisabled);
 
+            _blink?.Dispose();
+            _blink = null;
             _gaze?.Dispose();
             _gaze = null;
+            _attentionLife = null;
 
             if (_graph.IsValid()) _graph.Destroy();
             _breathing?.Dispose();
@@ -414,6 +557,25 @@ namespace DazPose.Performer
             eyeGazeMaxYaw = Mathf.Clamp(eyeGazeMaxYaw, 0f, 89f);
             eyeGazeMaxPitch = Mathf.Clamp(eyeGazeMaxPitch, 0f, 89f);
             gazeReleaseResponse = Mathf.Max(0f, gazeReleaseResponse);
+            eyeFixationMaxHorizontalDegrees = Mathf.Clamp(eyeFixationMaxHorizontalDegrees, 0f, 8f);
+            eyeFixationMaxVerticalDegrees = Mathf.Clamp(eyeFixationMaxVerticalDegrees, 0f, 6f);
+            eyeFixationMinimumHoldSeconds = Mathf.Max(0.05f, eyeFixationMinimumHoldSeconds);
+            eyeFixationMaximumHoldSeconds = Mathf.Max(eyeFixationMinimumHoldSeconds,
+                eyeFixationMaximumHoldSeconds);
+            eyeFixationCenterBias = Mathf.Clamp(eyeFixationCenterBias, 1f, 4f);
+            headAttentionMaxTiltDegrees = Mathf.Clamp(headAttentionMaxTiltDegrees, 0f, 15f);
+            headAttentionMaxChinDegrees = Mathf.Clamp(headAttentionMaxChinDegrees, 0f, 12f);
+            headAttentionMinimumHoldSeconds = Mathf.Max(0.1f, headAttentionMinimumHoldSeconds);
+            headAttentionMaximumHoldSeconds = Mathf.Max(headAttentionMinimumHoldSeconds,
+                headAttentionMaximumHoldSeconds);
+            headAttentionTransitionResponse = Mathf.Max(0f, headAttentionTransitionResponse);
+            blinkStrength = Mathf.Clamp01(blinkStrength);
+            blinkMinimumIntervalSeconds = Mathf.Max(0.1f, blinkMinimumIntervalSeconds);
+            blinkMaximumIntervalSeconds = Mathf.Max(blinkMinimumIntervalSeconds,
+                blinkMaximumIntervalSeconds);
+            blinkCloseDurationSeconds = Mathf.Max(0.005f, blinkCloseDurationSeconds);
+            blinkClosedDurationSeconds = Mathf.Max(0.005f, blinkClosedDurationSeconds);
+            blinkOpenDurationSeconds = Mathf.Max(0.005f, blinkOpenDurationSeconds);
         }
 
         private PerformerBreathingSettings CreateBreathingSettings()
@@ -449,6 +611,42 @@ namespace DazPose.Performer
                 EyeMaxYaw = eyeGazeMaxYaw,
                 EyeMaxPitch = eyeGazeMaxPitch,
                 ReleaseResponse = gazeReleaseResponse
+            };
+        }
+
+        private PerformerAttentionLifeSettings CreateAttentionLifeSettings()
+        {
+            return new PerformerAttentionLifeSettings
+            {
+                Enabled = attentionLifeEnabled,
+                Seed = attentionLifeSeed,
+                EyeFixationEnabled = eyeFixationLifeEnabled,
+                EyeMaxHorizontalDegrees = eyeFixationMaxHorizontalDegrees,
+                EyeMaxVerticalDegrees = eyeFixationMaxVerticalDegrees,
+                EyeMinimumHoldSeconds = eyeFixationMinimumHoldSeconds,
+                EyeMaximumHoldSeconds = eyeFixationMaximumHoldSeconds,
+                EyeCenterBias = eyeFixationCenterBias,
+                HeadEnabled = headAttentionLifeEnabled,
+                HeadMaxTiltDegrees = headAttentionMaxTiltDegrees,
+                HeadMaxChinDegrees = headAttentionMaxChinDegrees,
+                HeadMinimumHoldSeconds = headAttentionMinimumHoldSeconds,
+                HeadMaximumHoldSeconds = headAttentionMaximumHoldSeconds,
+                HeadTransitionResponse = headAttentionTransitionResponse
+            };
+        }
+
+        private PerformerBlinkSettings CreateBlinkSettings()
+        {
+            return new PerformerBlinkSettings
+            {
+                Enabled = blinkEnabled,
+                Seed = attentionLifeSeed,
+                Strength = blinkStrength,
+                MinimumIntervalSeconds = blinkMinimumIntervalSeconds,
+                MaximumIntervalSeconds = blinkMaximumIntervalSeconds,
+                CloseDurationSeconds = blinkCloseDurationSeconds,
+                ClosedDurationSeconds = blinkClosedDurationSeconds,
+                OpenDurationSeconds = blinkOpenDurationSeconds
             };
         }
 

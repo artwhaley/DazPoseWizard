@@ -61,10 +61,14 @@ namespace DazPose.Performer
             var playableCount = performer.RuntimePlayableCount;
             var originalBreathing = CaptureBreathingSettings();
             var originalGaze = CaptureGazeSettings();
+            var originalAttentionLife = CaptureAttentionLifeSettings();
+            var originalBlink = CaptureBlinkSettings();
             performer.BreathingEnabled = false;
             performer.MorphBreathingStrength = 0f;
             performer.BoneBreathingStrength = 0f;
             performer.GazeEnabled = false;
+            performer.AttentionLifeEnabled = false;
+            performer.BlinkEnabled = false;
             performer.ClearGaze();
             performer.SetBreathPhaseForAcceptance(originalBreathing.Phase);
 
@@ -147,10 +151,22 @@ namespace DazPose.Performer
             if (!_awaitableChecksComplete)
                 failures.Add("Gaze awaitable acceptance checks did not finish before the timeout.");
 
+            yield return CheckAttentionAndBlinkAcceptance(failures);
+
             performer.ClearGaze();
             yield return WaitForGazeRelease(2f);
+            var lifeReleaseDeadline = Time.realtimeSinceStartup + 5f;
+            while (performer.GazeRuntime != null
+                   && Quaternion.Angle(performer.GazeRuntime.EffectivePreferredHeadBias, Quaternion.identity) > 0.01f
+                   && Time.realtimeSinceStartup < lifeReleaseDeadline)
+                yield return null;
+            if (performer.GazeRuntime != null
+                && Quaternion.Angle(performer.GazeRuntime.EffectivePreferredHeadBias, Quaternion.identity) > 0.01f)
+                failures.Add("Final P0.7 teardown did not return preferred head bias to identity.");
             RestoreGazeSettings(originalGaze);
             RestoreBreathingSettings(originalBreathing);
+            RestoreAttentionLifeSettings(originalAttentionLife);
+            RestoreBlinkSettings(originalBlink);
             if (_gazeTargetPositionBeforeTests.HasValue && gazeTarget != null)
                 gazeTarget.position = _gazeTargetPositionBeforeTests.Value;
 
@@ -471,6 +487,389 @@ namespace DazPose.Performer
             yield return WaitForGazeRelease(3f);
             performer.Pose(poseA, PoseTransition.Snap);
             yield return null;
+        }
+
+        private IEnumerator CheckAttentionAndBlinkAcceptance(List<string> failures)
+        {
+            var gaze = performer.GazeRuntime;
+            var life = performer.AttentionLifeRuntime;
+            var blink = performer.BlinkRuntime;
+            if (gaze == null || !gaze.IsAvailable || life == null || blink == null)
+            {
+                failures.Add("P0.7 acceptance needs active PerformerGaze, PerformerAttentionLife, and PerformerBlink runtimes.");
+                yield break;
+            }
+
+            if (!blink.IsAvailable)
+                failures.Add("Canonical Lara blink bindings are missing: " + string.Join(" ", blink.Diagnostics));
+            foreach (var binding in blink.Bindings)
+            {
+                if (binding.PositiveMaximumWeight <= 0f)
+                    failures.Add("Blink morph '" + binding.ImportedBlendShapeName + "' has no positive full-closure weight.");
+                Debug.Log("P0.7 blink binding: " + binding.SemanticName + " = "
+                          + binding.ImportedBlendShapeName + " @ " + binding.RendererPath
+                          + ", positive frame max " + binding.PositiveMaximumWeight.ToString("F3") + ".", this);
+            }
+
+            var arbitraryBase = 23.75f;
+            if (PerformerBlink.ComposeWeight(arbitraryBase, 100f, 0f) != arbitraryBase)
+                failures.Add("Blink closure zero did not exactly preserve an incoming eyelid weight.");
+            if (Mathf.Abs(PerformerBlink.ComposeWeight(20f, 100f, 0.5f) - 60f) > 0.0001f
+                || PerformerBlink.ComposeWeight(20f, 100f, 1f) != 100f)
+                failures.Add("Blink composition did not move the incoming eyelid weight toward full closure.");
+
+            CheckDeterministicAttentionEvents(failures);
+
+            performer.AttentionLifeEnabled = false;
+            performer.BlinkEnabled = false;
+            performer.GazeEnabled = true;
+            performer.HeadGazeEnabled = true;
+            performer.HeadGazeWeight = 0.7f;
+            performer.EyeGazeEnabled = true;
+            performer.EyeGazeWeight = 1f;
+            performer.HeadGazeResponse = 20f;
+            performer.EyeGazeResponse = 20f;
+            performer.GazeAcquireToleranceDegrees = 5f;
+            var target = new GameObject("P0.7 Attention Acceptance Target");
+            target.transform.position = gaze.CreateValidationTarget(12f, 4f, 3f);
+            performer.LookAt(target.transform);
+            yield return null;
+            var rawTarget = performer.RawGazeTargetPosition;
+            if (Vector3.Distance(performer.EffectiveHeadTargetPosition, rawTarget) > 1e-5f
+                || Vector3.Distance(performer.EffectiveEyeTargetPosition, rawTarget) > 1e-5f
+                || Quaternion.Angle(gaze.EffectivePreferredHeadBias, Quaternion.identity) > 0.001f)
+                failures.Add("Attention Life OFF did not reproduce P0.6 raw targets and identity preferred-head bias.");
+
+            performer.AttentionLifeEnabled = true;
+            performer.EyeFixationLifeEnabled = true;
+            performer.EyeFixationMaxHorizontalDegrees = 4f;
+            performer.EyeFixationMaxVerticalDegrees = 3f;
+            performer.EyeFixationCenterBias = 1f;
+            performer.EyeFixationMinimumHoldSeconds = 0.1f;
+            performer.EyeFixationMaximumHoldSeconds = 0.1f;
+            performer.HeadAttentionLifeEnabled = false;
+            performer.AttentionLifeSeed = 8181;
+            performer.HeadGazeResponse = 0.1f;
+            performer.EyeGazeResponse = 0.1f;
+            performer.GazeAcquireToleranceDegrees = 0.1f;
+            var fixationWaiter = StartGazeRequest(target.transform);
+            var fixationGeneration = gaze.IntentionGeneration;
+            var pendingWaiters = gaze.PendingWaiterCount;
+            var fixationRaw = performer.RawGazeTargetPosition;
+            if (pendingWaiters != 1)
+                failures.Add("The fixation acceptance setup did not retain exactly one semantic gaze waiter.");
+            var sawFixation = false;
+            for (var frame = 0; frame < 30 && !sawFixation; frame++)
+            {
+                yield return null;
+                sawFixation = Mathf.Abs(performer.EyeFixationHorizontalOffset) > 0.01f
+                              || Mathf.Abs(performer.EyeFixationVerticalOffset) > 0.01f;
+                if (gaze.IntentionGeneration != fixationGeneration
+                    || gaze.PendingWaiterCount != pendingWaiters
+                    || Vector3.Distance(performer.RawGazeTargetPosition, fixationRaw) > 1e-5f)
+                    failures.Add("An eye fixation event changed semantic gaze generation, waiter count, or raw target.");
+            }
+            if (!sawFixation)
+                failures.Add("The short-interval fixation acceptance setup did not generate a nonzero held event.");
+            if (Vector3.Distance(performer.EffectiveHeadTargetPosition, fixationRaw) > 1e-5f
+                || Vector3.Distance(performer.EffectiveEyeTargetPosition, fixationRaw) < 1e-4f)
+                failures.Add("Fixation must move only the effective eye target while the head target stays raw.");
+            performer.ClearGaze();
+            if (!fixationWaiter.Completed || fixationWaiter.Result != GazeCompletion.Superseded)
+                failures.Add("ClearGaze did not supersede the pending semantic waiter used by fixation acceptance.");
+            yield return null;
+
+            performer.EyeFixationLifeEnabled = false;
+            performer.HeadAttentionLifeEnabled = true;
+            performer.HeadAttentionMaxTiltDegrees = 10f;
+            performer.HeadAttentionMaxChinDegrees = 8f;
+            performer.HeadAttentionMinimumHoldSeconds = 0.1f;
+            performer.HeadAttentionMaximumHoldSeconds = 0.1f;
+            performer.HeadAttentionTransitionResponse = 3f;
+            performer.AttentionLifeSeed = 9191;
+            target.transform.position = gaze.CreateValidationTarget(0f, 0f, 3f);
+            performer.LookAt(target.transform);
+            var headGeneration = gaze.IntentionGeneration;
+            var sawHeadBias = false;
+            for (var frame = 0; frame < 120 && !sawHeadBias; frame++)
+            {
+                yield return null;
+                sawHeadBias = Quaternion.Angle(gaze.EffectivePreferredHeadBias,
+                    Quaternion.identity) > 0.1f;
+            }
+            if (!sawHeadBias)
+                failures.Add("Head Attention Life did not produce a non-neutral preferred-head bias.");
+            if (Vector3.Distance(performer.EffectiveHeadTargetPosition, performer.RawGazeTargetPosition) > 1e-5f
+                || Vector3.Distance(performer.EffectiveEyeTargetPosition, performer.RawGazeTargetPosition) > 1e-5f)
+                failures.Add("Head Attention Life changed raw semantic target positions.");
+            if (sawHeadBias)
+            {
+                var leftAim = (gaze.LeftEyeCalibration.Bone.rotation * gaze.LeftEyeCalibration.LocalAim).normalized;
+                var leftTarget = (performer.RawGazeTargetPosition - gaze.LeftEyeCalibration.Bone.position).normalized;
+                if (Vector3.Angle(leftAim, leftTarget) > 8f)
+                    failures.Add("Eyes did not compensate toward the semantic target while preferred head bias was active.");
+            }
+
+            var beforeAttentionDisableGeneration = gaze.IntentionGeneration;
+            var beforeAttentionDisableTarget = performer.RawGazeTargetPosition;
+            performer.AttentionLifeEnabled = false;
+            var biasReleaseDeadline = Time.realtimeSinceStartup + 5f;
+            while (Quaternion.Angle(gaze.EffectivePreferredHeadBias, Quaternion.identity) > 0.01f
+                   && Time.realtimeSinceStartup < biasReleaseDeadline)
+                yield return null;
+            if (Quaternion.Angle(gaze.EffectivePreferredHeadBias, Quaternion.identity) > 0.01f)
+                failures.Add("Disabling Attention Life did not fade preferred head bias back to identity.");
+            if (!performer.HasGazeTarget || gaze.IntentionGeneration != beforeAttentionDisableGeneration
+                || Vector3.Distance(performer.RawGazeTargetPosition, beforeAttentionDisableTarget) > 1e-5f)
+                failures.Add("Disabling Attention Life changed the active semantic gaze intention.");
+
+            performer.ClearGaze();
+            var clearBiasDeadline = Time.realtimeSinceStartup + 5f;
+            while (Quaternion.Angle(gaze.EffectivePreferredHeadBias, Quaternion.identity) > 0.01f
+                   && Time.realtimeSinceStartup < clearBiasDeadline)
+                yield return null;
+            if (Quaternion.Angle(gaze.EffectivePreferredHeadBias, Quaternion.identity) > 0.01f)
+                failures.Add("ClearGaze did not release preferred head bias to identity.");
+
+            performer.AttentionLifeEnabled = true;
+            performer.HeadAttentionLifeEnabled = true;
+            performer.HeadAttentionMinimumHoldSeconds = 0.1f;
+            performer.HeadAttentionMaximumHoldSeconds = 0.1f;
+            performer.HeadAttentionTransitionResponse = 3f;
+            performer.AttentionLifeSeed = 10101;
+            var lostTarget = new GameObject("P0.7 Lost Target Acceptance Target");
+            lostTarget.transform.position = gaze.CreateValidationTarget(0f, 0f, 3f);
+            performer.LookAt(lostTarget.transform);
+            sawHeadBias = false;
+            for (var frame = 0; frame < 120 && !sawHeadBias; frame++)
+            {
+                yield return null;
+                sawHeadBias = Quaternion.Angle(gaze.EffectivePreferredHeadBias,
+                    Quaternion.identity) > 0.1f;
+            }
+            Destroy(lostTarget);
+            for (var frame = 0; frame < 3 && performer.HasGazeTarget; frame++) yield return null;
+            if (performer.HasGazeTarget)
+                failures.Add("Destroying the active Transform did not lose semantic gaze while head life was active.");
+            clearBiasDeadline = Time.realtimeSinceStartup + 5f;
+            while (Quaternion.Angle(gaze.EffectivePreferredHeadBias, Quaternion.identity) > 0.01f
+                   && Time.realtimeSinceStartup < clearBiasDeadline)
+                yield return null;
+            if (Quaternion.Angle(gaze.EffectivePreferredHeadBias, Quaternion.identity) > 0.01f)
+                failures.Add("Target loss did not release preferred head bias to identity.");
+
+            if (blink.IsAvailable)
+            {
+                var retarget = new GameObject("P0.7 Blink Retarget Acceptance Target");
+                performer.AttentionLifeEnabled = false;
+                performer.BlinkEnabled = true;
+                performer.BlinkStrength = 1f;
+                performer.GazeEnabled = true;
+                performer.HeadGazeResponse = 20f;
+                performer.EyeGazeResponse = 20f;
+                target.transform.position = gaze.CreateValidationTarget(0f, 0f, 3f);
+                performer.LookAt(target.transform);
+                var acquisitionDeadline = Time.realtimeSinceStartup + 6f;
+                while (!performer.IsGazeAcquired && Time.realtimeSinceStartup < acquisitionDeadline)
+                    yield return null;
+                if (!performer.IsGazeAcquired)
+                    failures.Add("Blink/gaze independence setup could not acquire its semantic target.");
+
+                var baseState = performer.CaptureEvaluatedBasePoseState();
+                blink.SetClosureForAcceptance(0f);
+                yield return null;
+                foreach (var binding in blink.Bindings)
+                {
+                    var incoming = baseState.BlendShapes[binding.BaseBlendShapeIndex];
+                    var actual = binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex);
+                    if (Mathf.Abs(actual - incoming) > BlendShapeTolerance)
+                        failures.Add("Zero blink closure changed incoming eyelid state for '"
+                                     + binding.ImportedBlendShapeName + "'.");
+                }
+
+                var generationBeforeBlink = gaze.IntentionGeneration;
+                var acquiredBeforeBlink = performer.IsGazeAcquired;
+                blink.SetClosureForAcceptance(1f);
+                yield return null;
+                foreach (var binding in blink.Bindings)
+                {
+                    var actual = binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex);
+                    if (Mathf.Abs(actual - binding.PositiveMaximumWeight) > BlendShapeTolerance)
+                        failures.Add("Full blink did not reach useful maximum weight for '"
+                                     + binding.ImportedBlendShapeName + "'.");
+                }
+                if (performer.BlinkClosure < 0.999f || gaze.IntentionGeneration != generationBeforeBlink
+                    || performer.IsGazeAcquired != acquiredBeforeBlink)
+                    failures.Add("Blink changed gaze closure, intention generation, or acquisition semantics.");
+
+                var generationBeforeClosedRetarget = gaze.IntentionGeneration;
+                retarget.transform.position = gaze.CreateValidationTarget(-18f, 5f, 3f);
+                performer.LookAt(retarget.transform);
+                if (gaze.IntentionGeneration != generationBeforeClosedRetarget + 1
+                    || performer.BlinkClosure < 0.999f)
+                    failures.Add("Gaze could not retarget independently while blink was held closed.");
+                acquisitionDeadline = Time.realtimeSinceStartup + 6f;
+                while (!performer.IsGazeAcquired && Time.realtimeSinceStartup < acquisitionDeadline)
+                    yield return null;
+                if (!performer.IsGazeAcquired || performer.BlinkClosure < 0.999f)
+                    failures.Add("Gaze did not reacquire under a closed blink contribution.");
+
+                performer.ClearGaze();
+                yield return null;
+                if (performer.BlinkClosure < 0.999f)
+                    failures.Add("ClearGaze canceled or altered an independent closed blink contribution.");
+
+                performer.Pose(poseA, PoseTransition.Snap);
+                yield return null;
+                blink.SetClosureForAcceptance(1f);
+                var poseDuringBlink = StartPoseRequest(poseB, PoseTransition.Smooth(0.15f));
+                var poseDeadline = Time.realtimeSinceStartup + 5f;
+                while (!poseDuringBlink.Completed && Time.realtimeSinceStartup < poseDeadline)
+                    yield return null;
+                if (!poseDuringBlink.Completed || poseDuringBlink.Error != null
+                    || poseDuringBlink.Result != PoseCompletion.Settled || performer.SettledPose != poseB)
+                    failures.Add("PoseAsync did not settle independently while blink was closed.");
+                if (performer.BlinkClosure < 0.999f)
+                    failures.Add("A base-pose transition restarted or altered blink closure.");
+
+                blink.ClearClosureOverrideForAcceptance();
+                performer.BlinkEnabled = false;
+                var blinkOpenDeadline = Time.realtimeSinceStartup + 1f;
+                while (performer.BlinkClosure > 0.001f && Time.realtimeSinceStartup < blinkOpenDeadline)
+                    yield return null;
+                if (performer.BlinkClosure > 0.001f)
+                    failures.Add("Disabling Blink mid-closure left the eyelids closed.");
+                Destroy(retarget);
+            }
+
+            yield return CheckP07PoseIsolation(target.transform, blink, failures);
+            performer.ClearGaze();
+            Destroy(target);
+        }
+
+        private IEnumerator CheckP07PoseIsolation(Transform target, PerformerBlink blink,
+            List<string> failures)
+        {
+            performer.BreathingEnabled = true;
+            performer.MorphBreathingEnabled = true;
+            performer.MorphBreathingStrength = 3f;
+            performer.BoneBreathingEnabled = true;
+            performer.BoneBreathingStrength = 2f;
+            performer.AttentionLifeEnabled = true;
+            performer.EyeFixationLifeEnabled = true;
+            performer.EyeFixationMaxHorizontalDegrees = 4f;
+            performer.EyeFixationMaxVerticalDegrees = 3f;
+            performer.EyeFixationMinimumHoldSeconds = 0.1f;
+            performer.EyeFixationMaximumHoldSeconds = 0.1f;
+            performer.HeadAttentionLifeEnabled = true;
+            performer.HeadAttentionMaxTiltDegrees = 10f;
+            performer.HeadAttentionMaxChinDegrees = 8f;
+            performer.HeadAttentionMinimumHoldSeconds = 0.1f;
+            performer.HeadAttentionMaximumHoldSeconds = 0.1f;
+            performer.HeadAttentionTransitionResponse = 3f;
+            performer.AttentionLifeSeed = 14711;
+            performer.GazeEnabled = true;
+            performer.BlinkEnabled = blink.IsAvailable;
+            performer.Pose(poseA, PoseTransition.Snap);
+            yield return null;
+            performer.LookAt(target);
+            for (var frame = 0; frame < 30; frame++) yield return null;
+            if (blink.IsAvailable) blink.SetClosureForAcceptance(1f);
+
+            performer.Pose(poseB, PoseTransition.Smooth(1f));
+            var deadline = Time.realtimeSinceStartup + 3f;
+            while (performer.IsTransitioning && performer.TransitionProgress < 0.35f
+                   && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            if (!performer.IsTransitioning || performer.TransitionProgress < 0.35f)
+            {
+                failures.Add("P0.7 pose-contamination setup did not reach the interruption point.");
+            }
+            else
+            {
+                var evaluatedBase = performer.CaptureEvaluatedBasePoseState();
+                performer.Pose(poseC, PoseTransition.Smooth(0.45f));
+                CheckPose("Breathing, gaze, fixation, head bias, and blink must stay downstream of pose source",
+                    ToPoseSnapshot(evaluatedBase),
+                    ToPoseSnapshot(performer.CaptureTransitionSourcePoseState()), failures);
+            }
+
+            yield return WaitForSettlement(6f, failures, "P0.7 pose-contamination retarget");
+            blink.ClearClosureOverrideForAcceptance();
+            performer.BlinkEnabled = false;
+            var blinkOpenDeadline = Time.realtimeSinceStartup + 1f;
+            while (performer.BlinkClosure > 0.001f && Time.realtimeSinceStartup < blinkOpenDeadline)
+                yield return null;
+            performer.Pose(poseA, PoseTransition.Snap);
+            performer.ClearGaze();
+        }
+
+        private static void CheckDeterministicAttentionEvents(List<string> failures)
+        {
+            var settings = new PerformerAttentionLifeSettings
+            {
+                Enabled = true,
+                Seed = 246813,
+                EyeFixationEnabled = true,
+                EyeMaxHorizontalDegrees = 2.5f,
+                EyeMaxVerticalDegrees = 1.5f,
+                EyeMinimumHoldSeconds = 0.4f,
+                EyeMaximumHoldSeconds = 0.8f,
+                EyeCenterBias = 2.2f,
+                HeadEnabled = true,
+                HeadMaxTiltDegrees = 3f,
+                HeadMaxChinDegrees = 2f,
+                HeadMinimumHoldSeconds = 1f,
+                HeadMaximumHoldSeconds = 2f,
+                HeadTransitionResponse = 1.5f
+            };
+            var first = new PerformerAttentionLife(Vector3.forward, Vector3.right, settings);
+            var second = new PerformerAttentionLife(Vector3.forward, Vector3.right, settings);
+            first.SetGazeActive(true);
+            second.SetGazeActive(true);
+            var sawEyeEvent = false;
+            var heldCheckPassed = true;
+            var previousHorizontal = 0f;
+            var previousVertical = 0f;
+            var previousCountdown = 0f;
+            for (var frame = 0; frame < 500; frame++)
+            {
+                first.Advance(0.05f);
+                second.Advance(0.05f);
+                var a = first.CurrentOutput;
+                var b = second.CurrentOutput;
+                if (Mathf.Abs(a.EyeHorizontalOffsetDegrees - b.EyeHorizontalOffsetDegrees) > 1e-6f
+                    || Mathf.Abs(a.EyeVerticalOffsetDegrees - b.EyeVerticalOffsetDegrees) > 1e-6f
+                    || Mathf.Abs(first.EyeEventCountdown - second.EyeEventCountdown) > 1e-6f
+                    || Mathf.Abs(first.HeadEventCountdown - second.HeadEventCountdown) > 1e-6f)
+                {
+                    failures.Add("Attention-life event offsets or event times were not deterministic for a fixed seed.");
+                    break;
+                }
+
+                if (previousCountdown > 0.051f
+                    && (Mathf.Abs(a.EyeHorizontalOffsetDegrees - previousHorizontal) > 1e-6f
+                        || Mathf.Abs(a.EyeVerticalOffsetDegrees - previousVertical) > 1e-6f))
+                    heldCheckPassed = false;
+                if (Mathf.Abs(a.EyeHorizontalOffsetDegrees) > 0.001f
+                    || Mathf.Abs(a.EyeVerticalOffsetDegrees) > 0.001f)
+                    sawEyeEvent = true;
+                previousHorizontal = a.EyeHorizontalOffsetDegrees;
+                previousVertical = a.EyeVerticalOffsetDegrees;
+                previousCountdown = first.EyeEventCountdown;
+            }
+            if (!sawEyeEvent) failures.Add("Deterministic attention-life progression did not produce a nonzero fixation event.");
+            if (!heldCheckPassed) failures.Add("Eye fixation changed between held events instead of remaining stable.");
+
+            var firstBlinkIntervals = PerformerBlink.SampleIntervalsForAcceptance(246813, 3.5f, 6.5f, 12);
+            var secondBlinkIntervals = PerformerBlink.SampleIntervalsForAcceptance(246813, 3.5f, 6.5f, 12);
+            for (var index = 0; index < firstBlinkIntervals.Length; index++)
+                if (firstBlinkIntervals[index] != secondBlinkIntervals[index]
+                    || firstBlinkIntervals[index] < 3.5f || firstBlinkIntervals[index] > 6.5f)
+                {
+                    failures.Add("Private blink event intervals did not repeat for the same seed and settings.");
+                    break;
+                }
         }
 
         private IEnumerator ReleaseGazeToBase(GazePoseSnapshot basePose, PerformerGaze gaze,
@@ -1034,6 +1433,26 @@ namespace DazPose.Performer
                 performer.GazeReleaseResponse);
         }
 
+        private AttentionLifeHarnessSettings CaptureAttentionLifeSettings()
+        {
+            return new AttentionLifeHarnessSettings(performer.AttentionLifeEnabled,
+                performer.AttentionLifeSeed, performer.EyeFixationLifeEnabled,
+                performer.EyeFixationMaxHorizontalDegrees, performer.EyeFixationMaxVerticalDegrees,
+                performer.EyeFixationMinimumHoldSeconds, performer.EyeFixationMaximumHoldSeconds,
+                performer.EyeFixationCenterBias, performer.HeadAttentionLifeEnabled,
+                performer.HeadAttentionMaxTiltDegrees, performer.HeadAttentionMaxChinDegrees,
+                performer.HeadAttentionMinimumHoldSeconds, performer.HeadAttentionMaximumHoldSeconds,
+                performer.HeadAttentionTransitionResponse);
+        }
+
+        private BlinkHarnessSettings CaptureBlinkSettings()
+        {
+            return new BlinkHarnessSettings(performer.BlinkEnabled, performer.BlinkStrength,
+                performer.BlinkMinimumIntervalSeconds, performer.BlinkMaximumIntervalSeconds,
+                performer.BlinkCloseDurationSeconds, performer.BlinkClosedDurationSeconds,
+                performer.BlinkOpenDurationSeconds);
+        }
+
         private void RestoreGazeSettings(GazeHarnessSettings settings)
         {
             performer.GazeEnabled = settings.GazeEnabled;
@@ -1049,6 +1468,38 @@ namespace DazPose.Performer
             performer.EyeGazeMaxYaw = settings.EyeMaxYaw;
             performer.EyeGazeMaxPitch = settings.EyeMaxPitch;
             performer.GazeReleaseResponse = settings.ReleaseResponse;
+        }
+
+        private void RestoreAttentionLifeSettings(AttentionLifeHarnessSettings settings)
+        {
+            performer.AttentionLifeEnabled = settings.Enabled;
+            performer.EyeFixationLifeEnabled = settings.EyeEnabled;
+            performer.EyeFixationMaxHorizontalDegrees = settings.EyeMaxHorizontal;
+            performer.EyeFixationMaxVerticalDegrees = settings.EyeMaxVertical;
+            performer.EyeFixationMinimumHoldSeconds = settings.EyeMinimumHold;
+            performer.EyeFixationMaximumHoldSeconds = settings.EyeMaximumHold;
+            performer.EyeFixationCenterBias = settings.EyeCenterBias;
+            performer.HeadAttentionLifeEnabled = settings.HeadEnabled;
+            performer.HeadAttentionMaxTiltDegrees = settings.HeadMaxTilt;
+            performer.HeadAttentionMaxChinDegrees = settings.HeadMaxChin;
+            performer.HeadAttentionMinimumHoldSeconds = settings.HeadMinimumHold;
+            performer.HeadAttentionMaximumHoldSeconds = settings.HeadMaximumHold;
+            performer.HeadAttentionTransitionResponse = settings.HeadResponse;
+            performer.AttentionLifeSeed = settings.Seed;
+        }
+
+        private void RestoreBlinkSettings(BlinkHarnessSettings settings)
+        {
+            var blink = performer.BlinkRuntime;
+            blink?.ClearClosureOverrideForAcceptance();
+            performer.BlinkEnabled = false;
+            performer.BlinkStrength = settings.Strength;
+            performer.BlinkMinimumIntervalSeconds = settings.MinimumInterval;
+            performer.BlinkMaximumIntervalSeconds = settings.MaximumInterval;
+            performer.BlinkCloseDurationSeconds = settings.CloseDuration;
+            performer.BlinkClosedDurationSeconds = settings.ClosedDuration;
+            performer.BlinkOpenDurationSeconds = settings.OpenDuration;
+            performer.BlinkEnabled = settings.Enabled;
         }
 
         private void RestoreBreathingSettings(BreathingHarnessSettings settings)
@@ -1390,7 +1841,7 @@ namespace DazPose.Performer
             Status = failures.Count == 0 ? "Acceptance checks passed."
                 : "Acceptance checks found " + failures.Count + " issue(s). See Console.";
             if (failures.Count == 0)
-                Debug.Log("Performer checks passed: pose endpoints, windup/overshoot, pose awaitables, breathing modes, gaze calibration/modes/limits, gaze target tracking, gaze awaitables, base-state isolation, graph lifecycle, and root placement.", this);
+                Debug.Log("Performer checks passed: pose endpoints and awaitables, breathing, P0.6 gaze, P0.7 attention-life determinism and release, exact blink bindings and composition, blink/gaze/pose independence, downstream pose-state isolation, graph lifecycle, and root placement.", this);
             else
                 Debug.LogError("Performer pose checks failed:\n- " + string.Join("\n- ", failures), this);
         }
@@ -1418,6 +1869,69 @@ namespace DazPose.Performer
                 BoneBreathingEnabled = boneBreathingEnabled;
                 BoneBreathingStrength = boneBreathingStrength;
                 Phase = phase;
+            }
+        }
+
+        private readonly struct AttentionLifeHarnessSettings
+        {
+            public readonly bool Enabled;
+            public readonly int Seed;
+            public readonly bool EyeEnabled;
+            public readonly float EyeMaxHorizontal;
+            public readonly float EyeMaxVertical;
+            public readonly float EyeMinimumHold;
+            public readonly float EyeMaximumHold;
+            public readonly float EyeCenterBias;
+            public readonly bool HeadEnabled;
+            public readonly float HeadMaxTilt;
+            public readonly float HeadMaxChin;
+            public readonly float HeadMinimumHold;
+            public readonly float HeadMaximumHold;
+            public readonly float HeadResponse;
+
+            public AttentionLifeHarnessSettings(bool enabled, int seed, bool eyeEnabled,
+                float eyeMaxHorizontal, float eyeMaxVertical, float eyeMinimumHold,
+                float eyeMaximumHold, float eyeCenterBias, bool headEnabled,
+                float headMaxTilt, float headMaxChin, float headMinimumHold,
+                float headMaximumHold, float headResponse)
+            {
+                Enabled = enabled;
+                Seed = seed;
+                EyeEnabled = eyeEnabled;
+                EyeMaxHorizontal = eyeMaxHorizontal;
+                EyeMaxVertical = eyeMaxVertical;
+                EyeMinimumHold = eyeMinimumHold;
+                EyeMaximumHold = eyeMaximumHold;
+                EyeCenterBias = eyeCenterBias;
+                HeadEnabled = headEnabled;
+                HeadMaxTilt = headMaxTilt;
+                HeadMaxChin = headMaxChin;
+                HeadMinimumHold = headMinimumHold;
+                HeadMaximumHold = headMaximumHold;
+                HeadResponse = headResponse;
+            }
+        }
+
+        private readonly struct BlinkHarnessSettings
+        {
+            public readonly bool Enabled;
+            public readonly float Strength;
+            public readonly float MinimumInterval;
+            public readonly float MaximumInterval;
+            public readonly float CloseDuration;
+            public readonly float ClosedDuration;
+            public readonly float OpenDuration;
+
+            public BlinkHarnessSettings(bool enabled, float strength, float minimumInterval,
+                float maximumInterval, float closeDuration, float closedDuration, float openDuration)
+            {
+                Enabled = enabled;
+                Strength = strength;
+                MinimumInterval = minimumInterval;
+                MaximumInterval = maximumInterval;
+                CloseDuration = closeDuration;
+                ClosedDuration = closedDuration;
+                OpenDuration = openDuration;
             }
         }
 
