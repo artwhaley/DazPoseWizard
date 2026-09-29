@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DazPose.Performer;
 using UnityEditor;
 using UnityEngine;
 
@@ -90,6 +91,8 @@ namespace DazPose.UnityValidation
                 var currentGuid = AssetDatabase.AssetPathToGUID(assetPath);
                 if (!string.IsNullOrEmpty(existingGuid) && !string.Equals(existingGuid, currentGuid, StringComparison.Ordinal))
                     throw new InvalidOperationException("AnimationClip asset identity changed during in-place regeneration. Previous GUID " + existingGuid + ", current GUID " + currentGuid + ".");
+
+                EnsurePerformerPoseAsset(assetPath, savedClip);
 
                 report = BuildReport(pose, savedClip, diagnostics, morphDiagnostics, parity, assetPath);
                 report.assetGuid = currentGuid;
@@ -298,6 +301,44 @@ namespace DazPose.UnityValidation
             destination.wrapMode = source.wrapMode;
             destination.name = source.name;
             destination.EnsureQuaternionContinuity();
+        }
+
+        private static void EnsurePerformerPoseAsset(string animationAssetPath, AnimationClip clip)
+        {
+            var poseAssetPath = Path.ChangeExtension(animationAssetPath, ".asset").Replace('\\', '/');
+            var pose = AssetDatabase.LoadAssetAtPath<PerformerPose>(poseAssetPath);
+            var existingAsset = AssetDatabase.LoadMainAssetAtPath(poseAssetPath);
+            if (existingAsset != null && pose == null)
+                throw new InvalidOperationException("Cannot create the generated PerformerPose because another asset already occupies " + poseAssetPath + ".");
+
+            var existingGuid = pose == null ? string.Empty : AssetDatabase.AssetPathToGUID(poseAssetPath);
+            if (pose == null)
+            {
+                pose = ScriptableObject.CreateInstance<PerformerPose>();
+                pose.name = Path.GetFileNameWithoutExtension(animationAssetPath);
+                AssetDatabase.CreateAsset(pose, poseAssetPath);
+            }
+
+            var serializedPose = new SerializedObject(pose);
+            var clipProperty = serializedPose.FindProperty("clip");
+            if (clipProperty == null)
+                throw new InvalidOperationException("PerformerPose has no serialized clip field at " + poseAssetPath + ".");
+            if (clipProperty.objectReferenceValue != clip)
+            {
+                clipProperty.objectReferenceValue = clip;
+                serializedPose.ApplyModifiedPropertiesWithoutUndo();
+                EditorUtility.SetDirty(pose);
+                AssetDatabase.SaveAssets();
+            }
+
+            var updatedPose = AssetDatabase.LoadAssetAtPath<PerformerPose>(poseAssetPath);
+            if (updatedPose == null || updatedPose.Clip != clip)
+                throw new InvalidOperationException("Generated PerformerPose does not reference the regenerated clip at " + poseAssetPath + ".");
+
+            var currentGuid = AssetDatabase.AssetPathToGUID(poseAssetPath);
+            if (!string.IsNullOrEmpty(existingGuid) && !string.Equals(existingGuid, currentGuid, StringComparison.Ordinal))
+                throw new InvalidOperationException("PerformerPose asset identity changed during clip regeneration. Previous GUID "
+                    + existingGuid + ", current GUID " + currentGuid + ".");
         }
 
         private static void WriteReport(string reportPath, DazPoseAnimationClipReport report)
