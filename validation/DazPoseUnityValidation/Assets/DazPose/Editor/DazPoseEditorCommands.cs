@@ -15,7 +15,9 @@ namespace DazPose.UnityValidation
         private const string PoseAssetFolder = "Assets/TestData";
         private const float RestFitWarningThresholdMeters = 0.02f;
         private static bool _ownsPreviewAnimationMode;
-        private static Transform _previewAnimationRoot;
+        private static Transform _previewBindingRoot;
+        private static Transform _previewCharacterRoot;
+        private static DazPoseCharacterState _previewRestState;
         private static AnimationClip _previewClip;
         private static readonly HashSet<string> RestCalibrationBoneIds = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -37,8 +39,8 @@ namespace DazPose.UnityValidation
             if (model == null) throw new InvalidOperationException("Could not load " + CharacterAssetPath + ". Copy the local lara.fbx into Assets/TestCharacter first.");
 
             var importer = AssetImporter.GetAtPath(CharacterAssetPath) as ModelImporter;
-            if (importer == null || importer.animationType != ModelImporterAnimationType.Generic || importer.optimizeGameObjects)
-                throw new InvalidOperationException("Lara FBX must import as Generic with Optimize Game Objects off. The DAZ Pose AssetPostprocessor should set this; reimport " + CharacterAssetPath + " and retry.");
+            if (importer == null || importer.animationType != ModelImporterAnimationType.Generic || importer.optimizeGameObjects || !importer.importBlendShapes)
+                throw new InvalidOperationException("Lara FBX must import as Generic, Optimize Game Objects off, with Import BlendShapes enabled. Reimport " + CharacterAssetPath + " and retry.");
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var character = PrefabUtility.InstantiatePrefab(model, scene) as GameObject;
@@ -100,6 +102,31 @@ namespace DazPose.UnityValidation
             var figureHierarchy = transforms.FirstOrDefault(item => item.name == "Genesis8Female" && item.parent == root) ?? root;
             var figureTransforms = figureHierarchy.GetComponentsInChildren<Transform>(true);
             var byName = figureTransforms.GroupBy(item => item.name, StringComparer.Ordinal).ToDictionary(group => group.Key, group => group.ToArray(), StringComparer.Ordinal);
+            var renderers = root.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Where(renderer => renderer != null && renderer.sharedMesh != null)
+                .OrderBy(renderer => AnimationUtility.CalculateTransformPath(renderer.transform, root), StringComparer.Ordinal)
+                .Select(renderer =>
+                {
+                    var mesh = renderer.sharedMesh;
+                    var shapes = Enumerable.Range(0, mesh.blendShapeCount).Select(index =>
+                    {
+                        var frameCount = mesh.GetBlendShapeFrameCount(index);
+                        return new DazPoseBlendShapeDiagnostic
+                        {
+                            index = index,
+                            name = mesh.GetBlendShapeName(index),
+                            frameCount = frameCount,
+                            frameWeights = Enumerable.Range(0, frameCount).Select(frame => mesh.GetBlendShapeFrameWeight(index, frame)).ToArray()
+                        };
+                    }).ToArray();
+                    return new DazPoseRendererDiagnostic
+                    {
+                        rendererPath = AnimationUtility.CalculateTransformPath(renderer.transform, root),
+                        meshName = mesh.name,
+                        blendShapeCount = mesh.blendShapeCount,
+                        blendShapes = shapes
+                    };
+                }).ToArray();
             var expected = ExpectedNames.Select(name =>
             {
                 var matches = byName.TryGetValue(name, out var entries) ? entries : Array.Empty<Transform>();
@@ -118,6 +145,9 @@ namespace DazPose.UnityValidation
                 character = root.name,
                 rootLocalScale = root.localScale,
                 rootLossyScale = root.lossyScale,
+                skinnedRendererCount = renderers.Length,
+                importedBlendShapeCount = renderers.Sum(item => item.blendShapeCount),
+                renderers = renderers,
                 transforms = transforms.Select(item => DescribeTransform(root, item)).ToArray(),
                 expectedBones = expected,
                 warnings = expected.Where(item => !item.found).Select(item => "Expected bone '" + item.name + "' is missing from the primary G8F hierarchy.")
@@ -128,7 +158,10 @@ namespace DazPose.UnityValidation
 
             var found = expected.Count(item => item.found);
             var missing = expected.Where(item => !item.found).Select(item => item.name).ToArray();
-            var summary = "Unity skeleton inspected: " + root.name + " | transform count " + transforms.Length + " | primary figure hierarchy " + figureHierarchy.name + " | expected Genesis bones " + found + "/" + expected.Length + " | root scale " + root.lossyScale;
+            var summary = "Unity character inspected: " + root.name + " | transform count " + transforms.Length
+                + " | primary skeleton " + figureHierarchy.name + " | expected Genesis bones " + found + "/" + expected.Length
+                + " | SkinnedMeshRenderers " + renderers.Length + " | imported blendshapes " + report.importedBlendShapeCount
+                + " | root scale " + root.lossyScale;
             var duplicates = expected.Where(item => item.matchCount > 1).Select(item => item.name + "×" + item.matchCount).ToArray();
             if (missing.Length == 0 && duplicates.Length == 0) Debug.Log(summary + " | report: " + output);
             else if (missing.Length == 0) Debug.LogWarning(summary + " | duplicate imported names (parent-chain mapping disambiguates): " + string.Join(", ", duplicates) + " | report: " + output);
@@ -184,12 +217,14 @@ namespace DazPose.UnityValidation
             var clip = DazPoseAnimationClipGenerator.LoadClipFromAbsolutePath(absolutePath);
             if (clip == null) throw new InvalidOperationException("Unity could not load the selected .anim. Select a generated clip inside this project's Assets folder.");
 
-            var animationRoot = FindAnimationRoot(root);
+            var animationRoot = FindBindingRoot(root);
             var state = CaptureRestPose(root, false);
             RestoreSnapshot(root, state);
             AnimationMode.StartAnimationMode();
             _ownsPreviewAnimationMode = true;
-            _previewAnimationRoot = animationRoot;
+            _previewBindingRoot = animationRoot;
+            _previewCharacterRoot = root;
+            _previewRestState = state;
             _previewClip = clip;
             try
             {
@@ -201,7 +236,9 @@ namespace DazPose.UnityValidation
             {
                 if (AnimationMode.InAnimationMode()) AnimationMode.StopAnimationMode();
                 _ownsPreviewAnimationMode = false;
-                _previewAnimationRoot = null;
+                _previewBindingRoot = null;
+                _previewCharacterRoot = null;
+                _previewRestState = null;
                 _previewClip = null;
                 throw;
             }
@@ -215,10 +252,14 @@ namespace DazPose.UnityValidation
             if (_ownsPreviewAnimationMode && AnimationMode.InAnimationMode()) AnimationMode.StopAnimationMode();
             _ownsPreviewAnimationMode = false;
             var clipName = _previewClip == null ? "animation" : "'" + _previewClip.name + "'";
-            var rootName = _previewAnimationRoot == null ? "selected character" : "'" + _previewAnimationRoot.name + "'";
-            _previewAnimationRoot = null;
+            var rootName = _previewBindingRoot == null ? "selected character" : "'" + _previewBindingRoot.name + "'";
+            if (_previewCharacterRoot != null && _previewRestState != null)
+                RestoreSnapshot(_previewCharacterRoot, _previewRestState);
+            _previewBindingRoot = null;
+            _previewCharacterRoot = null;
+            _previewRestState = null;
             _previewClip = null;
-            Debug.Log("Stopped DAZ Pose preview for " + clipName + " on " + rootName + ". Unity restored the pre-preview transform state.");
+            Debug.Log("Stopped DAZ Pose preview for " + clipName + " on " + rootName + ". The captured Transform and blendshape state was restored.");
         }
 
         [MenuItem("Tools/DAZ Pose/Run Play Mode AnimationClip Smoke Test")]
@@ -241,7 +282,7 @@ namespace DazPose.UnityValidation
         public static void SetupRuntimeBlendDemo()
         {
             var characterRoot = RequireSelectedRoot();
-            var animationRoot = FindAnimationRoot(characterRoot);
+            var animationRoot = FindBindingRoot(characterRoot);
             RemovePhase2ValidationDriverForBlendDemo(animationRoot, characterRoot.gameObject.scene);
             var animator = animationRoot.GetComponent<Animator>();
             if (animator == null)
@@ -274,7 +315,7 @@ namespace DazPose.UnityValidation
             if (character == null) throw new InvalidOperationException("The validation scene does not contain Lara. Run Setup Validation Scene first.");
 
             var characterRoot = character.transform;
-            var animationRoot = FindAnimationRoot(characterRoot);
+            var animationRoot = FindBindingRoot(characterRoot);
             RemovePhase2ValidationDriverForBlendDemo(animationRoot, scene);
 
             var sourceDirectory = Path.GetFullPath(Path.Combine(ProjectRoot, "..", "..", "stack3 poses"));
@@ -315,7 +356,7 @@ namespace DazPose.UnityValidation
 
             Selection.activeGameObject = character;
             SetupRuntimeBlendDemo();
-            animationRoot = FindAnimationRoot(characterRoot);
+            animationRoot = FindBindingRoot(characterRoot);
             var demo = animationRoot.GetComponent<DazPoseBlendDemo>();
             var player = animationRoot.GetComponent<DazPoseBlendPlayer>();
             if (demo == null || player == null)
@@ -381,6 +422,7 @@ namespace DazPose.UnityValidation
             if (character == null) throw new InvalidOperationException("Validation scene does not contain the Lara root. Run Setup Validation Scene first.");
             InspectSelectedCharacter();
             RunAdapterSelfTests();
+            RunStage5MorphSelfTests();
             var testFolder = Path.Combine(ProjectRoot, PoseAssetFolder.Replace('/', Path.DirectorySeparatorChar));
             var posePaths = Directory.Exists(testFolder) ? Directory.GetFiles(testFolder, "*.dazpose.json").OrderBy(path => path, StringComparer.Ordinal).ToArray() : Array.Empty<string>();
             if (posePaths.Length == 0) throw new FileNotFoundException("No local G8F .dazpose.json fixture is available under " + testFolder + ".");
@@ -494,159 +536,181 @@ namespace DazPose.UnityValidation
                 evaluationRootObject.hideFlags = HideFlags.HideAndDontSave;
                 var evaluationRoot = evaluationRootObject.transform;
                 RestoreSnapshot(evaluationRoot, state);
-                var resolutions = DazPoseSkeletonResolver.Resolve(evaluationRoot, pose);
-            var poseTargetIds = new HashSet<string>((pose.poseChannels ?? Array.Empty<DazPoseChannel>())
-                .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
-                .Select(channel => channel.targetId), StringComparer.Ordinal);
-            var missingTargets = resolutions.Where(item => poseTargetIds.Contains(item.Definition.id) && item.Status != "resolved").ToArray();
-            var missingCalibration = resolutions.Where(item => RestCalibrationBoneIds.Contains(item.Definition.id) && item.Status != "resolved").ToArray();
-            var resolved = resolutions.Where(item => item.Status == "resolved").ToArray();
+                var bindingRoot = FindBindingRoot(evaluationRoot);
+                var poseTargetIds = new HashSet<string>((pose.poseChannels ?? Array.Empty<DazPoseChannel>())
+                    .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
+                    .Select(channel => channel.targetId), StringComparer.Ordinal);
+                var hasActiveMorphs = (pose.figureControls ?? Array.Empty<DazPoseFigureControl>())
+                    .Any(control => control != null && Mathf.Abs(control.value) > 1e-7f);
+                if (poseTargetIds.Count == 0 && !hasActiveMorphs)
+                    throw new InvalidDataException("The canonical pose contains no active skeletal targets or figure controls.");
 
-            var warnings = new List<string>();
-            if (evaluationRoot.lossyScale.x <= 0 || evaluationRoot.lossyScale.y <= 0 || evaluationRoot.lossyScale.z <= 0)
-                warnings.Add("Character root has a non-positive scale; the pose was not applied.");
-            if (!ApproximatelyUniformOne(evaluationRoot.lossyScale))
-                warnings.Add("Character root world scale is not approximately (1,1,1); DAZ centimeters to Unity meters may not match.");
-            foreach (var item in resolutions.Where(item => item.Status != "resolved"))
-                warnings.Add(item.Status + " bone mapping: DAZ id='" + item.Definition.id + "', name='" + item.Definition.name + "', expected parent id='" + item.Definition.parentId + "'.");
+                var warnings = new List<string>();
+                if (evaluationRoot.lossyScale.x <= 0 || evaluationRoot.lossyScale.y <= 0 || evaluationRoot.lossyScale.z <= 0)
+                    warnings.Add("Character root has a non-positive scale; the pose was not applied.");
+                if (!ApproximatelyUniformOne(evaluationRoot.lossyScale))
+                    warnings.Add("Character root world scale is not approximately (1,1,1); DAZ centimeters to Unity meters may not match.");
 
-            DazPoseRestBasisFit fit = null;
-            try
-            {
-                var dazPoints = new List<Vector3>();
-                var unityPoints = new List<Vector3>();
-                foreach (var item in resolved.Where(item => RestCalibrationBoneIds.Contains(item.Definition.id)))
+                var resolutions = Array.Empty<DazPoseBoneResolution>();
+                var missingTargets = Array.Empty<DazPoseBoneResolution>();
+                var missingCalibration = Array.Empty<DazPoseBoneResolution>();
+                var resolved = Array.Empty<DazPoseBoneResolution>();
+                var resolvedBones = new List<ResolvedBonePose>();
+                Transform skeletonRootOriginal = null;
+                DazPoseRestBasisFit fit = null;
+                var skeletalPose = poseTargetIds.Count > 0;
+                if (skeletalPose)
                 {
-                    dazPoints.Add(DazPoseJsonLoader.Vector(item.Definition.restWorldPositionCm));
-                    unityPoints.Add(item.Transform.position);
+                    var skeletonRootEvaluation = FindSkeletonRoot(evaluationRoot);
+                    var skeletonRootPath = DazPoseTransformPath.Get(evaluationRoot, skeletonRootEvaluation);
+                    if (!originalTransformsByPath.TryGetValue(skeletonRootPath, out skeletonRootOriginal))
+                        throw new InvalidOperationException("The Genesis 8 Female skeleton root could not be mapped back to the selected character.");
+                    resolutions = DazPoseSkeletonResolver.Resolve(skeletonRootEvaluation, pose);
+                    missingTargets = resolutions.Where(item => poseTargetIds.Contains(item.Definition.id) && item.Status != "resolved").ToArray();
+                    missingCalibration = resolutions.Where(item => RestCalibrationBoneIds.Contains(item.Definition.id) && item.Status != "resolved").ToArray();
+                    resolved = resolutions.Where(item => item.Status == "resolved").ToArray();
+                    foreach (var item in resolutions.Where(item => item.Status != "resolved"))
+                        warnings.Add(item.Status + " bone mapping: DAZ id='" + item.Definition.id + "', name='" + item.Definition.name + "', expected parent id='" + item.Definition.parentId + "'.");
+
+                    try
+                    {
+                        var dazPoints = new List<Vector3>();
+                        var unityPoints = new List<Vector3>();
+                        foreach (var item in resolved.Where(item => RestCalibrationBoneIds.Contains(item.Definition.id)))
+                        {
+                            dazPoints.Add(DazPoseJsonLoader.Vector(item.Definition.restWorldPositionCm));
+                            unityPoints.Add(item.Transform.position);
+                        }
+                        fit = DazPoseRestBasisCalibration.Fit(dazPoints, unityPoints);
+                        if (fit.RmsErrorMeters > RestFitWarningThresholdMeters)
+                            warnings.Add("DAZ-to-Unity rest landmark fit RMS is " + (fit.RmsErrorMeters * 1000).ToString("F1") + " mm (over 20 mm). Pose application was stopped; inspect the rest matrices and verify this is the matching neutral FBX.");
+                    }
+                    catch (Exception exception)
+                    {
+                        warnings.Add("Could not derive DAZ-to-Unity rest basis: " + exception.Message);
+                    }
+
+                    foreach (var item in missingCalibration)
+                        warnings.Add("Rest calibration anchor did not resolve: DAZ id='" + item.Definition.id + "', name='" + item.Definition.name + "', parent id='" + item.Definition.parentId + "'.");
+                    if (fit != null)
+                    {
+                        foreach (var item in resolved.Where(item => poseTargetIds.Contains(item.Definition.id)))
+                        {
+                            var dazRest = DazPoseJsonLoader.Vector(item.Definition.restWorldPositionCm) * 0.01f;
+                            var predicted = fit.Basis.MultiplyVector(dazRest) + fit.Translation;
+                            var errorMm = Vector3.Distance(predicted, item.Transform.position) * 1000f;
+                            if (errorMm > RestFitWarningThresholdMeters * 1000f)
+                                warnings.Add("Active pose target rest position differs by " + errorMm.ToString("F1") + " mm after the shared basis fit: DAZ id='" + item.Definition.id + "', name='" + item.Definition.name + "'. No per-bone correction was added.");
+                        }
+                    }
+
+                    var report = BuildReport(evaluationRoot, pose, resolutions, poseTargetIds, RestCalibrationBoneIds, warnings, fit);
+                    var reportPath = Path.Combine(ProjectRoot, "TestOutput", "pose-application-report.json");
+                    if (!temporaryReference) WriteReport(reportPath, report);
+                    if (missingTargets.Length > 0 || missingCalibration.Length > 0 || fit == null
+                        || fit.RmsErrorMeters > RestFitWarningThresholdMeters
+                        || warnings.Any(value => value.StartsWith("Could not derive", StringComparison.Ordinal)))
+                    {
+                        failure = "Pose resolution stopped: target mapping or rest calibration failed. No scene object was changed."
+                            + (temporaryReference ? string.Empty : " Review the report at " + reportPath + ".");
+                        if (!temporaryReference) Debug.LogError(failure);
+                        return false;
+                    }
+
+                    var targets = new List<PoseTarget>(resolved.Length);
+                    foreach (var item in resolved)
+                    {
+                        var bone = item.Definition;
+                        var restRotationDaz = DazPoseJsonLoader.Quaternion(bone.restWorldRotation);
+                        var poseRotationDaz = DazPoseJsonLoader.Quaternion(bone.evaluatedWorldRotation);
+                        var deltaDaz = Quaternion.Normalize(poseRotationDaz * Quaternion.Inverse(restRotationDaz));
+                        var deltaUnity = DazPoseRestBasisCalibration.ConvertWorldRotationDelta(fit.Basis, deltaDaz);
+                        var targetRotation = Quaternion.Normalize(deltaUnity * item.Transform.rotation);
+                        var restPositionDaz = DazPoseJsonLoader.Vector(bone.restWorldPositionCm);
+                        var posePositionDaz = DazPoseJsonLoader.Vector(bone.evaluatedWorldPositionCm);
+                        var targetPosition = item.Transform.position + DazPoseRestBasisCalibration.ConvertDazCentimeterDelta(fit.Basis, posePositionDaz - restPositionDaz);
+                        targets.Add(new PoseTarget { Transform = item.Transform, Position = targetPosition, Rotation = targetRotation });
+                    }
+                    foreach (var target in targets.OrderBy(item => DazPoseTransformPath.DepthFrom(evaluationRoot, item.Transform)))
+                        target.Transform.SetPositionAndRotation(target.Position, target.Rotation);
+
+                    var channelTargets = (pose.poseChannels ?? Array.Empty<DazPoseChannel>())
+                        .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
+                        .GroupBy(channel => channel.targetId, StringComparer.Ordinal)
+                        .ToDictionary(group => group.Key, group => new
+                        {
+                            Rotation = group.Any(channel => channel.property == "rotation"),
+                            Translation = group.Any(channel => channel.property == "translation")
+                        }, StringComparer.Ordinal);
+                    var restByPath = (state.transforms ?? Array.Empty<DazPoseRestTransform>()).ToDictionary(item => item.path, StringComparer.Ordinal);
+                    foreach (var item in resolved)
+                    {
+                        var instancePath = DazPoseTransformPath.Get(evaluationRoot, item.Transform);
+                        if (!originalTransformsByPath.TryGetValue(instancePath, out var originalTransform))
+                            throw new InvalidOperationException("Could not map resolved DAZ bone '" + item.Definition.id + "' back to the selected character at " + instancePath + ".");
+                        if (!item.Transform.IsChildOf(skeletonRootEvaluation) && item.Transform != skeletonRootEvaluation)
+                            throw new InvalidOperationException("Resolved DAZ bone '" + item.Definition.id + "' is outside the configured skeleton root: " + instancePath + ".");
+                        if (!restByPath.TryGetValue(instancePath, out var restTransform))
+                            throw new InvalidOperationException("The captured import rest pose has no entry for resolved DAZ bone '" + item.Definition.id + "'.");
+                        channelTargets.TryGetValue(item.Definition.id, out var channels);
+                        var localRotation = item.Transform.localRotation;
+                        var localPosition = item.Transform.localPosition;
+                        var localScale = item.Transform.localScale;
+                        resolvedBones.Add(new ResolvedBonePose
+                        {
+                            DazBoneId = item.Definition.id,
+                            DazBoneName = item.Definition.name,
+                            InstancePath = instancePath,
+                            AnimationPath = AnimationUtility.CalculateTransformPath(item.Transform, bindingRoot),
+                            MappingMethod = item.Method,
+                            Transform = originalTransform,
+                            HasPosition = Vector3.Distance(restTransform.localPosition, localPosition) > 1e-5f,
+                            HasRotation = Quaternion.Angle(restTransform.localRotation, localRotation) > 0.001f,
+                            HasScale = false,
+                            HasDazTranslationChannel = channels != null && channels.Translation,
+                            HasDazRotationChannel = channels != null && channels.Rotation,
+                            LocalPosition = localPosition,
+                            LocalRotation = localRotation,
+                            LocalScale = localScale
+                        });
+                    }
                 }
-                fit = DazPoseRestBasisCalibration.Fit(dazPoints, unityPoints);
-                if (fit.RmsErrorMeters > RestFitWarningThresholdMeters)
-                    warnings.Add("DAZ-to-Unity rest landmark fit RMS is " + (fit.RmsErrorMeters * 1000).ToString("F1") + " mm (over 20 mm). Pose application was stopped; inspect the rest matrices and verify this is the matching neutral FBX.");
-            }
-            catch (Exception exception)
-            {
-                warnings.Add("Could not derive DAZ-to-Unity rest basis: " + exception.Message);
-            }
 
-            foreach (var item in missingCalibration)
-                warnings.Add("Rest calibration anchor did not resolve: DAZ id='" + item.Definition.id + "', name='" + item.Definition.name + "', parent id='" + item.Definition.parentId + "'.");
-            if (fit != null)
-            {
-                foreach (var item in resolved.Where(item => poseTargetIds.Contains(item.Definition.id)))
+                var morphControls = DazPoseMorphResolver.Resolve(root, pose.figureControls);
+                if (morphControls.Count > 0)
                 {
-                    var dazRest = DazPoseJsonLoader.Vector(item.Definition.restWorldPositionCm) * 0.01f;
-                    var predicted = fit.Basis.MultiplyVector(dazRest) + fit.Translation;
-                    var errorMm = Vector3.Distance(predicted, item.Transform.position) * 1000f;
-                    if (errorMm > RestFitWarningThresholdMeters * 1000f)
-                        warnings.Add("Active pose target rest position differs by " + errorMm.ToString("F1") + " mm after the shared basis fit: DAZ id='" + item.Definition.id + "', name='" + item.Definition.name + "'. No per-bone correction was added.");
+                    try
+                    {
+                        var confirmed = DazPoseRequiredMorphManifestStore.MarkConfirmed(ProjectRoot, morphControls);
+                        if (confirmed > 0) Debug.Log("Confirmed " + confirmed + " direct morph(s) in the project Required Morph Manifest.");
+                    }
+                    catch (Exception exception)
+                    {
+                        warnings.Add("Could not update the Required Morph Manifest after direct blendshape resolution: " + exception.Message);
+                    }
                 }
-            }
 
-            var report = BuildReport(evaluationRoot, pose, resolutions, poseTargetIds, RestCalibrationBoneIds, warnings, fit);
-            var reportPath = Path.Combine(ProjectRoot, "TestOutput", "pose-application-report.json");
-            if (!temporaryReference) WriteReport(reportPath, report);
-            var missingCount = resolutions.Count(item => item.Status == "missing");
-            var ambiguousCount = resolutions.Count(item => item.Status == "ambiguous");
-            var summary = "Pose: " + DazPoseJsonLoader.PoseName(pose.source.poseFile, pose.source.poseAssetId)
-                + " | character: " + root.name + " | pose targets: " + poseTargetIds.Count
-                + " | resolved bones: " + resolved.Length + "/" + pose.bones.Length
-                + " | missing: " + missingCount + " | ambiguous: " + ambiguousCount
-                + " | rest-fit RMS: " + (fit == null ? "unavailable" : (fit.RmsErrorMeters * 1000).ToString("F1") + " mm")
-                + (temporaryReference ? string.Empty : " | report: " + reportPath);
-
-            if (missingTargets.Length > 0 || missingCalibration.Length > 0 || fit == null || fit.RmsErrorMeters > RestFitWarningThresholdMeters || warnings.Any(value => value.StartsWith("Could not derive", StringComparison.Ordinal)))
-            {
-                failure = summary + (temporaryReference
-                    ? " | Pose resolution stopped: target mapping or rest calibration failed. No scene object was changed."
-                    : " | Pose resolution stopped: target mapping or rest calibration failed. Review the report; no axis settings were changed.");
-                if (!temporaryReference) Debug.LogError(failure);
-                return false;
-            }
-
-            var targets = new List<PoseTarget>(resolved.Length);
-            foreach (var item in resolved)
-            {
-                var bone = item.Definition;
-                var restRotationDaz = DazPoseJsonLoader.Quaternion(bone.restWorldRotation);
-                var poseRotationDaz = DazPoseJsonLoader.Quaternion(bone.evaluatedWorldRotation);
-                var deltaDaz = Quaternion.Normalize(poseRotationDaz * Quaternion.Inverse(restRotationDaz));
-                var deltaUnity = DazPoseRestBasisCalibration.ConvertWorldRotationDelta(fit.Basis, deltaDaz);
-                var targetRotation = Quaternion.Normalize(deltaUnity * item.Transform.rotation);
-                var restPositionDaz = DazPoseJsonLoader.Vector(bone.restWorldPositionCm);
-                var posePositionDaz = DazPoseJsonLoader.Vector(bone.evaluatedWorldPositionCm);
-                var targetPosition = item.Transform.position + DazPoseRestBasisCalibration.ConvertDazCentimeterDelta(fit.Basis, posePositionDaz - restPositionDaz);
-                targets.Add(new PoseTarget { Transform = item.Transform, Position = targetPosition, Rotation = targetRotation });
-            }
-
-            foreach (var target in targets.OrderBy(item => DazPoseTransformPath.DepthFrom(evaluationRoot, item.Transform)))
-                target.Transform.SetPositionAndRotation(target.Position, target.Rotation);
-
-            var channelTargets = (pose.poseChannels ?? Array.Empty<DazPoseChannel>())
-                .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
-                .GroupBy(channel => channel.targetId, StringComparer.Ordinal)
-                .ToDictionary(group => group.Key, group => new
+                resolvedPose = new ResolvedUnityPose
                 {
-                    Rotation = group.Any(channel => channel.property == "rotation"),
-                    Translation = group.Any(channel => channel.property == "translation")
-                }, StringComparer.Ordinal);
-            var animationRootEvaluation = FindAnimationRoot(evaluationRoot);
-            var animationRootPath = DazPoseTransformPath.Get(evaluationRoot, animationRootEvaluation);
-            if (!originalTransformsByPath.TryGetValue(animationRootPath, out var animationRootOriginal))
-                throw new InvalidOperationException("The stable Genesis8Female animation root could not be mapped back to the selected character.");
-
-            var restByPath = state.transforms.ToDictionary(item => item.path, StringComparer.Ordinal);
-            var resolvedBones = new List<ResolvedBonePose>(resolved.Length);
-            foreach (var item in resolved)
-            {
-                var instancePath = DazPoseTransformPath.Get(evaluationRoot, item.Transform);
-                if (!originalTransformsByPath.TryGetValue(instancePath, out var originalTransform))
-                    throw new InvalidOperationException("Could not map resolved DAZ bone '" + item.Definition.id + "' back to the selected character at " + instancePath + ".");
-                if (!item.Transform.IsChildOf(animationRootEvaluation) && item.Transform != animationRootEvaluation)
-                    throw new InvalidOperationException("Resolved DAZ bone '" + item.Definition.id + "' is outside the stable Genesis8Female animation root: " + instancePath + ".");
-                var animationPath = AnimationUtility.CalculateTransformPath(item.Transform, animationRootEvaluation);
-                if (!restByPath.TryGetValue(instancePath, out var restTransform))
-                    throw new InvalidOperationException("The captured import rest pose has no entry for resolved DAZ bone '" + item.Definition.id + "'.");
-                channelTargets.TryGetValue(item.Definition.id, out var channels);
-                var localRotation = item.Transform.localRotation;
-                var localPosition = item.Transform.localPosition;
-                var localScale = item.Transform.localScale;
-                resolvedBones.Add(new ResolvedBonePose
-                {
-                    DazBoneId = item.Definition.id,
-                    DazBoneName = item.Definition.name,
-                    InstancePath = instancePath,
-                    AnimationPath = animationPath,
-                    MappingMethod = item.Method,
-                    Transform = originalTransform,
-                    HasPosition = Vector3.Distance(restTransform.localPosition, localPosition) > 1e-5f,
-                    HasRotation = Quaternion.Angle(restTransform.localRotation, localRotation) > 0.001f,
-                    HasScale = false,
-                    HasDazTranslationChannel = channels != null && channels.Translation,
-                    HasDazRotationChannel = channels != null && channels.Rotation,
-                    LocalPosition = localPosition,
-                    LocalRotation = localRotation,
-                    LocalScale = localScale
-                });
-            }
-
-            resolvedPose = new ResolvedUnityPose
-            {
-                CharacterRoot = root,
-                AnimationRoot = animationRootOriginal,
-                Definition = pose,
-                RestState = state,
-                SourcePoseJsonPath = jsonPath,
-                CharacterName = root.name,
-                PoseTargetBoneCount = poseTargetIds.Count,
-                UnresolvedRequiredBoneCount = missingTargets.Length + missingCalibration.Length,
-                AmbiguousBoneCount = ambiguousCount,
-                Bones = resolvedBones,
-                Warnings = warnings.Where(value => !value.StartsWith("missing bone mapping", StringComparison.Ordinal)).ToArray()
-            };
-            Debug.Log(summary + " | captured " + resolvedBones.Count(item => item.HasRotation) + " driven local rotations and "
-                + resolvedBones.Count(item => item.HasPosition) + " local positions from the existing direct-apply conversion.");
-            return true;
+                    CharacterRoot = root,
+                    SkeletonRoot = skeletonRootOriginal,
+                    BindingRoot = root,
+                    Definition = pose,
+                    RestState = state,
+                    SourcePoseJsonPath = jsonPath,
+                    CharacterName = root.name,
+                    PoseTargetBoneCount = poseTargetIds.Count,
+                    UnresolvedRequiredBoneCount = missingTargets.Length + missingCalibration.Length,
+                    AmbiguousBoneCount = resolutions.Count(item => item.Status == "ambiguous"),
+                    Bones = resolvedBones,
+                    MorphControls = morphControls,
+                    Warnings = warnings.ToArray()
+                };
+                var resolvedMorphBindingCount = morphControls.Sum(item => item.Bindings.Count);
+                Debug.Log("Resolved DAZ pose on " + root.name + ": driven bones " + resolvedBones.Count(item => item.HasRotation || item.HasPosition || item.HasScale)
+                    + " | active figure controls " + morphControls.Count + " | renderer bindings " + resolvedMorphBindingCount
+                    + (fit == null ? string.Empty : " | rest-fit RMS " + (fit.RmsErrorMeters * 1000).ToString("F1") + " mm"));
+                return true;
             }
             finally
             {
@@ -654,18 +718,23 @@ namespace DazPose.UnityValidation
             }
         }
 
-        private static void ApplyResolvedPose(ResolvedUnityPose pose)
+        private static void ApplyResolvedPose(ResolvedUnityPose pose, bool recordUndoAndDirty = true)
         {
             RestoreSnapshot(pose.CharacterRoot, pose.RestState);
-            var transforms = pose.Bones.Select(item => item.Transform).Where(item => item != null).Cast<UnityEngine.Object>().ToArray();
-            Undo.RecordObjects(transforms, "Apply DAZ Pose");
+            var changedObjects = pose.Bones.Select(item => item.Transform).Where(item => item != null).Cast<UnityEngine.Object>()
+                .Concat(pose.MorphControls.SelectMany(item => item.Bindings).Select(item => item.Renderer)
+                    .Where(item => item != null).Cast<UnityEngine.Object>())
+                .Distinct().ToArray();
+            if (recordUndoAndDirty && changedObjects.Length > 0) Undo.RecordObjects(changedObjects, "Apply DAZ Pose");
             foreach (var bone in pose.Bones.OrderBy(item => DazPoseTransformPath.DepthFrom(pose.CharacterRoot, item.Transform)))
             {
                 bone.Transform.localPosition = bone.LocalPosition;
                 bone.Transform.localRotation = bone.LocalRotation;
                 bone.Transform.localScale = bone.LocalScale;
             }
-            EditorSceneManager.MarkSceneDirty(pose.CharacterRoot.gameObject.scene);
+            foreach (var binding in pose.MorphControls.SelectMany(item => item.Bindings))
+                binding.Renderer.SetBlendShapeWeight(binding.BlendShapeIndex, binding.UnityWeight);
+            if (recordUndoAndDirty) EditorSceneManager.MarkSceneDirty(pose.CharacterRoot.gameObject.scene);
         }
 
         private static DazPoseClipParityResult ValidateDirectApply(ResolvedUnityPose pose)
@@ -673,39 +742,52 @@ namespace DazPose.UnityValidation
             var maxPosition = 0f;
             var maxRotation = 0f;
             var maxScale = 0f;
+            var maxBlendShapeWeight = 0f;
             foreach (var bone in pose.Bones)
             {
                 maxPosition = Mathf.Max(maxPosition, Vector3.Distance(bone.LocalPosition, bone.Transform.localPosition));
                 maxRotation = Mathf.Max(maxRotation, Quaternion.Angle(bone.LocalRotation, bone.Transform.localRotation));
                 maxScale = Mathf.Max(maxScale, Vector3.Distance(bone.LocalScale, bone.Transform.localScale));
             }
+            foreach (var morphBinding in pose.MorphControls.SelectMany(item => item.Bindings))
+                maxBlendShapeWeight = Mathf.Max(maxBlendShapeWeight,
+                    Mathf.Abs(morphBinding.UnityWeight - morphBinding.Renderer.GetBlendShapeWeight(morphBinding.BlendShapeIndex)));
             var result = new DazPoseClipParityResult
             {
                 MaximumPositionErrorMeters = maxPosition,
                 MaximumRotationErrorDegrees = maxRotation,
                 MaximumScaleError = maxScale,
-                Passed = maxPosition <= 1e-5f && maxRotation <= 0.001f && maxScale <= 1e-5f,
+                MaximumBlendShapeWeightError = maxBlendShapeWeight,
+                Passed = maxPosition <= 1e-5f && maxRotation <= 0.001f && maxScale <= 1e-5f && maxBlendShapeWeight <= 1e-3f,
                 Summary = "resolved direct-output comparison: max local position " + maxPosition.ToString("G6") + " m, rotation "
-                    + maxRotation.ToString("G6") + " deg, scale " + maxScale.ToString("G6") + "."
+                    + maxRotation.ToString("G6") + " deg, scale " + maxScale.ToString("G6")
+                    + ", blendshape weight " + maxBlendShapeWeight.ToString("G6") + "."
             };
             Debug.Log((result.Passed ? "PASS" : "FAIL") + " DAZ Pose direct Apply regression: " + result.Summary);
             return result;
         }
 
-        private static Transform FindAnimationRoot(Transform characterRoot)
+        private static Transform FindSkeletonRoot(Transform characterRoot)
         {
             var candidates = characterRoot.GetComponentsInChildren<Transform>(true)
                 .Where(item => item.name == "Genesis8Female" && item.parent == characterRoot).ToArray();
             if (candidates.Length != 1)
                 throw new InvalidOperationException("Expected exactly one direct child named Genesis8Female under selected character '" + characterRoot.name
-                    + "', found " + candidates.Length + ". The clip needs a stable figure root separate from scene placement.");
+                + "', found " + candidates.Length + ". The G8F skeleton root must be a unique direct child.");
             return candidates[0];
+        }
+
+        private static Transform FindBindingRoot(Transform characterRoot)
+        {
+            if (characterRoot == null) throw new ArgumentNullException(nameof(characterRoot));
+            FindSkeletonRoot(characterRoot);
+            return characterRoot;
         }
 
         private static void ConfigurePlayableSmokeTest(Transform characterRoot, AnimationClip clip, string ownerId)
         {
             if (string.IsNullOrEmpty(ownerId)) throw new ArgumentException("A smoke-test owner id is required.", nameof(ownerId));
-            var animationRoot = FindAnimationRoot(characterRoot);
+            var animationRoot = FindBindingRoot(characterRoot);
             if (animationRoot.GetComponent<DazPosePlayableValidationDriver>() != null)
                 throw new InvalidOperationException("A DAZ Pose smoke-test driver already exists on " + animationRoot.name + ". Remove or inspect it before starting another test; the command will not commandeer it.");
             if (animationRoot.GetComponent<DazPoseBlendPlayer>() != null)
@@ -729,6 +811,7 @@ namespace DazPose.UnityValidation
                 driver.validationOwnedAnimator = addedAnimator ? animator : null;
                 driver.validationSmokeTestOwner = ownerId;
                 driver.expectedTransforms = BuildRuntimeExpectations(clip);
+                driver.expectedBlendShapes = BuildRuntimeBlendShapeExpectations(clip, characterRoot);
                 EditorUtility.SetDirty(driver);
             }
             catch
@@ -745,7 +828,8 @@ namespace DazPose.UnityValidation
 
         private static DazPoseRuntimeExpectedTransform[] BuildRuntimeExpectations(AnimationClip clip)
         {
-            var groups = AnimationUtility.GetCurveBindings(clip).GroupBy(binding => binding.path, StringComparer.Ordinal);
+            var groups = AnimationUtility.GetCurveBindings(clip).Where(binding => binding.type == typeof(Transform))
+                .GroupBy(binding => binding.path, StringComparer.Ordinal);
             var expectations = new List<DazPoseRuntimeExpectedTransform>();
             foreach (var group in groups)
             {
@@ -775,8 +859,42 @@ namespace DazPose.UnityValidation
                 }
                 if (expectation.hasPosition || expectation.hasRotation || expectation.hasScale) expectations.Add(expectation);
             }
-            if (expectations.Count == 0) throw new InvalidOperationException("Selected AnimationClip has no supported local Transform curves to validate.");
             return expectations.ToArray();
+        }
+
+        private static DazPoseRuntimeExpectedBlendShape[] BuildRuntimeBlendShapeExpectations(AnimationClip clip, Transform bindingRoot)
+        {
+            return AnimationUtility.GetCurveBindings(clip)
+                .Where(binding => binding.type == typeof(SkinnedMeshRenderer)
+                    && binding.propertyName.StartsWith("blendShape.", StringComparison.Ordinal))
+                .Select(binding =>
+                {
+                    var path = binding.path;
+                    var blendShapeName = binding.propertyName.Substring("blendShape.".Length);
+                    var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                    if (curve == null || curve.length == 0)
+                        throw new InvalidOperationException("Runtime validation found an empty blendshape curve at '" + path + "/" + binding.propertyName + "'.");
+                    var rendererTransform = string.IsNullOrEmpty(path) ? bindingRoot : bindingRoot.Find(path);
+                    if (rendererTransform == null)
+                        throw new InvalidOperationException("Runtime validation could not resolve blendshape renderer path '" + path + "'.");
+                    var renderers = rendererTransform.GetComponents<SkinnedMeshRenderer>();
+                    var matches = renderers.SelectMany((renderer, componentIndex) => renderer == null || renderer.sharedMesh == null
+                            ? Enumerable.Empty<DazPoseRuntimeExpectedBlendShape>()
+                            : Enumerable.Range(0, renderer.sharedMesh.blendShapeCount)
+                                .Where(index => string.Equals(renderer.sharedMesh.GetBlendShapeName(index), blendShapeName, StringComparison.Ordinal))
+                                .Select(index => new DazPoseRuntimeExpectedBlendShape
+                                {
+                                    path = path,
+                                    blendShapeName = blendShapeName,
+                                    blendShapeIndex = index,
+                                    rendererComponentIndex = componentIndex,
+                                    weight = curve.Evaluate(0.5f)
+                                }))
+                        .ToArray();
+                    if (matches.Length != 1)
+                        throw new InvalidOperationException("Runtime validation expected one imported blendshape '" + blendShapeName + "' at '" + path + "', found " + matches.Length + ".");
+                    return matches[0];
+                }).ToArray();
         }
 
         private static DazPoseValidationReport BuildReport(Transform root, DazPoseDefinition pose,
@@ -921,6 +1039,155 @@ namespace DazPose.UnityValidation
             Debug.Log("DAZ Pose adapter self-tests passed: " + passed + "/9.");
         }
 
+        [MenuItem("Tools/DAZ Pose/Run Stage 5 Morph Self Tests")]
+        public static void RunStage5MorphSelfTests()
+        {
+            var checks = 0;
+            void Check(bool condition, string name)
+            {
+                if (!condition) throw new InvalidOperationException("Stage 5 morph self-test failed: " + name);
+                checks++;
+                Debug.Log("PASS DAZ Pose Stage 5 self-test: " + name);
+            }
+
+            var character = new GameObject("Stage5MorphSelfTestCharacter");
+            Mesh bodyMesh = null;
+            Mesh shirtMesh = null;
+            Mesh untouchedMesh = null;
+            try
+            {
+                var body = CreateTestSkinnedRenderer(character.transform, "BodyRenderer", out bodyMesh, true);
+                var shirt = CreateTestSkinnedRenderer(character.transform, "ShirtRenderer", out shirtMesh, true);
+                var accessory = CreateTestSkinnedRenderer(character.transform, "RendererWithoutSmile", out untouchedMesh, false);
+                untouchedMesh.AddBlendShapeFrame("TestBlink", 100f,
+                    new[] { Vector3.zero, Vector3.zero, Vector3.forward * 0.05f },
+                    new[] { Vector3.zero, Vector3.zero, Vector3.zero },
+                    new[] { Vector3.zero, Vector3.zero, Vector3.zero });
+                accessory.SetBlendShapeWeight(0, 37f);
+                var control = new DazPoseFigureControl
+                {
+                    sourceUrl = "name://@selection#TestSmile:?value/value",
+                    rawControlId = "TestSmile",
+                    name = "TestSmile",
+                    value = 1f
+                };
+                var morphs = DazPoseMorphResolver.Resolve(character.transform, new[] { control });
+                Check(morphs.Count == 1 && morphs[0].Bindings.Count == 2,
+                    "one canonical control resolves to both body and shirt renderers");
+                Check(morphs[0].Bindings.All(binding => Mathf.Abs(binding.UnityWeight - 100f) < 1e-4f),
+                    "DAZ unit value maps to each imported mesh's full-value frame weight");
+
+                var rest = CaptureRestPose(character.transform, true, false);
+                var shapeOnly = new ResolvedUnityPose
+                {
+                    CharacterRoot = character.transform,
+                    BindingRoot = character.transform,
+                    Definition = new DazPoseDefinition
+                    {
+                        format = "DazPoseTool", version = 2,
+                        source = new DazPoseSource { poseFile = "TestSmile.dazpose.json", poseAssetId = "TestSmile" },
+                        figureControls = new[] { control }
+                    },
+                    RestState = rest,
+                    CharacterName = character.name,
+                    MorphControls = morphs
+                };
+                var shapeClip = DazPoseAnimationClipGenerator.BuildCandidateClip(shapeOnly);
+                try
+                {
+                    var shapeBindings = AnimationUtility.GetCurveBindings(shapeClip);
+                    Check(shapeBindings.Length == 2 && shapeBindings.All(binding => binding.type == typeof(SkinnedMeshRenderer)
+                        && binding.propertyName == "blendShape.TestSmile"),
+                        "shape-only clip emits one exact blendshape curve per renderer without Transform curves");
+                    var shapeParity = DazPoseClipParityValidator.Validate(shapeOnly, shapeClip);
+                    Check(shapeParity.Passed && shapeParity.MaximumBlendShapeWeightError <= 1e-3f,
+                        "shape-only clip passes direct/clip parity at 0, 0.5, and 1 seconds");
+                }
+                finally { UnityEngine.Object.DestroyImmediate(shapeClip); }
+
+                ApplyResolvedPose(shapeOnly, false);
+                Check(Mathf.Abs(body.GetBlendShapeWeight(0) - 100f) < 1e-3f
+                    && Mathf.Abs(shirt.GetBlendShapeWeight(0) - 100f) < 1e-3f,
+                    "direct application writes the same resolved value to every matching renderer");
+                Check(accessory.sharedMesh.blendShapeCount == 1 && Mathf.Abs(accessory.GetBlendShapeWeight(0) - 37f) < 1e-3f,
+                    "renderer without the required blendshape remains untouched");
+                RestoreSnapshot(character.transform, rest);
+
+                var skeletonRoot = new GameObject("Genesis8Female");
+                skeletonRoot.transform.SetParent(character.transform, false);
+                var hip = new GameObject("hip");
+                hip.transform.SetParent(skeletonRoot.transform, false);
+                var mixedRest = CaptureRestPose(character.transform, true, false);
+                var mixed = new ResolvedUnityPose
+                {
+                    CharacterRoot = character.transform,
+                    SkeletonRoot = skeletonRoot.transform,
+                    BindingRoot = character.transform,
+                    Definition = shapeOnly.Definition,
+                    RestState = mixedRest,
+                    CharacterName = character.name,
+                    PoseTargetBoneCount = 1,
+                    Bones = new List<ResolvedBonePose>
+                    {
+                        new ResolvedBonePose
+                        {
+                            DazBoneId = "hip", DazBoneName = "hip", InstancePath = "Genesis8Female/hip",
+                            AnimationPath = "Genesis8Female/hip", Transform = hip.transform,
+                            HasPosition = true, LocalPosition = new Vector3(0.125f, 0.25f, -0.05f),
+                            LocalRotation = Quaternion.identity, LocalScale = Vector3.one
+                        }
+                    },
+                    MorphControls = morphs
+                };
+                var mixedClip = DazPoseAnimationClipGenerator.BuildCandidateClip(mixed);
+                try
+                {
+                    var mixedBindings = AnimationUtility.GetCurveBindings(mixedClip);
+                    Check(mixedBindings.Any(binding => binding.type == typeof(Transform) && binding.path == "Genesis8Female/hip")
+                        && mixedBindings.Any(binding => binding.type == typeof(SkinnedMeshRenderer) && binding.propertyName == "blendShape.TestSmile"),
+                        "mixed skeletal and morph clip contains both binding families");
+                    Check(DazPoseClipParityValidator.Validate(mixed, mixedClip).Passed,
+                        "mixed skeletal and morph clip passes direct/clip parity");
+                }
+                finally { UnityEngine.Object.DestroyImmediate(mixedClip); }
+
+                var missingControl = new DazPoseFigureControl { rawControlId = "MissingFace", name = "MissingFace", value = 1f };
+                var missingFailedClearly = false;
+                try { DazPoseMorphResolver.Resolve(character.transform, new[] { missingControl }); }
+                catch (InvalidOperationException exception)
+                {
+                    missingFailedClearly = exception.Message.Contains("not present as a direct blendshape");
+                }
+                Check(missingFailedClearly, "missing direct morph fails with a reference-refresh diagnostic");
+                Debug.Log("DAZ Pose Stage 5 morph self-tests passed: " + checks + "/9.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(character);
+                if (bodyMesh != null) UnityEngine.Object.DestroyImmediate(bodyMesh);
+                if (shirtMesh != null) UnityEngine.Object.DestroyImmediate(shirtMesh);
+                if (untouchedMesh != null) UnityEngine.Object.DestroyImmediate(untouchedMesh);
+            }
+        }
+
+        private static SkinnedMeshRenderer CreateTestSkinnedRenderer(Transform root, string name, out Mesh mesh, bool withSmile)
+        {
+            var gameObject = new GameObject(name);
+            gameObject.transform.SetParent(root, false);
+            var renderer = gameObject.AddComponent<SkinnedMeshRenderer>();
+            mesh = new Mesh { name = name + "Mesh" };
+            mesh.vertices = new[] { Vector3.zero, Vector3.right, Vector3.up };
+            mesh.triangles = new[] { 0, 1, 2 };
+            mesh.RecalculateNormals();
+            if (withSmile)
+                mesh.AddBlendShapeFrame("TestSmile", 100f,
+                    new[] { Vector3.zero, Vector3.forward * 0.1f, Vector3.forward * 0.1f },
+                    new[] { Vector3.zero, Vector3.zero, Vector3.zero },
+                    new[] { Vector3.zero, Vector3.zero, Vector3.zero });
+            renderer.sharedMesh = mesh;
+            return renderer;
+        }
+
         private static DazPoseCharacterState CaptureRestPose(Transform root, bool force)
             => CaptureRestPose(root, force, true);
 
@@ -929,22 +1196,79 @@ namespace DazPose.UnityValidation
             var state = root.GetComponent<DazPoseCharacterState>();
             if (state == null)
                 state = recordUndo ? Undo.AddComponent<DazPoseCharacterState>(root.gameObject) : root.gameObject.AddComponent<DazPoseCharacterState>();
-            if (state.hasCapturedRestPose && !force) return state;
+            if (state.hasCapturedRestPose && !force)
+            {
+                if (!state.hasCapturedBlendShapes || !RestBlendShapeStructureMatches(root, state))
+                    CaptureRestBlendShapes(root, state);
+                return state;
+            }
             var transforms = root.GetComponentsInChildren<Transform>(true);
             state.transforms = transforms.Select(item => new DazPoseRestTransform
-            {
-                path = DazPoseTransformPath.Get(root, item),
-                localPosition = item.localPosition,
-                localRotation = item.localRotation,
-                localScale = item.localScale
-            }).ToArray();
+                {
+                    path = DazPoseTransformPath.Get(root, item),
+                    localPosition = item.localPosition,
+                    localRotation = item.localRotation,
+                    localScale = item.localScale
+                }).ToArray();
+            CaptureRestBlendShapes(root, state);
             state.hasCapturedRestPose = true;
             if (recordUndo) EditorUtility.SetDirty(state);
             return state;
         }
 
+        private static void CaptureRestBlendShapes(Transform root, DazPoseCharacterState state)
+        {
+            state.blendShapes = root.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Where(renderer => renderer != null && renderer.sharedMesh != null)
+                .Select(renderer =>
+                {
+                    var components = renderer.transform.GetComponents<SkinnedMeshRenderer>();
+                    var componentIndex = Array.IndexOf(components, renderer);
+                    var shapeCount = renderer.sharedMesh.blendShapeCount;
+                    var weights = new float[shapeCount];
+                    var shapeNames = new string[shapeCount];
+                    for (var index = 0; index < shapeCount; index++)
+                    {
+                        weights[index] = renderer.GetBlendShapeWeight(index);
+                        shapeNames[index] = renderer.sharedMesh.GetBlendShapeName(index);
+                    }
+                    return new DazPoseRestBlendShape
+                    {
+                        rendererPath = DazPoseTransformPath.Get(root, renderer.transform),
+                        rendererComponentIndex = componentIndex,
+                        blendShapeCount = shapeCount,
+                        blendShapeNames = shapeNames,
+                        weights = weights
+                    };
+                }).ToArray();
+            state.hasCapturedBlendShapes = true;
+        }
+
+        private static bool RestBlendShapeStructureMatches(Transform root, DazPoseCharacterState state)
+        {
+            var saved = state.blendShapes ?? Array.Empty<DazPoseRestBlendShape>();
+            var current = root.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Where(renderer => renderer != null && renderer.sharedMesh != null).ToArray();
+            if (saved.Length != current.Length) return false;
+            for (var index = 0; index < current.Length; index++)
+            {
+                var renderer = current[index];
+                var savedItem = saved.FirstOrDefault(item => item != null
+                    && item.rendererPath == DazPoseTransformPath.Get(root, renderer.transform)
+                    && item.rendererComponentIndex == Array.IndexOf(renderer.transform.GetComponents<SkinnedMeshRenderer>(), renderer));
+                if (savedItem == null || savedItem.blendShapeCount != renderer.sharedMesh.blendShapeCount
+                    || savedItem.blendShapeNames == null || savedItem.blendShapeNames.Length != renderer.sharedMesh.blendShapeCount)
+                    return false;
+                for (var shapeIndex = 0; shapeIndex < renderer.sharedMesh.blendShapeCount; shapeIndex++)
+                    if (!string.Equals(savedItem.blendShapeNames[shapeIndex], renderer.sharedMesh.GetBlendShapeName(shapeIndex), StringComparison.Ordinal))
+                        return false;
+            }
+            return true;
+        }
+
         internal static void RestoreSnapshot(Transform root, DazPoseCharacterState state)
         {
+            if (root == null || state == null) return;
             var byPath = state.transforms.ToDictionary(item => item.path, StringComparer.Ordinal);
             foreach (var item in root.GetComponentsInChildren<Transform>(true).OrderBy(value => DazPoseTransformPath.DepthFrom(root, value)))
             {
@@ -952,6 +1276,28 @@ namespace DazPose.UnityValidation
                 item.localPosition = snapshot.localPosition;
                 item.localRotation = snapshot.localRotation;
                 item.localScale = snapshot.localScale;
+            }
+
+            var transformByPath = root.GetComponentsInChildren<Transform>(true)
+                .ToDictionary(item => DazPoseTransformPath.Get(root, item), StringComparer.Ordinal);
+            foreach (var snapshot in state.blendShapes ?? Array.Empty<DazPoseRestBlendShape>())
+            {
+                if (snapshot == null || !transformByPath.TryGetValue(snapshot.rendererPath, out var rendererTransform)) continue;
+                var renderers = rendererTransform.GetComponents<SkinnedMeshRenderer>();
+                if (snapshot.rendererComponentIndex < 0 || snapshot.rendererComponentIndex >= renderers.Length) continue;
+                var renderer = renderers[snapshot.rendererComponentIndex];
+                if (renderer == null || renderer.sharedMesh == null || renderer.sharedMesh.blendShapeCount != snapshot.blendShapeCount
+                    || snapshot.weights == null || snapshot.weights.Length != snapshot.blendShapeCount
+                    || snapshot.blendShapeNames == null || snapshot.blendShapeNames.Length != snapshot.blendShapeCount) continue;
+                var namesMatch = true;
+                for (var shapeIndex = 0; shapeIndex < snapshot.blendShapeCount; shapeIndex++)
+                    if (!string.Equals(snapshot.blendShapeNames[shapeIndex], renderer.sharedMesh.GetBlendShapeName(shapeIndex), StringComparison.Ordinal))
+                    {
+                        namesMatch = false;
+                        break;
+                    }
+                if (!namesMatch) continue;
+                for (var index = 0; index < snapshot.weights.Length; index++) renderer.SetBlendShapeWeight(index, snapshot.weights[index]);
             }
         }
 

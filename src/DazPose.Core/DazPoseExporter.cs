@@ -15,7 +15,7 @@ public static class DazPoseExporter
         var data = new
         {
             format = "DazPoseTool",
-            version = 1,
+            version = 2,
             source = new
             {
                 figureFile = figure.FilePath,
@@ -24,6 +24,13 @@ public static class DazPoseExporter
                 poseAssetId = pose.AssetId
             },
             coordinateSystem = new { handedness = "right", upAxis = "Y", lengthUnit = "centimeter", angleUnit = "degree" },
+            figureControls = pose.FigureControls.Select(control => new
+            {
+                sourceUrl = control.SourceUrl,
+                rawControlId = control.RawControlId,
+                name = control.DecodedControlName,
+                value = control.Value
+            }).ToArray(),
             poseChannels = pose.Channels.Select(channel => new
             {
                 url = channel.Url,
@@ -33,7 +40,9 @@ public static class DazPoseExporter
                 axis = channel.ParsedUrl.Axis,
                 leafProperty = channel.ParsedUrl.LeafProperty,
                 keys = channel.Keys.Select(key => new { timeSeconds = key.Time, value = key.Value }).ToArray(),
-                supported = channel.IsSupportedSkeletalChannel,
+                kind = channel.IsSupportedSkeletalChannel ? "boneTransform"
+                    : channel.IsSupportedFigureControlChannel ? "figureControl" : "unsupported",
+                supported = channel.IsSupportedChannel,
                 usedIdFallback = channel.UsedIdFallback
             }).ToArray(),
             bones = evaluation.Bones.OrderBy(bone => bone.Bone.Id, StringComparer.Ordinal).Select(item => new

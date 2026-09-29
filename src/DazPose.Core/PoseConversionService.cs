@@ -89,7 +89,8 @@ public static class PoseConversionService
     {
         var diagnostics = new List<ConversionDiagnostic>
         {
-            new("Info", $"Ignored {pose.NeutralUnsupportedChannels.Count} neutral unsupported channels.")
+            new("Info", $"Ignored {pose.NeutralUnsupportedChannels.Count} inactive unsupported controls."),
+            new("Info", $"Parsed {pose.ActiveFigureControls.Count} active DAZ figure control(s); direct-morph confirmation is pending a Unity reference import.")
         };
         diagnostics.AddRange(pose.Diagnostics.Select(message => new ConversionDiagnostic("Warning", message)));
         if (includeBvhWarning) diagnostics.Add(new ConversionDiagnostic("Warning", BvhWarning));
@@ -110,13 +111,14 @@ public static class PoseConversionService
         var activeUnsupported = pose.NonNeutralUnsupportedChannels.FirstOrDefault();
         if (activeUnsupported is not null)
         {
-            var value = activeUnsupported.Keys.First(key => Math.Abs(key.Value) > 1e-7f).Value;
+            var value = activeUnsupported.Keys.First(key => !activeUnsupported.IsNeutralValue(key.Value)).Value;
             var channelKind = activeUnsupported.ParsedUrl.IsSelectedFigureRoot
                 ? "figure-root property"
                 : activeUnsupported.ParsedUrl.IsFigureControlAddress ? "figure/control property" : null;
             var channelContext = channelKind is null ? string.Empty : $" ({channelKind})";
+            var neutralScaleNote = activeUnsupported.ParsedUrl.Property == "scale" ? " Neutral scale is 1." : string.Empty;
             throw new DazConversionException(
-                $"Unsupported non-neutral channel '{activeUnsupported.Url}'{channelContext} has value {value.ToString("G9", CultureInfo.InvariantCulture)}. Conversion stopped to avoid dropping authored pose data.");
+                $"Unsupported non-neutral channel '{activeUnsupported.Url}'{channelContext} has value {value.ToString("G9", CultureInfo.InvariantCulture)}.{neutralScaleNote} Conversion stopped to avoid dropping authored pose data.");
         }
     }
 
@@ -141,9 +143,11 @@ public static class PoseConversionService
             "Unresolved skeletal target count: 0",
             $"Unsupported neutral channel count: {pose.NeutralUnsupportedChannels.Count}",
             $"Unsupported non-neutral channel count: {pose.NonNeutralUnsupportedChannels.Count}",
+            $"Active DAZ figure control count: {pose.ActiveFigureControls.Count}",
+            "Active DAZ figure controls are manifest candidates until a Unity reference confirms a direct blendshape.",
             "Canonical format: .dazpose.json (DAZ centimeter coordinates; includes evaluated rest and pose world transforms).",
             "BVH format: approximate interoperability export (linear values converted from centimeters to meters; Genesis joint orientation may be lost).",
-            "Unsupported neutral channels:",
+            "Inactive unsupported controls:",
             ..unsupportedNames.Select(name => $"  {name}"),
             "Warnings:",
             ..warnings.Select(warning => $"  {warning}"),

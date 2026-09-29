@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DazPose.App.AlwaysExportMorphEditWindow"
+        Title="Always-Export Morph"
+        Width="600" Height="330" MinWidth="520" MinHeight="300"
+        WindowStartupLocation="CenterOwner">
+  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="18" RowSpacing="12">
+    <TextBlock Grid.Row="0" Text="Morph name must exactly match an imported FBX blendshape." TextWrapping="Wrap" Opacity="0.8" />
+    <StackPanel Grid.Row="1" Spacing="5">
+      <TextBlock Text="Exact morph name" />
+      <TextBox x:Name="NameText" />
+    </StackPanel>
+    <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+      <StackPanel Grid.Column="0" Spacing="5">
+        <TextBlock Text="Category" />
+        <ComboBox x:Name="CategoryBox">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Label}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Spacing="5">
+        <TextBlock Text="Purpose" />
+        <TextBox x:Name="PurposeText" />
+      </StackPanel>
+    </Grid>
+    <CheckBox x:Name="EnabledCheck" Grid.Row="3" Content="Enabled for DAZ Morph Export" VerticalAlignment="Top" />
+    <Grid Grid.Row="4" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+      <TextBlock x:Name="ErrorText" Foreground="#FF7777" VerticalAlignment="Center" TextWrapping="Wrap" />
+      <Button Grid.Column="1" Content="Save entry" Click="SaveClicked" />
+      <Button Grid.Column="2" Content="Cancel" Click="CancelClicked" />
+    </Grid>
+  </Grid>
+</Window>

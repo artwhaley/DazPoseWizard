@@ -6,7 +6,7 @@ namespace DazPose.Tests;
 public sealed class PoseTests
 {
     [LocalDazFixtureFact]
-    public void CherishPoseHasExpectedStaticChannelCountsAndNeutralUnsupportedChannels()
+    public void CherishPoseHasExpectedStaticFigureControlChannels()
     {
         var figure = FixtureData.LoadFigure();
         var pose = FixtureData.LoadPose(figure);
@@ -19,7 +19,9 @@ public sealed class PoseTests
         Assert.Equal(74, pose.Channels.Count(channel => channel.ParsedUrl.Property == "value" && channel.ParsedUrl.LeafProperty == "value"));
         Assert.Equal(97, pose.SkeletalTargetCount);
         Assert.Equal(97, pose.ResolvedSkeletalTargetCount);
-        Assert.Equal(74, pose.NeutralUnsupportedChannels.Count);
+        Assert.Equal(74, pose.FigureControls.Count);
+        Assert.Empty(pose.ActiveFigureControls);
+        Assert.Empty(pose.NeutralUnsupportedChannels);
         Assert.Empty(pose.NonNeutralUnsupportedChannels);
         Assert.All(pose.Channels.Where(channel => channel.TargetBone is not null), channel => Assert.False(channel.UsedIdFallback));
     }
@@ -58,12 +60,13 @@ public sealed class PoseTests
     public void NonNeutralUnsupportedPropertiesAndAnimationAreRejected()
     {
         var basePose = FixtureData.LoadPose();
-        var channel = basePose.Channels.First(channel => channel.ParsedUrl.Property == "value");
-        var activeChannel = channel with { Keys = [new DazPoseKey(0, 0.25f)] };
+        var unsupportedUrl = "name://@selection#test-control:?min/value";
+        var unsupportedChannel = new DazPoseChannel(unsupportedUrl, DazPropertyUrlParser.Parse(unsupportedUrl),
+            [new DazPoseKey(0, 0.25f)], null, false);
         var activePose = new DazPose.Core.DazPose
         {
             FilePath = basePose.FilePath, AssetId = basePose.AssetId,
-            Channels = basePose.Channels.Select(item => ReferenceEquals(item, channel) ? activeChannel : item).ToArray()
+            Channels = basePose.Channels.Append(unsupportedChannel).ToArray()
         };
         var unsupported = Assert.Throws<DazConversionException>(() => PoseConversionService.ValidatePose(activePose));
         Assert.Contains("Unsupported non-neutral channel", unsupported.Message);

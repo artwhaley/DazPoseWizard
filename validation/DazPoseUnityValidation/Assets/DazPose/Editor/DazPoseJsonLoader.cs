@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace DazPose.UnityValidation
@@ -13,10 +14,19 @@ namespace DazPose.UnityValidation
 
             var json = File.ReadAllText(path);
             var definition = JsonUtility.FromJson<DazPoseDefinition>(json);
-            if (definition == null || definition.format != "DazPoseTool" || definition.version != 1)
-                throw new InvalidDataException("The selected file is not a supported DazPoseTool version 1 .dazpose.json.");
-            if (definition.source == null || definition.bones == null || definition.bones.Length == 0)
-                throw new InvalidDataException("The selected .dazpose.json has no source metadata or bones.");
+            if (definition == null || definition.format != "DazPoseTool"
+                || (definition.version != 1 && definition.version != 2))
+                throw new InvalidDataException("The selected file is not a supported DazPoseTool version 1 or 2 .dazpose.json.");
+            var hasActiveFigureControl = definition.version == 2 && (definition.figureControls ?? Array.Empty<DazPoseFigureControl>())
+                .Any(control => control != null && Mathf.Abs(control.value) > 1e-7f);
+            if (definition.source == null || definition.bones == null || (definition.bones.Length == 0 && !hasActiveFigureControl))
+                throw new InvalidDataException("The selected .dazpose.json has no source metadata or supported skeletal/figure-control data.");
+
+            var unsupportedActiveChannel = (definition.poseChannels ?? Array.Empty<DazPoseChannel>())
+                .FirstOrDefault(channel => channel != null && !channel.supported
+                    && (channel.keys ?? Array.Empty<DazPoseKey>()).Any(key => key != null && Mathf.Abs(key.value) > 1e-7f));
+            if (unsupportedActiveChannel != null)
+                throw new InvalidDataException("Canonical pose contains an unsupported non-neutral property '" + unsupportedActiveChannel.url + "'. It cannot be applied or converted to a clip without an explicit mapping.");
 
             foreach (var bone in definition.bones)
             {

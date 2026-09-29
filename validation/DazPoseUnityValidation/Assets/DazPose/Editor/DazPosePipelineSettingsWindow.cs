@@ -101,8 +101,8 @@ namespace DazPose.UnityValidation
             {
                 EditorGUILayout.LabelField("Model asset", assetPath);
                 var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
-                if (importer != null && (importer.animationType != ModelImporterAnimationType.Generic || importer.optimizeGameObjects))
-                    EditorGUILayout.HelpBox("The reference FBX must use Generic rig import with Optimize Game Objects disabled.", MessageType.Error);
+                if (importer != null && (importer.animationType != ModelImporterAnimationType.Generic || importer.optimizeGameObjects || !importer.importBlendShapes))
+                    EditorGUILayout.HelpBox("The reference FBX must use Generic rig import, Optimize Game Objects disabled, and Import BlendShapes enabled.", MessageType.Error);
             }
 
             if (_referenceModel == null)

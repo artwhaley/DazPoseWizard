@@ -53,6 +53,9 @@ namespace DazPose.UnityValidation
         private Transform[] _transforms;
         private TransformSnapshot[] _bindPose;
         private TransformSnapshot[] _sampleRestorePose;
+        private SkinnedMeshRenderer[] _blendShapeRenderers;
+        private BlendShapeSnapshot[] _bindBlendShapes;
+        private BlendShapeSnapshot[] _sampleRestoreBlendShapes;
         private NativeArray<TransformStreamHandle> _transformHandles;
         private NativeArray<DazPoseTransformEndpoint> _sourcePoseBuffer;
         private NativeArray<DazPoseTransformEndpoint> _targetPoseBuffer;
@@ -208,19 +211,23 @@ namespace DazPose.UnityValidation
                 throw new InvalidOperationException("Windup and overshoot require both source and target pose clips.");
 
             CaptureSnapshot(_sampleRestorePose);
+            CaptureBlendShapeSnapshot(_sampleRestoreBlendShapes);
             try
             {
                 RestoreSnapshot(_bindPose);
+                RestoreBlendShapeSnapshot(_bindBlendShapes);
                 source.SampleAnimation(gameObject, PoseSampleTimeSeconds);
                 CopyCurrentPoseTo(_sourcePoseBuffer);
 
                 RestoreSnapshot(_bindPose);
+                RestoreBlendShapeSnapshot(_bindBlendShapes);
                 target.SampleAnimation(gameObject, PoseSampleTimeSeconds);
                 CopyCurrentPoseTo(_targetPoseBuffer);
             }
             finally
             {
                 RestoreSnapshot(_sampleRestorePose);
+                RestoreBlendShapeSnapshot(_sampleRestoreBlendShapes);
             }
         }
 
@@ -280,10 +287,11 @@ namespace DazPose.UnityValidation
         {
             DestroyGraph();
             _animator = GetComponent<Animator>();
-            if (_animator == null) throw new InvalidOperationException("DazPoseBlendPlayer requires an Animator on the Genesis8Female animation root.");
+            if (_animator == null) throw new InvalidOperationException("DazPoseBlendPlayer requires an Animator on the common character binding root.");
 
             EnsureBindPoseSnapshot();
             RestoreSnapshot(_bindPose);
+            RestoreBlendShapeSnapshot(_bindBlendShapes);
             _graph = PlayableGraph.Create("DAZ Pose Blend Player - " + name);
             try
             {
@@ -336,12 +344,17 @@ namespace DazPose.UnityValidation
 
         private void EnsureBindPoseSnapshot()
         {
-            if (_transforms != null && _bindPose != null && _transforms.Length == _bindPose.Length) return;
+            if (_transforms != null && _bindPose != null && _transforms.Length == _bindPose.Length
+                && _blendShapeRenderers != null && _bindBlendShapes != null && _blendShapeRenderers.Length == _bindBlendShapes.Length) return;
 
             _transforms = GetComponentsInChildren<Transform>(true);
             _bindPose = new TransformSnapshot[_transforms.Length];
             _sampleRestorePose = new TransformSnapshot[_transforms.Length];
             CaptureSnapshot(_bindPose);
+            _blendShapeRenderers = GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            _bindBlendShapes = new BlendShapeSnapshot[_blendShapeRenderers.Length];
+            _sampleRestoreBlendShapes = new BlendShapeSnapshot[_blendShapeRenderers.Length];
+            CaptureBlendShapeSnapshot(_bindBlendShapes);
         }
 
         private void CaptureSnapshot(TransformSnapshot[] destination)
@@ -364,6 +377,34 @@ namespace DazPose.UnityValidation
                 item.Transform.localPosition = item.LocalPosition;
                 item.Transform.localRotation = item.LocalRotation;
                 item.Transform.localScale = item.LocalScale;
+            }
+        }
+
+        private void CaptureBlendShapeSnapshot(BlendShapeSnapshot[] destination)
+        {
+            if (destination == null || _blendShapeRenderers == null) return;
+            for (var index = 0; index < _blendShapeRenderers.Length; index++)
+            {
+                var renderer = _blendShapeRenderers[index];
+                if (renderer == null || renderer.sharedMesh == null)
+                {
+                    destination[index] = default;
+                    continue;
+                }
+                var weights = new float[renderer.sharedMesh.blendShapeCount];
+                for (var shape = 0; shape < weights.Length; shape++) weights[shape] = renderer.GetBlendShapeWeight(shape);
+                destination[index] = new BlendShapeSnapshot(renderer, weights);
+            }
+        }
+
+        private static void RestoreBlendShapeSnapshot(BlendShapeSnapshot[] snapshot)
+        {
+            if (snapshot == null) return;
+            foreach (var item in snapshot)
+            {
+                if (item.Renderer == null || item.Renderer.sharedMesh == null
+                    || item.Weights == null || item.Weights.Length != item.Renderer.sharedMesh.blendShapeCount) continue;
+                for (var index = 0; index < item.Weights.Length; index++) item.Renderer.SetBlendShapeWeight(index, item.Weights[index]);
             }
         }
 
@@ -491,6 +532,18 @@ namespace DazPose.UnityValidation
                 LocalPosition = position;
                 LocalRotation = rotation;
                 LocalScale = scale;
+            }
+        }
+
+        private readonly struct BlendShapeSnapshot
+        {
+            public readonly SkinnedMeshRenderer Renderer;
+            public readonly float[] Weights;
+
+            public BlendShapeSnapshot(SkinnedMeshRenderer renderer, float[] weights)
+            {
+                Renderer = renderer;
+                Weights = weights;
             }
         }
     }

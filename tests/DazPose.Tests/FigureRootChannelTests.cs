@@ -133,6 +133,140 @@ public sealed class FigureRootChannelTests
         }
     }
 
+    [Fact]
+    public void NeutralScaleXUsesOneAsNeutralAndRemainsUnsupported()
+    {
+        const string url = "name://@selection/upperTeeth:?scale/x/value";
+        var pose = ParseSyntheticChannel(url, 1f);
+        var channel = Assert.Single(pose.Channels);
+
+        Assert.False(channel.IsSupportedChannel);
+        Assert.Equal(1f, channel.NeutralValue);
+        Assert.Contains(channel, pose.NeutralUnsupportedChannels);
+        Assert.Empty(pose.NonNeutralUnsupportedChannels);
+        PoseConversionService.ValidatePose(pose);
+    }
+
+    [Fact]
+    public void GeneralScaleWithMultipleNeutralKeysIsIgnored()
+    {
+        const string url = "name://@selection/tongue:?scale/general/value";
+        var pose = ParseSyntheticChannel(url, 1f, 1f, 1f);
+        var channel = Assert.Single(pose.Channels);
+
+        Assert.False(channel.IsSupportedChannel);
+        Assert.Contains(channel, pose.NeutralUnsupportedChannels);
+        Assert.Empty(pose.NonNeutralUnsupportedChannels);
+        PoseConversionService.ValidatePose(pose);
+    }
+
+    [Fact]
+    public void ScaleValuesWithinExistingFloatToleranceOfOneAreNeutral()
+    {
+        const string url = "name://@selection/lowerTeeth:?scale/y/value";
+        var pose = ParseSyntheticChannel(url, 0.99999994f);
+        var channel = Assert.Single(pose.Channels);
+
+        Assert.True(channel.IsNeutralValue(channel.Keys[0].Value));
+        Assert.Contains(channel, pose.NeutralUnsupportedChannels);
+        Assert.Empty(pose.NonNeutralUnsupportedChannels);
+        PoseConversionService.ValidatePose(pose);
+    }
+
+    [Fact]
+    public void NonNeutralScaleIsRejectedAndReportsItsNeutralDefault()
+    {
+        const string url = "name://@selection/upperTeeth:?scale/x/value";
+        var pose = ParseSyntheticChannel(url, 1.1f);
+        var channel = Assert.Single(pose.Channels);
+
+        Assert.Contains(channel, pose.NonNeutralUnsupportedChannels);
+        Assert.Empty(pose.NeutralUnsupportedChannels);
+        var error = Assert.Throws<DazConversionException>(() => PoseConversionService.ValidatePose(pose));
+        Assert.Contains(url, error.Message, StringComparison.Ordinal);
+        Assert.Contains("has value 1.1", error.Message, StringComparison.Ordinal);
+        Assert.Contains("Neutral scale is 1", error.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NeutralUnsupportedControlPropertyStillUsesZero()
+    {
+        const string url = "name://@selection#SomeControl:?min/value";
+        var pose = ParseSyntheticChannel(url, 0f);
+        var channel = Assert.Single(pose.Channels);
+
+        Assert.False(channel.IsSupportedChannel);
+        Assert.Equal(0f, channel.NeutralValue);
+        Assert.Contains(channel, pose.NeutralUnsupportedChannels);
+        Assert.Empty(pose.NonNeutralUnsupportedChannels);
+        PoseConversionService.ValidatePose(pose);
+    }
+
+    [Fact]
+    public void ActiveUnsupportedControlPropertyStillFailsSafe()
+    {
+        const string url = "name://@selection#SomeControl:?min/value";
+        var pose = ParseSyntheticChannel(url, 0.5f);
+        var channel = Assert.Single(pose.Channels);
+
+        Assert.Contains(channel, pose.NonNeutralUnsupportedChannels);
+        var error = Assert.Throws<DazConversionException>(() => PoseConversionService.ValidatePose(pose));
+        Assert.Contains(url, error.Message, StringComparison.Ordinal);
+        Assert.Contains("has value 0.5", error.Message, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(0f, false)]
+    [InlineData(0.5f, true)]
+    public void StageFiveFigureControlValueChannelsRemainSupported(float value, bool isActive)
+    {
+        const string url = "name://@selection#SomeControl:?value/value";
+        var pose = ParseSyntheticChannel(url, value);
+        var channel = Assert.Single(pose.Channels);
+
+        Assert.True(channel.IsSupportedFigureControlChannel);
+        Assert.Equal(isActive, pose.ActiveFigureControls.Any(control => control.RawControlId == "SomeControl"));
+        Assert.DoesNotContain(channel, pose.NonNeutralUnsupportedChannels);
+        PoseConversionService.ValidatePose(pose);
+    }
+
+    [LocalDazFixtureFact("ST PD Smirk.duf")]
+    public void StPdSmirkNeutralScaleChannelsDoNotBlockValidation()
+    {
+        var figure = FixtureData.LoadFigure();
+        using var document = DsonFileReader.ReadJson(FixtureData.StPdSmirkPosePath);
+        var pose = DazPoseParser.Parse(FixtureData.StPdSmirkPosePath, document, figure);
+        var neutralScaleChannels = pose.Channels
+            .Where(channel => channel.ParsedUrl.Property == "scale"
+                && channel.Keys.All(key => Math.Abs(key.Value - 1f) <= 1e-7f))
+            .ToArray();
+
+        Assert.NotEmpty(neutralScaleChannels);
+        Assert.All(neutralScaleChannels, channel => Assert.Contains(channel, pose.NeutralUnsupportedChannels));
+        Assert.All(neutralScaleChannels, channel => Assert.DoesNotContain(channel, pose.NonNeutralUnsupportedChannels));
+
+        var output = FixtureData.NewTempDirectory();
+        try
+        {
+            var canonicalPath = Path.Combine(output, "ST PD Smirk.dazpose.json");
+            var failure = Record.Exception(() => PoseConversionService.ConvertCanonical(
+                FixtureData.FigurePath, FixtureData.StPdSmirkPosePath, canonicalPath));
+            if (failure is null)
+            {
+                Assert.True(File.Exists(canonicalPath));
+                return;
+            }
+
+            var conversionError = Assert.IsType<DazConversionException>(failure);
+            Assert.Contains("Unsupported non-neutral channel", conversionError.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain(neutralScaleChannels,
+                channel => conversionError.Message.Contains(channel.Url, StringComparison.Ordinal));
+            Assert.Contains(pose.NonNeutralUnsupportedChannels,
+                channel => conversionError.Message.Contains(channel.Url, StringComparison.Ordinal));
+        }
+        finally { FixtureData.DeleteTempDirectory(output); }
+    }
+
     private static DazPose.Core.DazPose ParseSyntheticTargetlessTransform(string property, string axis, float value)
     {
         var url = $"name://@selection:?{property}/{axis}/value";
@@ -148,6 +282,14 @@ public sealed class FigureRootChannelTests
         });
         using var document = JsonDocument.Parse(jsonText);
         return DazPoseParser.Parse("synthetic-root-channel.duf", document, CreateMinimalFigure());
+    }
+
+    private static DazPose.Core.DazPose ParseSyntheticChannel(string url, params float[] values)
+    {
+        var keys = values.Select((value, index) => new[] { (float)index, value }).ToArray();
+        var jsonText = JsonSerializer.Serialize(new { scene = new { animations = new[] { new { url, keys } } } });
+        using var document = JsonDocument.Parse(jsonText);
+        return DazPoseParser.Parse("synthetic-unsupported-channel.duf", document, CreateMinimalFigure());
     }
 
     private static DazFigureDefinition CreateMinimalFigure()

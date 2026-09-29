@@ -9,7 +9,7 @@ namespace DazPose.App.Services;
 /// <summary>Persistent, metadata-only index for read-only DAZ content libraries.</summary>
 public sealed class LibraryIndexService
 {
-    private const int FolderScanVersion = 2;
+    private const int FolderScanVersion = 3;
     private readonly string _databasePath;
     private readonly object _databaseWriteLock = new();
 
@@ -152,7 +152,7 @@ public sealed class LibraryIndexService
             try
             {
                 using var document = DsonFileReader.ReadJson(fullPath);
-                if (!TryReadPoseMetadata(document.RootElement, out var assetId, out var displayName))
+                if (!TryReadPresetMetadata(document.RootElement, out var assetId, out var displayName, out var assetType))
                 {
                     if (cached.ContainsKey(fullPath)) removals.Add(fullPath);
                     ignored++;
@@ -160,7 +160,7 @@ public sealed class LibraryIndexService
                 }
 
                 indexed++;
-                changes.Add(CreateIndexedPose(root, fullPath, fileInfo, previewPath, previewTicks, assetId, displayName));
+                changes.Add(CreateIndexedPose(root, fullPath, fileInfo, previewPath, previewTicks, assetId, displayName, assetType));
             }
             catch (Exception ex) when (ex is DazConversionException or IOException or UnauthorizedAccessException or JsonException or InvalidOperationException)
             {
@@ -237,7 +237,7 @@ public sealed class LibraryIndexService
             try
             {
                 using var document = DsonFileReader.ReadJson(fullPath);
-                if (!TryReadPoseMetadata(document.RootElement, out var assetId, out var displayName))
+                if (!TryReadPresetMetadata(document.RootElement, out var assetId, out var displayName, out var assetType))
                 {
                     if (cached.ContainsKey(fullPath)) removals.Add(fullPath);
                     ignored++;
@@ -245,7 +245,7 @@ public sealed class LibraryIndexService
                 else
                 {
                     indexed++;
-                    changed.Add(CreateIndexedPose(root, fullPath, fileInfo, previewPath, previewTicks, assetId, displayName));
+                    changed.Add(CreateIndexedPose(root, fullPath, fileInfo, previewPath, previewTicks, assetId, displayName, assetType));
                 }
             }
             catch (Exception ex) when (ex is DazConversionException or IOException or UnauthorizedAccessException or JsonException or InvalidOperationException)
@@ -525,7 +525,7 @@ public sealed class LibraryIndexService
     }
 
     private static IndexedPose CreateIndexedPose(string root, string fullPath, FileInfo fileInfo,
-        string? previewPath, long previewTicks, string assetId, string displayName)
+        string? previewPath, long previewTicks, string assetId, string displayName, string assetType)
     {
         var folder = Path.GetDirectoryName(fullPath)!;
         var relativeFolder = Path.GetRelativePath(root, folder).Replace('\\', '/');
@@ -539,7 +539,7 @@ public sealed class LibraryIndexService
             fileStem,
             displayName,
             assetId,
-            "preset_pose",
+            assetType,
             previewPath,
             fileInfo.Length,
             fileInfo.LastWriteTimeUtc.Ticks)
@@ -595,13 +595,17 @@ public sealed class LibraryIndexService
         return connection;
     }
 
-    private static bool TryReadPoseMetadata(JsonElement root, out string assetId, out string displayName)
+    private static bool TryReadPresetMetadata(JsonElement root, out string assetId, out string displayName, out string assetType)
     {
         assetId = string.Empty;
         displayName = string.Empty;
+        assetType = string.Empty;
         if (!root.TryGetProperty("asset_info", out var info) || info.ValueKind != JsonValueKind.Object) return false;
         if (!info.TryGetProperty("type", out var type) || type.ValueKind != JsonValueKind.String
-            || !string.Equals(type.GetString(), "preset_pose", StringComparison.OrdinalIgnoreCase)) return false;
+            || type.GetString() is not { } actualType
+            || !(string.Equals(actualType, "preset_pose", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(actualType, "preset_shape", StringComparison.OrdinalIgnoreCase))) return false;
+        assetType = actualType;
         assetId = ReadString(info, "id") ?? string.Empty;
         displayName = ReadString(info, "label") ?? ReadString(info, "name")
             ?? ReadString(root, "label") ?? ReadString(root, "name") ?? string.Empty;

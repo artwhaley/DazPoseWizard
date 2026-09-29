@@ -1,6 +1,6 @@
 # DAZ Pose Unity validation harness
 
-This small Unity 6 project checks the canonical `.dazpose.json` against the actual neutral Genesis 8 Female skeleton imported from DAZ's `lara.fbx`. It does not use Humanoid retargeting, Blender, or BVH. The `.dazpose.json` keeps DAZ centimeters and the converter's evaluated rest and pose transforms; the Unity adapter derives one DAZ-to-Unity 3×3 world basis from corresponding neutral skeleton positions and converts translation deltas from centimeters to meters. A reflected basis is allowed only when the imported bone positions establish it in the fit.
+This small Unity 6 project checks canonical `.dazpose.json` files against the actual Genesis 8 Female character imported from DAZ's `lara.fbx`. It does not use Humanoid retargeting, Blender, or BVH. The canonical file keeps DAZ centimeters and evaluated rest and pose transforms; format v2 also retains static figure controls without Unity renderer paths. Unity separates the figure `SkeletonRoot` from the common character `BindingRoot`, then resolves each control by exact imported name or the DAZ figure-root prefix Unity adds during FBX import.
 
 ## Local inputs
 
@@ -17,18 +17,32 @@ Copy-Item '.\output\Cherish Genesis 8 Female 16.dazpose.json' .\validation\DazPo
 
 ## Browser drag-to-Unity imports
 
-The editor scripts in this harness also exercise the Phase 4 browser bridge. In Unity, choose **Tools > DAZ Pose > Pipeline Settings** and assign the neutral `Assets/TestCharacter/lara.fbx` model to **G8F Reference Model**. Its importer should be **Generic** with **Optimize Game Objects** disabled. The selected model GUID is stored in `ProjectSettings/DazPoseWizardSettings.json`.
+The editor scripts in this harness also exercise the browser bridge. In Unity, choose **Tools > DAZ Pose > Pipeline Settings** and assign `Assets/TestCharacter/lara.fbx` to **G8F Reference Model**. Its importer must be **Generic**, have **Optimize Game Objects** disabled, and have **Import BlendShapes** enabled. The selected model GUID is stored in `ProjectSettings/DazPoseWizardSettings.json`.
 
-In DazPoseWizard, open **File > Settings…** and set the DAZ content root and `Genesis8Female.dsf`, set this harness as the Unity project root, and choose separate Assets-relative roots such as `Assets/Animations/DazPoses` and `Assets/DazPoseImports`. Save, then drag one or more pose cards onto a folder in **UNITY POSE ASSETS**. The app writes only canonical JSON into the mirrored import hierarchy; the source `.duf` and preview image stay in the DAZ library.
+In DazPoseWizard, open **File > Settings…** and set the DAZ content root and `Genesis8Female.dsf`, set this harness as the Unity project root, and choose separate Assets-relative roots such as `Assets/Animations/DazPoses` and `Assets/DazPoseImports`. Save, then drag pose or shape preset cards onto a folder in **UNITY POSE ASSETS**. The app writes canonical JSON into the mirrored import hierarchy; source `.duf` files and preview images stay in the DAZ library. Active figure controls are added to `.dazposewizard/required-morphs.json` at the Unity project root.
 
-Unity detects imported canonical files after the AssetDatabase callback settles, then processes them one at a time from an isolated preview scene. **Tools > DAZ Pose > Process Pending Browser Imports** scans for new, changed, failed, or missing-output jobs. Final clips use the canonical file's basename in the matching output folder. Reports and per-job status stay outside `Assets` under `.dazposewizard`; status JSON is written atomically for the browser to observe. The processor calls the same `TryResolvePose` adapter and `DazPoseAnimationClipGenerator` used by the manual converter, including clip parity checks and in-place GUID-preserving regeneration.
+In DazPoseWizard, open **Tools > Manage Always-Export Morphs…** to edit the project's categorized pins. Generate `.dazposewizard/DazPoseWizard-MorphExportRules.csv` with **Tools > Generate DAZ Morph Export Rules**. The CSV unions enabled pins with morphs required by converted content, writes each exact name once, and ends with one `Anything,Bake` fallback. Removing or disabling a pin does not drop a morph still required by converted content. Import the generated CSV into DAZ Studio's FBX Morph Export Rules UI, export the reduced `G8F-Base/lara.fbx`, then replace `Assets/TestCharacter/lara.fbx` while preserving its `.meta`. Reimport the FBX; the project postprocessor enables blendshapes and retries waiting browser imports. The DAZ export stays a manual step, and always-export pins do not create `.anim` clips.
+
+Unity detects imported canonical files after the AssetDatabase callback settles, then processes them one at a time from an isolated preview scene. **Tools > DAZ Pose > Process Pending Browser Imports** retries new, changed, failed, or missing-output jobs, including jobs that were waiting for a refreshed reference. Final clips use the canonical file's basename in the matching output folder. Reports, manifest, and per-job status stay outside `Assets` under `.dazposewizard`. The processor calls the same `TryResolvePose` adapter and `DazPoseAnimationClipGenerator` used by the manual converter, including Transform/blendshape parity checks and in-place GUID-preserving regeneration.
 
 The automatic pipeline does not require a selected character or open validation scene. It does not parse DAZ source files or modify scene objects. If the reference model is missing or a pose cannot resolve against G8F, that job receives a **Failed** status with the error in the Unity Console and browser card; the rest of the queue continues.
+
+### Stage 5 morph workflow
+
+The browser indexes both `preset_pose` and `preset_shape`. Converting a shape preset preserves its active DAZ figure control in canonical v2 and adds the decoded name once to the project Required Morph Manifest. Manage approved project pins in **Tools > Manage Always-Export Morphs…**; categories are Breathing, Blink, Body Customization, Lip Sync, and Manual. Generate the DAZ Morph Export Rules CSV after editing pins. The project-level manifest is the source for both content-required names and always-export pins; names are exact and no rule is typed by hand.
+
+After the user imports the CSV into DAZ Studio and exports the reduced `G8F-Base/lara.fbx`, copy it over the existing Unity reference at `Assets/TestCharacter/lara.fbx` without changing its `.meta`. The project postprocessor requires **Generic**, Optimize Game Objects off, and Import BlendShapes on. Unity preserves the GUID-based reference setting and retries pending/failed canonical imports after the FBX refresh; the explicit retry command is **Tools > DAZ Pose > Process Pending Browser Imports**.
+
+Use **Tools > DAZ Pose > Validate Always-Export Morphs** to check enabled pins against the configured reference model after refresh. Its compact Console result lists Present, Missing, and Ambiguous totals and missing names; the complete report is `TestOutput/always-export-morph-validation.json`. Multiple renderers may each carry a valid shape. Body categories require the match on the identified figure body renderer, so a clothing- or hair-only match remains Missing.
+
+The shared resolved pose separates `SkeletonRoot` (`Genesis8Female`) from `BindingRoot` (the selected character root). Skeletal transform curves and sibling renderer blendshape curves are relative to `BindingRoot`. Each active DAZ control first matches its exact imported blendshape name, then checks the exact `<figure-root-name>__<control-name>` name Unity imports from a DAZ FBX. Matches on multiple renderers are emitted as multiple curves. Missing controls and ambiguous duplicate shapes on one renderer fail clearly. Each renderer uses its mesh's highest positive frame weight as the full DAZ value, so the same DAZ value maps against the imported frame data instead of assuming every mesh uses a 100 frame.
+
+Choose **Tools > DAZ Pose > Inspect Selected Character** to write `TestOutput/lara-unity-skeleton.json`. The report includes renderer paths, mesh names, exact blendshape names and indices, frame counts, and frame weights. **Tools > DAZ Pose > Run Stage 5 Morph Self Tests** covers shape-only clips, mixed skeletal/morph clips, two-renderer resolution, untouched unrelated renderers, missing-morph diagnostics, and direct/clip parity.
 
 ## Open and inspect
 
 1. Open `validation\DazPoseUnityValidation` in Unity `6000.5.9f1`.
-2. Wait for the FBX and texture import to finish. The project AssetPostprocessor sets `lara.fbx` to **Generic** and turns **Optimize Game Objects** off. It leaves the imported skeleton and FBX axis/unit settings otherwise untouched.
+2. Wait for the FBX and texture import to finish. The project AssetPostprocessor sets `lara.fbx` to **Generic**, turns **Optimize Game Objects** off, and enables **Import BlendShapes**. It leaves the imported skeleton and FBX axis/unit settings otherwise untouched.
 3. The committed `Assets\Scenes\PoseValidation.unity` already contains a Lara instance, neutral rest snapshot, camera, light, and floor. Choose **Tools > DAZ Pose > Open Validation Scene** to load it and select Lara. If you need to recreate it from the local FBX, choose **Tools > DAZ Pose > Setup Validation Scene**.
 4. Confirm **Lara** is selected in the Hierarchy.
 5. Choose **Tools > DAZ Pose > Inspect Selected Character**. Confirm the Console reports all 13 expected skeleton names, including `hip`, `pelvis`, `lThighBend`, `lShin`, `lFoot`, `rThighBend`, `rShin`, `rFoot`, and `head`. This FBX has duplicate hip/spine/head paths under the eyelashes mesh; the tool will warn and disambiguate them by the exact DAZ parent hierarchy.
@@ -39,7 +53,7 @@ The automatic pipeline does not require a selected character or open validation 
 
 1. Keep **Lara** selected and choose **Tools > DAZ Pose > Apply Pose to Selected Character**.
 2. In the file picker, select `Assets\TestData\Cherish Genesis 8 Female 16.dazpose.json`.
-3. The Console reports the pose/channel/bone counts, exact-name or exact-ID resolution totals, and neutral-rest landmark-fit error. The detailed matrix and per-bone results are written to `TestOutput\pose-application-report.json`.
+3. The Console reports pose/channel/bone counts, active figure controls, exact-name or exact-ID resolution totals, and neutral-rest landmark-fit error. The detailed matrix and per-bone results are written to `TestOutput\pose-application-report.json`.
 4. If all active targets resolve and the neutral rest fit is within 20 mm RMS, Lara updates in the scene to the authored static Cherish pose. Inspect the overall body articulation first, then limbs and fingers. This first check only proves the visible application path is working; it does not establish fidelity against DAZ's posed reference export.
 5. Use **Tools > DAZ Pose > Restore Captured Rest Pose** or Unity **Edit > Undo Apply DAZ Pose** to return the character to its imported neutral pose. The captured neutral transforms live on the Lara scene object and persist with the scene.
 
@@ -61,8 +75,8 @@ The user confirmed the Phase 2 native clip, editor preview, and Play Mode animat
 2. Choose **Tools > DAZ Pose > Generate AnimationClip from Pose**.
 3. Select the canonical `*.dazpose.json` file. Unity resolves the figure on a hidden temporary copy restored to the captured import rest pose, leaving the visible Lara unchanged.
 4. If the same clip already exists, confirm **Regenerate**. Unity replaces it deterministically only after this explicit prompt.
-5. Unity writes a non-Legacy, one-second clip to `Assets/Generated/DazPoses/G8F/<pose name>.anim`, plus a neighboring `<pose name>.report.json` with source provenance, stable bone paths, emitted properties, curve counts, and parity errors.
-6. Inspect the Console summary. Rotation data uses complete `m_LocalRotation.x/y/z/w` quaternion curves. Local position curves are emitted only for resolved positions changed by this pose. The character/scene placement root is not a binding target.
+5. Unity writes a non-Legacy, one-second clip to `Assets/Generated/DazPoses/G8F/<pose name>.anim`, plus a neighboring `<pose name>.report.json` with source provenance, skeleton and binding roots, stable bone and renderer paths, exact blendshape names/frame data, curve counts, and parity errors.
+6. Inspect the Console summary. Rotation data uses complete `m_LocalRotation.x/y/z/w` quaternion curves. Local position curves are emitted only for resolved positions changed by this pose. Shape-only clips may contain no Transform curves. Renderer and bone paths are relative to the common character `BindingRoot`.
 
 The Console reports and adjacent JSON report include the exact clip path. Generated assets are local outputs and are ignored by Git in this validation harness.
 
@@ -71,7 +85,7 @@ The Console reports and adjacent JSON report include the exact clip path. Genera
 1. Select **Lara** in the Hierarchy.
 2. Choose **Tools > DAZ Pose > Preview AnimationClip on Selected Character**.
 3. In the file picker, choose the generated `.anim` under `Assets/Generated/DazPoses/G8F/`.
-4. Unity restores the captured import rest transforms and samples the clip at 0.5 seconds relative to the stable `Genesis8Female` figure root.
+4. Unity restores the captured import rest Transform and blendshape state and samples the clip at 0.5 seconds relative to the common character `BindingRoot`.
 5. Choose **Tools > DAZ Pose > Stop Preview / Restore Pose**. Unity exits its Animation Mode and restores the pre-preview rest state.
 
 For a direct-versus-clip visual comparison, first apply the same `.dazpose.json` with **Apply Pose to Selected Character** and inspect Lara. Then preview the corresponding `.anim`. Stop the preview when finished.
@@ -79,7 +93,7 @@ For a direct-versus-clip visual comparison, first apply the same `.dazpose.json`
 ## Play Mode smoke test
 
 1. Select **Lara** and choose **Tools > DAZ Pose > Run Play Mode AnimationClip Smoke Test**.
-2. Select the generated `.anim` asset. Unity adds a validation-only Animator and Playables driver to the stable `Genesis8Female` root and enters Play Mode.
+2. Select the generated `.anim` asset. Unity adds a validation-only Animator and Playables driver to the common character `BindingRoot` and enters Play Mode.
 3. Confirm the Console prints `PASS DAZ Pose runtime smoke test` with low local transform errors. The static clip stays active while Play Mode is running.
 4. Stop Play Mode. The temporary driver and an Animator added by the validation command are removed automatically.
 
@@ -87,7 +101,7 @@ The smoke test uses a `PlayableGraph` and `AnimationClipPlayable`; it does not u
 
 ## Automated Phase 2 validation
 
-From Unity batch mode, `DazPose.UnityValidation.DazPoseEditorCommands.RunBatchValidation` runs the nine adapter tests, refactored direct-apply regression, native clip generation, binding inspection, and parity checks at 0.0, 0.5, and 1.0 seconds for every `*.dazpose.json` currently present in `Assets/TestData`.
+From Unity batch mode, `DazPose.UnityValidation.DazPoseEditorCommands.RunBatchValidation` runs the adapter and Stage 5 morph self-tests, direct-apply regression, native clip generation, binding inspection, and parity checks at 0.0, 0.5, and 1.0 seconds for every `*.dazpose.json` currently present in `Assets/TestData`.
 
 `DazPose.UnityValidation.DazPoseEditorCommands.RunBatchPlayableSmokeTest` runs that suite and then enters Play Mode to verify Unity's Animator/Playables path. The editor monitor exits batch mode only after the runtime driver passes, and returns a failure exit code on a parity or timeout error.
 
@@ -95,7 +109,7 @@ The repository currently contains one local pose fixture (`Cherish Genesis 8 Fem
 
 ## Phase 3 runtime pose blending
 
-This experiment blends ordinary sparse G8F `.anim` pose clips through a two-input Playables mixer on the stable `Genesis8Female` root. It does not use BVH, retargeting, or an Animator Controller state machine. The Animator's root motion is disabled by the setup command; Lara remains the outer scene-placement object.
+This experiment blends ordinary sparse G8F `.anim` pose clips through a two-input Playables mixer on the common character `BindingRoot`. Transform and blendshape curves use the same native AnimationClip mixer. It does not use BVH, retargeting, or an Animator Controller state machine. The Animator's root motion is disabled by the setup command; Lara remains the outer scene-placement object.
 
 ### Prepare three poses
 
@@ -106,7 +120,7 @@ This experiment blends ordinary sparse G8F `.anim` pose clips through a two-inpu
 
 ### Configure and start the demo
 
-1. Select **Lara**, then choose **Tools > DAZ Pose > Setup Runtime Blend Demo**. The command puts or reuses the Animator, `DazPoseBlendPlayer`, and `DazPoseBlendDemo` on Lara's direct child `Genesis8Female` animation root. It selects that root afterward.
+1. Select **Lara**, then choose **Tools > DAZ Pose > Setup Runtime Blend Demo**. The command puts or reuses the Animator, `DazPoseBlendPlayer`, and `DazPoseBlendDemo` on Lara's common `BindingRoot`. It selects that root afterward.
 2. In the Inspector, find **Daz Pose Blend Demo**. Assign the generated `.anim` assets to **Pose A**, **Pose B**, and optionally **Pose C** by dragging them from the Project window. Leave Pose C empty for a two-pose test. Set **Blend Ease**; the default is SmoothStep.
 3. Save the scene with **Ctrl+S** while still in Edit Mode.
 4. Click Unity's **Play** button. The character snaps to Pose A as its known starting pose; there is no neutral-to-A blend.
@@ -128,7 +142,7 @@ The current transition's captured settings appear as **Active**; the next reques
 
 ### Endpoint and repeated-transition check
 
-With Pose A and Pose B assigned and no blend in progress, click **F5 - Check endpoints and repeat A/B 20 times** in the Game view panel. This checks trajectory math, shaped A/B endpoints against direct clip samples, captured active and queued options, Lara's outer world transform, mixer weight limits, 20 repeated transitions, and two graph disable/enable cycles. The Console should print `PASS DAZ Pose runtime blend validation`. It is a brief validation run and returns to Pose A.
+With Pose A and Pose B assigned and no blend in progress, click **F5 - Check endpoints and repeat A/B 20 times** in the Game view panel. This checks trajectory math, shaped A/B Transform and blendshape endpoints against direct clip samples, blendshape interpolation when the clips differ, captured active and queued options, Lara's outer world transform, mixer weight limits, 20 repeated transitions, and two graph disable/enable cycles. The Console should print `PASS DAZ Pose runtime blend validation`. It is a brief validation run and returns to Pose A.
 
 ### Compare sparse bindings after a visible snap
 

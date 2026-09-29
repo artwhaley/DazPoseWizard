@@ -68,12 +68,17 @@ namespace DazPose.UnityValidation
                 return;
             }
 
+            var referenceModel = DazPosePipelineSettings.LoadReferenceModel(out var referenceAssetPath);
+            var referenceWasImported = referenceModel != null && importedAssets.Any(importedPath =>
+                string.Equals(NormalizeAssetPath(importedPath), referenceAssetPath.Replace('\\', '/'), StringComparison.OrdinalIgnoreCase));
+
             foreach (var importedPath in importedAssets)
             {
                 var assetPath = NormalizeAssetPath(importedPath);
                 if (assetPath.EndsWith(CanonicalSuffix, StringComparison.OrdinalIgnoreCase)
                     && IsWithinRoot(assetPath, importRoot)) Enqueue(assetPath, false);
             }
+            if (referenceWasImported) Reconcile(false, true);
         }
 
         private static void ReconcileAtStartup()
@@ -351,8 +356,8 @@ namespace DazPose.UnityValidation
         private static void ValidateReferenceImporter(string assetPath)
         {
             var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
-            if (importer != null && (importer.animationType != ModelImporterAnimationType.Generic || importer.optimizeGameObjects))
-                throw new InvalidOperationException("The G8F reference FBX must import as Generic with Optimize Game Objects off. Reimport the model after changing its import settings.");
+            if (importer == null || importer.animationType != ModelImporterAnimationType.Generic || importer.optimizeGameObjects || !importer.importBlendShapes)
+                throw new InvalidOperationException("The G8F reference FBX must import as Generic, with Optimize Game Objects off and Import BlendShapes enabled. Reimport the model after changing its import settings.");
         }
 
         private static bool IsG8fPose(DazPoseDefinition definition)

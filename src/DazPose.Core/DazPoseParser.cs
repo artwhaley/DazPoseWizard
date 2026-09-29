@@ -38,7 +38,8 @@ public static class DazPropertyUrlParser
             controlId,
             parts[0],
             parts.Length > 1 ? parts[1] : null,
-            parts[^1]);
+            parts[^1],
+            propertyPath);
     }
 }
 
@@ -110,7 +111,25 @@ public static class DazPoseParser
                 if (parsed.IsSelectedFigureRoot && (parsed.Property is "rotation" or "translation"))
                     diagnostics.Add($"Recognized targetless selected-figure {parsed.Property} channel '{url}' as an unsupported figure-root property.");
 
-                channels.Add(new DazPoseChannel(url, parsed, keys, targetBone, usedIdFallback));
+                DazFigureControlValue? figureControl = null;
+                if (parsed.IsStaticFigureControlValueAddress
+                    && parsed.Property == "value"
+                    && parsed.Axis == "value"
+                    && parsed.LeafProperty == "value"
+                    && keys.Count == 1)
+                {
+                    var rawControlId = parsed.ControlId!;
+                    figureControl = new DazFigureControlValue(
+                        url,
+                        rawControlId,
+                        Uri.UnescapeDataString(rawControlId),
+                        keys[0].Value);
+                }
+
+                channels.Add(new DazPoseChannel(url, parsed, keys, targetBone, usedIdFallback)
+                {
+                    FigureControl = figureControl
+                });
             }
 
             return new DazPose
@@ -128,10 +147,15 @@ public static class DazPoseParser
         }
     }
 
-    private static float Number(JsonElement value) => value.ValueKind switch
+    private static float Number(JsonElement value)
     {
-        JsonValueKind.Number => value.GetSingle(),
-        JsonValueKind.String when float.TryParse(value.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) => parsed,
-        _ => throw new FormatException("Expected a numeric key value.")
-    };
+        var number = value.ValueKind switch
+        {
+            JsonValueKind.Number => value.GetSingle(),
+            JsonValueKind.String when float.TryParse(value.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) => parsed,
+            _ => throw new FormatException("Expected a numeric key value.")
+        };
+        if (!float.IsFinite(number)) throw new FormatException("Expected a finite numeric key value.");
+        return number;
+    }
 }

@@ -13,6 +13,10 @@
         <MenuItem Header="E_xit" Click="ExitClicked" />
       </MenuItem>
       <MenuItem Header="_Tools">
+        <MenuItem Header="Manage Always-Export Morphs…" Click="ManageAlwaysExportMorphsClicked" />
+        <MenuItem Header="Generate DAZ Morph Export Rules" Click="GenerateMorphExportRulesClicked" />
+        <MenuItem Header="Open DAZ Morph Export Rules Folder" Click="OpenMorphExportRulesFolderClicked" />
+        <Separator />
         <MenuItem Header="Refresh library and Unity status" Click="RefreshClicked" />
         <MenuItem Header="Retry failed conversions" Click="RetryFailedClicked" />
         <MenuItem Header="Clear completed queue items" Click="ClearQueueClicked" />
@@ -70,7 +74,7 @@
           <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="8">
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
               <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                <TextBlock Text="POSE PREVIEWS" FontSize="14" FontWeight="Bold" />
+                <TextBlock Text="DAZ PRESETS" FontSize="14" FontWeight="Bold" />
                 <TextBlock Text="{Binding PageSummary}" Opacity="0.65" />
               </StackPanel>
               <TextBlock Grid.Column="1" Text="Drag selected poses to a Unity destination folder →" Opacity="0.7" VerticalAlignment="Center" />
@@ -100,7 +104,7 @@
                           <Border Height="360" Background="#333840" CornerRadius="4" ClipToBounds="True">
                             <Grid>
                               <Image Source="{Binding PreviewImage}" Stretch="Uniform" Opacity="{Binding ThumbnailOpacity}" />
-                              <TextBlock Text="DAZ POSE" Opacity="0.35" HorizontalAlignment="Center" VerticalAlignment="Center"
+                              <TextBlock Text="{Binding AssetTypeLabel}" Opacity="0.35" HorizontalAlignment="Center" VerticalAlignment="Center"
                                          IsHitTestVisible="False" IsVisible="{Binding HasNoPreview}" />
                             </Grid>
                           </Border>
@@ -113,7 +117,7 @@
                       <Border Grid.Row="0" Background="#333840" CornerRadius="3" ClipToBounds="True">
                         <Grid>
                           <Image Source="{Binding PreviewImage}" Stretch="UniformToFill" Opacity="{Binding ThumbnailOpacity}" />
-                          <TextBlock Text="DAZ POSE" Opacity="0.35" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" IsVisible="{Binding HasNoPreview}" />
+                          <TextBlock Text="{Binding AssetTypeLabel}" Opacity="0.35" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" IsVisible="{Binding HasNoPreview}" />
                           <Border Background="#AA1F2329" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" CornerRadius="3" Padding="4,2"
                                   IsVisible="{Binding IsConverted}">
                             <TextBlock Text="✓" Foreground="#63D297" FontWeight="Bold" />

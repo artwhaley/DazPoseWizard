@@ -39,11 +39,18 @@ public sealed record DazPropertyUrl(
     string? ControlId,
     string Property,
     string? Axis,
-    string LeafProperty)
+    string LeafProperty,
+    string? PropertyPath = null)
 {
     public bool IsSelectedFigureRoot => Address == "@selection" && TargetNodeName is null && ControlId is null;
     public bool IsFigureControlAddress => ControlId is not null;
+    public bool IsStaticFigureControlValueAddress => AddressScheme == "name"
+        && IsFigureControlAddress
+        && !string.IsNullOrWhiteSpace(ControlId)
+        && string.Equals(PropertyPath, "value/value", StringComparison.Ordinal);
 }
+
+public sealed record DazFigureControlValue(string SourceUrl, string RawControlId, string DecodedControlName, float Value);
 
 public sealed record DazPoseChannel(
     string Url,
@@ -52,11 +59,18 @@ public sealed record DazPoseChannel(
     DazBoneDefinition? TargetBone,
     bool UsedIdFallback)
 {
+    private const float NeutralityTolerance = 1e-7f;
+
     public bool IsSupportedSkeletalChannel => TargetBone is not null
         && ParsedUrl.Property is "rotation" or "translation"
         && ParsedUrl.Axis is "x" or "y" or "z"
         && ParsedUrl.LeafProperty == "value";
+    public DazFigureControlValue? FigureControl { get; init; }
+    public bool IsSupportedFigureControlChannel => FigureControl is not null;
+    public bool IsSupportedChannel => IsSupportedSkeletalChannel || IsSupportedFigureControlChannel;
     public bool IsSkeletalProperty => ParsedUrl.Property is "rotation" or "translation";
+    public float NeutralValue => ParsedUrl.Property == "scale" ? 1f : 0f;
+    public bool IsNeutralValue(float value) => Math.Abs(value - NeutralValue) <= NeutralityTolerance;
     public string TargetDescription => TargetBone is null ? ParsedUrl.Address : $"{TargetBone.Name} ({TargetBone.Id})";
 }
 
@@ -66,15 +80,23 @@ public sealed class DazPose
     public required string AssetId { get; init; }
     public required IReadOnlyList<DazPoseChannel> Channels { get; init; }
     public IReadOnlyList<string> Diagnostics { get; init; } = Array.Empty<string>();
+    public IReadOnlyList<DazFigureControlValue> FigureControls => Channels
+        .Where(channel => channel.FigureControl is not null)
+        .Select(channel => channel.FigureControl!)
+        .ToArray();
+    public IReadOnlyList<DazFigureControlValue> ActiveFigureControls => Channels
+        .Where(channel => channel.FigureControl is not null && !channel.IsNeutralValue(channel.FigureControl.Value))
+        .Select(channel => channel.FigureControl!)
+        .ToArray();
     public string PoseName => Path.GetFileNameWithoutExtension(FilePath);
     public int SkeletalTargetCount => Channels.Where(channel => channel.IsSkeletalProperty && channel.TargetBone is not null)
         .Select(channel => channel.TargetBone!.Id).Distinct(StringComparer.Ordinal).Count();
     public int ResolvedSkeletalTargetCount => SkeletalTargetCount;
-    public IReadOnlyList<DazPoseChannel> UnsupportedChannels => Channels.Where(channel => !channel.IsSupportedSkeletalChannel).ToArray();
+    public IReadOnlyList<DazPoseChannel> UnsupportedChannels => Channels.Where(channel => !channel.IsSupportedChannel).ToArray();
     public IReadOnlyList<DazPoseChannel> NeutralUnsupportedChannels => UnsupportedChannels
-        .Where(channel => channel.Keys.All(key => Math.Abs(key.Value) <= 1e-7f)).ToArray();
+        .Where(channel => channel.Keys.All(key => channel.IsNeutralValue(key.Value))).ToArray();
     public IReadOnlyList<DazPoseChannel> NonNeutralUnsupportedChannels => UnsupportedChannels
-        .Where(channel => channel.Keys.Any(key => Math.Abs(key.Value) > 1e-7f)).ToArray();
+        .Where(channel => channel.Keys.Any(key => !channel.IsNeutralValue(key.Value))).ToArray();
 }
 
 public sealed record EvaluatedBonePose(

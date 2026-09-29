@@ -16,6 +16,8 @@ namespace DazPose.UnityValidation
         private const float PositionToleranceMeters = 1e-5f;
         private const float RotationToleranceDegrees = 0.001f;
         private const float ScaleTolerance = 1e-5f;
+        private const float BlendShapeWeightTolerance = 1e-3f;
+        private const float BlendShapeBlendTolerance = 0.05f;
 
         public DazPoseBlendPlayer player;
         public AnimationClip poseA;
@@ -27,6 +29,7 @@ namespace DazPose.UnityValidation
         [Range(0f, 0.30f)] public float overshootFraction;
 
         private LocalTransformState[] _startingPose;
+        private LocalBlendShapeState[] _startingBlendShapes;
         private Transform _outerPlacementRoot;
         private Vector3 _outerWorldPosition;
         private Quaternion _outerWorldRotation;
@@ -45,6 +48,7 @@ namespace DazPose.UnityValidation
             _outerPlacementRoot = transform.parent;
             CaptureOuterPlacement();
             _startingPose = CaptureLocalPose();
+            _startingBlendShapes = CaptureLocalBlendShapes();
             _blendDurationInput = blendDurationSeconds.ToString("0.##", CultureInfo.InvariantCulture);
 
             if (poseA == null)
@@ -172,31 +176,38 @@ namespace DazPose.UnityValidation
             ValidateTrajectoryMath(failures);
             var referenceA = SampleReferencePose(poseA);
             var referenceB = SampleReferencePose(poseB);
-            RestorePose(_startingPose);
+            var morphReferenceA = SampleReferenceBlendShapes(poseA);
+            var morphReferenceB = SampleReferenceBlendShapes(poseB);
+            var checksMorphBlend = MorphStatesDiffer(morphReferenceA, morphReferenceB);
+            RestoreStartingPose();
 
             var validationOptions = new DazPoseTransitionOptions(ValidationBlendSeconds, blendEase, 0.08f, 0.10f);
             player.SetPose(poseA, new DazPoseTransitionOptions(0f, blendEase, 0f, 0f));
             yield return new WaitForEndOfFrame();
             CheckEndpoint("Pose A initial endpoint", referenceA, failures);
+            CheckBlendShapeEndpoint("Pose A initial endpoint", morphReferenceA, failures);
             CheckOuterPlacement("Pose A initial endpoint", failures);
 
             var instantShapedOptions = new DazPoseTransitionOptions(0f, blendEase, 0.10f, 0.10f);
             player.SetPose(poseB, instantShapedOptions);
             yield return new WaitForEndOfFrame();
             CheckEndpoint("Zero-duration shaped Pose B endpoint", referenceB, failures);
+            CheckBlendShapeEndpoint("Zero-duration shaped Pose B endpoint", morphReferenceB, failures);
             if (player.IsBlending || player.TargetPose != null)
                 failures.Add("A zero-duration request entered a transition instead of snapping to its endpoint.");
             player.SetPose(poseA, instantShapedOptions);
             yield return new WaitForEndOfFrame();
             CheckEndpoint("Zero-duration shaped Pose A endpoint", referenceA, failures);
+            CheckBlendShapeEndpoint("Zero-duration shaped Pose A endpoint", morphReferenceA, failures);
 
             player.SetPose(poseB, validationOptions);
             var reached = false;
-            yield return WaitForTransition(ok => reached = ok);
+            yield return WaitForTransition(ok => reached = ok, morphReferenceA, morphReferenceB, checksMorphBlend, failures);
             if (!reached) failures.Add("A-to-B transition did not finish before the validation timeout.");
             else
             {
                 CheckEndpoint("Pose B endpoint", referenceB, failures);
+                CheckBlendShapeEndpoint("Pose B endpoint", morphReferenceB, failures);
                 CheckOuterPlacement("Pose B endpoint", failures);
             }
 
@@ -204,11 +215,12 @@ namespace DazPose.UnityValidation
             {
                 player.SetPose(poseA, validationOptions);
                 reached = false;
-                yield return WaitForTransition(ok => reached = ok);
+                yield return WaitForTransition(ok => reached = ok, morphReferenceB, morphReferenceA, checksMorphBlend, failures);
                 if (!reached) failures.Add("B-to-A transition did not finish before the validation timeout.");
                 else
                 {
                     CheckEndpoint("Pose A return endpoint", referenceA, failures);
+                    CheckBlendShapeEndpoint("Pose A return endpoint", morphReferenceA, failures);
                     CheckOuterPlacement("Pose A return endpoint", failures);
                 }
             }
@@ -221,7 +233,9 @@ namespace DazPose.UnityValidation
                     var target = index % 2 == 0 ? poseB : poseA;
                     player.SetPose(target, validationOptions);
                     reached = false;
-                    yield return WaitForTransition(ok => reached = ok);
+                    var morphFrom = index % 2 == 0 ? morphReferenceA : morphReferenceB;
+                    var morphTo = index % 2 == 0 ? morphReferenceB : morphReferenceA;
+                    yield return WaitForTransition(ok => reached = ok, morphFrom, morphTo, checksMorphBlend, failures);
                     if (!reached)
                     {
                         failures.Add("Repeated transition " + (index + 1) + " did not finish before the validation timeout.");
@@ -240,6 +254,7 @@ namespace DazPose.UnityValidation
             if (reached)
             {
                 CheckEndpoint("Pose A endpoint after 20 transitions", referenceA, failures);
+                CheckBlendShapeEndpoint("Pose A endpoint after 20 transitions", morphReferenceA, failures);
                 CheckOuterPlacement("Pose A endpoint after 20 transitions", failures);
             }
             if (player.GraphPlayableCount != steadyPlayableCount)
@@ -271,11 +286,12 @@ namespace DazPose.UnityValidation
                     if (player.HasPendingPose || player.ActiveTransitionOptions != latestPendingOptions)
                         failures.Add("The queued command's options changed when it became active.");
                     reached = false;
-                    yield return WaitForTransition(ok => reached = ok);
+                 yield return WaitForTransition(ok => reached = ok, morphReferenceB, morphReferenceA, checksMorphBlend, failures);
                     if (!reached) failures.Add("The queued transition did not finish before the validation timeout.");
                     else
                     {
                         CheckEndpoint("Latest queued Pose A endpoint", referenceA, failures);
+                        CheckBlendShapeEndpoint("Latest queued Pose A endpoint", morphReferenceA, failures);
                         CheckOuterPlacement("Latest queued Pose A endpoint", failures);
                     }
                 }
@@ -296,6 +312,7 @@ namespace DazPose.UnityValidation
                     player.SetPose(poseA, new DazPoseTransitionOptions(0f, blendEase, 0f, 0f));
                     yield return new WaitForEndOfFrame();
                     CheckEndpoint("Pose A after graph lifecycle cycle " + (cycle + 1), referenceA, failures);
+                    CheckBlendShapeEndpoint("Pose A after graph lifecycle cycle " + (cycle + 1), morphReferenceA, failures);
                 }
             }
 
@@ -304,7 +321,9 @@ namespace DazPose.UnityValidation
 
             _validationRunning = false;
             if (failures.Count == 0)
-                Debug.Log("PASS DAZ Pose runtime blend validation: shaped A/B endpoints match direct clip samples; trajectory math and immutable pending options passed; "
+                Debug.Log("PASS DAZ Pose runtime blend validation: shaped A/B Transform and blendshape endpoints match direct clip samples"
+                    + (checksMorphBlend ? ", and blendshape weights interpolated through Playables" : string.Empty)
+                    + "; trajectory math and immutable pending options passed; "
                     + "20 repeated transitions completed; graph enable/disable cycles were clean; mixer weights stayed in range; Lara's outer placement stayed unchanged. Ease tested: "
                     + blendEase + ".", this);
             else
@@ -380,22 +399,45 @@ namespace DazPose.UnityValidation
 
         private static bool Approximately(float left, float right) => Mathf.Abs(left - right) <= 1e-5f;
 
-        private IEnumerator WaitForTransition(Action<bool> result)
+        private IEnumerator WaitForTransition(Action<bool> result, LocalBlendShapeState[] morphFrom = null,
+            LocalBlendShapeState[] morphTo = null, bool validateMorphBlend = false, List<string> failures = null)
         {
             var deadline = Time.realtimeSinceStartup + 3f;
+            var morphFailureReported = false;
             yield return new WaitForEndOfFrame();
             while (player.IsBlending && Time.realtimeSinceStartup < deadline)
+            {
+                if (validateMorphBlend && !morphFailureReported && morphFrom != null && morphTo != null && failures != null)
+                {
+                    var maxError = BlendShapeInterpolationError(morphFrom, morphTo, player.TrajectoryProgress);
+                    if (maxError > BlendShapeBlendTolerance)
+                    {
+                        failures.Add("Playables blendshape interpolation exceeded " + BlendShapeBlendTolerance.ToString("G4")
+                            + " weight units at trajectory progress " + player.TrajectoryProgress.ToString("G4") + " (error " + maxError.ToString("G6") + ").");
+                        morphFailureReported = true;
+                    }
+                }
                 yield return new WaitForEndOfFrame();
+            }
             yield return new WaitForEndOfFrame();
             result(!player.IsBlending);
         }
 
         private LocalTransformState[] SampleReferencePose(AnimationClip clip)
         {
-            RestorePose(_startingPose);
+            RestoreStartingPose();
             clip.SampleAnimation(gameObject, 0.5f);
             var state = CaptureLocalPose();
-            RestorePose(_startingPose);
+            RestoreStartingPose();
+            return state;
+        }
+
+        private LocalBlendShapeState[] SampleReferenceBlendShapes(AnimationClip clip)
+        {
+            RestoreStartingPose();
+            clip.SampleAnimation(gameObject, 0.5f);
+            var state = CaptureLocalBlendShapes();
+            RestoreStartingPose();
             return state;
         }
 
@@ -410,6 +452,26 @@ namespace DazPose.UnityValidation
             }).ToArray();
         }
 
+        private LocalBlendShapeState[] CaptureLocalBlendShapes()
+        {
+            return transform.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Where(renderer => renderer != null && renderer.sharedMesh != null)
+                .SelectMany(renderer => Enumerable.Range(0, renderer.sharedMesh.blendShapeCount)
+                    .Select(index => new LocalBlendShapeState
+                    {
+                        renderer = renderer,
+                        index = index,
+                        name = renderer.sharedMesh.GetBlendShapeName(index),
+                        weight = renderer.GetBlendShapeWeight(index)
+                    })).ToArray();
+        }
+
+        private void RestoreStartingPose()
+        {
+            RestorePose(_startingPose);
+            RestoreBlendShapes(_startingBlendShapes);
+        }
+
         private static void RestorePose(IEnumerable<LocalTransformState> state)
         {
             foreach (var item in state)
@@ -419,6 +481,62 @@ namespace DazPose.UnityValidation
                 item.target.localRotation = item.rotation;
                 item.target.localScale = item.scale;
             }
+        }
+
+        private static void RestoreBlendShapes(IEnumerable<LocalBlendShapeState> state)
+        {
+            foreach (var item in state ?? Enumerable.Empty<LocalBlendShapeState>())
+            {
+                if (item.renderer == null || item.renderer.sharedMesh == null
+                    || item.index < 0 || item.index >= item.renderer.sharedMesh.blendShapeCount) continue;
+                item.renderer.SetBlendShapeWeight(item.index, item.weight);
+            }
+        }
+
+        private static void CheckBlendShapeEndpoint(string label, IEnumerable<LocalBlendShapeState> expected, List<string> failures)
+        {
+            var maxError = 0f;
+            var worstShape = string.Empty;
+            foreach (var item in expected ?? Enumerable.Empty<LocalBlendShapeState>())
+            {
+                if (item.renderer == null || item.renderer.sharedMesh == null || item.index >= item.renderer.sharedMesh.blendShapeCount)
+                {
+                    failures.Add(label + " encountered a missing SkinnedMeshRenderer or imported blendshape.");
+                    return;
+                }
+                var error = Mathf.Abs(item.weight - item.renderer.GetBlendShapeWeight(item.index));
+                if (error > maxError) worstShape = item.name;
+                maxError = Mathf.Max(maxError, error);
+            }
+            if (maxError > BlendShapeWeightTolerance)
+                failures.Add(label + " differs from direct clip sampling (blendshape weight error " + maxError.ToString("G6") + "; worst shape " + worstShape + ").");
+        }
+
+        private static bool MorphStatesDiffer(LocalBlendShapeState[] left, LocalBlendShapeState[] right)
+        {
+            if (left == null || right == null || left.Length != right.Length) return true;
+            for (var index = 0; index < left.Length; index++)
+                if (left[index].renderer != right[index].renderer || left[index].index != right[index].index
+                    || Mathf.Abs(left[index].weight - right[index].weight) > BlendShapeWeightTolerance) return true;
+            return false;
+        }
+
+        private static float BlendShapeInterpolationError(LocalBlendShapeState[] from, LocalBlendShapeState[] to, float progress)
+        {
+            if (from == null || to == null || from.Length != to.Length) return float.PositiveInfinity;
+            var maxError = 0f;
+            for (var index = 0; index < from.Length; index++)
+            {
+                var first = from[index];
+                var last = to[index];
+                if (first.renderer == null || last.renderer == null || first.renderer != last.renderer || first.index != last.index
+                    || first.renderer.sharedMesh == null || first.index >= first.renderer.sharedMesh.blendShapeCount) return float.PositiveInfinity;
+                // The Transform extrapolation job can move outside the endpoints for windup/overshoot,
+                // while the AnimationMixerPlayable intentionally keeps blendshape weights bounded.
+                var expected = Mathf.Lerp(first.weight, last.weight, Mathf.Clamp01(progress));
+                maxError = Mathf.Max(maxError, Mathf.Abs(expected - first.renderer.GetBlendShapeWeight(first.index)));
+            }
+            return maxError;
         }
 
         private static void CheckEndpoint(string label, IEnumerable<LocalTransformState> expected, List<string> failures)
@@ -509,6 +627,14 @@ namespace DazPose.UnityValidation
             public Vector3 position;
             public Quaternion rotation;
             public Vector3 scale;
+        }
+
+        private sealed class LocalBlendShapeState
+        {
+            public SkinnedMeshRenderer renderer;
+            public int index;
+            public string name;
+            public float weight;
         }
     }
 }

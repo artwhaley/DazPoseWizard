@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DazPose.App.AlwaysExportMorphsWindow"
+        Title="Manage Always-Export Morphs"
+        Width="1040" Height="640" MinWidth="820" MinHeight="440"
+        WindowStartupLocation="CenterOwner">
+  <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="16" RowSpacing="12">
+    <TextBlock Grid.Row="0" Text="Enabled pins and morphs used by converted content are combined in the export CSV. Removing a pin keeps it when converted content still requires it."
+               TextWrapping="Wrap" Opacity="0.8" />
+    <Grid Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="5">
+      <Grid Grid.Row="0" ColumnDefinitions="90,*,180,*,190" Margin="6,0,6,4">
+        <TextBlock Text="Enabled" FontWeight="SemiBold" />
+        <TextBlock Grid.Column="1" Text="Exact morph name" FontWeight="SemiBold" />
+        <TextBlock Grid.Column="2" Text="Category" FontWeight="SemiBold" />
+        <TextBlock Grid.Column="3" Text="Purpose" FontWeight="SemiBold" />
+        <TextBlock Grid.Column="4" Text="Provenance" FontWeight="SemiBold" />
+      </Grid>
+      <ListBox x:Name="MorphList" Grid.Row="1" ItemsSource="{Binding Entries}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ColumnDefinitions="90,*,180,*,190" Margin="4" ColumnSpacing="6">
+              <CheckBox IsChecked="{Binding AlwaysExport, Mode=TwoWay}" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Name}" />
+              <TextBlock Grid.Column="2" Text="{Binding CategoryDisplay}" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="3" Text="{Binding Purpose}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Purpose}" />
+              <TextBlock Grid.Column="4" Text="{Binding Provenance}" VerticalAlignment="Center" TextWrapping="Wrap" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+    <TextBlock x:Name="ErrorText" Grid.Row="2" Foreground="#FF7777" TextWrapping="Wrap" IsVisible="False" />
+    <Grid Grid.Row="3" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+      <TextBlock Text="Save writes to this Unity project's .dazposewizard/required-morphs.json."
+                 VerticalAlignment="Center" Opacity="0.7" TextTrimming="CharacterEllipsis" />
+      <Button Grid.Column="1" Content="Add…" Click="AddClicked" />
+      <Button Grid.Column="2" Content="Edit…" Click="EditClicked" />
+      <Button Grid.Column="3" Content="Remove pin" Click="RemoveClicked" />
+      <Button Grid.Column="4" Content="Save" Click="SaveClicked" />
+      <Button Grid.Column="5" Content="Cancel" Click="CancelClicked" />
+    </Grid>
+  </Grid>
+</Window>

@@ -123,7 +123,9 @@ public sealed class TransformAndOutputTests
             Assert.Equal(expectedHipOffset.Z, outputOffset[2], 5);
             Assert.Contains(PoseConversionService.BvhWarning, File.ReadAllText(result.ReportPath));
             Assert.Equal(97, result.Pose.ResolvedSkeletalTargetCount);
-            Assert.Equal(74, result.Pose.NeutralUnsupportedChannels.Count);
+            Assert.Equal(74, result.Pose.FigureControls.Count);
+            Assert.Empty(result.Pose.ActiveFigureControls);
+            Assert.Empty(result.Pose.NeutralUnsupportedChannels);
         }
         finally { FixtureData.DeleteTempDirectory(output); }
     }

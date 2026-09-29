@@ -14,6 +14,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     private readonly LibraryIndexService _libraryIndex = new();
     private readonly ConversionRegistryCacheService _registryCache = new();
     private readonly UnityProjectService _projectService = new();
+    private readonly RequiredMorphManifestService _requiredMorphs = new();
     private readonly ConversionRegistryService _registry;
     private readonly PoseOutputNamingService _naming;
     private readonly ThumbnailService _thumbnails = new();
@@ -67,7 +68,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         _conversionFilter = Enum.TryParse<ConversionFilter>(_settings.ConvertedFilter, true, out var filter) ? filter : ConversionFilter.All;
         _registry = new ConversionRegistryService(_projectService);
         _naming = new PoseOutputNamingService(_projectService);
-        _queue = new ConversionQueueService(() => _settings, _projectService, _registry, _naming);
+        _queue = new ConversionQueueService(() => _settings, _projectService, _registry, _naming,
+            requiredMorphs: _requiredMorphs);
         _queue.JobChanged += QueueJobChanged;
         _queue.JobsChanged += QueueJobsChanged;
         QueueJobs = new ObservableCollection<ConversionJob>();
@@ -82,6 +84,30 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     public ObservableCollection<PoseCardViewModel> PoseCards { get; } = [];
     public ObservableCollection<ConversionJob> QueueJobs { get; }
     public AppSettings Settings => _settings;
+    public DazMorphExportRulesResult GenerateDazMorphExportRules()
+    {
+        if (!_projectService.LooksLikeUnityProject(_settings.UnityProjectRoot))
+            throw new InvalidOperationException("Configure a valid Unity project before generating DAZ Morph Export Rules.");
+        return _requiredMorphs.GenerateExportRules(_settings.UnityProjectRoot);
+    }
+    public IReadOnlyList<RequiredMorphManifestItem> GetAlwaysExportMorphEntries()
+    {
+        if (!_projectService.LooksLikeUnityProject(_settings.UnityProjectRoot))
+            throw new InvalidOperationException("Configure a valid Unity project before managing Always-Export Morphs.");
+        return _requiredMorphs.GetAlwaysExportEntries(_settings.UnityProjectRoot);
+    }
+    public void SaveAlwaysExportMorphEntries(IEnumerable<RequiredMorphManifestItem> entries)
+    {
+        if (!_projectService.LooksLikeUnityProject(_settings.UnityProjectRoot))
+            throw new InvalidOperationException("Configure a valid Unity project before managing Always-Export Morphs.");
+        _requiredMorphs.SaveAlwaysExportEntries(_settings.UnityProjectRoot, entries);
+    }
+    public string GetMorphExportRulesDirectory()
+    {
+        if (!_projectService.LooksLikeUnityProject(_settings.UnityProjectRoot))
+            throw new InvalidOperationException("Configure a valid Unity project before opening the DAZ Morph Export Rules folder.");
+        return _requiredMorphs.GetProjectDirectory(_settings.UnityProjectRoot);
+    }
     public FolderNode? SelectedSourceFolder { get => _selectedSourceFolder; set { if (value is not null && !ReferenceEquals(value, _selectedSourceFolder)) SelectSourceFolder(value); } }
     public FolderNode? SelectedDestinationFolder { get => _selectedDestinationFolder; set { if (value is not null && !ReferenceEquals(value, _selectedDestinationFolder)) SelectDestinationFolder(value); } }
     public string SearchText { get => _searchText; set { if (Set(ref _searchText, value)) { OnPropertyChanged(nameof(EmptyMessage)); DebounceSearch(); } } }
@@ -112,8 +138,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         : !SearchIncludesChildren
             ? "No poses are directly in this folder. Expand the folder tree, or choose Include Children."
             : string.IsNullOrWhiteSpace(SearchText)
-                ? "No pose presets were found in this folder or its children."
-                : "No pose presets match this folder and search.";
+                ? "No DAZ pose or shape presets were found in this folder or its children."
+                : "No DAZ presets match this folder and search.";
     public string QueueSummary
     {
         get
@@ -203,7 +229,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
 
         IsScanning = true;
-        ScanProgress = "Scanning for pose presets…";
+        ScanProgress = "Scanning for pose and shape presets…";
         try
         {
             var progress = new Progress<LibraryScanProgress>(value =>
@@ -218,7 +244,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
             _lastIncrementalRefreshCount = 0;
             var result = await _libraryIndex.ScanAsync(_settings.DazContentRoot, progress, cancellationToken);
             await LoadCachedLibraryAsync(cancellationToken);
-            StatusMessage = $"Library refreshed: {result.AddedOrUpdated:N0} added or updated, {result.Removed:N0} removed, {result.Ignored:N0} non-pose presets skipped, {result.Errors:N0} read errors.";
+            StatusMessage = $"Library refreshed: {result.AddedOrUpdated:N0} added or updated, {result.Removed:N0} removed, {result.Ignored:N0} unsupported presets skipped, {result.Errors:N0} read errors.";
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or Microsoft.Data.Sqlite.SqliteException)
         {
@@ -354,7 +380,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
         {
-            StatusMessage = $"Could not search the pose index: {ex.Message}";
+            StatusMessage = $"Could not search the DAZ preset index: {ex.Message}";
         }
     }
 

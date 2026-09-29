@@ -12,6 +12,7 @@ namespace DazPose.UnityValidation
             var importer = (ModelImporter)assetImporter;
             importer.animationType = ModelImporterAnimationType.Generic;
             importer.optimizeGameObjects = false;
+            importer.importBlendShapes = true;
         }
     }
 }

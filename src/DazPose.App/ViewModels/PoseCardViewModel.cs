@@ -17,6 +17,8 @@ public sealed class PoseCardViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     public PoseLibraryEntry Entry { get; }
     public string Title => string.IsNullOrWhiteSpace(Entry.DisplayName) ? Entry.FileStem : Entry.DisplayName;
+    public string AssetTypeLabel => string.Equals(Entry.AssetType, "preset_shape", StringComparison.OrdinalIgnoreCase)
+        ? "DAZ SHAPE" : "DAZ POSE";
     public Bitmap? PreviewImage { get => _previewImage; set { if (Set(ref _previewImage, value)) OnPropertyChanged(nameof(HasNoPreview)); } }
     public bool HasNoPreview => PreviewImage is null;
     public ConversionJobState? State { get => _state; set { if (Set(ref _state, value)) { OnPropertyChanged(nameof(StateLabel)); OnPropertyChanged(nameof(StatusBrush)); OnPropertyChanged(nameof(IsConverted)); OnPropertyChanged(nameof(ThumbnailOpacity)); OnPropertyChanged(nameof(StatusToolTip)); } } }

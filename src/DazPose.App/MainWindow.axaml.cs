@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -94,6 +95,51 @@ public sealed partial class MainWindow : Window
     }
 
     private async void RefreshClicked(object? sender, RoutedEventArgs e) => await _viewModel.RefreshEverythingAsync();
+
+    private void GenerateMorphExportRulesClicked(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var result = _viewModel.GenerateDazMorphExportRules();
+            SetStatusMessage($"Generated {result.ExportRuleCount:N0} unique rule(s) ({result.AlwaysExportRuleCount:N0} enabled pins, {result.ContentRequiredRuleCount:N0} content-required): {result.CsvPath}");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
+        {
+            SetStatusMessage($"Could not generate DAZ Morph Export Rules: {ex.Message}");
+        }
+    }
+
+    private async void ManageAlwaysExportMorphsClicked(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var entries = _viewModel.GetAlwaysExportMorphEntries();
+            var dialog = new AlwaysExportMorphsWindow(entries);
+            if (await dialog.ShowDialog<bool>(this) && dialog.Saved)
+            {
+                _viewModel.SaveAlwaysExportMorphEntries(dialog.GetEntries());
+                SetStatusMessage("Saved Always-Export Morphs. Generate DAZ Morph Export Rules to update the CSV.");
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
+        {
+            SetStatusMessage($"Could not manage Always-Export Morphs: {ex.Message}");
+        }
+    }
+
+    private void OpenMorphExportRulesFolderClicked(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var directory = _viewModel.GetMorphExportRulesDirectory();
+            Directory.CreateDirectory(directory);
+            Process.Start(new ProcessStartInfo(directory) { UseShellExecute = true });
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException or System.ComponentModel.Win32Exception)
+        {
+            SetStatusMessage($"Could not open the DAZ Morph Export Rules folder: {ex.Message}");
+        }
+    }
 
     private async void SettingsClicked(object? sender, RoutedEventArgs e)
     {

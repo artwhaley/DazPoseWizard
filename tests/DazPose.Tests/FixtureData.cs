@@ -7,6 +7,7 @@ internal static class FixtureData
 {
     public static string FigurePath => Path.Combine(AppContext.BaseDirectory, "fixtures", "private", "Genesis8Female.dsf");
     public static string PosePath => Path.Combine(AppContext.BaseDirectory, "fixtures", "private", "Cherish Genesis 8 Female 16.duf");
+    public static string StPdSmirkPosePath => Path.Combine(AppContext.BaseDirectory, "fixtures", "private", "ST PD Smirk.duf");
     public static string VintageGlamourPosePath => Path.Combine(AppContext.BaseDirectory, "fixtures", "private", "Vintage Glamour Genesis 8 Female 03.duf");
 
     public static DazFigureDefinition LoadFigure()

@@ -7,7 +7,8 @@ namespace DazPose.UnityValidation
     public sealed class ResolvedUnityPose
     {
         public Transform CharacterRoot;
-        public Transform AnimationRoot;
+        public Transform SkeletonRoot;
+        public Transform BindingRoot;
         public DazPoseDefinition Definition;
         public DazPoseCharacterState RestState;
         public string SourcePoseJsonPath;
@@ -16,6 +17,7 @@ namespace DazPose.UnityValidation
         public int UnresolvedRequiredBoneCount;
         public int AmbiguousBoneCount;
         public List<ResolvedBonePose> Bones = new List<ResolvedBonePose>();
+        public List<ResolvedUnityMorphControl> MorphControls = new List<ResolvedUnityMorphControl>();
         public string[] Warnings = Array.Empty<string>();
     }
 
@@ -44,6 +46,8 @@ namespace DazPose.UnityValidation
         public string figureGeneration;
         public string character;
         public string animationRoot;
+        public string skeletonRoot;
+        public string bindingRoot;
         public string sourcePoseJson;
         public string sourceDazPosePath;
         public string sourcePoseAssetId;
@@ -72,6 +76,12 @@ namespace DazPose.UnityValidation
         public float[] paritySampleTimes;
         public string[] warnings;
         public DazPoseAnimationBindingDiagnostic[] bindings;
+        public DazPoseAnimationMorphBindingDiagnostic[] morphBindings;
+        public int morphControlCount;
+        public int morphBindingCount;
+        public int blendShapeCurveCount;
+        public float maximumBlendShapeWeightError;
+        public string[] resolvedMorphNames;
     }
 
     [Serializable]
@@ -83,6 +93,21 @@ namespace DazPose.UnityValidation
         public string[] properties;
         public string rotationSource;
         public string positionSource;
+    }
+
+    [Serializable]
+    public sealed class DazPoseAnimationMorphBindingDiagnostic
+    {
+        public string sourceControlName;
+        public string rawControlId;
+        public float sourceValue;
+        public string rendererPath;
+        public string meshName;
+        public string blendShapeName;
+        public int blendShapeIndex;
+        public int blendShapeFrameCount;
+        public float[] blendShapeFrameWeights;
+        public float unityWeight;
     }
 
 }

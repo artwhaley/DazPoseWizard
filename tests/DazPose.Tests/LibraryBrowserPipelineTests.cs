@@ -23,9 +23,11 @@ public sealed class LibraryBrowserPipelineTests
             var plainPath = Path.Combine(product, "Pose One.duf");
             var gzipPath = Path.Combine(nested, "Pose Two.duf");
             var rootPosePath = Path.Combine(root, "Root Pose.duf");
+            var shapePath = Path.Combine(root, "People", "Genesis 8 Female", "Shapes", "FUNtasy", "!!FUNtasy Face.duf");
             WritePoseMetadata(plainPath, "pose:one", "Pose One", compressed: false);
             WritePoseMetadata(gzipPath, "pose:two", "Pose Two", compressed: true);
             WritePoseMetadata(rootPosePath, "pose:root", "Root Pose", compressed: false);
+            WritePoseMetadata(shapePath, "shape:funtasy-face", "FUNtasy Face", "preset_shape", compressed: true);
             var previewPath = Path.ChangeExtension(plainPath, ".png");
             File.WriteAllBytes(previewPath, [1, 2, 3]);
             WritePoseMetadata(Path.Combine(product, "Scene.duf"), "scene:one", "Scene", "scene", compressed: false);
@@ -34,8 +36,11 @@ public sealed class LibraryBrowserPipelineTests
             var result = await index.ScanAsync(root);
             var entries = await index.GetAllAsync(root);
 
-            Assert.Equal(4, result.Visited);
-            Assert.Equal(3, entries.Count);
+            Assert.Equal(5, result.Visited);
+            Assert.Equal(4, entries.Count);
+            var shape = Assert.Single(entries, entry => entry.AssetId == "shape:funtasy-face");
+            Assert.Equal("preset_shape", shape.AssetType);
+            Assert.Equal("FUNtasy Face", shape.DisplayName);
             var plain = Assert.Single(entries, entry => entry.AssetId == "pose:one");
             Assert.Equal("Product A", plain.ImmediateFolderName);
             Assert.Equal("People/Genesis 8 Female/Poses/Product A", plain.RelativeFolderPath);

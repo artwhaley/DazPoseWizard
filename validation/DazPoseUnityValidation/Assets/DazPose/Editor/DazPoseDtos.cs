@@ -10,9 +10,19 @@ namespace DazPose.UnityValidation
         public int version;
         public DazPoseSource source;
         public DazPoseCoordinateSystem coordinateSystem;
+        public DazPoseFigureControl[] figureControls;
         public DazPoseChannel[] poseChannels;
         public DazPoseBone[] bones;
         public string[] warnings;
+    }
+
+    [Serializable]
+    public sealed class DazPoseFigureControl
+    {
+        public string sourceUrl;
+        public string rawControlId;
+        public string name;
+        public float value;
     }
 
     [Serializable]
@@ -149,7 +159,28 @@ namespace DazPose.UnityValidation
         public Vector3 dazToUnityWorldTranslation;
         public string[] warnings;
         public DazPoseExpectedBoneDiagnostic[] expectedBones;
+        public int skinnedRendererCount;
+        public int importedBlendShapeCount;
+        public DazPoseRendererDiagnostic[] renderers;
         public DazPoseMappingDiagnostic[] mappings;
         public DazPoseTransformDiagnostic[] transforms;
+    }
+
+    [Serializable]
+    public sealed class DazPoseRendererDiagnostic
+    {
+        public string rendererPath;
+        public string meshName;
+        public int blendShapeCount;
+        public DazPoseBlendShapeDiagnostic[] blendShapes;
+    }
+
+    [Serializable]
+    public sealed class DazPoseBlendShapeDiagnostic
+    {
+        public int index;
+        public string name;
+        public int frameCount;
+        public float[] frameWeights;
     }
 }

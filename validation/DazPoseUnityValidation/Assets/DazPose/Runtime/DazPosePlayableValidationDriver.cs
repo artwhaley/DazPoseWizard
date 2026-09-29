@@ -17,6 +17,16 @@ namespace DazPose.UnityValidation
         public Vector3 localScale;
     }
 
+    [Serializable]
+    public sealed class DazPoseRuntimeExpectedBlendShape
+    {
+        public string path;
+        public string blendShapeName;
+        public int blendShapeIndex;
+        public int rendererComponentIndex;
+        public float weight;
+    }
+
     [DisallowMultipleComponent]
     [AddComponentMenu("DAZ Pose/Validation Only/Playable Clip Smoke Test")]
     [RequireComponent(typeof(Animator))]
@@ -25,9 +35,11 @@ namespace DazPose.UnityValidation
         private const float PositionToleranceMeters = 1e-5f;
         private const float RotationToleranceDegrees = 0.001f;
         private const float ScaleTolerance = 1e-5f;
+        private const float BlendShapeWeightTolerance = 1e-3f;
 
         public AnimationClip clip;
         public DazPoseRuntimeExpectedTransform[] expectedTransforms = Array.Empty<DazPoseRuntimeExpectedTransform>();
+        public DazPoseRuntimeExpectedBlendShape[] expectedBlendShapes = Array.Empty<DazPoseRuntimeExpectedBlendShape>();
         public bool validationAddedAnimator;
         public Animator validationOwnedAnimator;
         public string validationSmokeTestOwner;
@@ -50,7 +62,7 @@ namespace DazPose.UnityValidation
             _animator = GetComponent<Animator>();
             if (_animator == null)
             {
-                Debug.LogError("DAZ Pose validation-only Playables driver requires an Animator on the Genesis8Female animation root.", this);
+                Debug.LogError("DAZ Pose validation-only Playables driver requires an Animator on the common character binding root.", this);
                 validationComplete = true;
                 return;
             }
@@ -89,6 +101,7 @@ namespace DazPose.UnityValidation
             var maxPosition = 0f;
             var maxRotation = 0f;
             var maxScale = 0f;
+            var maxBlendShapeWeight = 0f;
             foreach (var expected in expectedTransforms)
             {
                 if (expected == null) continue;
@@ -118,15 +131,45 @@ namespace DazPose.UnityValidation
                 }
             }
 
+            foreach (var expected in expectedBlendShapes)
+            {
+                if (expected == null) continue;
+                var rendererTransform = string.IsNullOrEmpty(expected.path) ? transform : transform.Find(expected.path);
+                if (rendererTransform == null)
+                {
+                    errors.Add("Missing blendshape renderer path '" + expected.path + "'.");
+                    continue;
+                }
+                var renderers = rendererTransform.GetComponents<SkinnedMeshRenderer>();
+                if (expected.rendererComponentIndex < 0 || expected.rendererComponentIndex >= renderers.Length)
+                {
+                    errors.Add("Missing SkinnedMeshRenderer component at '" + expected.path + "'.");
+                    continue;
+                }
+                var renderer = renderers[expected.rendererComponentIndex];
+                if (renderer == null || renderer.sharedMesh == null || expected.blendShapeIndex < 0
+                    || expected.blendShapeIndex >= renderer.sharedMesh.blendShapeCount
+                    || !string.Equals(renderer.sharedMesh.GetBlendShapeName(expected.blendShapeIndex), expected.blendShapeName, StringComparison.Ordinal))
+                {
+                    errors.Add("Missing imported blendshape '" + expected.blendShapeName + "' at '" + expected.path + "'.");
+                    continue;
+                }
+                var error = Mathf.Abs(expected.weight - renderer.GetBlendShapeWeight(expected.blendShapeIndex));
+                maxBlendShapeWeight = Mathf.Max(maxBlendShapeWeight, error);
+                if (error > BlendShapeWeightTolerance)
+                    errors.Add(expected.path + "/" + expected.blendShapeName + " weight error " + error.ToString("G6") + ".");
+            }
+
             validationComplete = true;
-            validationPassed = expectedTransforms.Length > 0 && errors.Count == 0;
+            validationPassed = expectedTransforms.Length + expectedBlendShapes.Length > 0 && errors.Count == 0;
             if (validationPassed)
                 Debug.Log("PASS DAZ Pose runtime smoke test: Animator/Playables drove " + expectedTransforms.Length
-                    + " pose transforms from '" + clip.name + "' at 0.5 sec; max errors rotation=" + maxRotation.ToString("G6")
-                    + " deg, position=" + maxPosition.ToString("G6") + " m, scale=" + maxScale.ToString("G6") + ". The static clip remains active in Play Mode.", this);
+                    + " pose transforms and " + expectedBlendShapes.Length + " blendshapes from '" + clip.name
+                    + "' at 0.5 sec; max errors rotation=" + maxRotation.ToString("G6") + " deg, position=" + maxPosition.ToString("G6")
+                    + " m, scale=" + maxScale.ToString("G6") + ", blendshape weight=" + maxBlendShapeWeight.ToString("G6") + ". The static clip remains active in Play Mode.", this);
             else
                 Debug.LogError("FAIL DAZ Pose runtime smoke test for '" + clip.name + "'. "
-                    + (expectedTransforms.Length == 0 ? "No animated transforms were inspected." : string.Join(" ", errors)), this);
+                    + (expectedTransforms.Length + expectedBlendShapes.Length == 0 ? "No animated properties were inspected." : string.Join(" ", errors)), this);
         }
 
         private void OnDisable()

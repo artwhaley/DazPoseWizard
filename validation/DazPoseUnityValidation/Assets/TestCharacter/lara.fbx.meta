@@ -3,7 +3,87 @@ guid: 16025d97afd36114ca02420ca90171e8
 ModelImporter:
   serializedVersion: 24501
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Arms
+    second: {fileID: 2100000, guid: cf740898fe1baa442bdfb74f93fd151f, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Cornea
+    second: {fileID: 2100000, guid: 092b57b2fb3067a45b9b81ae55ba5fe0, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Ears
+    second: {fileID: 2100000, guid: dd0a30308c3628b47ba2072d34ce206d, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: EyeMoisture
+    second: {fileID: 2100000, guid: 89b9c1bf4b4f00d4182e7e29698ccad1, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: EyeSocket
+    second: {fileID: 2100000, guid: 5db8e370fdf5519449c892df53b23ef6, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Face
+    second: {fileID: 2100000, guid: bf949857a6126854e851c3c791a0d26e, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Fingernails
+    second: {fileID: 2100000, guid: 9fdc3989c2e55784392278b7c6bea016, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Irises
+    second: {fileID: 2100000, guid: 0df6eba47885fa247a25061f78c6b3b9, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Legs
+    second: {fileID: 2100000, guid: 0cf558e9bab0883438da711b0fcf231c, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Lips
+    second: {fileID: 2100000, guid: b592e817a53282e43aaac3f9442646c9, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Mouth
+    second: {fileID: 2100000, guid: c3da288264d263646be64586cd717a8b, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Pupils
+    second: {fileID: 2100000, guid: 4126f056389aa774c87d9a138d1c2b17, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Sclera
+    second: {fileID: 2100000, guid: f78c93f1aae5746458d3d852da265213, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Teeth
+    second: {fileID: 2100000, guid: 74cffcb34d66e9a4386585f098ec1425, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Toenails
+    second: {fileID: 2100000, guid: 608fa212d6089064da47b40dff5d35ec, type: 2}
+  - first:
+      type: 3
+      assembly: UnityEngine.CoreModule
+      name: Torso
+    second: {fileID: 2100000, guid: 9aad316c2da29734e8212fed57221bf9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

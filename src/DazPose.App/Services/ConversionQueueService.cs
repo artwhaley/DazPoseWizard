@@ -11,6 +11,7 @@ public sealed class ConversionQueueService : IAsyncDisposable
     private readonly UnityProjectService _projectService;
     private readonly ConversionRegistryService _registry;
     private readonly PoseOutputNamingService _naming;
+    private readonly RequiredMorphManifestService _requiredMorphs;
     private readonly Channel<ConversionJob> _channel;
     private readonly ConcurrentDictionary<string, ConversionJob> _activeJobs = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<ConversionJob> _jobs = [];
@@ -19,12 +20,14 @@ public sealed class ConversionQueueService : IAsyncDisposable
     private readonly Task[] _workers;
 
     public ConversionQueueService(Func<AppSettings> settingsProvider, UnityProjectService projectService,
-        ConversionRegistryService registry, PoseOutputNamingService naming, int concurrency = 2, int capacity = 256)
+        ConversionRegistryService registry, PoseOutputNamingService naming, int concurrency = 2, int capacity = 256,
+        RequiredMorphManifestService? requiredMorphs = null)
     {
         _settingsProvider = settingsProvider;
         _projectService = projectService;
         _registry = registry;
         _naming = naming;
+        _requiredMorphs = requiredMorphs ?? new RequiredMorphManifestService();
         _channel = Channel.CreateBounded<ConversionJob>(new BoundedChannelOptions(capacity)
         {
             FullMode = BoundedChannelFullMode.Wait,
@@ -140,8 +143,10 @@ public sealed class ConversionQueueService : IAsyncDisposable
 
                     try
                     {
-                        await Task.Run(() => PoseConversionService.ConvertCanonical(settings.FigureDefinitionPath,
+                        var conversion = await Task.Run(() => PoseConversionService.ConvertCanonical(settings.FigureDefinitionPath,
                             job.Request.SourcePosePath, stagingPath), _shutdown.Token);
+                        _requiredMorphs.AddCandidateControls(projectRoot, conversion.Pose.ActiveFigureControls,
+                            job.Request.SourcePosePath, settings.DazContentRoot);
                         await _registry.WriteStatusAsync(settings, new BrowserJobStatus
                         {
                             CanonicalImportPath = output.CanonicalAssetPath,
