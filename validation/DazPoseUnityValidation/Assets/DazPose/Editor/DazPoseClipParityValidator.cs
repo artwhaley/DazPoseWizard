@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DazPose.Editor.Importing;
 using UnityEditor;
 using UnityEngine;
 
@@ -51,7 +52,7 @@ namespace DazPose.UnityValidation
                 clone.name = pose.CharacterRoot.name + "__PoseParityTemporary";
                 clone.hideFlags = HideFlags.HideAndDontSave;
                 var cloneRoot = clone.transform;
-                DazPoseEditorCommands.RestoreSnapshot(cloneRoot, pose.RestState);
+                DazPoseRestPoseService.RestoreSnapshot(cloneRoot, pose.RestState);
                 var instanceTransforms = cloneRoot.GetComponentsInChildren<Transform>(true)
                     .ToDictionary(item => DazPoseTransformPath.Get(cloneRoot, item), StringComparer.Ordinal);
                 var bindingRootInstancePath = DazPoseTransformPath.Get(pose.CharacterRoot, pose.BindingRoot);
@@ -63,7 +64,7 @@ namespace DazPose.UnityValidation
 
                 foreach (var sampleTime in result.SampleTimes)
                 {
-                    DazPoseEditorCommands.RestoreSnapshot(cloneRoot, pose.RestState);
+                    DazPoseRestPoseService.RestoreSnapshot(cloneRoot, pose.RestState);
                     clip.SampleAnimation(cloneBindingRoot.gameObject, sampleTime);
                     foreach (var bone in pose.Bones.Where(item => item.HasPosition || item.HasRotation || item.HasScale))
                     {

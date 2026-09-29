@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DazPose.Performer;
+using DazPose.UnityValidation;
 using UnityEditor;
 using UnityEngine;
 
-namespace DazPose.UnityValidation
+namespace DazPose.Editor.Importing
 {
     public static class DazPoseAnimationClipGenerator
     {

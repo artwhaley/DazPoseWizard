@@ -70,12 +70,14 @@ public sealed class BrowserJobStatus
     public string SourcePosePath { get; set; } = string.Empty;
     public string DestinationRelativeFolder { get; set; } = string.Empty;
     public string ExpectedAnimPath { get; set; } = string.Empty;
+    public string ExpectedPerformerPosePath { get; set; } = string.Empty;
     public string State { get; set; } = nameof(ConversionJobState.AwaitingUnity);
     public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
     public string? ErrorMessage { get; set; }
 }
 
-public sealed record ConversionOutput(string CanonicalImportPath, string AnimPath, string DestinationRelativeFolder,
+public sealed record ConversionOutput(string CanonicalImportPath, string AnimPath, string PerformerPoseAssetPath,
+    string DestinationRelativeFolder,
     ConversionJobState State, string? ErrorMessage, DateTimeOffset? Timestamp);
 
 public sealed record LibraryScanProgress(int Visited, int Indexed, int Ignored, int Errors, string? CurrentPath);

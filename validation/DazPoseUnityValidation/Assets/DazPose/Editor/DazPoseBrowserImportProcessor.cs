@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using DazPose.Performer;
+using DazPose.UnityValidation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace DazPose.UnityValidation
+namespace DazPose.Editor.Importing
 {
     [Serializable]
     internal sealed class DazPoseProjectBridge
@@ -27,6 +29,7 @@ namespace DazPose.UnityValidation
         public string sourcePosePath;
         public string destinationRelativeFolder;
         public string expectedAnimPath;
+        public string expectedPerformerPosePath;
         public string state;
         public string timestamp;
         public string errorMessage;
@@ -48,7 +51,7 @@ namespace DazPose.UnityValidation
             EditorApplication.delayCall += ReconcileAtStartup;
         }
 
-        [MenuItem("Tools/DAZ Pose/Process Pending Browser Imports")]
+        [MenuItem("Tools/DAZ Pose/Reconcile Pending Pose Imports")]
         private static void ProcessPendingBrowserImports()
         {
             Reconcile(true, true);
@@ -125,7 +128,7 @@ namespace DazPose.UnityValidation
             var path = Path.Combine(ProjectRoot, "DazPoseWizard.project.json");
             if (!File.Exists(path))
             {
-                if (logIfMissing) Debug.LogWarning("No browser bridge file was found. Configure this Unity project in DazPoseWizard, then retry Process Pending Browser Imports.");
+                if (logIfMissing) Debug.LogWarning("No browser bridge file was found. Configure this Unity project in DazPoseWizard, then use Reconcile Pending Pose Imports after setup.");
                 return false;
             }
             try
@@ -210,6 +213,7 @@ namespace DazPose.UnityValidation
             var contentHash = ContentHash(canonicalDiskPath);
             var status = ReadStatus(canonicalAssetPath) ?? new DazPoseBrowserJobStatus();
             var expectedAnimPath = ResolveExpectedAnimPath(canonicalAssetPath, importRoot, outputRoot, status);
+            var expectedPerformerPosePath = ResolveExpectedPerformerPosePath(expectedAnimPath, outputRoot, status);
             var destinationFolder = ResolveDestinationFolder(canonicalAssetPath, importRoot, status);
             if (!NeedsProcessing(canonicalDiskPath, canonicalAssetPath, status, contentHash, retryFailed)) return;
 
@@ -218,6 +222,7 @@ namespace DazPose.UnityValidation
             status.sourcePosePath = ReadSourcePosePath(canonicalDiskPath, status.sourcePosePath);
             status.destinationRelativeFolder = destinationFolder;
             status.expectedAnimPath = expectedAnimPath;
+            status.expectedPerformerPosePath = expectedPerformerPosePath;
             status.state = "Processing";
             status.timestamp = DateTime.UtcNow.ToString("O");
             status.errorMessage = string.Empty;
@@ -249,7 +254,7 @@ namespace DazPose.UnityValidation
 
                 ResolvedUnityPose resolvedPose;
                 string resolutionFailure;
-                if (!DazPoseEditorCommands.TryResolvePoseForPipeline(referenceInstance.transform, canonicalDiskPath,
+                if (!DazPoseUnityResolver.TryResolvePose(referenceInstance.transform, canonicalDiskPath,
                         out resolvedPose, out resolutionFailure))
                     throw new InvalidOperationException(resolutionFailure ?? "The reference G8F rig could not resolve this pose.");
 
@@ -258,6 +263,9 @@ namespace DazPose.UnityValidation
                 DazPoseAnimationClipGenerator.Generate(resolvedPose, expectedAnimPath, reportPath, existing != null);
                 var generated = AssetDatabase.LoadAssetAtPath<AnimationClip>(expectedAnimPath);
                 if (generated == null) throw new InvalidOperationException("Unity did not reload the generated AnimationClip at " + expectedAnimPath + ".");
+                var performerPose = AssetDatabase.LoadAssetAtPath<PerformerPose>(expectedPerformerPosePath);
+                if (performerPose == null || performerPose.Clip != generated)
+                    throw new InvalidOperationException("Unity did not generate a PerformerPose asset that references the expected AnimationClip at " + expectedPerformerPosePath + ".");
 
                 status.state = "Converted";
                 status.timestamp = DateTime.UtcNow.ToString("O");
@@ -295,22 +303,23 @@ namespace DazPose.UnityValidation
             string outputRoot;
             if (TryLoadBridge(out bridge, false)) ValidateBridge(bridge, out importRoot, out outputRoot);
             else return false;
-            var expectedPath = ResolveExpectedAnimPath(canonicalAssetPath, importRoot, outputRoot, status);
-
-            var outputDiskPath = AssetToDiskPath(expectedPath);
-            var outputExists = File.Exists(outputDiskPath);
+            var expectedAnimPath = ResolveExpectedAnimPath(canonicalAssetPath, importRoot, outputRoot, status);
+            var expectedPosePath = ResolveExpectedPerformerPosePath(expectedAnimPath, outputRoot, status);
+            var outputIsUsable = HasUsableProductionOutput(expectedAnimPath, expectedPosePath);
             var storedHash = status == null ? string.Empty : status.canonicalContentHash;
             var state = status == null ? string.Empty : status.state;
             if (string.Equals(state, "Converted", StringComparison.OrdinalIgnoreCase)
-                && string.Equals(storedHash, contentHash, StringComparison.OrdinalIgnoreCase) && outputExists) return false;
+                && string.Equals(storedHash, contentHash, StringComparison.OrdinalIgnoreCase) && outputIsUsable) return false;
             if (string.Equals(state, "Failed", StringComparison.OrdinalIgnoreCase)
-                && string.Equals(storedHash, contentHash, StringComparison.OrdinalIgnoreCase) && !retryFailed) return false;
+                && string.Equals(storedHash, contentHash, StringComparison.OrdinalIgnoreCase)
+                && outputIsUsable && !retryFailed) return false;
 
-            if (string.IsNullOrEmpty(storedHash) && outputExists)
+            if (string.IsNullOrEmpty(storedHash) && outputIsUsable)
             {
                 try
                 {
-                    if (File.GetLastWriteTimeUtc(outputDiskPath) >= File.GetLastWriteTimeUtc(canonicalDiskPath)
+                    var poseDiskPath = AssetToDiskPath(expectedPosePath);
+                    if (File.GetLastWriteTimeUtc(poseDiskPath) >= File.GetLastWriteTimeUtc(canonicalDiskPath)
                         && (string.IsNullOrEmpty(state) || string.Equals(state, "Converted", StringComparison.OrdinalIgnoreCase))) return false;
                 }
                 catch (IOException) { }
@@ -333,6 +342,26 @@ namespace DazPose.UnityValidation
                 throw new InvalidDataException("Canonical import filenames must end in .dazpose.json.");
             relative = relative.Substring(0, relative.Length - CanonicalSuffix.Length) + ".anim";
             return NormalizeAssetPath(outputRoot + "/" + relative);
+        }
+
+        private static string ResolveExpectedPerformerPosePath(string expectedAnimPath, string outputRoot,
+            DazPoseBrowserJobStatus status)
+        {
+            if (status != null && !string.IsNullOrWhiteSpace(status.expectedPerformerPosePath))
+            {
+                var recorded = NormalizeAssetPath(status.expectedPerformerPosePath);
+                if (recorded.EndsWith(".asset", StringComparison.OrdinalIgnoreCase) && IsWithinRoot(recorded, outputRoot))
+                    return recorded;
+            }
+            return NormalizeAssetPath(Path.ChangeExtension(expectedAnimPath, ".asset"));
+        }
+
+        private static bool HasUsableProductionOutput(string expectedAnimPath, string expectedPerformerPosePath)
+        {
+            var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(expectedAnimPath);
+            if (clip == null) return false;
+            var pose = AssetDatabase.LoadAssetAtPath<PerformerPose>(expectedPerformerPosePath);
+            return pose != null && pose.Clip == clip;
         }
 
         private static string ResolveDestinationFolder(string canonicalAssetPath, string importRoot, DazPoseBrowserJobStatus status)

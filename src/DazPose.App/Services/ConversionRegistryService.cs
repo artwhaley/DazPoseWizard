@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using DazPose.App.Models;
 
 namespace DazPose.App.Services;
@@ -60,7 +61,9 @@ public sealed class ConversionRegistryService
                         : UnityProjectService.JoinAssetPath(
                             UnityProjectService.JoinAssetPath(settings.FinalPoseAssetRoot, UnityProjectService.NormalizeDestinationRelativeFolder(destinationFolder)),
                             outputName);
-                    AddOutput(outputs, relativeCanonical, sourcePath, outputAssetPath, destinationFolder, status, projectRoot);
+                    var performerPoseAssetPath = ResolveExpectedPerformerPosePath(outputAssetPath, status);
+                    AddOutput(outputs, relativeCanonical, sourcePath, outputAssetPath, performerPoseAssetPath,
+                        destinationFolder, status, projectRoot);
                 }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException or ArgumentException)
                 {
@@ -83,7 +86,8 @@ public sealed class ConversionRegistryService
                     : UnityProjectService.JoinAssetPath(
                         UnityProjectService.JoinAssetPath(settings.FinalPoseAssetRoot,
                             UnityProjectService.NormalizeDestinationRelativeFolder(status.DestinationRelativeFolder)), GetAnimName(relativeCanonical));
-                AddOutput(outputs, relativeCanonical, status.SourcePosePath, expectedAssetPath,
+                var expectedPerformerPosePath = ResolveExpectedPerformerPosePath(expectedAssetPath, status);
+                AddOutput(outputs, relativeCanonical, status.SourcePosePath, expectedAssetPath, expectedPerformerPosePath,
                     status.DestinationRelativeFolder, status, projectRoot);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException) { }
@@ -121,9 +125,9 @@ public sealed class ConversionRegistryService
         return statuses;
     }
 
-    private static ConversionJobState DetermineState(bool outputExists, BrowserJobStatus? status)
+    private static ConversionJobState DetermineState(bool outputUsable, BrowserJobStatus? status)
     {
-        if (outputExists) return ConversionJobState.Converted;
+        if (outputUsable) return ConversionJobState.Converted;
         if (status is null) return ConversionJobState.AwaitingUnity;
         if (string.Equals(status.State, "Failed", StringComparison.OrdinalIgnoreCase)) return ConversionJobState.Failed;
         if (string.Equals(status.State, "Processing", StringComparison.OrdinalIgnoreCase)) return ConversionJobState.Converting;
@@ -131,16 +135,29 @@ public sealed class ConversionRegistryService
     }
 
     private void AddOutput(Dictionary<string, List<ConversionOutput>> outputs, string relativeCanonical, string sourcePath,
-        string outputAssetPath, string destinationFolder, BrowserJobStatus? status, string projectRoot)
+        string outputAssetPath, string performerPoseAssetPath, string destinationFolder,
+        BrowserJobStatus? status, string projectRoot)
     {
         var safeOutputAssetPath = _projectService.NormalizeAssetRelativePath(outputAssetPath);
         var outputDiskPath = _projectService.ResolveAssetPath(projectRoot, safeOutputAssetPath);
-        var state = DetermineState(File.Exists(outputDiskPath), status);
-        var output = new ConversionOutput(relativeCanonical, outputDiskPath, destinationFolder, state, status?.ErrorMessage, status?.Timestamp);
+        var safePerformerPosePath = _projectService.NormalizeAssetRelativePath(performerPoseAssetPath);
+        var performerPoseDiskPath = _projectService.ResolveAssetPath(projectRoot, safePerformerPosePath);
+        var outputUsable = PerformerPoseAssetInspector.IsUsable(projectRoot, outputDiskPath, performerPoseDiskPath);
+        var state = DetermineState(outputUsable, status);
+        var output = new ConversionOutput(relativeCanonical, outputDiskPath, performerPoseDiskPath,
+            destinationFolder, state, status?.ErrorMessage, status?.Timestamp);
         var normalizedSource = Path.GetFullPath(sourcePath);
         if (!outputs.TryGetValue(normalizedSource, out var sourceOutputs)) outputs[normalizedSource] = sourceOutputs = [];
         sourceOutputs.RemoveAll(item => string.Equals(item.CanonicalImportPath, relativeCanonical, StringComparison.OrdinalIgnoreCase));
         sourceOutputs.Add(output);
+    }
+
+    private string ResolveExpectedPerformerPosePath(string expectedAnimPath, BrowserJobStatus? status)
+    {
+        if (!string.IsNullOrWhiteSpace(status?.ExpectedPerformerPosePath))
+            return _projectService.NormalizeAssetRelativePath(status.ExpectedPerformerPosePath);
+        return Path.ChangeExtension(_projectService.NormalizeAssetRelativePath(expectedAnimPath), ".asset")
+            .Replace('\\', '/');
     }
 
     private static string GetAnimName(string canonicalPath)
@@ -163,8 +180,59 @@ public sealed class ConversionRegistryService
     }
 }
 
+/// <summary>Checks the Unity-authored PerformerPose YAML without requiring Unity to be open.</summary>
+public static class PerformerPoseAssetInspector
+{
+    private static readonly Regex MetaGuidPattern = new(@"(?m)^guid:\s*([0-9a-f]{32})\s*$",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+    public static bool IsUsable(string projectRoot, string animationClipPath, string performerPoseAssetPath)
+    {
+        try
+        {
+            if (!File.Exists(animationClipPath) || !File.Exists(performerPoseAssetPath)) return false;
+            var clipGuid = ReadMetaGuid(animationClipPath + ".meta");
+            var poseGuid = ReadMetaGuid(performerPoseAssetPath + ".meta");
+            if (clipGuid is null || poseGuid is null) return false;
+
+            var yaml = File.ReadAllText(performerPoseAssetPath);
+            if (!HasReference(yaml, "clip", clipGuid)) return false;
+
+            var scriptMeta = Path.Combine(projectRoot, "Assets", "DazPose", "Runtime", "Performer", "PerformerPose.cs.meta");
+            if (File.Exists(scriptMeta))
+            {
+                var scriptGuid = ReadMetaGuid(scriptMeta);
+                if (scriptGuid is null || !HasReference(yaml, "m_Script", scriptGuid)) return false;
+            }
+
+            return true;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or ArgumentException)
+        {
+            return false;
+        }
+    }
+
+    private static string? ReadMetaGuid(string path)
+    {
+        if (!File.Exists(path)) return null;
+        var match = MetaGuidPattern.Match(File.ReadAllText(path));
+        return match.Success ? match.Groups[1].Value : null;
+    }
+
+    private static bool HasReference(string yaml, string fieldName, string guid)
+    {
+        var fieldPattern = new Regex(@"(?m)^\s*" + Regex.Escape(fieldName)
+            + @":\s*\{[^}\r\n]*\bguid:\s*([0-9a-f]{32})",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        var match = fieldPattern.Match(yaml);
+        return match.Success && string.Equals(match.Groups[1].Value, guid, StringComparison.OrdinalIgnoreCase);
+    }
+}
+
 public sealed record ResolvedPoseOutput(string BaseName, string CanonicalPath, string CanonicalAssetPath,
-    string AnimPath, string AnimAssetPath, string DestinationRelativeFolder);
+    string AnimPath, string AnimAssetPath, string PerformerPosePath, string PerformerPoseAssetPath,
+    string DestinationRelativeFolder);
 
 public sealed class PoseOutputNamingService(UnityProjectService projectService)
 {
@@ -180,7 +248,7 @@ public sealed class PoseOutputNamingService(UnityProjectService projectService)
         var sourceStem = Path.GetFileNameWithoutExtension(source);
         var plainBase = SanitizeFileStem($"{sourceFolder} - {sourceStem}");
         var importFolderRelative = UnityProjectService.JoinAssetPath(settings.CanonicalImportRoot, destination);
-        var finalFolderRelative = UnityProjectService.JoinAssetPath(settings.FinalPoseAssetRoot, destination);
+            var finalFolderRelative = UnityProjectService.JoinAssetPath(settings.FinalPoseAssetRoot, destination);
         var importFolder = projectService.ResolveAssetPath(settings.UnityProjectRoot, importFolderRelative);
         var finalFolder = projectService.ResolveAssetPath(settings.UnityProjectRoot, finalFolderRelative);
         Directory.CreateDirectory(importFolder);
@@ -201,9 +269,11 @@ public sealed class PoseOutputNamingService(UnityProjectService projectService)
 
             var canonicalAssetPath = UnityProjectService.JoinAssetPath(importFolderRelative, selectedBase + ".dazpose.json");
             var animAssetPath = UnityProjectService.JoinAssetPath(finalFolderRelative, selectedBase + ".anim");
+            var performerPoseAssetPath = UnityProjectService.JoinAssetPath(finalFolderRelative, selectedBase + ".asset");
             var resolved = new ResolvedPoseOutput(selectedBase,
                 Path.Combine(importFolder, selectedBase + ".dazpose.json"), canonicalAssetPath,
-                Path.Combine(finalFolder, selectedBase + ".anim"), animAssetPath, destination);
+                Path.Combine(finalFolder, selectedBase + ".anim"), animAssetPath,
+                Path.Combine(finalFolder, selectedBase + ".asset"), performerPoseAssetPath, destination);
             _reservations[Path.GetFullPath(resolved.CanonicalPath)] = source;
             return resolved;
         }

@@ -4,7 +4,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace DazPose.UnityValidation
+namespace DazPose.Editor.Importing
 {
     [Serializable]
     internal sealed class DazPosePipelineProjectSettings

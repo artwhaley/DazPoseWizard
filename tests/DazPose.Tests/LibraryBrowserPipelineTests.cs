@@ -221,6 +221,8 @@ public sealed class LibraryBrowserPipelineTests
             Directory.CreateDirectory(Path.GetDirectoryName(secondAnim)!);
             File.WriteAllText(firstAnim, "clip one");
             File.WriteAllText(secondAnim, "clip two");
+            WriteUsablePerformerPose(project, firstAnim);
+            WriteUsablePerformerPose(project, secondAnim);
             await registry.WriteStatusAsync(settings, StatusFor(first, "Sitting/Romantic", firstAnim, source, project));
             await registry.WriteStatusAsync(settings, StatusFor(second, "Standing/Reference", secondAnim, source, project));
 
@@ -284,6 +286,9 @@ public sealed class LibraryBrowserPipelineTests
                 Assert.Equal(ConversionJobState.AwaitingUnity, output.State);
                 Directory.CreateDirectory(Path.GetDirectoryName(output.AnimPath)!);
                 File.WriteAllText(output.AnimPath, "test clip output");
+                Assert.Equal(ConversionJobState.AwaitingUnity,
+                    Assert.Single(registry.Reconcile(settings)[Path.GetFullPath(source)]).State);
+                WriteUsablePerformerPose(project, output.AnimPath);
                 Assert.Equal(ConversionJobState.Converted, Assert.Single(registry.Reconcile(settings)[Path.GetFullPath(source)]).State);
                 File.Delete(output.AnimPath);
                 Assert.Equal(ConversionJobState.AwaitingUnity, Assert.Single(registry.Reconcile(settings)[Path.GetFullPath(source)]).State);
@@ -292,6 +297,37 @@ public sealed class LibraryBrowserPipelineTests
             Assert.True(File.Exists(source));
             Assert.Equal(originalHash, Convert.ToHexString(SHA256.HashData(await File.ReadAllBytesAsync(source))));
             Assert.Equal(originalMtime, File.GetLastWriteTimeUtc(source));
+        }
+        finally { FixtureData.DeleteTempDirectory(temp); }
+    }
+
+    [Fact]
+    public async Task RegistryRequiresPerformerPoseWrapperToReferenceTheExpectedClip()
+    {
+        var temp = FixtureData.NewTempDirectory();
+        try
+        {
+            var project = CreateUnityProject(temp);
+            var settings = SettingsFor(project);
+            var source = Path.Combine(temp, "Vendor", "Pose.duf");
+            Directory.CreateDirectory(Path.GetDirectoryName(source)!);
+            File.WriteAllText(source, "source");
+            var projectService = new UnityProjectService();
+            await projectService.WriteBridgeConfigurationAsync(settings);
+            var registry = new ConversionRegistryService(projectService);
+            var canonical = WriteCanonical(project, "Standing", "Pose.dazpose.json", source);
+            var anim = Path.Combine(project, "Assets", "Animations", "DazPoses", "Standing", "Pose.anim");
+            Directory.CreateDirectory(Path.GetDirectoryName(anim)!);
+            File.WriteAllText(anim, "clip");
+            await registry.WriteStatusAsync(settings, StatusFor(canonical, "Standing", anim, source, project));
+
+            WriteUsablePerformerPose(project, anim, new string('b', 32));
+            Assert.Equal(ConversionJobState.AwaitingUnity,
+                Assert.Single(registry.Reconcile(settings)[Path.GetFullPath(source)]).State);
+
+            WriteUsablePerformerPose(project, anim);
+            Assert.Equal(ConversionJobState.Converted,
+                Assert.Single(registry.Reconcile(settings)[Path.GetFullPath(source)]).State);
         }
         finally { FixtureData.DeleteTempDirectory(temp); }
     }
@@ -384,12 +420,39 @@ public sealed class LibraryBrowserPipelineTests
         return importPath;
     }
 
+    private static void WriteUsablePerformerPose(string project, string animPath, string? referencedClipGuid = null)
+    {
+        const string scriptGuid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        var clipGuid = GuidFor(animPath);
+        var posePath = Path.ChangeExtension(animPath, ".asset");
+        Directory.CreateDirectory(Path.GetDirectoryName(posePath)!);
+        WriteUnityMeta(animPath + ".meta", clipGuid);
+        WriteUnityMeta(posePath + ".meta", GuidFor(posePath));
+
+        var scriptMeta = Path.Combine(project, "Assets", "DazPose", "Runtime", "Performer", "PerformerPose.cs.meta");
+        Directory.CreateDirectory(Path.GetDirectoryName(scriptMeta)!);
+        WriteUnityMeta(scriptMeta, scriptGuid);
+        File.WriteAllText(posePath,
+            "%YAML 1.1\n--- !u!114 &11400000\nMonoBehaviour:\n"
+            + $"  m_Script: {{fileID: 11500000, guid: {scriptGuid}, type: 3}}\n"
+            + $"  clip: {{fileID: 7400000, guid: {referencedClipGuid ?? clipGuid}, type: 2}}\n");
+    }
+
+    private static string GuidFor(string path) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(path)))[..32];
+
+    private static void WriteUnityMeta(string path, string guid)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, $"fileFormatVersion: 2\nguid: {guid}\n");
+    }
+
     private static BrowserJobStatus StatusFor(string canonicalPath, string destination, string animPath, string source, string project) => new()
     {
         CanonicalImportPath = Path.GetRelativePath(project, canonicalPath).Replace('\\', '/'),
         SourcePosePath = source,
         DestinationRelativeFolder = destination,
         ExpectedAnimPath = Path.GetRelativePath(project, animPath).Replace('\\', '/'),
+        ExpectedPerformerPosePath = Path.ChangeExtension(Path.GetRelativePath(project, animPath), ".asset").Replace('\\', '/'),
         State = nameof(ConversionJobState.Converted),
         Timestamp = DateTimeOffset.UtcNow
     };

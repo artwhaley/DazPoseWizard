@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using DazPose.Editor.Importing;
 using UnityEditor;
 using UnityEngine;
 
@@ -35,7 +36,7 @@ namespace DazPose.UnityValidation
 
     public static class DazPoseClipBindingComparison
     {
-        [MenuItem("Tools/DAZ Pose/Compare AnimationClip Bindings A vs B")]
+        [MenuItem("Tools/DAZ Pose/Development/Diagnostics/Compare Pose Clip Bindings")]
         public static void CompareSelectedPoseClips()
         {
             var startFolder = Path.Combine(Directory.GetParent(Application.dataPath).FullName,

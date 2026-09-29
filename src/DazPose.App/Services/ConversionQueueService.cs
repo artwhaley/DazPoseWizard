@@ -153,6 +153,7 @@ public sealed class ConversionQueueService : IAsyncDisposable
                             SourcePosePath = job.Request.SourcePosePath,
                             DestinationRelativeFolder = output.DestinationRelativeFolder,
                             ExpectedAnimPath = output.AnimAssetPath,
+                            ExpectedPerformerPosePath = output.PerformerPoseAssetPath,
                             State = nameof(ConversionJobState.AwaitingUnity),
                             Timestamp = DateTimeOffset.UtcNow
                         }, _shutdown.Token);
@@ -206,6 +207,8 @@ public sealed class ConversionQueueService : IAsyncDisposable
                 SourcePosePath = job.Request.SourcePosePath,
                 DestinationRelativeFolder = job.Request.DestinationRelativeFolder,
                 ExpectedAnimPath = animAsset,
+                ExpectedPerformerPosePath = Path.GetRelativePath(projectRoot,
+                    Path.ChangeExtension(job.AnimPath, ".asset")).Replace('\\', '/'),
                 State = nameof(ConversionJobState.Failed),
                 Timestamp = DateTimeOffset.UtcNow,
                 ErrorMessage = exception.Message

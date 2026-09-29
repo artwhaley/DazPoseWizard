@@ -52,12 +52,13 @@ public sealed class ConversionRegistryCacheService
             var canonicalPath = reader.GetString(1);
             var animPath = Path.GetFullPath(reader.GetString(2));
             if (!IsWithin(assetsRoot, animPath)) continue;
+            var performerPosePath = Path.ChangeExtension(animPath, ".asset");
             var state = Enum.TryParse<ConversionJobState>(reader.GetString(4), true, out var parsed)
                 ? parsed : ConversionJobState.AwaitingUnity;
-            if (File.Exists(animPath)) state = ConversionJobState.Converted;
+            if (PerformerPoseAssetInspector.IsUsable(root, animPath, performerPosePath)) state = ConversionJobState.Converted;
             else if (state == ConversionJobState.Converted) state = ConversionJobState.AwaitingUnity;
             DateTimeOffset? timestamp = reader.IsDBNull(6) ? null : new DateTimeOffset(reader.GetInt64(6), TimeSpan.Zero);
-            var output = new ConversionOutput(canonicalPath, animPath, reader.GetString(3), state,
+            var output = new ConversionOutput(canonicalPath, animPath, performerPosePath, reader.GetString(3), state,
                 reader.IsDBNull(5) ? null : reader.GetString(5), timestamp);
             if (!result.TryGetValue(sourcePath, out var sourceOutputs)) result[sourcePath] = sourceOutputs = [];
             sourceOutputs.Add(output);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace DazPose.Performer
         [SerializeField] private PerformerPose poseC = null;
 
         private bool _running;
+        private bool _awaitableChecksComplete;
         public string Status { get; private set; } = "Press F5 to run acceptance checks.";
 
         private void Reset()
@@ -98,10 +100,150 @@ namespace DazPose.Performer
             yield return CheckRapidRetargets(poseA, poseB, poseC, stateC, failures);
             yield return CheckLifecycle(animator, poseC, stateC, playableCount, failures);
 
+            _awaitableChecksComplete = false;
+            RunAwaitableChecks(failures);
+            var awaitableDeadline = Time.realtimeSinceStartup + 30f;
+            while (!_awaitableChecksComplete && Time.realtimeSinceStartup < awaitableDeadline)
+                yield return null;
+            if (!_awaitableChecksComplete)
+            {
+                failures.Add("PoseAsync acceptance checks did not finish before the timeout.");
+                performer.Pose(poseA, PoseTransition.Snap);
+                yield return null;
+            }
+
             CheckPlacement("Outer Lara placement", startPlacement, CapturePlacement(placementRoot), failures);
             if (performer.RuntimePlayableCount != playableCount)
                 failures.Add("Playable count changed from " + playableCount + " to " + performer.RuntimePlayableCount + ".");
             Finish(failures);
+        }
+
+        private async void RunAwaitableChecks(List<string> failures)
+        {
+            try
+            {
+                var alreadySettled = await performer.PoseAsync(poseC, PoseTransition.Smooth(0.5f));
+                if (alreadySettled != PoseCompletion.Settled || performer.IsTransitioning)
+                    failures.Add("PoseAsync on the already settled pose did not complete immediately as Settled.");
+
+                var snap = StartPoseRequest(poseA, PoseTransition.Snap);
+                if (!snap.Completed || snap.Error != null || snap.Result != PoseCompletion.Settled
+                    || performer.DesiredPose != poseA || performer.SettledPose != poseA || performer.IsTransitioning)
+                    failures.Add("PoseAsync with Snap did not settle synchronously before another frame.");
+
+                var ordinary = StartPoseRequest(poseB, PoseTransition.Smooth(0.20f));
+                if (ordinary.Completed || !performer.IsTransitioning || performer.DesiredPose != poseB)
+                    failures.Add("PoseAsync did not suspend while an ordinary transition was still running.");
+                await WaitForCompletionObservation(ordinary, 5f, failures, "ordinary PoseAsync transition");
+                if (ordinary.Result != PoseCompletion.Settled || performer.SettledPose != poseB)
+                    failures.Add("An ordinary PoseAsync transition did not complete with Settled at its target.");
+
+                performer.Pose(poseA, PoseTransition.Snap);
+                var reentrant = StartPoseRequest(poseB, PoseTransition.Smooth(1f));
+                reentrant.OnCompleted = result =>
+                {
+                    if (result == PoseCompletion.Superseded)
+                        performer.Pose(poseA, PoseTransition.Smooth(0.15f));
+                };
+                await Awaitable.NextFrameAsync();
+                performer.Pose(poseC, PoseTransition.Smooth(0.25f));
+                if (!reentrant.Completed || reentrant.Result != PoseCompletion.Superseded
+                    || performer.DesiredPose != poseA || !performer.IsTransitioning)
+                    failures.Add("A superseded PoseAsync continuation could not safely issue a reentrant pose command.");
+                await WaitForSettlementAsync(5f, failures, "reentrant superseding pose");
+
+                performer.Pose(poseA, PoseTransition.Snap);
+                var first = StartPoseRequest(poseB, PoseTransition.Smooth(0.25f));
+                var replacement = StartPoseRequest(poseC, PoseTransition.Smooth(0.20f));
+                await WaitForCompletionObservation(first, 5f, failures, "PoseAsync supersession by PoseAsync");
+                await WaitForCompletionObservation(replacement, 5f, failures, "latest PoseAsync target");
+                if (first.Result != PoseCompletion.Superseded || replacement.Result != PoseCompletion.Settled
+                    || performer.SettledPose != poseC)
+                    failures.Add("A newer PoseAsync did not supersede the old waiter and settle the latest target.");
+
+                performer.Pose(poseA, PoseTransition.Snap);
+                var waiterOne = StartPoseRequest(poseB, PoseTransition.Smooth(0.30f));
+                var waiterTwo = StartPoseRequest(poseB, PoseTransition.Smooth(1f));
+                if (performer.ActiveTransition.Duration < 0.299f || performer.ActiveTransition.Duration > 0.301f)
+                    failures.Add("A second waiter for the same desired pose restarted its transition.");
+                await WaitForCompletionObservation(waiterOne, 5f, failures, "first same-target waiter");
+                await WaitForCompletionObservation(waiterTwo, 5f, failures, "second same-target waiter");
+                if (waiterOne.Result != PoseCompletion.Settled || waiterTwo.Result != PoseCompletion.Settled)
+                    failures.Add("Independent same-target PoseAsync waiters did not both settle.");
+
+                performer.Pose(poseA, PoseTransition.Snap);
+                var disabled = StartPoseRequest(poseB, PoseTransition.Smooth(1f));
+                performer.enabled = false;
+                if (!disabled.Completed || disabled.Result != PoseCompletion.PerformerDisabled)
+                    failures.Add("Disabling the performer did not complete its outstanding PoseAsync waiter as PerformerDisabled.");
+                performer.enabled = true;
+                await Awaitable.NextFrameAsync();
+            }
+            catch (Exception exception)
+            {
+                failures.Add("PoseAsync acceptance checks threw " + exception.GetType().Name + ": " + exception.Message);
+            }
+            finally
+            {
+                _awaitableChecksComplete = true;
+            }
+        }
+
+        private CompletionObservation StartPoseRequest(PerformerPose pose, PoseTransition transition)
+        {
+            var observation = new CompletionObservation();
+            ObservePoseRequest(observation, pose, transition);
+            return observation;
+        }
+
+        private async void ObservePoseRequest(CompletionObservation observation,
+            PerformerPose pose, PoseTransition transition)
+        {
+            try
+            {
+                observation.Result = await performer.PoseAsync(pose, transition);
+            }
+            catch (Exception exception)
+            {
+                observation.Error = exception;
+            }
+            finally
+            {
+                observation.Completed = true;
+            }
+
+            observation.OnCompleted?.Invoke(observation.Result);
+        }
+
+        private static async Awaitable WaitForCompletionObservation(CompletionObservation observation,
+            float timeoutSeconds, List<string> failures, string description)
+        {
+            var deadline = Time.realtimeSinceStartup + timeoutSeconds;
+            while (!observation.Completed && Time.realtimeSinceStartup < deadline)
+                await Awaitable.NextFrameAsync();
+            if (!observation.Completed)
+            {
+                failures.Add(description + " did not resolve before the timeout.");
+                return;
+            }
+            if (observation.Error != null)
+                failures.Add(description + " threw " + observation.Error.GetType().Name + ": " + observation.Error.Message);
+        }
+
+        private async Awaitable WaitForSettlementAsync(float timeoutSeconds, List<string> failures, string description)
+        {
+            var deadline = Time.realtimeSinceStartup + timeoutSeconds;
+            while (performer.IsTransitioning && Time.realtimeSinceStartup < deadline)
+                await Awaitable.NextFrameAsync();
+            if (performer.IsTransitioning) failures.Add(description + " did not settle before the timeout.");
+        }
+
+        private sealed class CompletionObservation
+        {
+            public bool Completed;
+            public PoseCompletion Result;
+            public Exception Error;
+            public Action<PoseCompletion> OnCompleted;
         }
 
         private IEnumerator InterruptAtProgress(PerformerPose start, PerformerPose middle, PerformerPose target,
