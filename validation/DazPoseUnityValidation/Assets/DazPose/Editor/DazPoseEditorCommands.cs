@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DazPose.Performer;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -1265,8 +1266,17 @@ namespace DazPose.UnityValidation
                 state = recordUndo ? Undo.AddComponent<DazPoseCharacterState>(root.gameObject) : root.gameObject.AddComponent<DazPoseCharacterState>();
             if (state.hasCapturedRestPose && !force)
             {
-                if (!state.hasCapturedBlendShapes || !RestBlendShapeStructureMatches(root, state))
+                var currentTransforms = root.GetComponentsInChildren<Transform>(true);
+                var refreshTransforms = !RestTransformStructureMatches(root, currentTransforms, state.transforms);
+                var refreshBlendShapes = !state.hasCapturedBlendShapes || !RestBlendShapeStructureMatches(root, state);
+                if (recordUndo && (refreshTransforms || refreshBlendShapes))
+                    Undo.RecordObject(state, "Refresh captured import rest pose");
+                if (refreshTransforms)
+                    state.transforms = ReconcileRestTransforms(root, currentTransforms, state.transforms);
+                if (refreshBlendShapes)
                     CaptureRestBlendShapes(root, state);
+                if (recordUndo && (refreshTransforms || refreshBlendShapes))
+                    EditorUtility.SetDirty(state);
                 return state;
             }
             var transforms = root.GetComponentsInChildren<Transform>(true);
@@ -1281,6 +1291,76 @@ namespace DazPose.UnityValidation
             state.hasCapturedRestPose = true;
             if (recordUndo) EditorUtility.SetDirty(state);
             return state;
+        }
+
+        private static bool RestTransformStructureMatches(Transform root, Transform[] current,
+            DazPoseRestTransform[] saved)
+        {
+            if (current == null || saved == null || current.Length != saved.Length) return false;
+            for (var index = 0; index < current.Length; index++)
+            {
+                if (saved[index] == null
+                    || !string.Equals(saved[index].path, DazPoseTransformPath.Get(root, current[index]), StringComparison.Ordinal))
+                    return false;
+            }
+            return true;
+        }
+
+        private static DazPoseRestTransform[] ReconcileRestTransforms(Transform root, Transform[] current,
+            DazPoseRestTransform[] saved)
+        {
+            var savedByPath = (saved ?? Array.Empty<DazPoseRestTransform>())
+                .Where(item => item != null && item.path != null)
+                .GroupBy(item => item.path, StringComparer.Ordinal)
+                .Where(group => group.Count() == 1)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            var savedByStructure = savedByPath.Values
+                .GroupBy(item => NormalizeIndexedTransformPath(item.path), StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => group.ToArray(), StringComparer.Ordinal);
+            var reconciled = new DazPoseRestTransform[current.Length];
+
+            for (var index = 0; index < current.Length; index++)
+            {
+                var transform = current[index];
+                var path = DazPoseTransformPath.Get(root, transform);
+                if (savedByPath.TryGetValue(path, out var exact))
+                {
+                    reconciled[index] = exact;
+                    continue;
+                }
+
+                var structurePath = NormalizeIndexedTransformPath(path);
+                if (savedByStructure.TryGetValue(structurePath, out var structuralMatches)
+                    && structuralMatches.Length == 1)
+                {
+                    var previous = structuralMatches[0];
+                    reconciled[index] = new DazPoseRestTransform
+                    {
+                        path = path,
+                        localPosition = previous.localPosition,
+                        localRotation = previous.localRotation,
+                        localScale = previous.localScale
+                    };
+                    continue;
+                }
+
+                // A newly imported transform has no previous captured value. Its current
+                // imported local pose is the best available neutral baseline.
+                reconciled[index] = new DazPoseRestTransform
+                {
+                    path = path,
+                    localPosition = transform.localPosition,
+                    localRotation = transform.localRotation,
+                    localScale = transform.localScale
+                };
+            }
+
+            return reconciled;
+        }
+
+        private static string NormalizeIndexedTransformPath(string path)
+        {
+            return Regex.Replace(path ?? string.Empty, @"\[\d+\](?=/|$)", string.Empty);
         }
 
         private static void CaptureRestBlendShapes(Transform root, DazPoseCharacterState state)
