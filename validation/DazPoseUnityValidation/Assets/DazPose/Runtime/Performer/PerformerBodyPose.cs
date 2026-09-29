@@ -100,7 +100,7 @@ namespace DazPose.Performer
             {
                 CopyStateToNative(targetState, _sourceTransforms, _sourceBlendShapes);
                 CopyStateToNative(targetState, _targetTransforms, _targetBlendShapes);
-                SetMixerWeights(1f);
+                SetMixerWeights(0f);
                 SetTrajectoryProgress(1f);
                 SettledPose = pose;
                 TransitionProgress = 1f;
@@ -216,7 +216,7 @@ namespace DazPose.Performer
         {
             if (DesiredPose == null) return;
             CopyNativeState(_targetTransforms, _targetBlendShapes, _sourceTransforms, _sourceBlendShapes);
-            SetMixerWeights(1f);
+            SetMixerWeights(0f);
             SetTrajectoryProgress(1f);
             SettledPose = DesiredPose;
             _isTransitioning = false;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DazPose.Performer;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -278,7 +279,7 @@ namespace DazPose.UnityValidation
             EditorApplication.isPlaying = true;
         }
 
-        [MenuItem("Tools/DAZ Pose/Setup Runtime Blend Demo")]
+        [MenuItem("Tools/DAZ Pose/Setup Performer Pose Smoke Test")]
         public static void SetupRuntimeBlendDemo()
         {
             var characterRoot = RequireSelectedRoot();
@@ -292,18 +293,27 @@ namespace DazPose.UnityValidation
             animator.applyRootMotion = false;
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
-            var player = animationRoot.GetComponent<DazPoseBlendPlayer>();
-            if (player == null) player = Undo.AddComponent<DazPoseBlendPlayer>(animationRoot.gameObject);
-            var demo = animationRoot.GetComponent<DazPoseBlendDemo>();
-            if (demo == null) demo = Undo.AddComponent<DazPoseBlendDemo>(animationRoot.gameObject);
-            demo.player = player;
-            EditorUtility.SetDirty(demo);
+            RemoveLegacyBlendDemo(animationRoot);
+            var performer = animationRoot.GetComponent<SuccubusPerformer>();
+            if (performer == null) performer = Undo.AddComponent<SuccubusPerformer>(animationRoot.gameObject);
+            var smoke = animationRoot.GetComponent<PerformerPoseSmokeHarness>();
+            if (smoke == null) smoke = Undo.AddComponent<PerformerPoseSmokeHarness>(animationRoot.gameObject);
+            var acceptance = animationRoot.GetComponent<PerformerPoseAcceptanceHarness>();
+            if (acceptance == null) acceptance = Undo.AddComponent<PerformerPoseAcceptanceHarness>(animationRoot.gameObject);
+
+            var wrappers = Stack3PoseAssetPaths().Select(path => AssetDatabase.LoadAssetAtPath<PerformerPose>(path)).ToArray();
+            if (wrappers.All(pose => pose != null))
+                AssignPerformerSmokePoses(performer, smoke, acceptance, wrappers);
+            else
+                AssignSmokeHarnessOwners(performer, smoke, acceptance);
+
             EditorSceneManager.MarkSceneDirty(characterRoot.gameObject.scene);
             Selection.activeGameObject = animationRoot.gameObject;
-            Debug.Log("Runtime pose-blend demo is set up on " + animationRoot.name + ". Assign Pose A and Pose B on DazPoseBlendDemo, then enter Play Mode. Lara's outer scene object is not animated.");
+            Debug.Log("Production performer pose smoke test is set up on " + animationRoot.name
+                + ". The controller uses SuccubusPerformer and the three generated PerformerPose assets when available.");
         }
 
-        [MenuItem("Tools/DAZ Pose/Import Three Stack3 Poses and Setup Blend Test")]
+        [MenuItem("Tools/DAZ Pose/Import Three Stack3 Poses and Setup Performer Pose Test")]
         public static void ImportThreeStack3PosesAndSetupBlendTest()
         {
             const string validationScenePath = "Assets/Scenes/PoseValidation.unity";
@@ -332,15 +342,15 @@ namespace DazPose.UnityValidation
             for (var index = 0; index < poseFileNames.Length; index++)
             {
                 var sourcePath = Path.Combine(sourceDirectory, poseFileNames[index]);
-                if (!File.Exists(sourcePath))
-                    throw new FileNotFoundException("Convert the three Vintage Glamour poses and place their .dazpose.json outputs in the repository's stack3 poses folder.", sourcePath);
-
                 posePaths[index] = Path.Combine(testDataDirectory, poseFileNames[index]);
-                File.Copy(sourcePath, posePaths[index], true);
+                if (File.Exists(sourcePath)) File.Copy(sourcePath, posePaths[index], true);
+                else if (!File.Exists(posePaths[index]))
+                    throw new FileNotFoundException("The Stack3 source pose was not found in the local stack3 poses folder or Assets/TestData.", sourcePath);
             }
             AssetDatabase.Refresh();
 
             var clips = new AnimationClip[posePaths.Length];
+            var poses = new PerformerPose[posePaths.Length];
             for (var index = 0; index < posePaths.Length; index++)
             {
                 if (!TryResolvePose(characterRoot, posePaths[index], out var resolved))
@@ -352,30 +362,87 @@ namespace DazPose.UnityValidation
                 clips[index] = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
                 if (clips[index] == null)
                     throw new InvalidOperationException("AnimationClip generation did not create " + assetPath + ".");
+                var poseAssetPath = Path.ChangeExtension(assetPath, ".asset").Replace('\\', '/');
+                poses[index] = AssetDatabase.LoadAssetAtPath<PerformerPose>(poseAssetPath);
+                if (poses[index] == null || poses[index].Clip != clips[index])
+                    throw new InvalidOperationException("PerformerPose generation did not create a wrapper for " + assetPath + ".");
             }
 
             Selection.activeGameObject = character;
             SetupRuntimeBlendDemo();
             animationRoot = FindBindingRoot(characterRoot);
-            var demo = animationRoot.GetComponent<DazPoseBlendDemo>();
-            var player = animationRoot.GetComponent<DazPoseBlendPlayer>();
-            if (demo == null || player == null)
-                throw new InvalidOperationException("The runtime blend demo components were not attached to " + animationRoot.name + ".");
+            var performer = animationRoot.GetComponent<SuccubusPerformer>();
+            var smoke = animationRoot.GetComponent<PerformerPoseSmokeHarness>();
+            var acceptance = animationRoot.GetComponent<PerformerPoseAcceptanceHarness>();
+            if (performer == null || smoke == null || acceptance == null)
+                throw new InvalidOperationException("The production pose smoke components were not attached to " + animationRoot.name + ".");
 
-            Undo.RecordObject(demo, "Assign Three Stack3 Blend Test Poses");
-            demo.player = player;
-            demo.poseA = clips[0];
-            demo.poseB = clips[1];
-            demo.poseC = clips[2];
-            EditorUtility.SetDirty(demo);
+            AssignPerformerSmokePoses(performer, smoke, acceptance, poses);
             EditorSceneManager.MarkSceneDirty(scene);
             AssetDatabase.SaveAssets();
             if (!EditorSceneManager.SaveScene(scene))
                 throw new InvalidOperationException("Unity could not save the three-pose runtime blend setup to " + validationScenePath + ".");
 
-            Debug.Log("Three converted Stack3 poses are ready on " + animationRoot.name + ": Pose A=" + clips[0].name
-                + ", Pose B=" + clips[1].name + ", Pose C=" + clips[2].name
-                + ". Enter Play Mode and use 1/2/3 or the on-screen buttons to switch poses; F5 validates repeated A/B blending.");
+            Debug.Log("Three converted Stack3 PerformerPose assets are ready on " + animationRoot.name + ": Pose A=" + poses[0].name
+                + ", Pose B=" + poses[1].name + ", Pose C=" + poses[2].name
+                + ". Enter Play Mode, use 1/2/3 or the on-screen buttons to switch poses, and F5 runs runtime acceptance checks.");
+        }
+
+        private static void RemoveLegacyBlendDemo(Transform animationRoot)
+        {
+            var demo = animationRoot.GetComponent<DazPoseBlendDemo>();
+            if (demo != null) Undo.DestroyObjectImmediate(demo);
+            var player = animationRoot.GetComponent<DazPoseBlendPlayer>();
+            if (player != null) Undo.DestroyObjectImmediate(player);
+        }
+
+        private static string[] Stack3PoseAssetPaths()
+        {
+            return new[]
+            {
+                DazPoseAnimationClipGenerator.OutputFolder + "/Vintage Glamour Genesis 8 Female 03.asset",
+                DazPoseAnimationClipGenerator.OutputFolder + "/Vintage Glamour Genesis 8 Female 22.asset",
+                DazPoseAnimationClipGenerator.OutputFolder + "/Vintage Glamour Genesis 8 Female 25.asset"
+            };
+        }
+
+        private static void AssignPerformerSmokePoses(SuccubusPerformer performer,
+            PerformerPoseSmokeHarness smoke, PerformerPoseAcceptanceHarness acceptance, PerformerPose[] poses)
+        {
+            var performerProperties = new SerializedObject(performer);
+            performerProperties.FindProperty("initialPose").objectReferenceValue = poses[0];
+            performerProperties.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(performer);
+
+            AssignSmokeHarnessOwners(performer, smoke, acceptance);
+            AssignPoseReferences(smoke, poses);
+            AssignPoseReferences(acceptance, poses);
+        }
+
+        private static void AssignSmokeHarnessOwners(SuccubusPerformer performer,
+            PerformerPoseSmokeHarness smoke, PerformerPoseAcceptanceHarness acceptance)
+        {
+            AssignReference(smoke, "performer", performer);
+            AssignReference(smoke, "acceptanceHarness", acceptance);
+            AssignReference(acceptance, "performer", performer);
+        }
+
+        private static void AssignPoseReferences(UnityEngine.Object target, PerformerPose[] poses)
+        {
+            var serialized = new SerializedObject(target);
+            serialized.FindProperty("poseA").objectReferenceValue = poses[0];
+            serialized.FindProperty("poseB").objectReferenceValue = poses[1];
+            serialized.FindProperty("poseC").objectReferenceValue = poses[2];
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(target);
+        }
+
+        private static void AssignReference(UnityEngine.Object target, string fieldName, UnityEngine.Object value)
+        {
+            var serialized = new SerializedObject(target);
+            serialized.FindProperty(fieldName).objectReferenceValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(target);
         }
 
         private static void RemovePhase2ValidationDriverForBlendDemo(Transform animationRoot, Scene scene)
