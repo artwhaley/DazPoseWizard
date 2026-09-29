@@ -146,51 +146,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &489633616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489633612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 558e6e6b716044d2912123110b25e74d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DazPose.UnityValidation.DazPoseBlendDemo
-  player: {fileID: 489633617}
-  poseA: {fileID: 7400000, guid: 6ce63a477c2e91d4e812f729b6d839dd, type: 2}
-  poseB: {fileID: 7400000, guid: c9ffa4981fdb2e5438e45ddafc89ed1d, type: 2}
-  poseC: {fileID: 7400000, guid: fba2f480a51bf5a47af3fffcce47d4ca, type: 2}
-  blendDurationSeconds: 0.7
-  blendEase: 1
-  windupFraction: 0
-  overshootFraction: 0
---- !u!114 &489633617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489633612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f12c81f855a4463a98dced233cdae388, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DazPose.UnityValidation.DazPoseBlendPlayer
-  currentPoseDebug: {fileID: 0}
-  targetPoseDebug: {fileID: 0}
-  pendingPoseDebug: {fileID: 0}
-  blendProgressDebug: 0
-  trajectoryProgressDebug: 0
-  activeDurationDebug: 0
-  activeEaseDebug: 0
-  activeWindupDebug: 0
-  activeOvershootDebug: 0
-  pendingDurationDebug: 0
-  pendingEaseDebug: 0
-  pendingWindupDebug: 0
-  pendingOvershootDebug: 0
 --- !u!1001 &784435340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5197,12 +5152,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7818370485221686748, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 489633615}
-    - targetCorrespondingSourceObject: {fileID: 7818370485221686748, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 489633617}
-    - targetCorrespondingSourceObject: {fileID: 7818370485221686748, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 489633616}
   m_SourcePrefab: {fileID: 100100000, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
 --- !u!1 &784435341 stripped
 GameObject:

@@ -295,6 +295,7 @@ namespace DazPose.UnityValidation
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
             RemoveLegacyBlendDemo(animationRoot);
+            ClearAnimatorControllerForPoseSmokeTest(animator);
             var performer = animationRoot.GetComponent<SuccubusPerformer>();
             if (performer == null) performer = Undo.AddComponent<SuccubusPerformer>(animationRoot.gameObject);
             var smoke = animationRoot.GetComponent<PerformerPoseSmokeHarness>();
@@ -328,6 +329,9 @@ namespace DazPose.UnityValidation
             var characterRoot = character.transform;
             var animationRoot = FindBindingRoot(characterRoot);
             RemovePhase2ValidationDriverForBlendDemo(animationRoot, scene);
+            RemoveLegacyBlendDemo(animationRoot);
+            ClearAnimatorControllerForPoseSmokeTest(animationRoot.GetComponent<Animator>());
+            EditorSceneManager.MarkSceneDirty(scene);
 
             var sourceDirectory = Path.GetFullPath(Path.Combine(ProjectRoot, "..", "..", "stack3 poses"));
             var poseFileNames = new[]
@@ -395,6 +399,14 @@ namespace DazPose.UnityValidation
             if (demo != null) Undo.DestroyObjectImmediate(demo);
             var player = animationRoot.GetComponent<DazPoseBlendPlayer>();
             if (player != null) Undo.DestroyObjectImmediate(player);
+        }
+
+        private static void ClearAnimatorControllerForPoseSmokeTest(Animator animator)
+        {
+            if (animator == null || animator.runtimeAnimatorController == null) return;
+            Undo.RecordObject(animator, "Clear Animator Controller for Performer Pose Test");
+            animator.runtimeAnimatorController = null;
+            EditorUtility.SetDirty(animator);
         }
 
         private static string[] Stack3PoseAssetPaths()
