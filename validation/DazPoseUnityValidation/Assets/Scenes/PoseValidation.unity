@@ -4095,6 +4095,70 @@ PrefabInstance:
       value: -1.1034133
       objectReference: {fileID: 0}
     - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9aad316c2da29734e8212fed57221bf9, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: bf949857a6126854e851c3c791a0d26e, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b592e817a53282e43aaac3f9442646c9, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 74cffcb34d66e9a4386585f098ec1425, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[4]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dd0a30308c3628b47ba2072d34ce206d, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[5]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0cf558e9bab0883438da711b0fcf231c, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[6]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5db8e370fdf5519449c892df53b23ef6, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[7]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c3da288264d263646be64586cd717a8b, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[8]'
+      value: 
+      objectReference: {fileID: 2100000, guid: cf740898fe1baa442bdfb74f93fd151f, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[9]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4126f056389aa774c87d9a138d1c2b17, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[10]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 89b9c1bf4b4f00d4182e7e29698ccad1, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[11]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9fdc3989c2e55784392278b7c6bea016, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[12]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 092b57b2fb3067a45b9b81ae55ba5fe0, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[13]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0df6eba47885fa247a25061f78c6b3b9, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[14]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f78c93f1aae5746458d3d852da265213, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[15]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 608fa212d6089064da47b40dff5d35ec, type: 2}
+    - target: {fileID: 5438350859981263898, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
       propertyPath: 'm_BlendShapeWeights.Array.data[1]'
       value: 0
       objectReference: {fileID: 0}
@@ -5149,6 +5213,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 784435342}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 784435347}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 784435346}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 784435345}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 784435344}
     - targetCorrespondingSourceObject: {fileID: 7818370485221686748, guid: 16025d97afd36114ca02420ca90171e8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 489633615}
@@ -5185,943 +5261,743 @@ MonoBehaviour:
     localPosition: {x: -0, y: 0, z: 0}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]'
-    localPosition: {x: -0, y: 0, z: 0}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/Genesis8FemaleEyelashes.Shape[0]'
-    localPosition: {x: -0, y: 0, z: 0}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]'
+  - path: 'Genesis8Female[0]/hip[1]'
     localPosition: {x: 0.00000091622087, y: 1.0586828, z: 0.02077973}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]'
     localPosition: {x: 0.0000023481991, y: 0.01805458, z: -0.016476491}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]'
     localPosition: {x: -0.000011576711, y: 0.08142585, z: 0.012858261}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]'
     localPosition: {x: 0.000005362283, y: 0.078624345, z: -0.0023427021}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]'
     localPosition: {x: -0.00000548311, y: 0.1285672, z: -0.03378673}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]'
-    localPosition: {x: -0.0325221, y: 0.108387604, z: -0.015750835}
-    localRotation: {x: -1.0842022e-19, y: -9.073347e-38, z: 8.3686855e-19, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]'
-    localPosition: {x: 0.000050856404, y: 0.18408981, z: -0.01883929}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]'
-    localPosition: {x: 0.00008171901, y: 0.03831375, z: 0.020497542}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]'
-    localPosition: {x: 0.0001237956, y: 0.057776336, z: 0.00015668987}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lEar[0]'
-    localPosition: {x: -0.08978572, y: 0.042128142, z: 0.009725756}
-    localRotation: {x: 8.6736174e-19, y: 5.551115e-17, z: -1.7347235e-18, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lEye[1]'
-    localPosition: {x: -0.04381384, y: 0.06060074, z: 0.079340644}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]'
-    localPosition: {x: 0.000035591795, y: 0.018024292, z: 0.022773173}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/rEar[3]'
-    localPosition: {x: 0.089948565, y: 0.04213577, z: 0.009760985}
-    localRotation: {x: 8.6736174e-19, y: -5.551115e-17, z: 1.7347235e-18, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/rEye[4]'
-    localPosition: {x: 0.044297803, y: 0.06059799, z: 0.079432875}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]'
-    localPosition: {x: -0, y: 0, z: 0}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/CenterBrow[0]'
-    localPosition: {x: 0.00006320199, y: 0.088172756, z: 0.12902217}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowInner[1]'
-    localPosition: {x: -0.03174, y: 0.09299728, z: 0.12231539}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowMid[2]'
-    localPosition: {x: -0.057001192, y: 0.09740707, z: 0.11739571}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowOuter[3]'
-    localPosition: {x: -0.07698348, y: 0.08884079, z: 0.10124518}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lCheekUpper[4]'
-    localPosition: {x: -0.07475134, y: 0.026844025, z: 0.10120794}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidInner[5]'
-    localPosition: {x: -0.043396834, y: 0.06056854, z: 0.079877414}
-    localRotation: {x: 9.1835e-41, y: -2.7755576e-17, z: 3.3087225e-24, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLower[6]'
-    localPosition: {x: -0.043879867, y: 0.06027847, z: 0.08008287}
-    localRotation: {x: 0, y: 4.135903e-25, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLowerInner[7]'
-    localPosition: {x: -0.043340404, y: 0.060279083, z: 0.080121316}
-    localRotation: {x: -2.7755576e-17, y: 3.469447e-18, z: 8.6736174e-19, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLowerOuter[8]'
-    localPosition: {x: -0.044391807, y: 0.06029205, z: 0.0800506}
-    localRotation: {x: 0, y: 0, z: 1.7347235e-18, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidOuter[9]'
-    localPosition: {x: -0.044231787, y: 0.060583647, z: 0.079836465}
-    localRotation: {x: 0, y: 2.7755576e-17, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpper[10]'
-    localPosition: {x: -0.043886404, y: 0.060918424, z: 0.08010548}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpperInner[11]'
-    localPosition: {x: -0.043332685, y: 0.06090454, z: 0.08014059}
-    localRotation: {x: 7.523164e-37, y: -1.7347235e-18, z: 4.3368087e-19, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpperOuter[12]'
-    localPosition: {x: -0.044413656, y: 0.06091629, z: 0.08007031}
-    localRotation: {x: 1.3877788e-17, y: 3.469447e-18, z: -4.3368087e-19, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipBelowNose[13]'
-    localPosition: {x: -0.015216433, y: 0.0020852662, z: 0.12646899}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipNasolabialCrease[14]'
-    localPosition: {x: -0.031577155, y: -0.0058207703, z: 0.12729405}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNasolabialMiddle[15]'
-    localPosition: {x: -0.039222814, y: 0.0128236385, z: 0.12354311}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNasolabialUpper[16]'
-    localPosition: {x: -0.021957843, y: 0.031544648, z: 0.122319244}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNostril[17]'
-    localPosition: {x: -0.011778923, y: 0.01580017, z: 0.13670908}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lSquintInner[18]'
-    localPosition: {x: -0.06133131, y: 0.08184998, z: 0.14394991}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lSquintOuter[19]'
-    localPosition: {x: -0.07246379, y: 0.04853668, z: 0.09965796}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/MidNoseBridge[20]'
-    localPosition: {x: 0.000057166497, y: 0.056144256, z: 0.12185227}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/Nose[21]'
-    localPosition: {x: 0.000057542584, y: 0.019761352, z: 0.14080758}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowInner[22]'
-    localPosition: {x: 0.031846292, y: 0.09299896, z: 0.122332476}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowMid[23]'
-    localPosition: {x: 0.05713125, y: 0.09740875, z: 0.11741186}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowOuter[24]'
-    localPosition: {x: 0.077113464, y: 0.08882568, z: 0.10126393}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rCheekUpper[25]'
-    localPosition: {x: 0.07487518, y: 0.026828155, z: 0.1012207}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidInner[26]'
-    localPosition: {x: 0.043879822, y: 0.06056076, z: 0.07997412}
-    localRotation: {x: -1.83671e-40, y: -2.7755576e-17, z: -6.617445e-24, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLower[27]'
-    localPosition: {x: 0.044362802, y: 0.06027954, z: 0.08018572}
-    localRotation: {x: 0, y: -4.135903e-25, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLowerInner[28]'
-    localPosition: {x: 0.043825652, y: 0.060276337, z: 0.08022132}
-    localRotation: {x: -2.7755576e-17, y: -3.469447e-18, z: -8.6736174e-19, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLowerOuter[29]'
-    localPosition: {x: 0.044873483, y: 0.06029312, z: 0.08015343}
-    localRotation: {x: 2.7755576e-17, y: -4.814825e-35, z: -1.7347235e-18, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidOuter[30]'
-    localPosition: {x: 0.044715013, y: 0.060580596, z: 0.07993632}
-    localRotation: {x: 3.3087225e-24, y: 2.7755576e-17, z: -9.1835e-41, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpper[31]'
-    localPosition: {x: 0.044370793, y: 0.060920257, z: 0.08020678}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpperInner[32]'
-    localPosition: {x: 0.04381671, y: 0.06090393, z: 0.080242}
-    localRotation: {x: 7.523164e-37, y: 1.7347235e-18, z: -4.3368087e-19, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpperOuter[33]'
-    localPosition: {x: 0.044900373, y: 0.060917966, z: 0.08017357}
-    localRotation: {x: 1.3877788e-17, y: -3.469447e-18, z: 4.3368087e-19, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipBelowNose[34]'
-    localPosition: {x: 0.015351246, y: 0.0020965575, z: 0.12649022}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipNasolabialCrease[35]'
-    localPosition: {x: 0.031719927, y: -0.0057925414, z: 0.12731932}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNasolabialMiddle[36]'
-    localPosition: {x: 0.03934859, y: 0.012810058, z: 0.12355509}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNasolabialUpper[37]'
-    localPosition: {x: 0.022074534, y: 0.03154831, z: 0.12233685}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNostril[38]'
-    localPosition: {x: 0.011906927, y: 0.01585907, z: 0.13673036}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rSquintInner[39]'
-    localPosition: {x: 0.057999816, y: 0.08153747, z: 0.14394054}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rSquintOuter[40]'
-    localPosition: {x: 0.072582975, y: 0.048523255, z: 0.09964298}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperTeeth[6]'
-    localPosition: {x: 0.000061524195, y: -0.005243225, z: 0.0923056}
-    localRotation: {x: -1.7347235e-18, y: 0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]'
-    localPosition: {x: 0.032526124, y: 0.10842056, z: -0.015760072}
-    localRotation: {x: -1.0842022e-19, y: 9.073347e-38, z: -8.3686855e-19, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/lPectoral[1]'
-    localPosition: {x: -0.030576995, y: 0.08462021, z: -0.08471073}
-    localRotation: {x: 1.3877788e-17, y: -2.7755576e-17, z: 3.469447e-18, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/rPectoral[2]'
-    localPosition: {x: 0.03056089, y: 0.08461197, z: -0.08469747}
-    localRotation: {x: 1.3877788e-17, y: 2.7755576e-17, z: -3.85186e-34, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/Genesis8FemaleEyelashes[1]/hip[1]/pelvis[1]'
-    localPosition: {x: -0.0000054296383, y: 0.018561477, z: 0.0002926016}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]'
-    localPosition: {x: 0.00000091622087, y: 1.0586828, z: 0.02077973}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]'
-    localPosition: {x: 0.0000023481991, y: 0.01805458, z: -0.016476491}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]'
-    localPosition: {x: -0.000011576711, y: 0.08142585, z: 0.012858261}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]'
-    localPosition: {x: 0.000005362283, y: 0.078624345, z: -0.0023427021}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]'
-    localPosition: {x: -0.00000548311, y: 0.1285672, z: -0.03378673}
-    localRotation: {x: 0, y: -0, z: -0, w: 1}
-    localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]'
     localPosition: {x: -0.0325221, y: 0.108387604, z: -0.015750835}
     localRotation: {x: 0, y: 0, z: 2.3716923e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]'
     localPosition: {x: -0.114087895, y: -0.013028869, z: -0.0069217156}
     localRotation: {x: 1.0842022e-19, y: 1.7347235e-18, z: -1.3952327e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]'
     localPosition: {x: -0.07578336, y: -0.086417235, z: 0.00091165066}
     localRotation: {x: -1.3010426e-18, y: -1.7347235e-18, z: -2.9483523e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]'
     localPosition: {x: -0.09364057, y: -0.10902267, z: -0.0072882557}
     localRotation: {x: -3.3703774e-34, y: 1.3877788e-17, z: 2.4286129e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]'
     localPosition: {x: -0.08255543, y: -0.0810273, z: 0.033633143}
     localRotation: {x: -1.3877788e-17, y: 9.62965e-35, z: -6.938894e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]'
     localPosition: {x: -0.09465137, y: -0.09812576, z: 0.035660453}
     localRotation: {x: -8.6736174e-19, y: -2.7635872e-35, z: 3.186199e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal1[0]'
     localPosition: {x: -0.0062405393, y: 0.00011779785, z: 0.011641862}
     localRotation: {x: 0, y: -0, z: -8.500145e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal1[0]/lIndex1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal1[0]/lIndex1[0]'
     localPosition: {x: -0.051531676, y: -0.054135513, z: 0.021651253}
     localRotation: {x: -6.938894e-18, y: 1.3877788e-17, z: 4.3368087e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal1[0]/lIndex1[0]/lIndex2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal1[0]/lIndex1[0]/lIndex2[0]'
     localPosition: {x: -0.026066627, y: -0.030078812, z: 0.0064822338}
     localRotation: {x: 0, y: 0, z: 2.6020852e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal1[0]/lIndex1[0]/lIndex2[0]/lIndex3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal1[0]/lIndex1[0]/lIndex2[0]/lIndex3[0]'
     localPosition: {x: -0.013852005, y: -0.016458664, z: 0.0023214102}
     localRotation: {x: -3.469447e-18, y: 7.899322e-35, z: -2.2768246e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal2[1]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal2[1]'
     localPosition: {x: -0.008516654, y: -0.0015756988, z: 0.002526524}
     localRotation: {x: 3.469447e-18, y: 6.938894e-18, z: 3.426079e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal2[1]/lMid1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal2[1]/lMid1[0]'
     localPosition: {x: -0.054332197, y: -0.053792343, z: 0.009107432}
     localRotation: {x: 3.469447e-18, y: -6.938894e-18, z: -6.2883726e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal2[1]/lMid1[0]/lMid2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal2[1]/lMid1[0]/lMid2[0]'
     localPosition: {x: -0.030748786, y: -0.032018814, z: 0.0031355429}
     localRotation: {x: 3.469447e-18, y: -2.6331073e-35, z: -7.589415e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal2[1]/lMid1[0]/lMid2[0]/lMid3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal2[1]/lMid1[0]/lMid2[0]/lMid3[0]'
     localPosition: {x: -0.01586914, y: -0.020736236, z: 0.0024549842}
     localRotation: {x: 0, y: -0, z: -7.1828394e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal3[2]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal3[2]'
     localPosition: {x: -0.009335136, y: -0.0019778442, z: -0.007854694}
     localRotation: {x: 2.472037e-35, y: -4.87891e-19, z: 5.0667817e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal3[2]/lRing1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal3[2]/lRing1[0]'
     localPosition: {x: -0.04988449, y: -0.050569303, z: -0.00043216825}
     localRotation: {x: 6.938894e-18, y: 3.469447e-18, z: -3.567025e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal3[2]/lRing1[0]/lRing2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal3[2]/lRing1[0]/lRing2[0]'
     localPosition: {x: -0.027547415, y: -0.030884933, z: -0.0013514614}
     localRotation: {x: 6.938894e-18, y: -3.469447e-18, z: 4.5861752e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal3[2]/lRing1[0]/lRing2[0]/lRing3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal3[2]/lRing1[0]/lRing2[0]/lRing3[0]'
     localPosition: {x: -0.015026207, y: -0.017049942, z: -0.0003976929}
     localRotation: {x: -3.469447e-18, y: -8.6736174e-19, z: -1.1614516e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal4[3]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal4[3]'
     localPosition: {x: -0.009533691, y: -0.0018755341, z: -0.017299106}
     localRotation: {x: 0, y: 0, z: 6.938894e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal4[3]/lPinky1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal4[3]/lPinky1[0]'
     localPosition: {x: -0.041799583, y: -0.05130806, z: -0.012561474}
     localRotation: {x: 2.2268565e-34, y: -3.469447e-18, z: 6.418477e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal4[3]/lPinky1[0]/lPinky2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal4[3]/lPinky1[0]/lPinky2[0]'
     localPosition: {x: -0.019500045, y: -0.020740585, z: -0.0019670986}
     localRotation: {x: -1.8055593e-34, y: -6.938894e-18, z: -2.6020852e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal4[3]/lPinky1[0]/lPinky2[0]/lPinky3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lCarpal4[3]/lPinky1[0]/lPinky2[0]/lPinky3[0]'
     localPosition: {x: -0.011895408, y: -0.012884903, z: -0.0015943872}
     localRotation: {x: -3.469447e-18, y: 6.938894e-18, z: 1.3010426e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lThumb1[4]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lThumb1[4]'
     localPosition: {x: -0.0056972886, y: -0.015789185, z: 0.016467938}
     localRotation: {x: -2.7755576e-17, y: 1.3877788e-17, z: 6.938894e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lThumb1[4]/lThumb2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lThumb1[4]/lThumb2[0]'
     localPosition: {x: -0.010276756, y: -0.021608047, z: 0.035396293}
     localRotation: {x: -2.7755576e-17, y: 0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lThumb1[4]/lThumb2[0]/lThumb3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/lCollar[0]/lShldrBend[0]/lShldrTwist[0]/lForearmBend[0]/lForearmTwist[0]/lHand[0]/lThumb1[4]/lThumb2[0]/lThumb3[0]'
     localPosition: {x: -0.009572525, y: -0.023976821, z: 0.016682353}
     localRotation: {x: 5.551115e-17, y: -2.7755576e-17, z: 6.938894e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]'
     localPosition: {x: 0.000050856404, y: 0.18408981, z: -0.01883929}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]'
     localPosition: {x: 0.00008171901, y: 0.03831375, z: 0.020497542}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]'
     localPosition: {x: 0.0001237956, y: 0.057776336, z: 0.00015668987}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lEar[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lEar[0]'
     localPosition: {x: -0.08978572, y: 0.042128142, z: 0.009725756}
     localRotation: {x: 0, y: 0, z: 1.7347235e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lEye[1]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lEye[1]'
     localPosition: {x: -0.04381384, y: 0.06060074, z: 0.079340644}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]'
     localPosition: {x: 0.000035591795, y: 0.018024292, z: 0.022773173}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]'
     localPosition: {x: -0, y: 0, z: 0}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/BelowJaw[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/BelowJaw[0]'
     localPosition: {x: 0.000020595397, y: -0.081797175, z: 0.051677313}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/Chin[1]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/Chin[1]'
     localPosition: {x: -0.000028956196, y: -0.072968595, z: 0.08550591}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lCheekLower[2]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lCheekLower[2]'
     localPosition: {x: -0.07219713, y: -0.032928925, z: 0.06281147}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/LipBelow[3]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/LipBelow[3]'
     localPosition: {x: -0.000031944197, y: -0.059760895, z: 0.09947127}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/LipLowerMiddle[4]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/LipLowerMiddle[4]'
     localPosition: {x: 0.0000010412931, y: -0.046312254, z: 0.10474812}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lJawClench[5]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lJawClench[5]'
     localPosition: {x: -0.07486667, y: -0.031273194, z: 0.008032552}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lLipCorner[6]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lLipCorner[6]'
     localPosition: {x: -0.038748637, y: -0.035249326, z: 0.0903876}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lLipLowerInner[7]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lLipLowerInner[7]'
     localPosition: {x: -0.01298894, y: -0.044403534, z: 0.10047903}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lLipLowerOuter[8]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lLipLowerOuter[8]'
     localPosition: {x: -0.024451556, y: -0.041352235, z: 0.09831493}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lNasolabialLower[9]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lNasolabialLower[9]'
     localPosition: {x: -0.03629557, y: -0.05633194, z: 0.07936719}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lNasolabialMouthCorner[10]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/lNasolabialMouthCorner[10]'
     localPosition: {x: -0.052845806, y: -0.03444687, z: 0.08518314}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rCheekLower[11]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rCheekLower[11]'
     localPosition: {x: 0.07226395, y: -0.032946777, z: 0.06282612}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rJawClench[12]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rJawClench[12]'
     localPosition: {x: 0.07488652, y: -0.031262513, z: 0.008030337}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rLipCorner[13]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rLipCorner[13]'
     localPosition: {x: 0.0387997, y: -0.035230864, z: 0.09039999}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rLipLowerInner[14]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rLipLowerInner[14]'
     localPosition: {x: 0.012938084, y: -0.044414826, z: 0.10047242}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rLipLowerOuter[15]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rLipLowerOuter[15]'
     localPosition: {x: 0.024454948, y: -0.04132492, z: 0.09832822}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rNasolabialLower[16]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rNasolabialLower[16]'
     localPosition: {x: 0.036385298, y: -0.056325376, z: 0.07937684}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rNasolabialMouthCorner[17]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerFaceRig[0]/rNasolabialMouthCorner[17]'
     localPosition: {x: 0.052903697, y: -0.0344371, z: 0.08519991}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]'
     localPosition: {x: 0.000019284804, y: -0.035911255, z: 0.06688617}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]/tongue01[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]/tongue01[0]'
     localPosition: {x: -0.0000219463, y: -0.013090515, z: -0.02205912}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]/tongue01[0]/tongue02[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]/tongue01[0]/tongue02[0]'
     localPosition: {x: 0.0000035667977, y: 0.009110565, z: 0.01219572}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]/tongue01[0]/tongue02[0]/tongue03[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]/tongue01[0]/tongue02[0]/tongue03[0]'
     localPosition: {x: 0.000020590089, y: 0.0020169066, z: 0.014372187}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]/tongue01[0]/tongue02[0]/tongue03[0]/tongue04[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/lowerJaw[2]/lowerTeeth[1]/tongue01[0]/tongue02[0]/tongue03[0]/tongue04[0]'
     localPosition: {x: 0.000011837706, y: -0.0012675476, z: 0.014630307}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/rEar[3]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/rEar[3]'
     localPosition: {x: 0.089948565, y: 0.04213577, z: 0.009760985}
     localRotation: {x: 8.6736174e-19, y: -5.551115e-17, z: 1.7347235e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/rEye[4]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/rEye[4]'
     localPosition: {x: 0.044297803, y: 0.06059799, z: 0.079432875}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]'
     localPosition: {x: -0, y: 0, z: 0}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/CenterBrow[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/CenterBrow[0]'
     localPosition: {x: 0.00006320199, y: 0.088172756, z: 0.12902217}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowInner[1]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowInner[1]'
     localPosition: {x: -0.03174, y: 0.09299728, z: 0.12231539}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowMid[2]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowMid[2]'
     localPosition: {x: -0.057001192, y: 0.09740707, z: 0.11739571}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowOuter[3]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lBrowOuter[3]'
     localPosition: {x: -0.07698348, y: 0.08884079, z: 0.10124518}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lCheekUpper[4]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lCheekUpper[4]'
     localPosition: {x: -0.07475134, y: 0.026844025, z: 0.10120794}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidInner[5]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidInner[5]'
     localPosition: {x: -0.043396834, y: 0.06056854, z: 0.079877414}
     localRotation: {x: 9.1835e-41, y: -2.7755576e-17, z: 3.3087225e-24, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLower[6]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLower[6]'
     localPosition: {x: -0.043879867, y: 0.06027847, z: 0.08008287}
     localRotation: {x: 0, y: 4.135903e-25, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLowerInner[7]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLowerInner[7]'
     localPosition: {x: -0.043340404, y: 0.060279083, z: 0.080121316}
     localRotation: {x: -2.7755576e-17, y: 3.469447e-18, z: 8.6736174e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLowerOuter[8]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidLowerOuter[8]'
     localPosition: {x: -0.044391807, y: 0.06029205, z: 0.0800506}
     localRotation: {x: 0, y: 0, z: 1.7347235e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidOuter[9]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidOuter[9]'
     localPosition: {x: -0.044231787, y: 0.060583647, z: 0.079836465}
     localRotation: {x: 8.271806e-25, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpper[10]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpper[10]'
     localPosition: {x: -0.043886404, y: 0.060918424, z: 0.08010548}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpperInner[11]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpperInner[11]'
     localPosition: {x: -0.043332685, y: 0.06090454, z: 0.08014059}
     localRotation: {x: 7.523164e-37, y: -1.7347235e-18, z: 4.3368087e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpperOuter[12]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lEyelidUpperOuter[12]'
     localPosition: {x: -0.044413656, y: 0.06091629, z: 0.08007031}
     localRotation: {x: 1.3877788e-17, y: 3.469447e-18, z: -4.3368087e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/LipUpperMiddle[13]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/LipUpperMiddle[13]'
     localPosition: {x: 0.000026050899, y: -0.0063485717, z: 0.13499324}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipBelowNose[14]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipBelowNose[14]'
     localPosition: {x: -0.015216433, y: 0.0020852662, z: 0.12646899}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipNasolabialCrease[15]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipNasolabialCrease[15]'
     localPosition: {x: -0.031577155, y: -0.0058207703, z: 0.12729405}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipUpperInner[16]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipUpperInner[16]'
     localPosition: {x: -0.013755886, y: -0.010978088, z: 0.12985297}
     localRotation: {x: 0, y: -0, z: -2.75203e-20, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipUpperOuter[17]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lLipUpperOuter[17]'
     localPosition: {x: -0.025810676, y: -0.013863067, z: 0.1252397}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNasolabialMiddle[18]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNasolabialMiddle[18]'
     localPosition: {x: -0.039222814, y: 0.0128236385, z: 0.12354311}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNasolabialUpper[19]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNasolabialUpper[19]'
     localPosition: {x: -0.021957843, y: 0.031544648, z: 0.122319244}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNostril[20]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lNostril[20]'
     localPosition: {x: -0.011778923, y: 0.01580017, z: 0.13670908}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lSquintInner[21]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lSquintInner[21]'
     localPosition: {x: -0.06133131, y: 0.08184998, z: 0.14394991}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lSquintOuter[22]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/lSquintOuter[22]'
     localPosition: {x: -0.07246379, y: 0.04853668, z: 0.09965796}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/MidNoseBridge[23]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/MidNoseBridge[23]'
     localPosition: {x: 0.000057166497, y: 0.056144256, z: 0.12185227}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/Nose[24]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/Nose[24]'
     localPosition: {x: 0.000057542584, y: 0.019761352, z: 0.14080758}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowInner[25]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowInner[25]'
     localPosition: {x: 0.031846292, y: 0.09299896, z: 0.122332476}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowMid[26]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowMid[26]'
     localPosition: {x: 0.05713125, y: 0.09740875, z: 0.11741186}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowOuter[27]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rBrowOuter[27]'
     localPosition: {x: 0.077113464, y: 0.08882568, z: 0.10126393}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rCheekUpper[28]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rCheekUpper[28]'
     localPosition: {x: 0.07487518, y: 0.026828155, z: 0.1012207}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidInner[29]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidInner[29]'
     localPosition: {x: 0.043879822, y: 0.06056076, z: 0.07997412}
     localRotation: {x: -1.83671e-40, y: -2.7755576e-17, z: -6.617445e-24, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLower[30]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLower[30]'
     localPosition: {x: 0.044362802, y: 0.06027954, z: 0.08018572}
     localRotation: {x: 0, y: -4.135903e-25, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLowerInner[31]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLowerInner[31]'
     localPosition: {x: 0.043825652, y: 0.060276337, z: 0.08022132}
     localRotation: {x: -2.7755576e-17, y: -3.469447e-18, z: -8.6736174e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLowerOuter[32]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidLowerOuter[32]'
     localPosition: {x: 0.044873483, y: 0.06029312, z: 0.08015343}
     localRotation: {x: 2.7755576e-17, y: -4.814825e-35, z: -1.7347235e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidOuter[33]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidOuter[33]'
     localPosition: {x: 0.044715013, y: 0.060580596, z: 0.07993632}
     localRotation: {x: 1.83671e-40, y: 2.7755576e-17, z: -6.617445e-24, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpper[34]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpper[34]'
     localPosition: {x: 0.044370793, y: 0.060920257, z: 0.08020678}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpperInner[35]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpperInner[35]'
     localPosition: {x: 0.04381671, y: 0.06090393, z: 0.080242}
     localRotation: {x: 7.523164e-37, y: 1.7347235e-18, z: -4.3368087e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpperOuter[36]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rEyelidUpperOuter[36]'
     localPosition: {x: 0.044900373, y: 0.060917966, z: 0.08017357}
     localRotation: {x: 1.3877788e-17, y: -3.469447e-18, z: 4.3368087e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipBelowNose[37]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipBelowNose[37]'
     localPosition: {x: 0.015351246, y: 0.0020965575, z: 0.12649022}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipNasolabialCrease[38]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipNasolabialCrease[38]'
     localPosition: {x: 0.031719927, y: -0.0057925414, z: 0.12731932}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipUpperInner[39]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipUpperInner[39]'
     localPosition: {x: 0.013738221, y: -0.011003418, z: 0.12992667}
     localRotation: {x: 0, y: 0, z: 3.830177e-20, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipUpperOuter[40]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rLipUpperOuter[40]'
     localPosition: {x: 0.025912192, y: -0.0138543695, z: 0.12528491}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNasolabialMiddle[41]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNasolabialMiddle[41]'
     localPosition: {x: 0.03934859, y: 0.012810058, z: 0.12355509}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNasolabialUpper[42]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNasolabialUpper[42]'
     localPosition: {x: 0.022074534, y: 0.03154831, z: 0.12233685}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNostril[43]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rNostril[43]'
     localPosition: {x: 0.011906927, y: 0.01585907, z: 0.13673036}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rSquintInner[44]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rSquintInner[44]'
     localPosition: {x: 0.057999816, y: 0.08153747, z: 0.14394054}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rSquintOuter[45]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperFaceRig[5]/rSquintOuter[45]'
     localPosition: {x: 0.072582975, y: 0.048523255, z: 0.09964298}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperTeeth[6]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/neckLower[1]/neckUpper[0]/head[0]/upperTeeth[6]'
     localPosition: {x: 0.000061524195, y: -0.005243225, z: 0.0923056}
     localRotation: {x: 0, y: 0, z: 1.2493736e-20, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]'
     localPosition: {x: 0.032526124, y: 0.10842056, z: -0.015760072}
     localRotation: {x: -1.0842022e-19, y: 9.073347e-38, z: -8.3686855e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]'
     localPosition: {x: 0.11407935, y: -0.013108978, z: -0.0069008064}
     localRotation: {x: 1.0842022e-19, y: -1.7347235e-18, z: 1.3952327e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]'
     localPosition: {x: 0.07578703, y: -0.08637695, z: 0.0009020424}
     localRotation: {x: -1.3010426e-18, y: 1.7347235e-18, z: 2.9483523e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]'
     localPosition: {x: 0.09365295, y: -0.10903839, z: -0.007283139}
     localRotation: {x: -3.3703774e-34, y: -1.3877788e-17, z: -2.4286129e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]'
     localPosition: {x: 0.08255516, y: -0.08101967, z: 0.03362605}
     localRotation: {x: -7.70372e-34, y: 1.3877788e-17, z: 5.551115e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]'
     localPosition: {x: 0.0946495, y: -0.09812126, z: 0.035658855}
     localRotation: {x: -8.6736174e-19, y: 2.7635872e-35, z: -3.186199e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal1[0]'
     localPosition: {x: 0.006252441, y: 0.0001449585, z: 0.0116430735}
     localRotation: {x: 0, y: 0, z: 8.500145e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal1[0]/rIndex1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal1[0]/rIndex1[0]'
     localPosition: {x: 0.051529158, y: -0.05415222, z: 0.021650778}
     localRotation: {x: -6.938894e-18, y: -1.3877788e-17, z: -2.8622937e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal1[0]/rIndex1[0]/rIndex2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal1[0]/rIndex1[0]/rIndex2[0]'
     localPosition: {x: 0.026052818, y: -0.030098494, z: 0.0064819143}
     localRotation: {x: 3.469447e-18, y: -1.2187525e-34, z: -3.512815e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal1[0]/rIndex1[0]/rIndex2[0]/rIndex3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal1[0]/rIndex1[0]/rIndex2[0]/rIndex3[0]'
     localPosition: {x: 0.013852653, y: -0.016451873, z: 0.0023216533}
     localRotation: {x: 1.790513e-34, y: -6.938894e-18, z: 2.5804012e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal2[1]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal2[1]'
     localPosition: {x: 0.008530273, y: -0.001580429, z: 0.0025272083}
     localRotation: {x: 3.469447e-18, y: -6.938894e-18, z: -5.2041704e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal2[1]/rMid1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal2[1]/rMid1[0]'
     localPosition: {x: 0.054331284, y: -0.053770445, z: 0.009106538}
     localRotation: {x: 1.7347235e-18, y: 6.938894e-18, z: 4.3368087e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal2[1]/rMid1[0]/rMid2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal2[1]/rMid1[0]/rMid2[0]'
     localPosition: {x: 0.030726241, y: -0.032044295, z: 0.0031370043}
     localRotation: {x: 3.469447e-18, y: 2.6331073e-35, z: 7.589415e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal2[1]/rMid1[0]/rMid2[0]/rMid3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal2[1]/rMid1[0]/rMid2[0]/rMid3[0]'
     localPosition: {x: 0.015875205, y: -0.020733032, z: 0.0024532198}
     localRotation: {x: 0, y: 0, z: 7.1828394e-19, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal3[2]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal3[2]'
     localPosition: {x: 0.009341735, y: -0.0019708253, z: -0.007851253}
     localRotation: {x: 2.472037e-35, y: 4.87891e-19, z: -5.0667817e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal3[2]/rRing1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal3[2]/rRing1[0]'
     localPosition: {x: 0.04988777, y: -0.050564956, z: -0.00043590425}
     localRotation: {x: 6.938894e-18, y: -3.469447e-18, z: 3.567025e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal3[2]/rRing1[0]/rRing2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal3[2]/rRing1[0]/rRing2[0]'
     localPosition: {x: 0.027533455, y: -0.030897444, z: -0.0013497495}
     localRotation: {x: 6.938894e-18, y: 3.469447e-18, z: -4.5861752e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal3[2]/rRing1[0]/rRing2[0]/rRing3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal3[2]/rRing1[0]/rRing2[0]/rRing3[0]'
     localPosition: {x: 0.015031204, y: -0.01705391, z: -0.00039628742}
     localRotation: {x: -3.469447e-18, y: 8.6736174e-19, z: 1.1614516e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal4[3]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal4[3]'
     localPosition: {x: 0.0095368195, y: -0.0018647766, z: -0.017296318}
     localRotation: {x: 0, y: -0, z: -6.938894e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal4[3]/rPinky1[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal4[3]/rPinky1[0]'
     localPosition: {x: 0.041789703, y: -0.05132652, z: -0.012565043}
     localRotation: {x: 1.5347254e-34, y: 3.469447e-18, z: -4.423545e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal4[3]/rPinky1[0]/rPinky2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal4[3]/rPinky1[0]/rPinky2[0]'
     localPosition: {x: 0.019505424, y: -0.020737838, z: -0.0019636666}
     localRotation: {x: -1.8055593e-34, y: 6.938894e-18, z: 2.6020852e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal4[3]/rPinky1[0]/rPinky2[0]/rPinky3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rCarpal4[3]/rPinky1[0]/rPinky2[0]/rPinky3[0]'
     localPosition: {x: 0.0118964, y: -0.012882004, z: -0.0015942252}
     localRotation: {x: -3.469447e-18, y: -6.938894e-18, z: -1.3010426e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rThumb1[4]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rThumb1[4]'
     localPosition: {x: 0.0057092286, y: -0.015780639, z: 0.016468592}
     localRotation: {x: -9.62965e-35, y: -6.938894e-18, z: -1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rThumb1[4]/rThumb2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rThumb1[4]/rThumb2[0]'
     localPosition: {x: 0.010270843, y: -0.021599501, z: 0.03539453}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rThumb1[4]/rThumb2[0]/rThumb3[0]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/chestUpper[0]/rCollar[2]/rShldrBend[0]/rShldrTwist[0]/rForearmBend[0]/rForearmTwist[0]/rHand[0]/rThumb1[4]/rThumb2[0]/rThumb3[0]'
     localPosition: {x: 0.00956749, y: -0.024002532, z: 0.016683092}
     localRotation: {x: 0, y: -0, z: -1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/lPectoral[1]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/lPectoral[1]'
     localPosition: {x: -0.030576995, y: 0.08462021, z: -0.08471073}
     localRotation: {x: 1.3877788e-17, y: 4.814825e-35, z: 3.469447e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/rPectoral[2]'
+  - path: 'Genesis8Female[0]/hip[1]/abdomenLower[0]/abdomenUpper[0]/chestLower[0]/rPectoral[2]'
     localPosition: {x: 0.03056089, y: 0.08461197, z: -0.08469747}
     localRotation: {x: -1.3877788e-17, y: -2.7755576e-17, z: -3.469447e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]'
     localPosition: {x: -0.0000054296383, y: 0.018561477, z: 0.0002926016}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]'
     localPosition: {x: -0.07855864, y: -0.10518287, z: -0.01605578}
     localRotation: {x: 3.5735028e-35, y: 6.938894e-18, z: -5.1499603e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]'
     localPosition: {x: -0.029930867, y: -0.2064827, z: -0.0036866146}
     localRotation: {x: 3.5735028e-35, y: 6.938894e-18, z: -5.1499603e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]'
     localPosition: {x: -0.034656648, y: -0.24613936, z: -0.015650297}
     localRotation: {x: 6.938894e-18, y: 3.0092655e-35, z: 4.3368087e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]'
     localPosition: {x: -0.05758209, y: -0.42699325, z: -0.02840716}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]'
     localPosition: {x: -0.0014608955, y: -0.006099195, z: -0.007981572}
     localRotation: {x: -2.7755576e-17, y: -1.92593e-34, z: 6.938894e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]'
     localPosition: {x: -0.045280416, y: -0.0514149, z: 0.13969591}
     localRotation: {x: 0, y: 2.7755576e-17, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lBigToe[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lBigToe[0]'
     localPosition: {x: 0.037066154, y: 0.0015838527, z: 0.012463073}
     localRotation: {x: -2.7755576e-17, y: 0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lBigToe[0]/lBigToe_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lBigToe[0]/lBigToe_2[0]'
     localPosition: {x: -0.009930382, y: -0.0066157887, z: 0.025572538}
     localRotation: {x: 0, y: -2.7755576e-17, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe1[1]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe1[1]'
     localPosition: {x: 0.008955917, y: 0.005440149, z: 0.0117616365}
     localRotation: {x: 2.7755576e-17, y: -2.7755576e-17, z: -1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe1[1]/lSmallToe1_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe1[1]/lSmallToe1_2[0]'
     localPosition: {x: -0.008069744, y: -0.005764558, z: 0.02190218}
     localRotation: {x: -3.85186e-34, y: 2.7755576e-17, z: 1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe2[2]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe2[2]'
     localPosition: {x: -0.00945549, y: 0.0058835316, z: 0.0067482567}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe2[2]/lSmallToe2_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe2[2]/lSmallToe2_2[0]'
     localPosition: {x: -0.0060381126, y: -0.006503048, z: 0.01917759}
     localRotation: {x: 2.7755576e-17, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe3[3]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe3[3]'
     localPosition: {x: -0.021442967, y: 0.0024038027, z: -0.002142477}
     localRotation: {x: -1.92593e-34, y: 1.3877788e-17, z: 1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe3[3]/lSmallToe3_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe3[3]/lSmallToe3_2[0]'
     localPosition: {x: -0.0049932287, y: -0.005383062, z: 0.014656267}
     localRotation: {x: -2.7755576e-17, y: 1.3877788e-17, z: 3.85186e-34, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe4[4]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe4[4]'
     localPosition: {x: -0.038537443, y: -0.0003656554, z: -0.012622867}
     localRotation: {x: 2.7755576e-17, y: -1.3877788e-17, z: 3.85186e-34, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe4[4]/lSmallToe4_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/lThighBend[0]/lThighTwist[0]/lShin[0]/lFoot[0]/lMetatarsals[0]/lToe[0]/lSmallToe4[4]/lSmallToe4_2[0]'
     localPosition: {x: -0.0026119233, y: -0.0042195297, z: 0.01133285}
     localRotation: {x: 2.7755576e-17, y: -1.3877788e-17, z: 3.85186e-34, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]'
     localPosition: {x: 0.07855293, y: -0.105235666, z: -0.016063536}
     localRotation: {x: 3.5735028e-35, y: -6.938894e-18, z: 5.1499603e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]'
     localPosition: {x: 0.029944014, y: -0.20640533, z: -0.0036698775}
     localRotation: {x: 3.5735028e-35, y: -6.938894e-18, z: 5.1499603e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]'
     localPosition: {x: 0.034664735, y: -0.24617817, z: -0.01566343}
     localRotation: {x: 0, y: -0, z: -9.540979e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]'
     localPosition: {x: 0.057576474, y: -0.42697528, z: -0.028395474}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]'
     localPosition: {x: 0.0014569473, y: -0.0061009596, z: -0.008004727}
     localRotation: {x: 0, y: 0, z: 6.938894e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]'
     localPosition: {x: 0.045280017, y: -0.051426515, z: 0.13970403}
     localRotation: {x: 0, y: -2.7755576e-17, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rBigToe[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rBigToe[0]'
     localPosition: {x: -0.03705551, y: 0.0015971302, z: 0.012471962}
     localRotation: {x: 2.7755576e-17, y: -1.92593e-34, z: -6.938894e-18, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rBigToe[0]/rBigToe_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rBigToe[0]/rBigToe_2[0]'
     localPosition: {x: 0.009923496, y: -0.0066143414, z: 0.02557228}
     localRotation: {x: 0, y: 0, z: 1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe1[1]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe1[1]'
     localPosition: {x: -0.008952103, y: 0.0054536723, z: 0.011767149}
     localRotation: {x: 2.7755576e-17, y: 2.7755576e-17, z: 1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe1[1]/rSmallToe1_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe1[1]/rSmallToe1_2[0]'
     localPosition: {x: 0.008071556, y: -0.0057753944, z: 0.021904591}
     localRotation: {x: -3.85186e-34, y: -2.7755576e-17, z: -1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe2[2]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe2[2]'
     localPosition: {x: 0.00946228, y: 0.005893116, z: 0.0067577935}
     localRotation: {x: 0, y: -0, z: -0, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe2[2]/rSmallToe2_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe2[2]/rSmallToe2_2[0]'
     localPosition: {x: 0.0060322187, y: -0.006506126, z: 0.019171428}
     localRotation: {x: -2.7755576e-17, y: 2.7755576e-17, z: 7.70372e-34, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe3[3]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe3[3]'
     localPosition: {x: 0.021448689, y: 0.0024030637, z: -0.002134943}
     localRotation: {x: -1.92593e-34, y: -1.3877788e-17, z: -1.3877788e-17, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe3[3]/rSmallToe3_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe3[3]/rSmallToe3_2[0]'
     localPosition: {x: 0.004990234, y: -0.005377712, z: 0.014655971}
     localRotation: {x: -2.7755576e-17, y: -1.3877788e-17, z: -3.85186e-34, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe4[4]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe4[4]'
     localPosition: {x: 0.038541947, y: -0.00035592078, z: -0.012615623}
     localRotation: {x: 2.7755576e-17, y: 1.3877788e-17, z: -3.85186e-34, w: 1}
     localScale: {x: 1, y: 1, z: 1}
-  - path: 'Genesis8Female[0]/hip[2]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe4[4]/rSmallToe4_2[0]'
+  - path: 'Genesis8Female[0]/hip[1]/pelvis[1]/rThighBend[1]/rThighTwist[0]/rShin[0]/rFoot[0]/rMetatarsals[0]/rToe[0]/rSmallToe4[4]/rSmallToe4_2[0]'
     localPosition: {x: 0.0026114273, y: -0.004220822, z: 0.011331282}
     localRotation: {x: 2.7755576e-17, y: 1.3877788e-17, z: -3.85186e-34, w: 1}
     localScale: {x: 1, y: 1, z: 1}
   blendShapes:
   - rendererPath: 'Genesis8Female[0]/Genesis8Female.Shape[0]'
     rendererComponentIndex: 0
-    blendShapeCount: 42
+    blendShapeCount: 101
     blendShapeNames:
+    - Genesis8Female__eCTRLvWLipsOnly
+    - Genesis8Female__eCTRLvWJawOnly
+    - Genesis8Female__eCTRLvUWLipsOnly
+    - Genesis8Female__eCTRLvUWJawOnly
+    - Genesis8Female__eCTRLvTLipsOnly
+    - Genesis8Female__eCTRLvTJawOnly
+    - Genesis8Female__eCTRLvTHLipsOnly
+    - Genesis8Female__eCTRLvTHJawOnly
+    - Genesis8Female__eCTRLvSLipsOnly
+    - Genesis8Female__eCTRLvSJawOnly
+    - Genesis8Female__eCTRLvSHLipsOnly
+    - Genesis8Female__eCTRLvSHJawOnly
+    - Genesis8Female__eCTRLvS0
+    - Genesis8Female__eCTRLvOWLipsOnly
+    - Genesis8Female__eCTRLvOWJawOnly
+    - Genesis8Female__eCTRLvMLipsOnly
+    - Genesis8Female__eCTRLvMJawOnly
+    - Genesis8Female__eCTRLvLLipsOnly
+    - Genesis8Female__eCTRLvLJawOnly
+    - Genesis8Female__eCTRLvKLipsOnly
+    - Genesis8Female__eCTRLvKJawOnly
+    - Genesis8Female__eCTRLvIYLipsOnly
+    - Genesis8Female__eCTRLvIYJawOnly
+    - Genesis8Female__eCTRLvIHLipsOnly
+    - Genesis8Female__eCTRLvIHJawOnly
+    - Genesis8Female__eCTRLvFLipsOnly
+    - Genesis8Female__eCTRLvFJawOnly
+    - Genesis8Female__eCTRLvERLipsOnly
+    - Genesis8Female__eCTRLvERJawOnly
+    - Genesis8Female__eCTRLvEHLipsOnly
+    - Genesis8Female__eCTRLvEHJawOnly
+    - Genesis8Female__eCTRLvEELipsOnly
+    - Genesis8Female__eCTRLvEEJawOnly
+    - Genesis8Female__eCTRLvAALipsOnly
+    - Genesis8Female__eCTRLvAAJawOnly
+    - Genesis8Female__eCTRLvW
+    - Genesis8Female__eCTRLvUW
+    - Genesis8Female__eCTRLvTH
+    - Genesis8Female__eCTRLvT
+    - Genesis8Female__eCTRLvSH
+    - Genesis8Female__eCTRLvS
+    - Genesis8Female__eCTRLvOW
+    - Genesis8Female__eCTRLvM
+    - Genesis8Female__eCTRLvL
+    - Genesis8Female__eCTRLvK
+    - Genesis8Female__eCTRLvIY
+    - Genesis8Female__eCTRLvIH
+    - Genesis8Female__eCTRLvF
+    - Genesis8Female__eCTRLvER
+    - Genesis8Female__eCTRLvEH
+    - Genesis8Female__eCTRLvEE
+    - Genesis8Female__eCTRLvAA
     - Genesis8Female__eCTRLNostrilsFlex
     - Genesis8Female__eCTRLNoseWrinkle
     - Genesis8Female__eCTRLMouthWide-NarrowR
@@ -6141,6 +6017,8 @@ MonoBehaviour:
     - Genesis8Female__eCTRLEyesSquint-WidenR
     - Genesis8Female__eCTRLEyesSquint-WidenL
     - Genesis8Female__eCTRLEyesSquint-Widen
+    - Genesis8Female__eCTRLEyesClosedR
+    - Genesis8Female__eCTRLEyesClosedL
     - Genesis8Female__eCTRLEyelidsUpperUp-DownR
     - Genesis8Female__eCTRLEyelidsUpperUp-DownL
     - Genesis8Female__eCTRLEyelidsUpperUp-Down
@@ -6163,7 +6041,12 @@ MonoBehaviour:
     - Genesis8Female__eCTRLBrowInnerUp-DownR
     - Genesis8Female__eCTRLBrowInnerUp-DownL
     - Genesis8Female__eCTRLBrowInnerUp-Down
+    - Genesis8Female__Sakura 8 Glute Size
+    - Genesis8Female__PBMGraceYongBreastsSmall
+    - Genesis8Female__PBMGraceYongBreastsSize
     - Genesis8Female__FUNtasy Face
+    - Genesis8Female__EX_BreatheBelly
+    - Genesis8Female__EX_Breathe
     weights:
     - 0
     - 0
@@ -6207,6 +6090,190 @@ MonoBehaviour:
     - 0
     - 0
     - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+--- !u!114 &784435344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784435341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9bedf5c39c141c1aff498628808782e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerPoseAcceptanceHarness
+  performer: {fileID: 784435346}
+  poseA: {fileID: 11400000, guid: c428715ecd67662458a22d5807df2fb4, type: 2}
+  poseB: {fileID: 11400000, guid: 7f06352d680590c4b8d282cdb165d3ec, type: 2}
+  poseC: {fileID: 11400000, guid: f0d4d3dc2448c374fa2e3c24e03909e5, type: 2}
+--- !u!114 &784435345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784435341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7a1a5de8cfe49a4870cd23e7dac8f81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerPoseSmokeHarness
+  performer: {fileID: 784435346}
+  poseA: {fileID: 11400000, guid: c428715ecd67662458a22d5807df2fb4, type: 2}
+  poseB: {fileID: 11400000, guid: 7f06352d680590c4b8d282cdb165d3ec, type: 2}
+  poseC: {fileID: 11400000, guid: f0d4d3dc2448c374fa2e3c24e03909e5, type: 2}
+  transition:
+    Duration: 0.7
+    Windup: 0
+    Overshoot: 0
+    Curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  acceptanceHarness: {fileID: 784435344}
+--- !u!114 &784435346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784435341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61482888192f42e4a262bd3458a99e12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.SuccubusPerformer
+  animator: {fileID: 0}
+  initialPose: {fileID: 11400000, guid: c428715ecd67662458a22d5807df2fb4, type: 2}
+  defaultTransition:
+    Duration: 0.7
+    Windup: 0
+    Overshoot: 0
+    Curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+--- !u!95 &784435347
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784435341}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1214857864
 GameObject:
   m_ObjectHideFlags: 0
@@ -6642,63 +6709,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &3984956044191590011
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.075
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101143497326487143, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8887216947173311480, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
-      propertyPath: m_Name
-      value: larabridge
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: d7ce241c2be495848899ed3b6437ff8e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -6707,4 +6717,3 @@ SceneRoots:
   - {fileID: 1880382603}
   - {fileID: 1822648247}
   - {fileID: 1214857866}
-  - {fileID: 3984956044191590011}
