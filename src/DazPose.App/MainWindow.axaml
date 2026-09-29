@@ -77,7 +77,7 @@
                 <TextBlock Text="DAZ PRESETS" FontSize="14" FontWeight="Bold" />
                 <TextBlock Text="{Binding PageSummary}" Opacity="0.65" />
               </StackPanel>
-              <TextBlock Grid.Column="1" Text="Drag selected poses to a Unity destination folder →" Opacity="0.7" VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1" Text="Drag selected presets to Poses or Expressions →" Opacity="0.7" VerticalAlignment="Center" />
             </Grid>
             <TextBlock Grid.Row="1" Text="{Binding ScanProgress}" Foreground="#79C0FF" TextWrapping="Wrap" />
             <ListBox x:Name="PoseGrid" Grid.Row="2" ItemsSource="{Binding PoseCards}" SelectionMode="Multiple"
@@ -139,7 +139,8 @@
           </Grid>
         </Border>
 
-        <Border Grid.Column="2" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="8"
+        <Grid Grid.Column="2" RowDefinitions="*,*" RowSpacing="8">
+        <Border Grid.Row="0" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="8"
                 DragDrop.AllowDrop="True" DragDrop.DragOver="DestinationDragOver" DragDrop.Drop="DestinationDrop">
           <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
@@ -157,6 +158,23 @@
             </TreeView>
           </Grid>
         </Border>
+        <Border Grid.Row="1" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="8"
+                DragDrop.AllowDrop="True" DragDrop.DragOver="DestinationDragOver" DragDrop.Drop="ExpressionDestinationDrop">
+          <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+              <TextBlock Text="UNITY EXPRESSIONS" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" />
+              <Button Grid.Column="1" Content="＋" FontSize="17" ToolTip.Tip="Create matching expression output and import folders" Click="CreateExpressionFolderClicked" />
+            </Grid>
+            <TextBlock Grid.Row="1" Text="{Binding Settings.FinalExpressionAssetRoot}" Opacity="0.7" TextTrimming="CharacterEllipsis" />
+            <TreeView x:Name="ExpressionDestinationTree" Grid.Row="2" ItemsSource="{Binding ExpressionDestinationFolders}" SelectedItem="{Binding SelectedExpressionDestinationFolder, Mode=TwoWay}"
+                      DragDrop.AllowDrop="True" DragDrop.DragOver="DestinationDragOver" DragDrop.Drop="ExpressionDestinationDrop">
+              <TreeView.ItemTemplate>
+                <TreeDataTemplate DataType="{x:Type models:FolderNode}" ItemsSource="{Binding Children}"><TextBlock Text="{Binding Name}" /></TreeDataTemplate>
+              </TreeView.ItemTemplate>
+            </TreeView>
+          </Grid>
+        </Border>
+        </Grid>
       </Grid>
     </Grid>
 
@@ -182,10 +200,11 @@
         <ListBox Grid.Row="1" ItemsSource="{Binding QueueJobs}">
           <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type models:ConversionJob}">
-              <Grid ColumnDefinitions="2*,*,Auto" Margin="2">
+              <Grid ColumnDefinitions="2*,Auto,*,Auto" Margin="2">
                 <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Column="1" Text="{Binding Request.DestinationRelativeFolder}" TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Column="2" Text="{Binding State}" ToolTip.Tip="{Binding ErrorMessage}" />
+                <TextBlock Grid.Column="1" Text="{Binding KindLabel}" Margin="8,0" />
+                <TextBlock Grid.Column="2" Text="{Binding Request.DestinationRelativeFolder}" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="3" Text="{Binding State}" ToolTip.Tip="{Binding ErrorMessage}" />
               </Grid>
             </DataTemplate>
           </ListBox.ItemTemplate>

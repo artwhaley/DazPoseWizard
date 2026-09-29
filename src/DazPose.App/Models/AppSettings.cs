@@ -7,6 +7,8 @@ public sealed class AppSettings
     public string UnityProjectRoot { get; set; } = string.Empty;
     public string FinalPoseAssetRoot { get; set; } = "Assets/Animations/DazPoses";
     public string CanonicalImportRoot { get; set; } = "Assets/DazPoseImports";
+    public string FinalExpressionAssetRoot { get; set; } = "Assets/Animations/DazExpressions";
+    public string ExpressionImportRoot { get; set; } = "Assets/DazExpressionImports";
     public string LastSelectedSourceFolder { get; set; } = string.Empty;
     public bool SearchIncludesChildren { get; set; }
     public bool ShowG8Female { get; set; } = true;
@@ -63,20 +65,28 @@ public enum ConversionJobState
     Failed
 }
 
+public enum PerformerAssetKind
+{
+    Pose = 0,
+    Expression = 1
+}
+
 public sealed class BrowserJobStatus
 {
-    public int SchemaVersion { get; set; } = 1;
+    public int SchemaVersion { get; set; } = 2;
+    public PerformerAssetKind AssetKind { get; set; }
     public string CanonicalImportPath { get; set; } = string.Empty;
     public string SourcePosePath { get; set; } = string.Empty;
     public string DestinationRelativeFolder { get; set; } = string.Empty;
     public string ExpectedAnimPath { get; set; } = string.Empty;
     public string ExpectedPerformerPosePath { get; set; } = string.Empty;
+    public string ExpectedWrapperAssetPath { get; set; } = string.Empty;
     public string State { get; set; } = nameof(ConversionJobState.AwaitingUnity);
     public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
     public string? ErrorMessage { get; set; }
 }
 
-public sealed record ConversionOutput(string CanonicalImportPath, string AnimPath, string PerformerPoseAssetPath,
+public sealed record ConversionOutput(PerformerAssetKind AssetKind, string CanonicalImportPath, string AnimPath, string WrapperAssetPath,
     string DestinationRelativeFolder,
     ConversionJobState State, string? ErrorMessage, DateTimeOffset? Timestamp);
 
@@ -141,7 +151,11 @@ public sealed class FolderNode(string name, string relativePath) : System.Compon
     public override string ToString() => Name;
 }
 
-public sealed record ConversionRequest(string SourcePosePath, string DestinationRelativeFolder);
+public sealed record ConversionRequest(string SourcePosePath, PerformerAssetKind Kind, string DestinationRelativeFolder)
+{
+    public ConversionRequest(string sourcePosePath, string destinationRelativeFolder)
+        : this(sourcePosePath, PerformerAssetKind.Pose, destinationRelativeFolder) { }
+}
 
 public sealed class ConversionJob : System.ComponentModel.INotifyPropertyChanged
 {
@@ -159,6 +173,7 @@ public sealed class ConversionJob : System.ComponentModel.INotifyPropertyChanged
     public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
     public ConversionRequest Request { get; }
     public string DisplayName => Path.GetFileNameWithoutExtension(Request.SourcePosePath);
+    public string KindLabel => Request.Kind.ToString();
     public DateTimeOffset QueuedAt { get; }
     public ConversionJobState State { get => _state; internal set => Set(ref _state, value); }
     public string? ErrorMessage { get => _errorMessage; internal set => Set(ref _errorMessage, value); }

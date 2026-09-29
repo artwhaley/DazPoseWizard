@@ -158,10 +158,41 @@ public sealed class LibraryBrowserPipelineTests
             Assert.True(Directory.Exists(Path.Combine(project, "Assets", "Animations", "DazPoses", "Sitting", "Romantic_ Poses")));
             Assert.True(Directory.Exists(Path.Combine(project, "Assets", "DazPoseImports", "Sitting", "Romantic_ Poses")));
             using var bridge = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(project, "DazPoseWizard.project.json")));
-            Assert.Equal("Assets/DazPoseImports", bridge.RootElement.GetProperty("importRoot").GetString());
-            Assert.Equal("Assets/Animations/DazPoses", bridge.RootElement.GetProperty("outputRoot").GetString());
+            Assert.Equal(2, bridge.RootElement.GetProperty("schemaVersion").GetInt32());
+            Assert.Equal("Assets/DazPoseImports", bridge.RootElement.GetProperty("poseImportRoot").GetString());
+            Assert.Equal("Assets/Animations/DazPoses", bridge.RootElement.GetProperty("poseOutputRoot").GetString());
+            Assert.Equal("Assets/DazExpressionImports", bridge.RootElement.GetProperty("expressionImportRoot").GetString());
+            Assert.Equal("Assets/Animations/DazExpressions", bridge.RootElement.GetProperty("expressionOutputRoot").GetString());
             Assert.Throws<ArgumentException>(() => service.NormalizeAssetRelativePath("Assets/../ProjectSettings"));
             Assert.Throws<ArgumentException>(() => service.ValidateAssetRoots("Assets/DazPoseImports", "Assets/DazPoseImports"));
+        }
+        finally { FixtureData.DeleteTempDirectory(temp); }
+    }
+
+    [Fact]
+    public async Task ExpressionDestinationAndNamingUseIndependentTypedRoots()
+    {
+        var temp = FixtureData.NewTempDirectory();
+        try
+        {
+            var project = CreateUnityProject(temp);
+            var settings = SettingsFor(project);
+            var source = Path.Combine(temp, "Vendor", "Smile.duf");
+            Directory.CreateDirectory(Path.GetDirectoryName(source)!);
+            File.WriteAllText(source, "source");
+            var service = new UnityProjectService();
+            var relative = await service.CreateDestinationFolderAsync(settings, PerformerAssetKind.Expression, "Faces", "Warm");
+            Assert.Equal("Faces/Warm", relative);
+            Assert.True(Directory.Exists(Path.Combine(project, "Assets", "DazExpressionImports", "Faces", "Warm")));
+            Assert.True(Directory.Exists(Path.Combine(project, "Assets", "Animations", "DazExpressions", "Faces", "Warm")));
+            var expression = new PoseOutputNamingService(service).Resolve(settings, source, PerformerAssetKind.Expression, relative);
+            var pose = new PoseOutputNamingService(service).Resolve(settings, source, PerformerAssetKind.Pose, relative);
+            Assert.Equal(PerformerAssetKind.Expression, expression.Kind);
+            Assert.Contains("DazExpressionImports", expression.CanonicalAssetPath);
+            Assert.Contains("DazExpressions", expression.AnimAssetPath);
+            Assert.NotEqual(pose.CanonicalAssetPath, expression.CanonicalAssetPath);
+            Assert.Throws<ArgumentException>(() => service.ValidateAssetRoots(
+                "Assets/A", "Assets/B", "Assets/A/Nested", "Assets/C"));
         }
         finally { FixtureData.DeleteTempDirectory(temp); }
     }

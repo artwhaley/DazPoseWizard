@@ -34,14 +34,15 @@ public sealed class UnityProjectService
         return normalized;
     }
 
-    public void ValidateAssetRoots(string outputRoot, string importRoot)
+    public void ValidateAssetRoots(params string[] roots)
     {
-        var output = NormalizeAssetRelativePath(outputRoot).TrimEnd('/');
-        var import = NormalizeAssetRelativePath(importRoot).TrimEnd('/');
-        var overlaps = string.Equals(output, import, StringComparison.OrdinalIgnoreCase)
-            || output.StartsWith(import + "/", StringComparison.OrdinalIgnoreCase)
-            || import.StartsWith(output + "/", StringComparison.OrdinalIgnoreCase);
-        if (overlaps) throw new ArgumentException("The canonical import root and final pose asset root must be separate, non-overlapping folders inside Assets.");
+        var normalized = roots.Select(NormalizeAssetRelativePath).Select(path => path.TrimEnd('/')).ToArray();
+        for (var i = 0; i < normalized.Length; i++)
+        for (var j = i + 1; j < normalized.Length; j++)
+            if (string.Equals(normalized[i], normalized[j], StringComparison.OrdinalIgnoreCase)
+                || normalized[i].StartsWith(normalized[j] + "/", StringComparison.OrdinalIgnoreCase)
+                || normalized[j].StartsWith(normalized[i] + "/", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("All pose and expression import/output roots must be separate, non-overlapping folders inside Assets.");
     }
 
     public async Task WriteBridgeConfigurationAsync(AppSettings settings, CancellationToken cancellationToken = default)
@@ -51,20 +52,22 @@ public sealed class UnityProjectService
 
         var importRoot = NormalizeAssetRelativePath(settings.CanonicalImportRoot);
         var outputRoot = NormalizeAssetRelativePath(settings.FinalPoseAssetRoot);
-        ValidateAssetRoots(outputRoot, importRoot);
-        var importPath = ResolveAssetPath(settings.UnityProjectRoot, importRoot);
-        var outputPath = ResolveAssetPath(settings.UnityProjectRoot, outputRoot);
-        Directory.CreateDirectory(importPath);
-        Directory.CreateDirectory(outputPath);
+        var expressionImportRoot = NormalizeAssetRelativePath(settings.ExpressionImportRoot);
+        var expressionOutputRoot = NormalizeAssetRelativePath(settings.FinalExpressionAssetRoot);
+        ValidateAssetRoots(outputRoot, importRoot, expressionOutputRoot, expressionImportRoot);
+        foreach (var root in new[] { importRoot, outputRoot, expressionImportRoot, expressionOutputRoot })
+            Directory.CreateDirectory(ResolveAssetPath(settings.UnityProjectRoot, root));
         Directory.CreateDirectory(Path.Combine(Path.GetFullPath(settings.UnityProjectRoot), ".dazposewizard", "status"));
 
         var bridgePath = Path.Combine(Path.GetFullPath(settings.UnityProjectRoot), "DazPoseWizard.project.json");
         var stagedPath = bridgePath + $".{Guid.NewGuid():N}.tmp";
         var json = JsonSerializer.Serialize(new ProjectBridgeConfiguration
         {
-            SchemaVersion = 1,
-            ImportRoot = importRoot,
-            OutputRoot = outputRoot
+            SchemaVersion = 2,
+            PoseImportRoot = importRoot,
+            PoseOutputRoot = outputRoot,
+            ExpressionImportRoot = expressionImportRoot,
+            ExpressionOutputRoot = expressionOutputRoot
         }, JsonOptions);
         try
         {
@@ -77,33 +80,49 @@ public sealed class UnityProjectService
         }
     }
 
-    public async Task<string> CreateDestinationFolderAsync(AppSettings settings, string parentRelativeFolder,
+    public async Task<string> CreateDestinationFolderAsync(AppSettings settings, PerformerAssetKind kind, string parentRelativeFolder,
         string requestedName, CancellationToken cancellationToken = default)
     {
         if (!LooksLikeUnityProject(settings.UnityProjectRoot))
             throw new InvalidOperationException("Select a valid Unity project before creating destination folders.");
-        ValidateAssetRoots(settings.FinalPoseAssetRoot, settings.CanonicalImportRoot);
+        ValidateConfiguredRoots(settings);
         var folderName = SanitizeFolderName(requestedName);
         var parent = NormalizeDestinationRelativeFolder(parentRelativeFolder);
         var child = parent.Length == 0 ? folderName : $"{parent}/{folderName}";
-        var outputPath = ResolveAssetPath(settings.UnityProjectRoot, JoinAssetPath(settings.FinalPoseAssetRoot, child));
-        var importPath = ResolveAssetPath(settings.UnityProjectRoot, JoinAssetPath(settings.CanonicalImportRoot, child));
+        var outputPath = ResolveAssetPath(settings.UnityProjectRoot, JoinAssetPath(OutputRoot(settings, kind), child));
+        var importPath = ResolveAssetPath(settings.UnityProjectRoot, JoinAssetPath(ImportRoot(settings, kind), child));
         Directory.CreateDirectory(outputPath);
         Directory.CreateDirectory(importPath);
         await WriteBridgeConfigurationAsync(settings, cancellationToken);
         return child;
     }
 
-    public IReadOnlyList<FolderNode> LoadDestinationTree(AppSettings settings)
+    public Task<string> CreateDestinationFolderAsync(AppSettings settings, string parentRelativeFolder, string requestedName,
+        CancellationToken cancellationToken = default) => CreateDestinationFolderAsync(settings, PerformerAssetKind.Pose,
+            parentRelativeFolder, requestedName, cancellationToken);
+
+    public IReadOnlyList<FolderNode> LoadDestinationTree(AppSettings settings, PerformerAssetKind kind)
     {
         if (!LooksLikeUnityProject(settings.UnityProjectRoot)) return Array.Empty<FolderNode>();
-        var root = ResolveAssetPath(settings.UnityProjectRoot, settings.FinalPoseAssetRoot);
+        var root = ResolveAssetPath(settings.UnityProjectRoot, OutputRoot(settings, kind));
         Directory.CreateDirectory(root);
         var result = new List<FolderNode>();
         foreach (var child in EnumerateDirectories(root))
             result.Add(BuildNode(child, root));
         return result;
     }
+
+    public IReadOnlyList<FolderNode> LoadDestinationTree(AppSettings settings) => LoadDestinationTree(settings, PerformerAssetKind.Pose);
+
+    public void ValidateConfiguredRoots(AppSettings settings) => ValidateAssetRoots(
+        settings.FinalPoseAssetRoot, settings.CanonicalImportRoot,
+        settings.FinalExpressionAssetRoot, settings.ExpressionImportRoot);
+
+    public static string ImportRoot(AppSettings settings, PerformerAssetKind kind) =>
+        kind == PerformerAssetKind.Expression ? settings.ExpressionImportRoot : settings.CanonicalImportRoot;
+
+    public static string OutputRoot(AppSettings settings, PerformerAssetKind kind) =>
+        kind == PerformerAssetKind.Expression ? settings.FinalExpressionAssetRoot : settings.FinalPoseAssetRoot;
 
     public static string NormalizeDestinationRelativeFolder(string? relativeFolder)
     {
@@ -167,6 +186,8 @@ public sealed class UnityProjectService
 public sealed class ProjectBridgeConfiguration
 {
     public int SchemaVersion { get; set; }
-    public string ImportRoot { get; set; } = string.Empty;
-    public string OutputRoot { get; set; } = string.Empty;
+    public string PoseImportRoot { get; set; } = string.Empty;
+    public string PoseOutputRoot { get; set; } = string.Empty;
+    public string ExpressionImportRoot { get; set; } = string.Empty;
+    public string ExpressionOutputRoot { get; set; } = string.Empty;
 }

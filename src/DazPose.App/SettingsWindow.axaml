@@ -34,6 +34,12 @@
         <TextBlock Text="Canonical import root (inside Assets)" FontWeight="SemiBold" />
         <TextBox x:Name="ImportRootBox" PlaceholderText="Assets/DazPoseImports" />
 
+        <TextBlock Text="Final Unity expression asset root (inside Assets)" FontWeight="SemiBold" />
+        <TextBox x:Name="ExpressionOutputRootBox" PlaceholderText="Assets/Animations/DazExpressions" />
+
+        <TextBlock Text="Expression canonical import root (inside Assets)" FontWeight="SemiBold" />
+        <TextBox x:Name="ExpressionImportRootBox" PlaceholderText="Assets/DazExpressionImports" />
+
         <Border Background="#20FFFFFF" CornerRadius="4" Padding="10">
           <TextBlock Text="The Unity project also needs its G8F reference model configured in Unity's Tools → DAZ Pose → Pipeline Settings menu. That setting lives in the project and is separate from these Windows app settings." TextWrapping="Wrap" />
         </Border>

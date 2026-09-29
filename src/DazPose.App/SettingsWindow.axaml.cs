@@ -23,6 +23,8 @@ public sealed partial class SettingsWindow : Window
         this.FindControl<TextBox>("UnityProjectBox")!.Text = settings.UnityProjectRoot;
         this.FindControl<TextBox>("OutputRootBox")!.Text = settings.FinalPoseAssetRoot;
         this.FindControl<TextBox>("ImportRootBox")!.Text = settings.CanonicalImportRoot;
+        this.FindControl<TextBox>("ExpressionOutputRootBox")!.Text = settings.FinalExpressionAssetRoot;
+        this.FindControl<TextBox>("ExpressionImportRootBox")!.Text = settings.ExpressionImportRoot;
     }
 
     private async void BrowseDazRoot(object? sender, RoutedEventArgs e) => await PickFolder("Select DAZ Content Root", "DazRootBox");
@@ -65,6 +67,8 @@ public sealed partial class SettingsWindow : Window
             UnityProjectRoot = this.FindControl<TextBox>("UnityProjectBox")!.Text?.Trim() ?? string.Empty,
             FinalPoseAssetRoot = this.FindControl<TextBox>("OutputRootBox")!.Text?.Trim() ?? string.Empty,
             CanonicalImportRoot = this.FindControl<TextBox>("ImportRootBox")!.Text?.Trim() ?? string.Empty,
+            FinalExpressionAssetRoot = this.FindControl<TextBox>("ExpressionOutputRootBox")!.Text?.Trim() ?? string.Empty,
+            ExpressionImportRoot = this.FindControl<TextBox>("ExpressionImportRootBox")!.Text?.Trim() ?? string.Empty,
             LastSelectedSourceFolder = _initialSettings.LastSelectedSourceFolder,
             SearchIncludesChildren = _initialSettings.SearchIncludesChildren,
             ShowG8Female = _initialSettings.ShowG8Female,
@@ -89,7 +93,9 @@ public sealed partial class SettingsWindow : Window
                 throw new InvalidOperationException("The selected folder does not look like a Unity project (Assets and ProjectSettings or Packages are required).");
             settings.FinalPoseAssetRoot = _projectService.NormalizeAssetRelativePath(settings.FinalPoseAssetRoot);
             settings.CanonicalImportRoot = _projectService.NormalizeAssetRelativePath(settings.CanonicalImportRoot);
-            _projectService.ValidateAssetRoots(settings.FinalPoseAssetRoot, settings.CanonicalImportRoot);
+            settings.FinalExpressionAssetRoot = _projectService.NormalizeAssetRelativePath(settings.FinalExpressionAssetRoot);
+            settings.ExpressionImportRoot = _projectService.NormalizeAssetRelativePath(settings.ExpressionImportRoot);
+            _projectService.ValidateConfiguredRoots(settings);
             await _settingsService.SaveAsync(settings);
             Settings = settings;
             Close(true);

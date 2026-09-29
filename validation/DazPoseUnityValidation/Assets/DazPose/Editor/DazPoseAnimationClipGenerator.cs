@@ -11,6 +11,12 @@ namespace DazPose.Editor.Importing
 {
     public static class DazPoseAnimationClipGenerator
     {
+        private static readonly HashSet<string> ExpressionExcludedBlendShapes = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "Breathe", "EX_Breathe", "Genesis8Female__EX_Breathe",
+            "BreatheBelly", "EX_BreatheBelly", "Genesis8Female__EX_BreatheBelly",
+            "Genesis8Female__eCTRLEyesClosedL", "Genesis8Female__eCTRLEyesClosedR"
+        };
         public const string OutputFolder = "Assets/Generated/DazPoses/G8F";
         public const float DurationSeconds = 1f;
         public static DazPoseAnimationClipReport Generate(ResolvedUnityPose pose, bool replaceExisting)
@@ -145,6 +151,77 @@ namespace DazPose.Editor.Importing
                 if (clip != null) UnityEngine.Object.DestroyImmediate(clip);
                 if (backup != null) UnityEngine.Object.DestroyImmediate(backup);
             }
+        }
+
+        public static void GenerateExpression(ResolvedUnityPose pose, string assetPath, string reportPath, bool replaceExisting)
+        {
+            if (pose == null || pose.BindingRoot == null) throw new ArgumentNullException(nameof(pose));
+            assetPath = NormalizeAssetPath(assetPath);
+            var existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+            if (existing != null && !replaceExisting) throw new InvalidOperationException("AnimationClip already exists at " + assetPath + ".");
+            var clip = new AnimationClip { name = Path.GetFileNameWithoutExtension(assetPath), frameRate = 30f, legacy = false };
+            var bindings = new List<EditorCurveBinding>();
+            var curves = new List<AnimationCurve>();
+            var channels = new List<PerformerExpressionChannel>();
+            var excluded = new List<string>();
+            var emitted = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var pair in pose.MorphControls.SelectMany(control => control.Bindings.Select(binding => new { Control = control, Binding = binding }))
+                         .OrderBy(item => item.Binding.RendererPath, StringComparer.Ordinal).ThenBy(item => item.Binding.BlendShapeName, StringComparer.Ordinal))
+            {
+                ValidateMorphBinding(pose, pair.Control, pair.Binding);
+                if (ExpressionExcludedBlendShapes.Contains(pair.Binding.BlendShapeName)) { excluded.Add(pair.Binding.BlendShapeName); continue; }
+                var property = "blendShape." + pair.Binding.BlendShapeName;
+                var key = pair.Binding.RendererPath + "|" + property;
+                if (!emitted.Add(key)) throw new InvalidOperationException("More than one active DAZ control resolves to expression curve '" + key + "'.");
+                AddBlendShapeCurve(bindings, curves, pair.Binding.RendererPath, property, pair.Binding.UnityWeight);
+                channels.Add(new PerformerExpressionChannel(pair.Binding.RendererPath, pair.Binding.BlendShapeName, pair.Binding.UnityWeight));
+            }
+            if (channels.Count == 0) throw new InvalidOperationException("Expression sanitization removed every channel; no morph-only expression can be generated.");
+            AnimationUtility.SetEditorCurves(clip, bindings.ToArray(), curves.ToArray());
+            var transformCount = AnimationUtility.GetCurveBindings(clip).Count(binding => binding.type == typeof(Transform));
+            if (transformCount != 0) throw new InvalidOperationException("Expression candidate contains Transform curves.");
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(ProjectRoot, assetPath.Replace('/', Path.DirectorySeparatorChar))));
+            if (existing == null) { AssetDatabase.CreateAsset(clip, assetPath); clip = null; }
+            else { CopyClipContents(clip, existing); EditorUtility.SetDirty(existing); }
+            AssetDatabase.SaveAssets();
+            AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+            var saved = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+            var savedBindings = AnimationUtility.GetCurveBindings(saved);
+            if (savedBindings.Any(binding => binding.type == typeof(Transform))) throw new InvalidOperationException("Saved Expression clip contains Transform curves.");
+            EnsurePerformerExpressionAsset(assetPath, saved, channels.ToArray());
+            var fullReport = Path.Combine(ProjectRoot, reportPath.Replace('/', Path.DirectorySeparatorChar));
+            Directory.CreateDirectory(Path.GetDirectoryName(fullReport));
+            File.WriteAllText(fullReport, JsonUtility.ToJson(new DazPoseExpressionImportReport
+            {
+                generatedAtUtc = DateTime.UtcNow.ToString("O"), assetPath = assetPath,
+                sourceMorphControlCount = pose.MorphControls.Count, emittedMorphCurveCount = channels.Count,
+                transformCurveCount = 0, emittedChannels = channels.Select(c => c.RendererPath + "|" + c.BlendShapeName).ToArray(),
+                excludedChannels = excluded.Distinct().OrderBy(value => value, StringComparer.Ordinal).ToArray()
+            }, true));
+            if (clip != null) UnityEngine.Object.DestroyImmediate(clip);
+        }
+
+        private static void EnsurePerformerExpressionAsset(string animationAssetPath, AnimationClip clip, PerformerExpressionChannel[] channels)
+        {
+            var assetPath = Path.ChangeExtension(animationAssetPath, ".asset").Replace('\\', '/');
+            var expression = AssetDatabase.LoadAssetAtPath<PerformerExpression>(assetPath);
+            var occupied = AssetDatabase.LoadMainAssetAtPath(assetPath);
+            if (occupied != null && expression == null) throw new InvalidOperationException("Another asset occupies " + assetPath + ".");
+            var guid = expression == null ? string.Empty : AssetDatabase.AssetPathToGUID(assetPath);
+            if (expression == null) { expression = ScriptableObject.CreateInstance<PerformerExpression>(); expression.name = Path.GetFileNameWithoutExtension(assetPath); AssetDatabase.CreateAsset(expression, assetPath); }
+            var serialized = new SerializedObject(expression);
+            serialized.FindProperty("clip").objectReferenceValue = clip;
+            var channelProperty = serialized.FindProperty("channels");
+            channelProperty.arraySize = channels.Length;
+            for (var i = 0; i < channels.Length; i++)
+            {
+                var item = channelProperty.GetArrayElementAtIndex(i);
+                item.FindPropertyRelative("rendererPath").stringValue = channels[i].RendererPath;
+                item.FindPropertyRelative("blendShapeName").stringValue = channels[i].BlendShapeName;
+                item.FindPropertyRelative("targetWeight").floatValue = channels[i].TargetWeight;
+            }
+            serialized.ApplyModifiedPropertiesWithoutUndo(); EditorUtility.SetDirty(expression); AssetDatabase.SaveAssets();
+            if (!string.IsNullOrEmpty(guid) && guid != AssetDatabase.AssetPathToGUID(assetPath)) throw new InvalidOperationException("PerformerExpression GUID changed during regeneration.");
         }
 
         internal static AnimationClip BuildCandidateClip(ResolvedUnityPose pose)
@@ -494,5 +571,17 @@ namespace DazPose.Editor.Importing
                 throw new InvalidOperationException("Animation report path must be project-relative and cannot contain traversal segments.");
             return normalized;
         }
+    }
+
+    [Serializable]
+    internal sealed class DazPoseExpressionImportReport
+    {
+        public string generatedAtUtc;
+        public string assetPath;
+        public int sourceMorphControlCount;
+        public int emittedMorphCurveCount;
+        public int transformCurveCount;
+        public string[] emittedChannels;
+        public string[] excludedChannels;
     }
 }

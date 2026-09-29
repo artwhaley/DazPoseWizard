@@ -32,6 +32,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         new Dictionary<string, IReadOnlyList<ConversionOutput>>(StringComparer.OrdinalIgnoreCase);
     private FolderNode? _selectedSourceFolder;
     private FolderNode? _selectedDestinationFolder;
+    private FolderNode? _selectedExpressionDestinationFolder;
     private string _searchText = string.Empty;
     private bool _searchIncludesChildren;
     private bool _showG8Female = true;
@@ -81,6 +82,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<FolderNode> SourceFolders { get; } = [];
     public ObservableCollection<FolderNode> DestinationFolders { get; } = [];
+    public ObservableCollection<FolderNode> ExpressionDestinationFolders { get; } = [];
     public ObservableCollection<PoseCardViewModel> PoseCards { get; } = [];
     public ObservableCollection<ConversionJob> QueueJobs { get; }
     public AppSettings Settings => _settings;
@@ -110,6 +112,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     }
     public FolderNode? SelectedSourceFolder { get => _selectedSourceFolder; set { if (value is not null && !ReferenceEquals(value, _selectedSourceFolder)) SelectSourceFolder(value); } }
     public FolderNode? SelectedDestinationFolder { get => _selectedDestinationFolder; set { if (value is not null && !ReferenceEquals(value, _selectedDestinationFolder)) SelectDestinationFolder(value); } }
+    public FolderNode? SelectedExpressionDestinationFolder { get => _selectedExpressionDestinationFolder; set { if (value is not null) Set(ref _selectedExpressionDestinationFolder, value); } }
     public string SearchText { get => _searchText; set { if (Set(ref _searchText, value)) { OnPropertyChanged(nameof(EmptyMessage)); DebounceSearch(); } } }
     public bool SearchIncludesChildren { get => _searchIncludesChildren; set { if (Set(ref _searchIncludesChildren, value)) { _settings.SearchIncludesChildren = value; OnPropertyChanged(nameof(IsCurrentFolderScope)); OnPropertyChanged(nameof(IsIncludeChildrenScope)); OnPropertyChanged(nameof(EmptyMessage)); _ = PersistSettingsAsync(); _ = RefreshCardsAsync(); } } }
     public bool IsCurrentFolderScope { get => !SearchIncludesChildren; set { if (value) SearchIncludesChildren = false; } }
@@ -182,7 +185,9 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     {
         settings.FinalPoseAssetRoot = _projectService.NormalizeAssetRelativePath(settings.FinalPoseAssetRoot);
         settings.CanonicalImportRoot = _projectService.NormalizeAssetRelativePath(settings.CanonicalImportRoot);
-        _projectService.ValidateAssetRoots(settings.FinalPoseAssetRoot, settings.CanonicalImportRoot);
+        settings.FinalExpressionAssetRoot = _projectService.NormalizeAssetRelativePath(settings.FinalExpressionAssetRoot);
+        settings.ExpressionImportRoot = _projectService.NormalizeAssetRelativePath(settings.ExpressionImportRoot);
+        _projectService.ValidateConfiguredRoots(settings);
         _settings = settings;
         _searchIncludesChildren = settings.SearchIncludesChildren;
         _showG8Female = settings.ShowG8Female;
@@ -270,25 +275,27 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         StatusMessage = "Library and Unity output status reconciled.";
     }
 
-    public async Task<string> CreateDestinationFolderAsync(string name, FolderNode? parent, CancellationToken cancellationToken = default)
+    public async Task<string> CreateDestinationFolderAsync(PerformerAssetKind kind, string name, FolderNode? parent, CancellationToken cancellationToken = default)
     {
         if (!_projectService.LooksLikeUnityProject(_settings.UnityProjectRoot))
             throw new InvalidOperationException("Configure a Unity project first.");
-        var relative = await _projectService.CreateDestinationFolderAsync(_settings, parent?.RelativePath ?? string.Empty, name, cancellationToken);
+        var relative = await _projectService.CreateDestinationFolderAsync(_settings, kind, parent?.RelativePath ?? string.Empty, name, cancellationToken);
         LoadDestinationTree();
-        var node = FindFolder(DestinationFolders, relative);
-        SelectDestinationFolder(node);
-        StatusMessage = $"Created {relative} under both the final pose root and canonical import root.";
+        var collection = kind == PerformerAssetKind.Expression ? ExpressionDestinationFolders : DestinationFolders;
+        var node = FindFolder(collection, relative);
+        if (kind == PerformerAssetKind.Expression) SelectedExpressionDestinationFolder = node;
+        else SelectDestinationFolder(node);
+        StatusMessage = $"Created {relative} under both {kind} roots.";
         return relative;
     }
 
-    public async Task<int> EnqueueAsync(IEnumerable<PoseCardViewModel> cards, FolderNode? destination,
+    public async Task<int> EnqueueAsync(IEnumerable<PoseCardViewModel> cards, PerformerAssetKind kind, FolderNode? destination,
         CancellationToken cancellationToken = default)
     {
-        var requests = cards.Select(card => new ConversionRequest(card.Entry.SourcePath, destination?.RelativePath ?? string.Empty)).ToArray();
+        var requests = cards.Select(card => new ConversionRequest(card.Entry.SourcePath, kind, destination?.RelativePath ?? string.Empty)).ToArray();
         var count = await _queue.EnqueueAsync(requests, cancellationToken);
         var destinationName = destination?.RelativePath is { Length: > 0 } relative ? relative : "Daz Poses";
-        StatusMessage = count == 0 ? "Those poses are already queued for this destination." : $"{count} pose{(count == 1 ? "" : "s")} queued for {destinationName}.";
+        StatusMessage = count == 0 ? $"Those presets are already queued as {kind} for this destination." : $"{count} preset{(count == 1 ? "" : "s")} queued as {kind} for {destinationName}.";
         return count;
     }
 
@@ -622,17 +629,26 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
 
     private void LoadDestinationTree()
     {
-        DestinationFolders.Clear();
-        var rootName = Path.GetFileName(_settings.FinalPoseAssetRoot.TrimEnd('/'));
-        var root = new FolderNode(string.IsNullOrWhiteSpace(rootName) ? "Daz Poses" : rootName, string.Empty)
-        {
-            Children = _projectService.LoadDestinationTree(_settings)
-        };
-        DestinationFolders.Add(root);
+        var root = LoadDestinationTree(DestinationFolders, PerformerAssetKind.Pose);
+        var expressionRoot = LoadDestinationTree(ExpressionDestinationFolders, PerformerAssetKind.Expression);
         var selected = SelectedDestinationFolder is not null
             ? FindFolder(DestinationFolders, SelectedDestinationFolder.RelativePath)
             : null;
         SelectDestinationFolder(selected ?? root);
+        var expressionSelected = SelectedExpressionDestinationFolder is not null
+            ? FindFolder(ExpressionDestinationFolders, SelectedExpressionDestinationFolder.RelativePath) : null;
+        SelectedExpressionDestinationFolder = expressionSelected ?? expressionRoot;
+    }
+
+    private FolderNode LoadDestinationTree(ObservableCollection<FolderNode> collection, PerformerAssetKind kind)
+    {
+        collection.Clear();
+        var configuredRoot = UnityProjectService.OutputRoot(_settings, kind);
+        var rootName = Path.GetFileName(configuredRoot.TrimEnd('/'));
+        var root = new FolderNode(string.IsNullOrWhiteSpace(rootName) ? kind.ToString() : rootName, string.Empty)
+        { Children = _projectService.LoadDestinationTree(_settings, kind) };
+        collection.Add(root);
+        return root;
     }
 
     private static FolderNode? FindFolder(IEnumerable<FolderNode> nodes, string? path)
@@ -674,6 +690,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
             _registry.GetStatusDirectory(_settings),
             _projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.CanonicalImportRoot),
             _projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.FinalPoseAssetRoot)
+            ,_projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.ExpressionImportRoot)
+            ,_projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.FinalExpressionAssetRoot)
         };
         foreach (var path in paths.Distinct(StringComparer.OrdinalIgnoreCase))
         {

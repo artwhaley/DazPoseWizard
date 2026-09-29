@@ -53,7 +53,7 @@ public sealed class ConversionQueueService : IAsyncDisposable
         {
             cancellationToken.ThrowIfCancellationRequested();
             var normalized = new ConversionRequest(Path.GetFullPath(request.SourcePosePath),
-                UnityProjectService.NormalizeDestinationRelativeFolder(request.DestinationRelativeFolder));
+                request.Kind, UnityProjectService.NormalizeDestinationRelativeFolder(request.DestinationRelativeFolder));
             var key = JobKey(normalized);
             if (_activeJobs.ContainsKey(key)) continue;
 
@@ -70,7 +70,7 @@ public sealed class ConversionQueueService : IAsyncDisposable
     public async Task<int> RetryFailedAsync(CancellationToken cancellationToken = default)
     {
         var failed = Jobs.Where(job => job.State == ConversionJobState.Failed)
-            .Select(job => new ConversionRequest(job.Request.SourcePosePath, job.Request.DestinationRelativeFolder)).ToArray();
+            .Select(job => new ConversionRequest(job.Request.SourcePosePath, job.Request.Kind, job.Request.DestinationRelativeFolder)).ToArray();
         return await EnqueueAsync(failed, cancellationToken);
     }
 
@@ -92,7 +92,7 @@ public sealed class ConversionQueueService : IAsyncDisposable
         foreach (var job in Jobs.Where(job => job.State is ConversionJobState.AwaitingUnity or ConversionJobState.Converted or ConversionJobState.Failed))
         {
             var hasSource = outputs.TryGetValue(Path.GetFullPath(job.Request.SourcePosePath), out var sourceOutputs);
-            var match = hasSource ? sourceOutputs!.FirstOrDefault(output => string.Equals(output.DestinationRelativeFolder,
+            var match = hasSource ? sourceOutputs!.FirstOrDefault(output => output.AssetKind == job.Request.Kind && string.Equals(output.DestinationRelativeFolder,
                 job.Request.DestinationRelativeFolder, StringComparison.OrdinalIgnoreCase)) : null;
             if (match is not null)
             {
@@ -131,7 +131,7 @@ public sealed class ConversionQueueService : IAsyncDisposable
                         throw new InvalidOperationException("Configure a valid Unity project before converting poses.");
 
                     await _projectService.WriteBridgeConfigurationAsync(settings, _shutdown.Token);
-                    var output = _naming.Resolve(settings, job.Request.SourcePosePath, job.Request.DestinationRelativeFolder);
+                    var output = _naming.Resolve(settings, job.Request.SourcePosePath, job.Request.Kind, job.Request.DestinationRelativeFolder);
                     outputReservation = output;
                     job.CanonicalPath = output.CanonicalPath;
                     job.AnimPath = output.AnimPath;
@@ -153,7 +153,9 @@ public sealed class ConversionQueueService : IAsyncDisposable
                             SourcePosePath = job.Request.SourcePosePath,
                             DestinationRelativeFolder = output.DestinationRelativeFolder,
                             ExpectedAnimPath = output.AnimAssetPath,
-                            ExpectedPerformerPosePath = output.PerformerPoseAssetPath,
+                            AssetKind = job.Request.Kind,
+                            ExpectedWrapperAssetPath = output.WrapperAssetPath,
+                            ExpectedPerformerPosePath = job.Request.Kind == PerformerAssetKind.Pose ? output.WrapperAssetPath : string.Empty,
                             State = nameof(ConversionJobState.AwaitingUnity),
                             Timestamp = DateTimeOffset.UtcNow
                         }, _shutdown.Token);
@@ -204,11 +206,14 @@ public sealed class ConversionQueueService : IAsyncDisposable
             await _registry.WriteStatusAsync(settings, new BrowserJobStatus
             {
                 CanonicalImportPath = canonicalAsset,
+                AssetKind = job.Request.Kind,
                 SourcePosePath = job.Request.SourcePosePath,
                 DestinationRelativeFolder = job.Request.DestinationRelativeFolder,
                 ExpectedAnimPath = animAsset,
-                ExpectedPerformerPosePath = Path.GetRelativePath(projectRoot,
+                ExpectedWrapperAssetPath = Path.GetRelativePath(projectRoot,
                     Path.ChangeExtension(job.AnimPath, ".asset")).Replace('\\', '/'),
+                ExpectedPerformerPosePath = job.Request.Kind == PerformerAssetKind.Pose ? Path.GetRelativePath(projectRoot,
+                    Path.ChangeExtension(job.AnimPath, ".asset")).Replace('\\', '/') : string.Empty,
                 State = nameof(ConversionJobState.Failed),
                 Timestamp = DateTimeOffset.UtcNow,
                 ErrorMessage = exception.Message
@@ -224,7 +229,7 @@ public sealed class ConversionQueueService : IAsyncDisposable
     }
 
     private static string JobKey(ConversionRequest request) =>
-        Path.GetFullPath(request.SourcePosePath).ToUpperInvariant() + "\n" + request.DestinationRelativeFolder.ToUpperInvariant();
+        Path.GetFullPath(request.SourcePosePath).ToUpperInvariant() + "\n" + request.Kind + "\n" + request.DestinationRelativeFolder.ToUpperInvariant();
 
     private static void CleanupOldStagingFiles(string directory)
     {

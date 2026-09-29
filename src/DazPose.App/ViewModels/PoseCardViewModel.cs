@@ -48,7 +48,7 @@ public sealed class PoseCardViewModel : INotifyPropertyChanged
         {
             if (IsConverted)
                 return "Converted to:" + Environment.NewLine + string.Join(Environment.NewLine, Outputs.Where(output => output.State == ConversionJobState.Converted).Select(output =>
-                    $"{output.DestinationRelativeFolder}/{Path.GetFileName(output.PerformerPoseAssetPath)}"));
+                    $"{output.AssetKind}: {output.DestinationRelativeFolder}/{Path.GetFileName(output.WrapperAssetPath)}"));
             if (State == ConversionJobState.Failed) return ErrorMessage ?? "Conversion failed.";
             return StateLabel;
         }

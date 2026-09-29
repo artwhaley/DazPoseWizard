@@ -166,11 +166,20 @@ public sealed partial class MainWindow : Window
     {
         var dialog = new NameDialogWindow("Create Unity Destination Folder", "Create a child folder in both the final pose root and the matching canonical import root.");
         if (!await dialog.ShowDialog<bool>(this) || string.IsNullOrWhiteSpace(dialog.Value)) return;
-        try { await _viewModel.CreateDestinationFolderAsync(dialog.Value, _viewModel.SelectedDestinationFolder); }
+        try { await _viewModel.CreateDestinationFolderAsync(PerformerAssetKind.Pose, dialog.Value, _viewModel.SelectedDestinationFolder); }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
         {
             SetStatusMessage($"Could not create the Unity destination folder: {ex.Message}");
         }
+    }
+
+    private async void CreateExpressionFolderClicked(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new NameDialogWindow("Create Unity Expression Folder", "Create a child folder in both expression roots.");
+        if (!await dialog.ShowDialog<bool>(this) || string.IsNullOrWhiteSpace(dialog.Value)) return;
+        try { await _viewModel.CreateDestinationFolderAsync(PerformerAssetKind.Expression, dialog.Value, _viewModel.SelectedExpressionDestinationFolder); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
+        { SetStatusMessage($"Could not create the Unity expression folder: {ex.Message}"); }
     }
 
     private async void QueueSummaryClicked(object? sender, RoutedEventArgs e) =>
@@ -263,7 +272,23 @@ public sealed partial class MainWindow : Window
             return;
         }
         e.Handled = true;
-        await _viewModel.EnqueueAsync(selectedCards, destination);
+        await _viewModel.EnqueueAsync(selectedCards, PerformerAssetKind.Pose, destination);
+    }
+
+    private async void ExpressionDestinationDrop(object? sender, DragEventArgs e)
+    {
+        var text = e.DataTransfer.TryGetText();
+        if (text is null || !TryParseDrop(text, out var paths)) return;
+        var tree = this.FindControl<TreeView>("ExpressionDestinationTree")!;
+        var destination = FindFolderNode(e.Source as Control, tree) ?? _viewModel.SelectedExpressionDestinationFolder;
+        if (destination is null) return;
+        _viewModel.SelectedExpressionDestinationFolder = destination;
+        var selectedCards = paths.Select(path => _viewModel.PoseCards.FirstOrDefault(card =>
+            string.Equals(card.Entry.SourcePath, path, StringComparison.OrdinalIgnoreCase)))
+            .Where(card => card is not null).Cast<PoseCardViewModel>().ToArray();
+        if (selectedCards.Length == 0) { SetStatusMessage("The dragged preset selection is no longer visible."); return; }
+        e.Handled = true;
+        await _viewModel.EnqueueAsync(selectedCards, PerformerAssetKind.Expression, destination);
     }
 
     private static bool TryParseDrop(string payload, out string[] paths)

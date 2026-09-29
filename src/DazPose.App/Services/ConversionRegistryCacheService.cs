@@ -21,6 +21,8 @@ public sealed class ConversionRegistryCacheService
                 source_path TEXT NOT NULL COLLATE NOCASE,
                 canonical_import_path TEXT NOT NULL COLLATE NOCASE,
                 anim_path TEXT NOT NULL,
+                wrapper_path TEXT NOT NULL,
+                asset_kind INTEGER NOT NULL,
                 destination_relative_folder TEXT NOT NULL,
                 state TEXT NOT NULL,
                 error_message TEXT,
@@ -30,6 +32,20 @@ public sealed class ConversionRegistryCacheService
             CREATE INDEX IF NOT EXISTS ix_conversion_outputs_source ON conversion_outputs(project_root, source_path COLLATE NOCASE);
             """;
         command.ExecuteNonQuery();
+        EnsureColumn(connection, "wrapper_path", "TEXT NOT NULL DEFAULT ''");
+        EnsureColumn(connection, "asset_kind", "INTEGER NOT NULL DEFAULT 0");
+    }
+
+    private static void EnsureColumn(SqliteConnection connection, string name, string declaration)
+    {
+        using var inspect = connection.CreateCommand();
+        inspect.CommandText = "PRAGMA table_info(conversion_outputs)";
+        using var reader = inspect.ExecuteReader();
+        while (reader.Read()) if (string.Equals(reader.GetString(1), name, StringComparison.OrdinalIgnoreCase)) return;
+        reader.Close();
+        using var alter = connection.CreateCommand();
+        alter.CommandText = $"ALTER TABLE conversion_outputs ADD COLUMN {name} {declaration}";
+        alter.ExecuteNonQuery();
     }
 
     public IReadOnlyDictionary<string, IReadOnlyList<ConversionOutput>> Load(string projectRoot)
@@ -38,7 +54,7 @@ public sealed class ConversionRegistryCacheService
         using var connection = OpenConnection();
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT source_path, canonical_import_path, anim_path, destination_relative_folder, state, error_message, timestamp_utc_ticks
+            SELECT source_path, canonical_import_path, anim_path, wrapper_path, asset_kind, destination_relative_folder, state, error_message, timestamp_utc_ticks
             FROM conversion_outputs WHERE project_root = $root
             ORDER BY destination_relative_folder COLLATE NOCASE
             """;
@@ -52,14 +68,16 @@ public sealed class ConversionRegistryCacheService
             var canonicalPath = reader.GetString(1);
             var animPath = Path.GetFullPath(reader.GetString(2));
             if (!IsWithin(assetsRoot, animPath)) continue;
-            var performerPosePath = Path.ChangeExtension(animPath, ".asset");
-            var state = Enum.TryParse<ConversionJobState>(reader.GetString(4), true, out var parsed)
+            var recordedWrapper = reader.GetString(3);
+            var wrapperPath = string.IsNullOrWhiteSpace(recordedWrapper) ? Path.ChangeExtension(animPath, ".asset") : Path.GetFullPath(recordedWrapper);
+            var kind = (PerformerAssetKind)reader.GetInt32(4);
+            var state = Enum.TryParse<ConversionJobState>(reader.GetString(6), true, out var parsed)
                 ? parsed : ConversionJobState.AwaitingUnity;
-            if (PerformerPoseAssetInspector.IsUsable(root, animPath, performerPosePath)) state = ConversionJobState.Converted;
+            if (PerformerPoseAssetInspector.IsUsable(root, animPath, wrapperPath, kind)) state = ConversionJobState.Converted;
             else if (state == ConversionJobState.Converted) state = ConversionJobState.AwaitingUnity;
-            DateTimeOffset? timestamp = reader.IsDBNull(6) ? null : new DateTimeOffset(reader.GetInt64(6), TimeSpan.Zero);
-            var output = new ConversionOutput(canonicalPath, animPath, performerPosePath, reader.GetString(3), state,
-                reader.IsDBNull(5) ? null : reader.GetString(5), timestamp);
+            DateTimeOffset? timestamp = reader.IsDBNull(8) ? null : new DateTimeOffset(reader.GetInt64(8), TimeSpan.Zero);
+            var output = new ConversionOutput(kind, canonicalPath, animPath, wrapperPath, reader.GetString(5), state,
+                reader.IsDBNull(7) ? null : reader.GetString(7), timestamp);
             if (!result.TryGetValue(sourcePath, out var sourceOutputs)) result[sourcePath] = sourceOutputs = [];
             sourceOutputs.Add(output);
         }
@@ -84,15 +102,15 @@ public sealed class ConversionRegistryCacheService
         {
             insert.Transaction = transaction;
             insert.CommandText = """
-                INSERT INTO conversion_outputs(project_root, source_path, canonical_import_path, anim_path,
+                INSERT INTO conversion_outputs(project_root, source_path, canonical_import_path, anim_path, wrapper_path, asset_kind,
                     destination_relative_folder, state, error_message, timestamp_utc_ticks)
-                VALUES($root, $source, $canonical, $anim, $destination, $state, $error, $timestamp)
+                VALUES($root, $source, $canonical, $anim, $wrapper, $kind, $destination, $state, $error, $timestamp)
                 ON CONFLICT(project_root, canonical_import_path) DO UPDATE SET
-                    source_path=excluded.source_path, anim_path=excluded.anim_path,
+                    source_path=excluded.source_path, anim_path=excluded.anim_path, wrapper_path=excluded.wrapper_path, asset_kind=excluded.asset_kind,
                     destination_relative_folder=excluded.destination_relative_folder, state=excluded.state,
                     error_message=excluded.error_message, timestamp_utc_ticks=excluded.timestamp_utc_ticks
                 """;
-            foreach (var name in new[] { "$root", "$source", "$canonical", "$anim", "$destination", "$state", "$error", "$timestamp" })
+            foreach (var name in new[] { "$root", "$source", "$canonical", "$anim", "$wrapper", "$kind", "$destination", "$state", "$error", "$timestamp" })
                 insert.Parameters.Add(new SqliteParameter(name, DBNull.Value));
             foreach (var (source, sourceOutputs) in outputs)
             foreach (var output in sourceOutputs)
@@ -101,6 +119,8 @@ public sealed class ConversionRegistryCacheService
                 insert.Parameters["$source"].Value = Path.GetFullPath(source);
                 insert.Parameters["$canonical"].Value = output.CanonicalImportPath.Replace('\\', '/');
                 insert.Parameters["$anim"].Value = Path.GetFullPath(output.AnimPath);
+                insert.Parameters["$wrapper"].Value = Path.GetFullPath(output.WrapperAssetPath);
+                insert.Parameters["$kind"].Value = (int)output.AssetKind;
                 insert.Parameters["$destination"].Value = UnityProjectService.NormalizeDestinationRelativeFolder(output.DestinationRelativeFolder);
                 insert.Parameters["$state"].Value = output.State.ToString();
                 insert.Parameters["$error"].Value = output.ErrorMessage is null ? DBNull.Value : output.ErrorMessage;
