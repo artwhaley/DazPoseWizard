@@ -295,7 +295,7 @@ namespace DazPose.UnityValidation
             var newBindings = AnimationUtility.GetCurveBindings(source);
             var newCurves = newBindings.Select(binding => AnimationUtility.GetEditorCurve(source, binding)).ToArray();
             AnimationUtility.SetEditorCurves(destination, newBindings, newCurves);
-            destination.events = source.events;
+            AnimationUtility.SetAnimationEvents(destination, AnimationUtility.GetAnimationEvents(source));
             destination.frameRate = source.frameRate;
             destination.legacy = source.legacy;
             destination.wrapMode = source.wrapMode;
