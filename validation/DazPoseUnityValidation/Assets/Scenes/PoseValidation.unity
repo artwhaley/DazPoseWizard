@@ -6165,6 +6165,7 @@ MonoBehaviour:
   poseA: {fileID: 11400000, guid: c428715ecd67662458a22d5807df2fb4, type: 2}
   poseB: {fileID: 11400000, guid: 7f06352d680590c4b8d282cdb165d3ec, type: 2}
   poseC: {fileID: 11400000, guid: f0d4d3dc2448c374fa2e3c24e03909e5, type: 2}
+  gazeTarget: {fileID: 2093172002}
 --- !u!114 &784435345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6181,6 +6182,7 @@ MonoBehaviour:
   poseA: {fileID: 11400000, guid: c428715ecd67662458a22d5807df2fb4, type: 2}
   poseB: {fileID: 11400000, guid: 7f06352d680590c4b8d282cdb165d3ec, type: 2}
   poseC: {fileID: 11400000, guid: f0d4d3dc2448c374fa2e3c24e03909e5, type: 2}
+  gazeTarget: {fileID: 2093172002}
   transition:
     Duration: 0.7
     Windup: 0
@@ -6315,6 +6317,19 @@ MonoBehaviour:
   - boneName: chestUpper
     fullInhaleLocalRotationDelta: {x: -0.25, y: 0, z: 0}
     fullInhaleLocalPositionDelta: {x: 0, y: 0.0003, z: 0}
+  gazeEnabled: 1
+  gazeAcquireToleranceDegrees: 2
+  headGazeEnabled: 1
+  headGazeWeight: 0.7
+  headGazeResponse: 4
+  headGazeMaxYaw: 40
+  headGazeMaxPitch: 25
+  eyeGazeEnabled: 1
+  eyeGazeWeight: 1
+  eyeGazeResponse: 12
+  eyeGazeMaxYaw: 32
+  eyeGazeMaxPitch: 22
+  gazeReleaseResponse: 4
 --- !u!95 &784435347
 Animator:
   serializedVersion: 7
@@ -6349,7 +6364,7 @@ GameObject:
   - component: {fileID: 1214857865}
   m_Layer: 0
   m_Name: Validation Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6772,6 +6787,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2093172001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2093172002}
+  m_Layer: 0
+  m_Name: Gaze Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2093172002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093172001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.1, y: 1.65, z: 1.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -6780,3 +6826,4 @@ SceneRoots:
   - {fileID: 1880382603}
   - {fileID: 1822648247}
   - {fileID: 1214857866}
+  - {fileID: 2093172002}

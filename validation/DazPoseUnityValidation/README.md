@@ -42,6 +42,14 @@ SuccubusPerformer adds a persistent breathing overlay after the captured base-po
 
 The Performer Pose Smoke Test overlay exposes the master switch, BPM, phase/value, morph and bone switches, and their strengths during Play Mode. Run its acceptance checks with F5 to verify the P0.4 pose behavior with breathing bypassed, then exercise morph-only, bone-only, combined, retarget-isolation, phase-continuity, and awaitable cases. The default torso channels target abdomenLower, abdomenUpper, chestLower, and chestUpper; each inhale rotation/position delta remains editable on SuccubusPerformer.
 
+## Persistent procedural gaze
+
+The performer graph is base-pose capture → breathing → gaze → Animator. `LookAt(Transform)` tracks a live Transform; `LookAt(Vector3)` holds a fixed world point; `ClearGaze()` smoothly reveals the authored head and eye pose. The validation rig resolves `head`, `lEye`, and `rEye` uniquely. At runtime it derives facial forward from the eye midpoint relative to the head, projects performer up onto the facial plane, then transforms that orthogonal basis into each bone's local space. No Unity XYZ axis is assumed.
+
+The default gaze settings are head weight/response/limits 0.7, 4, ±40° yaw, ±25° pitch; eye weight/response/limits 1.0, 12, ±32° yaw, ±22° pitch; release response 4 and acquisition tolerance 2°. Eyes therefore respond faster than the head. Targets are smoothed independently for head and eyes, with left/right eye aim solved independently for near-target convergence. Gaze is added downstream of the captured base pose, so it cannot become the source of a later pose retarget. The effective head target, effective eye target, and preferred head bias are represented before smoothing and solving as the insertion seam reserved for future attention-life behavior.
+
+The validation scene has a root-level empty `Gaze Target` at eye height in front of Lara. Select it in the Hierarchy and move it in the Scene view during Play Mode. The smoke overlay has buttons for this target, the Main Camera, and Clear Gaze, plus gaze/head/eye weights, responses, limits, acquisition tolerance, and live target/status readouts. Run F5 acceptance checks for bone calibration, bypass, eye-only/head-only/combined modes, moving and fixed targets, release, clamping, async supersession/loss, and gaze/pose/breathing independence.
+
 ## Continuing production workflows
 
 - Tools > DAZ Pose > Validate Always-Export Morphs checks configured runtime morphs after refreshing the reference model.

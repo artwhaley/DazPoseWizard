@@ -38,9 +38,25 @@ namespace DazPose.Performer
         [SerializeField, Range(0f, 2f)] private float boneBreathingStrength = 0.3f;
         [SerializeField] private BreathingBoneChannel[] breathingBones = CreateDefaultBreathingBones();
 
+        [Header("Gaze")]
+        [SerializeField] private bool gazeEnabled = true;
+        [SerializeField, Range(0.1f, 10f)] private float gazeAcquireToleranceDegrees = 2f;
+        [SerializeField] private bool headGazeEnabled = true;
+        [SerializeField, Range(0f, 1f)] private float headGazeWeight = 0.7f;
+        [SerializeField, Range(0f, 20f)] private float headGazeResponse = 4f;
+        [SerializeField, Range(0f, 89f)] private float headGazeMaxYaw = 40f;
+        [SerializeField, Range(0f, 89f)] private float headGazeMaxPitch = 25f;
+        [SerializeField] private bool eyeGazeEnabled = true;
+        [SerializeField, Range(0f, 1f)] private float eyeGazeWeight = 1f;
+        [SerializeField, Range(0f, 30f)] private float eyeGazeResponse = 12f;
+        [SerializeField, Range(0f, 89f)] private float eyeGazeMaxYaw = 32f;
+        [SerializeField, Range(0f, 89f)] private float eyeGazeMaxPitch = 22f;
+        [SerializeField, Range(0f, 20f)] private float gazeReleaseResponse = 4f;
+
         private PlayableGraph _graph;
         private PerformerBodyPose _bodyPose;
         private PerformerBreathing _breathing;
+        private PerformerGaze _gaze;
         private PerformerPose _lastDesiredPose;
         private PerformerPose _lastSettledPose;
         private PerformerPoseSnapshot _neutralPoseState;
@@ -71,8 +87,42 @@ namespace DazPose.Performer
         public float BreatheBellyStrength { get => breatheBellyStrength; set => breatheBellyStrength = Mathf.Max(0f, value); }
         public bool BoneBreathingEnabled { get => boneBreathingEnabled; set => boneBreathingEnabled = value; }
         public float BoneBreathingStrength { get => boneBreathingStrength; set => boneBreathingStrength = Mathf.Max(0f, value); }
+        public bool GazeEnabled
+        {
+            get => gazeEnabled;
+            set
+            {
+                if (gazeEnabled == value) return;
+                gazeEnabled = value;
+                _gaze?.Configure(CreateGazeSettings());
+            }
+        }
+        public bool HeadGazeEnabled { get => headGazeEnabled; set => headGazeEnabled = value; }
+        public float HeadGazeWeight { get => headGazeWeight; set => headGazeWeight = Mathf.Clamp01(value); }
+        public float HeadGazeResponse { get => headGazeResponse; set => headGazeResponse = Mathf.Max(0f, value); }
+        public float HeadGazeMaxYaw { get => headGazeMaxYaw; set => headGazeMaxYaw = Mathf.Clamp(value, 0f, 89f); }
+        public float HeadGazeMaxPitch { get => headGazeMaxPitch; set => headGazeMaxPitch = Mathf.Clamp(value, 0f, 89f); }
+        public bool EyeGazeEnabled { get => eyeGazeEnabled; set => eyeGazeEnabled = value; }
+        public float EyeGazeWeight { get => eyeGazeWeight; set => eyeGazeWeight = Mathf.Clamp01(value); }
+        public float EyeGazeResponse { get => eyeGazeResponse; set => eyeGazeResponse = Mathf.Max(0f, value); }
+        public float EyeGazeMaxYaw { get => eyeGazeMaxYaw; set => eyeGazeMaxYaw = Mathf.Clamp(value, 0f, 89f); }
+        public float EyeGazeMaxPitch { get => eyeGazeMaxPitch; set => eyeGazeMaxPitch = Mathf.Clamp(value, 0f, 89f); }
+        public float GazeReleaseResponse { get => gazeReleaseResponse; set => gazeReleaseResponse = Mathf.Max(0f, value); }
+        public float GazeAcquireToleranceDegrees
+        {
+            get => gazeAcquireToleranceDegrees;
+            set => gazeAcquireToleranceDegrees = Mathf.Max(0.1f, value);
+        }
+        public bool HasGazeTarget => _gaze != null && _gaze.HasGazeTarget;
+        public bool IsGazeAcquired => _gaze != null && _gaze.IsGazeAcquired;
+        public float GazeWeight => _gaze == null ? 0f : _gaze.GazeWeight;
+        public string GazeTargetDescription => _gaze == null ? "none" : _gaze.TargetDescription;
+        public Vector3 RawGazeTargetPosition => _gaze == null ? default : _gaze.RawTargetPosition;
+        internal Vector3 EffectiveHeadTargetPosition => _gaze == null ? default : _gaze.EffectiveHeadTargetPosition;
+        internal Vector3 EffectiveEyeTargetPosition => _gaze == null ? default : _gaze.EffectiveEyeTargetPosition;
 
         internal PerformerBreathing BreathingRuntime => _breathing;
+        internal PerformerGaze GazeRuntime => _gaze;
         internal int RuntimePlayableCount => _graph.IsValid() ? _graph.GetPlayableCount() : 0;
 
         private void OnEnable()
@@ -92,6 +142,11 @@ namespace DazPose.Performer
                 _breathing.Configure(CreateBreathingSettings());
                 _breathing.Advance(Time.deltaTime);
                 _lastBreathPhase = _breathing.BreathPhase;
+            }
+            if (_gaze != null)
+            {
+                _gaze.Configure(CreateGazeSettings());
+                _gaze.Advance(Time.deltaTime);
             }
             PublishCurrentPoseState();
             if (request == null || !ReferenceEquals(_activePoseRequest, request)
@@ -131,6 +186,35 @@ namespace DazPose.Performer
             var completion = new AwaitableCompletionSource<PoseCompletion>();
             RequestPose(pose, transition, completion);
             return completion.Awaitable;
+        }
+
+        public void LookAt(Transform target)
+        {
+            RequestGaze(target, null);
+        }
+
+        public void LookAt(Vector3 worldPosition)
+        {
+            RequestGaze(worldPosition, null);
+        }
+
+        public Awaitable<GazeCompletion> LookAtAsync(Transform target)
+        {
+            var completion = new AwaitableCompletionSource<GazeCompletion>();
+            RequestGaze(target, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<GazeCompletion> LookAtAsync(Vector3 worldPosition)
+        {
+            var completion = new AwaitableCompletionSource<GazeCompletion>();
+            RequestGaze(worldPosition, completion);
+            return completion.Awaitable;
+        }
+
+        public void ClearGaze()
+        {
+            _gaze?.ClearGaze();
         }
 
         internal PerformerPoseSnapshot CaptureEvaluatedBasePoseState()
@@ -206,6 +290,20 @@ namespace DazPose.Performer
                 CompleteRequest(supersededRequest, PoseCompletion.Superseded);
         }
 
+        private void RequestGaze(Transform target, AwaitableCompletionSource<GazeCompletion> completion)
+        {
+            if (_gaze == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive gaze commands only while enabled in Play Mode.");
+            _gaze.LookAt(target, completion);
+        }
+
+        private void RequestGaze(Vector3 worldPosition, AwaitableCompletionSource<GazeCompletion> completion)
+        {
+            if (_gaze == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive gaze commands only while enabled in Play Mode.");
+            _gaze.LookAt(worldPosition, completion);
+        }
+
         private void PublishCurrentPoseState()
         {
             if (_bodyPose == null) return;
@@ -252,8 +350,12 @@ namespace DazPose.Performer
                 _breathing.Configure(CreateBreathingSettings());
                 _breathing.Advance(0f);
 
+                _gaze = new PerformerGaze(animator, _graph, _breathing.OutputPlayable);
+                _gaze.Configure(CreateGazeSettings());
+                _gaze.Advance(0f);
+
                 var output = AnimationPlayableOutput.Create(_graph, "Performer Animation", animator);
-                output.SetSourcePlayable(_breathing.OutputPlayable);
+                output.SetSourcePlayable(_gaze.OutputPlayable);
                 _graph.Play();
 
                 var poseToRestore = _hasPoseCommand ? _lastDesiredPose : initialPose;
@@ -282,6 +384,9 @@ namespace DazPose.Performer
             _activePoseRequest = null;
             if (request != null) CompleteRequest(request, PoseCompletion.PerformerDisabled);
 
+            _gaze?.Dispose();
+            _gaze = null;
+
             if (_graph.IsValid()) _graph.Destroy();
             _breathing?.Dispose();
             _breathing = null;
@@ -299,6 +404,16 @@ namespace DazPose.Performer
             boneBreathingStrength = Mathf.Max(0f, boneBreathingStrength);
             if (breathingCurve == null) breathingCurve = CreateDefaultBreathingCurve();
             if (breathingBones == null) breathingBones = CreateDefaultBreathingBones();
+            gazeAcquireToleranceDegrees = Mathf.Max(0.1f, gazeAcquireToleranceDegrees);
+            headGazeWeight = Mathf.Clamp01(headGazeWeight);
+            headGazeResponse = Mathf.Max(0f, headGazeResponse);
+            headGazeMaxYaw = Mathf.Clamp(headGazeMaxYaw, 0f, 89f);
+            headGazeMaxPitch = Mathf.Clamp(headGazeMaxPitch, 0f, 89f);
+            eyeGazeWeight = Mathf.Clamp01(eyeGazeWeight);
+            eyeGazeResponse = Mathf.Max(0f, eyeGazeResponse);
+            eyeGazeMaxYaw = Mathf.Clamp(eyeGazeMaxYaw, 0f, 89f);
+            eyeGazeMaxPitch = Mathf.Clamp(eyeGazeMaxPitch, 0f, 89f);
+            gazeReleaseResponse = Mathf.Max(0f, gazeReleaseResponse);
         }
 
         private PerformerBreathingSettings CreateBreathingSettings()
@@ -314,6 +429,26 @@ namespace DazPose.Performer
                 BreatheBellyStrength = breatheBellyStrength,
                 BoneBreathingEnabled = boneBreathingEnabled,
                 BoneBreathingStrength = boneBreathingStrength
+            };
+        }
+
+        private PerformerGazeSettings CreateGazeSettings()
+        {
+            return new PerformerGazeSettings
+            {
+                GazeEnabled = gazeEnabled,
+                AcquireToleranceDegrees = gazeAcquireToleranceDegrees,
+                HeadEnabled = headGazeEnabled,
+                HeadWeight = headGazeWeight,
+                HeadResponse = headGazeResponse,
+                HeadMaxYaw = headGazeMaxYaw,
+                HeadMaxPitch = headGazeMaxPitch,
+                EyesEnabled = eyeGazeEnabled,
+                EyeWeight = eyeGazeWeight,
+                EyeResponse = eyeGazeResponse,
+                EyeMaxYaw = eyeGazeMaxYaw,
+                EyeMaxPitch = eyeGazeMaxPitch,
+                ReleaseResponse = gazeReleaseResponse
             };
         }
 

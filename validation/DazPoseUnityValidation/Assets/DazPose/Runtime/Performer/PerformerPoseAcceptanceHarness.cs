@@ -18,9 +18,11 @@ namespace DazPose.Performer
         [SerializeField] private PerformerPose poseA = null;
         [SerializeField] private PerformerPose poseB = null;
         [SerializeField] private PerformerPose poseC = null;
+        [SerializeField] private Transform gazeTarget;
 
         private bool _running;
         private bool _awaitableChecksComplete;
+        private Vector3? _gazeTargetPositionBeforeTests;
         public string Status { get; private set; } = "Press F5 to run acceptance checks.";
 
         private void Reset()
@@ -55,11 +57,15 @@ namespace DazPose.Performer
             var placementRoot = transform;
             while (placementRoot.parent != null) placementRoot = placementRoot.parent;
             var startPlacement = CapturePlacement(placementRoot);
+            _gazeTargetPositionBeforeTests = gazeTarget == null ? (Vector3?)null : gazeTarget.position;
             var playableCount = performer.RuntimePlayableCount;
             var originalBreathing = CaptureBreathingSettings();
+            var originalGaze = CaptureGazeSettings();
             performer.BreathingEnabled = false;
             performer.MorphBreathingStrength = 0f;
             performer.BoneBreathingStrength = 0f;
+            performer.GazeEnabled = false;
+            performer.ClearGaze();
             performer.SetBreathPhaseForAcceptance(originalBreathing.Phase);
 
             performer.Pose(poseA, PoseTransition.Snap);
@@ -130,6 +136,23 @@ namespace DazPose.Performer
 
             RestoreBreathingSettings(originalBreathing);
             performer.SetBreathPhaseForAcceptance(originalBreathing.Phase);
+
+            yield return CheckGazeAcceptance(animator, startPlacement, failures);
+
+            _awaitableChecksComplete = false;
+            RunGazeAwaitableChecks(failures);
+            awaitableDeadline = Time.realtimeSinceStartup + 45f;
+            while (!_awaitableChecksComplete && Time.realtimeSinceStartup < awaitableDeadline)
+                yield return null;
+            if (!_awaitableChecksComplete)
+                failures.Add("Gaze awaitable acceptance checks did not finish before the timeout.");
+
+            performer.ClearGaze();
+            yield return WaitForGazeRelease(2f);
+            RestoreGazeSettings(originalGaze);
+            RestoreBreathingSettings(originalBreathing);
+            if (_gazeTargetPositionBeforeTests.HasValue && gazeTarget != null)
+                gazeTarget.position = _gazeTargetPositionBeforeTests.Value;
 
             CheckPlacement("Outer Lara placement", startPlacement, CapturePlacement(placementRoot), failures);
             if (performer.RuntimePlayableCount != playableCount)
@@ -292,6 +315,244 @@ namespace DazPose.Performer
                 failures.Add("Retarget isolation did not exercise both requested morph channels.");
         }
 
+        private IEnumerator CheckGazeAcceptance(Animator animator, PlacementSnapshot startPlacement,
+            List<string> failures)
+        {
+            var gaze = performer.GazeRuntime;
+            if (gaze == null)
+            {
+                failures.Add("PerformerGaze runtime is missing.");
+                yield break;
+            }
+            if (!gaze.IsAvailable)
+            {
+                failures.Add("Canonical Lara gaze bindings failed: " + string.Join(" ", gaze.Diagnostics));
+                yield break;
+            }
+            if (gazeTarget == null)
+            {
+                failures.Add("Assign the scene Gaze Target to the acceptance harness.");
+                yield break;
+            }
+
+            CheckGazeCalibration("head", gaze.HeadCalibration, "head", failures);
+            CheckGazeCalibration("left eye", gaze.LeftEyeCalibration, "lEye", failures);
+            CheckGazeCalibration("right eye", gaze.RightEyeCalibration, "rEye", failures);
+
+            performer.Pose(poseA, PoseTransition.Snap);
+            performer.ClearGaze();
+            performer.GazeEnabled = false;
+            yield return null;
+            var baseGazePose = CaptureGazePose(gaze);
+            var firstTarget = gaze.CreateValidationTarget(18f, 7f, 2.5f);
+            performer.LookAt(firstTarget);
+            for (var frame = 0; frame < 3; frame++) yield return null;
+            CheckGazePose("Master gaze bypass", baseGazePose, CaptureGazePose(gaze), false, false, false, failures);
+            if (!performer.HasGazeTarget)
+                failures.Add("Disabling the gaze development switch erased the semantic target.");
+
+            performer.GazeEnabled = true;
+            performer.HeadGazeEnabled = false;
+            performer.HeadGazeWeight = 0f;
+            performer.EyeGazeEnabled = true;
+            performer.EyeGazeWeight = 1f;
+            yield return WaitForGazeAcquisition(6f, failures, "eye-only target");
+            CheckGazePose("Eye-only mode", baseGazePose, CaptureGazePose(gaze), false, true, true, failures);
+            yield return ReleaseGazeToBase(baseGazePose, gaze, failures, "eye-only release");
+
+            performer.HeadGazeEnabled = true;
+            performer.HeadGazeWeight = 1f;
+            performer.EyeGazeEnabled = true;
+            performer.EyeGazeWeight = 0f;
+            performer.LookAt(gaze.CreateValidationTarget(-27f, 8f, 2.5f));
+            yield return WaitForGazeAcquisition(6f, failures, "head-only target");
+            CheckGazePose("Head-only mode", baseGazePose, CaptureGazePose(gaze), true, false, false, failures);
+            yield return ReleaseGazeToBase(baseGazePose, gaze, failures, "head-only release");
+
+            performer.HeadGazeEnabled = true;
+            performer.HeadGazeWeight = 0.7f;
+            performer.EyeGazeEnabled = true;
+            performer.EyeGazeWeight = 1f;
+            performer.LookAt(gaze.CreateValidationTarget(25f, -9f, 2.5f));
+            yield return WaitForGazeAcquisition(6f, failures, "combined head and eye target");
+            CheckGazePose("Combined gaze", baseGazePose, CaptureGazePose(gaze), true, true, true, failures);
+
+            var movingTargetStart = gaze.CreateValidationTarget(-20f, 2f, 2.5f);
+            gazeTarget.position = movingTargetStart;
+            performer.LookAt(gazeTarget);
+            yield return WaitForGazeAcquisition(6f, failures, "moving Transform target");
+            var previousSmoothedDirection = gaze.SmoothedHeadAimDirection;
+            var movingTargetEnd = gaze.CreateValidationTarget(38f, 14f, 2.5f);
+            gazeTarget.position = movingTargetEnd;
+            var errorBeforeMove = Vector3.Angle(previousSmoothedDirection,
+                (movingTargetEnd - gaze.HeadCalibration.Bone.position).normalized);
+            for (var frame = 0; frame < 18; frame++) yield return null;
+            var errorAfterMove = Vector3.Angle(gaze.SmoothedHeadAimDirection,
+                (movingTargetEnd - gaze.HeadCalibration.Bone.position).normalized);
+            if (Vector3.Distance(performer.RawGazeTargetPosition, movingTargetEnd) > 1e-4f
+                || errorAfterMove >= errorBeforeMove - 0.5f)
+                failures.Add("The persistent Transform gaze did not follow its moved target through the smoothed head aim.");
+
+            var fixedPoint = gaze.CreateValidationTarget(-12f, 5f, 2.2f);
+            performer.LookAt(fixedPoint);
+            yield return WaitForGazeAcquisition(6f, failures, "fixed world target");
+            gazeTarget.position = gaze.CreateValidationTarget(45f, -10f, 2.5f);
+            for (var frame = 0; frame < 4; frame++) yield return null;
+            if (Vector3.Distance(performer.RawGazeTargetPosition, fixedPoint) > 1e-5f)
+                failures.Add("LookAt(Vector3) changed when an unrelated Transform moved.");
+
+            performer.GazeEnabled = false;
+            yield return null;
+            CheckGazePose("Master bypass with an active target", baseGazePose,
+                CaptureGazePose(gaze), false, false, false, failures);
+            if (!performer.HasGazeTarget)
+                failures.Add("The master gaze switch cleared a persistent target.");
+
+            performer.GazeEnabled = true;
+            performer.ClearGaze();
+            yield return WaitForGazeRelease(3f);
+            if (performer.GazeWeight > 0.01f)
+                failures.Add("ClearGaze did not release gaze influence to zero.");
+            CheckGazePose("ClearGaze returns to authored pose", baseGazePose,
+                CaptureGazePose(gaze), false, false, false, failures);
+
+            var farTarget = gaze.CreateValidationTarget(165f, 18f, 3f);
+            var requestedHeadDirection = (farTarget - gaze.HeadCalibration.Bone.position).normalized;
+            var headAim = (gaze.HeadCalibration.Bone.rotation * gaze.HeadCalibration.LocalAim).normalized;
+            var headUp = (gaze.HeadCalibration.Bone.rotation * gaze.HeadCalibration.LocalUp).normalized;
+            var headRight = Vector3.Cross(headUp, headAim).normalized;
+            headUp = Vector3.Cross(headAim, headRight).normalized;
+            var rawHeadYaw = Mathf.Atan2(Vector3.Dot(requestedHeadDirection, headRight),
+                Vector3.Dot(requestedHeadDirection, headAim)) * Mathf.Rad2Deg;
+            var clampedHeadAngles = PerformerGazeJob.ClampAimAngles(headAim, headRight, headUp,
+                requestedHeadDirection, performer.HeadGazeMaxYaw, performer.HeadGazeMaxPitch);
+            if (Mathf.Abs(rawHeadYaw) <= performer.HeadGazeMaxYaw
+                || Mathf.Abs(clampedHeadAngles.x) > performer.HeadGazeMaxYaw + 0.01f
+                || Mathf.Abs(clampedHeadAngles.y) > performer.HeadGazeMaxPitch + 0.01f)
+                failures.Add("Behind-target head yaw/pitch did not clamp to the configured anatomical limits.");
+            performer.LookAt(farTarget);
+            yield return WaitForGazeAcquisition(8f, failures, "behind-the-performer target");
+            CheckPlacement("Gaze limits must preserve outer performer placement", startPlacement,
+                CapturePlacement(transform.root), failures);
+
+            var beforePhase = performer.BreathPhase;
+            var breathingWasEnabled = performer.BreathingEnabled;
+            performer.BreathingEnabled = true;
+            performer.LookAt(gaze.CreateValidationTarget(8f, 2f, 2.5f));
+            for (var frame = 0; frame < 12; frame++) yield return null;
+            if (Mathf.Repeat(performer.BreathPhase - beforePhase, 1f) <= 0.001f)
+                failures.Add("Breathing phase did not continue while gaze was active.");
+            performer.BreathingEnabled = breathingWasEnabled;
+
+            performer.Pose(poseA, PoseTransition.Snap);
+            performer.LookAt(gaze.CreateValidationTarget(-10f, 4f, 2.5f));
+            yield return WaitForGazeAcquisition(6f, failures, "gaze before pose retarget");
+            performer.Pose(poseB, PoseTransition.Smooth(1.2f));
+            var deadline = Time.realtimeSinceStartup + 4f;
+            while (performer.IsTransitioning && performer.TransitionProgress < 0.38f
+                   && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            if (!performer.IsTransitioning || performer.TransitionProgress < 0.38f)
+                failures.Add("Gaze/base-state isolation setup did not reach the pose interruption point.");
+            else
+            {
+                var capturedBase = performer.CaptureEvaluatedBasePoseState();
+                var targetBeforeRetarget = performer.GazeTargetDescription;
+                performer.Pose(poseC, new PoseTransition(0.45f, 0.06f, 0.08f,
+                    AnimationCurve.EaseInOut(0f, 0f, 1f, 1f)));
+                CheckPose("Gaze must not contaminate the base transition source",
+                    ToPoseSnapshot(capturedBase), ToPoseSnapshot(performer.CaptureTransitionSourcePoseState()), failures);
+                if (!performer.HasGazeTarget || performer.GazeTargetDescription != targetBeforeRetarget)
+                    failures.Add("Pose retargeting replaced the persistent gaze intention.");
+                yield return WaitForSettlement(6f, failures, "gaze-active pose retarget");
+            }
+
+            performer.ClearGaze();
+            yield return WaitForGazeRelease(3f);
+            performer.Pose(poseA, PoseTransition.Snap);
+            yield return null;
+        }
+
+        private IEnumerator ReleaseGazeToBase(GazePoseSnapshot basePose, PerformerGaze gaze,
+            List<string> failures, string description)
+        {
+            performer.ClearGaze();
+            yield return WaitForGazeRelease(3f);
+            if (performer.GazeWeight > 0.01f)
+                failures.Add(description + " did not reach zero gaze weight.");
+            CheckGazePose(description, basePose, CaptureGazePose(gaze), false, false, false, failures);
+        }
+
+        private IEnumerator WaitForGazeAcquisition(float timeoutSeconds, List<string> failures,
+            string description)
+        {
+            var deadline = Time.realtimeSinceStartup + timeoutSeconds;
+            while (performer.HasGazeTarget && !performer.IsGazeAcquired
+                   && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            if (!performer.HasGazeTarget || !performer.IsGazeAcquired)
+                failures.Add(description + " did not acquire before the timeout.");
+        }
+
+        private IEnumerator WaitForGazeRelease(float timeoutSeconds)
+        {
+            var deadline = Time.realtimeSinceStartup + timeoutSeconds;
+            while (performer.GazeWeight > 0.01f && Time.realtimeSinceStartup < deadline)
+                yield return null;
+        }
+
+        private static GazePoseSnapshot CaptureGazePose(PerformerGaze gaze)
+        {
+            return new GazePoseSnapshot(gaze.HeadCalibration.Bone.localRotation,
+                gaze.LeftEyeCalibration.Bone.localRotation, gaze.RightEyeCalibration.Bone.localRotation);
+        }
+
+        private static void CheckGazePose(string description, GazePoseSnapshot expected,
+            GazePoseSnapshot actual, bool headShouldMove, bool leftEyeShouldMove,
+            bool rightEyeShouldMove, List<string> failures)
+        {
+            CheckGazeRotation(description, "head", expected.Head, actual.Head, headShouldMove, failures);
+            CheckGazeRotation(description, "left eye", expected.LeftEye, actual.LeftEye, leftEyeShouldMove, failures);
+            CheckGazeRotation(description, "right eye", expected.RightEye, actual.RightEye, rightEyeShouldMove, failures);
+        }
+
+        private static void CheckGazeRotation(string description, string semanticName,
+            Quaternion expected, Quaternion actual, bool shouldMove, List<string> failures)
+        {
+            var difference = Quaternion.Angle(expected, actual);
+            if (shouldMove && difference <= RotationToleranceDegrees)
+                failures.Add(description + " did not rotate the " + semanticName + ".");
+            if (!shouldMove && difference > RotationToleranceDegrees)
+                failures.Add(description + " changed the " + semanticName + " without a gaze contribution.");
+        }
+
+        private static void CheckGazeCalibration(string semanticName,
+            PerformerGazeBoneCalibration calibration, string expectedBoneName, List<string> failures)
+        {
+            if (calibration.Bone == null || calibration.Bone.name != expectedBoneName)
+            {
+                failures.Add("The " + semanticName + " gaze bone did not resolve to exact transform '"
+                             + expectedBoneName + "'.");
+                return;
+            }
+
+            if (!IsFinite(calibration.LocalAim) || !IsFinite(calibration.LocalUp)
+                || !IsFinite(calibration.LocalRight) || Mathf.Abs(calibration.LocalAim.magnitude - 1f) > 0.001f
+                || Mathf.Abs(calibration.LocalUp.magnitude - 1f) > 0.001f
+                || Mathf.Abs(calibration.LocalRight.magnitude - 1f) > 0.001f
+                || Mathf.Abs(Vector3.Dot(calibration.LocalAim, calibration.LocalUp)) > 0.001f
+                || Mathf.Abs(Vector3.Dot(calibration.LocalAim, calibration.LocalRight)) > 0.001f
+                || Mathf.Abs(Vector3.Dot(calibration.LocalUp, calibration.LocalRight)) > 0.001f)
+                failures.Add("The " + semanticName + " calibrated anatomical aim basis is invalid.");
+        }
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return !float.IsNaN(value.x) && !float.IsInfinity(value.x)
+                   && !float.IsNaN(value.y) && !float.IsInfinity(value.y)
+                   && !float.IsNaN(value.z) && !float.IsInfinity(value.z);
+        }
+
         private async void RunBreathingAwaitableChecks(List<string> failures)
         {
             try
@@ -344,6 +605,280 @@ namespace DazPose.Performer
             {
                 _awaitableChecksComplete = true;
             }
+        }
+
+        private async void RunGazeAwaitableChecks(List<string> failures)
+        {
+            var originalSettings = CaptureGazeSettings();
+            GameObject targetA = null;
+            GameObject targetB = null;
+            GameObject lostTarget = null;
+            try
+            {
+                var gaze = performer.GazeRuntime;
+                if (gaze == null || !gaze.IsAvailable)
+                {
+                    failures.Add("Gaze awaitable checks require a successfully initialized PerformerGaze runtime.");
+                    return;
+                }
+
+                performer.GazeEnabled = true;
+                performer.HeadGazeEnabled = true;
+                performer.EyeGazeEnabled = true;
+                performer.HeadGazeWeight = 0.7f;
+                performer.EyeGazeWeight = 1f;
+                performer.HeadGazeResponse = 4f;
+                performer.EyeGazeResponse = 12f;
+                performer.GazeAcquireToleranceDegrees = 3f;
+                performer.GazeReleaseResponse = 20f;
+                targetA = new GameObject("Gaze Acceptance Target A");
+                targetB = new GameObject("Gaze Acceptance Target B");
+                targetA.transform.position = gaze.CreateValidationTarget(15f, 5f, 2.5f);
+                targetB.transform.position = gaze.CreateValidationTarget(-35f, 10f, 2.5f);
+
+                performer.Pose(poseA, PoseTransition.Snap);
+                var firstSameTarget = StartGazeRequest(targetA.transform);
+                await Awaitable.NextFrameAsync();
+                var generationBeforeDuplicate = gaze.IntentionGeneration;
+                var secondSameTarget = StartGazeRequest(targetA.transform);
+                if (gaze.IntentionGeneration != generationBeforeDuplicate)
+                    failures.Add("A second same-Transform waiter restarted gaze acquisition.");
+                await WaitForGazeCompletionObservation(firstSameTarget, 8f, failures,
+                    "first same-target gaze waiter");
+                await WaitForGazeCompletionObservation(secondSameTarget, 8f, failures,
+                    "second same-target gaze waiter");
+                if (firstSameTarget.Result != GazeCompletion.Acquired
+                    || secondSameTarget.Result != GazeCompletion.Acquired)
+                    failures.Add("Same-target gaze waiters did not both complete as Acquired.");
+
+                var generationBeforeMovedDuplicate = gaze.IntentionGeneration;
+                targetA.transform.position = gaze.CreateValidationTarget(-48f, 12f, 2.5f);
+                var movedSameTarget = StartGazeRequest(targetA.transform);
+                if (movedSameTarget.Completed || gaze.IntentionGeneration != generationBeforeMovedDuplicate)
+                    failures.Add("A moved but semantically identical target restarted gaze or reported stale acquisition.");
+                await WaitForGazeCompletionObservation(movedSameTarget, 8f, failures,
+                    "same target after its Transform moved");
+                if (movedSameTarget.Result != GazeCompletion.Acquired)
+                    failures.Add("A same-Transform waiter did not reacquire after the target moved.");
+
+                performer.ClearGaze();
+                await WaitForGazeReleaseAsync(3f);
+                performer.HeadGazeResponse = 0.1f;
+                performer.EyeGazeResponse = 0.1f;
+                performer.GazeAcquireToleranceDegrees = 0.1f;
+                targetA.transform.position = gaze.CreateValidationTarget(78f, -12f, 3f);
+                targetB.transform.position = gaze.CreateValidationTarget(-70f, 16f, 3f);
+                var superseded = StartGazeRequest(targetA.transform);
+                await Awaitable.NextFrameAsync();
+                var headBeforeRetarget = gaze.HeadCalibration.Bone.localRotation;
+                var leftEyeBeforeRetarget = gaze.LeftEyeCalibration.Bone.localRotation;
+                var rightEyeBeforeRetarget = gaze.RightEyeCalibration.Bone.localRotation;
+                performer.LookAt(targetB.transform);
+                if (!superseded.Completed || superseded.Result != GazeCompletion.Superseded)
+                    failures.Add("A replaced pending gaze request did not complete as Superseded immediately.");
+                CheckGazeRotation("Gaze retarget continuity", "head", headBeforeRetarget,
+                    gaze.HeadCalibration.Bone.localRotation, false, failures);
+                CheckGazeRotation("Gaze retarget continuity", "left eye", leftEyeBeforeRetarget,
+                    gaze.LeftEyeCalibration.Bone.localRotation, false, failures);
+                CheckGazeRotation("Gaze retarget continuity", "right eye", rightEyeBeforeRetarget,
+                    gaze.RightEyeCalibration.Bone.localRotation, false, failures);
+                var retargetWaiter = StartGazeRequest(targetB.transform);
+                performer.HeadGazeResponse = 12f;
+                performer.EyeGazeResponse = 20f;
+                await WaitForGazeCompletionObservation(retargetWaiter, 8f, failures,
+                    "latest gaze target after supersession");
+                if (retargetWaiter.Result != GazeCompletion.Acquired)
+                    failures.Add("The latest gaze target did not acquire after superseding the first target.");
+
+                performer.ClearGaze();
+                await WaitForGazeReleaseAsync(3f);
+                performer.HeadGazeResponse = 0.1f;
+                performer.EyeGazeResponse = 0.1f;
+                targetA.transform.position = gaze.CreateValidationTarget(100f, 0f, 3f);
+                var clearedDuringAcquisition = StartGazeRequest(targetA.transform);
+                await Awaitable.NextFrameAsync();
+                performer.ClearGaze();
+                if (!clearedDuringAcquisition.Completed
+                    || clearedDuringAcquisition.Result != GazeCompletion.Superseded)
+                    failures.Add("ClearGaze during acquisition did not supersede the pending waiter.");
+                await WaitForGazeReleaseAsync(3f);
+
+                lostTarget = new GameObject("Gaze Acceptance Lost Target");
+                lostTarget.transform.position = gaze.CreateValidationTarget(-100f, 0f, 3f);
+                var targetLost = StartGazeRequest(lostTarget.transform);
+                await Awaitable.NextFrameAsync();
+                Destroy(lostTarget);
+                await WaitForGazeCompletionObservation(targetLost, 4f, failures,
+                    "destroyed Transform gaze target");
+                if (targetLost.Result != GazeCompletion.TargetLost || performer.HasGazeTarget)
+                    failures.Add("A destroyed gaze Transform did not resolve as TargetLost and release the intention.");
+                await WaitForGazeReleaseAsync(3f);
+                lostTarget = null;
+
+                performer.HeadGazeResponse = 20f;
+                performer.EyeGazeResponse = 30f;
+                performer.GazeAcquireToleranceDegrees = 8f;
+                var fixedPoint = gaze.CreateValidationTarget(5f, 2f, 2.5f);
+                var fixedAwaiter = StartGazeRequest(fixedPoint);
+                await WaitForGazeCompletionObservation(fixedAwaiter, 5f, failures,
+                    "fixed world point gaze waiter");
+                if (fixedAwaiter.Result != GazeCompletion.Acquired)
+                    failures.Add("LookAtAsync(Vector3) did not complete as Acquired.");
+
+                performer.ClearGaze();
+                await WaitForGazeReleaseAsync(3f);
+                performer.HeadGazeResponse = 20f;
+                performer.EyeGazeResponse = 30f;
+                performer.GazeAcquireToleranceDegrees = 8f;
+                var constrainedWaiter = StartGazeRequest(gaze.CreateValidationTarget(145f, 12f, 2.5f));
+                await WaitForGazeCompletionObservation(constrainedWaiter, 5f, failures,
+                    "async gaze toward a target beyond anatomical limits");
+                if (constrainedWaiter.Result != GazeCompletion.Acquired)
+                    failures.Add("LookAtAsync did not complete Acquired for a target beyond anatomical limits.");
+
+                performer.ClearGaze();
+                await WaitForGazeReleaseAsync(3f);
+                performer.HeadGazeResponse = 0.1f;
+                performer.EyeGazeResponse = 0.1f;
+                performer.GazeAcquireToleranceDegrees = 0.1f;
+                var slowGaze = StartGazeRequest(gaze.CreateValidationTarget(145f, 10f, 3f));
+                await Awaitable.NextFrameAsync();
+                var poseWhileGazeAcquires = StartPoseRequest(poseB, PoseTransition.Smooth(0.15f));
+                await WaitForCompletionObservation(poseWhileGazeAcquires, 4f, failures,
+                    "PoseAsync while gaze is still acquiring");
+                if (poseWhileGazeAcquires.Result != PoseCompletion.Settled || performer.SettledPose != poseB)
+                    failures.Add("PoseAsync did not settle independently while gaze was acquiring.");
+                if (slowGaze.Completed)
+                    failures.Add("LookAtAsync completed before its slow, out-of-range gaze solution settled.");
+                performer.ClearGaze();
+                if (!slowGaze.Completed || slowGaze.Result != GazeCompletion.Superseded)
+                    failures.Add("Clearing a slow pending gaze did not complete its waiter as Superseded.");
+                await WaitForGazeReleaseAsync(3f);
+
+                performer.HeadGazeResponse = 20f;
+                performer.EyeGazeResponse = 30f;
+                performer.GazeAcquireToleranceDegrees = 10f;
+                performer.Pose(poseA, PoseTransition.Snap);
+                var poseInProgress = StartPoseRequest(poseB, PoseTransition.Smooth(2f));
+                await Awaitable.NextFrameAsync();
+                targetA.transform.position = gaze.CreateValidationTarget(4f, 1f, 2.5f);
+                targetB.transform.position = gaze.CreateValidationTarget(-28f, 8f, 2.8f);
+                var gazeDuringPose = StartGazeRequest(targetA.transform);
+                await WaitForGazeCompletionObservation(gazeDuringPose, 3f, failures,
+                    "LookAtAsync while a body pose transition is active");
+                if (gazeDuringPose.Result != GazeCompletion.Acquired || !performer.IsTransitioning)
+                    failures.Add("LookAtAsync was coupled to pose settlement instead of gaze acquisition.");
+                var gazeRetargetedDuringPose = StartGazeRequest(targetB.transform);
+                if (!performer.IsTransitioning)
+                    failures.Add("The body pose transition settled before a second gaze target could be issued.");
+                await WaitForGazeCompletionObservation(gazeRetargetedDuringPose, 3f, failures,
+                    "gaze retarget during a body pose transition");
+                if (gazeRetargetedDuringPose.Result != GazeCompletion.Acquired || !performer.IsTransitioning)
+                    failures.Add("Gaze could not retarget and acquire independently while the body pose transition continued.");
+                await WaitForCompletionObservation(poseInProgress, 5f, failures,
+                    "PoseAsync while gaze remains active");
+                if (poseInProgress.Result != PoseCompletion.Settled)
+                    failures.Add("PoseAsync did not settle while persistent gaze remained active.");
+
+                performer.ClearGaze();
+                await WaitForGazeReleaseAsync(3f);
+                performer.HeadGazeResponse = 0.1f;
+                performer.EyeGazeResponse = 0.1f;
+                performer.GazeAcquireToleranceDegrees = 0.1f;
+                var pendingOnDisable = StartGazeRequest(gaze.CreateValidationTarget(130f, -15f, 3f));
+                await Awaitable.NextFrameAsync();
+                if (pendingOnDisable.Completed)
+                    failures.Add("The lifecycle test target acquired before the performer-disable check.");
+                performer.enabled = false;
+                if (!pendingOnDisable.Completed || pendingOnDisable.Result != GazeCompletion.PerformerDisabled)
+                    failures.Add("Disabling the performer did not complete the pending gaze waiter as PerformerDisabled.");
+                performer.enabled = true;
+                await Awaitable.NextFrameAsync();
+            }
+            catch (Exception exception)
+            {
+                failures.Add("Gaze awaitable checks threw " + exception.GetType().Name + ": " + exception.Message);
+            }
+            finally
+            {
+                if (!performer.enabled) performer.enabled = true;
+                if (targetA != null) Destroy(targetA);
+                if (targetB != null) Destroy(targetB);
+                if (lostTarget != null) Destroy(lostTarget);
+                RestoreGazeSettings(originalSettings);
+                _awaitableChecksComplete = true;
+            }
+        }
+
+        private GazeCompletionObservation StartGazeRequest(Transform target)
+        {
+            var observation = new GazeCompletionObservation();
+            ObserveGazeRequest(observation, target);
+            return observation;
+        }
+
+        private GazeCompletionObservation StartGazeRequest(Vector3 worldPosition)
+        {
+            var observation = new GazeCompletionObservation();
+            ObserveGazeRequest(observation, worldPosition);
+            return observation;
+        }
+
+        private async void ObserveGazeRequest(GazeCompletionObservation observation, Transform target)
+        {
+            try
+            {
+                observation.Result = await performer.LookAtAsync(target);
+            }
+            catch (Exception exception)
+            {
+                observation.Error = exception;
+            }
+            finally
+            {
+                observation.Completed = true;
+            }
+        }
+
+        private async void ObserveGazeRequest(GazeCompletionObservation observation, Vector3 worldPosition)
+        {
+            try
+            {
+                observation.Result = await performer.LookAtAsync(worldPosition);
+            }
+            catch (Exception exception)
+            {
+                observation.Error = exception;
+            }
+            finally
+            {
+                observation.Completed = true;
+            }
+        }
+
+        private static async Awaitable WaitForGazeCompletionObservation(
+            GazeCompletionObservation observation, float timeoutSeconds, List<string> failures,
+            string description)
+        {
+            var deadline = Time.realtimeSinceStartup + timeoutSeconds;
+            while (!observation.Completed && Time.realtimeSinceStartup < deadline)
+                await Awaitable.NextFrameAsync();
+            if (!observation.Completed)
+            {
+                failures.Add(description + " did not resolve before the timeout.");
+                return;
+            }
+            if (observation.Error != null)
+                failures.Add(description + " threw " + observation.Error.GetType().Name + ": " + observation.Error.Message);
+        }
+
+        private async Awaitable WaitForGazeReleaseAsync(float timeoutSeconds)
+        {
+            var deadline = Time.realtimeSinceStartup + timeoutSeconds;
+            while (performer.GazeWeight > 0.01f && Time.realtimeSinceStartup < deadline)
+                await Awaitable.NextFrameAsync();
+            if (performer.GazeWeight > 0.01f)
+                throw new TimeoutException("Gaze influence did not release before the timeout.");
         }
 
         private static float[] CaptureMorphContributions(
@@ -489,6 +1024,33 @@ namespace DazPose.Performer
                 performer.BoneBreathingEnabled, performer.BoneBreathingStrength, performer.BreathPhase);
         }
 
+        private GazeHarnessSettings CaptureGazeSettings()
+        {
+            return new GazeHarnessSettings(performer.GazeEnabled,
+                performer.GazeAcquireToleranceDegrees, performer.HeadGazeEnabled,
+                performer.HeadGazeWeight, performer.HeadGazeResponse, performer.HeadGazeMaxYaw,
+                performer.HeadGazeMaxPitch, performer.EyeGazeEnabled, performer.EyeGazeWeight,
+                performer.EyeGazeResponse, performer.EyeGazeMaxYaw, performer.EyeGazeMaxPitch,
+                performer.GazeReleaseResponse);
+        }
+
+        private void RestoreGazeSettings(GazeHarnessSettings settings)
+        {
+            performer.GazeEnabled = settings.GazeEnabled;
+            performer.GazeAcquireToleranceDegrees = settings.AcquireToleranceDegrees;
+            performer.HeadGazeEnabled = settings.HeadEnabled;
+            performer.HeadGazeWeight = settings.HeadWeight;
+            performer.HeadGazeResponse = settings.HeadResponse;
+            performer.HeadGazeMaxYaw = settings.HeadMaxYaw;
+            performer.HeadGazeMaxPitch = settings.HeadMaxPitch;
+            performer.EyeGazeEnabled = settings.EyesEnabled;
+            performer.EyeGazeWeight = settings.EyeWeight;
+            performer.EyeGazeResponse = settings.EyeResponse;
+            performer.EyeGazeMaxYaw = settings.EyeMaxYaw;
+            performer.EyeGazeMaxPitch = settings.EyeMaxPitch;
+            performer.GazeReleaseResponse = settings.ReleaseResponse;
+        }
+
         private void RestoreBreathingSettings(BreathingHarnessSettings settings)
         {
             performer.BreathingEnabled = settings.BreathingEnabled;
@@ -626,6 +1188,13 @@ namespace DazPose.Performer
             public PoseCompletion Result;
             public Exception Error;
             public Action<PoseCompletion> OnCompleted;
+        }
+
+        private sealed class GazeCompletionObservation
+        {
+            public bool Completed;
+            public GazeCompletion Result;
+            public Exception Error;
         }
 
         private IEnumerator InterruptAtProgress(PerformerPose start, PerformerPose middle, PerformerPose target,
@@ -821,7 +1390,7 @@ namespace DazPose.Performer
             Status = failures.Count == 0 ? "Acceptance checks passed."
                 : "Acceptance checks found " + failures.Count + " issue(s). See Console.";
             if (failures.Count == 0)
-                Debug.Log("Performer checks passed: pose endpoints, windup/overshoot, retarget continuity, awaitable completion, morph/bone breathing modes, shared phase, base-state isolation, graph lifecycle, and root placement.", this);
+                Debug.Log("Performer checks passed: pose endpoints, windup/overshoot, pose awaitables, breathing modes, gaze calibration/modes/limits, gaze target tracking, gaze awaitables, base-state isolation, graph lifecycle, and root placement.", this);
             else
                 Debug.LogError("Performer pose checks failed:\n- " + string.Join("\n- ", failures), this);
         }
@@ -849,6 +1418,57 @@ namespace DazPose.Performer
                 BoneBreathingEnabled = boneBreathingEnabled;
                 BoneBreathingStrength = boneBreathingStrength;
                 Phase = phase;
+            }
+        }
+
+        private readonly struct GazeHarnessSettings
+        {
+            public readonly bool GazeEnabled;
+            public readonly float AcquireToleranceDegrees;
+            public readonly bool HeadEnabled;
+            public readonly float HeadWeight;
+            public readonly float HeadResponse;
+            public readonly float HeadMaxYaw;
+            public readonly float HeadMaxPitch;
+            public readonly bool EyesEnabled;
+            public readonly float EyeWeight;
+            public readonly float EyeResponse;
+            public readonly float EyeMaxYaw;
+            public readonly float EyeMaxPitch;
+            public readonly float ReleaseResponse;
+
+            public GazeHarnessSettings(bool gazeEnabled, float acquireToleranceDegrees,
+                bool headEnabled, float headWeight, float headResponse, float headMaxYaw,
+                float headMaxPitch, bool eyesEnabled, float eyeWeight, float eyeResponse,
+                float eyeMaxYaw, float eyeMaxPitch, float releaseResponse)
+            {
+                GazeEnabled = gazeEnabled;
+                AcquireToleranceDegrees = acquireToleranceDegrees;
+                HeadEnabled = headEnabled;
+                HeadWeight = headWeight;
+                HeadResponse = headResponse;
+                HeadMaxYaw = headMaxYaw;
+                HeadMaxPitch = headMaxPitch;
+                EyesEnabled = eyesEnabled;
+                EyeWeight = eyeWeight;
+                EyeResponse = eyeResponse;
+                EyeMaxYaw = eyeMaxYaw;
+                EyeMaxPitch = eyeMaxPitch;
+                ReleaseResponse = releaseResponse;
+            }
+        }
+
+        private readonly struct GazePoseSnapshot
+        {
+            public readonly Quaternion Head;
+            public readonly Quaternion LeftEye;
+            public readonly Quaternion RightEye;
+
+            public GazePoseSnapshot(Quaternion head, Quaternion leftEye, Quaternion rightEye)
+            {
+                Head = head;
+                LeftEye = leftEye;
+                RightEye = rightEye;
             }
         }
 
