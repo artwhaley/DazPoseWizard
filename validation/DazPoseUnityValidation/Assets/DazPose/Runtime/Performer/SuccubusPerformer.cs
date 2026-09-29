@@ -29,7 +29,7 @@ namespace DazPose.Performer
 
         [Header("Morph Breathing")]
         [SerializeField] private bool morphBreathingEnabled = true;
-        [SerializeField, Range(0f, 2f)] private float morphBreathingStrength = 0.25f;
+        [SerializeField, Range(0f, 3f)] private float morphBreathingStrength = 0.25f;
         [SerializeField, Range(0f, 2f)] private float breatheStrength = 1f;
         [SerializeField, Range(0f, 2f)] private float breatheBellyStrength = 0.7f;
 

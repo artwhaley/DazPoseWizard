@@ -59,7 +59,7 @@ namespace DazPose.Performer
             GUILayout.Label("Morph Breathing");
             performer.MorphBreathingEnabled = GUILayout.Toggle(
                 performer.MorphBreathingEnabled, "Morph breathing enabled");
-            DrawSlider("Morph strength", performer.MorphBreathingStrength, 0f, 2f,
+            DrawSlider("Morph strength", performer.MorphBreathingStrength, 0f, 3f,
                 value => performer.MorphBreathingStrength = value);
             DrawSlider("Breathe strength", performer.BreatheStrength, 0f, 2f,
                 value => performer.BreatheStrength = value);
