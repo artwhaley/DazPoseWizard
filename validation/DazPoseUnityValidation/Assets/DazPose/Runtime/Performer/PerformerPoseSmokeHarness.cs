@@ -29,7 +29,7 @@ namespace DazPose.Performer
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(12f, 12f, 290f, 190f), "Performer Pose Smoke Test", GUI.skin.window);
+            GUILayout.BeginArea(new Rect(12f, 12f, 360f, 470f), "Performer Pose Smoke Test", GUI.skin.window);
             GUILayout.Label("1 / 2 / 3 also selects these persistent poses.");
             DrawPoseButton("Pose A", poseA);
             DrawPoseButton("Pose B", poseB);
@@ -38,6 +38,7 @@ namespace DazPose.Performer
 
             if (performer != null)
             {
+                DrawBreathingControls();
                 var desired = performer.DesiredPose == null ? "none" : performer.DesiredPose.name;
                 GUILayout.Label("Desired: " + desired + (performer.IsTransitioning
                     ? "  " + (performer.TransitionProgress * 100f).ToString("F0") + "%"
@@ -45,6 +46,42 @@ namespace DazPose.Performer
             }
             if (acceptanceHarness != null) GUILayout.Label(acceptanceHarness.Status);
             GUILayout.EndArea();
+        }
+
+        private void DrawBreathingControls()
+        {
+            performer.BreathingEnabled = GUILayout.Toggle(performer.BreathingEnabled, "Breathing Enabled");
+            DrawSlider("Breaths per minute", performer.BreathsPerMinute, 3f, 24f,
+                value => performer.BreathsPerMinute = value);
+            GUILayout.Label("Breath phase " + performer.BreathPhase.ToString("F2")
+                            + "    value " + performer.BreathValue.ToString("F2"));
+
+            GUILayout.Label("Morph Breathing");
+            performer.MorphBreathingEnabled = GUILayout.Toggle(
+                performer.MorphBreathingEnabled, "Morph breathing enabled");
+            DrawSlider("Morph strength", performer.MorphBreathingStrength, 0f, 2f,
+                value => performer.MorphBreathingStrength = value);
+            DrawSlider("Breathe strength", performer.BreatheStrength, 0f, 2f,
+                value => performer.BreatheStrength = value);
+            DrawSlider("BreatheBelly strength", performer.BreatheBellyStrength, 0f, 2f,
+                value => performer.BreatheBellyStrength = value);
+
+            GUILayout.Label("Bone Breathing");
+            performer.BoneBreathingEnabled = GUILayout.Toggle(
+                performer.BoneBreathingEnabled, "Bone breathing enabled");
+            DrawSlider("Bone strength", performer.BoneBreathingStrength, 0f, 2f,
+                value => performer.BoneBreathingStrength = value);
+        }
+
+        private static void DrawSlider(string label, float current, float minimum, float maximum,
+            System.Action<float> update)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(label, GUILayout.Width(150f));
+            var value = GUILayout.HorizontalSlider(current, minimum, maximum);
+            GUILayout.Label(value.ToString("F2"), GUILayout.Width(42f));
+            GUILayout.EndHorizontal();
+            if (Mathf.Abs(value - current) > 0.0001f) update(value);
         }
 
         private void DrawPoseButton(string label, PerformerPose pose)

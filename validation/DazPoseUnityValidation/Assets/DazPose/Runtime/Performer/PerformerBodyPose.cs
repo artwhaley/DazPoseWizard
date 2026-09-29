@@ -34,17 +34,20 @@ namespace DazPose.Performer
         private NativeArray<PerformerPoseTransformState> _targetTransforms;
         private NativeArray<float> _sourceBlendShapes;
         private NativeArray<float> _targetBlendShapes;
+        private NativeArray<PerformerPoseTransformState> _evaluatedBaseTransforms;
+        private NativeArray<float> _evaluatedBaseBlendShapes;
 
         private AnimationScriptPlayable _sourceStatePlayable;
         private AnimationScriptPlayable _targetStatePlayable;
         private AnimationMixerPlayable _mixer;
         private AnimationScriptPlayable _extrapolationPlayable;
+        private AnimationScriptPlayable _baseCapturePlayable;
         private PoseTransition _activeTransition;
         private float _elapsedSeconds;
         private bool _isTransitioning;
         private bool _disposed;
 
-        public Playable OutputPlayable => _extrapolationPlayable;
+        public Playable OutputPlayable => _baseCapturePlayable;
         public PerformerPose SettledPose { get; private set; }
         public PerformerPose DesiredPose { get; private set; }
         public bool IsTransitioning => _isTransitioning;
@@ -86,8 +89,7 @@ namespace DazPose.Performer
             transition.Validate();
             if (pose == DesiredPose) return;
 
-            if (_graph.IsValid()) _graph.Evaluate(0f);
-            var currentState = CaptureLiveState();
+            var currentState = CaptureEvaluatedBaseState();
             var targetState = SamplePose(pose.Clip, currentState);
 
             DesiredPose = pose;
@@ -130,6 +132,45 @@ namespace DazPose.Performer
             if (progress >= 1f) CompleteTransition();
         }
 
+        public PerformerPoseSnapshot CaptureEvaluatedBaseState()
+        {
+            ThrowIfDisposed();
+            if (_graph.IsValid()) _graph.Evaluate(0f);
+            return CopyEvaluatedBaseState();
+        }
+
+        public PerformerPoseSnapshot CaptureTransitionSourceState()
+        {
+            ThrowIfDisposed();
+            var snapshot = new PerformerPoseSnapshot(_sourceTransforms.Length, _sourceBlendShapes.Length);
+            for (var index = 0; index < _sourceTransforms.Length; index++)
+                snapshot.Transforms[index] = _sourceTransforms[index];
+            for (var index = 0; index < _sourceBlendShapes.Length; index++)
+                snapshot.BlendShapes[index] = _sourceBlendShapes[index];
+            return snapshot;
+        }
+
+        public int GetBlendShapeStreamIndex(SkinnedMeshRenderer renderer, int shapeIndex)
+        {
+            var streamIndex = 0;
+            foreach (var candidate in _blendShapeRenderers)
+            {
+                var mesh = candidate == null ? null : candidate.sharedMesh;
+                if (mesh == null) continue;
+                if (candidate == renderer)
+                    return shapeIndex >= 0 && shapeIndex < mesh.blendShapeCount ? streamIndex + shapeIndex : -1;
+                streamIndex += mesh.blendShapeCount;
+            }
+            return -1;
+        }
+
+        public int GetTransformStreamIndex(Transform transform)
+        {
+            for (var index = 0; index < _transforms.Length; index++)
+                if (_transforms[index] == transform) return index;
+            return -1;
+        }
+
         public void Dispose()
         {
             if (_disposed) return;
@@ -153,6 +194,8 @@ namespace DazPose.Performer
             _targetTransforms = new NativeArray<PerformerPoseTransformState>(_transforms.Length, Allocator.Persistent);
             _sourceBlendShapes = new NativeArray<float>(blendShapeCount, Allocator.Persistent);
             _targetBlendShapes = new NativeArray<float>(blendShapeCount, Allocator.Persistent);
+            _evaluatedBaseTransforms = new NativeArray<PerformerPoseTransformState>(_transforms.Length, Allocator.Persistent);
+            _evaluatedBaseBlendShapes = new NativeArray<float>(blendShapeCount, Allocator.Persistent);
 
             for (var index = 0; index < _transforms.Length; index++)
                 _transformHandles[index] = _animator.BindStreamTransform(_transforms[index]);
@@ -173,6 +216,7 @@ namespace DazPose.Performer
             var neutral = CaptureLiveState();
             CopyStateToNative(neutral, _sourceTransforms, _sourceBlendShapes);
             CopyStateToNative(neutral, _targetTransforms, _targetBlendShapes);
+            CopyStateToNative(neutral, _evaluatedBaseTransforms, _evaluatedBaseBlendShapes);
 
             _sourceStatePlayable = AnimationScriptPlayable.Create(_graph, CreateStateJob(_sourceTransforms, _sourceBlendShapes), 0);
             _targetStatePlayable = AnimationScriptPlayable.Create(_graph, CreateStateJob(_targetTransforms, _targetBlendShapes), 0);
@@ -195,6 +239,19 @@ namespace DazPose.Performer
             _extrapolationPlayable.SetProcessInputs(true);
             if (!_graph.Connect(_mixer, 0, _extrapolationPlayable, 0))
                 throw new InvalidOperationException("Could not connect the pose mixer to its extrapolation job.");
+
+            var captureJob = new PerformerBaseStateCaptureJob
+            {
+                TransformHandles = _transformHandles,
+                BlendShapeHandles = _blendShapeHandles,
+                CapturedTransforms = _evaluatedBaseTransforms,
+                CapturedBlendShapes = _evaluatedBaseBlendShapes
+            };
+            _baseCapturePlayable = AnimationScriptPlayable.Create(_graph, captureJob, 1);
+            _baseCapturePlayable.SetProcessInputs(true);
+            _baseCapturePlayable.SetInputWeight(0, 1f);
+            if (!_graph.Connect(_extrapolationPlayable, 0, _baseCapturePlayable, 0))
+                throw new InvalidOperationException("Could not connect the base-pose capture stage.");
 
             SetMixerWeights(0f);
             SetTrajectoryProgress(0f);
@@ -278,6 +335,16 @@ namespace DazPose.Performer
                 for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
                     snapshot.BlendShapes[blendShapeIndex++] = renderer.GetBlendShapeWeight(shapeIndex);
             }
+            return snapshot;
+        }
+
+        private PerformerPoseSnapshot CopyEvaluatedBaseState()
+        {
+            var snapshot = new PerformerPoseSnapshot(_evaluatedBaseTransforms.Length, _evaluatedBaseBlendShapes.Length);
+            for (var index = 0; index < _evaluatedBaseTransforms.Length; index++)
+                snapshot.Transforms[index] = _evaluatedBaseTransforms[index];
+            for (var index = 0; index < _evaluatedBaseBlendShapes.Length; index++)
+                snapshot.BlendShapes[index] = _evaluatedBaseBlendShapes[index];
             return snapshot;
         }
 
@@ -367,20 +434,26 @@ namespace DazPose.Performer
             if (_targetTransforms.IsCreated) _targetTransforms.Dispose();
             if (_sourceBlendShapes.IsCreated) _sourceBlendShapes.Dispose();
             if (_targetBlendShapes.IsCreated) _targetBlendShapes.Dispose();
+            if (_evaluatedBaseTransforms.IsCreated) _evaluatedBaseTransforms.Dispose();
+            if (_evaluatedBaseBlendShapes.IsCreated) _evaluatedBaseBlendShapes.Dispose();
             _transformHandles = default;
             _blendShapeHandles = default;
             _sourceTransforms = default;
             _targetTransforms = default;
             _sourceBlendShapes = default;
             _targetBlendShapes = default;
+            _evaluatedBaseTransforms = default;
+            _evaluatedBaseBlendShapes = default;
         }
 
         private void DestroyCreatedPlayables()
         {
+            if (_baseCapturePlayable.IsValid()) _baseCapturePlayable.Destroy();
             if (_extrapolationPlayable.IsValid()) _extrapolationPlayable.Destroy();
             if (_mixer.IsValid()) _mixer.Destroy();
             if (_sourceStatePlayable.IsValid()) _sourceStatePlayable.Destroy();
             if (_targetStatePlayable.IsValid()) _targetStatePlayable.Destroy();
+            _baseCapturePlayable = default;
         }
 
     }

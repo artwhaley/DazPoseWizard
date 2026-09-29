@@ -56,6 +56,11 @@ namespace DazPose.Performer
             while (placementRoot.parent != null) placementRoot = placementRoot.parent;
             var startPlacement = CapturePlacement(placementRoot);
             var playableCount = performer.RuntimePlayableCount;
+            var originalBreathing = CaptureBreathingSettings();
+            performer.BreathingEnabled = false;
+            performer.MorphBreathingStrength = 0f;
+            performer.BoneBreathingStrength = 0f;
+            performer.SetBreathPhaseForAcceptance(originalBreathing.Phase);
 
             performer.Pose(poseA, PoseTransition.Snap);
             yield return null;
@@ -112,10 +117,387 @@ namespace DazPose.Performer
                 yield return null;
             }
 
+            yield return CheckBreathingAcceptance(animator, stateA, stateB, stateC,
+                startPlacement, failures);
+
+            _awaitableChecksComplete = false;
+            RunBreathingAwaitableChecks(failures);
+            awaitableDeadline = Time.realtimeSinceStartup + 30f;
+            while (!_awaitableChecksComplete && Time.realtimeSinceStartup < awaitableDeadline)
+                yield return null;
+            if (!_awaitableChecksComplete)
+                failures.Add("Breathing PoseAsync acceptance checks did not finish before the timeout.");
+
+            RestoreBreathingSettings(originalBreathing);
+            performer.SetBreathPhaseForAcceptance(originalBreathing.Phase);
+
             CheckPlacement("Outer Lara placement", startPlacement, CapturePlacement(placementRoot), failures);
             if (performer.RuntimePlayableCount != playableCount)
                 failures.Add("Playable count changed from " + playableCount + " to " + performer.RuntimePlayableCount + ".");
             Finish(failures);
+        }
+
+        private IEnumerator CheckBreathingAcceptance(Animator animator, PoseSnapshot stateA,
+            PoseSnapshot stateB, PoseSnapshot stateC, PlacementSnapshot startPlacement,
+            List<string> failures)
+        {
+            var breathing = performer.BreathingRuntime;
+            if (breathing == null)
+            {
+                failures.Add("PerformerBreathing runtime is missing.");
+                yield break;
+            }
+
+            if (breathing.BreatheBindingCount == 0)
+                failures.Add("Canonical Lara is missing the Breathe morph binding. " + string.Join(" ", breathing.Diagnostics));
+            if (breathing.BreatheBellyBindingCount == 0)
+                failures.Add("Canonical Lara is missing the BreatheBelly morph binding. " + string.Join(" ", breathing.Diagnostics));
+            if (breathing.BoneBindings.Count == 0)
+                failures.Add("No configured torso breathing bones resolved. " + string.Join(" ", breathing.Diagnostics));
+
+            performer.BreathingEnabled = true;
+            performer.MorphBreathingEnabled = true;
+            performer.MorphBreathingStrength = 1f;
+            performer.BreatheStrength = 1f;
+            performer.BreatheBellyStrength = 0.7f;
+            performer.BoneBreathingEnabled = false;
+            performer.BoneBreathingStrength = 1f;
+            performer.Pose(poseA, PoseTransition.Snap);
+
+            performer.SetBreathPhaseForAcceptance(0f);
+            var restBase = performer.CaptureEvaluatedBasePoseState();
+            CheckPose("Breathing at rest must equal the base pose", ToPoseSnapshot(restBase),
+                CapturePose(animator), failures);
+
+            performer.SetBreathPhaseForAcceptance(0.32f);
+            var morphInhaleBase = performer.CaptureEvaluatedBasePoseState();
+            var inhaleContributions = CaptureMorphContributions(breathing.MorphBindings, morphInhaleBase);
+            CheckMorphContributions("Morph-only inhale", breathing.MorphBindings, inhaleContributions,
+                true, failures);
+            CheckBreathingBonesEqualBase("Morph-only mode", breathing.BoneBindings,
+                morphInhaleBase, failures);
+
+            performer.SetBreathPhaseForAcceptance(0.70f);
+            var morphExhaleBase = performer.CaptureEvaluatedBasePoseState();
+            var exhaleContributions = CaptureMorphContributions(breathing.MorphBindings, morphExhaleBase);
+            CheckMorphContributions("Morph-only exhale", breathing.MorphBindings, exhaleContributions,
+                true, failures);
+            if (inhaleContributions.Length != exhaleContributions.Length)
+                failures.Add("Morph bindings changed between breath phases.");
+            else
+                for (var index = 0; index < inhaleContributions.Length; index++)
+                    if (Mathf.Abs(inhaleContributions[index] - exhaleContributions[index]) < 0.05f)
+                    {
+                        failures.Add("Morph binding " + index + " did not change between two breath phases.");
+                        break;
+                    }
+
+            performer.MorphBreathingEnabled = false;
+            performer.BoneBreathingEnabled = true;
+            performer.SetBreathPhaseForAcceptance(0.32f);
+            var boneOnlyBase = performer.CaptureEvaluatedBasePoseState();
+            CheckMorphsEqualBase("Bone-only mode", breathing.MorphBindings, boneOnlyBase, failures);
+            if (!CheckBreathingBonesDifferFromBase("Bone-only mode", breathing.BoneBindings,
+                    boneOnlyBase, failures))
+                failures.Add("Bone-only breathing did not move any configured torso bone.");
+
+            performer.MorphBreathingEnabled = true;
+            performer.BoneBreathingEnabled = true;
+            performer.MorphBreathingStrength = 1f;
+            performer.BoneBreathingStrength = 1f;
+            performer.SetBreathPhaseForAcceptance(0.32f);
+            var combinedBase = performer.CaptureEvaluatedBasePoseState();
+            CheckExpectedMorphContributions("Combined mode", breathing.MorphBindings,
+                combinedBase, performer, failures);
+            CheckExpectedBoneContributions("Combined mode", breathing.BoneBindings,
+                combinedBase, performer, failures);
+            var expectedBreathValue = Mathf.Clamp01(performer.BreathingCurve.Evaluate(performer.BreathPhase));
+            if (Mathf.Abs(expectedBreathValue - performer.BreathValue) > 0.0001f)
+                failures.Add("Morph and bone breathing do not share the evaluated value for the current phase.");
+
+            yield return CheckBreathingRetargetIsolation(animator, stateA, stateB, stateC, failures);
+
+            performer.BreathingEnabled = false;
+            performer.SetBreathPhaseForAcceptance(0.32f);
+            var disabledBase = performer.CaptureEvaluatedBasePoseState();
+            CheckPose("Master breathing switch bypass", ToPoseSnapshot(disabledBase),
+                CapturePose(animator), failures);
+
+            performer.BreathingEnabled = true;
+            performer.MorphBreathingStrength = 0f;
+            performer.BoneBreathingStrength = 0f;
+            performer.SetBreathPhaseForAcceptance(0.32f);
+            var zeroStrengthBase = performer.CaptureEvaluatedBasePoseState();
+            CheckPose("Zero breathing strengths bypass", ToPoseSnapshot(zeroStrengthBase),
+                CapturePose(animator), failures);
+
+            if (performer.DesiredPose != performer.SettledPose || performer.IsTransitioning)
+                failures.Add("Continuous breathing changed the persistent pose state or transition status.");
+            CheckPlacement("Breathing root placement", startPlacement, CapturePlacement(transform.root), failures);
+
+            performer.Pose(poseA, PoseTransition.Snap);
+            yield return null;
+        }
+
+        private IEnumerator CheckBreathingRetargetIsolation(Animator animator, PoseSnapshot stateA,
+            PoseSnapshot stateB, PoseSnapshot stateC, List<string> failures)
+        {
+            var breathing = performer.BreathingRuntime;
+            var midPoses = new[] { poseB, poseA, poseC };
+            var nextPoses = new[] { poseC, poseB, poseA };
+            var nextPoseStates = new[] { stateC, stateB, stateA };
+
+            performer.Pose(poseA, PoseTransition.Snap);
+            performer.SetBreathPhaseForAcceptance(0.32f);
+            yield return null;
+
+            for (var index = 0; index < midPoses.Length; index++)
+            {
+                performer.Pose(midPoses[index], PoseTransition.Smooth(1f));
+                var deadline = Time.realtimeSinceStartup + 4f;
+                while (performer.IsTransitioning && performer.TransitionProgress < 0.38f
+                       && Time.realtimeSinceStartup < deadline)
+                    yield return null;
+                if (!performer.IsTransitioning || performer.TransitionProgress < 0.38f)
+                {
+                    failures.Add("Breathing retarget setup did not reach its interruption point.");
+                    yield break;
+                }
+
+                var phaseBeforeRetarget = performer.BreathPhase;
+                var evaluatedBase = performer.CaptureEvaluatedBasePoseState();
+                var renderedBefore = CapturePose(animator);
+                if (CheckPoseDifference(ToPoseSnapshot(evaluatedBase), renderedBefore) < 0.0001f)
+                    failures.Add("Breathing was not visible during the base-state isolation check.");
+
+                performer.Pose(nextPoses[index], new PoseTransition(0.45f, 0.06f, 0.08f,
+                    AnimationCurve.EaseInOut(0f, 0f, 1f, 1f)));
+                CheckPose("Retarget source must be evaluated base only", ToPoseSnapshot(evaluatedBase),
+                    ToPoseSnapshot(performer.CaptureTransitionSourcePoseState()), failures);
+                CheckPose("Retarget continuity with downstream breathing", renderedBefore,
+                    CapturePose(animator), failures);
+                if (Mathf.Abs(phaseBeforeRetarget - performer.BreathPhase) > 0.0001f)
+                    failures.Add("A pose retarget reset or advanced the breath phase synchronously.");
+
+                yield return null;
+                var phaseDelta = Mathf.Repeat(performer.BreathPhase - phaseBeforeRetarget, 1f);
+                if (phaseDelta <= 0.0001f || phaseDelta > 0.2f)
+                    failures.Add("The breath phase did not continue smoothly after a pose retarget.");
+                yield return WaitForSettlement(6f, failures, "breathing retarget to " + nextPoses[index].name);
+                CheckPose("Retarget base pose must not accumulate breathing offsets",
+                    nextPoseStates[index], ToPoseSnapshot(performer.CaptureEvaluatedBasePoseState()), failures);
+            }
+
+            if (breathing.BreatheBindingCount == 0 || breathing.BreatheBellyBindingCount == 0)
+                failures.Add("Retarget isolation did not exercise both requested morph channels.");
+        }
+
+        private async void RunBreathingAwaitableChecks(List<string> failures)
+        {
+            try
+            {
+                performer.BreathingEnabled = true;
+                performer.MorphBreathingEnabled = true;
+                performer.BoneBreathingEnabled = true;
+                performer.MorphBreathingStrength = 1f;
+                performer.BoneBreathingStrength = 1f;
+                performer.Pose(poseA, PoseTransition.Snap);
+                performer.SetBreathPhaseForAcceptance(0.20f);
+                var phaseAtStart = performer.BreathPhase;
+                var settledRequest = StartPoseRequest(poseB, PoseTransition.Smooth(0.30f));
+                await WaitForCompletionObservation(settledRequest, 5f, failures,
+                    "PoseAsync while breathing is active");
+                if (settledRequest.Result != PoseCompletion.Settled || performer.SettledPose != poseB
+                    || performer.IsTransitioning)
+                    failures.Add("PoseAsync did not complete at base-pose settlement while breathing was active.");
+                var phaseAtSettlement = performer.BreathPhase;
+                await Awaitable.NextFrameAsync();
+                if (Mathf.Repeat(phaseAtSettlement - phaseAtStart, 1f) <= 0.01f
+                    || Mathf.Repeat(performer.BreathPhase - phaseAtSettlement, 1f) <= 0.0001f)
+                    failures.Add("Breathing did not continue independently through and after PoseAsync settlement.");
+
+                performer.Pose(poseA, PoseTransition.Snap);
+                performer.SetBreathPhaseForAcceptance(0.25f);
+                var superseded = StartPoseRequest(poseB, PoseTransition.Smooth(1f));
+                var deadline = Time.realtimeSinceStartup + 4f;
+                while (performer.IsTransitioning && performer.TransitionProgress < 0.35f
+                       && Time.realtimeSinceStartup < deadline)
+                    await Awaitable.NextFrameAsync();
+                if (!performer.IsTransitioning || performer.TransitionProgress < 0.35f)
+                    failures.Add("Breathing-active supersession setup did not reach the requested transition point.");
+                var phaseBeforeSupersession = performer.BreathPhase;
+                performer.Pose(poseC, PoseTransition.Smooth(0.25f));
+                if (!superseded.Completed || superseded.Result != PoseCompletion.Superseded
+                    || performer.DesiredPose != poseC)
+                    failures.Add("Breathing-active PoseAsync supersession did not preserve latest-wins behavior.");
+                if (Mathf.Abs(phaseBeforeSupersession - performer.BreathPhase) > 0.0001f)
+                    failures.Add("Superseding an awaited pose reset the breath phase.");
+                await WaitForSettlementAsync(5f, failures, "breathing-active superseding pose");
+                if (performer.SettledPose != poseC)
+                    failures.Add("The breathing-active superseding pose did not settle at the latest target.");
+            }
+            catch (Exception exception)
+            {
+                failures.Add("Breathing PoseAsync checks threw " + exception.GetType().Name + ": " + exception.Message);
+            }
+            finally
+            {
+                _awaitableChecksComplete = true;
+            }
+        }
+
+        private static float[] CaptureMorphContributions(
+            IReadOnlyList<PerformerBreathingMorphBindingInfo> bindings, PerformerPoseSnapshot baseState)
+        {
+            var result = new float[bindings.Count];
+            for (var index = 0; index < bindings.Count; index++)
+            {
+                var binding = bindings[index];
+                result[index] = binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex)
+                                - baseState.BlendShapes[binding.BaseBlendShapeIndex];
+            }
+            return result;
+        }
+
+        private static void CheckMorphContributions(string description,
+            IReadOnlyList<PerformerBreathingMorphBindingInfo> bindings, IReadOnlyList<float> contributions,
+            bool shouldMove, List<string> failures)
+        {
+            for (var index = 0; index < bindings.Count; index++)
+            {
+                if (shouldMove && contributions[index] <= 0.05f)
+                    failures.Add(description + " did not add weight to '" + bindings[index].SemanticName
+                                 + "' on " + bindings[index].RendererPath + ".");
+                if (!shouldMove && Mathf.Abs(contributions[index]) > BlendShapeTolerance)
+                    failures.Add(description + " changed base morph '" + bindings[index].SemanticName + "'.");
+            }
+        }
+
+        private static void CheckMorphsEqualBase(string description,
+            IReadOnlyList<PerformerBreathingMorphBindingInfo> bindings, PerformerPoseSnapshot baseState,
+            List<string> failures)
+        {
+            CheckMorphContributions(description, bindings, CaptureMorphContributions(bindings, baseState),
+                false, failures);
+        }
+
+        private static void CheckBreathingBonesEqualBase(string description,
+            IReadOnlyList<PerformerBreathingBoneBindingInfo> bindings, PerformerPoseSnapshot baseState,
+            List<string> failures)
+        {
+            CheckBreathingBones(description, bindings, baseState, false, failures);
+        }
+
+        private static bool CheckBreathingBonesDifferFromBase(string description,
+            IReadOnlyList<PerformerBreathingBoneBindingInfo> bindings, PerformerPoseSnapshot baseState,
+            List<string> failures)
+        {
+            return CheckBreathingBones(description, bindings, baseState, true, failures);
+        }
+
+        private static bool CheckBreathingBones(string description,
+            IReadOnlyList<PerformerBreathingBoneBindingInfo> bindings, PerformerPoseSnapshot baseState,
+            bool shouldMove, List<string> failures)
+        {
+            var anyMoved = false;
+            foreach (var binding in bindings)
+            {
+                var expected = baseState.Transforms[binding.BaseTransformIndex];
+                var positionDelta = Vector3.Distance(binding.Bone.localPosition, expected.LocalPosition);
+                var rotationDelta = Quaternion.Angle(binding.Bone.localRotation, expected.LocalRotation);
+                var moved = positionDelta > PositionTolerance || rotationDelta > RotationToleranceDegrees;
+                anyMoved |= moved;
+                if (shouldMove && !moved)
+                    failures.Add(description + " did not move configured bone '" + binding.Bone.name + "'.");
+                if (!shouldMove && moved)
+                    failures.Add(description + " applied a breathing delta to bone '" + binding.Bone.name + "'.");
+            }
+            return anyMoved;
+        }
+
+        private static void CheckExpectedMorphContributions(string description,
+            IReadOnlyList<PerformerBreathingMorphBindingInfo> bindings, PerformerPoseSnapshot baseState,
+            SuccubusPerformer currentPerformer, List<string> failures)
+        {
+            for (var index = 0; index < bindings.Count; index++)
+            {
+                var binding = bindings[index];
+                var relativeStrength = binding.SemanticName == "Breathe"
+                    ? currentPerformer.BreatheStrength : currentPerformer.BreatheBellyStrength;
+                var baseWeight = baseState.BlendShapes[binding.BaseBlendShapeIndex];
+                var room = Mathf.Max(0f, binding.PositiveMaximumWeight - baseWeight);
+                var expected = Mathf.Min(PerformerBreathing.MorphWeightAmplitude * currentPerformer.BreathValue
+                                         * currentPerformer.MorphBreathingStrength * relativeStrength, room);
+                var actual = binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex) - baseWeight;
+                if (Mathf.Abs(actual - expected) > BlendShapeTolerance)
+                    failures.Add(description + " did not use the shared breath value for '"
+                                 + binding.SemanticName + "' on " + binding.RendererPath + ".");
+            }
+        }
+
+        private static void CheckExpectedBoneContributions(string description,
+            IReadOnlyList<PerformerBreathingBoneBindingInfo> bindings, PerformerPoseSnapshot baseState,
+            SuccubusPerformer currentPerformer, List<string> failures)
+        {
+            var inhale = currentPerformer.BreathValue * currentPerformer.BoneBreathingStrength;
+            foreach (var binding in bindings)
+            {
+                var expected = baseState.Transforms[binding.BaseTransformIndex];
+                var expectedPosition = expected.LocalPosition + binding.FullInhaleLocalPositionDelta * inhale;
+                var expectedRotation = expected.LocalRotation
+                                      * Quaternion.Euler(binding.FullInhaleLocalRotationDelta * inhale);
+                if (Vector3.Distance(binding.Bone.localPosition, expectedPosition) > PositionTolerance
+                    || Quaternion.Angle(binding.Bone.localRotation, expectedRotation) > RotationToleranceDegrees)
+                    failures.Add(description + " did not derive bone '" + binding.Bone.name
+                                 + "' from the same breath value as the morph channels.");
+            }
+        }
+
+        private static PoseSnapshot ToPoseSnapshot(PerformerPoseSnapshot source)
+        {
+            var transforms = new TransformSnapshot[source.Transforms.Length];
+            for (var index = 0; index < transforms.Length; index++)
+            {
+                var state = source.Transforms[index];
+                transforms[index] = new TransformSnapshot(state.LocalPosition, state.LocalRotation, state.LocalScale);
+            }
+            return new PoseSnapshot(transforms, (float[])source.BlendShapes.Clone());
+        }
+
+        private static float CheckPoseDifference(PoseSnapshot left, PoseSnapshot right)
+        {
+            var difference = 0f;
+            var transformCount = Mathf.Min(left.Transforms.Length, right.Transforms.Length);
+            for (var index = 0; index < transformCount; index++)
+            {
+                difference = Mathf.Max(difference,
+                    Vector3.Distance(left.Transforms[index].Position, right.Transforms[index].Position));
+                difference = Mathf.Max(difference,
+                    Quaternion.Angle(left.Transforms[index].Rotation, right.Transforms[index].Rotation) / 180f);
+            }
+            var blendShapeCount = Mathf.Min(left.BlendShapes.Length, right.BlendShapes.Length);
+            for (var index = 0; index < blendShapeCount; index++)
+                difference = Mathf.Max(difference, Mathf.Abs(left.BlendShapes[index] - right.BlendShapes[index]));
+            return difference;
+        }
+
+        private BreathingHarnessSettings CaptureBreathingSettings()
+        {
+            return new BreathingHarnessSettings(performer.BreathingEnabled,
+                performer.MorphBreathingEnabled, performer.MorphBreathingStrength,
+                performer.BreatheStrength, performer.BreatheBellyStrength,
+                performer.BoneBreathingEnabled, performer.BoneBreathingStrength, performer.BreathPhase);
+        }
+
+        private void RestoreBreathingSettings(BreathingHarnessSettings settings)
+        {
+            performer.BreathingEnabled = settings.BreathingEnabled;
+            performer.MorphBreathingEnabled = settings.MorphBreathingEnabled;
+            performer.MorphBreathingStrength = settings.MorphBreathingStrength;
+            performer.BreatheStrength = settings.BreatheStrength;
+            performer.BreatheBellyStrength = settings.BreatheBellyStrength;
+            performer.BoneBreathingEnabled = settings.BoneBreathingEnabled;
+            performer.BoneBreathingStrength = settings.BoneBreathingStrength;
         }
 
         private async void RunAwaitableChecks(List<string> failures)
@@ -439,9 +821,35 @@ namespace DazPose.Performer
             Status = failures.Count == 0 ? "Acceptance checks passed."
                 : "Acceptance checks found " + failures.Count + " issue(s). See Console.";
             if (failures.Count == 0)
-                Debug.Log("Performer pose checks passed: endpoints, custom curve, windup/overshoot, interruptions, latest-wins, blendshape continuity, graph lifecycle, and outer placement.", this);
+                Debug.Log("Performer checks passed: pose endpoints, windup/overshoot, retarget continuity, awaitable completion, morph/bone breathing modes, shared phase, base-state isolation, graph lifecycle, and root placement.", this);
             else
                 Debug.LogError("Performer pose checks failed:\n- " + string.Join("\n- ", failures), this);
+        }
+
+        private readonly struct BreathingHarnessSettings
+        {
+            public readonly bool BreathingEnabled;
+            public readonly bool MorphBreathingEnabled;
+            public readonly float MorphBreathingStrength;
+            public readonly float BreatheStrength;
+            public readonly float BreatheBellyStrength;
+            public readonly bool BoneBreathingEnabled;
+            public readonly float BoneBreathingStrength;
+            public readonly float Phase;
+
+            public BreathingHarnessSettings(bool breathingEnabled, bool morphBreathingEnabled,
+                float morphBreathingStrength, float breatheStrength, float breatheBellyStrength,
+                bool boneBreathingEnabled, float boneBreathingStrength, float phase)
+            {
+                BreathingEnabled = breathingEnabled;
+                MorphBreathingEnabled = morphBreathingEnabled;
+                MorphBreathingStrength = morphBreathingStrength;
+                BreatheStrength = breatheStrength;
+                BreatheBellyStrength = breatheBellyStrength;
+                BoneBreathingEnabled = boneBreathingEnabled;
+                BoneBreathingStrength = boneBreathingStrength;
+                Phase = phase;
+            }
         }
 
         private readonly struct PoseSnapshot

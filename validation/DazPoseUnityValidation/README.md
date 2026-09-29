@@ -36,6 +36,12 @@ The performer offers both immediate and awaitable requests:
 
 Pose returns while the transition continues. PoseAsync suspends its calling async sequence until the request settles, another request supersedes it, or the performer is disabled. PoseCompletion is Settled, Superseded, or PerformerDisabled. Both methods use the same latest-desired-state-wins runtime, including duration, curve, windup, overshoot, and continuity-preserving interruption.
 
+## Experimental breathing
+
+SuccubusPerformer adds a persistent breathing overlay after the captured base-pose output. The validation scene starts with a 10 BPM cycle, morph strength 0.25, relative Breathe/BreatheBelly strengths 1.0/0.7, and bone strength 0.3. Those are conservative starting values for visual tuning, not final animation constants. The curve holds an exhale at phase 0, rises smoothly to inhale by phase 0.32, holds briefly, then returns more slowly to rest by phase 1. The phase pauses while the master Breathing Enabled switch is off.
+
+The Performer Pose Smoke Test overlay exposes the master switch, BPM, phase/value, morph and bone switches, and their strengths during Play Mode. Run its acceptance checks with F5 to verify the P0.4 pose behavior with breathing bypassed, then exercise morph-only, bone-only, combined, retarget-isolation, phase-continuity, and awaitable cases. The default torso channels target abdomenLower, abdomenUpper, chestLower, and chestUpper; each inhale rotation/position delta remains editable on SuccubusPerformer.
+
 ## Continuing production workflows
 
 - Tools > DAZ Pose > Validate Always-Export Morphs checks configured runtime morphs after refreshing the reference model.

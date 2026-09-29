@@ -6252,6 +6252,69 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  breathingEnabled: 1
+  breathsPerMinute: 10
+  breathingCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.32
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.44
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  morphBreathingEnabled: 1
+  morphBreathingStrength: 0.25
+  breatheStrength: 1
+  breatheBellyStrength: 0.7
+  boneBreathingEnabled: 1
+  boneBreathingStrength: 0.3
+  breathingBones:
+  - boneName: abdomenLower
+    fullInhaleLocalRotationDelta: {x: -0.2, y: 0, z: 0}
+    fullInhaleLocalPositionDelta: {x: 0, y: 0, z: 0}
+  - boneName: abdomenUpper
+    fullInhaleLocalRotationDelta: {x: -0.3, y: 0, z: 0}
+    fullInhaleLocalPositionDelta: {x: 0, y: 0.0003, z: 0}
+  - boneName: chestLower
+    fullInhaleLocalRotationDelta: {x: -0.4, y: 0, z: 0}
+    fullInhaleLocalPositionDelta: {x: 0, y: 0.0005, z: 0}
+  - boneName: chestUpper
+    fullInhaleLocalRotationDelta: {x: -0.25, y: 0, z: 0}
+    fullInhaleLocalPositionDelta: {x: 0, y: 0.0003, z: 0}
 --- !u!95 &784435347
 Animator:
   serializedVersion: 7

@@ -22,11 +22,29 @@ namespace DazPose.Performer
         [SerializeField] private PerformerPose initialPose = null;
         [SerializeField] private PoseTransition defaultTransition = PoseTransition.Default;
 
+        [Header("Breathing")]
+        [SerializeField] private bool breathingEnabled = true;
+        [SerializeField, Range(3f, 24f)] private float breathsPerMinute = 10f;
+        [SerializeField] private AnimationCurve breathingCurve = CreateDefaultBreathingCurve();
+
+        [Header("Morph Breathing")]
+        [SerializeField] private bool morphBreathingEnabled = true;
+        [SerializeField, Range(0f, 2f)] private float morphBreathingStrength = 0.25f;
+        [SerializeField, Range(0f, 2f)] private float breatheStrength = 1f;
+        [SerializeField, Range(0f, 2f)] private float breatheBellyStrength = 0.7f;
+
+        [Header("Bone Breathing")]
+        [SerializeField] private bool boneBreathingEnabled = true;
+        [SerializeField, Range(0f, 2f)] private float boneBreathingStrength = 0.3f;
+        [SerializeField] private BreathingBoneChannel[] breathingBones = CreateDefaultBreathingBones();
+
         private PlayableGraph _graph;
         private PerformerBodyPose _bodyPose;
+        private PerformerBreathing _breathing;
         private PerformerPose _lastDesiredPose;
         private PerformerPose _lastSettledPose;
         private PerformerPoseSnapshot _neutralPoseState;
+        private float _lastBreathPhase;
         private PoseRequest _activePoseRequest;
         private long _nextPoseRequestId;
         private bool _hasPoseCommand;
@@ -38,6 +56,23 @@ namespace DazPose.Performer
         public float TransitionProgress => _bodyPose == null ? 0f : _bodyPose.TransitionProgress;
         public float TrajectoryProgress => _bodyPose == null ? 0f : _bodyPose.TrajectoryProgress;
         public PoseTransition ActiveTransition => _bodyPose == null ? default : _bodyPose.ActiveTransition;
+        public bool BreathingEnabled { get => breathingEnabled; set => breathingEnabled = value; }
+        public float BreathsPerMinute { get => breathsPerMinute; set => breathsPerMinute = Mathf.Max(0f, value); }
+        public AnimationCurve BreathingCurve
+        {
+            get => breathingCurve;
+            set => breathingCurve = value ?? CreateDefaultBreathingCurve();
+        }
+        public float BreathPhase => _breathing == null ? _lastBreathPhase : _breathing.BreathPhase;
+        public float BreathValue => _breathing == null ? 0f : _breathing.BreathValue;
+        public bool MorphBreathingEnabled { get => morphBreathingEnabled; set => morphBreathingEnabled = value; }
+        public float MorphBreathingStrength { get => morphBreathingStrength; set => morphBreathingStrength = Mathf.Max(0f, value); }
+        public float BreatheStrength { get => breatheStrength; set => breatheStrength = Mathf.Max(0f, value); }
+        public float BreatheBellyStrength { get => breatheBellyStrength; set => breatheBellyStrength = Mathf.Max(0f, value); }
+        public bool BoneBreathingEnabled { get => boneBreathingEnabled; set => boneBreathingEnabled = value; }
+        public float BoneBreathingStrength { get => boneBreathingStrength; set => boneBreathingStrength = Mathf.Max(0f, value); }
+
+        internal PerformerBreathing BreathingRuntime => _breathing;
         internal int RuntimePlayableCount => _graph.IsValid() ? _graph.GetPlayableCount() : 0;
 
         private void OnEnable()
@@ -52,6 +87,12 @@ namespace DazPose.Performer
 
             var request = _activePoseRequest;
             _bodyPose.Advance(Time.deltaTime);
+            if (_breathing != null)
+            {
+                _breathing.Configure(CreateBreathingSettings());
+                _breathing.Advance(Time.deltaTime);
+                _lastBreathPhase = _breathing.BreathPhase;
+            }
             PublishCurrentPoseState();
             if (request == null || !ReferenceEquals(_activePoseRequest, request)
                 || _bodyPose.IsTransitioning || _bodyPose.SettledPose != request.Pose) return;
@@ -90,6 +131,27 @@ namespace DazPose.Performer
             var completion = new AwaitableCompletionSource<PoseCompletion>();
             RequestPose(pose, transition, completion);
             return completion.Awaitable;
+        }
+
+        internal PerformerPoseSnapshot CaptureEvaluatedBasePoseState()
+        {
+            if (_bodyPose == null) throw new InvalidOperationException("The performer runtime is not active.");
+            return _bodyPose.CaptureEvaluatedBaseState();
+        }
+
+        internal PerformerPoseSnapshot CaptureTransitionSourcePoseState()
+        {
+            if (_bodyPose == null) throw new InvalidOperationException("The performer runtime is not active.");
+            return _bodyPose.CaptureTransitionSourceState();
+        }
+
+        internal void SetBreathPhaseForAcceptance(float phase)
+        {
+            if (_breathing == null) throw new InvalidOperationException("The performer breathing runtime is not active.");
+            _breathing.Configure(CreateBreathingSettings());
+            _breathing.SetPhaseForAcceptance(phase);
+            _lastBreathPhase = _breathing.BreathPhase;
+            if (_graph.IsValid()) _graph.Evaluate(0f);
         }
 
         private void RequestPose(PerformerPose pose, PoseTransition transition,
@@ -185,9 +247,13 @@ namespace DazPose.Performer
                 _graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
                 _bodyPose = new PerformerBodyPose(animator, _graph, _neutralPoseState);
                 _neutralPoseState = _bodyPose.NeutralState;
+                _breathing = new PerformerBreathing(animator, _graph, _bodyPose.OutputPlayable,
+                    _bodyPose, breathingBones, _lastBreathPhase);
+                _breathing.Configure(CreateBreathingSettings());
+                _breathing.Advance(0f);
 
                 var output = AnimationPlayableOutput.Create(_graph, "Performer Animation", animator);
-                output.SetSourcePlayable(_bodyPose.OutputPlayable);
+                output.SetSourcePlayable(_breathing.OutputPlayable);
                 _graph.Play();
 
                 var poseToRestore = _hasPoseCommand ? _lastDesiredPose : initialPose;
@@ -204,6 +270,7 @@ namespace DazPose.Performer
 
         private void DestroyRuntime()
         {
+            if (_breathing != null) _lastBreathPhase = _breathing.BreathPhase;
             if (_bodyPose != null)
             {
                 if (_bodyPose.DesiredPose != null) _lastDesiredPose = _bodyPose.DesiredPose;
@@ -216,9 +283,77 @@ namespace DazPose.Performer
             if (request != null) CompleteRequest(request, PoseCompletion.PerformerDisabled);
 
             if (_graph.IsValid()) _graph.Destroy();
+            _breathing?.Dispose();
+            _breathing = null;
             _bodyPose?.Dispose();
             _bodyPose = null;
             _graph = default;
+        }
+
+        private void OnValidate()
+        {
+            breathsPerMinute = Mathf.Max(0f, breathsPerMinute);
+            morphBreathingStrength = Mathf.Max(0f, morphBreathingStrength);
+            breatheStrength = Mathf.Max(0f, breatheStrength);
+            breatheBellyStrength = Mathf.Max(0f, breatheBellyStrength);
+            boneBreathingStrength = Mathf.Max(0f, boneBreathingStrength);
+            if (breathingCurve == null) breathingCurve = CreateDefaultBreathingCurve();
+            if (breathingBones == null) breathingBones = CreateDefaultBreathingBones();
+        }
+
+        private PerformerBreathingSettings CreateBreathingSettings()
+        {
+            return new PerformerBreathingSettings
+            {
+                BreathingEnabled = breathingEnabled,
+                BreathsPerMinute = breathsPerMinute,
+                BreathingCurve = breathingCurve,
+                MorphBreathingEnabled = morphBreathingEnabled,
+                MorphBreathingStrength = morphBreathingStrength,
+                BreatheStrength = breatheStrength,
+                BreatheBellyStrength = breatheBellyStrength,
+                BoneBreathingEnabled = boneBreathingEnabled,
+                BoneBreathingStrength = boneBreathingStrength
+            };
+        }
+
+        private static AnimationCurve CreateDefaultBreathingCurve()
+        {
+            return new AnimationCurve(
+                new Keyframe(0f, 0f, 0f, 0f),
+                new Keyframe(0.32f, 1f, 0f, 0f),
+                new Keyframe(0.44f, 1f, 0f, 0f),
+                new Keyframe(1f, 0f, 0f, 0f));
+        }
+
+        private static BreathingBoneChannel[] CreateDefaultBreathingBones()
+        {
+            return new[]
+            {
+                new BreathingBoneChannel
+                {
+                    boneName = "abdomenLower",
+                    fullInhaleLocalRotationDelta = new Vector3(-0.20f, 0f, 0f)
+                },
+                new BreathingBoneChannel
+                {
+                    boneName = "abdomenUpper",
+                    fullInhaleLocalRotationDelta = new Vector3(-0.30f, 0f, 0f),
+                    fullInhaleLocalPositionDelta = new Vector3(0f, 0.0003f, 0f)
+                },
+                new BreathingBoneChannel
+                {
+                    boneName = "chestLower",
+                    fullInhaleLocalRotationDelta = new Vector3(-0.40f, 0f, 0f),
+                    fullInhaleLocalPositionDelta = new Vector3(0f, 0.0005f, 0f)
+                },
+                new BreathingBoneChannel
+                {
+                    boneName = "chestUpper",
+                    fullInhaleLocalRotationDelta = new Vector3(-0.25f, 0f, 0f),
+                    fullInhaleLocalPositionDelta = new Vector3(0f, 0.0003f, 0f)
+                }
+            };
         }
     }
 }
