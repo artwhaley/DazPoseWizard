@@ -840,6 +840,72 @@ namespace DazPose.UnityValidation
                 check(DazPoseAnimationClipGenerator.IsExpressionReservedBlendShape(reserved),
                     "Expression sanitation reserves exact autonomous channel " + reserved);
 
+            foreach (var definition in PerformerLipSyncMorphCatalog.Definitions)
+            {
+                check(PerformerLipSyncMorphCatalog.IsOwnedBinding(PerformerLipSyncMorphCatalog.RendererPath,
+                        definition.BlendShapeName),
+                    "speech ownership catalog includes exact " + definition.Viseme + " renderer/name pair");
+                check(DazPoseAnimationClipGenerator.IsExpressionReservedBlendShape(PerformerLipSyncMorphCatalog.RendererPath,
+                        definition.BlendShapeName),
+                    "Expression sanitizer reserves speech channel " + definition.BlendShapeName);
+                check(!DazPoseAnimationClipGenerator.IsExpressionReservedBlendShape("other/renderer",
+                        definition.BlendShapeName),
+                    "speech-name match outside the exact renderer does not claim ownership for " + definition.BlendShapeName);
+                check(!DazPoseAnimationClipGenerator.IsExpressionReservedBlendShape(definition.BlendShapeName),
+                    "speech-shape names are not globally reserved without renderer context for " + definition.BlendShapeName);
+            }
+
+            var speechRoot = new GameObject("SpeechExpressionSanitizerTest");
+            var speechFigure = new GameObject("Genesis8Female");
+            speechFigure.transform.SetParent(speechRoot.transform, false);
+            var speechRendererObject = new GameObject("Genesis8Female.Shape");
+            speechRendererObject.transform.SetParent(speechFigure.transform, false);
+            var speechRenderer = speechRendererObject.AddComponent<SkinnedMeshRenderer>();
+            var speechMesh = new Mesh { name = "SpeechExpressionSanitizerMesh" };
+            try
+            {
+                speechMesh.vertices = new[] { Vector3.zero, Vector3.right, Vector3.up };
+                foreach (var definition in PerformerLipSyncMorphCatalog.Definitions)
+                    speechMesh.AddBlendShapeFrame(definition.BlendShapeName, 100f,
+                        new[] { Vector3.zero, Vector3.zero, Vector3.forward * 0.01f },
+                        new[] { Vector3.zero, Vector3.zero, Vector3.zero },
+                        new[] { Vector3.zero, Vector3.zero, Vector3.zero });
+                speechRenderer.sharedMesh = speechMesh;
+                var speechControls = PerformerLipSyncMorphCatalog.Definitions.Select(definition =>
+                    new DazPoseFigureControl
+                    {
+                        rawControlId = definition.SourceControlName,
+                        name = definition.SourceControlName,
+                        value = 1f
+                    }).ToArray();
+                var speechMorphs = DazPoseMorphResolver.Resolve(speechRoot.transform, speechControls);
+                check(speechMorphs.Count == PerformerLipSyncMorphCatalog.Definitions.Count
+                    && speechMorphs.SelectMany(control => control.Bindings).All(binding =>
+                        binding.RendererPath == PerformerLipSyncMorphCatalog.RendererPath),
+                    "speech fixture resolves every exact imported name at the catalog renderer path");
+                var speechPose = new ResolvedUnityPose
+                {
+                    BindingRoot = speechRoot.transform,
+                    MorphControls = speechMorphs
+                };
+                var speechOnlyFailed = false;
+                try
+                {
+                    DazPoseAnimationClipGenerator.BuildExpressionCandidateClip(speechPose, out _, out _);
+                }
+                catch (InvalidOperationException exception)
+                {
+                    speechOnlyFailed = exception.Message.Contains("no usable Expression morph or facial-bone channels");
+                }
+                check(speechOnlyFailed,
+                    "an Expression containing only SALSA-owned speech morphs fails after sanitation");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(speechRoot);
+                UnityEngine.Object.DestroyImmediate(speechMesh);
+            }
+
             var reservedOnlyRenderer = new GameObject("ReservedExpressionControls").AddComponent<SkinnedMeshRenderer>();
             var reservedMesh = new Mesh { name = "ReservedExpressionMesh" };
             try

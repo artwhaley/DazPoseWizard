@@ -154,7 +154,12 @@ namespace DazPose.Editor.Importing
             }
         }
 
-        internal static bool IsExpressionReservedBlendShape(string name) => ExpressionExcludedBlendShapes.Contains(name);
+        internal static bool IsExpressionReservedBlendShape(string name)
+            => ExpressionExcludedBlendShapes.Contains(name);
+
+        internal static bool IsExpressionReservedBlendShape(string rendererPath, string name)
+            => ExpressionExcludedBlendShapes.Contains(name)
+                || PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, name);
 
         internal static AnimationClip BuildExpressionCandidateClip(ResolvedUnityPose pose,
             out PerformerExpressionChannel[] channels, out string[] excludedChannels)
@@ -178,7 +183,11 @@ namespace DazPose.Editor.Importing
                              .OrderBy(item => item.Binding.RendererPath, StringComparer.Ordinal).ThenBy(item => item.Binding.BlendShapeName, StringComparer.Ordinal))
                 {
                     ValidateMorphBinding(pose, pair.Control, pair.Binding);
-                    if (ExpressionExcludedBlendShapes.Contains(pair.Binding.BlendShapeName)) { excluded.Add(pair.Binding); continue; }
+                    if (IsExpressionReservedBlendShape(pair.Binding.RendererPath, pair.Binding.BlendShapeName))
+                    {
+                        excluded.Add(pair.Binding);
+                        continue;
+                    }
                     var property = "blendShape." + pair.Binding.BlendShapeName;
                     var key = pair.Binding.RendererPath + "|" + property;
                     if (!emitted.Add(key)) throw new InvalidOperationException("More than one active DAZ control resolves to expression curve '" + key + "'.");
@@ -504,7 +513,8 @@ namespace DazPose.Editor.Importing
             foreach (var channel in channels ?? Array.Empty<PerformerExpressionChannel>())
             {
                 if (channel.RendererPath == null || string.IsNullOrWhiteSpace(channel.BlendShapeName)
-                    || !IsFinite(channel.TargetWeight) || ExpressionExcludedBlendShapes.Contains(channel.BlendShapeName))
+                    || !IsFinite(channel.TargetWeight)
+                    || IsExpressionReservedBlendShape(channel.RendererPath, channel.BlendShapeName))
                     throw new InvalidOperationException("PerformerExpression has invalid or reserved blendshape metadata.");
                 var morphKey = channel.RendererPath + "|" + channel.BlendShapeName;
                 if (!morphChannels.Add(morphKey)) throw new InvalidOperationException("Duplicate PerformerExpression blendshape metadata '" + morphKey + "'.");

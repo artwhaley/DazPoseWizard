@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -207,6 +208,15 @@ namespace DazPose.Performer
                 if (mesh == null) continue;
                 for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
                 {
+                    var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
+                    var shapeName = mesh.GetBlendShapeName(shapeIndex);
+                    if (PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, shapeName))
+                    {
+                        // An unbound handle is skipped by each BodyPose job. SALSA remains the only
+                        // graph/runtime writer for this exact renderer/name pair.
+                        _blendShapeHandles[handleIndex++] = default;
+                        continue;
+                    }
                     var propertyName = "blendShape." + mesh.GetBlendShapeName(shapeIndex);
                     _blendShapeHandles[handleIndex++] = _animator.BindStreamProperty(
                         renderer.transform, typeof(SkinnedMeshRenderer), propertyName);
@@ -301,6 +311,7 @@ namespace DazPose.Performer
 
         private PerformerPoseSnapshot SamplePose(AnimationClip clip, PerformerPoseSnapshot stateToRestore)
         {
+            var speechState = CaptureSpeechOwnedWeights();
             try
             {
                 RestoreNeutralState();
@@ -310,6 +321,7 @@ namespace DazPose.Performer
             finally
             {
                 RestoreState(stateToRestore);
+                RestoreSpeechOwnedWeights(speechState);
             }
         }
 
@@ -333,7 +345,13 @@ namespace DazPose.Performer
                 var mesh = renderer == null ? null : renderer.sharedMesh;
                 if (mesh == null) continue;
                 for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
-                    snapshot.BlendShapes[blendShapeIndex++] = renderer.GetBlendShapeWeight(shapeIndex);
+                {
+                    var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
+                    var shapeName = mesh.GetBlendShapeName(shapeIndex);
+                    snapshot.BlendShapes[blendShapeIndex++] = PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, shapeName)
+                        ? PerformerLipSyncMorphCatalog.RestUnityWeight
+                        : renderer.GetBlendShapeWeight(shapeIndex);
+                }
             }
             return snapshot;
         }
@@ -365,7 +383,13 @@ namespace DazPose.Performer
                 var mesh = renderer == null ? null : renderer.sharedMesh;
                 if (mesh == null) continue;
                 for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
-                    renderer.SetBlendShapeWeight(shapeIndex, _neutralState.BlendShapes[blendShapeIndex++]);
+                {
+                    var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
+                    var shapeName = mesh.GetBlendShapeName(shapeIndex);
+                    var weight = _neutralState.BlendShapes[blendShapeIndex++];
+                    if (!PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, shapeName))
+                        renderer.SetBlendShapeWeight(shapeIndex, weight);
+                }
             }
         }
 
@@ -387,8 +411,42 @@ namespace DazPose.Performer
                 var mesh = renderer == null ? null : renderer.sharedMesh;
                 if (mesh == null) continue;
                 for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
-                    renderer.SetBlendShapeWeight(shapeIndex, snapshot.BlendShapes[blendShapeIndex++]);
+                {
+                    var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
+                    var shapeName = mesh.GetBlendShapeName(shapeIndex);
+                    var weight = snapshot.BlendShapes[blendShapeIndex++];
+                    if (!PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, shapeName))
+                        renderer.SetBlendShapeWeight(shapeIndex, weight);
+                }
             }
+        }
+
+        private PerformerLipSyncMorphWeight[] CaptureSpeechOwnedWeights()
+        {
+            var values = new List<PerformerLipSyncMorphWeight>();
+            foreach (var renderer in _blendShapeRenderers)
+            {
+                var mesh = renderer == null ? null : renderer.sharedMesh;
+                if (mesh == null) continue;
+                var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
+                for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
+                {
+                    var name = mesh.GetBlendShapeName(shapeIndex);
+                    if (!PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, name)) continue;
+                    values.Add(new PerformerLipSyncMorphWeight(renderer, shapeIndex,
+                        renderer.GetBlendShapeWeight(shapeIndex)));
+                }
+            }
+            return values.ToArray();
+        }
+
+        private static void RestoreSpeechOwnedWeights(IEnumerable<PerformerLipSyncMorphWeight> values)
+        {
+            if (values == null) return;
+            foreach (var value in values)
+                if (value.Renderer != null && value.Renderer.sharedMesh != null
+                    && value.Index >= 0 && value.Index < value.Renderer.sharedMesh.blendShapeCount)
+                    value.Renderer.SetBlendShapeWeight(value.Index, value.Weight);
         }
 
         private void CopyStateToNative(PerformerPoseSnapshot source,
@@ -424,6 +482,20 @@ namespace DazPose.Performer
         private void ThrowIfDisposed()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(PerformerBodyPose));
+        }
+
+        private readonly struct PerformerLipSyncMorphWeight
+        {
+            public PerformerLipSyncMorphWeight(SkinnedMeshRenderer renderer, int index, float weight)
+            {
+                Renderer = renderer;
+                Index = index;
+                Weight = weight;
+            }
+
+            public SkinnedMeshRenderer Renderer { get; }
+            public int Index { get; }
+            public float Weight { get; }
         }
 
         private void DisposeNativeArrays()

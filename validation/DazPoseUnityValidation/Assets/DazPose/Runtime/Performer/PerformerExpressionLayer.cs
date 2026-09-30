@@ -301,8 +301,10 @@ namespace DazPose.Performer
                     throw new InvalidOperationException("PerformerExpression contains an empty blendshape name or non-finite target weight.");
                 if (channel.RendererPath == null) throw new InvalidOperationException("PerformerExpression contains a null renderer path.");
                 var key = "M|" + channel.RendererPath + "|" + channel.BlendShapeName;
-                if (IsRuntimeOwnedChannel(channel.BlendShapeName))
-                    throw new InvalidOperationException("PerformerExpression channel '" + key + "' is owned by autonomous breathing or blink and cannot be driven by an Expression.");
+                if (IsRuntimeOwnedChannel(channel.BlendShapeName)
+                    || PerformerLipSyncMorphCatalog.IsOwnedBinding(channel.RendererPath, channel.BlendShapeName))
+                    throw new InvalidOperationException("PerformerExpression channel '" + key
+                        + "' is owned by autonomous breathing, blink, or speech and cannot be driven by an Expression.");
                 if (!morphKeys.Add(key)) throw new InvalidOperationException("PerformerExpression contains duplicate channel '" + key + "'.");
                 var matches = _animator.GetComponentsInChildren<SkinnedMeshRenderer>(true).Where(renderer =>
                     string.Equals(HierarchyPath(_animator.transform, renderer.transform), channel.RendererPath, StringComparison.Ordinal)

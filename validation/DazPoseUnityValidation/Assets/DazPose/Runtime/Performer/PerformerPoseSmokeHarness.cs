@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DazPose.Performer
@@ -23,6 +25,8 @@ namespace DazPose.Performer
         [SerializeField] private Transform gazeTarget;
         private Vector2 _scrollPosition;
         private string _seedText = string.Empty;
+        private bool _lipSyncCheckRunning;
+        private string _lipSyncCheckStatus = "Not run. Use Play Mode with a non-silent Clip A.";
 
         internal AudioClip SpeechClipA => speechClipA;
         internal AudioClip SpeechClipB => speechClipB;
@@ -128,6 +132,138 @@ namespace DazPose.Performer
             GUILayout.Label("Speaking: " + performer.IsSpeaking + "  Current: " + current
                             + "  Pending: " + performer.PendingSpeechCount);
             GUILayout.Label("Speech AudioSource playing: " + (source != null && source.isPlaying));
+
+            var lipSync = performer.GetComponent<PerformerSalsaLipSync>();
+            GUILayout.Label("P0.9B SALSA: " + (lipSync == null ? "not configured" : lipSync.Status));
+            if (lipSync != null)
+            {
+                GUILayout.Label("Ready: " + lipSync.IsReady + "  IsSALSAing: " + lipSync.IsSALSAing
+                    + "  Analysis: " + lipSync.AnalysisValue.ToString("F3")
+                    + "  Trigger: " + lipSync.TriggeredIndex + " / " + lipSync.CurrentViseme
+                    + "  Visemes: " + lipSync.VisemeCount
+                    + "  AudioSource matches: " + lipSync.UsesSpeechAudioSource);
+                GUILayout.Label("Bindings: " + lipSync.BindingSummary);
+                GUILayout.Label("Speech weights: " + lipSync.WeightSummary);
+            }
+            if (GUILayout.Button(_lipSyncCheckRunning ? "Checking speech articulation…" : "Check Clip A articulation"))
+                StartLipSyncCheck();
+            GUILayout.Label("Lip-sync check: " + _lipSyncCheckStatus);
+        }
+
+        private void StartLipSyncCheck()
+        {
+            if (_lipSyncCheckRunning) return;
+            if (speechClipA == null)
+            {
+                _lipSyncCheckStatus = "Assign Speech Clip A on the smoke harness first.";
+                return;
+            }
+            var lipSync = performer == null ? null : performer.GetComponent<PerformerSalsaLipSync>();
+            if (performer == null || lipSync == null || !lipSync.IsReady)
+            {
+                _lipSyncCheckStatus = "P0.9B SALSA is not ready. Run the editor setup command and inspect the Console.";
+                return;
+            }
+            if (performer.IsSpeaking || performer.PendingSpeechCount != 0)
+            {
+                _lipSyncCheckStatus = "Wait until the existing FIFO speech queue is idle, then run this check.";
+                return;
+            }
+            StartCoroutine(CheckClipArticulation(speechClipA, lipSync));
+        }
+
+        private IEnumerator CheckClipArticulation(AudioClip clip, PerformerSalsaLipSync lipSync)
+        {
+            _lipSyncCheckRunning = true;
+            _lipSyncCheckStatus = "Playing Clip A and sampling analysis, triggers, and all catalog weights.";
+            if (!PerformerLipSyncMorphCatalog.TryResolveBindings(performer.GetComponent<Animator>(),
+                    out var bindings, out var bindingFailure))
+            {
+                _lipSyncCheckStatus = "FAIL: " + bindingFailure;
+                _lipSyncCheckRunning = false;
+                yield break;
+            }
+
+            var analysisPeak = 0f;
+            var speechWeightPeak = 0f;
+            var maximumAllowedWeight = 0f;
+            var speechWeightOverLimit = false;
+            foreach (var binding in bindings)
+                maximumAllowedWeight = Mathf.Max(maximumAllowedWeight, binding.Definition.MaximumUnityWeight);
+            var speechAudioSource = performer.SpeechAudioSource;
+            var audioSourceStable = speechAudioSource != null && lipSync.UsesSpeechAudioSource;
+            var sawPlayback = false;
+            var sawSalsaing = false;
+            var sawTrigger = false;
+            var triggerCount = new HashSet<int>();
+            var deadline = Time.realtimeSinceStartup + Mathf.Max(2f, clip.length + 2f);
+            performer.Say(clip);
+            while (performer.CurrentSpeechClip == clip && Time.realtimeSinceStartup < deadline)
+            {
+                var source = performer.SpeechAudioSource;
+                audioSourceStable &= source == speechAudioSource && lipSync.UsesSpeechAudioSource;
+                sawPlayback |= source != null && source.isPlaying;
+                analysisPeak = Mathf.Max(analysisPeak, lipSync.AnalysisValue);
+                sawSalsaing |= lipSync.IsSALSAing;
+                var trigger = lipSync.TriggeredIndex;
+                if (trigger >= 0)
+                {
+                    sawTrigger = true;
+                    triggerCount.Add(trigger);
+                }
+                foreach (var binding in bindings)
+                {
+                    var mesh = binding.Renderer == null ? null : binding.Renderer.sharedMesh;
+                    if (mesh == null || binding.Index < 0 || binding.Index >= mesh.blendShapeCount
+                        || mesh.GetBlendShapeName(binding.Index) != binding.Definition.BlendShapeName) continue;
+                    var currentWeight = Mathf.Abs(binding.Renderer.GetBlendShapeWeight(binding.Index)
+                        - binding.Definition.RestUnityWeight);
+                    speechWeightPeak = Mathf.Max(speechWeightPeak, currentWeight);
+                    speechWeightOverLimit |= currentWeight > binding.Definition.MaximumUnityWeight + 1f;
+                }
+                yield return null;
+            }
+
+            var speechEnded = !performer.IsSpeaking && performer.PendingSpeechCount == 0;
+            if (!speechEnded) performer.StopSpeaking();
+
+            var maxOff = 0f;
+            foreach (var binding in bindings) maxOff = Mathf.Max(maxOff, binding.Definition.DurationOff);
+            var releaseTimeout = Mathf.Max(0.35f, (lipSync.AudioUpdateDelay + maxOff) * 3f);
+            var releaseDeadline = Time.realtimeSinceStartup + releaseTimeout;
+            var released = false;
+            var residualPeak = 0f;
+            while (Time.realtimeSinceStartup < releaseDeadline)
+            {
+                audioSourceStable &= performer.SpeechAudioSource == speechAudioSource && lipSync.UsesSpeechAudioSource;
+                residualPeak = 0f;
+                foreach (var binding in bindings)
+                {
+                    var mesh = binding.Renderer == null ? null : binding.Renderer.sharedMesh;
+                    if (mesh == null || binding.Index < 0 || binding.Index >= mesh.blendShapeCount
+                        || mesh.GetBlendShapeName(binding.Index) != binding.Definition.BlendShapeName) continue;
+                    var currentWeight = Mathf.Abs(binding.Renderer.GetBlendShapeWeight(binding.Index)
+                        - binding.Definition.RestUnityWeight);
+                    residualPeak = Mathf.Max(residualPeak, currentWeight);
+                    speechWeightOverLimit |= currentWeight > binding.Definition.MaximumUnityWeight + 1f;
+                }
+                if (residualPeak <= 0.5f) { released = true; break; }
+                yield return null;
+            }
+
+            var passed = sawPlayback && analysisPeak > 0.01f && sawSalsaing && sawTrigger
+                && speechWeightPeak > 0.5f && !speechWeightOverLimit && speechEnded && released && audioSourceStable;
+            _lipSyncCheckStatus = (passed ? "PASS" : "FAIL")
+                + " playback=" + sawPlayback + " analysisPeak=" + analysisPeak.ToString("F3")
+                + " SALSAing=" + sawSalsaing + " triggers=" + triggerCount.Count
+                + " speechWeightPeak=" + speechWeightPeak.ToString("F2")
+                + " maxAllowedUnityWeight=" + maximumAllowedWeight.ToString("F2")
+                + " overLimit=" + speechWeightOverLimit
+                + " audioSourceStable=" + audioSourceStable
+                + " ended=" + speechEnded + " released=" + released
+                + " residual=" + residualPeak.ToString("F2") + " releaseTimeout=" + releaseTimeout.ToString("F2") + "s";
+            Debug.Log("P0.9B audio/articulation check " + _lipSyncCheckStatus, this);
+            _lipSyncCheckRunning = false;
         }
 
         private void SaySpeech(AudioClip clip, string label)
