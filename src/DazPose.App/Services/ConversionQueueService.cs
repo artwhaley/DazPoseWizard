@@ -144,7 +144,8 @@ public sealed class ConversionQueueService : IAsyncDisposable
                     try
                     {
                         var conversion = await Task.Run(() => PoseConversionService.ConvertCanonical(settings.FigureDefinitionPath,
-                            job.Request.SourcePosePath, stagingPath), _shutdown.Token);
+                            job.Request.SourcePresetPath, stagingPath,
+                            ignoreUnsupportedSkeletalTransformChannels: job.Request.Kind == PerformerAssetKind.Expression), _shutdown.Token);
                         _requiredMorphs.AddCandidateControls(projectRoot, conversion.Pose.ActiveFigureControls,
                             job.Request.SourcePosePath, settings.DazContentRoot);
                         await _registry.WriteStatusAsync(settings, new BrowserJobStatus

@@ -15,6 +15,7 @@ namespace DazPose.Editor.Importing
         {
             "Breathe", "EX_Breathe", "Genesis8Female__EX_Breathe",
             "BreatheBelly", "EX_BreatheBelly", "Genesis8Female__EX_BreatheBelly",
+            "eCTRLEyesClosedL", "eCTRLEyesClosedR",
             "Genesis8Female__eCTRLEyesClosedL", "Genesis8Female__eCTRLEyesClosedR"
         };
         public const string OutputFolder = "Assets/Generated/DazPoses/G8F";
@@ -153,55 +154,216 @@ namespace DazPose.Editor.Importing
             }
         }
 
+        internal static bool IsExpressionReservedBlendShape(string name) => ExpressionExcludedBlendShapes.Contains(name);
+
+        internal static AnimationClip BuildExpressionCandidateClip(ResolvedUnityPose pose,
+            out PerformerExpressionChannel[] channels, out string[] excludedChannels)
+            => BuildExpressionCandidateClip(pose, out channels, out _, out excludedChannels);
+
+        internal static AnimationClip BuildExpressionCandidateClip(ResolvedUnityPose pose,
+            out PerformerExpressionChannel[] channels, out PerformerExpressionBoneChannel[] boneChannels,
+            out string[] excludedChannels)
+        {
+            if (pose == null || pose.BindingRoot == null) throw new ArgumentNullException(nameof(pose));
+            var clip = new AnimationClip { name = "DAZ Expression Candidate", frameRate = 30f, legacy = false };
+            var bindings = new List<EditorCurveBinding>();
+            var curves = new List<AnimationCurve>();
+            var channelList = new List<PerformerExpressionChannel>();
+            var boneChannelList = new List<PerformerExpressionBoneChannel>();
+            var excluded = new List<ResolvedUnityMorphBinding>();
+            var emitted = new HashSet<string>(StringComparer.Ordinal);
+            try
+            {
+                foreach (var pair in pose.MorphControls.SelectMany(control => control.Bindings.Select(binding => new { Control = control, Binding = binding }))
+                             .OrderBy(item => item.Binding.RendererPath, StringComparer.Ordinal).ThenBy(item => item.Binding.BlendShapeName, StringComparer.Ordinal))
+                {
+                    ValidateMorphBinding(pose, pair.Control, pair.Binding);
+                    if (ExpressionExcludedBlendShapes.Contains(pair.Binding.BlendShapeName)) { excluded.Add(pair.Binding); continue; }
+                    var property = "blendShape." + pair.Binding.BlendShapeName;
+                    var key = pair.Binding.RendererPath + "|" + property;
+                    if (!emitted.Add(key)) throw new InvalidOperationException("More than one active DAZ control resolves to expression curve '" + key + "'.");
+                    AddBlendShapeCurve(bindings, curves, pair.Binding.RendererPath, property, pair.Binding.UnityWeight);
+                    channelList.Add(new PerformerExpressionChannel(pair.Binding.RendererPath, pair.Binding.BlendShapeName, pair.Binding.UnityWeight));
+                }
+
+                foreach (var bone in pose.Bones.OrderBy(item => item.AnimationPath, StringComparer.Ordinal).ThenBy(item => item.DazBoneId, StringComparer.Ordinal))
+                {
+                    var properties = PerformerExpressionBoneProperties.None;
+                    if (bone.ExpressionHasPosition) properties |= PerformerExpressionBoneProperties.LocalPosition;
+                    if (bone.ExpressionHasRotation) properties |= PerformerExpressionBoneProperties.LocalRotation;
+                    if (properties == PerformerExpressionBoneProperties.None) continue;
+                    if (IsForbiddenGazeBoneId(bone.DazBoneId)
+                        || IsForbiddenGazeTransformPath(bone.AnimationPath))
+                        throw new InvalidOperationException("Expression facial bone metadata cannot own gaze bone '" + bone.DazBoneId + "'.");
+                    ValidateAnimationPath(pose, bone);
+                    var transformPath = bone.AnimationPath;
+                    if ((properties & PerformerExpressionBoneProperties.LocalPosition) != 0)
+                    {
+                        RequireFinite(bone.LocalPosition, bone.DazBoneId + " Expression local position");
+                        var positionKey = transformPath + "|m_LocalPosition";
+                        if (!emitted.Add(positionKey)) throw new InvalidOperationException("Duplicate Expression local-position channel '" + positionKey + "'.");
+                        AddVector3(bindings, curves, transformPath, "m_LocalPosition", bone.LocalPosition);
+                    }
+                    if ((properties & PerformerExpressionBoneProperties.LocalRotation) != 0)
+                    {
+                        var localRotation = Normalize(bone.LocalRotation, bone.DazBoneId + " Expression local rotation");
+                        var rotationKey = transformPath + "|m_LocalRotation";
+                        if (!emitted.Add(rotationKey)) throw new InvalidOperationException("Duplicate Expression local-rotation channel '" + rotationKey + "'.");
+                        AddVector4(bindings, curves, transformPath, "m_LocalRotation", localRotation);
+                        boneChannelList.Add(new PerformerExpressionBoneChannel(transformPath, bone.DazBoneId,
+                            properties, bone.LocalPosition, localRotation));
+                        continue;
+                    }
+                    boneChannelList.Add(new PerformerExpressionBoneChannel(transformPath, bone.DazBoneId,
+                        properties, bone.LocalPosition, bone.LocalRotation));
+                }
+                if (channelList.Count == 0 && boneChannelList.Count == 0)
+                    throw new InvalidOperationException("This preset produced no usable Expression morph or facial-bone channels after sanitation. No active morph or facial articulation channel remains.");
+                AnimationUtility.SetEditorCurves(clip, bindings.ToArray(), curves.ToArray());
+                var candidateBindings = AnimationUtility.GetCurveBindings(clip);
+                if (candidateBindings.Any(binding => !IsSupportedExpressionBinding(binding)))
+                    throw new InvalidOperationException("Expression candidate contains a curve outside the supported blendshape and facial Transform properties.");
+                channels = channelList.ToArray();
+                boneChannels = boneChannelList.ToArray();
+                excludedChannels = excluded.Select(binding => binding.RendererPath + "|" + binding.BlendShapeName + "|"
+                    + binding.UnityWeight.ToString("R", System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+                return clip;
+            }
+            catch
+            {
+                UnityEngine.Object.DestroyImmediate(clip);
+                throw;
+            }
+        }
+
         public static void GenerateExpression(ResolvedUnityPose pose, string assetPath, string reportPath, bool replaceExisting)
         {
             if (pose == null || pose.BindingRoot == null) throw new ArgumentNullException(nameof(pose));
             assetPath = NormalizeAssetPath(assetPath);
+            reportPath = NormalizeProjectRelativePath(reportPath);
             var existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+            var occupiedClip = AssetDatabase.LoadMainAssetAtPath(assetPath);
+            if (occupiedClip != null && existing == null)
+                throw new InvalidOperationException("Another asset occupies the expected AnimationClip path " + assetPath + ".");
             if (existing != null && !replaceExisting) throw new InvalidOperationException("AnimationClip already exists at " + assetPath + ".");
-            var clip = new AnimationClip { name = Path.GetFileNameWithoutExtension(assetPath), frameRate = 30f, legacy = false };
-            var bindings = new List<EditorCurveBinding>();
-            var curves = new List<AnimationCurve>();
-            var channels = new List<PerformerExpressionChannel>();
-            var excluded = new List<string>();
-            var emitted = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var pair in pose.MorphControls.SelectMany(control => control.Bindings.Select(binding => new { Control = control, Binding = binding }))
-                         .OrderBy(item => item.Binding.RendererPath, StringComparer.Ordinal).ThenBy(item => item.Binding.BlendShapeName, StringComparer.Ordinal))
+            var clip = BuildExpressionCandidateClip(pose, out var channels, out var boneChannels, out var excluded);
+            clip.name = Path.GetFileNameWithoutExtension(assetPath);
+            var expectedCurveKeys = BuildExpressionCurveKeys(channels, boneChannels);
+            var consideredMorphControlCount = pose.Definition == null || pose.Definition.figureControls == null
+                ? pose.MorphControls.Count : pose.Definition.figureControls.Length;
+            var fullAssetPath = Path.Combine(ProjectRoot, assetPath.Replace('/', Path.DirectorySeparatorChar));
+            Directory.CreateDirectory(Path.GetDirectoryName(fullAssetPath));
+            AssetDatabase.Refresh();
+            existing = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+            var existingGuid = existing == null ? string.Empty : AssetDatabase.AssetPathToGUID(assetPath);
+            var occupiedWrapper = AssetDatabase.LoadMainAssetAtPath(Path.ChangeExtension(assetPath, ".asset").Replace('\\', '/'));
+            if (occupiedWrapper != null && !(occupiedWrapper is PerformerExpression))
             {
-                ValidateMorphBinding(pose, pair.Control, pair.Binding);
-                if (ExpressionExcludedBlendShapes.Contains(pair.Binding.BlendShapeName)) { excluded.Add(pair.Binding.BlendShapeName); continue; }
-                var property = "blendShape." + pair.Binding.BlendShapeName;
-                var key = pair.Binding.RendererPath + "|" + property;
-                if (!emitted.Add(key)) throw new InvalidOperationException("More than one active DAZ control resolves to expression curve '" + key + "'.");
-                AddBlendShapeCurve(bindings, curves, pair.Binding.RendererPath, property, pair.Binding.UnityWeight);
-                channels.Add(new PerformerExpressionChannel(pair.Binding.RendererPath, pair.Binding.BlendShapeName, pair.Binding.UnityWeight));
+                UnityEngine.Object.DestroyImmediate(clip);
+                throw new InvalidOperationException("Another asset occupies the expected PerformerExpression wrapper path.");
             }
-            if (channels.Count == 0) throw new InvalidOperationException("Expression sanitization removed every channel; no morph-only expression can be generated.");
-            AnimationUtility.SetEditorCurves(clip, bindings.ToArray(), curves.ToArray());
-            var transformCount = AnimationUtility.GetCurveBindings(clip).Count(binding => binding.type == typeof(Transform));
-            if (transformCount != 0) throw new InvalidOperationException("Expression candidate contains Transform curves.");
-            Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(ProjectRoot, assetPath.Replace('/', Path.DirectorySeparatorChar))));
-            if (existing == null) { AssetDatabase.CreateAsset(clip, assetPath); clip = null; }
-            else { CopyClipContents(clip, existing); EditorUtility.SetDirty(existing); }
-            AssetDatabase.SaveAssets();
-            AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
-            var saved = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
-            var savedBindings = AnimationUtility.GetCurveBindings(saved);
-            if (savedBindings.Any(binding => binding.type == typeof(Transform))) throw new InvalidOperationException("Saved Expression clip contains Transform curves.");
-            EnsurePerformerExpressionAsset(assetPath, saved, channels.ToArray());
+            AnimationClip backup = null;
+            PerformerExpression wrapperBackup = null;
+            var wrapperPath = Path.ChangeExtension(assetPath, ".asset").Replace('\\', '/');
+            var existingWrapper = AssetDatabase.LoadAssetAtPath<PerformerExpression>(wrapperPath);
+            var wrapperGuid = existingWrapper == null ? string.Empty : AssetDatabase.AssetPathToGUID(wrapperPath);
+            var wrapperCreated = existingWrapper == null;
             var fullReport = Path.Combine(ProjectRoot, reportPath.Replace('/', Path.DirectorySeparatorChar));
             Directory.CreateDirectory(Path.GetDirectoryName(fullReport));
-            File.WriteAllText(fullReport, JsonUtility.ToJson(new DazPoseExpressionImportReport
+            var previousReportExists = File.Exists(fullReport);
+            var previousReport = previousReportExists ? File.ReadAllBytes(fullReport) : null;
+            var reportWritten = false;
+            try
             {
-                generatedAtUtc = DateTime.UtcNow.ToString("O"), assetPath = assetPath,
-                sourceMorphControlCount = pose.MorphControls.Count, emittedMorphCurveCount = channels.Count,
-                transformCurveCount = 0, emittedChannels = channels.Select(c => c.RendererPath + "|" + c.BlendShapeName).ToArray(),
-                excludedChannels = excluded.Distinct().OrderBy(value => value, StringComparer.Ordinal).ToArray()
-            }, true));
-            if (clip != null) UnityEngine.Object.DestroyImmediate(clip);
+                if (existing == null) { AssetDatabase.CreateAsset(clip, assetPath); clip = null; }
+                else
+                {
+                    backup = UnityEngine.Object.Instantiate(existing);
+                    backup.hideFlags = HideFlags.HideAndDontSave;
+                    CopyClipContents(clip, existing);
+                    EditorUtility.SetDirty(existing);
+                }
+                AssetDatabase.SaveAssets();
+                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+                var saved = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+                if (saved == null) throw new InvalidOperationException("Unity did not reload the saved Expression clip at " + assetPath + ".");
+                var savedBindings = AnimationUtility.GetCurveBindings(saved);
+                if (savedBindings.Any(binding => !IsSupportedExpressionBinding(binding)))
+                    throw new InvalidOperationException("Saved Expression clip contains a curve outside the supported blendshape and facial Transform properties.");
+                var savedKeys = new HashSet<string>(savedBindings.Select(ExpressionCurveKey), StringComparer.Ordinal);
+                if (!savedKeys.SetEquals(expectedCurveKeys))
+                    throw new InvalidOperationException("Saved Expression clip does not contain the exact expected blendshape and facial-bone curves.");
+                if (existingWrapper != null)
+                {
+                    wrapperBackup = UnityEngine.Object.Instantiate(existingWrapper);
+                    wrapperBackup.hideFlags = HideFlags.HideAndDontSave;
+                }
+                EnsurePerformerExpressionAsset(assetPath, saved, channels, boneChannels);
+                ValidatePerformerExpressionAsset(wrapperPath, saved);
+                EnsureGuidUnchanged(assetPath, existingGuid, "Expression clip");
+                EnsureGuidUnchanged(wrapperPath, wrapperGuid, "PerformerExpression wrapper");
+
+                File.WriteAllText(fullReport, JsonUtility.ToJson(new DazPoseExpressionImportReport
+                {
+                    generatedAtUtc = DateTime.UtcNow.ToString("O"), assetPath = assetPath,
+                    assetKind = "Expression", sourceSkeletalChannelCountConsidered = pose.ActiveSkeletalChannelCount,
+                    facialSkeletalChannelCountRetained = pose.RetainedFacialSkeletalChannelCount,
+                    nonfacialSkeletalChannelCountIgnored = pose.IgnoredSkeletalChannelCount,
+                    unsupportedFacialSkeletalChannelCount = pose.UnsupportedFacialSkeletalChannelCount,
+                    sourceMorphControlCountConsidered = consideredMorphControlCount,
+                    reservedControlCountExcluded = excluded.Select(value => value.Split('|')[1]).Distinct(StringComparer.Ordinal).Count(),
+                    finalExpressionChannelCountEmitted = channels.Length + boneChannels.Length,
+                    blendShapeChannelCountEmitted = channels.Length,
+                    facialBoneChannelCountEmitted = boneChannels.Length,
+                    blendShapeCurveCount = savedBindings.Count(binding => binding.type == typeof(SkinnedMeshRenderer)),
+                    rotationCurveCount = savedBindings.Count(binding => binding.propertyName.StartsWith("m_LocalRotation.", StringComparison.Ordinal)),
+                    positionCurveCount = savedBindings.Count(binding => binding.propertyName.StartsWith("m_LocalPosition.", StringComparison.Ordinal)),
+                    totalCurveCount = savedBindings.Length,
+                    sourceMorphControlCount = consideredMorphControlCount, emittedMorphCurveCount = channels.Length,
+                    transformCurveCount = savedBindings.Count(binding => binding.type == typeof(Transform)),
+                    emittedChannels = channels.Select(c => c.RendererPath + "|" + c.BlendShapeName + "|" + c.TargetWeight.ToString("R", System.Globalization.CultureInfo.InvariantCulture)).ToArray(),
+                    emittedBoneChannels = boneChannels.Select(c => c.DazBoneId + "|" + c.TransformPath + "|" + c.Properties
+                        + "|" + c.TargetLocalPosition + "|" + c.TargetLocalRotation).ToArray(),
+                    skeletalChannelDiagnostics = pose.SkeletalChannelDiagnostics ?? Array.Empty<string>(),
+                    excludedChannels = excluded.OrderBy(value => value, StringComparer.Ordinal).ToArray()
+                }, true));
+                reportWritten = true;
+            }
+            catch
+            {
+                if (existing != null && backup != null)
+                {
+                    var restoreClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
+                    if (restoreClip != null) { CopyClipContents(backup, restoreClip); EditorUtility.SetDirty(restoreClip); }
+                }
+                else if (existing == null && AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath) != null)
+                    AssetDatabase.DeleteAsset(assetPath);
+
+                if (existingWrapper != null && wrapperBackup != null)
+                {
+                    var restoreWrapper = AssetDatabase.LoadAssetAtPath<PerformerExpression>(wrapperPath);
+                    if (restoreWrapper != null) CopyExpressionWrapperContents(wrapperBackup, restoreWrapper);
+                }
+                else if (wrapperCreated && AssetDatabase.LoadAssetAtPath<PerformerExpression>(wrapperPath) != null)
+                    AssetDatabase.DeleteAsset(wrapperPath);
+                AssetDatabase.SaveAssets();
+                throw;
+            }
+            finally
+            {
+                if (clip != null) UnityEngine.Object.DestroyImmediate(clip);
+                if (backup != null) UnityEngine.Object.DestroyImmediate(backup);
+                if (wrapperBackup != null) UnityEngine.Object.DestroyImmediate(wrapperBackup);
+                if (!reportWritten)
+                {
+                    if (previousReportExists) File.WriteAllBytes(fullReport, previousReport);
+                    else if (File.Exists(fullReport)) File.Delete(fullReport);
+                }
+            }
         }
 
-        private static void EnsurePerformerExpressionAsset(string animationAssetPath, AnimationClip clip, PerformerExpressionChannel[] channels)
+        private static void EnsurePerformerExpressionAsset(string animationAssetPath, AnimationClip clip,
+            PerformerExpressionChannel[] channels, PerformerExpressionBoneChannel[] boneChannels)
         {
             var assetPath = Path.ChangeExtension(animationAssetPath, ".asset").Replace('\\', '/');
             var expression = AssetDatabase.LoadAssetAtPath<PerformerExpression>(assetPath);
@@ -220,8 +382,228 @@ namespace DazPose.Editor.Importing
                 item.FindPropertyRelative("blendShapeName").stringValue = channels[i].BlendShapeName;
                 item.FindPropertyRelative("targetWeight").floatValue = channels[i].TargetWeight;
             }
+            var boneChannelProperty = serialized.FindProperty("boneChannels");
+            boneChannelProperty.arraySize = boneChannels.Length;
+            for (var i = 0; i < boneChannels.Length; i++)
+            {
+                var item = boneChannelProperty.GetArrayElementAtIndex(i);
+                item.FindPropertyRelative("transformPath").stringValue = boneChannels[i].TransformPath;
+                item.FindPropertyRelative("dazBoneId").stringValue = boneChannels[i].DazBoneId;
+                item.FindPropertyRelative("properties").intValue = (int)boneChannels[i].Properties;
+                item.FindPropertyRelative("targetLocalPosition").vector3Value = boneChannels[i].TargetLocalPosition;
+                item.FindPropertyRelative("targetLocalRotation").quaternionValue = boneChannels[i].TargetLocalRotation;
+            }
             serialized.ApplyModifiedPropertiesWithoutUndo(); EditorUtility.SetDirty(expression); AssetDatabase.SaveAssets();
             if (!string.IsNullOrEmpty(guid) && guid != AssetDatabase.AssetPathToGUID(assetPath)) throw new InvalidOperationException("PerformerExpression GUID changed during regeneration.");
+        }
+
+        private static void ValidatePerformerExpressionAsset(string assetPath, AnimationClip clip)
+        {
+            var expression = AssetDatabase.LoadAssetAtPath<PerformerExpression>(assetPath);
+            if (expression == null || expression.Clip != clip
+                || ((expression.Channels == null || expression.Channels.Length == 0)
+                    && (expression.BoneChannels == null || expression.BoneChannels.Length == 0)))
+                throw new InvalidOperationException("PerformerExpression wrapper is missing its exact clip reference or generated channel metadata at " + assetPath + ".");
+            if (expression.Channels.Any(channel => !IsFinite(channel.TargetWeight)))
+                throw new InvalidOperationException("Saved PerformerExpression metadata contains a non-finite target weight.");
+            if (!ExpressionMetadataMatchesClip(expression, clip))
+                throw new InvalidOperationException("Saved PerformerExpression metadata does not have exact one-to-one parity with its blendshape and facial-bone clip curves.");
+        }
+
+        private static void CopyExpressionWrapperContents(PerformerExpression source, PerformerExpression destination)
+        {
+            var sourceSerialized = new SerializedObject(source);
+            var destinationSerialized = new SerializedObject(destination);
+            destinationSerialized.FindProperty("clip").objectReferenceValue = sourceSerialized.FindProperty("clip").objectReferenceValue;
+            var sourceChannels = sourceSerialized.FindProperty("channels");
+            var destinationChannels = destinationSerialized.FindProperty("channels");
+            destinationChannels.arraySize = sourceChannels.arraySize;
+            for (var index = 0; index < sourceChannels.arraySize; index++)
+            {
+                var sourceItem = sourceChannels.GetArrayElementAtIndex(index);
+                var destinationItem = destinationChannels.GetArrayElementAtIndex(index);
+                destinationItem.FindPropertyRelative("rendererPath").stringValue = sourceItem.FindPropertyRelative("rendererPath").stringValue;
+                destinationItem.FindPropertyRelative("blendShapeName").stringValue = sourceItem.FindPropertyRelative("blendShapeName").stringValue;
+                destinationItem.FindPropertyRelative("targetWeight").floatValue = sourceItem.FindPropertyRelative("targetWeight").floatValue;
+            }
+            var sourceBoneChannels = sourceSerialized.FindProperty("boneChannels");
+            var destinationBoneChannels = destinationSerialized.FindProperty("boneChannels");
+            destinationBoneChannels.arraySize = sourceBoneChannels.arraySize;
+            for (var index = 0; index < sourceBoneChannels.arraySize; index++)
+            {
+                var sourceItem = sourceBoneChannels.GetArrayElementAtIndex(index);
+                var destinationItem = destinationBoneChannels.GetArrayElementAtIndex(index);
+                destinationItem.FindPropertyRelative("transformPath").stringValue = sourceItem.FindPropertyRelative("transformPath").stringValue;
+                destinationItem.FindPropertyRelative("dazBoneId").stringValue = sourceItem.FindPropertyRelative("dazBoneId").stringValue;
+                destinationItem.FindPropertyRelative("properties").intValue = sourceItem.FindPropertyRelative("properties").intValue;
+                destinationItem.FindPropertyRelative("targetLocalPosition").vector3Value = sourceItem.FindPropertyRelative("targetLocalPosition").vector3Value;
+                destinationItem.FindPropertyRelative("targetLocalRotation").quaternionValue = sourceItem.FindPropertyRelative("targetLocalRotation").quaternionValue;
+            }
+            destinationSerialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(destination);
+        }
+
+        internal static bool IsSupportedExpressionBinding(EditorCurveBinding binding)
+        {
+            if (binding.type == typeof(SkinnedMeshRenderer))
+                return binding.propertyName.StartsWith("blendShape.", StringComparison.Ordinal)
+                    && binding.propertyName.Length > "blendShape.".Length;
+            if (binding.type != typeof(Transform)) return false;
+            return binding.propertyName == "m_LocalPosition.x" || binding.propertyName == "m_LocalPosition.y"
+                || binding.propertyName == "m_LocalPosition.z" || binding.propertyName == "m_LocalRotation.x"
+                || binding.propertyName == "m_LocalRotation.y" || binding.propertyName == "m_LocalRotation.z"
+                || binding.propertyName == "m_LocalRotation.w";
+        }
+
+        internal static bool ExpressionMetadataMatchesClip(PerformerExpression expression, AnimationClip clip)
+        {
+            if (expression == null || clip == null || expression.Clip != clip) return false;
+            var channels = expression.Channels ?? Array.Empty<PerformerExpressionChannel>();
+            var boneChannels = expression.BoneChannels ?? Array.Empty<PerformerExpressionBoneChannel>();
+            if (channels.Length == 0 && boneChannels.Length == 0) return false;
+            HashSet<string> expected;
+            try { expected = BuildExpressionCurveKeys(channels, boneChannels); }
+            catch (Exception) { return false; }
+
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            if (AnimationUtility.GetObjectReferenceCurveBindings(clip).Length > 0
+                || bindings.Any(binding => !IsSupportedExpressionBinding(binding))) return false;
+            var actual = new HashSet<string>(bindings.Select(ExpressionCurveKey), StringComparer.Ordinal);
+            if (actual.Count != bindings.Length || !actual.SetEquals(expected)) return false;
+
+            foreach (var channel in channels)
+            {
+                var binding = EditorCurveBinding.FloatCurve(channel.RendererPath, typeof(SkinnedMeshRenderer), "blendShape." + channel.BlendShapeName);
+                var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                if (curve == null || curve.length == 0
+                    || curve.keys.Any(key => !IsFinite(key.value) || Mathf.Abs(key.value - channel.TargetWeight) > 0.001f)) return false;
+            }
+            foreach (var channel in boneChannels)
+            {
+                var properties = channel.Properties;
+                if ((properties & PerformerExpressionBoneProperties.LocalPosition) != 0)
+                {
+                    if (!CurveValueMatches(clip, channel.TransformPath, "m_LocalPosition.x", channel.TargetLocalPosition.x)
+                        || !CurveValueMatches(clip, channel.TransformPath, "m_LocalPosition.y", channel.TargetLocalPosition.y)
+                        || !CurveValueMatches(clip, channel.TransformPath, "m_LocalPosition.z", channel.TargetLocalPosition.z)) return false;
+                }
+                if ((properties & PerformerExpressionBoneProperties.LocalRotation) != 0)
+                {
+                    var rotation = Normalize(channel.TargetLocalRotation, channel.DazBoneId);
+                    if (!CurveRotationMatches(clip, channel.TransformPath, rotation)) return false;
+                }
+            }
+            return true;
+        }
+
+        private static HashSet<string> BuildExpressionCurveKeys(PerformerExpressionChannel[] channels,
+            PerformerExpressionBoneChannel[] boneChannels)
+        {
+            var keys = new HashSet<string>(StringComparer.Ordinal);
+            var morphChannels = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var channel in channels ?? Array.Empty<PerformerExpressionChannel>())
+            {
+                if (channel.RendererPath == null || string.IsNullOrWhiteSpace(channel.BlendShapeName)
+                    || !IsFinite(channel.TargetWeight) || ExpressionExcludedBlendShapes.Contains(channel.BlendShapeName))
+                    throw new InvalidOperationException("PerformerExpression has invalid or reserved blendshape metadata.");
+                var morphKey = channel.RendererPath + "|" + channel.BlendShapeName;
+                if (!morphChannels.Add(morphKey)) throw new InvalidOperationException("Duplicate PerformerExpression blendshape metadata '" + morphKey + "'.");
+                AddExpectedCurve(keys, typeof(SkinnedMeshRenderer), channel.RendererPath, "blendShape." + channel.BlendShapeName);
+            }
+
+            var boneProperties = new HashSet<string>(StringComparer.Ordinal);
+            var boneDescriptorPaths = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var channel in boneChannels ?? Array.Empty<PerformerExpressionBoneChannel>())
+            {
+                var properties = channel.Properties;
+                if (string.IsNullOrWhiteSpace(channel.DazBoneId)
+                    || channel.TransformPath == null
+                    || properties == PerformerExpressionBoneProperties.None
+                    || (properties & ~(PerformerExpressionBoneProperties.LocalPosition | PerformerExpressionBoneProperties.LocalRotation)) != 0
+                    || IsForbiddenGazeBoneId(channel.DazBoneId) || IsForbiddenGazeTransformPath(channel.TransformPath)
+                    || channel.TransformPath.IndexOf("[", StringComparison.Ordinal) >= 0
+                    || channel.TransformPath.IndexOf("]", StringComparison.Ordinal) >= 0)
+                    throw new InvalidOperationException("PerformerExpression has invalid facial-bone metadata or attempts to own a gaze bone.");
+                if (!boneDescriptorPaths.Add(channel.TransformPath))
+                    throw new InvalidOperationException("Duplicate PerformerExpression facial-bone descriptor path '" + channel.TransformPath + "'.");
+                if ((properties & PerformerExpressionBoneProperties.LocalPosition) != 0)
+                    RequireFinite(channel.TargetLocalPosition, channel.DazBoneId + " Expression target position");
+                if ((properties & PerformerExpressionBoneProperties.LocalRotation) != 0)
+                    Normalize(channel.TargetLocalRotation, channel.DazBoneId + " Expression target rotation");
+
+                if ((properties & PerformerExpressionBoneProperties.LocalPosition) != 0)
+                {
+                    var key = channel.TransformPath + "|m_LocalPosition";
+                    if (!boneProperties.Add(key)) throw new InvalidOperationException("Duplicate PerformerExpression bone property '" + key + "'.");
+                    foreach (var axis in new[] { "x", "y", "z" })
+                        AddExpectedCurve(keys, typeof(Transform), channel.TransformPath, "m_LocalPosition." + axis);
+                }
+                if ((properties & PerformerExpressionBoneProperties.LocalRotation) != 0)
+                {
+                    var key = channel.TransformPath + "|m_LocalRotation";
+                    if (!boneProperties.Add(key)) throw new InvalidOperationException("Duplicate PerformerExpression bone property '" + key + "'.");
+                    foreach (var axis in new[] { "x", "y", "z", "w" })
+                        AddExpectedCurve(keys, typeof(Transform), channel.TransformPath, "m_LocalRotation." + axis);
+                }
+            }
+            return keys;
+        }
+
+        private static void AddExpectedCurve(HashSet<string> keys, Type type, string path, string property)
+        {
+            if (!keys.Add(type.FullName + "|" + path + "|" + property))
+                throw new InvalidOperationException("Duplicate PerformerExpression clip binding '" + path + "|" + property + "'.");
+        }
+
+        private static string ExpressionCurveKey(EditorCurveBinding binding)
+            => binding.type.FullName + "|" + binding.path + "|" + binding.propertyName;
+
+        private static bool CurveValueMatches(AnimationClip clip, string path, string property, float expected)
+        {
+            var curve = AnimationUtility.GetEditorCurve(clip, EditorCurveBinding.FloatCurve(path, typeof(Transform), property));
+            return curve != null && curve.length > 0 && IsFinite(expected)
+                && curve.keys.All(key => IsFinite(key.value) && Mathf.Abs(key.value - expected) <= 0.001f);
+        }
+
+        private static bool CurveRotationMatches(AnimationClip clip, string path, Quaternion expected)
+        {
+            var x = AnimationUtility.GetEditorCurve(clip, EditorCurveBinding.FloatCurve(path, typeof(Transform), "m_LocalRotation.x"));
+            var y = AnimationUtility.GetEditorCurve(clip, EditorCurveBinding.FloatCurve(path, typeof(Transform), "m_LocalRotation.y"));
+            var z = AnimationUtility.GetEditorCurve(clip, EditorCurveBinding.FloatCurve(path, typeof(Transform), "m_LocalRotation.z"));
+            var w = AnimationUtility.GetEditorCurve(clip, EditorCurveBinding.FloatCurve(path, typeof(Transform), "m_LocalRotation.w"));
+            if (x == null || y == null || z == null || w == null
+                || x.length == 0 || x.length != y.length || x.length != z.length || x.length != w.length) return false;
+            for (var index = 0; index < x.length; index++)
+            {
+                if (Mathf.Abs(x.keys[index].time - y.keys[index].time) > 1e-6f
+                    || Mathf.Abs(x.keys[index].time - z.keys[index].time) > 1e-6f
+                    || Mathf.Abs(x.keys[index].time - w.keys[index].time) > 1e-6f) return false;
+                var value = new Quaternion(x.keys[index].value, y.keys[index].value, z.keys[index].value, w.keys[index].value);
+                if (!IsFinite(value) || Mathf.Abs(value.x * value.x + value.y * value.y + value.z * value.z + value.w * value.w - 1f) > 0.002f
+                    || Quaternion.Angle(value, expected) > 0.2f) return false;
+            }
+            return true;
+        }
+
+        private static void EnsureGuidUnchanged(string assetPath, string originalGuid, string description)
+        {
+            if (!string.IsNullOrEmpty(originalGuid) && originalGuid != AssetDatabase.AssetPathToGUID(assetPath))
+                throw new InvalidOperationException(description + " GUID changed during regeneration.");
+        }
+
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+        private static bool IsFinite(Quaternion value)
+            => IsFinite(value.x) && IsFinite(value.y) && IsFinite(value.z) && IsFinite(value.w);
+
+        private static bool IsForbiddenGazeBoneId(string boneId)
+            => boneId == "head" || boneId == "lEye" || boneId == "rEye";
+
+        private static bool IsForbiddenGazeTransformPath(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+            var separator = path.LastIndexOf('/', path.Length - 1);
+            var finalSegment = separator >= 0 ? path.Substring(separator + 1) : path;
+            return IsForbiddenGazeBoneId(finalSegment);
         }
 
         internal static AnimationClip BuildCandidateClip(ResolvedUnityPose pose)
@@ -581,7 +963,23 @@ namespace DazPose.Editor.Importing
         public int sourceMorphControlCount;
         public int emittedMorphCurveCount;
         public int transformCurveCount;
+        public string assetKind;
+        public int sourceSkeletalChannelCountConsidered;
+        public int facialSkeletalChannelCountRetained;
+        public int nonfacialSkeletalChannelCountIgnored;
+        public int unsupportedFacialSkeletalChannelCount;
+        public int sourceMorphControlCountConsidered;
+        public int reservedControlCountExcluded;
+        public int finalExpressionChannelCountEmitted;
+        public int blendShapeChannelCountEmitted;
+        public int facialBoneChannelCountEmitted;
+        public int blendShapeCurveCount;
+        public int rotationCurveCount;
+        public int positionCurveCount;
+        public int totalCurveCount;
         public string[] emittedChannels;
+        public string[] emittedBoneChannels;
+        public string[] skeletalChannelDiagnostics;
         public string[] excludedChannels;
     }
 }

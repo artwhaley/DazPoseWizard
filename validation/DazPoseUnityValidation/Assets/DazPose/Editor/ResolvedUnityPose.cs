@@ -14,6 +14,11 @@ namespace DazPose.UnityValidation
         public string SourcePoseJsonPath;
         public string CharacterName;
         public int PoseTargetBoneCount;
+        public int IgnoredSkeletalChannelCount;
+        public int ActiveSkeletalChannelCount;
+        public int RetainedFacialSkeletalChannelCount;
+        public int UnsupportedFacialSkeletalChannelCount;
+        public string[] SkeletalChannelDiagnostics = Array.Empty<string>();
         public int UnresolvedRequiredBoneCount;
         public int AmbiguousBoneCount;
         public List<ResolvedBonePose> Bones = new List<ResolvedBonePose>();
@@ -34,6 +39,8 @@ namespace DazPose.UnityValidation
         public bool HasScale;
         public bool HasDazTranslationChannel;
         public bool HasDazRotationChannel;
+        public bool ExpressionHasPosition;
+        public bool ExpressionHasRotation;
         public Vector3 LocalPosition;
         public Quaternion LocalRotation;
         public Vector3 LocalScale;

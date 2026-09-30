@@ -52,7 +52,7 @@ public sealed class UnityProjectService
 
         var importRoot = NormalizeAssetRelativePath(settings.CanonicalImportRoot);
         var outputRoot = NormalizeAssetRelativePath(settings.FinalPoseAssetRoot);
-        var expressionImportRoot = NormalizeAssetRelativePath(settings.ExpressionImportRoot);
+        var expressionImportRoot = NormalizeAssetRelativePath(settings.CanonicalExpressionImportRoot);
         var expressionOutputRoot = NormalizeAssetRelativePath(settings.FinalExpressionAssetRoot);
         ValidateAssetRoots(outputRoot, importRoot, expressionOutputRoot, expressionImportRoot);
         foreach (var root in new[] { importRoot, outputRoot, expressionImportRoot, expressionOutputRoot })
@@ -116,10 +116,10 @@ public sealed class UnityProjectService
 
     public void ValidateConfiguredRoots(AppSettings settings) => ValidateAssetRoots(
         settings.FinalPoseAssetRoot, settings.CanonicalImportRoot,
-        settings.FinalExpressionAssetRoot, settings.ExpressionImportRoot);
+        settings.FinalExpressionAssetRoot, settings.CanonicalExpressionImportRoot);
 
     public static string ImportRoot(AppSettings settings, PerformerAssetKind kind) =>
-        kind == PerformerAssetKind.Expression ? settings.ExpressionImportRoot : settings.CanonicalImportRoot;
+        kind == PerformerAssetKind.Expression ? settings.CanonicalExpressionImportRoot : settings.CanonicalImportRoot;
 
     public static string OutputRoot(AppSettings settings, PerformerAssetKind kind) =>
         kind == PerformerAssetKind.Expression ? settings.FinalExpressionAssetRoot : settings.FinalPoseAssetRoot;

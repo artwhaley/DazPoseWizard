@@ -90,7 +90,8 @@ namespace DazPose.Editor.Importing
             foreach (var assetPath in assetPaths)
             {
                 if (assetPath.EndsWith(CanonicalSuffix, StringComparison.OrdinalIgnoreCase)
-                    && (IsWithinRoot(assetPath, poseImportRoot) || IsWithinRoot(assetPath, expressionImportRoot))) Enqueue(assetPath, false);
+                    && (IsWithinRoot(assetPath, poseImportRoot)
+                        || (!string.IsNullOrEmpty(expressionImportRoot) && IsWithinRoot(assetPath, expressionImportRoot)))) Enqueue(assetPath, false);
             }
             if (referenceWasImported) Reconcile(false, true);
         }
@@ -112,7 +113,7 @@ namespace DazPose.Editor.Importing
                 return;
             }
 
-            foreach (var importRoot in new[] { poseImportRoot, expressionImportRoot })
+            foreach (var importRoot in new[] { poseImportRoot, expressionImportRoot }.Where(root => !string.IsNullOrEmpty(root)))
             {
                 var importDiskPath = AssetToDiskPath(importRoot);
                 if (!Directory.Exists(importDiskPath)) continue;
@@ -152,9 +153,11 @@ namespace DazPose.Editor.Importing
         {
             poseImportRoot = NormalizeAssetRoot(bridge.schemaVersion == 1 ? bridge.importRoot : bridge.poseImportRoot);
             poseOutputRoot = NormalizeAssetRoot(bridge.schemaVersion == 1 ? bridge.outputRoot : bridge.poseOutputRoot);
-            expressionImportRoot = bridge.schemaVersion == 1 ? "Assets/DazExpressionImports" : NormalizeAssetRoot(bridge.expressionImportRoot);
-            expressionOutputRoot = bridge.schemaVersion == 1 ? "Assets/Animations/DazExpressions" : NormalizeAssetRoot(bridge.expressionOutputRoot);
-            var roots = new[] { poseImportRoot, poseOutputRoot, expressionImportRoot, expressionOutputRoot };
+            expressionImportRoot = bridge.schemaVersion == 1 ? string.Empty : NormalizeAssetRoot(bridge.expressionImportRoot);
+            expressionOutputRoot = bridge.schemaVersion == 1 ? string.Empty : NormalizeAssetRoot(bridge.expressionOutputRoot);
+            var roots = bridge.schemaVersion == 1
+                ? new[] { poseImportRoot, poseOutputRoot }
+                : new[] { poseImportRoot, poseOutputRoot, expressionImportRoot, expressionOutputRoot };
             for (var i = 0; i < roots.Length; i++) for (var j = i + 1; j < roots.Length; j++)
                 if (IsWithinRoot(roots[i], roots[j]) || IsWithinRoot(roots[j], roots[i]))
                     throw new InvalidDataException("All pose and expression roots must be separate, non-overlapping Assets folders.");
@@ -221,10 +224,32 @@ namespace DazPose.Editor.Importing
             var canonicalDiskPath = AssetToDiskPath(canonicalAssetPath);
             if (!File.Exists(canonicalDiskPath)) return;
             var contentHash = ContentHash(canonicalDiskPath);
-            var status = ReadStatus(canonicalAssetPath) ?? new DazPoseBrowserJobStatus();
-            if (status.schemaVersion >= 2 && !string.IsNullOrWhiteSpace(status.assetKind)
-                && !string.Equals(status.assetKind, isExpression ? "Expression" : "Pose", StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("The status assetKind does not match the import root that declares this product kind.");
+            var storedStatus = ReadStatus(canonicalAssetPath);
+            var status = storedStatus ?? new DazPoseBrowserJobStatus();
+            var expectedKind = isExpression ? "Expression" : "Pose";
+            var storedKind = status.schemaVersion >= 2 && !string.IsNullOrWhiteSpace(status.assetKind)
+                ? status.assetKind : "Pose";
+            if (storedStatus != null && !string.Equals(storedKind, expectedKind, StringComparison.OrdinalIgnoreCase))
+            {
+                status.state = "Failed";
+                status.timestamp = DateTime.UtcNow.ToString("O");
+                status.errorMessage = "Browser status assetKind '" + storedKind + "' does not match the "
+                    + expectedKind + " import root. Move the canonical asset to the matching root or requeue it from the intended destination.";
+                try { WriteStatus(status); }
+                catch (Exception statusException) { Debug.LogError("Could not write DAZ Pose kind-mismatch status: " + statusException.Message); }
+                Debug.LogError("DAZ Pose browser import rejected " + canonicalAssetPath + ": " + status.errorMessage);
+                return;
+            }
+            if (storedStatus != null && status.schemaVersion >= 2 && string.IsNullOrWhiteSpace(status.assetKind))
+            {
+                status.state = "Failed";
+                status.timestamp = DateTime.UtcNow.ToString("O");
+                status.errorMessage = "Schema-2 browser status is missing assetKind; Unity will not infer the requested product from its folder.";
+                try { WriteStatus(status); }
+                catch (Exception statusException) { Debug.LogError("Could not write DAZ Pose invalid-status record: " + statusException.Message); }
+                Debug.LogError("DAZ Pose browser import rejected " + canonicalAssetPath + ": " + status.errorMessage);
+                return;
+            }
             var expectedAnimPath = ResolveExpectedAnimPath(canonicalAssetPath, importRoot, outputRoot, status);
             var expectedPerformerPosePath = ResolveExpectedWrapperPath(expectedAnimPath, outputRoot, status);
             var destinationFolder = ResolveDestinationFolder(canonicalAssetPath, importRoot, status);
@@ -236,7 +261,7 @@ namespace DazPose.Editor.Importing
             status.sourcePosePath = ReadSourcePosePath(canonicalDiskPath, status.sourcePosePath);
             status.destinationRelativeFolder = destinationFolder;
             status.expectedAnimPath = expectedAnimPath;
-            status.expectedPerformerPosePath = expectedPerformerPosePath;
+            status.expectedPerformerPosePath = isExpression ? string.Empty : expectedPerformerPosePath;
             status.expectedWrapperAssetPath = expectedPerformerPosePath;
             status.state = "Processing";
             status.timestamp = DateTime.UtcNow.ToString("O");
@@ -248,7 +273,7 @@ namespace DazPose.Editor.Importing
             GameObject referenceInstance = null;
             try
             {
-                var definition = DazPoseJsonLoader.Load(canonicalDiskPath);
+                var definition = DazPoseJsonLoader.Load(canonicalDiskPath, isExpression);
                 if (!IsG8fPose(definition))
                     throw new InvalidOperationException("Only Genesis 8 Female canonical poses are supported by this pipeline. The source figure is '" + definition.source.figureAssetId + "'.");
 
@@ -270,7 +295,7 @@ namespace DazPose.Editor.Importing
                 ResolvedUnityPose resolvedPose;
                 string resolutionFailure;
                 if (!DazPoseUnityResolver.TryResolvePose(referenceInstance.transform, canonicalDiskPath,
-                        out resolvedPose, out resolutionFailure))
+                        out resolvedPose, out resolutionFailure, true, isExpression))
                     throw new InvalidOperationException(resolutionFailure ?? "The reference G8F rig could not resolve this pose.");
 
                 var reportPath = ".dazposewizard/reports/" + StatusFileName(canonicalAssetPath) + ".report.json";
@@ -282,10 +307,14 @@ namespace DazPose.Editor.Importing
                 if (isExpression)
                 {
                     var expression = AssetDatabase.LoadAssetAtPath<PerformerExpression>(expectedPerformerPosePath);
-                    if (expression == null || expression.Clip != generated || expression.Channels == null || expression.Channels.Length == 0)
+                    if (expression == null || expression.Clip != generated
+                        || ((expression.Channels == null || expression.Channels.Length == 0)
+                            && (expression.BoneChannels == null || expression.BoneChannels.Length == 0)))
                         throw new InvalidOperationException("Unity did not generate a valid PerformerExpression at " + expectedPerformerPosePath + ".");
-                    if (AnimationUtility.GetCurveBindings(generated).Any(binding => binding.type == typeof(Transform)))
-                        throw new InvalidOperationException("Generated PerformerExpression clip contains Transform curves.");
+                    if (AnimationUtility.GetCurveBindings(generated).Any(binding => !DazPoseAnimationClipGenerator.IsSupportedExpressionBinding(binding)))
+                        throw new InvalidOperationException("Generated PerformerExpression clip contains a curve outside the sanitized blendshape and facial Transform properties.");
+                    if (!DazPoseAnimationClipGenerator.ExpressionMetadataMatchesClip(expression, generated))
+                        throw new InvalidOperationException("Generated PerformerExpression metadata is not in exact parity with the sanitized clip curves.");
                 }
                 else
                 {
@@ -397,8 +426,11 @@ namespace DazPose.Editor.Importing
             if (isExpression)
             {
                 var expression = AssetDatabase.LoadAssetAtPath<PerformerExpression>(expectedPerformerPosePath);
-                return expression != null && expression.Clip == clip && expression.Channels != null && expression.Channels.Length > 0
-                    && !AnimationUtility.GetCurveBindings(clip).Any(binding => binding.type == typeof(Transform));
+                return expression != null && expression.Clip == clip
+                    && ((expression.Channels != null && expression.Channels.Length > 0)
+                        || (expression.BoneChannels != null && expression.BoneChannels.Length > 0))
+                    && !AnimationUtility.GetCurveBindings(clip).Any(binding => !DazPoseAnimationClipGenerator.IsSupportedExpressionBinding(binding))
+                    && DazPoseAnimationClipGenerator.ExpressionMetadataMatchesClip(expression, clip);
             }
             var pose = AssetDatabase.LoadAssetAtPath<PerformerPose>(expectedPerformerPosePath);
             return pose != null && pose.Clip == clip;

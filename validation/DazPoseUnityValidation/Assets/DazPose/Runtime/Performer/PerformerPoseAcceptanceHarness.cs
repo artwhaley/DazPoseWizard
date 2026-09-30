@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace DazPose.Performer
@@ -18,10 +19,21 @@ namespace DazPose.Performer
         [SerializeField] private PerformerPose poseA = null;
         [SerializeField] private PerformerPose poseB = null;
         [SerializeField] private PerformerPose poseC = null;
+        [SerializeField] private PerformerExpression expressionA = null;
+        [SerializeField] private PerformerExpression expressionB = null;
+        [SerializeField] private PerformerExpression expressionC = null;
         [SerializeField] private Transform gazeTarget;
 
         private bool _running;
         private bool _awaitableChecksComplete;
+        private bool _expressionAwaitableChecksComplete;
+        private bool _originalExpressionTested;
+        private GazeHarnessSettings _originalGazeSettings;
+        private AttentionLifeHarnessSettings _originalAttentionLifeSettings;
+        private BreathingHarnessSettings _originalBreathingSettings;
+        private BlinkHarnessSettings _originalBlinkSettings;
+        private PerformerExpression _originalDesiredExpression;
+        private float _originalDesiredExpressionIntensity;
         private Vector3? _gazeTargetPositionBeforeTests;
         public string Status { get; private set; } = "Press F5 to run acceptance checks.";
 
@@ -63,6 +75,12 @@ namespace DazPose.Performer
             var originalGaze = CaptureGazeSettings();
             var originalAttentionLife = CaptureAttentionLifeSettings();
             var originalBlink = CaptureBlinkSettings();
+            _originalBreathingSettings = originalBreathing;
+            _originalGazeSettings = originalGaze;
+            _originalAttentionLifeSettings = originalAttentionLife;
+            _originalBlinkSettings = originalBlink;
+            _originalDesiredExpression = performer.DesiredExpression;
+            _originalDesiredExpressionIntensity = performer.DesiredExpressionIntensity;
             performer.BreathingEnabled = false;
             performer.MorphBreathingStrength = 0f;
             performer.BoneBreathingStrength = 0f;
@@ -152,6 +170,8 @@ namespace DazPose.Performer
                 failures.Add("Gaze awaitable acceptance checks did not finish before the timeout.");
 
             yield return CheckAttentionAndBlinkAcceptance(failures);
+            yield return CheckExpressionAcceptance(failures);
+            yield return CheckSpeechAcceptance(failures);
 
             performer.ClearGaze();
             yield return WaitForGazeRelease(2f);
@@ -167,6 +187,12 @@ namespace DazPose.Performer
             RestoreBreathingSettings(originalBreathing);
             RestoreAttentionLifeSettings(originalAttentionLife);
             RestoreBlinkSettings(originalBlink);
+            if (_originalExpressionTested)
+            {
+                if (_originalDesiredExpression == null) performer.ClearExpression(0f);
+                else performer.Expression(_originalDesiredExpression, _originalDesiredExpressionIntensity, 0f);
+                yield return null;
+            }
             if (_gazeTargetPositionBeforeTests.HasValue && gazeTarget != null)
                 gazeTarget.position = _gazeTargetPositionBeforeTests.Value;
 
@@ -174,6 +200,412 @@ namespace DazPose.Performer
             if (performer.RuntimePlayableCount != playableCount)
                 failures.Add("Playable count changed from " + playableCount + " to " + performer.RuntimePlayableCount + ".");
             Finish(failures);
+        }
+
+        private IEnumerator CheckExpressionBypassAndAsyncClear(List<string> failures)
+        {
+            var runtime = performer.ExpressionRuntime;
+            if (runtime == null) { failures.Add("PerformerExpressionLayer runtime is missing."); yield break; }
+            runtime.SetBypassedForAcceptance(true);
+            performer.Expression(expressionA, 1f, 0f);
+            yield return null;
+            foreach (var channel in expressionA.Channels)
+                if (TryGetBlendShapeWeight(channel, out var actual)
+                    && Math.Abs(actual - channel.TargetWeight) > BlendShapeTolerance)
+                    failures.Add("Expression bypass altered renderer channel " + channel.BlendShapeName + ".");
+            runtime.SetBypassedForAcceptance(false);
+            performer.Expression(expressionA, 1f, 0f);
+            yield return null;
+            CheckExpressionTargets("Expression bypass restored", expressionA, 1f, failures);
+        }
+
+        private IEnumerator CheckExpressionRuntimeIndependence(List<string> failures)
+        {
+            var gaze = performer.GazeRuntime;
+            var breathing = performer.BreathingRuntime;
+            var life = performer.AttentionLifeRuntime;
+            if (gaze == null || breathing == null || life == null)
+            { failures.Add("Expression independence requires live gaze, breathing, and attention-life runtimes."); yield break; }
+            performer.BreathingEnabled = true;
+            performer.AttentionLifeEnabled = true;
+            performer.EyeFixationLifeEnabled = true;
+            performer.HeadAttentionLifeEnabled = true;
+            performer.GazeEnabled = true;
+            performer.BlinkEnabled = false;
+            performer.BreathsPerMinute = 12f;
+            performer.SetBreathPhaseForAcceptance(0.31f);
+            var phaseBefore = performer.BreathPhase;
+            var generationBefore = gaze.IntentionGeneration;
+            var rawTargetBefore = performer.RawGazeTargetPosition;
+            var eyeCountdownBefore = performer.EyeFixationEventCountdown;
+            var headCountdownBefore = performer.HeadAttentionEventCountdown;
+            var breathBindings = breathing.MorphBindings.Select(binding => binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex)).ToArray();
+            var expressionJob = StartExpressionRequest(expressionB, 0.65f, 0.1f);
+            var deadline = Time.realtimeSinceStartup + 3f;
+            while (!expressionJob.Completed && Time.realtimeSinceStartup < deadline) yield return null;
+            if (!expressionJob.Completed || expressionJob.Result != ExpressionCompletion.Settled)
+                failures.Add("ExpressionAsync failed while autonomous life systems were running.");
+            if (gaze.IntentionGeneration != generationBefore || (performer.HasGazeTarget && Vector3.Distance(performer.RawGazeTargetPosition, rawTargetBefore) > 1e-5f))
+                failures.Add("Expression changed semantic gaze acquisition or target state.");
+            if (Mathf.Abs(performer.BreathPhase - phaseBefore) > 0.2f || performer.BreathPhase == phaseBefore)
+                failures.Add("Expression reset or stalled autonomous breathing phase.");
+            if (eyeCountdownBefore <= 0f || headCountdownBefore <= 0f)
+                failures.Add("Attention-life countdown diagnostics were not available at Expression test start.");
+            if (life.EyeEventCountdown > eyeCountdownBefore + 0.2f || life.HeadEventCountdown > headCountdownBefore + 0.2f)
+                failures.Add("Expression reseeded or reset attention-life event timers.");
+            if (breathBindings.Length != breathing.MorphBindings.Count)
+                failures.Add("Breathing binding set changed while Expression was active.");
+            for (var index = 0; index < breathing.MorphBindings.Count; index++)
+                if (Mathf.Abs(breathBindings[index] - breathing.MorphBindings[index].Renderer
+                        .GetBlendShapeWeight(breathing.MorphBindings[index].BlendShapeIndex)) > BlendShapeTolerance)
+                    failures.Add("Expression changed breathing-owned morph " + breathing.MorphBindings[index].SemanticName + ".");
+            performer.BreathingEnabled = false;
+            performer.SetBreathPhaseForAcceptance(_originalBreathingSettings.Phase);
+        }
+
+        private IEnumerator CheckExpressionBaseAndPoseIsolation(List<string> failures)
+        {
+            performer.BlinkEnabled = false;
+            performer.BreathingEnabled = false;
+            performer.GazeEnabled = false;
+            performer.AttentionLifeEnabled = false;
+            performer.Pose(poseA, PoseTransition.Snap);
+            performer.Expression(expressionA, 1f, 0f);
+            yield return null;
+            var exaggerated = expressionA.Channels.ToDictionary(channel => channel.RendererPath + "|" + channel.BlendShapeName,
+                channel => channel.TargetWeight, StringComparer.Ordinal);
+            performer.Pose(poseB, PoseTransition.Smooth(0.3f));
+            var deadline = Time.realtimeSinceStartup + 3f;
+            while (performer.IsTransitioning && Time.realtimeSinceStartup < deadline) yield return null;
+            if (performer.DesiredExpression != expressionA || performer.SettledExpression != expressionA)
+                failures.Add("Pose replacement cleared or superseded persistent Expression state.");
+            var baseAfterPose = performer.CaptureEvaluatedBasePoseState();
+            foreach (var channel in expressionA.Channels)
+            {
+                var key = channel.RendererPath + "|" + channel.BlendShapeName;
+                if (exaggerated.TryGetValue(key, out var target) && TryGetBlendShapeWeight(channel, out var actual))
+                {
+                    var baseIndex = FindBaseBlendShapeIndex(baseAfterPose, channel);
+                    if (baseIndex < 0) continue;
+                    var incoming = baseAfterPose.BlendShapes[baseIndex];
+                    if (Mathf.Abs(actual - Mathf.Lerp(incoming, target, 1f)) > BlendShapeTolerance)
+                        failures.Add("Full Expression stopped applying over the changing incoming Pose value for " + key + ".");
+                }
+            }
+            var transitionSource = performer.CaptureTransitionSourcePoseState();
+            foreach (var channel in expressionA.Channels)
+            {
+                var sourceIndex = FindBaseBlendShapeIndex(transitionSource, channel);
+                var baseIndex = FindBaseBlendShapeIndex(baseAfterPose, channel);
+                if (sourceIndex >= 0 && baseIndex >= 0
+                    && Mathf.Abs(transitionSource.BlendShapes[sourceIndex] - baseAfterPose.BlendShapes[baseIndex]) > BlendShapeTolerance)
+                    failures.Add("Expression contaminated the base-state pose transition source for " + channel.BlendShapeName + ".");
+            }
+            performer.ClearExpression(0.2f);
+            deadline = Time.realtimeSinceStartup + 3f;
+            while (performer.IsExpressionTransitioning && Time.realtimeSinceStartup < deadline) yield return null;
+            var clearedBase = performer.CaptureEvaluatedBasePoseState();
+            foreach (var channel in expressionA.Channels)
+            {
+                var baseIndex = FindBaseBlendShapeIndex(clearedBase, channel);
+                if (baseIndex >= 0 && TryGetBlendShapeWeight(channel, out var actual)
+                    && Mathf.Abs(actual - clearedBase.BlendShapes[baseIndex]) > BlendShapeTolerance)
+                    failures.Add("ClearExpression did not reveal the current Pose-authored channel " + channel.BlendShapeName + ".");
+            }
+        }
+
+        private IEnumerator CheckExpressionBlinkComposition(List<string> failures)
+        {
+            var blink = performer.BlinkRuntime;
+            if (blink == null || !blink.IsAvailable) { failures.Add("Blink composition requires resolved autonomous eyelid bindings."); yield break; }
+            performer.BreathingEnabled = false;
+            performer.GazeEnabled = false;
+            performer.AttentionLifeEnabled = false;
+            performer.BlinkEnabled = false;
+            performer.ClearExpression(0f);
+            yield return null;
+            foreach (var binding in blink.Bindings) binding.Renderer.SetBlendShapeWeight(binding.BlendShapeIndex, 12f);
+            var narrowings = expressionA.Channels.Where(channel =>
+                channel.BlendShapeName.IndexOf("Eye", StringComparison.OrdinalIgnoreCase) >= 0
+                || channel.BlendShapeName.IndexOf("Lid", StringComparison.OrdinalIgnoreCase) >= 0).ToArray();
+            var blinkBefore = blink.Bindings.ToDictionary(binding => binding.ImportedBlendShapeName,
+                binding => binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex), StringComparer.Ordinal);
+            performer.Expression(expressionA, 1f, 0f);
+            yield return null;
+            foreach (var binding in blink.Bindings)
+                if (Mathf.Abs(binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex) - blinkBefore[binding.ImportedBlendShapeName]) > BlendShapeTolerance)
+                    failures.Add("Facial Expression directly owned an autonomous full-blink control.");
+            if (narrowings.Length == 0)
+                Debug.Log("P0.8 Blink smoke: selected Expression has no eye/lid narrowing channel; composition is verified by the active blink-only stream below.", this);
+            blink.SetClosureForAcceptance(1f);
+            yield return null;
+            foreach (var binding in blink.Bindings)
+                if (Mathf.Abs(binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex) - binding.PositiveMaximumWeight) > BlendShapeTolerance)
+                    failures.Add("Blink did not close fully over the current Expression face.");
+            blink.SetClosureForAcceptance(0f);
+            yield return null;
+            foreach (var binding in blink.Bindings)
+                if (Mathf.Abs(binding.Renderer.GetBlendShapeWeight(binding.BlendShapeIndex) - blinkBefore[binding.ImportedBlendShapeName]) > BlendShapeTolerance)
+                    failures.Add("Opening Blink did not reveal the underlying Expression eyelid state.");
+            blink.ClearClosureOverrideForAcceptance();
+            performer.ClearExpression(0f);
+            yield return null;
+        }
+
+        private int FindBaseBlendShapeIndex(PerformerPoseSnapshot state, PerformerExpressionChannel channel)
+        {
+            var renderer = performer.GetComponent<Animator>().transform.Find(channel.RendererPath)?.GetComponent<SkinnedMeshRenderer>();
+            if (renderer == null || renderer.sharedMesh == null) return -1;
+            var shape = renderer.sharedMesh.GetBlendShapeIndex(channel.BlendShapeName);
+            if (shape < 0) return -1;
+            var index = 0;
+            foreach (var candidate in performer.GetComponent<Animator>().GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                if (candidate.sharedMesh == null) continue;
+                if (candidate == renderer) return index + shape < state.BlendShapes.Length ? index + shape : -1;
+                index += candidate.sharedMesh.blendShapeCount;
+            }
+            return -1;
+        }
+
+        private IEnumerator CheckExpressionAcceptance(List<string> failures)
+        {
+            var runtimeSelfTestFailures = PerformerExpressionRuntimeSelfTests.Run();
+            failures.AddRange(runtimeSelfTestFailures);
+            if (runtimeSelfTestFailures.Length == 0)
+                Debug.Log("P0.8.1 synthetic facial Expression runtime checks passed.", this);
+
+            if (expressionA == null || expressionB == null || expressionC == null)
+            {
+                failures.Add("Assign Expression A, B, and C to run the P0.8 acceptance checks.");
+                yield break;
+            }
+
+            _originalExpressionTested = true;
+            performer.BreathingEnabled = true;
+            performer.MorphBreathingEnabled = true;
+            performer.BoneBreathingEnabled = true;
+            performer.GazeEnabled = true;
+            performer.AttentionLifeEnabled = true;
+            performer.EyeFixationLifeEnabled = true;
+            performer.HeadAttentionLifeEnabled = true;
+            performer.BlinkEnabled = false;
+            performer.SetBreathPhaseForAcceptance(0.22f);
+            performer.ClearExpression(0f);
+            performer.Pose(poseA, PoseTransition.Snap);
+            yield return null;
+            var baseA = CaptureExpressionChannels(expressionA);
+            performer.Expression(expressionA, 1f, 0f);
+            yield return null;
+            CheckExpressionTargets("Expression A snap", expressionA, 1f, failures);
+            if (performer.DesiredExpression != expressionA || performer.SettledExpression != expressionA)
+                failures.Add("Expression A snap did not publish desired and settled state.");
+
+            performer.Expression(expressionA, 0.5f, 0.25f);
+            if (!performer.IsExpressionTransitioning) failures.Add("Same expression with changed intensity did not retarget.");
+            var deadline = Time.realtimeSinceStartup + 3f;
+            while (performer.IsExpressionTransitioning && Time.realtimeSinceStartup < deadline) yield return null;
+            foreach (var channel in expressionA.Channels)
+            {
+                var key = channel.RendererPath + "|" + channel.BlendShapeName;
+                if (baseA.TryGetValue(key, out var incoming) && TryGetBlendShapeWeight(channel, out var actual))
+                {
+                    var expected = Mathf.Lerp(incoming, channel.TargetWeight, 0.5f);
+                    if (Mathf.Abs(actual - expected) > BlendShapeTolerance)
+                        failures.Add("Expression A partial intensity did not use Lerp(incoming, target, intensity) for " + key + ".");
+                }
+            }
+
+            yield return CheckExpressionBypassAndAsyncClear(failures);
+            yield return CheckExpressionRuntimeIndependence(failures);
+            yield return CheckExpressionBaseAndPoseIsolation(failures);
+            yield return CheckExpressionBlinkComposition(failures);
+            _expressionAwaitableChecksComplete = false;
+            RunExpressionAwaitableChecks(failures);
+            deadline = Time.realtimeSinceStartup + 20f;
+            while (!_expressionAwaitableChecksComplete && Time.realtimeSinceStartup < deadline) yield return null;
+            if (!_expressionAwaitableChecksComplete) failures.Add("ExpressionAsync checks timed out.");
+
+        }
+
+        private IEnumerator CheckSpeechAcceptance(List<string> failures)
+        {
+            var runtimeFailures = PerformerSpeechRuntimeSelfTests.Run();
+            failures.AddRange(runtimeFailures);
+            if (runtimeFailures.Length == 0)
+                Debug.Log("P0.9A deterministic speech queue checks passed. Actual end-of-clip playback remains a Play Mode audio check.", this);
+
+            var smoke = GetComponent<PerformerPoseSmokeHarness>();
+            var clipA = smoke == null ? null : smoke.SpeechClipA;
+            var clipB = smoke == null ? null : smoke.SpeechClipB;
+            var source = performer.SpeechAudioSource;
+            if (source == null || clipA == null || clipB == null)
+            {
+                failures.Add("Assign the generated Speech AudioSource and Assets/generated/A.mp3 and B.mp3 in the performer smoke harness before running P0.9A integration checks.");
+                yield break;
+            }
+
+            var head = performer.GetComponent<Animator>().GetComponentsInChildren<Transform>(true)
+                .FirstOrDefault(item => item.name == "head");
+            if (head == null || source.transform == head || !source.transform.IsChildOf(head))
+                failures.Add("The dedicated speech AudioSource is not parented beneath the animated head bone.");
+
+            var previousPose = performer.DesiredPose;
+            var previousExpression = performer.DesiredExpression;
+            var previousExpressionIntensity = performer.DesiredExpressionIntensity;
+            var speechTestExpression = previousExpression == expressionA ? expressionB : expressionA;
+            if (speechTestExpression != null) performer.Expression(speechTestExpression, 0.73f, 0.5f);
+            var expectedExpression = performer.DesiredExpression;
+            var expectedExpressionIntensity = performer.DesiredExpressionIntensity;
+            var breathPhase = performer.BreathPhase;
+            var hasGazeTarget = performer.HasGazeTarget;
+            var gazeTarget = performer.RawGazeTargetPosition;
+            var eyeCountdown = performer.EyeFixationEventCountdown;
+            var headCountdown = performer.HeadAttentionEventCountdown;
+
+            performer.Say(clipA);
+            if (!performer.IsSpeaking || performer.CurrentSpeechClip != clipA
+                || performer.PendingSpeechCount != 0 || source.clip != clipA)
+                failures.Add("Say did not immediately publish the current clip on the dedicated AudioSource.");
+            if (performer.DesiredExpression != expectedExpression
+                || Mathf.Abs(performer.DesiredExpressionIntensity - expectedExpressionIntensity) > 0.0001f
+                || performer.HasGazeTarget != hasGazeTarget
+                || (hasGazeTarget && Vector3.Distance(performer.RawGazeTargetPosition, gazeTarget) > 0.0001f)
+                || Mathf.Abs(performer.BreathPhase - breathPhase) > 0.0001f
+                || Mathf.Abs(performer.EyeFixationEventCountdown - eyeCountdown) > 0.0001f
+                || Mathf.Abs(performer.HeadAttentionEventCountdown - headCountdown) > 0.0001f)
+                failures.Add("Starting speech changed Expression, gaze, breathing, or attention-life state.");
+
+            var speechTestPose = previousPose == poseB ? poseC : poseB;
+            var poseDuringSpeech = StartPoseRequest(speechTestPose, PoseTransition.Smooth(0.25f));
+            if (poseDuringSpeech.Completed || !performer.IsTransitioning)
+                failures.Add("PoseAsync did not remain active while a speech request was playing.");
+
+            var speechResult = SpeechCompletion.Finished;
+            var speechCompleted = false;
+            var speechAwaiter = performer.SayAsync(clipB).GetAwaiter();
+            speechAwaiter.OnCompleted(() =>
+            {
+                speechResult = speechAwaiter.GetResult();
+                speechCompleted = true;
+            });
+            if (performer.CurrentSpeechClip != clipA || performer.PendingSpeechCount != 1
+                || source.clip != clipA || speechCompleted)
+                failures.Add("SayAsync did not remain queued behind the current line while Pose/Expression were transitioning.");
+
+            performer.Pose(speechTestPose, PoseTransition.Snap);
+            if (!poseDuringSpeech.Completed || poseDuringSpeech.Error != null
+                || poseDuringSpeech.Result != PoseCompletion.Settled
+                || !performer.IsSpeaking || performer.CurrentSpeechClip != clipA || speechCompleted)
+                failures.Add("PoseAsync settlement was coupled to queued speech completion.");
+            performer.StopSpeaking();
+            if (!speechCompleted || speechResult != SpeechCompletion.Cancelled
+                || performer.IsSpeaking || performer.PendingSpeechCount != 0 || source.isPlaying || source.clip != null)
+                failures.Add("StopSpeaking did not stop current audio, clear the queue, and cancel the queued SayAsync request.");
+
+            performer.Say(clipA);
+            if (!performer.IsSpeaking || performer.CurrentSpeechClip != clipA)
+                failures.Add("Speech did not accept a new request after StopSpeaking.");
+            performer.StopSpeaking();
+
+            if (previousPose != null) performer.Pose(previousPose, PoseTransition.Snap);
+            if (previousExpression == null) performer.ClearExpression(0f);
+            else performer.Expression(previousExpression, previousExpressionIntensity, 0f);
+            yield break;
+        }
+
+        private async void RunExpressionAwaitableChecks(List<string> failures)
+        {
+            try
+            {
+                var first = StartExpressionRequest(expressionA, 1f, 0.4f);
+                var joined = StartExpressionRequest(expressionA, 1f, 1f);
+                await Awaitable.NextFrameAsync();
+                var replacement = StartExpressionRequest(expressionB, 0.75f, 0.2f);
+                await WaitForExpressionCompletion(first, 4f, failures, "superseded Expression waiter");
+                await WaitForExpressionCompletion(joined, 4f, failures, "joined Expression waiter");
+                await WaitForExpressionCompletion(replacement, 4f, failures, "replacement Expression waiter");
+                if (first.Result != ExpressionCompletion.Superseded || joined.Result != ExpressionCompletion.Superseded
+                    || replacement.Result != ExpressionCompletion.Settled)
+                    failures.Add("ExpressionAsync latest-intention completion results were incorrect.");
+
+                var immediate = await performer.ExpressionAsync(expressionB, 0.75f, 1f);
+                if (immediate != ExpressionCompletion.Settled) failures.Add("Settled same-state ExpressionAsync was not immediate Settled.");
+
+                var pendingForClear = StartExpressionRequest(expressionA, 1f, 0.5f);
+                await Awaitable.NextFrameAsync();
+                var clear = StartExpressionRequest(null, 0f, 0.2f);
+                await WaitForExpressionCompletion(pendingForClear, 4f, failures, "Expression superseded by ClearExpression");
+                await WaitForExpressionCompletion(clear, 4f, failures, "ClearExpression waiter");
+                if (pendingForClear.Result != ExpressionCompletion.Superseded || clear.Result != ExpressionCompletion.Settled)
+                    failures.Add("ClearExpression did not supersede the previous waiter and settle its own waiter.");
+
+                var disabled = StartExpressionRequest(expressionC, 1f, 1f);
+                performer.enabled = false;
+                if (!disabled.Completed || disabled.Result != ExpressionCompletion.PerformerDisabled)
+                    failures.Add("Disabling did not complete ExpressionAsync as PerformerDisabled.");
+                performer.enabled = true;
+                await Awaitable.NextFrameAsync();
+                if (performer.DesiredExpression != expressionC || performer.IsExpressionTransitioning)
+                    failures.Add("Re-enable did not restore the last desired Expression snapped.");
+            }
+            catch (Exception exception) { failures.Add("ExpressionAsync checks threw " + exception.GetType().Name + ": " + exception.Message); }
+            finally { _expressionAwaitableChecksComplete = true; }
+        }
+
+        private ExpressionCompletionObservation StartExpressionRequest(PerformerExpression expression, float intensity, float blendTime)
+        {
+            var observation = new ExpressionCompletionObservation(); ObserveExpressionRequest(observation, expression, intensity, blendTime); return observation;
+        }
+
+        private async void ObserveExpressionRequest(ExpressionCompletionObservation observation, PerformerExpression expression, float intensity, float blendTime)
+        {
+            try { observation.Result = await performer.ExpressionAsync(expression, intensity, blendTime); }
+            catch (Exception exception) { observation.Error = exception; }
+            finally { observation.Completed = true; }
+        }
+
+        private static async Awaitable WaitForExpressionCompletion(ExpressionCompletionObservation observation,
+            float timeout, List<string> failures, string description)
+        {
+            var deadline = Time.realtimeSinceStartup + timeout;
+            while (!observation.Completed && Time.realtimeSinceStartup < deadline) await Awaitable.NextFrameAsync();
+            if (!observation.Completed) failures.Add(description + " did not resolve before timeout.");
+            else if (observation.Error != null) failures.Add(description + " threw " + observation.Error.Message);
+        }
+
+        private void CheckExpressionTargets(string label, PerformerExpression expression, float intensity, List<string> failures)
+        {
+            foreach (var channel in expression.Channels)
+            {
+                if (!TryGetBlendShapeWeight(channel, out var actual)) { failures.Add(label + " could not resolve " + channel.RendererPath + "|" + channel.BlendShapeName + "."); continue; }
+                if (intensity >= 0.999f && Mathf.Abs(actual - channel.TargetWeight) > BlendShapeTolerance)
+                    failures.Add(label + " expected " + channel.TargetWeight + " but found " + actual + " for " + channel.BlendShapeName + ".");
+            }
+        }
+
+        private Dictionary<string, float> CaptureExpressionChannels(params PerformerExpression[] expressions)
+        {
+            var result = new Dictionary<string, float>(StringComparer.Ordinal);
+            foreach (var channel in expressions.SelectMany(expression => expression.Channels))
+                if (TryGetBlendShapeWeight(channel, out var value)) result[channel.RendererPath + "|" + channel.BlendShapeName] = value;
+            return result;
+        }
+
+        private bool TryGetBlendShapeWeight(PerformerExpressionChannel channel, out float value)
+        {
+            value = 0f;
+            var renderer = performer.GetComponent<Animator>().transform.Find(channel.RendererPath)?.GetComponent<SkinnedMeshRenderer>();
+            var index = renderer == null || renderer.sharedMesh == null ? -1 : renderer.sharedMesh.GetBlendShapeIndex(channel.BlendShapeName);
+            if (index < 0) return false;
+            value = renderer.GetBlendShapeWeight(index); return true;
+        }
+
+        private static void CheckFloatMap(string label, Dictionary<string, float> expected, Dictionary<string, float> actual, List<string> failures)
+        {
+            foreach (var pair in expected)
+                if (!actual.TryGetValue(pair.Key, out var value) || Mathf.Abs(value - pair.Value) > BlendShapeTolerance)
+                    failures.Add(label + " changed " + pair.Key + " at retarget.");
         }
 
         private IEnumerator CheckBreathingAcceptance(Animator animator, PoseSnapshot stateA,
@@ -1649,6 +2081,13 @@ namespace DazPose.Performer
             public PoseCompletion Result;
             public Exception Error;
             public Action<PoseCompletion> OnCompleted;
+        }
+
+        private sealed class ExpressionCompletionObservation
+        {
+            public bool Completed;
+            public ExpressionCompletion Result;
+            public Exception Error;
         }
 
         private sealed class GazeCompletionObservation

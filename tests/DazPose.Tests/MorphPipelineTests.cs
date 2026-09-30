@@ -325,6 +325,35 @@ public sealed class MorphPipelineTests
         finally { FixtureData.DeleteTempDirectory(temp); }
     }
 
+    [Fact]
+    public async Task ExpressionQueuePublishesTypedSchemaTwoStatusAndIndependentPaths()
+    {
+        var temp = FixtureData.NewTempDirectory();
+        try
+        {
+            var project = CreateUnityProject(temp);
+            var sourceRoot = Path.Combine(temp, "DAZ Library");
+            var source = WriteShapePreset(Path.Combine(sourceRoot, "Expressions", "Smile.duf"), FuntasyUrl, 0.75f);
+            var settings = new AppSettings { DazContentRoot = sourceRoot, FigureDefinitionPath = FixtureData.FigurePath, UnityProjectRoot = project };
+            var projectService = new UnityProjectService();
+            var registry = new ConversionRegistryService(projectService);
+            await using var queue = new ConversionQueueService(() => settings, projectService, registry,
+                new PoseOutputNamingService(projectService), concurrency: 1);
+
+            await queue.EnqueueAsync([new ConversionRequest(source, PerformerAssetKind.Expression, "Faces")]);
+            var job = Assert.Single(queue.Jobs);
+            await WaitForJobAsync(job);
+            Assert.Equal(ConversionJobState.AwaitingUnity, job.State);
+            Assert.Contains(Path.Combine("Assets", "DazExpressionImports"), job.CanonicalPath!, StringComparison.OrdinalIgnoreCase);
+            var statusPath = Assert.Single(Directory.EnumerateFiles(Path.Combine(project, ".dazposewizard", "status"), "*.json"));
+            using var status = JsonDocument.Parse(File.ReadAllText(statusPath));
+            Assert.Equal(2, status.RootElement.GetProperty("schemaVersion").GetInt32());
+            Assert.Equal("Expression", status.RootElement.GetProperty("assetKind").GetString());
+            Assert.Contains("DazExpressions", status.RootElement.GetProperty("expectedWrapperAssetPath").GetString(), StringComparison.Ordinal);
+        }
+        finally { FixtureData.DeleteTempDirectory(temp); }
+    }
+
     private static DazPose.Core.DazPose ParseControl(string url, IReadOnlyList<DazPoseKey> keys)
     {
         var payload = JsonSerializer.Serialize(new

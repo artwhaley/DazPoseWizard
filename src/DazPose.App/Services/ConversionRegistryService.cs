@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Linq;
 using DazPose.App.Models;
 
 namespace DazPose.App.Services;
@@ -195,7 +196,7 @@ public sealed class ConversionRegistryService
     }
 }
 
-/// <summary>Checks the Unity-authored PerformerPose YAML without requiring Unity to be open.</summary>
+/// <summary>Checks the Unity-authored performer wrapper YAML without requiring Unity to be open.</summary>
 public static class PerformerPoseAssetInspector
 {
     private static readonly Regex MetaGuidPattern = new(@"(?m)^guid:\s*([0-9a-f]{32})\s*$",
@@ -216,11 +217,12 @@ public static class PerformerPoseAssetInspector
 
             var scriptName = kind == PerformerAssetKind.Expression ? "PerformerExpression.cs.meta" : "PerformerPose.cs.meta";
             var scriptMeta = Path.Combine(projectRoot, "Assets", "DazPose", "Runtime", "Performer", scriptName);
-            if (File.Exists(scriptMeta))
-            {
-                var scriptGuid = ReadMetaGuid(scriptMeta);
-                if (scriptGuid is null || !HasReference(yaml, "m_Script", scriptGuid)) return false;
-            }
+            if (!File.Exists(scriptMeta)) return false;
+            var scriptGuid = ReadMetaGuid(scriptMeta);
+            if (scriptGuid is null || !HasReference(yaml, "m_Script", scriptGuid)) return false;
+
+            if (kind == PerformerAssetKind.Expression)
+                return IsUsableExpression(yaml, File.ReadAllText(animationClipPath));
 
             return true;
         }
@@ -245,6 +247,230 @@ public static class PerformerPoseAssetInspector
         var match = fieldPattern.Match(yaml);
         return match.Success && string.Equals(match.Groups[1].Value, guid, StringComparison.OrdinalIgnoreCase);
     }
+
+    private static bool IsUsableExpression(string wrapperYaml, string clipYaml)
+    {
+        var channels = ParseMorphChannels(GetYamlSection(wrapperYaml, "channels"));
+        var boneChannels = ParseBoneChannels(GetYamlSection(wrapperYaml, "boneChannels"));
+        if (channels is null || boneChannels is null || channels.Count == 0 && boneChannels.Count == 0) return false;
+
+        var expectedMorphs = new Dictionary<string, float>(StringComparer.Ordinal);
+        foreach (var channel in channels)
+        {
+            var key = channel.Path + "|blendShape." + channel.Name;
+            if (expectedMorphs.ContainsKey(key)) return false;
+            expectedMorphs.Add(key, channel.Weight);
+        }
+
+        var expectedPositions = new Dictionary<string, float[]>(StringComparer.Ordinal);
+        var expectedRotations = new Dictionary<string, float[]>(StringComparer.Ordinal);
+        var boneDescriptorPaths = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var channel in boneChannels)
+        {
+            if (!boneDescriptorPaths.Add(channel.Path)) return false;
+            var properties = channel.Properties;
+            if ((properties & 1) != 0 && !expectedPositions.TryAdd(channel.Path, channel.Position)) return false;
+            if ((properties & 2) != 0 && !expectedRotations.TryAdd(channel.Path, channel.Rotation)) return false;
+        }
+
+        if (!IsEmptyCurveArray(clipYaml, "m_CompressedRotationCurves")
+            || !IsEmptyCurveArray(clipYaml, "m_EulerCurves")
+            || !IsEmptyCurveArray(clipYaml, "m_ScaleCurves")
+            || !IsEmptyCurveArray(clipYaml, "m_PPtrCurves")) return false;
+
+        var actualPositions = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var block in GetCurveBlocks(GetYamlSection(clipYaml, "m_PositionCurves")))
+        {
+            var path = GetScalarField(block, "path");
+            if (path is null || !actualPositions.Add(path) || !expectedPositions.TryGetValue(path, out var target)
+                || !CurveVectorsMatch(block, target, quaternion: false)) return false;
+        }
+        if (!actualPositions.SetEquals(expectedPositions.Keys)) return false;
+
+        var actualRotations = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var block in GetCurveBlocks(GetYamlSection(clipYaml, "m_RotationCurves")))
+        {
+            var path = GetScalarField(block, "path");
+            if (path is null || !actualRotations.Add(path) || !expectedRotations.TryGetValue(path, out var target)
+                || !CurveVectorsMatch(block, target, quaternion: true)) return false;
+        }
+        if (!actualRotations.SetEquals(expectedRotations.Keys)) return false;
+
+        var actualMorphs = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var block in GetCurveBlocks(GetYamlSection(clipYaml, "m_FloatCurves")))
+        {
+            var attribute = GetScalarField(block, "attribute");
+            var path = GetScalarField(block, "path");
+            if (attribute is null || path is null || !attribute.StartsWith("blendShape.", StringComparison.Ordinal)) return false;
+            var key = path + "|" + attribute;
+            if (!actualMorphs.Add(key) || !expectedMorphs.TryGetValue(key, out var target)
+                || !CurveScalarsMatch(block, target)) return false;
+        }
+        return actualMorphs.SetEquals(expectedMorphs.Keys);
+    }
+
+    private static List<MorphChannel>? ParseMorphChannels(string section)
+    {
+        var channels = new List<MorphChannel>();
+        var entries = GetListEntries(section, "rendererPath");
+        foreach (var entry in entries)
+        {
+            var path = GetScalarField(entry, "rendererPath");
+            var name = GetScalarField(entry, "blendShapeName");
+            var rawWeight = GetScalarField(entry, "targetWeight");
+            if (path is null || name is null || string.IsNullOrWhiteSpace(name)
+                || IsReservedExpressionMorph(name)
+                || !TryFiniteFloat(rawWeight, out var weight)) return null;
+            channels.Add(new MorphChannel(path, name, weight));
+        }
+        return channels;
+    }
+
+    private static List<BoneChannel>? ParseBoneChannels(string section)
+    {
+        var channels = new List<BoneChannel>();
+        foreach (var entry in GetListEntries(section, "transformPath"))
+        {
+            var path = GetScalarField(entry, "transformPath");
+            var boneId = GetScalarField(entry, "dazBoneId");
+            var rawProperties = GetScalarField(entry, "properties");
+            if (path is null || string.IsNullOrWhiteSpace(path) || path.Contains('[') || path.Contains(']')
+                || string.IsNullOrWhiteSpace(boneId) || boneId is "head" or "lEye" or "rEye"
+                || IsForbiddenGazePath(path)
+                || !int.TryParse(rawProperties, System.Globalization.NumberStyles.Integer,
+                    System.Globalization.CultureInfo.InvariantCulture, out var properties)
+                || properties == 0 || (properties & ~3) != 0) return null;
+
+            var position = ParseVector(entry, "targetLocalPosition", 3);
+            var rotation = ParseVector(entry, "targetLocalRotation", 4);
+            if (position is null || rotation is null
+                || (properties & 1) != 0 && !position.All(float.IsFinite)
+                || (properties & 2) != 0 && (!rotation.All(float.IsFinite) || rotation.Sum(value => value * value) <= 1e-8f)) return null;
+            if ((properties & 2) != 0)
+            {
+                var norm = MathF.Sqrt(rotation.Sum(value => value * value));
+                for (var index = 0; index < rotation.Length; index++) rotation[index] /= norm;
+            }
+            channels.Add(new BoneChannel(path, boneId, properties, position, rotation));
+        }
+        return channels;
+    }
+
+    private static string GetYamlSection(string yaml, string fieldName)
+    {
+        var header = Regex.Match(yaml, @"(?m)^[ \t]*" + Regex.Escape(fieldName) + @":(?:[ \t]*\[\])?[ \t]*$",
+            RegexOptions.CultureInvariant);
+        if (!header.Success) return string.Empty;
+        var start = header.Index + header.Length;
+        var boundary = Regex.Match(yaml.Substring(start), @"(?m)^[ \t]{2}m_[A-Za-z0-9_]+:", RegexOptions.CultureInvariant);
+        return boundary.Success ? yaml.Substring(start, boundary.Index) : yaml.Substring(start);
+    }
+
+    private static List<string> GetListEntries(string section, string listItemField)
+    {
+        var starts = Regex.Matches(section, @"(?m)^[ \t]*-[ \t]*" + Regex.Escape(listItemField) + @":",
+            RegexOptions.CultureInvariant);
+        var entries = new List<string>(starts.Count);
+        for (var index = 0; index < starts.Count; index++)
+        {
+            var end = index + 1 < starts.Count ? starts[index + 1].Index : section.Length;
+            entries.Add(section.Substring(starts[index].Index, end - starts[index].Index));
+        }
+        return entries;
+    }
+
+    private static List<string> GetCurveBlocks(string section)
+    {
+        var starts = Regex.Matches(section, @"(?m)^[ \t]*-[ \t]*curve:", RegexOptions.CultureInvariant);
+        var blocks = new List<string>(starts.Count);
+        for (var index = 0; index < starts.Count; index++)
+        {
+            var end = index + 1 < starts.Count ? starts[index + 1].Index : section.Length;
+            blocks.Add(section.Substring(starts[index].Index, end - starts[index].Index));
+        }
+        return blocks;
+    }
+
+    private static string? GetScalarField(string yaml, string fieldName)
+    {
+        var match = Regex.Match(yaml, @"(?m)^[ \t]*(?:-[ \t]*)?" + Regex.Escape(fieldName) + @":[ \t]*([^\r\n]*)$",
+            RegexOptions.CultureInvariant);
+        if (!match.Success) return null;
+        var value = match.Groups[1].Value.Trim();
+        if (value.Length >= 2 && (value[0] == '"' && value[^1] == '"' || value[0] == '\'' && value[^1] == '\''))
+            value = value.Substring(1, value.Length - 2);
+        return value;
+    }
+
+    private static float[]? ParseVector(string yaml, string fieldName, int componentCount)
+    {
+        var value = GetScalarField(yaml, fieldName);
+        if (value is null) return null;
+        var components = Regex.Matches(value, @"([xyzw]):\s*([^,}]+)", RegexOptions.CultureInvariant);
+        var labels = componentCount == 3 ? "xyz" : "xyzw";
+        if (components.Count != componentCount) return null;
+        var result = new float[componentCount];
+        for (var index = 0; index < componentCount; index++)
+        {
+            if (!string.Equals(components[index].Groups[1].Value, labels[index].ToString(), StringComparison.Ordinal)
+                || !TryFiniteFloat(components[index].Groups[2].Value, out result[index])) return null;
+        }
+        return result;
+    }
+
+    private static bool CurveVectorsMatch(string block, float[] expected, bool quaternion)
+    {
+        var values = Regex.Matches(block,
+            @"(?m)^[ \t]*value:[ \t]*\{x:\s*([^,]+),\s*y:\s*([^,]+),\s*z:\s*([^,}]+)" + (quaternion ? @",\s*w:\s*([^}]+)" : string.Empty) + @"\}",
+            RegexOptions.CultureInvariant);
+        if (values.Count == 0) return false;
+        foreach (Match value in values)
+        {
+            var parsed = new float[expected.Length];
+            for (var index = 0; index < expected.Length; index++)
+                if (!TryFiniteFloat(value.Groups[index + 1].Value, out parsed[index])) return false;
+            if (quaternion)
+            {
+                var norm = MathF.Sqrt(parsed.Sum(component => component * component));
+                if (norm <= 1e-8f) return false;
+                var dot = Math.Abs(parsed.Select((component, index) => component * expected[index] / norm).Sum());
+                if (Math.Abs(1f - dot) > 0.002f) return false;
+            }
+            else if (parsed.Where((component, index) => Math.Abs(component - expected[index]) > 0.001f).Any()) return false;
+        }
+        return true;
+    }
+
+    private static bool CurveScalarsMatch(string block, float expected)
+    {
+        var values = Regex.Matches(block, @"(?m)^[ \t]*value:[ \t]*([^\r\n]+)$", RegexOptions.CultureInvariant);
+        return values.Count > 0 && values.Cast<Match>().All(value =>
+            TryFiniteFloat(value.Groups[1].Value, out var parsed) && Math.Abs(parsed - expected) <= 0.001f);
+    }
+
+    private static bool IsEmptyCurveArray(string yaml, string fieldName)
+        => Regex.IsMatch(yaml, @"(?m)^[ \t]*" + Regex.Escape(fieldName) + @":[ \t]*\[\][ \t]*$",
+            RegexOptions.CultureInvariant);
+
+    private static bool TryFiniteFloat(string? value, out float result)
+        => float.TryParse(value, System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out result) && float.IsFinite(result);
+
+    private static bool IsReservedExpressionMorph(string name)
+        => name is "Breathe" or "EX_Breathe" or "Genesis8Female__EX_Breathe"
+            or "BreatheBelly" or "EX_BreatheBelly" or "Genesis8Female__EX_BreatheBelly"
+            or "eCTRLEyesClosedL" or "eCTRLEyesClosedR"
+            or "Genesis8Female__eCTRLEyesClosedL" or "Genesis8Female__eCTRLEyesClosedR";
+
+    private static bool IsForbiddenGazePath(string path)
+    {
+        var separator = path.LastIndexOf('/');
+        var finalSegment = separator >= 0 ? path.Substring(separator + 1) : path;
+        return finalSegment is "head" or "lEye" or "rEye";
+    }
+
+    private sealed record MorphChannel(string Path, string Name, float Weight);
+    private sealed record BoneChannel(string Path, string BoneId, int Properties, float[] Position, float[] Rotation);
 }
 
 public sealed record ResolvedPoseOutput(PerformerAssetKind Kind, string BaseName, string CanonicalPath, string CanonicalAssetPath,

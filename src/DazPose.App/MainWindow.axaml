@@ -119,8 +119,8 @@
                           <Image Source="{Binding PreviewImage}" Stretch="UniformToFill" Opacity="{Binding ThumbnailOpacity}" />
                           <TextBlock Text="{Binding AssetTypeLabel}" Opacity="0.35" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" IsVisible="{Binding HasNoPreview}" />
                           <Border Background="#AA1F2329" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" CornerRadius="3" Padding="4,2"
-                                  IsVisible="{Binding IsConverted}">
-                            <TextBlock Text="✓" Foreground="#63D297" FontWeight="Bold" />
+                                  IsVisible="{Binding IsConverted}" MaxWidth="88">
+                            <TextBlock Text="{Binding StateLabel}" Foreground="#63D297" FontWeight="Bold" FontSize="9" TextTrimming="CharacterEllipsis" />
                           </Border>
                         </Grid>
                       </Border>
@@ -139,12 +139,12 @@
           </Grid>
         </Border>
 
-        <Grid Grid.Column="2" RowDefinitions="*,*" RowSpacing="8">
+        <Grid Grid.Column="2" RowDefinitions="*,Auto,*">
         <Border Grid.Row="0" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="8"
                 DragDrop.AllowDrop="True" DragDrop.DragOver="DestinationDragOver" DragDrop.Drop="DestinationDrop">
           <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
-              <TextBlock Text="UNITY POSE ASSETS" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" />
+              <TextBlock Text="UNITY POSES" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" />
               <Button Grid.Column="1" Content="＋" FontSize="17" ToolTip.Tip="Create a matching Unity destination and import folder" Click="CreateFolderClicked" />
             </Grid>
             <TextBlock Grid.Row="1" Text="{Binding Settings.FinalPoseAssetRoot}" Opacity="0.7" TextTrimming="CharacterEllipsis" />
@@ -158,14 +158,15 @@
             </TreeView>
           </Grid>
         </Border>
-        <Border Grid.Row="1" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="8"
+        <Border Grid.Row="1" Height="1" Background="#50545C" Margin="8,4" />
+        <Border Grid.Row="2" BorderBrush="#50545C" BorderThickness="1" CornerRadius="5" Padding="8"
                 DragDrop.AllowDrop="True" DragDrop.DragOver="DestinationDragOver" DragDrop.Drop="ExpressionDestinationDrop">
           <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
               <TextBlock Text="UNITY EXPRESSIONS" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" />
               <Button Grid.Column="1" Content="＋" FontSize="17" ToolTip.Tip="Create matching expression output and import folders" Click="CreateExpressionFolderClicked" />
             </Grid>
-            <TextBlock Grid.Row="1" Text="{Binding Settings.FinalExpressionAssetRoot}" Opacity="0.7" TextTrimming="CharacterEllipsis" />
+            <TextBlock Grid.Row="1" Text="{Binding CurrentExpressionDestinationRoot}" Opacity="0.7" TextTrimming="CharacterEllipsis" />
             <TreeView x:Name="ExpressionDestinationTree" Grid.Row="2" ItemsSource="{Binding ExpressionDestinationFolders}" SelectedItem="{Binding SelectedExpressionDestinationFolder, Mode=TwoWay}"
                       DragDrop.AllowDrop="True" DragDrop.DragOver="DestinationDragOver" DragDrop.Drop="ExpressionDestinationDrop">
               <TreeView.ItemTemplate>

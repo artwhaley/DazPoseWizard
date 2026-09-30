@@ -12,6 +12,7 @@ public sealed class PoseCardViewModel : INotifyPropertyChanged
     private ConversionJobState? _state;
     private IReadOnlyList<ConversionOutput> _outputs = Array.Empty<ConversionOutput>();
     private string? _errorMessage;
+    private PerformerAssetKind? _activeKind;
 
     public PoseCardViewModel(PoseLibraryEntry entry) => Entry = entry;
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -21,17 +22,22 @@ public sealed class PoseCardViewModel : INotifyPropertyChanged
         ? "DAZ SHAPE" : "DAZ POSE";
     public Bitmap? PreviewImage { get => _previewImage; set { if (Set(ref _previewImage, value)) OnPropertyChanged(nameof(HasNoPreview)); } }
     public bool HasNoPreview => PreviewImage is null;
-    public ConversionJobState? State { get => _state; set { if (Set(ref _state, value)) { OnPropertyChanged(nameof(StateLabel)); OnPropertyChanged(nameof(StatusBrush)); OnPropertyChanged(nameof(IsConverted)); OnPropertyChanged(nameof(ThumbnailOpacity)); OnPropertyChanged(nameof(StatusToolTip)); } } }
+    public ConversionJobState? State { get => _state; set { if (Set(ref _state, value)) { OnPropertyChanged(nameof(StateLabel)); OnPropertyChanged(nameof(StatusBrush)); OnPropertyChanged(nameof(IsConverted)); OnPropertyChanged(nameof(IsConvertedAsPose)); OnPropertyChanged(nameof(IsConvertedAsExpression)); OnPropertyChanged(nameof(ThumbnailOpacity)); OnPropertyChanged(nameof(StatusToolTip)); } } }
+    public PerformerAssetKind? ActiveKind { get => _activeKind; set { if (Set(ref _activeKind, value)) OnPropertyChanged(nameof(StateLabel)); } }
     public string? ErrorMessage { get => _errorMessage; set { if (Set(ref _errorMessage, value)) OnPropertyChanged(nameof(StatusToolTip)); } }
-    public IReadOnlyList<ConversionOutput> Outputs { get => _outputs; set { if (Set(ref _outputs, value)) { OnPropertyChanged(nameof(StateLabel)); OnPropertyChanged(nameof(StatusBrush)); OnPropertyChanged(nameof(IsConverted)); OnPropertyChanged(nameof(ThumbnailOpacity)); OnPropertyChanged(nameof(StatusToolTip)); } } }
-    public bool IsConverted => Outputs.Any(output => output.State == ConversionJobState.Converted);
+    public IReadOnlyList<ConversionOutput> Outputs { get => _outputs; set { if (Set(ref _outputs, value)) { OnPropertyChanged(nameof(StateLabel)); OnPropertyChanged(nameof(StatusBrush)); OnPropertyChanged(nameof(IsConverted)); OnPropertyChanged(nameof(IsConvertedAsPose)); OnPropertyChanged(nameof(IsConvertedAsExpression)); OnPropertyChanged(nameof(ThumbnailOpacity)); OnPropertyChanged(nameof(StatusToolTip)); } } }
+    public bool IsConvertedAsPose => Outputs.Any(output => output.AssetKind == PerformerAssetKind.Pose && output.State == ConversionJobState.Converted);
+    public bool IsConvertedAsExpression => Outputs.Any(output => output.AssetKind == PerformerAssetKind.Expression && output.State == ConversionJobState.Converted);
+    public bool IsConverted => IsConvertedAsPose || IsConvertedAsExpression;
     public double ThumbnailOpacity => IsConverted ? 0.72 : 1.0;
-    public string StateLabel => IsConverted ? "✓ Converted" : State switch
+    public string StateLabel => IsConverted
+        ? IsConvertedAsPose && IsConvertedAsExpression ? "P ✓  E ✓" : IsConvertedAsPose ? "P ✓" : "E ✓"
+        : State switch
     {
-        ConversionJobState.Queued => "Queued",
-        ConversionJobState.Converting => "Converting",
-        ConversionJobState.AwaitingUnity => "Awaiting Unity",
-        ConversionJobState.Failed => "⚠ Failed",
+        ConversionJobState.Queued => ActiveKind == PerformerAssetKind.Expression ? "E · Queued" : "P · Queued",
+        ConversionJobState.Converting => ActiveKind == PerformerAssetKind.Expression ? "E · Converting" : "P · Converting",
+        ConversionJobState.AwaitingUnity => ActiveKind == PerformerAssetKind.Expression ? "E · Awaiting Unity" : "P · Awaiting Unity",
+        ConversionJobState.Failed => ActiveKind == PerformerAssetKind.Expression ? "E · Failed" : "⚠ Failed",
         _ => ""
     };
     public IBrush StatusBrush => IsConverted ? Brushes.LightGreen : State switch
@@ -47,7 +53,7 @@ public sealed class PoseCardViewModel : INotifyPropertyChanged
         get
         {
             if (IsConverted)
-                return "Converted to:" + Environment.NewLine + string.Join(Environment.NewLine, Outputs.Where(output => output.State == ConversionJobState.Converted).Select(output =>
+                return "Converted as:" + Environment.NewLine + string.Join(Environment.NewLine, Outputs.Where(output => output.State == ConversionJobState.Converted).Select(output =>
                     $"{output.AssetKind}: {output.DestinationRelativeFolder}/{Path.GetFileName(output.WrapperAssetPath)}"));
             if (State == ConversionJobState.Failed) return ErrorMessage ?? "Conversion failed.";
             return StateLabel;

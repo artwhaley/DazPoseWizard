@@ -112,7 +112,15 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     }
     public FolderNode? SelectedSourceFolder { get => _selectedSourceFolder; set { if (value is not null && !ReferenceEquals(value, _selectedSourceFolder)) SelectSourceFolder(value); } }
     public FolderNode? SelectedDestinationFolder { get => _selectedDestinationFolder; set { if (value is not null && !ReferenceEquals(value, _selectedDestinationFolder)) SelectDestinationFolder(value); } }
-    public FolderNode? SelectedExpressionDestinationFolder { get => _selectedExpressionDestinationFolder; set { if (value is not null) Set(ref _selectedExpressionDestinationFolder, value); } }
+    public FolderNode? SelectedExpressionDestinationFolder
+    {
+        get => _selectedExpressionDestinationFolder;
+        set
+        {
+            if (value is null || !Set(ref _selectedExpressionDestinationFolder, value)) return;
+            OnPropertyChanged(nameof(CurrentExpressionDestinationLabel));
+        }
+    }
     public string SearchText { get => _searchText; set { if (Set(ref _searchText, value)) { OnPropertyChanged(nameof(EmptyMessage)); DebounceSearch(); } } }
     public bool SearchIncludesChildren { get => _searchIncludesChildren; set { if (Set(ref _searchIncludesChildren, value)) { _settings.SearchIncludesChildren = value; OnPropertyChanged(nameof(IsCurrentFolderScope)); OnPropertyChanged(nameof(IsIncludeChildrenScope)); OnPropertyChanged(nameof(EmptyMessage)); _ = PersistSettingsAsync(); _ = RefreshCardsAsync(); } } }
     public bool IsCurrentFolderScope { get => !SearchIncludesChildren; set { if (value) SearchIncludesChildren = false; } }
@@ -135,6 +143,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     public string PageSummary => _filteredCount == 0 ? "0 poses" : $"{_pageOffset + 1}–{Math.Min(_pageOffset + VisibleCount, _filteredCount)} of {_filteredCount}";
     public string CurrentSourceFolderLabel => SelectedSourceFolder?.RelativePath is { Length: > 0 } path ? path : "DAZ Library";
     public string CurrentDestinationLabel => SelectedDestinationFolder?.RelativePath is { Length: > 0 } path ? path : "Daz Poses";
+    public string CurrentExpressionDestinationLabel => SelectedExpressionDestinationFolder?.RelativePath is { Length: > 0 } path ? path : "Daz Expressions";
+    public string CurrentExpressionDestinationRoot => _settings.FinalExpressionAssetRoot;
     public string RefreshButtonText => IsScanning ? "Scanning…" : "Refresh library";
     public string EmptyMessage => IsScanning
         ? "Scanning this library now. Pose cards appear as each batch is indexed."
@@ -186,7 +196,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         settings.FinalPoseAssetRoot = _projectService.NormalizeAssetRelativePath(settings.FinalPoseAssetRoot);
         settings.CanonicalImportRoot = _projectService.NormalizeAssetRelativePath(settings.CanonicalImportRoot);
         settings.FinalExpressionAssetRoot = _projectService.NormalizeAssetRelativePath(settings.FinalExpressionAssetRoot);
-        settings.ExpressionImportRoot = _projectService.NormalizeAssetRelativePath(settings.ExpressionImportRoot);
+        settings.CanonicalExpressionImportRoot = _projectService.NormalizeAssetRelativePath(settings.CanonicalExpressionImportRoot);
         _projectService.ValidateConfiguredRoots(settings);
         _settings = settings;
         _searchIncludesChildren = settings.SearchIncludesChildren;
@@ -198,6 +208,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         _showOtherFigures = settings.ShowOtherFigures;
         await _settingsService.SaveAsync(_settings, cancellationToken);
         OnPropertyChanged(nameof(Settings));
+        OnPropertyChanged(nameof(CurrentExpressionDestinationRoot));
         OnPropertyChanged(nameof(IsConfigured));
         OnPropertyChanged(nameof(IsCurrentFolderScope));
         OnPropertyChanged(nameof(IsIncludeChildrenScope));
@@ -285,7 +296,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         var node = FindFolder(collection, relative);
         if (kind == PerformerAssetKind.Expression) SelectedExpressionDestinationFolder = node;
         else SelectDestinationFolder(node);
-        StatusMessage = $"Created {relative} under both {kind} roots.";
+        StatusMessage = $"Created {relative} under the matching {kind} roots.";
         return relative;
     }
 
@@ -294,8 +305,10 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     {
         var requests = cards.Select(card => new ConversionRequest(card.Entry.SourcePath, kind, destination?.RelativePath ?? string.Empty)).ToArray();
         var count = await _queue.EnqueueAsync(requests, cancellationToken);
-        var destinationName = destination?.RelativePath is { Length: > 0 } relative ? relative : "Daz Poses";
-        StatusMessage = count == 0 ? $"Those presets are already queued as {kind} for this destination." : $"{count} preset{(count == 1 ? "" : "s")} queued as {kind} for {destinationName}.";
+        var destinationName = destination?.RelativePath is { Length: > 0 } relative ? relative
+            : kind == PerformerAssetKind.Expression ? "Daz Expressions" : "Daz Poses";
+        var productName = kind == PerformerAssetKind.Expression ? "Expressions" : "Poses";
+        StatusMessage = count == 0 ? $"Those presets are already queued as {productName} for this destination." : $"{count} preset{(count == 1 ? "" : "s")} queued as {productName} for {destinationName}.";
         return count;
     }
 
@@ -467,17 +480,21 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
     private void ApplyStatus(PoseCardViewModel card)
     {
         if (_outputs.TryGetValue(card.Entry.SourcePath, out var outputs)) card.Outputs = outputs;
-        var latestJob = _queue.Jobs.FirstOrDefault(job => string.Equals(job.Request.SourcePosePath,
+        var latestJob = _queue.Jobs.FirstOrDefault(job => string.Equals(job.Request.SourcePresetPath,
             card.Entry.SourcePath, StringComparison.OrdinalIgnoreCase));
         if (latestJob is not null)
         {
             card.State = latestJob.State;
+            card.ActiveKind = latestJob.Request.Kind;
             card.ErrorMessage = latestJob.ErrorMessage;
         }
         else if (outputs is not null && outputs.Count > 0)
         {
-            var latestOutput = outputs.OrderByDescending(output => output.Timestamp).First();
+            var latestOutput = outputs.Where(output => output.State != ConversionJobState.Converted)
+                .OrderByDescending(output => output.Timestamp).FirstOrDefault()
+                ?? outputs.OrderByDescending(output => output.Timestamp).First();
             card.State = latestOutput.State;
+            card.ActiveKind = latestOutput.AssetKind;
             card.ErrorMessage = latestOutput.ErrorMessage;
         }
     }
@@ -689,9 +706,9 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged, IAsyncDisposab
         {
             _registry.GetStatusDirectory(_settings),
             _projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.CanonicalImportRoot),
-            _projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.FinalPoseAssetRoot)
-            ,_projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.ExpressionImportRoot)
-            ,_projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.FinalExpressionAssetRoot)
+            _projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.FinalPoseAssetRoot),
+            _projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.CanonicalExpressionImportRoot),
+            _projectService.ResolveAssetPath(_settings.UnityProjectRoot, _settings.FinalExpressionAssetRoot)
         };
         foreach (var path in paths.Distinct(StringComparer.OrdinalIgnoreCase))
         {

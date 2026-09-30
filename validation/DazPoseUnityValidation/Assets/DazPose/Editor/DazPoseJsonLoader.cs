@@ -7,7 +7,7 @@ namespace DazPose.UnityValidation
 {
     public static class DazPoseJsonLoader
     {
-        public static DazPoseDefinition Load(string path)
+        public static DazPoseDefinition Load(string path, bool ignoreUnsupportedSkeletalChannels = false)
         {
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
                 throw new FileNotFoundException("Choose an existing .dazpose.json file.", path);
@@ -19,11 +19,13 @@ namespace DazPose.UnityValidation
                 throw new InvalidDataException("The selected file is not a supported DazPoseTool version 1 or 2 .dazpose.json.");
             var hasActiveFigureControl = definition.version == 2 && (definition.figureControls ?? Array.Empty<DazPoseFigureControl>())
                 .Any(control => control != null && Mathf.Abs(control.value) > 1e-7f);
-            if (definition.source == null || definition.bones == null || (definition.bones.Length == 0 && !hasActiveFigureControl))
+            if (definition.source == null || definition.bones == null
+                || (!ignoreUnsupportedSkeletalChannels && definition.bones.Length == 0 && !hasActiveFigureControl))
                 throw new InvalidDataException("The selected .dazpose.json has no source metadata or supported skeletal/figure-control data.");
 
             var unsupportedActiveChannel = (definition.poseChannels ?? Array.Empty<DazPoseChannel>())
                 .FirstOrDefault(channel => channel != null && !channel.supported
+                    && !(ignoreUnsupportedSkeletalChannels && IsSkeletalTransformChannel(channel))
                     && (channel.keys ?? Array.Empty<DazPoseKey>()).Any(key => key != null && Mathf.Abs(key.value) > 1e-7f));
             if (unsupportedActiveChannel != null)
                 throw new InvalidDataException("Canonical pose contains an unsupported non-neutral property '" + unsupportedActiveChannel.url + "'. It cannot be applied or converted to a clip without an explicit mapping.");
@@ -45,6 +47,18 @@ namespace DazPose.UnityValidation
                 + " | bones " + definition.bones.Length + " | channels "
                 + (definition.poseChannels == null ? 0 : definition.poseChannels.Length));
             return definition;
+        }
+
+        private static bool IsSkeletalTransformChannel(DazPoseChannel channel)
+        {
+            if (channel == null || !(channel.property == "rotation"
+                || channel.property == "translation" || channel.property == "scale")) return false;
+            var url = channel.url ?? string.Empty;
+            var addressStart = url.IndexOf("://", StringComparison.Ordinal);
+            var propertyStart = url.IndexOf(":?", StringComparison.Ordinal);
+            if (addressStart < 0 || propertyStart <= addressStart + 3) return false;
+            var address = url.Substring(addressStart + 3, propertyStart - addressStart - 3);
+            return !string.IsNullOrEmpty(channel.targetId) || address == "@selection";
         }
 
         public static string PoseName(string sourcePath, string assetId)

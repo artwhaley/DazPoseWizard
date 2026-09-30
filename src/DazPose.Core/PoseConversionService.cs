@@ -43,13 +43,14 @@ public static class PoseConversionService
     /// then writes only the canonical pose JSON. Callers should write to a staging path and
     /// publish the finished file atomically into Unity's Assets tree.
     /// </summary>
-    public static CanonicalConversionResult ConvertCanonical(string figurePath, string posePath, string canonicalOutputPath)
+    public static CanonicalConversionResult ConvertCanonical(string figurePath, string posePath, string canonicalOutputPath,
+        bool ignoreUnsupportedSkeletalTransformChannels = false)
     {
         if (!File.Exists(figurePath)) throw new DazConversionException($"Figure file does not exist: '{figurePath}'.");
         if (!File.Exists(posePath)) throw new DazConversionException($"Pose file does not exist: '{posePath}'.");
         if (string.IsNullOrWhiteSpace(canonicalOutputPath)) throw new ArgumentException("A canonical output path is required.", nameof(canonicalOutputPath));
 
-        var evaluated = Evaluate(figurePath, posePath);
+        var evaluated = Evaluate(figurePath, posePath, ignoreUnsupportedSkeletalTransformChannels);
         var fullOutputPath = Path.GetFullPath(canonicalOutputPath);
         var outputDirectory = Path.GetDirectoryName(fullOutputPath)
             ?? throw new DazConversionException($"Canonical output path has no parent directory: '{canonicalOutputPath}'.");
@@ -68,13 +69,14 @@ public static class PoseConversionService
         };
     }
 
-    private static EvaluatedConversion Evaluate(string figurePath, string posePath)
+    private static EvaluatedConversion Evaluate(string figurePath, string posePath,
+        bool ignoreUnsupportedSkeletalTransformChannels = false)
     {
         using var figureDocument = DsonFileReader.ReadJson(figurePath);
         using var poseDocument = DsonFileReader.ReadJson(posePath);
         var figure = DazFigureParser.Parse(figurePath, figureDocument);
         var pose = DazPoseParser.Parse(posePath, poseDocument, figure);
-        ValidatePose(pose);
+        ValidatePose(pose, ignoreUnsupportedSkeletalTransformChannels);
         var evaluation = DazTransformEvaluator.Evaluate(figure, pose);
         var restEvaluation = DazTransformEvaluator.Evaluate(figure, new DazPose
         {
@@ -100,7 +102,7 @@ public static class PoseConversionService
     private sealed record EvaluatedConversion(DazFigureDefinition Figure, DazPose Pose,
         DazPoseEvaluation Evaluation, DazPoseEvaluation RestEvaluation);
 
-    public static void ValidatePose(DazPose pose)
+    public static void ValidatePose(DazPose pose, bool ignoreUnsupportedSkeletalTransformChannels = false)
     {
         var skeletal = pose.Channels.Where(channel => channel.IsSupportedSkeletalChannel).ToArray();
         if (skeletal.Any(channel => channel.Keys.Count != 1))
@@ -108,7 +110,8 @@ public static class PoseConversionService
         if (skeletal.Select(channel => channel.Keys[0].Time).Distinct().Skip(1).Any())
             throw new DazConversionException("This preset contains animation data. V0 supports static poses only.");
 
-        var activeUnsupported = pose.NonNeutralUnsupportedChannels.FirstOrDefault();
+        var activeUnsupported = pose.NonNeutralUnsupportedChannels.FirstOrDefault(channel =>
+            !(ignoreUnsupportedSkeletalTransformChannels && IsSkeletalTransformChannel(channel)));
         if (activeUnsupported is not null)
         {
             var value = activeUnsupported.Keys.First(key => !activeUnsupported.IsNeutralValue(key.Value)).Value;
@@ -121,6 +124,12 @@ public static class PoseConversionService
                 $"Unsupported non-neutral channel '{activeUnsupported.Url}'{channelContext} has value {value.ToString("G9", CultureInfo.InvariantCulture)}.{neutralScaleNote} Conversion stopped to avoid dropping authored pose data.");
         }
     }
+
+    private static bool IsSkeletalTransformChannel(DazPoseChannel channel) =>
+        channel.ParsedUrl.Property is "rotation" or "translation" or "scale"
+        && !channel.ParsedUrl.IsFigureControlAddress
+        && (channel.TargetBone is not null || channel.ParsedUrl.TargetNodeName is not null
+            || channel.ParsedUrl.IsSelectedFigureRoot);
 
     private static string BuildReport(DazFigureDefinition figure, DazPose pose, string jsonPath, string bvhPath,
         string reportPath, IReadOnlyList<string> warnings)

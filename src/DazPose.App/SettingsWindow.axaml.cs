@@ -24,7 +24,7 @@ public sealed partial class SettingsWindow : Window
         this.FindControl<TextBox>("OutputRootBox")!.Text = settings.FinalPoseAssetRoot;
         this.FindControl<TextBox>("ImportRootBox")!.Text = settings.CanonicalImportRoot;
         this.FindControl<TextBox>("ExpressionOutputRootBox")!.Text = settings.FinalExpressionAssetRoot;
-        this.FindControl<TextBox>("ExpressionImportRootBox")!.Text = settings.ExpressionImportRoot;
+        this.FindControl<TextBox>("ExpressionImportRootBox")!.Text = settings.CanonicalExpressionImportRoot;
     }
 
     private async void BrowseDazRoot(object? sender, RoutedEventArgs e) => await PickFolder("Select DAZ Content Root", "DazRootBox");
@@ -68,7 +68,7 @@ public sealed partial class SettingsWindow : Window
             FinalPoseAssetRoot = this.FindControl<TextBox>("OutputRootBox")!.Text?.Trim() ?? string.Empty,
             CanonicalImportRoot = this.FindControl<TextBox>("ImportRootBox")!.Text?.Trim() ?? string.Empty,
             FinalExpressionAssetRoot = this.FindControl<TextBox>("ExpressionOutputRootBox")!.Text?.Trim() ?? string.Empty,
-            ExpressionImportRoot = this.FindControl<TextBox>("ExpressionImportRootBox")!.Text?.Trim() ?? string.Empty,
+            CanonicalExpressionImportRoot = this.FindControl<TextBox>("ExpressionImportRootBox")!.Text?.Trim() ?? string.Empty,
             LastSelectedSourceFolder = _initialSettings.LastSelectedSourceFolder,
             SearchIncludesChildren = _initialSettings.SearchIncludesChildren,
             ShowG8Female = _initialSettings.ShowG8Female,
@@ -94,7 +94,7 @@ public sealed partial class SettingsWindow : Window
             settings.FinalPoseAssetRoot = _projectService.NormalizeAssetRelativePath(settings.FinalPoseAssetRoot);
             settings.CanonicalImportRoot = _projectService.NormalizeAssetRelativePath(settings.CanonicalImportRoot);
             settings.FinalExpressionAssetRoot = _projectService.NormalizeAssetRelativePath(settings.FinalExpressionAssetRoot);
-            settings.ExpressionImportRoot = _projectService.NormalizeAssetRelativePath(settings.ExpressionImportRoot);
+            settings.CanonicalExpressionImportRoot = _projectService.NormalizeAssetRelativePath(settings.CanonicalExpressionImportRoot);
             _projectService.ValidateConfiguredRoots(settings);
             await _settingsService.SaveAsync(settings);
             Settings = settings;

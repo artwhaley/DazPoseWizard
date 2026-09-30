@@ -175,17 +175,116 @@ namespace DazPose.UnityValidation
             ClearAnimatorControllerForPoseSmokeTest(animator);
             var performer = animationRoot.GetComponent<SuccubusPerformer>();
             if (performer == null) performer = Undo.AddComponent<SuccubusPerformer>(animationRoot.gameObject);
+            var speechAudioSource = EnsureSpeechAudioSource(characterRoot, performer);
             var smoke = animationRoot.GetComponent<PerformerPoseSmokeHarness>();
             if (smoke == null) smoke = Undo.AddComponent<PerformerPoseSmokeHarness>(animationRoot.gameObject);
             var acceptance = animationRoot.GetComponent<PerformerPoseAcceptanceHarness>();
             if (acceptance == null) acceptance = Undo.AddComponent<PerformerPoseAcceptanceHarness>(animationRoot.gameObject);
 
             AssignSmokeHarnessOwners(performer, smoke, acceptance);
+            AssignExpressionFixtures(smoke, acceptance);
+            AssignSpeechFixtures(smoke);
 
             EditorSceneManager.MarkSceneDirty(characterRoot.gameObject.scene);
             Selection.activeGameObject = animationRoot.gameObject;
             Debug.Log("Performer pose acceptance harness is ready on " + animationRoot.name
-                + ". Assign three PerformerPose assets on the harness if they are not already configured.");
+                + ". Speech AudioSource: " + DazPoseTransformPath.Get(characterRoot, speechAudioSource.transform)
+                + ". Assign three PerformerPose and three PerformerExpression assets if they are not already configured.");
+        }
+
+        private static AudioSource EnsureSpeechAudioSource(Transform characterRoot, SuccubusPerformer performer)
+        {
+            var skeleton = FindSkeletonRoot(characterRoot);
+            var head = FindUniqueChild(skeleton, "head");
+            var source = performer.SpeechAudioSource;
+            var reused = source != null && source.transform != head && source.transform.IsChildOf(head);
+            if (!reused)
+            {
+                var anchors = head.GetComponentsInChildren<Transform>(true)
+                    .Where(item => item.name == "SpeechAudio" || item.name == "VoiceAudio"
+                        || item.name == "VoiceAnchor" || item.name == "Voice" || item.name == "MouthAudio")
+                    .Select(item => item.GetComponent<AudioSource>()).Where(item => item != null).Distinct().ToArray();
+                if (anchors.Length > 1)
+                    throw new InvalidOperationException("The selected Lara head has multiple dedicated speech AudioSources. Assign one on SuccubusPerformer before setup.");
+                if (anchors.Length == 1)
+                {
+                    source = anchors[0];
+                    reused = true;
+                }
+                else
+                {
+                    var speechTransform = head.Find("SpeechAudio");
+                    var createdTransform = speechTransform == null;
+                    if (createdTransform)
+                    {
+                        var speechObject = new GameObject("SpeechAudio");
+                        Undo.RegisterCreatedObjectUndo(speechObject, "Create Head-Mounted Speech AudioSource");
+                        speechTransform = speechObject.transform;
+                        speechTransform.SetParent(head, false);
+                        speechTransform.localPosition = FindMouthAnchorLocalPosition(characterRoot, head);
+                        speechTransform.localRotation = Quaternion.identity;
+                        speechTransform.localScale = Vector3.one;
+                    }
+
+                    source = speechTransform.GetComponent<AudioSource>();
+                    if (source == null)
+                    {
+                        source = Undo.AddComponent<AudioSource>(speechTransform.gameObject);
+                        source.spatialBlend = 1f;
+                    }
+                }
+            }
+
+            if (source == null) throw new InvalidOperationException("Could not create or resolve the dedicated speech AudioSource beneath Lara's head.");
+            source.enabled = true;
+            source.loop = false;
+            source.playOnAwake = false;
+            AssignReference(performer, "speechAudioSource", source);
+            EditorUtility.SetDirty(source);
+            EditorUtility.SetDirty(source.gameObject);
+            Debug.Log("Speech AudioSource " + (reused ? "reused" : "created") + " at "
+                + DazPoseTransformPath.Get(characterRoot, source.transform)
+                + " (spatial blend " + source.spatialBlend.ToString("F1") + ").");
+            return source;
+        }
+
+        private static Transform FindUniqueChild(Transform root, string exactName)
+        {
+            var matches = root.GetComponentsInChildren<Transform>(true)
+                .Where(item => item.name == exactName).ToArray();
+            if (matches.Length != 1)
+                throw new InvalidOperationException("Expected one '" + exactName + "' transform beneath "
+                    + DazPoseTransformPath.Get(root.root, root) + ", found " + matches.Length + ".");
+            return matches[0];
+        }
+
+        private static Vector3 FindMouthAnchorLocalPosition(Transform characterRoot, Transform head)
+        {
+            var transforms = head.GetComponentsInChildren<Transform>(true);
+            var upperLip = transforms.Where(item => item.name == "LipUpperMiddle").ToArray();
+            var lowerLip = transforms.Where(item => item.name == "LipLowerMiddle").ToArray();
+            Vector3 mouthPosition;
+            if (upperLip.Length == 1 && lowerLip.Length == 1)
+            {
+                mouthPosition = (upperLip[0].position + lowerLip[0].position) * 0.5f;
+            }
+            else
+            {
+                var leftEye = transforms.FirstOrDefault(item => item.name == "lEye");
+                var rightEye = transforms.FirstOrDefault(item => item.name == "rEye");
+                if (leftEye == null || rightEye == null)
+                    throw new InvalidOperationException("Could not locate Lara's lip or eye landmarks to position the head-mounted speech source.");
+                var eyeMidpoint = (leftEye.position + rightEye.position) * 0.5f;
+                var rootUp = characterRoot.up.normalized;
+                var faceForward = Vector3.ProjectOnPlane(eyeMidpoint - head.position, rootUp).normalized;
+                var faceUp = Vector3.ProjectOnPlane(rootUp, faceForward).normalized;
+                var eyeSpan = Vector3.Distance(leftEye.position, rightEye.position);
+                if (faceForward.sqrMagnitude < 0.9f || faceUp.sqrMagnitude < 0.9f || eyeSpan < 0.001f)
+                    throw new InvalidOperationException("Lara's facial landmarks could not establish a stable mouth position for the speech source.");
+                mouthPosition = eyeMidpoint - faceUp * (eyeSpan * 0.85f) + faceForward * (eyeSpan * 0.25f);
+            }
+
+            return head.InverseTransformPoint(mouthPosition);
         }
 
         private static void ClearAnimatorControllerForPoseSmokeTest(Animator animator)
@@ -210,6 +309,32 @@ namespace DazPose.UnityValidation
             serialized.FindProperty(fieldName).objectReferenceValue = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(target);
+        }
+
+        private static void AssignExpressionFixtures(PerformerPoseSmokeHarness smoke,
+            PerformerPoseAcceptanceHarness acceptance)
+        {
+            var expressions = AssetDatabase.FindAssets("t:PerformerExpression")
+                .Select(AssetDatabase.GUIDToAssetPath).OrderBy(path => path, StringComparer.Ordinal)
+                .Select(AssetDatabase.LoadAssetAtPath<PerformerExpression>).Where(asset => asset != null).Take(3).ToArray();
+            for (var index = 0; index < expressions.Length; index++)
+            {
+                var field = "expression" + (char)('A' + index);
+                AssignReferenceIfEmpty(smoke, field, expressions[index]);
+                AssignReferenceIfEmpty(acceptance, field, expressions[index]);
+            }
+        }
+
+        private static void AssignReferenceIfEmpty(UnityEngine.Object target, string fieldName, UnityEngine.Object value)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(fieldName);
+            if (property != null && property.objectReferenceValue == null)
+            {
+                property.objectReferenceValue = value;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                EditorUtility.SetDirty(target);
+            }
         }
 
         public static void RunBatchValidation()
@@ -475,6 +600,8 @@ namespace DazPose.UnityValidation
                 Debug.Log("PASS DAZ Pose Stage 5 self-test: " + name);
             }
 
+            RunExpressionBonePolicySelfTests(Check);
+
             var character = new GameObject("Stage5MorphSelfTestCharacter");
             Mesh bodyMesh = null;
             Mesh shirtMesh = null;
@@ -584,7 +711,8 @@ namespace DazPose.UnityValidation
                     missingFailedClearly = exception.Message.Contains("not present as a direct blendshape");
                 }
                 Check(missingFailedClearly, "missing direct morph fails with a reference-refresh diagnostic");
-                Debug.Log("DAZ Pose Stage 5 morph self-tests passed: " + checks + "/9.");
+                RunExpressionSanitizerSelfTests(character.transform, control, Check);
+                Debug.Log("DAZ Pose Stage 5 self-tests passed: " + checks + " checks.");
             }
             finally
             {
@@ -593,6 +721,264 @@ namespace DazPose.UnityValidation
                 if (shirtMesh != null) UnityEngine.Object.DestroyImmediate(shirtMesh);
                 if (untouchedMesh != null) UnityEngine.Object.DestroyImmediate(untouchedMesh);
             }
+        }
+
+        private static void RunExpressionSanitizerSelfTests(Transform character,
+            DazPoseFigureControl smile, Action<bool, string> check)
+        {
+            var activeMorphs = DazPoseMorphResolver.Resolve(character, new[] { smile });
+            var upperFace = new GameObject("upperFaceRig");
+            upperFace.transform.SetParent(character, false);
+            var brow = new GameObject("lBrowInner");
+            brow.transform.SetParent(upperFace.transform, false);
+            var browDescendant = new GameObject("lBrowInner2");
+            browDescendant.transform.SetParent(brow.transform, false);
+            var lowerJaw = new GameObject("lowerJaw");
+            lowerJaw.transform.SetParent(character, false);
+            var tongue = new GameObject("tongue1");
+            tongue.transform.SetParent(lowerJaw.transform, false);
+            var facialBones = new List<ResolvedBonePose>
+            {
+                new ResolvedBonePose
+                {
+                    DazBoneId = "lBrowInner", DazBoneName = "lBrowInner", Transform = brow.transform,
+                    AnimationPath = "upperFaceRig/lBrowInner", ExpressionHasRotation = true,
+                    LocalRotation = Quaternion.Euler(3f, -2f, 1f)
+                },
+                new ResolvedBonePose
+                {
+                    DazBoneId = "tongue1", DazBoneName = "tongue1", Transform = tongue.transform,
+                    AnimationPath = "lowerJaw/tongue1", ExpressionHasPosition = true,
+                    LocalPosition = new Vector3(0.01f, 0.02f, -0.005f)
+                },
+                new ResolvedBonePose
+                {
+                    DazBoneId = "lBrowInner2", DazBoneName = "lBrowInner2", Transform = browDescendant.transform,
+                    AnimationPath = "upperFaceRig/lBrowInner/lBrowInner2", LocalRotation = Quaternion.Euler(1f, 0f, 0f)
+                }
+            };
+            var expression = new ResolvedUnityPose
+            {
+                CharacterRoot = character,
+                BindingRoot = character,
+                Definition = new DazPoseDefinition
+                {
+                    format = "DazPoseTool", version = 2,
+                    source = new DazPoseSource { poseFile = "TestSmile.dazpose.json", poseAssetId = "TestSmile" },
+                    figureControls = new[] { smile }
+                },
+                CharacterName = character.name,
+                IgnoredSkeletalChannelCount = 2,
+                Bones = facialBones,
+                MorphControls = activeMorphs
+            };
+            var clip = DazPoseAnimationClipGenerator.BuildExpressionCandidateClip(expression,
+                out var channels, out var boneChannels, out var excluded);
+            try
+            {
+                var bindings = AnimationUtility.GetCurveBindings(clip);
+                check(bindings.Count(binding => binding.type == typeof(SkinnedMeshRenderer)
+                    && binding.propertyName == "blendShape.TestSmile") == 2
+                    && bindings.Count(binding => binding.type == typeof(Transform)) == 7,
+                    "mixed Expression sanitizer emits active morph and facial Transform curves only");
+                check(channels.Length == 2,
+                    "Expression sanitizer emits one metadata channel per rendered active morph");
+                check(boneChannels.Length == 2
+                    && boneChannels.Any(channel => channel.DazBoneId == "lBrowInner"
+                        && channel.Properties == PerformerExpressionBoneProperties.LocalRotation)
+                    && boneChannels.Any(channel => channel.DazBoneId == "tongue1"
+                        && channel.Properties == PerformerExpressionBoneProperties.LocalPosition),
+                    "Expression metadata retains upper-face rotation and lower-face translation");
+                check(expression.IgnoredSkeletalChannelCount == 2
+                    && bindings.Count(binding => binding.type == typeof(Transform)) == 7,
+                    "Expression report distinguishes ignored skeletal channels from retained Transform curves");
+
+                var metadataAsset = ScriptableObject.CreateInstance<PerformerExpression>();
+                try
+                {
+                    SetExpressionMetadataForSelfTest(metadataAsset, clip, channels, boneChannels);
+                    check(DazPoseAnimationClipGenerator.ExpressionMetadataMatchesClip(metadataAsset, clip),
+                        "mixed Expression metadata has exact clip curve parity");
+                    var serializedMetadata = new SerializedObject(metadataAsset);
+                    serializedMetadata.FindProperty("boneChannels").arraySize--;
+                    serializedMetadata.ApplyModifiedPropertiesWithoutUndo();
+                    check(!DazPoseAnimationClipGenerator.ExpressionMetadataMatchesClip(metadataAsset, clip),
+                        "Expression parity rejects an unrepresented facial Transform property");
+                }
+                finally { UnityEngine.Object.DestroyImmediate(metadataAsset); }
+            }
+            finally { UnityEngine.Object.DestroyImmediate(clip); }
+
+            var boneOnly = new ResolvedUnityPose
+            {
+                BindingRoot = character,
+                Bones = facialBones,
+                MorphControls = new List<ResolvedUnityMorphControl>()
+            };
+            var boneOnlyClip = DazPoseAnimationClipGenerator.BuildExpressionCandidateClip(boneOnly,
+                out var emptyMorphs, out var boneOnlyChannels, out _);
+            try
+            {
+                check(emptyMorphs.Length == 0 && boneOnlyChannels.Length == 2
+                    && AnimationUtility.GetCurveBindings(boneOnlyClip).Length == 7,
+                    "bone-only Expression remains valid and emits complete local position and rotation curves");
+                var metadataAsset = ScriptableObject.CreateInstance<PerformerExpression>();
+                try
+                {
+                    SetExpressionMetadataForSelfTest(metadataAsset, boneOnlyClip, emptyMorphs, boneOnlyChannels);
+                    check(DazPoseAnimationClipGenerator.ExpressionMetadataMatchesClip(metadataAsset, boneOnlyClip),
+                        "bone-only Expression metadata has exact clip curve parity");
+                }
+                finally { UnityEngine.Object.DestroyImmediate(metadataAsset); }
+            }
+            finally { UnityEngine.Object.DestroyImmediate(boneOnlyClip); }
+
+            foreach (var reserved in new[] { "Breathe", "EX_Breathe", "Genesis8Female__EX_Breathe",
+                         "BreatheBelly", "EX_BreatheBelly", "Genesis8Female__EX_BreatheBelly",
+                         "eCTRLEyesClosedL", "eCTRLEyesClosedR", "Genesis8Female__eCTRLEyesClosedL",
+                         "Genesis8Female__eCTRLEyesClosedR" })
+                check(DazPoseAnimationClipGenerator.IsExpressionReservedBlendShape(reserved),
+                    "Expression sanitation reserves exact autonomous channel " + reserved);
+
+            var reservedOnlyRenderer = new GameObject("ReservedExpressionControls").AddComponent<SkinnedMeshRenderer>();
+            var reservedMesh = new Mesh { name = "ReservedExpressionMesh" };
+            try
+            {
+                reservedMesh.vertices = new[] { Vector3.zero, Vector3.right, Vector3.up };
+                foreach (var reserved in new[] { "Breathe", "eCTRLEyesClosedL", "eCTRLEyesClosedR" })
+                    reservedMesh.AddBlendShapeFrame(reserved, 100f, new[] { Vector3.zero, Vector3.zero, Vector3.forward * 0.01f },
+                        new[] { Vector3.zero, Vector3.zero, Vector3.zero }, new[] { Vector3.zero, Vector3.zero, Vector3.zero });
+                reservedOnlyRenderer.sharedMesh = reservedMesh;
+                var reservedControls = new[] { "Breathe", "eCTRLEyesClosedL", "eCTRLEyesClosedR" }
+                    .Select(name => new DazPoseFigureControl { rawControlId = name, name = name, value = 1f }).ToArray();
+                var reservedMorphs = DazPoseMorphResolver.Resolve(reservedOnlyRenderer.transform, reservedControls);
+                var reservedPose = new ResolvedUnityPose { BindingRoot = reservedOnlyRenderer.transform, MorphControls = reservedMorphs };
+                var emptyFailed = false;
+                try { DazPoseAnimationClipGenerator.BuildExpressionCandidateClip(reservedPose, out _, out _); }
+                catch (InvalidOperationException exception) { emptyFailed = exception.Message.Contains("no usable Expression morph or facial-bone channels"); }
+                check(emptyFailed, "an Expression with only reserved channels fails as empty");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reservedOnlyRenderer.gameObject);
+                UnityEngine.Object.DestroyImmediate(reservedMesh);
+            }
+        }
+
+        private static void AssignSpeechFixtures(PerformerPoseSmokeHarness smoke)
+        {
+            var clips = new[]
+            {
+                ("speechClipA", "Assets/generated/A.mp3"),
+                ("speechClipB", "Assets/generated/B.mp3"),
+                ("speechClipC", "Assets/generated/C.mp3")
+            };
+            foreach (var item in clips)
+            {
+                var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(item.Item2);
+                if (clip != null) AssignReferenceIfEmpty(smoke, item.Item1, clip);
+                else Debug.LogWarning("Speech smoke clip is missing at " + item.Item2 + ". Assign a clip in the Performer Pose Smoke Harness Inspector.");
+            }
+        }
+
+        private static void SetExpressionMetadataForSelfTest(PerformerExpression expression, AnimationClip clip,
+            PerformerExpressionChannel[] channels, PerformerExpressionBoneChannel[] boneChannels)
+        {
+            var serialized = new SerializedObject(expression);
+            serialized.FindProperty("clip").objectReferenceValue = clip;
+            var channelProperty = serialized.FindProperty("channels");
+            channelProperty.arraySize = channels.Length;
+            for (var index = 0; index < channels.Length; index++)
+            {
+                var item = channelProperty.GetArrayElementAtIndex(index);
+                item.FindPropertyRelative("rendererPath").stringValue = channels[index].RendererPath;
+                item.FindPropertyRelative("blendShapeName").stringValue = channels[index].BlendShapeName;
+                item.FindPropertyRelative("targetWeight").floatValue = channels[index].TargetWeight;
+            }
+            var boneProperty = serialized.FindProperty("boneChannels");
+            boneProperty.arraySize = boneChannels.Length;
+            for (var index = 0; index < boneChannels.Length; index++)
+            {
+                var item = boneProperty.GetArrayElementAtIndex(index);
+                item.FindPropertyRelative("transformPath").stringValue = boneChannels[index].TransformPath;
+                item.FindPropertyRelative("dazBoneId").stringValue = boneChannels[index].DazBoneId;
+                item.FindPropertyRelative("properties").intValue = (int)boneChannels[index].Properties;
+                item.FindPropertyRelative("targetLocalPosition").vector3Value = boneChannels[index].TargetLocalPosition;
+                item.FindPropertyRelative("targetLocalRotation").quaternionValue = boneChannels[index].TargetLocalRotation;
+            }
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void RunExpressionBonePolicySelfTests(Action<bool, string> check)
+        {
+            static DazPoseBone Bone(string id, string parentId) => new DazPoseBone { id = id, parentId = parentId };
+            static DazPoseChannel Channel(string targetId, string property, float value, bool supported = true)
+                => new DazPoseChannel
+                {
+                    targetId = targetId, property = property, axis = "x", url = "test://" + targetId + ":?" + property,
+                    supported = supported, keys = new[] { new DazPoseKey { timeSeconds = 0f, value = value } }
+                };
+
+            var bones = new[]
+            {
+                Bone("hip", null), Bone("neck", "head"), Bone("head", "hip"),
+                Bone("upperFaceRig", "head"), Bone("lBrowInner", "upperFaceRig"),
+                Bone("upperFaceRigCopy", "hip"), Bone("lowerJaw", "head"), Bone("tongue1", "lowerJaw"),
+                Bone("lEye", "head"), Bone("rEye", "head"), Bone("lEar", "head")
+            };
+            var definition = new DazPoseDefinition
+            {
+                bones = bones,
+                poseChannels = new[]
+                {
+                    Channel("lBrowInner", "rotation", 5f),
+                    Channel("tongue1", "translation", 0.2f),
+                    Channel("head", "rotation", 2f),
+                    Channel("lEye", "rotation", 2f),
+                    Channel("rEye", "rotation", 2f),
+                    Channel("neck", "rotation", 2f),
+                    Channel("hip", "translation", 0.2f),
+                    Channel("upperFaceRigCopy", "rotation", 2f),
+                    Channel("tongue2", "rotation", 0f)
+                }
+            };
+            var selection = DazPoseExpressionBonePolicy.Analyze(definition);
+            check(string.IsNullOrEmpty(selection.Failure)
+                && selection.ActiveFacialProperties.Count == 2
+                && selection.ActiveFacialProperties["lBrowInner"] == PerformerExpressionBoneProperties.LocalRotation
+                && selection.ActiveFacialProperties["tongue1"] == PerformerExpressionBoneProperties.LocalPosition,
+                "canonical hierarchy retains active upper-face and lower-jaw channels only");
+            check(selection.IgnoredSkeletalChannelCount == 6
+                && !selection.ActiveFacialProperties.ContainsKey("head")
+                && !selection.ActiveFacialProperties.ContainsKey("lEye")
+                && !selection.ActiveFacialProperties.ContainsKey("rEye")
+                && !selection.ActiveFacialProperties.ContainsKey("upperFaceRigCopy"),
+                "gaze, head, body, neck, and similarly named outside bones stay excluded");
+
+            var missingAnchor = DazPoseExpressionBonePolicy.Analyze(new DazPoseDefinition
+            {
+                bones = bones.Where(bone => bone.id != "lowerJaw").ToArray(),
+                poseChannels = new[] { Channel("lBrowInner", "rotation", 5f) }
+            });
+            check(!string.IsNullOrEmpty(missingAnchor.Failure),
+                "active skeletal Expression fails when a facial hierarchy anchor is absent");
+
+            var ambiguousTarget = DazPoseExpressionBonePolicy.Analyze(new DazPoseDefinition
+            {
+                bones = bones.Concat(new[] { Bone("lBrowInner", "hip") }).ToArray(),
+                poseChannels = new[] { Channel("lBrowInner", "rotation", 5f) }
+            });
+            check(!string.IsNullOrEmpty(ambiguousTarget.Failure),
+                "ambiguous active facial target fails canonical selection");
+
+            var unsupportedScale = DazPoseExpressionBonePolicy.Analyze(new DazPoseDefinition
+            {
+                bones = bones,
+                poseChannels = new[] { Channel("tongue1", "scale", 1.2f) }
+            });
+            check(!string.IsNullOrEmpty(unsupportedScale.Failure)
+                && unsupportedScale.UnsupportedFacialChannelCount == 1,
+                "nonneutral facial scale fails explicitly instead of being discarded");
         }
 
         private static SkinnedMeshRenderer CreateTestSkinnedRenderer(Transform root, string name, out Mesh mesh, bool withSmile)

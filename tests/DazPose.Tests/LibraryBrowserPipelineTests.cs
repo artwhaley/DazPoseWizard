@@ -103,6 +103,219 @@ public sealed class LibraryBrowserPipelineTests
     }
 
     [Fact]
+    public async Task LegacySettingsKeepPoseRootsAndReceiveExpressionDefaults()
+    {
+        var temp = FixtureData.NewTempDirectory();
+        try
+        {
+            var settingsPath = Path.Combine(temp, "settings.json");
+            await File.WriteAllTextAsync(settingsPath,
+                "{\"canonicalImportRoot\":\"Assets/LegacyPoseImports\",\"finalPoseAssetRoot\":\"Assets/LegacyPoses\"}");
+
+            var settings = new SettingsService(settingsPath).Load();
+
+            Assert.Equal("Assets/LegacyPoseImports", settings.CanonicalImportRoot);
+            Assert.Equal("Assets/LegacyPoses", settings.FinalPoseAssetRoot);
+            Assert.Equal("Assets/DazExpressionImports", settings.CanonicalExpressionImportRoot);
+            Assert.Equal("Assets/Animations/DazExpressions", settings.FinalExpressionAssetRoot);
+        }
+        finally { FixtureData.DeleteTempDirectory(temp); }
+    }
+
+    [Theory]
+    [InlineData("Assets/A", "Assets/B", "Assets/A/Nested", "Assets/C")]
+    [InlineData("Assets/A", "Assets/B", "Assets/C", "Assets/B/Nested")]
+    [InlineData("Assets/A", "Assets/B", "Assets/A", "Assets/D")]
+    [InlineData("Assets/A", "Assets/B", "Assets/C", "Assets/B")]
+    public void FourConfiguredRootsRejectEqualOrNestedPaths(string poseOutput, string poseImport,
+        string expressionOutput, string expressionImport)
+    {
+        Assert.Throws<ArgumentException>(() => new UnityProjectService().ValidateAssetRoots(
+            poseOutput, poseImport, expressionOutput, expressionImport));
+    }
+
+    [Fact]
+    public async Task OnePresetCanBeQueuedIndependentlyAsPoseAndExpressionAndCacheRetainsKind()
+    {
+        var temp = FixtureData.NewTempDirectory();
+        try
+        {
+            var project = CreateUnityProject(temp);
+            var source = WriteSimplePose(Path.Combine(temp, "Vendor", "Shared.duf"), "hip", "rotation", 7f);
+            var settings = SettingsFor(project);
+            settings.FigureDefinitionPath = WriteFigureDefinition(Path.Combine(temp, "Genesis8Female.dsf"));
+            var projectService = new UnityProjectService();
+            var registry = new ConversionRegistryService(projectService);
+            await using var queue = new ConversionQueueService(() => settings, projectService, registry,
+                new PoseOutputNamingService(projectService), concurrency: 1);
+
+            var added = await queue.EnqueueAsync(new[]
+            {
+                new ConversionRequest(source, PerformerAssetKind.Pose, "Faces/Shared"),
+                new ConversionRequest(source, PerformerAssetKind.Expression, "Faces/Shared")
+            });
+            Assert.Equal(2, added);
+            var jobs = queue.Jobs.ToArray();
+            Assert.Equal(2, jobs.Length);
+            Assert.Contains(jobs, job => job.Request.Kind == PerformerAssetKind.Pose);
+            Assert.Contains(jobs, job => job.Request.Kind == PerformerAssetKind.Expression);
+            foreach (var job in jobs)
+            {
+                var deadline = DateTime.UtcNow.AddSeconds(15);
+                while (job.State is ConversionJobState.Queued or ConversionJobState.Converting && DateTime.UtcNow < deadline)
+                    await Task.Delay(25);
+                Assert.Equal(ConversionJobState.AwaitingUnity, job.State);
+            }
+
+            Assert.Contains("DazPoseImports", jobs.Single(job => job.Request.Kind == PerformerAssetKind.Pose).CanonicalPath!);
+            Assert.Contains("DazExpressionImports", jobs.Single(job => job.Request.Kind == PerformerAssetKind.Expression).CanonicalPath!);
+            var outputs = registry.Reconcile(settings);
+            var sourceOutputs = outputs[Path.GetFullPath(source)];
+            Assert.Equal(2, sourceOutputs.Count);
+            Assert.Contains(sourceOutputs, output => output.AssetKind == PerformerAssetKind.Pose);
+            Assert.Contains(sourceOutputs, output => output.AssetKind == PerformerAssetKind.Expression);
+
+            var cache = new ConversionRegistryCacheService(Path.Combine(temp, "registry.db"));
+            cache.Replace(project, outputs);
+            var cachedKinds = cache.Load(project)[Path.GetFullPath(source)].Select(output => output.AssetKind).ToArray();
+            Assert.Contains(PerformerAssetKind.Pose, cachedKinds);
+            Assert.Contains(PerformerAssetKind.Expression, cachedKinds);
+        }
+        finally { FixtureData.DeleteTempDirectory(temp); }
+    }
+
+    [Fact]
+    public async Task LegacyStatusWithoutAssetKindReconcilesAsPose()
+    {
+        var temp = FixtureData.NewTempDirectory();
+        try
+        {
+            var project = CreateUnityProject(temp);
+            var settings = SettingsFor(project);
+            var source = Path.Combine(temp, "Vendor", "Legacy.duf");
+            Directory.CreateDirectory(Path.GetDirectoryName(source)!);
+            File.WriteAllText(source, "source");
+            var projectService = new UnityProjectService();
+            var registry = new ConversionRegistryService(projectService);
+            var canonical = WriteCanonical(project, "Legacy", "Legacy.dazpose.json", source);
+            var relativeCanonical = Path.GetRelativePath(project, canonical).Replace('\\', '/');
+            Directory.CreateDirectory(registry.GetStatusDirectory(settings));
+            await File.WriteAllTextAsync(registry.GetStatusPath(settings, relativeCanonical), JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                canonicalImportPath = relativeCanonical,
+                sourcePosePath = source,
+                destinationRelativeFolder = "Legacy",
+                expectedAnimPath = "Assets/Animations/DazPoses/Legacy/Legacy.anim",
+                state = "AwaitingUnity"
+            }));
+
+            var output = Assert.Single(registry.Reconcile(settings)[Path.GetFullPath(source)]);
+            Assert.Equal(PerformerAssetKind.Pose, output.AssetKind);
+        }
+        finally { FixtureData.DeleteTempDirectory(temp); }
+    }
+
+    [Fact]
+    public void ExpressionWrapperInspectorRequiresExpressionScriptAndGeneratedChannels()
+    {
+        var temp = FixtureData.NewTempDirectory();
+        try
+        {
+            var project = CreateUnityProject(temp);
+            var expressionScriptGuid = new string('c', 32);
+            var poseScriptGuid = new string('a', 32);
+            var clipPath = Path.Combine(project, "Assets", "Animations", "DazExpressions", "Smile.anim");
+            var wrapperPath = Path.ChangeExtension(clipPath, ".asset");
+            Directory.CreateDirectory(Path.GetDirectoryName(clipPath)!);
+            File.WriteAllText(clipPath, ExpressionClipYaml(includeMorph: true, includeRotation: false));
+            WriteUnityMeta(clipPath + ".meta", GuidFor(clipPath));
+            WriteUnityMeta(wrapperPath + ".meta", GuidFor(wrapperPath));
+            var performerDirectory = Path.Combine(project, "Assets", "DazPose", "Runtime", "Performer");
+            Directory.CreateDirectory(performerDirectory);
+            WriteUnityMeta(Path.Combine(performerDirectory, "PerformerExpression.cs.meta"), expressionScriptGuid);
+            File.WriteAllText(wrapperPath,
+                "%YAML 1.1\n--- !u!114 &11400000\nMonoBehaviour:\n"
+                + $"  m_Script: {{fileID: 11500000, guid: {expressionScriptGuid}, type: 3}}\n"
+                + $"  clip: {{fileID: 7400000, guid: {GuidFor(clipPath)}, type: 2}}\n"
+                + "  channels:\n  - rendererPath: Face\n    blendShapeName: Smile\n    targetWeight: 100\n  boneChannels: []\n");
+
+            Assert.True(PerformerPoseAssetInspector.IsUsable(project, clipPath, wrapperPath, PerformerAssetKind.Expression));
+            WriteUnityMeta(Path.Combine(performerDirectory, "PerformerPose.cs.meta"), poseScriptGuid);
+            File.WriteAllText(wrapperPath,
+                "%YAML 1.1\n--- !u!114 &11400000\nMonoBehaviour:\n"
+                + $"  m_Script: {{fileID: 11500000, guid: {poseScriptGuid}, type: 3}}\n"
+                + $"  clip: {{fileID: 7400000, guid: {GuidFor(clipPath)}, type: 2}}\n"
+                + "  channels:\n  - rendererPath: Face\n    blendShapeName: Smile\n    targetWeight: 100\n");
+            Assert.False(PerformerPoseAssetInspector.IsUsable(project, clipPath, wrapperPath, PerformerAssetKind.Expression));
+
+            File.WriteAllText(clipPath, ExpressionClipYaml(includeMorph: false, includeRotation: true));
+            File.WriteAllText(wrapperPath,
+                "%YAML 1.1\n--- !u!114 &11400000\nMonoBehaviour:\n"
+                + $"  m_Script: {{fileID: 11500000, guid: {expressionScriptGuid}, type: 3}}\n"
+                + $"  clip: {{fileID: 7400000, guid: {GuidFor(clipPath)}, type: 2}}\n"
+                + "  channels: []\n  boneChannels:\n"
+                + "  - transformPath: upperFaceRig/lBrowInner\n    dazBoneId: lBrowInner\n    properties: 2\n"
+                + "    targetLocalPosition: {x: 0, y: 0, z: 0}\n    targetLocalRotation: {x: 0, y: 0, z: 0, w: 1}\n");
+            Assert.True(PerformerPoseAssetInspector.IsUsable(project, clipPath, wrapperPath, PerformerAssetKind.Expression));
+
+            File.WriteAllText(clipPath, ExpressionClipYaml(includeMorph: false, includeRotation: true, includePosition: true));
+            Assert.False(PerformerPoseAssetInspector.IsUsable(project, clipPath, wrapperPath, PerformerAssetKind.Expression));
+
+            File.WriteAllText(clipPath, ExpressionClipYaml(includeMorph: false, includeRotation: true, transformPath: "head"));
+            File.WriteAllText(wrapperPath,
+                "%YAML 1.1\n--- !u!114 &11400000\nMonoBehaviour:\n"
+                + $"  m_Script: {{fileID: 11500000, guid: {expressionScriptGuid}, type: 3}}\n"
+                + $"  clip: {{fileID: 7400000, guid: {GuidFor(clipPath)}, type: 2}}\n"
+                + "  channels: []\n  boneChannels:\n"
+                + "  - transformPath: head\n    dazBoneId: testFaceAlias\n    properties: 2\n"
+                + "    targetLocalPosition: {x: 0, y: 0, z: 0}\n    targetLocalRotation: {x: 0, y: 0, z: 0, w: 1}\n");
+            Assert.False(PerformerPoseAssetInspector.IsUsable(project, clipPath, wrapperPath, PerformerAssetKind.Expression));
+
+            File.WriteAllText(clipPath, ExpressionClipYaml(includeMorph: true, includeRotation: true));
+            File.WriteAllText(wrapperPath,
+                "%YAML 1.1\n--- !u!114 &11400000\nMonoBehaviour:\n"
+                + $"  m_Script: {{fileID: 11500000, guid: {expressionScriptGuid}, type: 3}}\n"
+                + $"  clip: {{fileID: 7400000, guid: {GuidFor(clipPath)}, type: 2}}\n"
+                + "  channels:\n  - rendererPath: Face\n    blendShapeName: Smile\n    targetWeight: 100\n"
+                + "  boneChannels:\n  - transformPath: upperFaceRig/lBrowInner\n    dazBoneId: lBrowInner\n    properties: 2\n"
+                + "    targetLocalPosition: {x: 0, y: 0, z: 0}\n    targetLocalRotation: {x: 0, y: 0, z: 0, w: 1}\n");
+            Assert.True(PerformerPoseAssetInspector.IsUsable(project, clipPath, wrapperPath, PerformerAssetKind.Expression));
+        }
+        finally { FixtureData.DeleteTempDirectory(temp); }
+    }
+
+    private static string ExpressionClipYaml(bool includeMorph, bool includeRotation,
+        bool includePosition = false, string transformPath = "upperFaceRig/lBrowInner")
+    {
+        var rotation = includeRotation
+            ? "  m_RotationCurves:\n  - curve:\n      m_Curve:\n"
+                + "      - serializedVersion: 3\n        time: 0\n        value: {x: 0, y: 0, z: 0, w: 1}\n"
+                + "      - serializedVersion: 3\n        time: 1\n        value: {x: 0, y: 0, z: 0, w: 1}\n"
+                + $"    path: {transformPath}\n"
+            : "  m_RotationCurves: []\n";
+        var position = includePosition
+            ? "  m_PositionCurves:\n  - curve:\n      m_Curve:\n"
+                + "      - serializedVersion: 3\n        time: 0\n        value: {x: 0, y: 0, z: 0}\n"
+                + "      - serializedVersion: 3\n        time: 1\n        value: {x: 0, y: 0, z: 0}\n"
+                + $"    path: {transformPath}\n"
+            : "  m_PositionCurves: []\n";
+        var morph = includeMorph
+            ? "  m_FloatCurves:\n  - curve:\n      m_Curve:\n"
+                + "      - serializedVersion: 3\n        time: 0\n        value: 100\n"
+                + "      - serializedVersion: 3\n        time: 1\n        value: 100\n"
+                + "    attribute: blendShape.Smile\n    path: Face\n    classID: 137\n    script: {fileID: 0}\n"
+            : "  m_FloatCurves: []\n";
+        return "%YAML 1.1\n--- !u!74 &7400000\nAnimationClip:\n"
+            + rotation
+            + "  m_CompressedRotationCurves: []\n  m_EulerCurves: []\n"
+            + position
+            + "  m_ScaleCurves: []\n"
+            + morph
+            + "  m_PPtrCurves: []\n";
+    }
+
+    [Fact]
     public void OutputNamingUsesImmediateFolderAndStableCollisionSuffix()
     {
         var temp = FixtureData.NewTempDirectory();
@@ -182,9 +395,15 @@ public sealed class LibraryBrowserPipelineTests
             File.WriteAllText(source, "source");
             var service = new UnityProjectService();
             var relative = await service.CreateDestinationFolderAsync(settings, PerformerAssetKind.Expression, "Faces", "Warm");
+            var poseRelative = await service.CreateDestinationFolderAsync(settings, PerformerAssetKind.Pose, "Body", "Neutral");
+            Assert.Equal("Body/Neutral", poseRelative);
             Assert.Equal("Faces/Warm", relative);
             Assert.True(Directory.Exists(Path.Combine(project, "Assets", "DazExpressionImports", "Faces", "Warm")));
             Assert.True(Directory.Exists(Path.Combine(project, "Assets", "Animations", "DazExpressions", "Faces", "Warm")));
+            Assert.True(Directory.Exists(Path.Combine(project, "Assets", "DazPoseImports", "Body", "Neutral")));
+            Assert.True(Directory.Exists(Path.Combine(project, "Assets", "Animations", "DazPoses", "Body", "Neutral")));
+            Assert.DoesNotContain(service.LoadDestinationTree(settings, PerformerAssetKind.Expression), folder => folder.RelativePath == "Body");
+            Assert.DoesNotContain(service.LoadDestinationTree(settings, PerformerAssetKind.Pose), folder => folder.RelativePath == "Faces");
             var expression = new PoseOutputNamingService(service).Resolve(settings, source, PerformerAssetKind.Expression, relative);
             var pose = new PoseOutputNamingService(service).Resolve(settings, source, PerformerAssetKind.Pose, relative);
             Assert.Equal(PerformerAssetKind.Expression, expression.Kind);

@@ -13,6 +13,13 @@ namespace DazPose.Performer
         PerformerDisabled
     }
 
+    public enum ExpressionCompletion
+    {
+        Settled,
+        Superseded,
+        PerformerDisabled
+    }
+
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Animator))]
     [AddComponentMenu("Performer/Succubus Performer")]
@@ -21,6 +28,14 @@ namespace DazPose.Performer
         [SerializeField] private Animator animator;
         [SerializeField] private PerformerPose initialPose = null;
         [SerializeField] private PoseTransition defaultTransition = PoseTransition.Default;
+
+        [Header("Expression")]
+        [SerializeField] private PerformerExpression initialExpression = null;
+        [SerializeField, Range(0f, 1f)] private float initialExpressionIntensity = 1f;
+        [SerializeField, Min(0f)] private float defaultExpressionBlendTime = 0.25f;
+
+        [Header("Speech")]
+        [SerializeField] private AudioSource speechAudioSource;
 
         [Header("Breathing")]
         [SerializeField] private bool breathingEnabled = true;
@@ -86,6 +101,8 @@ namespace DazPose.Performer
         private PerformerGaze _gaze;
         private PerformerAttentionLife _attentionLife;
         private PerformerBlink _blink;
+        private PerformerExpressionLayer _expression;
+        private PerformerSpeech _speech;
         private PerformerPose _lastDesiredPose;
         private PerformerPose _lastSettledPose;
         private PerformerPoseSnapshot _neutralPoseState;
@@ -94,11 +111,31 @@ namespace DazPose.Performer
         private long _nextPoseRequestId;
         private bool _hasPoseCommand;
         private bool _isTearingDown;
+        private PerformerExpression _lastDesiredExpression;
+        private PerformerExpression _lastSettledExpression;
+        private float _lastDesiredExpressionIntensity;
+        private float _lastSettledExpressionIntensity;
+        private ExpressionRequest _activeExpressionRequest;
+        private bool _hasExpressionCommand;
 
         public PerformerPose SettledPose => _bodyPose != null ? _bodyPose.SettledPose : _lastSettledPose;
         public PerformerPose DesiredPose => _bodyPose != null ? _bodyPose.DesiredPose : _lastDesiredPose;
         public bool IsTransitioning => _bodyPose != null && _bodyPose.IsTransitioning;
+        public bool IsRuntimeReady => Application.isPlaying && isActiveAndEnabled && !_isTearingDown
+            && _bodyPose != null && _speech != null && _graph.IsValid();
         public float TransitionProgress => _bodyPose == null ? 0f : _bodyPose.TransitionProgress;
+        public PerformerExpression DesiredExpression => _lastDesiredExpression;
+        public PerformerExpression SettledExpression => _lastSettledExpression;
+        public float DesiredExpressionIntensity => _lastDesiredExpressionIntensity;
+        public float SettledExpressionIntensity => _lastSettledExpressionIntensity;
+        public bool IsExpressionTransitioning => _expression != null && _expression.IsTransitioning;
+        public float ExpressionTransitionProgress => _expression == null ? 0f : _expression.EvaluatedProgress;
+        public float DefaultExpressionBlendTime { get => defaultExpressionBlendTime; set => defaultExpressionBlendTime = Mathf.Max(0f, value); }
+        public AudioSource SpeechAudioSource => speechAudioSource;
+        public bool IsSpeaking => _speech != null && _speech.IsSpeaking;
+        public AudioClip CurrentSpeechClip => _speech == null ? null : _speech.CurrentSpeechClip;
+        public int PendingSpeechCount => _speech == null ? 0 : _speech.PendingSpeechCount;
+        internal PerformerExpressionLayer ExpressionRuntime => _expression;
         public float TrajectoryProgress => _bodyPose == null ? 0f : _bodyPose.TrajectoryProgress;
         public PoseTransition ActiveTransition => _bodyPose == null ? default : _bodyPose.ActiveTransition;
         public bool BreathingEnabled { get => breathingEnabled; set => breathingEnabled = value; }
@@ -257,6 +294,7 @@ namespace DazPose.Performer
 
         private void Update()
         {
+            _speech?.Advance();
             if (_bodyPose == null) return;
 
             var request = _activePoseRequest;
@@ -277,12 +315,22 @@ namespace DazPose.Performer
                 _gaze.Configure(CreateGazeSettings());
                 _gaze.Advance(Time.deltaTime);
             }
+            var expressionRequest = _activeExpressionRequest;
+            if (_expression != null) _expression.Advance(Time.deltaTime);
             if (_blink != null)
             {
                 _blink.Configure(CreateBlinkSettings());
                 _blink.Advance(Time.deltaTime);
             }
             PublishCurrentPoseState();
+            if (expressionRequest != null && ReferenceEquals(_activeExpressionRequest, expressionRequest)
+                && !_expression.IsTransitioning)
+            {
+                _lastSettledExpression = expressionRequest.Expression;
+                _lastSettledExpressionIntensity = expressionRequest.Intensity;
+                _activeExpressionRequest = null;
+                CompleteExpressionRequest(expressionRequest, ExpressionCompletion.Settled);
+            }
             if (request == null || !ReferenceEquals(_activePoseRequest, request)
                 || _bodyPose.IsTransitioning || _bodyPose.SettledPose != request.Pose) return;
 
@@ -320,6 +368,42 @@ namespace DazPose.Performer
             var completion = new AwaitableCompletionSource<PoseCompletion>();
             RequestPose(pose, transition, completion);
             return completion.Awaitable;
+        }
+
+        public void Expression(PerformerExpression expression) => Expression(expression, 1f, defaultExpressionBlendTime);
+        public void Expression(PerformerExpression expression, float intensity) => Expression(expression, intensity, defaultExpressionBlendTime);
+        public void Expression(PerformerExpression expression, float intensity, float blendTime) =>
+            RequestExpression(expression, intensity, blendTime, null);
+
+        public Awaitable<ExpressionCompletion> ExpressionAsync(PerformerExpression expression) =>
+            ExpressionAsync(expression, 1f, defaultExpressionBlendTime);
+        public Awaitable<ExpressionCompletion> ExpressionAsync(PerformerExpression expression, float intensity) =>
+            ExpressionAsync(expression, intensity, defaultExpressionBlendTime);
+        public Awaitable<ExpressionCompletion> ExpressionAsync(PerformerExpression expression, float intensity, float blendTime)
+        {
+            var completion = new AwaitableCompletionSource<ExpressionCompletion>();
+            RequestExpression(expression, intensity, blendTime, completion);
+            return completion.Awaitable;
+        }
+
+        public void ClearExpression() => ClearExpression(defaultExpressionBlendTime);
+        public void ClearExpression(float blendTime) => RequestExpression(null, 0f, blendTime, null);
+
+        public void Say(AudioClip clip)
+        {
+            if (clip == null) throw new ArgumentNullException(nameof(clip));
+            RequireSpeechRuntime().Say(clip);
+        }
+
+        public Awaitable<SpeechCompletion> SayAsync(AudioClip clip)
+        {
+            if (clip == null) throw new ArgumentNullException(nameof(clip));
+            return RequireSpeechRuntime().SayAsync(clip);
+        }
+
+        public void StopSpeaking()
+        {
+            RequireSpeechRuntime().StopSpeaking();
         }
 
         public void LookAt(Transform target)
@@ -431,6 +515,62 @@ namespace DazPose.Performer
             _gaze.LookAt(target, completion);
         }
 
+        private void RequestExpression(PerformerExpression expression, float intensity, float blendTime,
+            AwaitableCompletionSource<ExpressionCompletion> completion)
+        {
+            if (_expression == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive Expression commands only while enabled in Play Mode.");
+            if (!IsFinite(blendTime))
+                throw new ArgumentOutOfRangeException(nameof(blendTime), "Expression blend time must be finite.");
+            if (expression != null && !IsFinite(intensity))
+                throw new ArgumentOutOfRangeException(nameof(intensity), "Expression intensity must be finite.");
+            intensity = Mathf.Clamp01(intensity);
+            blendTime = Mathf.Max(0f, blendTime);
+            var sameDesired = expression == _lastDesiredExpression && Mathf.Abs(intensity - _lastDesiredExpressionIntensity) <= 0.00001f;
+            if (sameDesired)
+            {
+                if (_expression.IsTransitioning)
+                {
+                    if (completion != null && _activeExpressionRequest != null) _activeExpressionRequest.Waiters.Add(completion);
+                }
+                else if (completion != null) completion.TrySetResult(ExpressionCompletion.Settled);
+                return;
+            }
+
+            var previous = _activeExpressionRequest;
+            if (expression == null) _expression.Clear(blendTime);
+            else _expression.SetExpression(expression, intensity, blendTime);
+            _lastDesiredExpression = expression;
+            _lastDesiredExpressionIntensity = expression == null ? 0f : intensity;
+            _hasExpressionCommand = true;
+            var request = new ExpressionRequest(expression, _lastDesiredExpressionIntensity);
+            if (completion != null) request.Waiters.Add(completion);
+            _activeExpressionRequest = _expression.IsTransitioning ? request : null;
+            if (!_expression.IsTransitioning)
+            {
+                _lastSettledExpression = expression;
+                _lastSettledExpressionIntensity = _lastDesiredExpressionIntensity;
+                CompleteExpressionRequest(request, ExpressionCompletion.Settled);
+            }
+            if (previous != null) CompleteExpressionRequest(previous, ExpressionCompletion.Superseded);
+        }
+
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+
+        private static void CompleteExpressionRequest(ExpressionRequest request, ExpressionCompletion result)
+        {
+            var waiters = request.Waiters.ToArray(); request.Waiters.Clear();
+            foreach (var waiter in waiters) waiter.TrySetResult(result);
+        }
+
+        private sealed class ExpressionRequest
+        {
+            public ExpressionRequest(PerformerExpression expression, float intensity) { Expression = expression; Intensity = intensity; }
+            public PerformerExpression Expression { get; }
+            public float Intensity { get; }
+            public List<AwaitableCompletionSource<ExpressionCompletion>> Waiters { get; } = new List<AwaitableCompletionSource<ExpressionCompletion>>();
+        }
+
         private void RequestGaze(Vector3 worldPosition, AwaitableCompletionSource<GazeCompletion> completion)
         {
             if (_gaze == null || _isTearingDown || !isActiveAndEnabled)
@@ -475,6 +615,9 @@ namespace DazPose.Performer
 
             try
             {
+                speechAudioSource = ResolveSpeechAudioSource();
+                _speech = new PerformerSpeech(speechAudioSource);
+
                 _graph = PlayableGraph.Create("Succubus Performer - " + name);
                 _graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
                 _bodyPose = new PerformerBodyPose(animator, _graph, _neutralPoseState);
@@ -492,7 +635,22 @@ namespace DazPose.Performer
                 _attentionLife.Advance(0f);
                 _gaze.Advance(0f);
 
-                _blink = new PerformerBlink(animator, _graph, _gaze.OutputPlayable,
+                _expression = new PerformerExpressionLayer(animator, _graph, _gaze.OutputPlayable);
+                var expressionToRestore = _hasExpressionCommand ? _lastDesiredExpression : initialExpression;
+                var intensityToRestore = _hasExpressionCommand ? _lastDesiredExpressionIntensity : initialExpressionIntensity;
+                if (expressionToRestore != null)
+                {
+                    _expression.SetExpression(expressionToRestore, intensityToRestore, 0f);
+                    _lastDesiredExpression = _lastSettledExpression = expressionToRestore;
+                    _lastDesiredExpressionIntensity = _lastSettledExpressionIntensity = intensityToRestore;
+                }
+                else if (_hasExpressionCommand)
+                {
+                    _lastSettledExpression = null;
+                    _lastSettledExpressionIntensity = 0f;
+                }
+
+                _blink = new PerformerBlink(animator, _graph, _expression.OutputPlayable,
                     _bodyPose, CreateBlinkSettings());
                 _blink.Advance(0f);
 
@@ -512,6 +670,68 @@ namespace DazPose.Performer
             }
         }
 
+        private AudioSource ResolveSpeechAudioSource()
+        {
+            if (speechAudioSource == null)
+            {
+                var skeleton = FindUniqueChildTransform(transform, "Genesis8Female");
+                var head = FindUniqueChildTransform(skeleton, "head");
+                speechAudioSource = FindHeadSpeechAudioSource(head);
+            }
+
+            if (speechAudioSource == null)
+                throw new InvalidOperationException("No dedicated speech AudioSource is assigned or present beneath the performer's head. In Edit Mode, select the Lara root, run Tools > DAZ Pose > Development > Setup or Refresh Performer Pose Acceptance Harness, then save PoseValidation.unity.");
+            if (speechAudioSource.transform == transform || !speechAudioSource.transform.IsChildOf(transform))
+                throw new InvalidOperationException("The dedicated speech AudioSource must be a child of SuccubusPerformer so it follows the performer.");
+
+            var underHead = false;
+            for (var current = speechAudioSource.transform.parent; current != null && current != transform; current = current.parent)
+                if (current.name == "head") { underHead = true; break; }
+            if (!underHead)
+                throw new InvalidOperationException("The dedicated speech AudioSource must be on a child transform beneath the performer's head bone so spatial audio follows the mouth.");
+            return speechAudioSource;
+        }
+
+        private static AudioSource FindHeadSpeechAudioSource(Transform head)
+        {
+            AudioSource match = null;
+            foreach (var child in head.GetComponentsInChildren<Transform>(true))
+            {
+                if (child == head || (child.name != "SpeechAudio" && child.name != "VoiceAudio"
+                    && child.name != "VoiceAnchor" && child.name != "Voice" && child.name != "MouthAudio")) continue;
+                var candidate = child.GetComponent<AudioSource>();
+                if (candidate == null) continue;
+                if (match != null)
+                    throw new InvalidOperationException("SuccubusPerformer found multiple dedicated AudioSources beneath the head. Assign the intended SpeechAudioSource explicitly.");
+                match = candidate;
+            }
+            return match;
+        }
+
+        private static Transform FindUniqueChildTransform(Transform root, string exactName)
+        {
+            Transform match = null;
+            foreach (var child in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name != exactName) continue;
+                if (match != null)
+                    throw new InvalidOperationException("SuccubusPerformer needs one unique '" + exactName
+                        + "' transform beneath '" + root.name + "' to place its speech AudioSource.");
+                match = child;
+            }
+            if (match == null)
+                throw new InvalidOperationException("SuccubusPerformer could not find '" + exactName
+                    + "' beneath '" + root.name + "' to place its speech AudioSource.");
+            return match;
+        }
+
+        private PerformerSpeech RequireSpeechRuntime()
+        {
+            if (_speech == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive speech commands only while enabled in Play Mode.");
+            return _speech;
+        }
+
         private void DestroyRuntime()
         {
             if (_breathing != null) _lastBreathPhase = _breathing.BreathPhase;
@@ -522,15 +742,24 @@ namespace DazPose.Performer
             }
 
             _isTearingDown = true;
+            var speech = _speech;
+            _speech = null;
+            speech?.Dispose();
+
             var request = _activePoseRequest;
             _activePoseRequest = null;
             if (request != null) CompleteRequest(request, PoseCompletion.PerformerDisabled);
+            var expressionRequest = _activeExpressionRequest;
+            _activeExpressionRequest = null;
+            if (expressionRequest != null) CompleteExpressionRequest(expressionRequest, ExpressionCompletion.PerformerDisabled);
 
             _blink?.Dispose();
             _blink = null;
             _gaze?.Dispose();
             _gaze = null;
             _attentionLife = null;
+            _expression?.Dispose();
+            _expression = null;
 
             if (_graph.IsValid()) _graph.Destroy();
             _breathing?.Dispose();
@@ -578,6 +807,8 @@ namespace DazPose.Performer
             blinkCloseDurationSeconds = Mathf.Max(0.005f, blinkCloseDurationSeconds);
             blinkClosedDurationSeconds = Mathf.Max(0.005f, blinkClosedDurationSeconds);
             blinkOpenDurationSeconds = Mathf.Max(0.005f, blinkOpenDurationSeconds);
+            initialExpressionIntensity = Mathf.Clamp01(initialExpressionIntensity);
+            defaultExpressionBlendTime = Mathf.Max(0f, defaultExpressionBlendTime);
         }
 
         private PerformerBreathingSettings CreateBreathingSettings()

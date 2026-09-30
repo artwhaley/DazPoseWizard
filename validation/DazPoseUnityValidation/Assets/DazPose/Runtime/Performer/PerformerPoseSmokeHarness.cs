@@ -10,11 +10,22 @@ namespace DazPose.Performer
         [SerializeField] private PerformerPose poseA = null;
         [SerializeField] private PerformerPose poseB = null;
         [SerializeField] private PerformerPose poseC = null;
+        [SerializeField] private PerformerExpression expressionA = null;
+        [SerializeField] private PerformerExpression expressionB = null;
+        [SerializeField] private PerformerExpression expressionC = null;
+        [SerializeField] private AudioClip speechClipA;
+        [SerializeField] private AudioClip speechClipB;
+        [SerializeField] private AudioClip speechClipC;
+        [SerializeField, Range(0f, 1f)] private float expressionIntensity = 1f;
+        [SerializeField, Min(0f)] private float expressionBlendTime = 0.25f;
         [SerializeField] private PoseTransition transition = PoseTransition.Default;
         [SerializeField] private PerformerPoseAcceptanceHarness acceptanceHarness;
         [SerializeField] private Transform gazeTarget;
         private Vector2 _scrollPosition;
         private string _seedText = string.Empty;
+
+        internal AudioClip SpeechClipA => speechClipA;
+        internal AudioClip SpeechClipB => speechClipB;
 
         private void Reset()
         {
@@ -24,6 +35,7 @@ namespace DazPose.Performer
 
         private void Update()
         {
+            if (performer == null || !performer.IsRuntimeReady) return;
             if (Input.GetKeyDown(KeyCode.Alpha1)) RequestPose(poseA);
             if (Input.GetKeyDown(KeyCode.Alpha2)) RequestPose(poseB);
             if (Input.GetKeyDown(KeyCode.Alpha3)) RequestPose(poseC);
@@ -34,6 +46,11 @@ namespace DazPose.Performer
         {
             GUILayout.BeginArea(new Rect(12f, 12f, 430f, 900f), "Performer Pose Smoke Test", GUI.skin.window);
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
+            var previousGuiEnabled = GUI.enabled;
+            var runtimeReady = performer != null && performer.IsRuntimeReady;
+            GUI.enabled = previousGuiEnabled && runtimeReady;
+            if (!runtimeReady)
+                GUILayout.Label("Performer runtime is unavailable. Speech setup is attempted automatically at Play Mode startup; inspect the Console if startup failed.");
             GUILayout.Label("1 / 2 / 3 also selects these persistent poses.");
             DrawPoseButton("Pose A", poseA);
             DrawPoseButton("Pose B", poseB);
@@ -43,6 +60,8 @@ namespace DazPose.Performer
             if (performer != null)
             {
                 DrawBreathingControls();
+                DrawExpressionControls();
+                DrawSpeechControls();
                 DrawGazeControls();
                 DrawAttentionLifeControls();
                 var desired = performer.DesiredPose == null ? "none" : performer.DesiredPose.name;
@@ -50,9 +69,75 @@ namespace DazPose.Performer
                     ? "  " + (performer.TransitionProgress * 100f).ToString("F0") + "%"
                     : "  settled"));
             }
+            GUI.enabled = previousGuiEnabled;
             if (acceptanceHarness != null) GUILayout.Label(acceptanceHarness.Status);
             GUILayout.EndScrollView();
             GUILayout.EndArea();
+        }
+
+        private void DrawExpressionControls()
+        {
+            GUILayout.Space(8f);
+            GUILayout.Label("P0.8 Persistent Expression");
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Expression A")) RequestExpression(expressionA);
+            if (GUILayout.Button("Expression B")) RequestExpression(expressionB);
+            if (GUILayout.Button("Expression C")) RequestExpression(expressionC);
+            if (GUILayout.Button("Clear")) performer.ClearExpression(expressionBlendTime);
+            GUILayout.EndHorizontal();
+            DrawSlider("Expression intensity", expressionIntensity, 0f, 1f, value => expressionIntensity = value);
+            DrawSlider("Expression blend (s)", expressionBlendTime, 0f, 2f, value => expressionBlendTime = value);
+            var desired = performer.DesiredExpression == null ? "none" : performer.DesiredExpression.name;
+            var settled = performer.SettledExpression == null ? "none" : performer.SettledExpression.name;
+            GUILayout.Label("Desired: " + desired + "  Settled: " + settled + "  Progress: "
+                            + (performer.ExpressionTransitionProgress * 100f).ToString("F0") + "%");
+        }
+
+        private void RequestExpression(PerformerExpression expression)
+        {
+            if (expression != null) performer.Expression(expression, expressionIntensity, expressionBlendTime);
+            else Debug.LogWarning("Assign this PerformerExpression on the smoke harness first.", this);
+        }
+
+        private void DrawSpeechControls()
+        {
+            GUILayout.Space(8f);
+            GUILayout.Label("P0.9A Queued Speech");
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Say A")) SaySpeech(speechClipA, "A");
+            if (GUILayout.Button("Say B")) SaySpeech(speechClipB, "B");
+            if (GUILayout.Button("Say C")) SaySpeech(speechClipC, "C");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Queue A+B+C"))
+            {
+                if (speechClipA == null || speechClipB == null || speechClipC == null)
+                    Debug.LogWarning("Assign Speech Clip A, B, and C before queueing the three-line sequence.", this);
+                else
+                {
+                    performer.Say(speechClipA);
+                    performer.Say(speechClipB);
+                    performer.Say(speechClipC);
+                }
+            }
+            if (GUILayout.Button("Stop Speaking")) performer.StopSpeaking();
+            GUILayout.EndHorizontal();
+
+            var current = performer.CurrentSpeechClip == null ? "none" : performer.CurrentSpeechClip.name;
+            var source = performer.SpeechAudioSource;
+            GUILayout.Label("Speaking: " + performer.IsSpeaking + "  Current: " + current
+                            + "  Pending: " + performer.PendingSpeechCount);
+            GUILayout.Label("Speech AudioSource playing: " + (source != null && source.isPlaying));
+        }
+
+        private void SaySpeech(AudioClip clip, string label)
+        {
+            if (clip == null)
+            {
+                Debug.LogWarning("Assign Speech Clip " + label + " on the Performer Pose Smoke Harness first.", this);
+                return;
+            }
+            performer.Say(clip);
         }
 
         private void DrawBreathingControls()

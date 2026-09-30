@@ -19,13 +19,19 @@ namespace DazPose.Editor.Importing
         };
         internal static bool TryResolvePose(Transform root, string jsonPath,
             out ResolvedUnityPose resolvedPose, out string failure)
-            => TryResolvePose(root, jsonPath, out resolvedPose, out failure, true);
+            => TryResolvePose(root, jsonPath, out resolvedPose, out failure, true, false);
         internal static bool TryResolvePose(Transform root, string jsonPath, out ResolvedUnityPose resolvedPose,
             out string failure, bool temporaryReference)
+            => TryResolvePose(root, jsonPath, out resolvedPose, out failure, temporaryReference, false);
+        internal static bool TryResolvePose(Transform root, string jsonPath, out ResolvedUnityPose resolvedPose,
+            out string failure, bool temporaryReference, bool expressionImport)
         {
             resolvedPose = null;
             failure = null;
-            var pose = DazPoseJsonLoader.Load(jsonPath);
+            var pose = DazPoseJsonLoader.Load(jsonPath, expressionImport);
+            var expressionBoneSelection = expressionImport ? DazPoseExpressionBonePolicy.Analyze(pose) : null;
+            if (expressionBoneSelection != null && !string.IsNullOrEmpty(expressionBoneSelection.Failure))
+                throw new InvalidDataException(expressionBoneSelection.Failure);
             var state = DazPoseRestPoseService.Capture(root, false, !temporaryReference);
             var originalTransformsByPath = root.GetComponentsInChildren<Transform>(true)
                 .ToDictionary(item => DazPoseTransformPath.Get(root, item), StringComparer.Ordinal);
@@ -38,12 +44,14 @@ namespace DazPose.Editor.Importing
                 var evaluationRoot = evaluationRootObject.transform;
                 DazPoseRestPoseService.RestoreSnapshot(evaluationRoot, state);
                 var bindingRoot = FindBindingRoot(evaluationRoot);
-                var poseTargetIds = new HashSet<string>((pose.poseChannels ?? Array.Empty<DazPoseChannel>())
-                    .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
-                    .Select(channel => channel.targetId), StringComparer.Ordinal);
+                var poseTargetIds = expressionImport
+                    ? new HashSet<string>(expressionBoneSelection.ActiveFacialProperties.Keys, StringComparer.Ordinal)
+                    : new HashSet<string>((pose.poseChannels ?? Array.Empty<DazPoseChannel>())
+                        .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
+                        .Select(channel => channel.targetId), StringComparer.Ordinal);
                 var hasActiveMorphs = (pose.figureControls ?? Array.Empty<DazPoseFigureControl>())
                     .Any(control => control != null && Mathf.Abs(control.value) > 1e-7f);
-                if (poseTargetIds.Count == 0 && !hasActiveMorphs)
+                if (!expressionImport && poseTargetIds.Count == 0 && !hasActiveMorphs)
                     throw new InvalidDataException("The canonical pose contains no active skeletal targets or figure controls.");
 
                 var warnings = new List<string>();
@@ -122,65 +130,142 @@ namespace DazPose.Editor.Importing
                         return false;
                     }
 
-                    var targets = new List<PoseTarget>(resolved.Length);
-                    foreach (var item in resolved)
-                    {
-                        var bone = item.Definition;
-                        var restRotationDaz = DazPoseJsonLoader.Quaternion(bone.restWorldRotation);
-                        var poseRotationDaz = DazPoseJsonLoader.Quaternion(bone.evaluatedWorldRotation);
-                        var deltaDaz = Quaternion.Normalize(poseRotationDaz * Quaternion.Inverse(restRotationDaz));
-                        var deltaUnity = DazPoseRestBasisCalibration.ConvertWorldRotationDelta(fit.Basis, deltaDaz);
-                        var targetRotation = Quaternion.Normalize(deltaUnity * item.Transform.rotation);
-                        var restPositionDaz = DazPoseJsonLoader.Vector(bone.restWorldPositionCm);
-                        var posePositionDaz = DazPoseJsonLoader.Vector(bone.evaluatedWorldPositionCm);
-                        var targetPosition = item.Transform.position + DazPoseRestBasisCalibration.ConvertDazCentimeterDelta(fit.Basis, posePositionDaz - restPositionDaz);
-                        targets.Add(new PoseTarget { Transform = item.Transform, Position = targetPosition, Rotation = targetRotation });
-                    }
-                    foreach (var target in targets.OrderBy(item => DazPoseTransformPath.DepthFrom(evaluationRoot, item.Transform)))
-                        target.Transform.SetPositionAndRotation(target.Position, target.Rotation);
-
-                    var channelTargets = (pose.poseChannels ?? Array.Empty<DazPoseChannel>())
-                        .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
-                        .GroupBy(channel => channel.targetId, StringComparer.Ordinal)
-                        .ToDictionary(group => group.Key, group => new
-                        {
-                            Rotation = group.Any(channel => channel.property == "rotation"),
-                            Translation = group.Any(channel => channel.property == "translation")
-                        }, StringComparer.Ordinal);
                     var restByPath = (state.transforms ?? Array.Empty<DazPoseRestTransform>()).ToDictionary(item => item.path, StringComparer.Ordinal);
-                    foreach (var item in resolved)
+                    if (expressionImport)
                     {
-                        var instancePath = DazPoseTransformPath.Get(evaluationRoot, item.Transform);
-                        if (!originalTransformsByPath.TryGetValue(instancePath, out var originalTransform))
-                            throw new InvalidOperationException("Could not map resolved DAZ bone '" + item.Definition.id + "' back to the selected character at " + instancePath + ".");
-                        if (!item.Transform.IsChildOf(skeletonRootEvaluation) && item.Transform != skeletonRootEvaluation)
-                            throw new InvalidOperationException("Resolved DAZ bone '" + item.Definition.id + "' is outside the configured skeleton root: " + instancePath + ".");
-                        if (!restByPath.TryGetValue(instancePath, out var restTransform))
-                            throw new InvalidOperationException("The captured import rest pose has no entry for resolved DAZ bone '" + item.Definition.id + "'.");
-                        channelTargets.TryGetValue(item.Definition.id, out var channels);
-                        var localRotation = item.Transform.localRotation;
-                        var localPosition = item.Transform.localPosition;
-                        var localScale = item.Transform.localScale;
-                        resolvedBones.Add(new ResolvedBonePose
+                        var canonicalBonesById = (pose.bones ?? Array.Empty<DazPoseBone>())
+                            .Where(bone => bone != null && !string.IsNullOrEmpty(bone.id))
+                            .GroupBy(bone => bone.id, StringComparer.Ordinal)
+                            .Where(group => group.Count() == 1)
+                            .ToDictionary(group => group.Key, group => group.Single(), StringComparer.Ordinal);
+                        foreach (var item in resolved.Where(item => expressionBoneSelection.ActiveFacialProperties.ContainsKey(item.Definition.id)))
                         {
-                            DazBoneId = item.Definition.id,
-                            DazBoneName = item.Definition.name,
-                            InstancePath = instancePath,
-                            AnimationPath = AnimationUtility.CalculateTransformPath(item.Transform, bindingRoot),
-                            MappingMethod = item.Method,
-                            Transform = originalTransform,
-                            HasPosition = Vector3.Distance(restTransform.localPosition, localPosition) > 1e-5f,
-                            HasRotation = Quaternion.Angle(restTransform.localRotation, localRotation) > 0.001f,
-                            HasScale = false,
-                            HasDazTranslationChannel = channels != null && channels.Translation,
-                            HasDazRotationChannel = channels != null && channels.Rotation,
-                            LocalPosition = localPosition,
-                            LocalRotation = localRotation,
-                            LocalScale = localScale
-                        });
+                            var bone = item.Definition;
+                            var properties = expressionBoneSelection.ActiveFacialProperties[bone.id];
+                            var instancePath = DazPoseTransformPath.Get(evaluationRoot, item.Transform);
+                            if (!originalTransformsByPath.TryGetValue(instancePath, out var originalTransform))
+                                throw new InvalidOperationException("Could not map Expression facial bone '" + bone.id + "' back to the selected character at " + instancePath + ".");
+                            if (!item.Transform.IsChildOf(skeletonRootEvaluation) && item.Transform != skeletonRootEvaluation)
+                                throw new InvalidOperationException("Expression facial bone '" + bone.id + "' is outside the configured skeleton root: " + instancePath + ".");
+                            if (!restByPath.TryGetValue(instancePath, out var restTransform))
+                                throw new InvalidOperationException("The captured import rest pose has no entry for Expression facial bone '" + bone.id + "'.");
+                            if (!string.IsNullOrEmpty(bone.parentId) && !canonicalBonesById.ContainsKey(bone.parentId))
+                                throw new InvalidDataException("Expression facial bone '" + bone.id + "' has a missing or ambiguous canonical parent '" + bone.parentId + "'.");
+
+                            var parentDazRestRotation = Quaternion.identity;
+                            if (!string.IsNullOrEmpty(bone.parentId) && canonicalBonesById.TryGetValue(bone.parentId, out var parentBone))
+                                parentDazRestRotation = DazPoseJsonLoader.Quaternion(parentBone.restWorldRotation);
+                            var parentUnity = item.Transform.parent;
+                            var targetLocalPosition = restTransform.localPosition;
+                            var targetLocalRotation = restTransform.localRotation;
+                            if ((properties & DazPose.Performer.PerformerExpressionBoneProperties.LocalPosition) != 0)
+                            {
+                                if (bone.sourceTranslationCm == null || bone.sourceTranslationCm.Length < 3
+                                    || bone.poseTranslationCm == null || bone.poseTranslationCm.Length < 3)
+                                    throw new InvalidDataException("Expression facial bone '" + bone.id + "' is missing source/pose translation data.");
+                                var deltaDazLocal = DazPoseJsonLoader.Vector(bone.poseTranslationCm) - DazPoseJsonLoader.Vector(bone.sourceTranslationCm);
+                                var deltaDazWorld = parentDazRestRotation * deltaDazLocal;
+                                var deltaUnityWorld = fit.Basis.MultiplyVector(deltaDazWorld * 0.01f);
+                                var deltaUnityLocal = parentUnity == null
+                                    ? deltaUnityWorld
+                                    : parentUnity.worldToLocalMatrix.MultiplyVector(deltaUnityWorld);
+                                targetLocalPosition += deltaUnityLocal;
+                            }
+                            if ((properties & DazPose.Performer.PerformerExpressionBoneProperties.LocalRotation) != 0)
+                            {
+                                var restLocalDaz = GetDazLocalRotation(bone, canonicalBonesById, false);
+                                var evaluatedLocalDaz = GetDazLocalRotation(bone, canonicalBonesById, true);
+                                var deltaLocalDaz = Quaternion.Normalize(evaluatedLocalDaz * Quaternion.Inverse(restLocalDaz));
+                                var deltaWorldDaz = Quaternion.Normalize(parentDazRestRotation * deltaLocalDaz * Quaternion.Inverse(parentDazRestRotation));
+                                var deltaWorldUnity = DazPoseRestBasisCalibration.ConvertWorldRotationDelta(fit.Basis, deltaWorldDaz);
+                                var parentUnityRotation = parentUnity == null ? Quaternion.identity : parentUnity.rotation;
+                                var deltaLocalUnity = Quaternion.Normalize(Quaternion.Inverse(parentUnityRotation) * deltaWorldUnity * parentUnityRotation);
+                                targetLocalRotation = Quaternion.Normalize(deltaLocalUnity * restTransform.localRotation);
+                            }
+
+                            resolvedBones.Add(new ResolvedBonePose
+                            {
+                                DazBoneId = bone.id,
+                                DazBoneName = bone.name,
+                                InstancePath = instancePath,
+                                AnimationPath = AnimationUtility.CalculateTransformPath(item.Transform, bindingRoot),
+                                MappingMethod = item.Method,
+                                Transform = originalTransform,
+                                HasPosition = (properties & DazPose.Performer.PerformerExpressionBoneProperties.LocalPosition) != 0,
+                                HasRotation = (properties & DazPose.Performer.PerformerExpressionBoneProperties.LocalRotation) != 0,
+                                HasScale = false,
+                                HasDazTranslationChannel = (properties & DazPose.Performer.PerformerExpressionBoneProperties.LocalPosition) != 0,
+                                HasDazRotationChannel = (properties & DazPose.Performer.PerformerExpressionBoneProperties.LocalRotation) != 0,
+                                ExpressionHasPosition = (properties & DazPose.Performer.PerformerExpressionBoneProperties.LocalPosition) != 0,
+                                ExpressionHasRotation = (properties & DazPose.Performer.PerformerExpressionBoneProperties.LocalRotation) != 0,
+                                LocalPosition = targetLocalPosition,
+                                LocalRotation = targetLocalRotation,
+                                LocalScale = restTransform.localScale
+                            });
+                        }
+                    }
+                    else
+                    {
+                        var targets = new List<PoseTarget>(resolved.Length);
+                        foreach (var item in resolved)
+                        {
+                            var bone = item.Definition;
+                            var restRotationDaz = DazPoseJsonLoader.Quaternion(bone.restWorldRotation);
+                            var poseRotationDaz = DazPoseJsonLoader.Quaternion(bone.evaluatedWorldRotation);
+                            var deltaDaz = Quaternion.Normalize(poseRotationDaz * Quaternion.Inverse(restRotationDaz));
+                            var deltaUnity = DazPoseRestBasisCalibration.ConvertWorldRotationDelta(fit.Basis, deltaDaz);
+                            var targetRotation = Quaternion.Normalize(deltaUnity * item.Transform.rotation);
+                            var restPositionDaz = DazPoseJsonLoader.Vector(bone.restWorldPositionCm);
+                            var posePositionDaz = DazPoseJsonLoader.Vector(bone.evaluatedWorldPositionCm);
+                            var targetPosition = item.Transform.position + DazPoseRestBasisCalibration.ConvertDazCentimeterDelta(fit.Basis, posePositionDaz - restPositionDaz);
+                            targets.Add(new PoseTarget { Transform = item.Transform, Position = targetPosition, Rotation = targetRotation });
+                        }
+                        foreach (var target in targets.OrderBy(item => DazPoseTransformPath.DepthFrom(evaluationRoot, item.Transform)))
+                            target.Transform.SetPositionAndRotation(target.Position, target.Rotation);
+
+                        var channelTargets = (pose.poseChannels ?? Array.Empty<DazPoseChannel>())
+                            .Where(channel => channel.supported && !string.IsNullOrEmpty(channel.targetId))
+                            .GroupBy(channel => channel.targetId, StringComparer.Ordinal)
+                            .ToDictionary(group => group.Key, group => new
+                            {
+                                Rotation = group.Any(channel => channel.property == "rotation"),
+                                Translation = group.Any(channel => channel.property == "translation")
+                            }, StringComparer.Ordinal);
+                        foreach (var item in resolved)
+                        {
+                            var instancePath = DazPoseTransformPath.Get(evaluationRoot, item.Transform);
+                            if (!originalTransformsByPath.TryGetValue(instancePath, out var originalTransform))
+                                throw new InvalidOperationException("Could not map resolved DAZ bone '" + item.Definition.id + "' back to the selected character at " + instancePath + ".");
+                            if (!item.Transform.IsChildOf(skeletonRootEvaluation) && item.Transform != skeletonRootEvaluation)
+                                throw new InvalidOperationException("Resolved DAZ bone '" + item.Definition.id + "' is outside the configured skeleton root: " + instancePath + ".");
+                            if (!restByPath.TryGetValue(instancePath, out var restTransform))
+                                throw new InvalidOperationException("The captured import rest pose has no entry for resolved DAZ bone '" + item.Definition.id + "'.");
+                            channelTargets.TryGetValue(item.Definition.id, out var channels);
+                            var localRotation = item.Transform.localRotation;
+                            var localPosition = item.Transform.localPosition;
+                            var localScale = item.Transform.localScale;
+                            resolvedBones.Add(new ResolvedBonePose
+                            {
+                                DazBoneId = item.Definition.id,
+                                DazBoneName = item.Definition.name,
+                                InstancePath = instancePath,
+                                AnimationPath = AnimationUtility.CalculateTransformPath(item.Transform, bindingRoot),
+                                MappingMethod = item.Method,
+                                Transform = originalTransform,
+                                HasPosition = Vector3.Distance(restTransform.localPosition, localPosition) > 1e-5f,
+                                HasRotation = Quaternion.Angle(restTransform.localRotation, localRotation) > 0.001f,
+                                HasScale = false,
+                                HasDazTranslationChannel = channels != null && channels.Translation,
+                                HasDazRotationChannel = channels != null && channels.Rotation,
+                                LocalPosition = localPosition,
+                                LocalRotation = localRotation,
+                                LocalScale = localScale
+                            });
+                        }
                     }
                 }
 
+                var ignoredSkeletalChannelCount = expressionBoneSelection == null ? 0 : expressionBoneSelection.IgnoredSkeletalChannelCount;
                 var morphControls = DazPoseMorphResolver.Resolve(root, pose.figureControls);
                 if (morphControls.Count > 0)
                 {
@@ -205,6 +290,11 @@ namespace DazPose.Editor.Importing
                     SourcePoseJsonPath = jsonPath,
                     CharacterName = root.name,
                     PoseTargetBoneCount = poseTargetIds.Count,
+                    IgnoredSkeletalChannelCount = ignoredSkeletalChannelCount,
+                    ActiveSkeletalChannelCount = expressionBoneSelection == null ? 0 : expressionBoneSelection.ActiveSkeletalChannelCount,
+                    RetainedFacialSkeletalChannelCount = expressionBoneSelection == null ? 0 : expressionBoneSelection.RetainedSkeletalChannelCount,
+                    UnsupportedFacialSkeletalChannelCount = expressionBoneSelection == null ? 0 : expressionBoneSelection.UnsupportedFacialChannelCount,
+                    SkeletalChannelDiagnostics = expressionBoneSelection == null ? Array.Empty<string>() : expressionBoneSelection.Diagnostics.ToArray(),
                     UnresolvedRequiredBoneCount = missingTargets.Length + missingCalibration.Length,
                     AmbiguousBoneCount = resolutions.Count(item => item.Status == "ambiguous"),
                     Bones = resolvedBones,
@@ -312,6 +402,20 @@ namespace DazPose.Editor.Importing
             if (characterRoot == null) throw new ArgumentNullException(nameof(characterRoot));
             FindSkeletonRoot(characterRoot);
             return characterRoot;
+        }
+
+        private static Quaternion GetDazLocalRotation(DazPoseBone bone,
+            IReadOnlyDictionary<string, DazPoseBone> bonesById, bool evaluated)
+        {
+            var localValues = evaluated ? bone.evaluatedLocalRotation : bone.restLocalRotation;
+            if (localValues != null && localValues.Length >= 4) return DazPoseJsonLoader.Quaternion(localValues);
+            var worldValues = evaluated ? bone.evaluatedWorldRotation : bone.restWorldRotation;
+            var parentWorldValues = bone.parentId != null && bonesById.TryGetValue(bone.parentId, out var parent)
+                ? evaluated ? parent.evaluatedWorldRotation : parent.restWorldRotation
+                : null;
+            var world = DazPoseJsonLoader.Quaternion(worldValues);
+            var parentWorld = parentWorldValues == null ? Quaternion.identity : DazPoseJsonLoader.Quaternion(parentWorldValues);
+            return Quaternion.Normalize(Quaternion.Inverse(parentWorld) * world);
         }
 
         private static bool ApproximatelyUniformOne(Vector3 scale)
