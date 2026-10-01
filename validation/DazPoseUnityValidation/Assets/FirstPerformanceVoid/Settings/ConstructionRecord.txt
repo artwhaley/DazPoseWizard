@@ -1,0 +1,11 @@
+P0.C native Unity scene construction
+Source: Assets/P0CWorkingSnapshot.unity
+Performer: Lara
+Chair: P0.B Seating Test Chair
+Source chair world position: (0.0000, 0.0000, 1.6000)
+Approach local position preserved: (0.0005, 0.0101, 0.4999)
+Seat local position preserved: (0.0000, 0.6030, 0.1147)
+Source chair and performer references copied; external scene harness references remapped to this scene.
+Floor 18 x 14 x 0.15 m; stage diameter 4 m, height 0.35 m.
+Three realtime lights, four Local Volumetric Fog banks, one shared 32^3 RGBA32 density mask.
+Scene serialized by Unity. No Play Mode or aesthetic acceptance performed.
