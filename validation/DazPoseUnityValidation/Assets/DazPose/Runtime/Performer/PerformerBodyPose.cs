@@ -28,6 +28,7 @@ namespace DazPose.Performer
         private readonly Transform[] _transforms;
         private readonly SkinnedMeshRenderer[] _blendShapeRenderers;
         private readonly PerformerPoseSnapshot _neutralState;
+        private readonly bool _animateActorRoot;
 
         private NativeArray<TransformStreamHandle> _transformHandles;
         private NativeArray<PropertyStreamHandle> _blendShapeHandles;
@@ -57,13 +58,15 @@ namespace DazPose.Performer
         public PoseTransition ActiveTransition => _activeTransition;
         public PerformerPoseSnapshot NeutralState => _neutralState;
 
-        public PerformerBodyPose(Animator animator, PlayableGraph graph, PerformerPoseSnapshot neutralState = null)
+        public PerformerBodyPose(Animator animator, PlayableGraph graph, PerformerPoseSnapshot neutralState = null,
+            bool animateActorRoot = true)
         {
             if (animator == null) throw new ArgumentNullException(nameof(animator));
             if (!graph.IsValid()) throw new ArgumentException("A valid PlayableGraph is required.", nameof(graph));
 
             _animator = animator;
             _graph = graph;
+            _animateActorRoot = animateActorRoot;
             _transforms = animator.GetComponentsInChildren<Transform>(true);
             _blendShapeRenderers = animator.GetComponentsInChildren<SkinnedMeshRenderer>(true);
             _neutralState = neutralState ?? CaptureLiveState();
@@ -199,7 +202,12 @@ namespace DazPose.Performer
             _evaluatedBaseBlendShapes = new NativeArray<float>(blendShapeCount, Allocator.Persistent);
 
             for (var index = 0; index < _transforms.Length; index++)
+            {
+                // Keep the snapshot slot for stable bone indices. Locomotion owns actor
+                // placement, so its root handle must remain unbound in every pose job.
+                if (!_animateActorRoot && _transforms[index] == _animator.transform) continue;
                 _transformHandles[index] = _animator.BindStreamTransform(_transforms[index]);
+            }
 
             var handleIndex = 0;
             foreach (var renderer in _blendShapeRenderers)
@@ -312,6 +320,10 @@ namespace DazPose.Performer
         private PerformerPoseSnapshot SamplePose(AnimationClip clip, PerformerPoseSnapshot stateToRestore)
         {
             var speechState = CaptureSpeechOwnedWeights();
+            Transform actorRoot = _animator.transform;
+            Vector3 actorPosition = actorRoot.localPosition;
+            Quaternion actorRotation = actorRoot.localRotation;
+            Vector3 actorScale = actorRoot.localScale;
             try
             {
                 RestoreNeutralState();
@@ -322,6 +334,13 @@ namespace DazPose.Performer
             {
                 RestoreState(stateToRestore);
                 RestoreSpeechOwnedWeights(speechState);
+                if (!_animateActorRoot)
+                {
+                    // Sampling a pose clip with root bindings must preserve current placement.
+                    actorRoot.localPosition = actorPosition;
+                    actorRoot.localRotation = actorRotation;
+                    actorRoot.localScale = actorScale;
+                }
             }
         }
 
@@ -371,6 +390,7 @@ namespace DazPose.Performer
             for (var index = 0; index < _transforms.Length; index++)
             {
                 var transform = _transforms[index];
+                if (!_animateActorRoot && transform == _animator.transform) continue;
                 var state = _neutralState.Transforms[index];
                 transform.localPosition = state.LocalPosition;
                 transform.localRotation = state.LocalRotation;
@@ -399,6 +419,7 @@ namespace DazPose.Performer
             for (var index = 0; index < _transforms.Length; index++)
             {
                 var transform = _transforms[index];
+                if (!_animateActorRoot && transform == _animator.transform) continue;
                 var state = snapshot.Transforms[index];
                 transform.localPosition = state.LocalPosition;
                 transform.localRotation = state.LocalRotation;

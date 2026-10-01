@@ -16,6 +16,8 @@ namespace DazPose.UnityValidation
     {
         private const string CharacterAssetPath = "Assets/TestCharacter/lara.fbx";
         private const string PoseAssetFolder = "Assets/TestData";
+        private const string LocomotionProfilePath = "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset";
+        private const string LocomotionTargetName = "P0.A1 WalkTo Target";
         private static readonly string[] ExpectedNames =
         {
             "hip", "pelvis", "abdomenLower", "abdomenUpper", "lThighBend", "lThighTwist", "lShin", "lFoot",
@@ -184,12 +186,44 @@ namespace DazPose.UnityValidation
             AssignSmokeHarnessOwners(performer, smoke, acceptance);
             AssignExpressionFixtures(smoke, acceptance);
             AssignSpeechFixtures(smoke);
+            AssignLocomotionFixtures(performer, smoke, animationRoot);
 
             EditorSceneManager.MarkSceneDirty(characterRoot.gameObject.scene);
             Selection.activeGameObject = animationRoot.gameObject;
             Debug.Log("Performer pose acceptance harness is ready on " + animationRoot.name
                 + ". Speech AudioSource: " + DazPoseTransformPath.Get(characterRoot, speechAudioSource.transform)
+                + ". Locomotion profile: " + (performer.LocomotionProfile == null ? "not assigned (bake Walk01 first)" : performer.LocomotionProfile.name)
                 + ". Assign three PerformerPose and three PerformerExpression assets if they are not already configured.");
+        }
+
+        private static void AssignLocomotionFixtures(SuccubusPerformer performer,
+            PerformerPoseSmokeHarness smoke, Transform animationRoot)
+        {
+            PerformerLocomotionProfile profile = AssetDatabase.LoadAssetAtPath<PerformerLocomotionProfile>(LocomotionProfilePath);
+            if (profile != null) AssignReferenceIfEmpty(performer, "locomotionProfile", profile);
+
+            var smokeSerialized = new SerializedObject(smoke);
+            var targetProperty = smokeSerialized.FindProperty("locomotionTarget");
+            if (targetProperty == null || targetProperty.objectReferenceValue != null) return;
+
+            GameObject targetObject = null;
+            foreach (GameObject root in animationRoot.gameObject.scene.GetRootGameObjects())
+                if (root.name == LocomotionTargetName) { targetObject = root; break; }
+            if (targetObject == null)
+            {
+                targetObject = new GameObject(LocomotionTargetName);
+                Undo.RegisterCreatedObjectUndo(targetObject, "Create P0.A1 WalkTo Target");
+                SceneManager.MoveGameObjectToScene(targetObject, animationRoot.gameObject.scene);
+                Undo.RecordObject(targetObject.transform, "Place P0.A1 WalkTo Target");
+                targetObject.transform.SetPositionAndRotation(
+                    animationRoot.position + animationRoot.forward
+                        * Mathf.Max(5f, profile == null ? 5f : profile.MinimumWalkDistance + 0.5f),
+                    Quaternion.LookRotation(-animationRoot.forward, Vector3.up));
+            }
+
+            targetProperty.objectReferenceValue = targetObject.transform;
+            smokeSerialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(smoke);
         }
 
         private static AudioSource EnsureSpeechAudioSource(Transform characterRoot, SuccubusPerformer performer)

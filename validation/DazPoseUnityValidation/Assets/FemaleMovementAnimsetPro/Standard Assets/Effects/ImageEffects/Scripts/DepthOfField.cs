@@ -131,13 +131,11 @@ namespace UnityStandardAssets.ImageEffects
 
                 // "merge up" with background COC
                 dofHdrMaterial.SetTexture("_FgOverlap", temp2);
-                fromTo.MarkRestoreExpected(); // only touching alpha channel, RT restore expected
                 Graphics.Blit (fromTo, fromTo, dofHdrMaterial,  13);
                 RenderTexture.ReleaseTemporary(temp2);
             }
             else {
                 // capture full coc in alpha channel (fromTo is not read, but bound to detect screen flip)
-				fromTo.MarkRestoreExpected(); // only touching alpha channel, RT restore expected
                 Graphics.Blit (fromTo, fromTo, dofHdrMaterial,  0);
             }
         }
@@ -254,7 +252,7 @@ namespace UnityStandardAssets.ImageEffects
                     dx11bokehMaterial.SetVector ("_Screen", new Vector3(1.0f/(1.0f*source.width), 1.0f/(1.0f*source.height), internalBlurWidth));
                     dx11bokehMaterial.SetPass (2);
 
-                    Graphics.DrawProceduralIndirect (MeshTopology.Points, cbDrawArgs, 0);
+                    Graphics.DrawProceduralIndirectNow (MeshTopology.Points, cbDrawArgs, 0);
 
                     Graphics.Blit (dest2, destination);	// hackaround for DX11 high resolution flipfun (OPTIMIZEME)
 
@@ -328,7 +326,7 @@ namespace UnityStandardAssets.ImageEffects
                     dx11bokehMaterial.SetTexture ("_MainTex", dx11BokehTexture);
                     dx11bokehMaterial.SetVector ("_Screen", new Vector3(1.0f/(1.0f*rtLow2.width), 1.0f/(1.0f*rtLow2.height), internalBlurWidth));
                     dx11bokehMaterial.SetPass (1);
-                    Graphics.DrawProceduralIndirect (MeshTopology.Points, cbDrawArgs, 0);
+                    Graphics.DrawProceduralIndirectNow (MeshTopology.Points, cbDrawArgs, 0);
 
                     // upsample & combine
                     dofHdrMaterial.SetTexture ("_LowRez", rtLow2);

@@ -1,0 +1,2 @@
+timestamp_utc,pack,clip,asset_path,root_motion,mirror,elapsed_s,root_dx,root_dy,root_dz,planar_path_m,yaw_degrees
+"2026-10-01T00:44:52.8329431Z","Kawaii","KA_TurnLeft_180 → KA_Walk01_Start → KA_Walk01 → KA_Walk01_Stop","Assets/KAWAII_ANIMATIOMS_100/Assets/Animations/@KA_Walk01.FBX","False","False","0.759","0.000","0.000","0.000","0.000","0.000"

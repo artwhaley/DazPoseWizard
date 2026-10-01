@@ -37,6 +37,9 @@ namespace DazPose.Performer
         [Header("Speech")]
         [SerializeField] private AudioSource speechAudioSource;
 
+        [Header("Locomotion")]
+        [SerializeField] private PerformerLocomotionProfile locomotionProfile;
+
         [Header("Breathing")]
         [SerializeField] private bool breathingEnabled = true;
         [SerializeField, Range(3f, 24f)] private float breathsPerMinute = 10f;
@@ -97,6 +100,8 @@ namespace DazPose.Performer
 
         private PlayableGraph _graph;
         private PerformerBodyPose _bodyPose;
+        private PerformerBodySourceMixer _bodySourceMixer;
+        private PerformerLocomotion _locomotion;
         private PerformerBreathing _breathing;
         private PerformerGaze _gaze;
         private PerformerAttentionLife _attentionLife;
@@ -117,12 +122,31 @@ namespace DazPose.Performer
         private float _lastSettledExpressionIntensity;
         private ExpressionRequest _activeExpressionRequest;
         private bool _hasExpressionCommand;
+        private bool _hasSavedApplyRootMotion;
+        private bool _savedApplyRootMotion;
 
         public PerformerPose SettledPose => _bodyPose != null ? _bodyPose.SettledPose : _lastSettledPose;
         public PerformerPose DesiredPose => _bodyPose != null ? _bodyPose.DesiredPose : _lastDesiredPose;
         public bool IsTransitioning => _bodyPose != null && _bodyPose.IsTransitioning;
         public bool IsRuntimeReady => Application.isPlaying && isActiveAndEnabled && !_isTearingDown
             && _bodyPose != null && _speech != null && _graph.IsValid();
+        public bool LocomotionAvailable => _locomotion != null;
+        public bool IsLocomoting => _locomotion != null && _locomotion.IsLocomoting;
+        public PerformerLocomotionState LocomotionState => _locomotion == null
+            ? PerformerLocomotionState.Idle : _locomotion.State;
+        public string LocomotionCurrentMotion => _locomotion == null || _locomotion.CurrentMotion == null
+            ? "none" : _locomotion.CurrentMotion.name;
+        public float LocomotionPlaybackTime => _locomotion == null ? 0f : _locomotion.PlaybackTime;
+        public float LocomotionGaitPhase => _locomotion == null ? 0f : _locomotion.GaitPhase;
+        public float LocomotionRemainingDistance => _locomotion == null ? 0f : _locomotion.RemainingDistance;
+        public float LocomotionHeadingError => _locomotion == null ? 0f : _locomotion.HeadingError;
+        public Vector3 LocomotionCurrentTarget => _locomotion == null ? default : _locomotion.CurrentTarget;
+        public string LocomotionSelectedTurn => _locomotion == null ? "none" : _locomotion.SelectedTurn;
+        public string LocomotionSelectedStop => _locomotion == null ? "none" : _locomotion.SelectedStopVariant;
+        public float LocomotionPredictedStopDistance => _locomotion == null ? 0f : _locomotion.PredictedStopDistance;
+        public Vector3 LocomotionPredictedStopEndpoint => _locomotion == null ? default : _locomotion.PredictedStopEndpoint;
+        public Vector3 LocomotionEndpointCorrection => _locomotion == null ? default : _locomotion.EndpointCorrection;
+        public PerformerLocomotionProfile LocomotionProfile => locomotionProfile;
         public float TransitionProgress => _bodyPose == null ? 0f : _bodyPose.TransitionProgress;
         public PerformerExpression DesiredExpression => _lastDesiredExpression;
         public PerformerExpression SettledExpression => _lastSettledExpression;
@@ -299,6 +323,7 @@ namespace DazPose.Performer
 
             var request = _activePoseRequest;
             _bodyPose.Advance(Time.deltaTime);
+            _locomotion?.Advance(Time.deltaTime);
             if (_breathing != null)
             {
                 _breathing.Configure(CreateBreathingSettings());
@@ -434,6 +459,16 @@ namespace DazPose.Performer
         {
             _gaze?.ClearGaze();
         }
+
+        public void WalkTo(Vector3 worldPosition) => RequireLocomotionRuntime().WalkTo(worldPosition);
+
+        public void WalkTo(Transform target) => RequireLocomotionRuntime().WalkTo(target);
+
+        public Awaitable<LocomotionCompletion> WalkToAsync(Vector3 worldPosition) =>
+            RequireLocomotionRuntime().WalkToAsync(worldPosition);
+
+        public Awaitable<LocomotionCompletion> WalkToAsync(Transform target) =>
+            RequireLocomotionRuntime().WalkToAsync(target);
 
         internal PerformerPoseSnapshot CaptureEvaluatedBasePoseState()
         {
@@ -612,17 +647,33 @@ namespace DazPose.Performer
             if (animator == null) animator = GetComponent<Animator>();
             if (animator == null)
                 throw new InvalidOperationException("SuccubusPerformer needs an Animator on this GameObject or assigned in its Inspector.");
+            if (locomotionProfile != null && animator.transform != transform)
+                throw new InvalidOperationException("The baked KAWAII Generic locomotion profile expects the SuccubusPerformer and Animator on the same model root.");
 
             try
             {
+                if (locomotionProfile != null)
+                {
+                    _savedApplyRootMotion = animator.applyRootMotion;
+                    _hasSavedApplyRootMotion = true;
+                    animator.applyRootMotion = false;
+                }
                 speechAudioSource = ResolveSpeechAudioSource();
                 _speech = new PerformerSpeech(speechAudioSource);
 
                 _graph = PlayableGraph.Create("Succubus Performer - " + name);
                 _graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
-                _bodyPose = new PerformerBodyPose(animator, _graph, _neutralPoseState);
+                _bodyPose = new PerformerBodyPose(animator, _graph, _neutralPoseState,
+                    animateActorRoot: locomotionProfile == null);
                 _neutralPoseState = _bodyPose.NeutralState;
-                _breathing = new PerformerBreathing(animator, _graph, _bodyPose.OutputPlayable,
+                Playable bodySource = _bodyPose.OutputPlayable;
+                if (locomotionProfile != null)
+                {
+                    _bodySourceMixer = new PerformerBodySourceMixer(animator, _graph, bodySource, locomotionProfile);
+                    _locomotion = new PerformerLocomotion(transform, locomotionProfile, _bodySourceMixer);
+                    bodySource = _bodySourceMixer.Output;
+                }
+                _breathing = new PerformerBreathing(animator, _graph, bodySource,
                     _bodyPose, breathingBones, _lastBreathPhase);
                 _breathing.Configure(CreateBreathingSettings());
                 _breathing.Advance(0f);
@@ -732,6 +783,18 @@ namespace DazPose.Performer
             return _speech;
         }
 
+        private PerformerLocomotion RequireLocomotionRuntime()
+        {
+            if (_locomotion == null || _isTearingDown || !isActiveAndEnabled)
+            {
+                string setup = locomotionProfile == null
+                    ? "Assign the generated KawaiiWalk01Profile in the Locomotion section after running Tools > DAZ Pose > Locomotion > Bake KAWAII Walk01 for Generic Lara."
+                    : "SuccubusPerformer locomotion is available only while enabled in Play Mode and after its profile has initialized.";
+                throw new InvalidOperationException("SuccubusPerformer cannot receive WalkTo commands. " + setup);
+            }
+            return _locomotion;
+        }
+
         private void DestroyRuntime()
         {
             if (_breathing != null) _lastBreathPhase = _breathing.BreathPhase;
@@ -753,6 +816,9 @@ namespace DazPose.Performer
             _activeExpressionRequest = null;
             if (expressionRequest != null) CompleteExpressionRequest(expressionRequest, ExpressionCompletion.PerformerDisabled);
 
+            _locomotion?.Dispose();
+            _locomotion = null;
+
             _blink?.Dispose();
             _blink = null;
             _gaze?.Dispose();
@@ -761,12 +827,20 @@ namespace DazPose.Performer
             _expression?.Dispose();
             _expression = null;
 
+            _bodySourceMixer?.Dispose();
+            _bodySourceMixer = null;
+
             if (_graph.IsValid()) _graph.Destroy();
             _breathing?.Dispose();
             _breathing = null;
             _bodyPose?.Dispose();
             _bodyPose = null;
             _graph = default;
+            if (_hasSavedApplyRootMotion && animator != null)
+            {
+                animator.applyRootMotion = _savedApplyRootMotion;
+                _hasSavedApplyRootMotion = false;
+            }
         }
 
         private void OnValidate()

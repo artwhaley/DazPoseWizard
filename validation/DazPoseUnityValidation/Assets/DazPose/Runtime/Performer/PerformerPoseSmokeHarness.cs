@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,10 +24,17 @@ namespace DazPose.Performer
         [SerializeField] private PoseTransition transition = PoseTransition.Default;
         [SerializeField] private PerformerPoseAcceptanceHarness acceptanceHarness;
         [SerializeField] private Transform gazeTarget;
+        [Header("P0.A1 Locomotion")]
+        [SerializeField] private Transform locomotionTarget;
+        [SerializeField, Min(0.5f)] private float locomotionTestDistance = 5f;
         private Vector2 _scrollPosition;
         private string _seedText = string.Empty;
         private bool _lipSyncCheckRunning;
         private string _lipSyncCheckStatus = "Not run. Use Play Mode with a non-silent Clip A.";
+        private string _locomotionCommandStatus = "No locomotion command yet.";
+        private Vector3 _locomotionTestOrigin;
+        private int _nextLocomotionTestId;
+        private readonly List<string> _locomotionResults = new List<string>();
 
         internal AudioClip SpeechClipA => speechClipA;
         internal AudioClip SpeechClipB => speechClipB;
@@ -35,6 +43,12 @@ namespace DazPose.Performer
         {
             if (performer == null) performer = GetComponent<SuccubusPerformer>();
             if (acceptanceHarness == null) acceptanceHarness = GetComponent<PerformerPoseAcceptanceHarness>();
+        }
+
+        private void Awake()
+        {
+            if (performer == null) performer = GetComponent<SuccubusPerformer>();
+            if (performer != null) _locomotionTestOrigin = performer.transform.position;
         }
 
         private void Update()
@@ -66,6 +80,7 @@ namespace DazPose.Performer
                 DrawBreathingControls();
                 DrawExpressionControls();
                 DrawSpeechControls();
+                DrawLocomotionControls();
                 DrawGazeControls();
                 DrawAttentionLifeControls();
                 var desired = performer.DesiredPose == null ? "none" : performer.DesiredPose.name;
@@ -77,6 +92,147 @@ namespace DazPose.Performer
             if (acceptanceHarness != null) GUILayout.Label(acceptanceHarness.Status);
             GUILayout.EndScrollView();
             GUILayout.EndArea();
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (locomotionTarget != null)
+            {
+                Gizmos.color = new Color(1f, 0.75f, 0.15f, 1f);
+                Gizmos.DrawWireSphere(locomotionTarget.position, 0.12f);
+                Gizmos.DrawLine(locomotionTarget.position,
+                    locomotionTarget.position + locomotionTarget.forward * 0.45f);
+            }
+
+            if (performer == null || !Application.isPlaying || !performer.IsLocomoting) return;
+            Vector3 actorPosition = performer.transform.position + Vector3.up * 0.05f;
+            Vector3 targetPosition = performer.LocomotionCurrentTarget;
+            targetPosition.y = actorPosition.y;
+            Vector3 predictedEndpoint = performer.LocomotionPredictedStopEndpoint;
+            predictedEndpoint.y = actorPosition.y;
+
+            Gizmos.color = new Color(0.2f, 0.9f, 0.3f, 1f);
+            Gizmos.DrawLine(actorPosition, targetPosition);
+            Gizmos.DrawLine(actorPosition, actorPosition + performer.transform.forward * 0.6f);
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(predictedEndpoint, 0.1f);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(predictedEndpoint, targetPosition);
+        }
+
+        private void DrawLocomotionControls()
+        {
+            GUILayout.Space(8f);
+            GUILayout.Label("P0.A1 Production WalkTo");
+            if (!performer.LocomotionAvailable)
+            {
+                GUILayout.Label(performer.LocomotionProfile == null
+                    ? "No locomotion profile assigned. Bake Walk01, then assign KawaiiWalk01Profile on SuccubusPerformer."
+                    : "The locomotion profile did not initialize. Check the Console for its configuration error.");
+                return;
+            }
+
+            DrawSlider("Test distance (m)", locomotionTestDistance, 0.5f, 8f,
+                value => locomotionTestDistance = Mathf.Max(0.5f, value));
+            GUILayout.Label("Full Start/Stop distance threshold: "
+                + performer.LocomotionProfile.MinimumWalkDistance.ToString("F2") + " m");
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Ahead")) RequestWalkToDirection(0f);
+            if (GUILayout.Button("30° L")) RequestWalkToDirection(-30f);
+            if (GUILayout.Button("30° R")) RequestWalkToDirection(30f);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("60° L")) RequestWalkToDirection(-60f);
+            if (GUILayout.Button("60° R")) RequestWalkToDirection(60f);
+            if (GUILayout.Button("90° L")) RequestWalkToDirection(-90f);
+            if (GUILayout.Button("90° R")) RequestWalkToDirection(90f);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("120° L")) RequestWalkToDirection(-120f);
+            if (GUILayout.Button("120° R")) RequestWalkToDirection(120f);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Behind-Left")) RequestWalkToDirection(-165f);
+            if (GUILayout.Button("Directly Behind")) RequestWalkToDirection(180f);
+            if (GUILayout.Button("Behind-Right")) RequestWalkToDirection(165f);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Return to start")) RequestWalkTo(_locomotionTestOrigin);
+            GUILayout.EndHorizontal();
+            if (GUILayout.Button(locomotionTarget == null
+                    ? "WalkTo Transform (assign target)"
+                    : "WalkTo Transform: " + locomotionTarget.name))
+            {
+                if (locomotionTarget == null)
+                    Debug.LogWarning("Assign a target Transform to the P0.A1 Locomotion Target field.", this);
+                else RequestWalkTo(locomotionTarget);
+            }
+
+            GUILayout.Label("Request: " + _locomotionCommandStatus);
+            GUILayout.Label("State: " + performer.LocomotionState + "    active: " + performer.IsLocomoting);
+            GUILayout.Label("Actor position: " + performer.transform.position.ToString("F3"));
+            GUILayout.Label("Motion: " + performer.LocomotionCurrentMotion
+                + "    clip time: " + performer.LocomotionPlaybackTime.ToString("F2") + " s"
+                + "    playables: " + performer.RuntimePlayableCount);
+            GUILayout.Label("Turn: " + performer.LocomotionSelectedTurn + "    stop: " + performer.LocomotionSelectedStop);
+            GUILayout.Label("Gait phase: " + performer.LocomotionGaitPhase.ToString("F3")
+                + "    remaining: " + performer.LocomotionRemainingDistance.ToString("F2") + " m"
+                + "    heading: " + performer.LocomotionHeadingError.ToString("F1") + "°");
+            GUILayout.Label("Predicted stop distance: " + performer.LocomotionPredictedStopDistance.ToString("F2") + " m");
+            GUILayout.Label("Predicted endpoint: " + performer.LocomotionPredictedStopEndpoint.ToString("F2"));
+            GUILayout.Label("Endpoint correction: " + performer.LocomotionEndpointCorrection.ToString("F3")
+                + " (" + performer.LocomotionEndpointCorrection.magnitude.ToString("F3") + " m)");
+            for (int i = _locomotionResults.Count - 1; i >= 0; i--)
+                GUILayout.Label("Result: " + _locomotionResults[i]);
+        }
+
+        private void RequestWalkToDirection(float angleDegrees)
+        {
+            if (performer == null) return;
+            Vector3 direction = Quaternion.AngleAxis(angleDegrees, Vector3.up) * performer.transform.forward;
+            direction.y = 0f;
+            RequestWalkTo(performer.transform.position + direction.normalized * locomotionTestDistance);
+        }
+
+        private async void RequestWalkTo(Vector3 destination)
+        {
+            if (performer == null) return;
+            int id = ++_nextLocomotionTestId;
+            _locomotionCommandStatus = "#" + id + " walking to " + destination.ToString("F2");
+            try
+            {
+                LocomotionCompletion result = await performer.WalkToAsync(destination);
+                RecordLocomotionResult(id, result);
+            }
+            catch (Exception exception)
+            {
+                _locomotionCommandStatus = "#" + id + " rejected: " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private async void RequestWalkTo(Transform target)
+        {
+            if (performer == null || target == null) return;
+            int id = ++_nextLocomotionTestId;
+            _locomotionCommandStatus = "#" + id + " walking to Transform " + target.name;
+            try
+            {
+                LocomotionCompletion result = await performer.WalkToAsync(target);
+                RecordLocomotionResult(id, result);
+            }
+            catch (Exception exception)
+            {
+                _locomotionCommandStatus = "#" + id + " rejected: " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private void RecordLocomotionResult(int id, LocomotionCompletion result)
+        {
+            _locomotionCommandStatus = "#" + id + " " + result;
+            _locomotionResults.Add("#" + id + " " + result);
+            if (_locomotionResults.Count > 5) _locomotionResults.RemoveAt(0);
         }
 
         private void DrawExpressionControls()
