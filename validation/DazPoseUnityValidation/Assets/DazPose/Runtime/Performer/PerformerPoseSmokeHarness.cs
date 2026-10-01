@@ -276,6 +276,8 @@ namespace DazPose.Performer
                 + "    seating weight: " + performer.SeatingOwnershipWeight.ToString("F2"));
             GUILayout.Label("Seat contact error: " + performer.SeatingContactError.ToString("F3")
                 + " (" + performer.SeatingContactError.magnitude.ToString("F3") + " m)");
+            GUILayout.Label("CrossLegs exit blend: " + performer.SeatingCrossLegsExitBlendProgress.ToString("F2")
+                + "    duration: " + performer.SeatingCrossLegsExitBlendDuration.ToString("F2") + " s");
             GUILayout.Label("Use the expression, gaze, breathing, blink, and speech controls while she is seated to verify those layers remain active.");
         }
 

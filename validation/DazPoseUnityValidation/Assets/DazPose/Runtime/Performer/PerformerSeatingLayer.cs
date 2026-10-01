@@ -37,6 +37,8 @@ namespace DazPose.Performer
         public PerformerSeatingMotion ActiveMotion => _activeMotion;
         public float ActiveTime => _active.IsValid() ? (float)_active.GetTime() : 0f;
         public float OwnershipWeight => _ownershipWeight;
+        public float MotionBlendProgress => _blendDuration <= 0f ? 1f
+            : Mathf.Clamp01(_blendElapsed / _blendDuration);
 
         public PerformerSeatingLayer(PlayableGraph graph, Playable baseSource)
         {
@@ -102,6 +104,10 @@ namespace DazPose.Performer
             _active = next;
             _activeMotion = motion;
             _active.SetTime(Mathf.Clamp01(normalizedTime) * motion.DurationSeconds);
+            // Times are driven explicitly by the seating state machine. During uncross
+            // preparation neither the captured outgoing pose nor target frame zero advances.
+            _active.SetSpeed(0d);
+            if (_outgoing.IsValid()) _outgoing.SetSpeed(0d);
             _blendElapsed = 0f;
             _blendDuration = Mathf.Max(0f, blendSeconds);
             UpdateMotionBlend();

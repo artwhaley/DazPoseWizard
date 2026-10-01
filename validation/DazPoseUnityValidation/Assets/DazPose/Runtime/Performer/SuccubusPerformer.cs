@@ -159,6 +159,8 @@ namespace DazPose.Performer
         public string SeatingCurrentMotion => _seating == null || _seating.CurrentMotion == null
             ? "none" : _seating.CurrentMotion.name;
         public float SeatingMotionTime => _seating == null ? 0f : _seating.MotionTime;
+        public float SeatingCrossLegsExitBlendProgress => _seating == null ? 0f : _seating.CrossLegsExitBlendProgress;
+        public float SeatingCrossLegsExitBlendDuration => _seating == null ? 0.5f : _seating.CrossLegsExitBlendDuration;
         public float SeatingOwnershipWeight => _seating == null ? 0f : _seating.OwnershipWeight;
         public Vector3 SeatingContactError => _seating == null ? default : _seating.ContactError;
         public float TransitionProgress => _bodyPose == null ? 0f : _bodyPose.TransitionProgress;

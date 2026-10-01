@@ -21,7 +21,9 @@ Basic seated state: **hold the final `KA_Sit_Start` frame** so downstream pose, 
 
 `CrossLegs_Start` end → rotated `CrossLegs_Loop` entry: source loop phase **0.001**, pose score **0.006**. The generated loop clip is rotated so this best-matching frame becomes time zero.
 
-`CrossLegs_Loop` → `CrossLegs_End`: wait for generated loop phase **0.999** before beginning the authored uncross animation; pose score **0.000**.
+`CrossLegs_Loop` → `CrossLegs_End`: numerically best-matching generated loop phase **0.999**; pose score **0.000**.
+
+Runtime P0.B1 no longer waits for this seam. It freezes the current loop pose and blends to frozen `CrossLegs_End` frame 0 over `CrossLegsExitBlendSeconds` gameplay seconds (default **0.5 s**, independent of PlaybackSpeed). Only after preparation finishes does the End clip advance from time 0. The measured seam metadata remains diagnostic information.
 
 Basic hold → `Sit_End`: start source phase **0.000** to best match the held Basic pose; pose score **0.959**.
 

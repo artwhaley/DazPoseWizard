@@ -24,7 +24,7 @@ namespace DazPose.Performer
         BasicSeated,
         CrossingLegs,
         CrossLegsSeated,
-        AwaitingUncrossSeam,
+        PreparingUncross,
         UncrossingLegs,
         StandingUp
     }
@@ -64,6 +64,8 @@ namespace DazPose.Performer
         private Vector3 _motionTargetPosition;
         private Quaternion _motionTargetRotation;
         private bool _exitAfterUncross;
+        private float _uncrossBlendProgress;
+        private float _uncrossBlendDuration = 0.5f;
         private bool _basicIdleCandidateActive;
         private float _alignElapsed;
         private Vector3 _alignStartPosition;
@@ -77,12 +79,15 @@ namespace DazPose.Performer
         public PerformerSeatingMotion CurrentMotion => _motion;
         public float MotionTime => _motionTime;
         public float OwnershipWeight => _layer.OwnershipWeight;
+        public float CrossLegsExitBlendProgress => _uncrossBlendProgress;
+        public float CrossLegsExitBlendDuration => _state == PerformerSeatingState.PreparingUncross
+            || _currentProfile == null ? _uncrossBlendDuration : _currentProfile.CrossLegsExitBlendSeconds;
         public Vector3 ContactError => _lastContactError;
         public bool BlocksLocomotion => _state == PerformerSeatingState.SittingDown
             || _state == PerformerSeatingState.BasicSeated
             || _state == PerformerSeatingState.CrossingLegs
             || _state == PerformerSeatingState.CrossLegsSeated
-            || _state == PerformerSeatingState.AwaitingUncrossSeam
+            || _state == PerformerSeatingState.PreparingUncross
             || _state == PerformerSeatingState.UncrossingLegs
             || _state == PerformerSeatingState.StandingUp;
 
@@ -144,13 +149,13 @@ namespace DazPose.Performer
                 _currentProfile = _sitRequest.Profile;
                 _layer.PrepareProfile(_currentProfile);
                 if (style == PerformerSeatedStyle.CrossLegs) BeginCrossingLegs();
-                else BeginWaitingToUncross(false);
+                else BeginPreparingUncross(false);
                 return;
             }
 
             if (_state == PerformerSeatingState.SittingDown
                 || _state == PerformerSeatingState.CrossingLegs
-                || _state == PerformerSeatingState.AwaitingUncrossSeam
+                || _state == PerformerSeatingState.PreparingUncross
                 || _state == PerformerSeatingState.UncrossingLegs
                 || _state == PerformerSeatingState.StandingUp)
             {
@@ -178,7 +183,7 @@ namespace DazPose.Performer
                 if (waiter != null) _standWaiters.Add(waiter);
                 return;
             }
-            if ((_state == PerformerSeatingState.AwaitingUncrossSeam
+            if ((_state == PerformerSeatingState.PreparingUncross
                     || _state == PerformerSeatingState.UncrossingLegs) && _exitAfterUncross)
             {
                 if (waiter != null) _standWaiters.Add(waiter);
@@ -188,7 +193,7 @@ namespace DazPose.Performer
                 throw new InvalidOperationException("StandUp can begin only after the current sit/style transition reaches a stable seated state.");
 
             if (waiter != null) _standWaiters.Add(waiter);
-            if (_currentStyle == PerformerSeatedStyle.CrossLegs) BeginWaitingToUncross(true);
+            if (_currentStyle == PerformerSeatedStyle.CrossLegs) BeginPreparingUncross(true);
             else BeginSitEnd();
         }
 
@@ -216,8 +221,8 @@ namespace DazPose.Performer
                 case PerformerSeatingState.BasicSeated:
                     if (_basicIdleCandidateActive) AdvanceSeatedLoop(dt);
                     break;
-                case PerformerSeatingState.AwaitingUncrossSeam:
-                    AdvanceAwaitingUncross(dt);
+                case PerformerSeatingState.PreparingUncross:
+                    AdvancePreparingUncross();
                     break;
                 case PerformerSeatingState.UncrossingLegs:
                     AdvanceBodyMotion(dt, false);
@@ -468,34 +473,44 @@ namespace DazPose.Performer
         {
             if (_currentProfile == null) return;
             _basicIdleCandidateActive = false;
+            _uncrossBlendProgress = 0f;
             _currentStyle = PerformerSeatedStyle.CrossLegs;
             StartBodyMotion(_currentProfile.CrossLegsStart, 0f, PerformerSeatingState.CrossingLegs);
         }
 
-        private void BeginWaitingToUncross(bool standAfter)
+        private void BeginPreparingUncross(bool standAfter)
         {
             _exitAfterUncross = standAfter;
-            _state = PerformerSeatingState.AwaitingUncrossSeam;
+            _uncrossBlendDuration = Mathf.Max(0f, _currentProfile.CrossLegsExitBlendSeconds);
+            _motion = _currentProfile.CrossLegsEnd;
+            _motionEntryTime = 0f;
+            _motionTime = 0f;
+            // BeginMotion captures the current loop Playable at its existing time.
+            // Only mixer weights advance until preparation completes; the actor root
+            // and both clip poses remain frozen. Duration is gameplay time, not clip time.
+            _layer.BeginMotion(_motion, 0f, _uncrossBlendDuration);
+            _layer.SetActiveTime(0f);
+            _uncrossBlendProgress = _layer.MotionBlendProgress;
+            _state = PerformerSeatingState.PreparingUncross;
+            if (_uncrossBlendProgress >= 1f) BeginUncrossing();
         }
 
-        private void AdvanceAwaitingUncross(float deltaTime)
+        private void AdvancePreparingUncross()
         {
-            if (_motion == null || !_motion.Looping || _motion.DurationSeconds <= 0f) return;
-            float oldTime = _motionTime;
-            float delta = deltaTime * _currentProfile.PlaybackSpeed;
-            float duration = _motion.DurationSeconds;
-            float phaseTime = _currentProfile.CrossLegsExitLoopPhase * duration;
-            float untilSeam = Mathf.Repeat(phaseTime - oldTime, duration);
-            _motionTime = Mathf.Repeat(oldTime + delta, duration);
-            _layer.SetActiveTime(_motionTime);
-            if (untilSeam <= delta + 0.00001f) BeginUncrossing();
+            // _layer.Advance has advanced only the weights using gameplay dt,
+            // independent of PlaybackSpeed.
+            // Do not change _motionTime or either Playable's time during preparation.
+            _uncrossBlendProgress = _layer.MotionBlendProgress;
+            if (_uncrossBlendProgress >= 1f) BeginUncrossing();
         }
 
         private void BeginUncrossing()
         {
             if (_currentProfile == null) return;
             _currentStyle = PerformerSeatedStyle.Basic;
-            StartBodyMotion(_currentProfile.CrossLegsEnd, 0f, PerformerSeatingState.UncrossingLegs);
+            // The End clip already owns the seating mixer at frame zero. Switching state
+            // starts its clock on the next update without initiating another crossfade.
+            _state = PerformerSeatingState.UncrossingLegs;
         }
 
         private void AdvanceBodyMotion(float deltaTime, bool crossing)

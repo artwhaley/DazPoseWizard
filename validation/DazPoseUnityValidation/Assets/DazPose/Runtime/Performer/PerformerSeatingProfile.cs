@@ -16,6 +16,7 @@ namespace DazPose.Performer
         [Header("Timing")]
         [SerializeField, Min(0f)] private float playbackSpeed = 1f;
         [SerializeField, Min(0f)] private float bodyBlendSeconds = 0.18f;
+        [SerializeField, Min(0f)] private float crossLegsExitBlendSeconds = 0.5f;
         [SerializeField, Min(0f)] private float finalBlendSeconds = 0.5f;
         [SerializeField, Min(0f)] private float approachAlignmentSeconds = 0.18f;
         [SerializeField, Min(0f)] private float maximumApproachPositionErrorMeters = 0.05f;
@@ -35,6 +36,7 @@ namespace DazPose.Performer
         public PerformerSeatingMotion BasicIdleLoopCandidate => basicIdleLoopCandidate;
         public float PlaybackSpeed => playbackSpeed;
         public float BodyBlendSeconds => bodyBlendSeconds;
+        public float CrossLegsExitBlendSeconds => crossLegsExitBlendSeconds;
         public float FinalBlendSeconds => finalBlendSeconds;
         public float ApproachAlignmentSeconds => approachAlignmentSeconds;
         public float MaximumApproachPositionErrorMeters => maximumApproachPositionErrorMeters;
@@ -97,6 +99,7 @@ namespace DazPose.Performer
             basicIdleLoopCandidate = motions.Length > 5 ? motions[5] : null;
             playbackSpeed = 1f;
             bodyBlendSeconds = 0.18f;
+            crossLegsExitBlendSeconds = 0.5f;
             finalBlendSeconds = 0.5f;
             approachAlignmentSeconds = 0.18f;
             maximumApproachPositionErrorMeters = 0.05f;

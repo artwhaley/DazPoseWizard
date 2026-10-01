@@ -489,10 +489,11 @@ namespace DazPose.Editor.AnimationAudit
             report.AppendLine("`CrossLegs_Start` end → rotated `CrossLegs_Loop` entry: source loop phase **"
                 + ((float)loopEntry / Mathf.Max(1, loop.UniqueFrameCount)).ToString("0.000")
                 + "**, pose score **" + loopEntryError.ToString("0.000") + "**. The generated loop clip is rotated so this best-matching frame becomes time zero.\n");
-            report.AppendLine("`CrossLegs_Loop` → `CrossLegs_End`: wait for generated loop phase **"
+            report.AppendLine("`CrossLegs_Loop` → `CrossLegs_End`: numerically best-matching generated loop phase **"
                 + ((float)((crossExit - loopEntry + loop.UniqueFrameCount) % loop.UniqueFrameCount)
                     / Mathf.Max(1, loop.UniqueFrameCount)).ToString("0.000")
-                + "** before beginning the authored uncross animation; pose score **" + crossExitError.ToString("0.000") + "**.\n");
+                + "**; pose score **" + crossExitError.ToString("0.000") + "**.\n");
+            report.AppendLine("Runtime P0.B1 no longer waits for this seam. It freezes the current loop pose and blends to frozen `CrossLegs_End` frame 0 over `CrossLegsExitBlendSeconds` gameplay seconds (default **0.5 s**, independent of PlaybackSpeed). Only after preparation finishes does the End clip advance from time 0. The measured seam metadata remains diagnostic information.\n");
             SampleSet sitEnd = Find(samples, "Sit_End");
             report.AppendLine("Basic hold → `Sit_End`: start source phase **"
                 + ((float)sitEndEntry / Mathf.Max(1, sitEnd.UniqueFrameCount)).ToString("0.000")
