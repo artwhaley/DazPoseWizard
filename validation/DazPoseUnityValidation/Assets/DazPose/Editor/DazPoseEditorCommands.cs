@@ -17,7 +17,9 @@ namespace DazPose.UnityValidation
         private const string CharacterAssetPath = "Assets/TestCharacter/lara.fbx";
         private const string PoseAssetFolder = "Assets/TestData";
         private const string LocomotionProfilePath = "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset";
+        private const string SeatingProfilePath = "Assets/Animations/Performer/Seating/KawaiiSeatingProfile.asset";
         private const string LocomotionTargetName = "P0.A1 WalkTo Target";
+        private const string SeatingChairName = "P0.B Seating Test Chair";
         private static readonly string[] ExpectedNames =
         {
             "hip", "pelvis", "abdomenLower", "abdomenUpper", "lThighBend", "lThighTwist", "lShin", "lFoot",
@@ -187,12 +189,15 @@ namespace DazPose.UnityValidation
             AssignExpressionFixtures(smoke, acceptance);
             AssignSpeechFixtures(smoke);
             AssignLocomotionFixtures(performer, smoke, animationRoot);
+            AssignSeatingFixtures(smoke, animationRoot);
 
             EditorSceneManager.MarkSceneDirty(characterRoot.gameObject.scene);
             Selection.activeGameObject = animationRoot.gameObject;
             Debug.Log("Performer pose acceptance harness is ready on " + animationRoot.name
                 + ". Speech AudioSource: " + DazPoseTransformPath.Get(characterRoot, speechAudioSource.transform)
                 + ". Locomotion profile: " + (performer.LocomotionProfile == null ? "not assigned (bake Walk01 first)" : performer.LocomotionProfile.name)
+                + ". Seating profile: " + (AssetDatabase.LoadAssetAtPath<PerformerSeatingProfile>(SeatingProfilePath) == null
+                    ? "not baked (run Bake KAWAII Seating for Generic Lara)" : "assigned to the test chair")
                 + ". Assign three PerformerPose and three PerformerExpression assets if they are not already configured.");
         }
 
@@ -224,6 +229,85 @@ namespace DazPose.UnityValidation
             targetProperty.objectReferenceValue = targetObject.transform;
             smokeSerialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(smoke);
+        }
+
+        private static void AssignSeatingFixtures(PerformerPoseSmokeHarness smoke, Transform animationRoot)
+        {
+            Scene scene = animationRoot.gameObject.scene;
+            GameObject chairObject = null;
+            foreach (GameObject root in scene.GetRootGameObjects())
+                if (root.name == SeatingChairName) { chairObject = root; break; }
+
+            if (chairObject == null)
+            {
+                chairObject = new GameObject(SeatingChairName);
+                Undo.RegisterCreatedObjectUndo(chairObject, "Create P0.B seating test chair");
+                SceneManager.MoveGameObjectToScene(chairObject, scene);
+                Vector3 forward = Vector3.ProjectOnPlane(animationRoot.forward, Vector3.up).normalized;
+                if (forward.sqrMagnitude < 0.9f) forward = Vector3.forward;
+                chairObject.transform.SetPositionAndRotation(
+                    animationRoot.position + forward * 1.6f,
+                    Quaternion.LookRotation(-forward, Vector3.up));
+                CreateSeatVisuals(chairObject.transform);
+            }
+
+            PerformerSeat seat = chairObject.GetComponent<PerformerSeat>();
+            if (seat == null) seat = Undo.AddComponent<PerformerSeat>(chairObject);
+            Transform approach = chairObject.transform.Find("ApproachAnchor");
+            if (approach == null) approach = CreateSeatAnchor(chairObject.transform, "ApproachAnchor",
+                new Vector3(0f, 0f, 0.95f));
+            Transform seatAnchor = chairObject.transform.Find("SeatAnchor");
+            if (seatAnchor == null) seatAnchor = CreateSeatAnchor(chairObject.transform, "SeatAnchor",
+                new Vector3(0f, 0.55f, 0f));
+
+            var profile = AssetDatabase.LoadAssetAtPath<PerformerSeatingProfile>(SeatingProfilePath);
+            var seatSerialized = new SerializedObject(seat);
+            seatSerialized.FindProperty("approachAnchor").objectReferenceValue = approach;
+            seatSerialized.FindProperty("seatAnchor").objectReferenceValue = seatAnchor;
+            if (profile != null) seatSerialized.FindProperty("seatingProfile").objectReferenceValue = profile;
+            seatSerialized.FindProperty("defaultStyle").enumValueIndex = (int)PerformerSeatedStyle.CrossLegs;
+            seatSerialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(seat);
+
+            var smokeSerialized = new SerializedObject(smoke);
+            smokeSerialized.FindProperty("seatingTestSeat").objectReferenceValue = seat;
+            smokeSerialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(smoke);
+        }
+
+        private static void CreateSeatVisuals(Transform parent)
+        {
+            CreateSeatPart(parent, "Chair Seat", new Vector3(0f, 0.5f, 0f), new Vector3(0.82f, 0.12f, 0.82f));
+            CreateSeatPart(parent, "Chair Back", new Vector3(0f, 0.98f, -0.34f), new Vector3(0.82f, 0.88f, 0.12f));
+            for (int x = -1; x <= 1; x += 2)
+                for (int z = -1; z <= 1; z += 2)
+                    CreateSeatPart(parent, "Chair Leg " + (x < 0 ? "L" : "R") + (z < 0 ? "F" : "B"),
+                        new Vector3(x * 0.31f, 0.25f, z * 0.31f), new Vector3(0.12f, 0.5f, 0.12f));
+        }
+
+        private static GameObject CreateSeatPart(Transform parent, string name, Vector3 localPosition, Vector3 localScale)
+        {
+            GameObject part = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Undo.RegisterCreatedObjectUndo(part, "Create seating test chair part");
+            part.name = name;
+            part.transform.SetParent(parent, false);
+            part.transform.localPosition = localPosition;
+            part.transform.localRotation = Quaternion.identity;
+            part.transform.localScale = localScale;
+            var collider = part.GetComponent<Collider>();
+            if (collider != null) collider.enabled = false;
+            return part;
+        }
+
+        private static Transform CreateSeatAnchor(Transform parent, string name, Vector3 localPosition)
+        {
+            var anchorObject = new GameObject(name);
+            Undo.RegisterCreatedObjectUndo(anchorObject, "Create seating anchor");
+            anchorObject.transform.SetParent(parent, false);
+            anchorObject.transform.localPosition = localPosition;
+            anchorObject.transform.localRotation = Quaternion.identity;
+            anchorObject.transform.localScale = Vector3.one;
+            return anchorObject.transform;
         }
 
         private static AudioSource EnsureSpeechAudioSource(Transform characterRoot, SuccubusPerformer performer)

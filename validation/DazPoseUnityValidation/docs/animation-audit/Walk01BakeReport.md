@@ -4,7 +4,9 @@ Source clips are sampled through the configured Human Avatar on `laraHumanoid.fb
 
 Retarget bake setting: Unity Humanoid Foot IK **enabled** to match the accepted audit appearance; the resulting joint transforms are baked. Production playback is Generic and runs no runtime Foot IK.
 
-Current production playback speed: **0.665×** for both body and authored trajectory. Full Start/Stop distance threshold: **3.93 m**. Idle → locomotion and locomotion → idle both blend over **0.5 seconds** while the animation advances. Long Stop endpoints are predicted and corrected over their final **0.5 seconds** to match the target X/Z exactly. These runtime settings were updated after baking; source trajectory measurements below are unchanged.
+Body ownership: facial transforms below `head`, plus the `upperFaceRig`/`lowerJaw` facial subtrees, are excluded from sampling and emitted curves. Head, neck, body and finger animation remain included. No blendshape curves are emitted. Every bake replaces all configured clips in place and clears their previous curves, including facial curves from older bakes.
+
+Default production playback speed: **0.67×** for both body and authored trajectory. Full Start/Stop distance threshold: **3.93 m**.
 
 | Motion | Source | Duration (s) | Root X (m) | Root Z (m) | Yaw (°) | Path (m) | Entry support | Exit support |
 |---|---|---:|---:|---:|---:|---:|---|---|

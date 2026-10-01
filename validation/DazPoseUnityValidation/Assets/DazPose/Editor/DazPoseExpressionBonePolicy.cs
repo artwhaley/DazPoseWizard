@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DazPose.Performer;
 using DazPose.UnityValidation;
+using UnityEngine;
 
 namespace DazPose.Editor.Importing
 {
@@ -23,6 +24,25 @@ namespace DazPose.Editor.Importing
         private const string UpperFaceAnchor = "upperFaceRig";
         private const string LowerFaceAnchor = "lowerJaw";
         private const float ActiveTolerance = 1e-7f;
+
+        /// <summary>
+        /// Body bakes leave facial articulation and gaze-owned transforms to their own systems.
+        /// Keep the head itself; exclude its descendants, including jaw, eyes, teeth and ears.
+        /// The expression anchors also identify facial subtrees if the head is absent.
+        /// This broader body exclusion does not change which bones Expressions may animate.
+        /// </summary>
+        internal static bool IsReservedFaceTransformForBodyBake(Transform target)
+        {
+            for (Transform current = target; current != null; current = current.parent)
+            {
+                if (current.name == UpperFaceAnchor || current.name == LowerFaceAnchor
+                    || current.name == "lowerFaceRig")
+                    return true;
+                if (current.name == "head")
+                    return current != target;
+            }
+            return false;
+        }
 
         public static DazPoseExpressionBoneSelection Analyze(DazPoseDefinition definition)
         {

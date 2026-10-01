@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using DazPose.Performer;
+using DazPose.Editor.Importing;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
@@ -90,7 +91,8 @@ namespace DazPose.Editor.AnimationAudit
                 animator.Rebind();
 
                 Transform[] bones = instance.GetComponentsInChildren<Transform>(true)
-                    .Where(bone => bone != instance.transform).ToArray();
+                    .Where(bone => bone != instance.transform
+                        && !DazPoseExpressionBonePolicy.IsReservedFaceTransformForBodyBake(bone)).ToArray();
                 Transform leftFoot = animator.GetBoneTransform(HumanBodyBones.LeftFoot);
                 Transform rightFoot = animator.GetBoneTransform(HumanBodyBones.RightFoot);
                 if (leftFoot == null || rightFoot == null)
@@ -277,12 +279,15 @@ namespace DazPose.Editor.AnimationAudit
             }
             foreach (EditorCurveBinding binding in AnimationUtility.GetCurveBindings(clip))
                 AnimationUtility.SetEditorCurve(clip, binding, null);
+            foreach (EditorCurveBinding binding in AnimationUtility.GetObjectReferenceCurveBindings(clip))
+                AnimationUtility.SetObjectReferenceCurve(clip, binding, null);
 
             for (int bone = 0; bone < set.Bones.Length; bone++)
             {
                 string relativePath = AnimationUtility.CalculateTransformPath(set.Bones[bone], set.Bones[0].root);
                 // The model root is excluded from the bake. All movement curves are stored separately.
                 if (string.IsNullOrEmpty(relativePath)) continue;
+                if (DazPoseExpressionBonePolicy.IsReservedFaceTransformForBodyBake(set.Bones[bone])) continue;
                 var px = new List<Keyframe>(set.Count); var py = new List<Keyframe>(set.Count); var pz = new List<Keyframe>(set.Count);
                 var rx = new List<Keyframe>(set.Count); var ry = new List<Keyframe>(set.Count); var rz = new List<Keyframe>(set.Count); var rw = new List<Keyframe>(set.Count);
                 var sx = new List<Keyframe>(set.Count); var sy = new List<Keyframe>(set.Count); var sz = new List<Keyframe>(set.Count);
@@ -452,6 +457,7 @@ namespace DazPose.Editor.AnimationAudit
             var report = new StringBuilder("# KAWAII Walk01 canonical Lara bake\n\n");
             report.AppendLine("Source clips are sampled through the configured Human Avatar on `laraHumanoid.fbx` and baked to project-owned Generic transform clips. Actor planar root translation/yaw are separate curves; the body clip excludes the actor GameObject transform. Vendor FBXs/importers and canonical `lara.fbx` remain read-only.\n");
             report.AppendLine("Retarget bake setting: Unity Humanoid Foot IK **enabled** to match the accepted audit appearance; the resulting joint transforms are baked. Production playback is Generic and runs no runtime Foot IK.\n");
+            report.AppendLine("Body ownership: facial transforms below `head`, plus the `upperFaceRig`/`lowerJaw` facial subtrees, are excluded from sampling and emitted curves. Head, neck, body and finger animation remain included. No blendshape curves are emitted. Every bake replaces all configured clips in place and clears their previous curves, including facial curves from older bakes.\n");
             report.AppendLine("Default production playback speed: **" + profile.PlaybackSpeed.ToString("0.00")
                 + "×** for both body and authored trajectory. Full Start/Stop distance threshold: **"
                 + profile.MinimumWalkDistance.ToString("0.00") + " m**.\n");

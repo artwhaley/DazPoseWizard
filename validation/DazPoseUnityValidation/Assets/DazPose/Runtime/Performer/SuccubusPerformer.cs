@@ -102,6 +102,8 @@ namespace DazPose.Performer
         private PerformerBodyPose _bodyPose;
         private PerformerBodySourceMixer _bodySourceMixer;
         private PerformerLocomotion _locomotion;
+        private PerformerSeatingLayer _seatingLayer;
+        private PerformerSeating _seating;
         private PerformerBreathing _breathing;
         private PerformerGaze _gaze;
         private PerformerAttentionLife _attentionLife;
@@ -146,7 +148,19 @@ namespace DazPose.Performer
         public float LocomotionPredictedStopDistance => _locomotion == null ? 0f : _locomotion.PredictedStopDistance;
         public Vector3 LocomotionPredictedStopEndpoint => _locomotion == null ? default : _locomotion.PredictedStopEndpoint;
         public Vector3 LocomotionEndpointCorrection => _locomotion == null ? default : _locomotion.EndpointCorrection;
+        public float LocomotionArrivalBlendProgress => _locomotion == null ? 0f : _locomotion.ArrivalBlendProgress;
         public PerformerLocomotionProfile LocomotionProfile => locomotionProfile;
+        public bool SeatingAvailable => _seating != null;
+        public PerformerSeatingState SeatingState => _seating == null
+            ? PerformerSeatingState.Standing : _seating.State;
+        public PerformerSeat CurrentSeat => _seating == null ? null : _seating.CurrentSeat;
+        public PerformerSeatedStyle CurrentSeatedStyle => _seating == null
+            ? PerformerSeatedStyle.Basic : _seating.CurrentStyle;
+        public string SeatingCurrentMotion => _seating == null || _seating.CurrentMotion == null
+            ? "none" : _seating.CurrentMotion.name;
+        public float SeatingMotionTime => _seating == null ? 0f : _seating.MotionTime;
+        public float SeatingOwnershipWeight => _seating == null ? 0f : _seating.OwnershipWeight;
+        public Vector3 SeatingContactError => _seating == null ? default : _seating.ContactError;
         public float TransitionProgress => _bodyPose == null ? 0f : _bodyPose.TransitionProgress;
         public PerformerExpression DesiredExpression => _lastDesiredExpression;
         public PerformerExpression SettledExpression => _lastSettledExpression;
@@ -324,6 +338,7 @@ namespace DazPose.Performer
             var request = _activePoseRequest;
             _bodyPose.Advance(Time.deltaTime);
             _locomotion?.Advance(Time.deltaTime);
+            _seating?.Advance(Time.deltaTime);
             if (_breathing != null)
             {
                 _breathing.Configure(CreateBreathingSettings());
@@ -460,15 +475,60 @@ namespace DazPose.Performer
             _gaze?.ClearGaze();
         }
 
-        public void WalkTo(Vector3 worldPosition) => RequireLocomotionRuntime().WalkTo(worldPosition);
+        public void WalkTo(Vector3 worldPosition)
+        {
+            _seating?.PrepareForWalkRequest();
+            RequireLocomotionRuntime().WalkTo(worldPosition);
+        }
 
-        public void WalkTo(Transform target) => RequireLocomotionRuntime().WalkTo(target);
+        public void WalkTo(Transform target)
+        {
+            _seating?.PrepareForWalkRequest();
+            RequireLocomotionRuntime().WalkTo(target);
+        }
 
-        public Awaitable<LocomotionCompletion> WalkToAsync(Vector3 worldPosition) =>
-            RequireLocomotionRuntime().WalkToAsync(worldPosition);
+        public Awaitable<LocomotionCompletion> WalkToAsync(Vector3 worldPosition)
+        {
+            _seating?.PrepareForWalkRequest();
+            return RequireLocomotionRuntime().WalkToAsync(worldPosition);
+        }
 
-        public Awaitable<LocomotionCompletion> WalkToAsync(Transform target) =>
-            RequireLocomotionRuntime().WalkToAsync(target);
+        public Awaitable<LocomotionCompletion> WalkToAsync(Transform target)
+        {
+            _seating?.PrepareForWalkRequest();
+            return RequireLocomotionRuntime().WalkToAsync(target);
+        }
+
+        public void SitAt(PerformerSeat seat) => RequireSeatingRuntime().SitAt(seat, null, null);
+
+        public void SitAt(PerformerSeat seat, PerformerSeatedStyle style) =>
+            RequireSeatingRuntime().SitAt(seat, style, null);
+
+        public Awaitable<SeatingCompletion> SitAtAsync(PerformerSeat seat)
+        {
+            var completion = new AwaitableCompletionSource<SeatingCompletion>();
+            RequireSeatingRuntime().SitAt(seat, null, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<SeatingCompletion> SitAtAsync(PerformerSeat seat, PerformerSeatedStyle style)
+        {
+            var completion = new AwaitableCompletionSource<SeatingCompletion>();
+            RequireSeatingRuntime().SitAt(seat, style, completion);
+            return completion.Awaitable;
+        }
+
+        public void StandUp() => RequireSeatingRuntime().StandUp(null);
+
+        public Awaitable<SeatingCompletion> StandUpAsync()
+        {
+            var completion = new AwaitableCompletionSource<SeatingCompletion>();
+            RequireSeatingRuntime().StandUp(completion);
+            return completion.Awaitable;
+        }
+
+        internal void SetBasicIdleLoopCandidateForAcceptance(bool enabled) =>
+            RequireSeatingRuntime().SetBasicIdleLoopCandidate(enabled);
 
         internal PerformerPoseSnapshot CaptureEvaluatedBasePoseState()
         {
@@ -673,6 +733,9 @@ namespace DazPose.Performer
                     _locomotion = new PerformerLocomotion(transform, locomotionProfile, _bodySourceMixer);
                     bodySource = _bodySourceMixer.Output;
                 }
+                _seatingLayer = new PerformerSeatingLayer(_graph, bodySource);
+                _seating = new PerformerSeating(transform, _locomotion, _seatingLayer);
+                bodySource = _seatingLayer.Output;
                 _breathing = new PerformerBreathing(animator, _graph, bodySource,
                     _bodyPose, breathingBones, _lastBreathPhase);
                 _breathing.Configure(CreateBreathingSettings());
@@ -795,6 +858,13 @@ namespace DazPose.Performer
             return _locomotion;
         }
 
+        private PerformerSeating RequireSeatingRuntime()
+        {
+            if (_seating == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive SitAt/StandUp commands only while enabled in Play Mode.");
+            return _seating;
+        }
+
         private void DestroyRuntime()
         {
             if (_breathing != null) _lastBreathPhase = _breathing.BreathPhase;
@@ -819,6 +889,9 @@ namespace DazPose.Performer
             _locomotion?.Dispose();
             _locomotion = null;
 
+            _seating?.Dispose();
+            _seating = null;
+
             _blink?.Dispose();
             _blink = null;
             _gaze?.Dispose();
@@ -826,6 +899,9 @@ namespace DazPose.Performer
             _attentionLife = null;
             _expression?.Dispose();
             _expression = null;
+
+            _seatingLayer?.Dispose();
+            _seatingLayer = null;
 
             _bodySourceMixer?.Dispose();
             _bodySourceMixer = null;

@@ -98,13 +98,24 @@ namespace DazPose.Performer
 
         public void SetOwnership(bool locomotion, bool immediate = false)
         {
+            SetOwnership(locomotion, locomotion
+                ? _profile.IdleToLocomotionBlendSeconds
+                : _profile.LocomotionToIdleBlendSeconds, immediate);
+        }
+
+        public void SetOwnership(bool locomotion, float blendSeconds)
+        {
+            SetOwnership(locomotion, blendSeconds, false);
+        }
+
+        private void SetOwnership(bool locomotion, float blendSeconds, bool immediate)
+        {
             float target = locomotion ? 1f : 0f;
             if (!immediate && target == _ownershipTarget) return;
             _ownershipStart = _ownershipWeight;
             _ownershipTarget = target;
             _ownershipElapsed = 0f;
-            _ownershipDuration = locomotion
-                ? _profile.IdleToLocomotionBlendSeconds : _profile.LocomotionToIdleBlendSeconds;
+            _ownershipDuration = Mathf.Max(0f, blendSeconds);
             if (immediate || _ownershipDuration <= 0f) _ownershipWeight = _ownershipTarget;
             SetSourceWeights();
         }
@@ -112,13 +123,6 @@ namespace DazPose.Performer
         public void Advance(float deltaTime)
         {
             if (_disposed) return;
-            if (_ownershipTarget == 0f && _ownershipWeight > 0f
-                && _active.IsValid() && _activeMotion != null)
-            {
-                // Continue the outgoing Stop during the fade; actor travel has ended.
-                _active.SetTime(Math.Min(_activeMotion.DurationSeconds,
-                    _active.GetTime() + Mathf.Max(0f, deltaTime) * _profile.PlaybackSpeed));
-            }
             if (_blendElapsed < _blendDuration)
             {
                 _blendElapsed = Mathf.Min(_blendDuration, _blendElapsed + Mathf.Max(0f, deltaTime));

@@ -27,11 +27,14 @@ namespace DazPose.Performer
         [Header("P0.A1 Locomotion")]
         [SerializeField] private Transform locomotionTarget;
         [SerializeField, Min(0.5f)] private float locomotionTestDistance = 5f;
+        [Header("P0.B Anchored Seating")]
+        [SerializeField] private PerformerSeat seatingTestSeat;
         private Vector2 _scrollPosition;
         private string _seedText = string.Empty;
         private bool _lipSyncCheckRunning;
         private string _lipSyncCheckStatus = "Not run. Use Play Mode with a non-silent Clip A.";
         private string _locomotionCommandStatus = "No locomotion command yet.";
+        private string _seatingCommandStatus = "No seating command yet.";
         private Vector3 _locomotionTestOrigin;
         private int _nextLocomotionTestId;
         private readonly List<string> _locomotionResults = new List<string>();
@@ -81,6 +84,7 @@ namespace DazPose.Performer
                 DrawExpressionControls();
                 DrawSpeechControls();
                 DrawLocomotionControls();
+                DrawSeatingControls();
                 DrawGazeControls();
                 DrawAttentionLifeControls();
                 var desired = performer.DesiredPose == null ? "none" : performer.DesiredPose.name;
@@ -182,6 +186,9 @@ namespace DazPose.Performer
             GUILayout.Label("Predicted endpoint: " + performer.LocomotionPredictedStopEndpoint.ToString("F2"));
             GUILayout.Label("Endpoint correction: " + performer.LocomotionEndpointCorrection.ToString("F3")
                 + " (" + performer.LocomotionEndpointCorrection.magnitude.ToString("F3") + " m)");
+            GUILayout.Label("Arrival blend: " + (performer.LocomotionArrivalBlendProgress * 100f).ToString("F0")
+                + "%    target: " + performer.LocomotionCurrentTarget.ToString("F3")
+                + "    actual: " + performer.transform.position.ToString("F3"));
             for (int i = _locomotionResults.Count - 1; i >= 0; i--)
                 GUILayout.Label("Result: " + _locomotionResults[i]);
         }
@@ -233,6 +240,107 @@ namespace DazPose.Performer
             _locomotionCommandStatus = "#" + id + " " + result;
             _locomotionResults.Add("#" + id + " " + result);
             if (_locomotionResults.Count > 5) _locomotionResults.RemoveAt(0);
+        }
+
+        private void DrawSeatingControls()
+        {
+            GUILayout.Space(8f);
+            GUILayout.Label("P0.B Anchored Seating");
+            if (seatingTestSeat == null)
+            {
+                GUILayout.Label("No chair fixture is assigned. Run Tools > DAZ Pose > Development > Setup or Refresh Performer Pose Acceptance Harness.");
+                return;
+            }
+            if (seatingTestSeat.SeatingProfile == null)
+                GUILayout.Label("Bake first: Tools > DAZ Pose > Seating > Bake KAWAII Seating for Generic Lara. Then refresh this harness to assign the profile.");
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Sit Default")) RequestSitDefault();
+            if (GUILayout.Button("Sit Basic")) RequestSit(PerformerSeatedStyle.Basic);
+            if (GUILayout.Button("Sit CrossLegs")) RequestSit(PerformerSeatedStyle.CrossLegs);
+            if (GUILayout.Button("Stand Up")) RequestStandUp();
+            GUILayout.EndHorizontal();
+            if (performer.SeatingState == PerformerSeatingState.BasicSeated)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Hold Sit_Start frame")) SetBasicIdleCandidate(false);
+                if (GUILayout.Button("Preview Idle10 Sit Loop")) SetBasicIdleCandidate(true);
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.Label("Request: " + _seatingCommandStatus);
+            GUILayout.Label("State: " + performer.SeatingState + "    seat: "
+                + (performer.CurrentSeat == null ? "none" : performer.CurrentSeat.name)
+                + "    style: " + performer.CurrentSeatedStyle);
+            GUILayout.Label("Motion: " + performer.SeatingCurrentMotion
+                + "    time: " + performer.SeatingMotionTime.ToString("F2") + " s"
+                + "    seating weight: " + performer.SeatingOwnershipWeight.ToString("F2"));
+            GUILayout.Label("Seat contact error: " + performer.SeatingContactError.ToString("F3")
+                + " (" + performer.SeatingContactError.magnitude.ToString("F3") + " m)");
+            GUILayout.Label("Use the expression, gaze, breathing, blink, and speech controls while she is seated to verify those layers remain active.");
+        }
+
+        private async void RequestSit(PerformerSeatedStyle style)
+        {
+            if (performer == null || seatingTestSeat == null) return;
+            _seatingCommandStatus = "Walking to " + seatingTestSeat.name + " as " + style;
+            try
+            {
+                SeatingCompletion result = await performer.SitAtAsync(seatingTestSeat, style);
+                _seatingCommandStatus = "SitAt " + result;
+            }
+            catch (Exception exception)
+            {
+                _seatingCommandStatus = "SitAt rejected: " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private async void RequestSitDefault()
+        {
+            if (performer == null || seatingTestSeat == null) return;
+            _seatingCommandStatus = "Walking to " + seatingTestSeat.name + " using its default style";
+            try
+            {
+                SeatingCompletion result = await performer.SitAtAsync(seatingTestSeat);
+                _seatingCommandStatus = "SitAt default " + result;
+            }
+            catch (Exception exception)
+            {
+                _seatingCommandStatus = "SitAt default rejected: " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private async void RequestStandUp()
+        {
+            if (performer == null) return;
+            _seatingCommandStatus = "Standing up";
+            try
+            {
+                SeatingCompletion result = await performer.StandUpAsync();
+                _seatingCommandStatus = "StandUp " + result;
+            }
+            catch (Exception exception)
+            {
+                _seatingCommandStatus = "StandUp rejected: " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private void SetBasicIdleCandidate(bool enabled)
+        {
+            try
+            {
+                performer.SetBasicIdleLoopCandidateForAcceptance(enabled);
+                _seatingCommandStatus = enabled
+                    ? "Auditioning KA_Idle10_Sit_Loop; click Hold Sit_Start frame to restore the selected Basic state."
+                    : "Using the selected Basic hold: final frame of KA_Sit_Start.";
+            }
+            catch (Exception exception)
+            {
+                _seatingCommandStatus = "Basic seated loop rejected: " + exception.Message;
+                Debug.LogException(exception, this);
+            }
         }
 
         private void DrawExpressionControls()
