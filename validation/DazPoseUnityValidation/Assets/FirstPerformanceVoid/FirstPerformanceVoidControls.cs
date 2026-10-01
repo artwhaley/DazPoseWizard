@@ -11,6 +11,9 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform acrossFloor;
         [SerializeField] private Transform nearPlatform;
         [SerializeField] private Transform cameraTarget;
+        [SerializeField, HideInInspector] private int lightingRevision;
+        public int LightingRevision => lightingRevision;
+        private ParticleSystem[] smokeEmitters;
         private string status = "Use the existing performer panel for seating, expressions and speech.";
 
         public void Configure(SuccubusPerformer owner, Transform across, Transform platform, Transform camera)
@@ -19,6 +22,11 @@ namespace DazPose.FirstPerformanceVoid
             acrossFloor = across;
             nearPlatform = platform;
             cameraTarget = camera;
+        }
+
+        private void Awake()
+        {
+            smokeEmitters = GetComponentsInChildren<ParticleSystem>();
         }
 
         private void OnGUI()
@@ -33,6 +41,17 @@ namespace DazPose.FirstPerformanceVoid
             GUI.enabled = enabled;
             GUILayout.Label(status);
             GUILayout.Label("The raised stage is scenery. Walk targets stay on the floor.");
+            if (smokeEmitters != null && smokeEmitters.Length > 0)
+            {
+                int count = 0, running = 0;
+                foreach (ParticleSystem emitter in smokeEmitters)
+                {
+                    if (emitter == null) continue;
+                    count += emitter.particleCount;
+                    if (emitter.isPlaying) running++;
+                }
+                GUILayout.Label("Smoke: " + count + " particles; " + running + "/" + smokeEmitters.Length + " emitters running.");
+            }
             GUILayout.EndArea();
         }
 

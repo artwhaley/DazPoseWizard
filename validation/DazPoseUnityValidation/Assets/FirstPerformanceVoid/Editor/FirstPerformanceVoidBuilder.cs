@@ -22,7 +22,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
         private const string SeatPrefabPath = Root + "/Prefabs/ValidatedLoungeSeat.prefab";
         private const string MaskPath = Root + "/Textures/T_FogDensity32.asset";
         private const string RingPath = Root + "/Meshes/StageGlowRing.asset";
-        private static readonly Color Neon = new Color(1f, 0.015f, 0.28f);
+        private static readonly Color Neon = new Color(1f, 0.015f, 1f);
 
         [MenuItem("Tools/DAZ Pose/First Performance Void/Build or Open Lounge")]
         public static void BuildOrOpen()
@@ -149,6 +149,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 CreateLights(Group("Lights", environment));
                 CreateVolume(Group("SceneVolumes", room));
                 CreateFogBanks(Group("Volumetrics", environment));
+                FirstPerformanceVoidLighting.ApplyToScene(scene);
                 RenderSettings.skybox = null;
                 RenderSettings.ambientMode = AmbientMode.Flat;
                 RenderSettings.ambientLight = Color.black;

@@ -63,6 +63,53 @@ Main performance costs are HDRP volumetrics/Bloom, three realtime lights, one sh
 
 Native generation serializes/configures assets and preserves source references. It is not a rendered visual review or Play Mode acceptance. WalkTo/SitAt/StandUp, gaze/expression/blink/breathing, Speech/SALSA, chair fit, fog appearance, exposure and reflections must be reviewed manually by Art. The room layout provides clear floor-level destination paths; actual movement completion is not asserted before that review.
 
+## Corrections after Art's first review
+
+Art accepted Bloom, floor, stage and initial lounge placement, but found Lara too dark, the neon red, and the fog invisible. These lighting corrections preserve those accepted settings and the camera placement:
+
+- Magenta emission and accent lights now use RGB 1/.015/1: equal red and blue, rather than the original blue .28 (which becomes substantially weaker after linear conversion). Emission stays 3500 nits and Bloom/exposure stay unchanged.
+- Two soft, unshadowed point lights are children of the performer root, so they follow locomotion and seating automatically. The warm key uses 1600 candela and the cool fill 950 candela. Only the cloned Lara renderers receive rendering layer bit 2, while keeping their original world-lighting mask. These two lights use only bit 2 and have volumetric dimmer zero: no floor or fog lighting.
+- The existing active HDRP asset now supports Light Layers; the lounge camera enables them. This capability is required for the character-only lights. Existing camera defaults and unrelated scene renderer masks are preserved.
+- Local banks use mean free paths of 2.5 m (Left/Rear/Right) and 4 m (Lounge), with albedo .85. Existing density texture, feathering, scrolling, placement and size remain. Two magenta point lights at (-4.5,.65,2) and (5.5,.55,2.5), 1800 candela/range 12 m, illuminate only volumetrics: diffuse/specular contributions are disabled. Existing magenta accents now have volumetric dimmer 1.
+- There are now seven realtime lights total; only the original neutral key casts shadows. The additional cost is four unshadowed point lights, of which two illuminate only fog.
+
+The correction is already serialized into the scene and material; no setup command is needed. The optional **Tools > DAZ Pose > First Performance Void > Apply Lara Lighting and Fog Corrections** command reapplies these defaults without replacing objects or moving camera/chair/fog banks. Fresh initial construction also applies them. Visual confirmation remains Art's Play Mode review.
+
+### Loaded-scene correction delivery
+
+The first correction was copied into the scene on disk while an older version was already loaded in the editor. A subsequent save of the loaded scene replaced the new hierarchy; the project scene then contained none of the four added lights. This was a delivery failure, not visual acceptance of the corrected setup.
+
+Lighting revision 1 is now stored in the room controls. An editor-only, one-time upgrade applies the correction to an already loaded FirstPerformanceVoid scene after script reload, on scene opening, or immediately before Play. It preserves current camera/placement edits and saves that corrected scene. It does not create lights at runtime or repeatedly retune a scene already upgraded. If scripts were imported during Play, the upgrade waits until Edit mode. The latest generated scene preserves Art's moved camera at (4.92,2.19,-5.09).
+
+### Revision 2 — illuminated perimeter and softer skin
+
+After revision 1, Art confirmed a substantial lighting improvement but requested stronger fog enclosing all four sides and less glossy skin. Revision 2 uses the same one-time editor delivery mechanism and preserves current camera edits.
+
+- Four banks bound the floor: Left/Right centers (-8,.6,0)/(8,.6,0), sizes (2.4,1.6,14); Front/Rear centers (0,.6,-6)/(0,.6,6), sizes (18,1.6,2.4). The old Lounge bank becomes Front. Mean free path is .65 m, albedo .95, with feathered upper edges and horizontally tiled/scrolled existing 32³ noise. The middle of the room remains outside these banks.
+- Four unshadowed magenta fog-only point lights, one per edge, use 4500 candela and 12 m range. They do not light floor or skin surfaces. Total realtime light count becomes nine, still with only one original shadow caster. Fog brightness/density does not increase its resolution; broader bank coverage and two additional lights increase the work within the existing volumetric pass.
+- Skin materials used by this scene are copied to `Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_<surface>.mat` for Face, Ears, Torso, Arms, Legs, Lips and EyeSocket when those surfaces are present. Imported materials and shader graphs are unchanged; eyes, nails, teeth and hair are unaffected. All texture maps remain. The copies use roughness .72, lobe roughness .72/.6, glossy weight .5, dual-lobe weight .2, top-coat weight .03. This is a quick specular adjustment, not a new skin shader or diffusion-profile overhaul.
+- No screen-space/ray-traced GI was enabled. Emissive surface bounce would require a GI solution; fog illumination remains native light components. An FPS/millisecond estimate requires profiling the target GPU and resolution and is not asserted here. Visual acceptance and playback remain manual.
+
+### Revision 3 — rising smoke, replacing the fog hedge
+
+Art rejected the rectangular upper boundary of revision 2. The local `Environment/Volumetrics` banks are now inactive, retained only as an editable fallback reference. Four native ParticleSystems under `Environment/Perimeter Rising Smoke` emit along the floor perimeter at X ±8.6/Z ±6.6. Smoke uses world-space simulation, randomized 6–10 second lifetimes and 0.2–0.4 m/s upward drift, gentle noise and lateral drift, random rotation, size growth, and smooth per-particle birth/death opacity. There is no shared horizontal termination plane. Each emitter is prewarmed and loops automatically in Play mode; no runtime setup fallback/script is required.
+
+The project-owned `Shaders/PerimeterSmokeLit.shadergraph` is copied from Unity's installed HDRP 17.5.0 `ParticleLitSoft` sample (Unity Companion License notice included). Its two subgraphs are existing installed Shader Graph dependencies, not additional packages. Native lit transparent billboards use particle vertex color, texture alpha and scene-depth soft intersections. A generated 128² RGBA32 mipmapped `Textures/T_SmokeBillow.asset` combines seven soft density lobes with three frequencies of noise and zero opacity at the texture edge. `Materials/M_PerimeterSmoke.mat` binds that texture and a .5 m soft-intersection fade.
+
+Four `Smoke Edge Left/Right/Front/Back` lights replace the four fog-only lights. Rendering layer bit 4 restricts them to smoke particle renderers; they do not affect floor/Lara, cast no shadows, and have volumetric contribution zero. They use magenta 4500 candela/range 12 m. Total light count remains nine. Faint global fog and existing Lara lighting/skin/Bloom/exposure are preserved. Typical steady-state count is approximately 400 billboards (50 emissions/second × 8-second average lifetime), bounded by 720 total. The main extra rendering cost is transparent overdraw; no GI, fluid simulation or third-party asset was added.
+
+Lighting revision 3 upgrades an already loaded lounge once in Edit mode, retaining camera and placement edits. Stop Play and allow script/shader import before evaluating it. Manual visual checks: billows should rise, expand, drift and gradually disappear at varied heights; no box-shaped ceiling should remain; intersections near the floor should be soft; all four edges should show smoke while the room's center stays open. Particle appearance, light response and runtime performance have not been accepted by the executor.
+
+### Revision 4 — continuous coverage, Game-view visibility and camera preservation
+
+The current saved scene was reread before this correction. Its camera position was (2.42,1.34,-.14), with rotation quaternion (.027425291,-.93873113,-.0018371617,.34355253). The scene already serialized Play On Awake, prewarm, enabled box shapes spanning the edges, and enabled camera transparency/Light Layers. Therefore this was not treated as a missing Play On Awake setting or an authored point-shaped emitter.
+
+Emission increases from 11/14 particles per second to 42/54 for 14/18 m edges: three billows per metre per second, approximately 1536 particles at the average lifetime, with a 650-particle limit per edge. Box position/rotation are explicitly zeroed and the full line dimensions retained. Peak opacity increases to .5. The lit shader adds constant magenta emission (180,18,150) so visibility is no longer exclusively dependent on a light reaching the billboard; texture alpha and lifetime fades still define each billow's soft shape. This is a deliberate glow approximation for the neon environment, not physical emissive bounce lighting.
+
+Only existing smoke ParticleSystem/Renderer/Transform blocks and the lighting revision were transferred from native generation into the freshly reread scene. All camera component/transform blocks were compared before writing and preserved exactly. No whole-scene replacement was performed. Later loaded-scene smoke upgrades change only smoke, not the accepted character lighting or skin. The existing room panel now reports particle count and running emitter count to distinguish simulation from rendering failures during manual Play Mode review. Expected steady state is four running emitters with nonzero particles. Visual acceptance remains manual.
+
+The runtime particle-count reference exposed a missing prerequisite: the project had not enabled `com.unity.modules.particlesystem`. The installed Unity built-in module `1.0.0` is now explicitly enabled in the package manifest/lock, with no dependencies or third-party/HDRP package updates. Editor-only native generation did not establish that the runtime assembly was available. No camera or scene data changes accompany this dependency fix.
+
 ## ART'S FIRST PERFORMANCE VOID REVIEW
 
 1. Open `Assets/Scenes/FirstPerformanceVoid.unity`. Save any current unsaved scene before switching. Let Unity import the new assets, then enter Play mode.
