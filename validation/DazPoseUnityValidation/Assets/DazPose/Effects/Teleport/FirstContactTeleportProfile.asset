@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27938ebfc8c44aecbc2b550cf41a0428, type: 3}
+  m_Name: FirstContactTeleportProfile
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerTeleportProfile
+  effectPrefab: {fileID: 2961283431243580222, guid: a7547e247775a3844bb0f995a25bf49e, type: 3}
+  departureAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
+  arrivalAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
+  hideTime: 0.15
+  revealDelay: 0.25
+  completionTime: 0.45
+  effectLifetime: 1.4
+  departurePitch: 0.94
+  arrivalPitch: 1.04

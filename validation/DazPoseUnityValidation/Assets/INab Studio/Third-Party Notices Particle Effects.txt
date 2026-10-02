@@ -1,0 +1,3 @@
+The following third-party components are used in the package:
+
+vfx-uniform-mesh-sampling - Licensed under the CC0 1.0 Universal. See INab Studio\Common\Particle Effects Scripts\License.txt for details.

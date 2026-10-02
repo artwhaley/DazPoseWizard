@@ -18,12 +18,25 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform viewMarkLounge;
         [SerializeField] private Transform laraFaceViewTarget;
         [SerializeField] private FirstContactPerformance firstContact;
+        [Header("P0.F Teleport Acceptance")]
+        [SerializeField] private Transform teleportMarkA;
+        [SerializeField] private Transform teleportMarkB;
+        [SerializeField] private PerformerPose teleportArrivalPose;
         [SerializeField, HideInInspector] private int lightingRevision;
         public int LightingRevision => lightingRevision;
         private ParticleSystem[] smokeEmitters;
         private string status = "Use the existing performer panel for seating, expressions and speech.";
+        private string teleportStatus = "Run Install Teleport Acceptance Harness in Edit Mode.";
+        private bool teleportTestRunning;
 
         public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
+
+        public void ConfigureTeleportAcceptance(Transform markA, Transform markB, PerformerPose arrivalPose)
+        {
+            if (teleportMarkA == null) teleportMarkA = markA;
+            if (teleportMarkB == null) teleportMarkB = markB;
+            if (teleportArrivalPose == null) teleportArrivalPose = arrivalPose;
+        }
 
         public void Configure(SuccubusPerformer owner, Transform across, Transform platform, Transform camera)
         {
@@ -51,7 +64,7 @@ namespace DazPose.FirstPerformanceVoid
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(Mathf.Max(454f, Screen.width - 286f), 12f, 274f, Mathf.Min(610f, Screen.height - 24f)),
+            GUILayout.BeginArea(new Rect(Mathf.Max(454f, Screen.width - 286f), 12f, 274f, Mathf.Min(760f, Screen.height - 24f)),
                 "First Performance Void", GUI.skin.window);
             bool enabled = GUI.enabled;
             GUILayout.Label("FIRST CONTACT", GUI.skin.box);
@@ -60,6 +73,17 @@ namespace DazPose.FirstPerformanceVoid
             GUI.enabled = enabled;
             GUILayout.Label("Status: " + (firstContact != null ? firstContact.Status : "Run Install First Contact Performance"));
             if (firstContact != null) GUILayout.Label("Elapsed: " + firstContact.Elapsed.ToString("F1") + "s");
+            GUILayout.Space(5f);
+            GUILayout.Label("P0.F TELEPORT", GUI.skin.box);
+            bool teleportEnabled = enabled && !teleportTestRunning && performer != null && performer.TeleportAvailable;
+            GUI.enabled = teleportEnabled && teleportMarkA != null && teleportMarkB != null;
+            if (GUILayout.Button("TELEPORT A → B")) RunTeleportTest(teleportMarkB, null);
+            GUI.enabled = teleportEnabled && teleportMarkA != null && teleportMarkB != null;
+            if (GUILayout.Button("TELEPORT B → A")) RunTeleportTest(teleportMarkA, null);
+            GUI.enabled = teleportEnabled && teleportMarkB != null && teleportArrivalPose != null;
+            if (GUILayout.Button("TELEPORT B + ARRIVAL POSE")) RunTeleportTest(teleportMarkB, teleportArrivalPose);
+            GUI.enabled = enabled;
+            GUILayout.Label("Teleport: " + teleportStatus);
             GUILayout.Space(5f);
             GUI.enabled = enabled && performer != null && performer.IsRuntimeReady;
             if (GUILayout.Button("Walk across floor")) Request(() => performer.WalkTo(acrossFloor), "Walking across floor");
@@ -121,5 +145,25 @@ namespace DazPose.FirstPerformanceVoid
         }
 
         private void PlayerViewRequest(Action command, string description) => Request(command, description);
+
+        private async void RunTeleportTest(Transform target, PerformerPose arrivalPose)
+        {
+            teleportTestRunning = true;
+            teleportStatus = "Teleporting…";
+            string targetName = target != null ? target.name : "destination";
+            try
+            {
+                TeleportCompletion result = await performer.TeleportToAsync(target, arrivalPose);
+                teleportStatus = result == TeleportCompletion.Arrived
+                    ? "Arrived at " + targetName + (arrivalPose != null ? " in " + arrivalPose.name : ".")
+                    : "Performer disabled during teleport.";
+            }
+            catch (Exception exception)
+            {
+                teleportStatus = "ABORTED — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+            finally { teleportTestRunning = false; }
+        }
     }
 }

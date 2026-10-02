@@ -92,7 +92,7 @@ namespace DazPose.FirstPerformanceVoid
                 await Delay(2.25f, id);
 
                 SetBeat("Noticing Lara");
-                PendingAction turn = Start(player.LookAtAsync(laraFaceViewTarget, 1.2f),
+                PendingAction turn = ObserveAction(player.LookAtAsync(laraFaceViewTarget, 1.2f),
                     PlayerViewCompletion.Completed, "Player noticing turn");
                 orientationRevision = player.View.OrientationCommandRevision;
                 await Delay(0.45f, id);
@@ -102,7 +102,7 @@ namespace DazPose.FirstPerformanceVoid
                 await Delay(0.7f, id);
 
                 SetBeat("Speech A");
-                await WaitFor(id, Start(performer.SayAsync(speechClipA), SpeechCompletion.Finished, "Speech A"));
+                await WaitFor(id, ObserveAction(performer.SayAsync(speechClipA), SpeechCompletion.Finished, "Speech A"));
                 await Delay(0.5f, id);
 
                 player.Track(laraFaceViewTarget, new ViewTrackingSettings
@@ -114,7 +114,7 @@ namespace DazPose.FirstPerformanceVoid
                 ownsTracking = true;
                 performer.SetHoldLocomotionArrivalPose(true);
                 SetBeat("Approaching");
-                PendingAction approach = Start(performer.WalkToAsync(laraCloseMark),
+                PendingAction approach = ObserveAction(performer.WalkToAsync(laraCloseMark),
                     LocomotionCompletion.Arrived, "Lara approach");
                 await Delay(0.3f, id);
                 PendingAction closeMove = Move(viewMarkLara, 3.5f, "Player approach");
@@ -123,7 +123,7 @@ namespace DazPose.FirstPerformanceVoid
                 await Delay(0.9f, id);
 
                 SetBeat("Going to lounge");
-                PendingAction sit = Start(performer.SitAtAsync(loungeSeat, PerformerSeatedStyle.CrossLegs),
+                PendingAction sit = ObserveAction(performer.SitAtAsync(loungeSeat, PerformerSeatedStyle.CrossLegs),
                     SeatingCompletion.Seated, "Lounge SitAt CrossLegs");
                 await Delay(0.6f, id);
                 PendingAction loungeMove = Move(viewMarkLounge, 4.5f, "Player lounge move");
@@ -136,7 +136,7 @@ namespace DazPose.FirstPerformanceVoid
                 PendingAction finalMove = Move(viewMarkFinal, 4f, "Player final push");
                 await Delay(0.5f, id);
                 SetBeat("Speech B");
-                PendingAction lineB = Start(performer.SayAsync(speechClipB), SpeechCompletion.Finished, "Speech B");
+                PendingAction lineB = ObserveAction(performer.SayAsync(speechClipB), SpeechCompletion.Finished, "Speech B");
                 await WaitFor(id, finalMove, lineB);
 
                 SetBeat("Final hold");
@@ -161,14 +161,14 @@ namespace DazPose.FirstPerformanceVoid
 
         private PendingAction Move(Transform mark, float duration, string name)
         {
-            PendingAction action = Start(player.MoveToAsync(mark, duration), PlayerViewCompletion.Completed, name);
+            PendingAction action = ObserveAction(player.MoveToAsync(mark, duration), PlayerViewCompletion.Completed, name);
             positionRevision = player.View.PositionCommandRevision;
             return action;
         }
 
         // Consume every Unity Awaitable exactly once, immediately after starting it.
         // Concurrent results are observed independently, so either failure aborts promptly.
-        private PendingAction Start<T>(Awaitable<T> operation, T expected, string name)
+        private PendingAction ObserveAction<T>(Awaitable<T> operation, T expected, string name)
         {
             var action = new PendingAction { Name = name };
             actions.Add(action);

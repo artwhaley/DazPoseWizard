@@ -7210,6 +7210,9 @@ MonoBehaviour:
   viewMarkLounge: {fileID: 1942173269}
   laraFaceViewTarget: {fileID: 1436712012}
   firstContact: {fileID: 407646201}
+  teleportMarkA: {fileID: 1336767648}
+  teleportMarkB: {fileID: 412335443}
+  teleportArrivalPose: {fileID: 11400000, guid: 7f06352d680590c4b8d282cdb165d3ec, type: 2}
   lightingRevision: 5
 --- !u!4 &407646200
 Transform:
@@ -7285,6 +7288,37 @@ Transform:
   - {fileID: 1962495261}
   m_Father: {fileID: 570764516}
   m_LocalEulerAnglesHint: {x: 3.5112448, y: 5.1169796, z: 77.59204}
+--- !u!1 &412335442
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 412335443}
+  m_Layer: 0
+  m_Name: TeleportMark_B
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &412335443
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412335442}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 5.5, y: 0, z: -3.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 448049656}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &414600261
 GameObject:
   m_ObjectHideFlags: 0
@@ -7450,6 +7484,39 @@ Transform:
   - {fileID: 560309672}
   m_Father: {fileID: 1990643239}
   m_LocalEulerAnglesHint: {x: 1.3657326, y: -18.645082, z: 85.51212}
+--- !u!1 &448049655
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 448049656}
+  m_Layer: 0
+  m_Name: TeleportAcceptance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &448049656
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448049655}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1336767648}
+  - {fileID: 412335443}
+  m_Father: {fileID: 2113752062}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &462854808
 GameObject:
   m_ObjectHideFlags: 0
@@ -19883,6 +19950,7 @@ MonoBehaviour:
   defaultExpressionBlendTime: 0.25
   speechAudioSource: {fileID: 64725181}
   locomotionProfile: {fileID: 11400000, guid: b41f3e2279fd4b6428b58e48b2995ffc, type: 2}
+  teleportProfile: {fileID: 11400000, guid: 787474b37b9c04544916679bcd587c2e, type: 2}
   breathingEnabled: 1
   breathsPerMinute: 10
   breathingCurve:
@@ -23367,6 +23435,37 @@ Transform:
   - {fileID: 504135089}
   m_Father: {fileID: 815462537}
   m_LocalEulerAnglesHint: {x: -0.19786094, y: -0.12965058, z: -0.14062579}
+--- !u!1 &1336767647
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1336767648}
+  m_Layer: 0
+  m_Name: TeleportMark_A
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1336767648
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336767647}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -3.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 448049656}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1353076914
 GameObject:
   m_ObjectHideFlags: 0
@@ -31623,6 +31722,7 @@ Transform:
   - {fileID: 1811281838}
   - {fileID: 1587948176}
   - {fileID: 1565825219}
+  - {fileID: 448049656}
   m_Father: {fileID: 407646200}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2125118266

@@ -40,6 +40,9 @@ namespace DazPose.Performer
         [Header("Locomotion")]
         [SerializeField] private PerformerLocomotionProfile locomotionProfile;
 
+        [Header("Teleport")]
+        [SerializeField] private PerformerTeleportProfile teleportProfile;
+
         [Header("Breathing")]
         [SerializeField] private bool breathingEnabled = true;
         [SerializeField, Range(3f, 24f)] private float breathsPerMinute = 10f;
@@ -102,6 +105,7 @@ namespace DazPose.Performer
         private PerformerBodyPose _bodyPose;
         private PerformerBodySourceMixer _bodySourceMixer;
         private PerformerLocomotion _locomotion;
+        private PerformerTeleport _teleport;
         private PerformerSeatingLayer _seatingLayer;
         private PerformerSeating _seating;
         private PerformerBreathing _breathing;
@@ -133,6 +137,8 @@ namespace DazPose.Performer
         public bool IsRuntimeReady => Application.isPlaying && isActiveAndEnabled && !_isTearingDown
             && _bodyPose != null && _speech != null && _graph.IsValid();
         public bool LocomotionAvailable => _locomotion != null;
+        public bool TeleportAvailable => _teleport != null && IsRuntimeReady;
+        public bool IsTeleporting => _teleport != null && _teleport.IsTeleporting;
         public bool IsLocomoting => _locomotion != null && _locomotion.IsLocomoting;
         public PerformerLocomotionState LocomotionState => _locomotion == null
             ? PerformerLocomotionState.Idle : _locomotion.State;
@@ -341,6 +347,7 @@ namespace DazPose.Performer
             _bodyPose.Advance(Time.deltaTime);
             _locomotion?.Advance(Time.deltaTime);
             _seating?.Advance(Time.deltaTime);
+            _teleport?.Advance(Time.deltaTime);
             if (_breathing != null)
             {
                 _breathing.Configure(CreateBreathingSettings());
@@ -409,6 +416,36 @@ namespace DazPose.Performer
         {
             var completion = new AwaitableCompletionSource<PoseCompletion>();
             RequestPose(pose, transition, completion);
+            return completion.Awaitable;
+        }
+
+        public void TeleportTo(Vector3 worldPosition) => TeleportTo(worldPosition, null);
+
+        public void TeleportTo(Transform target) => TeleportTo(target, null);
+
+        public void TeleportTo(Vector3 worldPosition, PerformerPose arrivalPose) =>
+            RequireTeleportRuntime().TeleportTo(worldPosition, arrivalPose, null);
+
+        public void TeleportTo(Transform target, PerformerPose arrivalPose) =>
+            RequireTeleportRuntime().TeleportTo(target, arrivalPose, null);
+
+        public Awaitable<TeleportCompletion> TeleportToAsync(Vector3 worldPosition) =>
+            TeleportToAsync(worldPosition, null);
+
+        public Awaitable<TeleportCompletion> TeleportToAsync(Transform target) =>
+            TeleportToAsync(target, null);
+
+        public Awaitable<TeleportCompletion> TeleportToAsync(Vector3 worldPosition, PerformerPose arrivalPose)
+        {
+            var completion = new AwaitableCompletionSource<TeleportCompletion>();
+            RequireTeleportRuntime().TeleportTo(worldPosition, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<TeleportCompletion> TeleportToAsync(Transform target, PerformerPose arrivalPose)
+        {
+            var completion = new AwaitableCompletionSource<TeleportCompletion>();
+            RequireTeleportRuntime().TeleportTo(target, arrivalPose, completion);
             return completion.Awaitable;
         }
 
@@ -781,6 +818,9 @@ namespace DazPose.Performer
                 if (poseToRestore != null)
                     _bodyPose.SetPose(poseToRestore, PoseTransition.Snap);
                 _graph.Evaluate(0f);
+                if (teleportProfile != null)
+                    _teleport = new PerformerTeleport(transform, teleportProfile,
+                        pose => Pose(pose, PoseTransition.Snap));
             }
             catch
             {
@@ -853,6 +893,8 @@ namespace DazPose.Performer
 
         private PerformerLocomotion RequireLocomotionRuntime()
         {
+            if (IsTeleporting)
+                throw new InvalidOperationException("WalkTo is unavailable while a teleport is in progress.");
             if (_locomotion == null || _isTearingDown || !isActiveAndEnabled)
             {
                 string setup = locomotionProfile == null
@@ -865,9 +907,26 @@ namespace DazPose.Performer
 
         private PerformerSeating RequireSeatingRuntime()
         {
+            if (IsTeleporting)
+                throw new InvalidOperationException("SitAt/StandUp is unavailable while a teleport is in progress.");
             if (_seating == null || _isTearingDown || !isActiveAndEnabled)
                 throw new InvalidOperationException("SuccubusPerformer can receive SitAt/StandUp commands only while enabled in Play Mode.");
             return _seating;
+        }
+
+        private PerformerTeleport RequireTeleportRuntime()
+        {
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("SuccubusPerformer can teleport only while its runtime is ready in Play Mode.");
+            if (_teleport == null)
+                throw new InvalidOperationException("Teleport is unavailable. In Edit Mode, run Tools > DAZ Pose > First Performance Void > Install Teleport Acceptance Harness.");
+            if (IsLocomoting)
+                throw new InvalidOperationException("Teleport requires Lara to finish locomoting first.");
+            if (SeatingState != PerformerSeatingState.Standing)
+                throw new InvalidOperationException("Teleport is available only while Lara is standing.");
+            if (_teleport.IsTeleporting)
+                throw new InvalidOperationException("A teleport is already in progress; wait for it to arrive before requesting another.");
+            return _teleport;
         }
 
         private void DestroyRuntime()
@@ -880,6 +939,8 @@ namespace DazPose.Performer
             }
 
             _isTearingDown = true;
+            _teleport?.Dispose();
+            _teleport = null;
             var speech = _speech;
             _speech = null;
             speech?.Dispose();
