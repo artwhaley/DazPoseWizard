@@ -146,6 +146,9 @@ namespace DazPose.Performer
         public bool IsTeleporting => _teleport != null && _teleport.IsTeleporting;
         public bool DissolveAvailable => _dissolve != null && IsRuntimeReady;
         public bool IsDissolving => _dissolve != null && _dissolve.IsDissolving;
+        public bool DissolveShaderAcceptanceAvailable => IsRuntimeReady
+            && dissolveProfile != null && dissolveRig != null
+            && dissolveProfile.IsShaderReady(out _) && dissolveRig.IsShaderReady(dissolveProfile, out _);
         public bool IsLocomoting => _locomotion != null && _locomotion.IsLocomoting;
         public PerformerLocomotionState LocomotionState => _locomotion == null
             ? PerformerLocomotionState.Idle : _locomotion.State;
@@ -472,6 +475,24 @@ namespace DazPose.Performer
 
         public Awaitable<DissolveCompletion> DissolveToAsync(Transform target) =>
             DissolveToAsync(target, null);
+
+        /// <summary>Sets the shader-only acceptance state without invoking the P0.G DissolveTo sequence.</summary>
+        public void SetDissolveShaderAcceptanceState(bool enabled, float progress)
+        {
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("Dissolve shader acceptance is available only while the performer is enabled in Play Mode.");
+            if (_dissolve != null && _dissolve.IsDissolving)
+                throw new InvalidOperationException("Shader acceptance controls cannot run while DissolveTo is active.");
+            if (float.IsNaN(progress) || float.IsInfinity(progress))
+                throw new ArgumentOutOfRangeException(nameof(progress), "Dissolve progress must be finite.");
+            if (dissolveRig == null)
+                throw new InvalidOperationException("The native dissolve shader rig is not assigned.");
+            if (!dissolveRig.IsShaderReady(dissolveProfile, out string reason))
+                throw new InvalidOperationException(reason);
+
+            dissolveRig.SetDissolveEnabled(enabled);
+            dissolveRig.SetDissolveProgress(Mathf.Clamp01(progress));
+        }
 
         public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition, PerformerPose arrivalPose)
         {

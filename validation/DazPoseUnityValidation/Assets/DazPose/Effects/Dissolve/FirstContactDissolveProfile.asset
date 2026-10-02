@@ -19,23 +19,25 @@ MonoBehaviour:
   effectTailLifetime: 0.65
   dissolveVfx: {fileID: 8926484042661614526, guid: 45004183e02f83d44989badd280fbe1e, type: 3}
   transitPrefab: {fileID: 4687663386673435297, guid: b1ff3165f6756ba4b90bd5d36d8a6762, type: 3}
-  dissolveMaterialVariants:
-  - {fileID: 2100000, guid: 930e07ae93e21414d8842ab936265865, type: 2}
-  - {fileID: 2100000, guid: b6ada2ace24b1d84fbfe641ad1ebd7e2, type: 2}
-  - {fileID: 2100000, guid: 5dc387c74530342468e8836793f9db49, type: 2}
-  - {fileID: 2100000, guid: d4d226fb86bff4043b7f74885f3e11da, type: 2}
-  - {fileID: 2100000, guid: b198c350669e86e4a98b0aca504d2ee0, type: 2}
-  - {fileID: 2100000, guid: e13b2529553b7fd43aa9716888e8a1cc, type: 2}
-  - {fileID: 2100000, guid: c47c8d0ea340a704593e227f224e5c6c, type: 2}
-  - {fileID: 2100000, guid: 3abe4c367d4a23042818d36eb1f7a395, type: 2}
-  - {fileID: 2100000, guid: 9eddab122934ea54ab5eaca65b686733, type: 2}
-  - {fileID: 2100000, guid: 04ca2980c805a8643bb884b80b1bf78d, type: 2}
-  - {fileID: 2100000, guid: c94657e80d5bca64bb424ac291799280, type: 2}
-  - {fileID: 2100000, guid: b4de438efb038a243bdc2cc165423317, type: 2}
-  - {fileID: 2100000, guid: 2ad163f2efcd45e4ca62dc32e18d016f, type: 2}
-  - {fileID: 2100000, guid: eb497fe8a5950df45a268f9bcae933cd, type: 2}
-  - {fileID: 2100000, guid: 67342397f83e1eb4396d540b52f6bc0b, type: 2}
-  - {fileID: 2100000, guid: 5fcba4db169394543ba359db63f6bcdc, type: 2}
+  sssDissolveShader: {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  wetDissolveShader: {fileID: -6465566751694194690, guid: b684dcf5875d44c0a12a25f7bec2d87e, type: 3}
+  laraRuntimeMaterials:
+  - {fileID: 2100000, guid: 09c8bbc7920a4dae886e06deee8e5a69, type: 2}
+  - {fileID: 2100000, guid: 40469cf7c3234492bd8d4a748a59baef, type: 2}
+  - {fileID: 2100000, guid: df839d3913ee4cd2b1cae183c39cc0fd, type: 2}
+  - {fileID: 2100000, guid: 874f8cc535154658a1ccc98fca13927b, type: 2}
+  - {fileID: 2100000, guid: f0839e7a52fe470d9768d23711399eea, type: 2}
+  - {fileID: 2100000, guid: bba3bfaf5f1840a090b8f427155c1874, type: 2}
+  - {fileID: 2100000, guid: ac9f57641dde476c97dcaae78e2ed75a, type: 2}
+  - {fileID: 2100000, guid: 2857fe429f2846829d4d721e117211f8, type: 2}
+  - {fileID: 2100000, guid: e5b1267a0517403189c53440c50a3d4c, type: 2}
+  - {fileID: 2100000, guid: 53a660fb86a147a0bac53c69a5fdae8d, type: 2}
+  - {fileID: 2100000, guid: c694a61e5a6d4e8ebb29137dfb8eaeee, type: 2}
+  - {fileID: 2100000, guid: bb8168ede6d84ed9b2b28a8144b7489b, type: 2}
+  - {fileID: 2100000, guid: d4b54fa5d55a488f9e4aa363d54c9450, type: 2}
+  - {fileID: 2100000, guid: 175f220bb92346a586ef8c2c2809e514, type: 2}
+  - {fileID: 2100000, guid: 076413272f214a4f995aacaa490c4dbb, type: 2}
+  - {fileID: 2100000, guid: 1f25e303491f48108699435eddff56cf, type: 2}
   departureAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
   arrivalAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
   departurePitch: 0.92

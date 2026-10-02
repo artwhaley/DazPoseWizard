@@ -6,6 +6,22 @@ namespace DazPose.Performer
     [CreateAssetMenu(menuName = "Performer/Dissolve Profile", fileName = "Performer Dissolve Profile")]
     public sealed class PerformerDissolveProfile : ScriptableObject
     {
+        private const int MaterialSlotCount = 16;
+        private const int EyeMoistureSlot = 10;
+        private const int CorneaSlot = 14;
+
+        private static readonly string[] RequiredDissolveProperties =
+        {
+            "_DissolveEnabled",
+            "_DissolveProgress",
+            "_DissolveBoundsMin",
+            "_DissolveBoundsSize",
+            "_DissolveFieldParams",
+            "_DissolveEdgeWidth",
+            "_DissolveEdgeColor",
+            "_DissolveEdgeEmission"
+        };
+
         [Header("Timing")]
         [SerializeField, Min(0.01f)] private float dissolveOutDuration = 0.45f;
         [SerializeField, Min(0.01f)] private float transitDuration = 0.65f;
@@ -13,10 +29,14 @@ namespace DazPose.Performer
         [SerializeField, Min(0f)] private float transitArcHeight = 0.45f;
         [SerializeField, Min(0f)] private float effectTailLifetime = 0.65f;
 
-        [Header("Effects")]
+        [Header("Native Dissolve Shaders")]
+        [SerializeField] private Shader sssDissolveShader;
+        [SerializeField] private Shader wetDissolveShader;
+        [SerializeField] private Material[] laraRuntimeMaterials;
+
+        [Header("Existing DissolveTo Effects")]
         [SerializeField] private VisualEffectAsset dissolveVfx;
         [SerializeField] private GameObject transitPrefab;
-        [SerializeField] private Material[] dissolveMaterialVariants;
         [SerializeField] private AudioClip departureAudio;
         [SerializeField] private AudioClip arrivalAudio;
         [SerializeField, Range(0.1f, 3f)] private float departurePitch = 0.92f;
@@ -29,33 +49,72 @@ namespace DazPose.Performer
         public float EffectTailLifetime => effectTailLifetime;
         public VisualEffectAsset DissolveVfx => dissolveVfx;
         public GameObject TransitPrefab => transitPrefab;
-        public Material[] DissolveMaterialVariants => dissolveMaterialVariants;
+        public Shader SssDissolveShader => sssDissolveShader;
+        public Shader WetDissolveShader => wetDissolveShader;
+        public Material[] LaraRuntimeMaterials => laraRuntimeMaterials;
         public AudioClip DepartureAudio => departureAudio;
         public AudioClip ArrivalAudio => arrivalAudio;
         public float DeparturePitch => departurePitch;
         public float ArrivalPitch => arrivalPitch;
 
+        public bool IsShaderReady(out string reason)
+        {
+            if (sssDissolveShader == null || wetDissolveShader == null)
+            {
+                reason = "Assign both project-owned dissolve Shader Graph assets to the profile.";
+                return false;
+            }
+            if (sssDissolveShader == wetDissolveShader)
+            {
+                reason = "The SSS and Wet dissolve shader references must be distinct.";
+                return false;
+            }
+            if (laraRuntimeMaterials == null || laraRuntimeMaterials.Length != MaterialSlotCount)
+            {
+                reason = "The profile must contain exactly 16 permanent Lara runtime materials.";
+                return false;
+            }
+
+            for (int i = 0; i < laraRuntimeMaterials.Length; i++)
+            {
+                Material material = laraRuntimeMaterials[i];
+                if (material == null)
+                {
+                    reason = "Lara runtime material slot " + i + " is missing.";
+                    return false;
+                }
+
+                Shader expectedShader = IsWetSlot(i) ? wetDissolveShader : sssDissolveShader;
+                if (material.shader != expectedShader)
+                {
+                    reason = "Lara runtime material slot " + i + " must use "
+                        + (IsWetSlot(i) ? "the Wet dissolve shader." : "the uDTU SSS dissolve shader.");
+                    return false;
+                }
+                for (int propertyIndex = 0; propertyIndex < RequiredDissolveProperties.Length; propertyIndex++)
+                {
+                    string property = RequiredDissolveProperties[propertyIndex];
+                    if (material.HasProperty(property)) continue;
+                    reason = "Lara runtime material slot " + i + " is missing shader property " + property + ".";
+                    return false;
+                }
+            }
+
+            reason = null;
+            return true;
+        }
+
         public bool IsReady(out string reason)
         {
+            if (!IsShaderReady(out reason)) return false;
             if (dissolveVfx == null)
             {
-                reason = "Assign the INAB Attract Sparks dissolve VFX Graph in PerformerDissolveProfile.";
+                reason = "Assign the existing P0.G dissolve VFX Graph in PerformerDissolveProfile.";
                 return false;
             }
             if (transitPrefab == null)
             {
-                reason = "Assign the project-owned magical transit particle prefab in PerformerDissolveProfile.";
-                return false;
-            }
-            if (dissolveMaterialVariants == null || dissolveMaterialVariants.Length == 0)
-            {
-                reason = "Assign the generated Lara dissolve material variants in PerformerDissolveProfile.";
-                return false;
-            }
-            for (int i = 0; i < dissolveMaterialVariants.Length; i++)
-            {
-                if (dissolveMaterialVariants[i] != null) continue;
-                reason = "Dissolve material variant slot " + i + " is missing.";
+                reason = "Assign the existing project-owned transit prefab in PerformerDissolveProfile.";
                 return false;
             }
             if (!IsFinite(dissolveOutDuration) || dissolveOutDuration <= 0f
@@ -67,23 +126,21 @@ namespace DazPose.Performer
                 reason = "Dissolve timings must be finite, with positive phase durations and nonnegative arc/tail values.";
                 return false;
             }
+
             reason = null;
             return true;
         }
 
 #if UNITY_EDITOR
-        public void ConfigureIfMissing(VisualEffectAsset graph, GameObject transit,
-            Material[] materialVariants, AudioClip departure, AudioClip arrival)
+        public void ConfigureNativeMaterials(Shader sssShader, Shader wetShader, Material[] runtimeMaterials)
         {
-            if (dissolveVfx == null) dissolveVfx = graph;
-            if (transitPrefab == null) transitPrefab = transit;
-            if (dissolveMaterialVariants == null || dissolveMaterialVariants.Length == 0)
-                dissolveMaterialVariants = materialVariants;
-            if (departureAudio == null) departureAudio = departure;
-            if (arrivalAudio == null) arrivalAudio = arrival;
+            sssDissolveShader = sssShader;
+            wetDissolveShader = wetShader;
+            laraRuntimeMaterials = runtimeMaterials;
         }
 #endif
 
+        private static bool IsWetSlot(int index) => index == EyeMoistureSlot || index == CorneaSlot;
         private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
     }
 }

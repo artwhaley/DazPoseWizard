@@ -18,6 +18,8 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform viewMarkLounge;
         [SerializeField] private Transform laraFaceViewTarget;
         [SerializeField] private FirstContactPerformance firstContact;
+        [Header("P0.G2 Particle Body Acceptance")]
+        [SerializeField] private PerformerParticleBody particleBody;
         [Header("P0.F Teleport Acceptance")]
         [SerializeField] private Transform teleportMarkA;
         [SerializeField] private Transform teleportMarkB;
@@ -28,8 +30,11 @@ namespace DazPose.FirstPerformanceVoid
         private string status = "Use the existing performer panel for seating, expressions and speech.";
         private string teleportStatus = "Run Install Teleport Acceptance Harness in Edit Mode.";
         private bool teleportTestRunning;
-        private string dissolveStatus = "Run Install Dissolve Acceptance Harness in Edit Mode.";
-        private bool dissolveTestRunning;
+        private string dissolveShaderStatus = "Run the native dissolve shader acceptance controls in Play Mode.";
+        private Vector2 panelScrollPosition;
+        private bool dissolveShaderAnimating;
+        private float dissolveShaderAnimationElapsed;
+        private const float DissolveShaderHalfCycleSeconds = 1f;
 
         public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
 
@@ -64,10 +69,43 @@ namespace DazPose.FirstPerformanceVoid
             smokeEmitters = GetComponentsInChildren<ParticleSystem>();
         }
 
+        private void Update()
+        {
+            if (!dissolveShaderAnimating) return;
+            if (performer == null || !performer.DissolveShaderAcceptanceAvailable)
+            {
+                dissolveShaderAnimating = false;
+                return;
+            }
+
+            dissolveShaderAnimationElapsed += Time.deltaTime;
+            float elapsed = dissolveShaderAnimationElapsed;
+            float duration = DissolveShaderHalfCycleSeconds;
+            if (elapsed < duration)
+            {
+                ApplyDissolveShaderState(true, Mathf.SmoothStep(0f, 1f, elapsed / duration));
+                dissolveShaderStatus = "Animating shader dissolve out.";
+            }
+            else if (elapsed < duration * 2f)
+            {
+                float progress = 1f - Mathf.SmoothStep(0f, 1f, (elapsed - duration) / duration);
+                ApplyDissolveShaderState(true, progress);
+                dissolveShaderStatus = "Animating shader dissolve in.";
+            }
+            else
+            {
+                dissolveShaderAnimating = false;
+                ApplyDissolveShaderState(false, 0f);
+                dissolveShaderStatus = "Animation complete; dissolve disabled and Lara restored.";
+            }
+        }
+
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(Mathf.Max(454f, Screen.width - 286f), 12f, 274f, Mathf.Min(760f, Screen.height - 24f)),
+            GUILayout.BeginArea(new Rect(Mathf.Max(454f, Screen.width - 286f), 12f, 274f, Mathf.Min(900f, Screen.height - 24f)),
                 "First Performance Void", GUI.skin.window);
+            panelScrollPosition = GUILayout.BeginScrollView(panelScrollPosition,
+                GUILayout.Width(274f), GUILayout.Height(Mathf.Max(160f, Mathf.Min(900f, Screen.height - 54f))));
             bool enabled = GUI.enabled;
             GUILayout.Label("FIRST CONTACT", GUI.skin.box);
             GUI.enabled = enabled && firstContact != null && firstContact.CanRun;
@@ -88,16 +126,36 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.Label("Teleport: " + teleportStatus);
 
             GUILayout.Space(5f);
-            GUILayout.Label("P0.G DISSOLVE", GUI.skin.box);
-            bool dissolveEnabled = enabled && !dissolveTestRunning && performer != null && performer.DissolveAvailable;
-            GUI.enabled = dissolveEnabled && teleportMarkA != null && teleportMarkB != null;
-            if (GUILayout.Button("DISSOLVE A → B")) RunDissolveTest(teleportMarkB, null);
-            GUI.enabled = dissolveEnabled && teleportMarkA != null && teleportMarkB != null;
-            if (GUILayout.Button("DISSOLVE B → A")) RunDissolveTest(teleportMarkA, null);
-            GUI.enabled = dissolveEnabled && teleportMarkB != null && teleportArrivalPose != null;
-            if (GUILayout.Button("DISSOLVE B + ARRIVAL POSE")) RunDissolveTest(teleportMarkB, teleportArrivalPose);
+            GUILayout.Label("P0.G1 DISSOLVE SHADER", GUI.skin.box);
+            bool shaderAcceptanceEnabled = enabled && !dissolveShaderAnimating && performer != null
+                && performer.DissolveShaderAcceptanceAvailable;
+            GUI.enabled = shaderAcceptanceEnabled;
+            if (GUILayout.Button("DISSOLVE SHADER 0%")) SetDissolveShaderAcceptanceState(false, 0f);
+            if (GUILayout.Button("DISSOLVE SHADER 25%")) SetDissolveShaderAcceptanceState(true, 0.25f);
+            if (GUILayout.Button("DISSOLVE SHADER 50%")) SetDissolveShaderAcceptanceState(true, 0.5f);
+            if (GUILayout.Button("DISSOLVE SHADER 75%")) SetDissolveShaderAcceptanceState(true, 0.75f);
+            if (GUILayout.Button("DISSOLVE SHADER 100%")) SetDissolveShaderAcceptanceState(true, 1f);
+            if (GUILayout.Button("DISSOLVE SHADER ANIMATE OUT/IN"))
+            {
+                dissolveShaderAnimationElapsed = 0f;
+                dissolveShaderAnimating = true;
+                dissolveShaderStatus = "Starting shader-only dissolve acceptance animation.";
+            }
             GUI.enabled = enabled;
-            GUILayout.Label("Dissolve: " + dissolveStatus);
+            GUILayout.Label("Shader: " + dissolveShaderStatus);
+
+            GUILayout.Space(5f);
+            GUILayout.Label("P0.G2 PARTICLE BODY", GUI.skin.box);
+            GUI.enabled = enabled && particleBody != null;
+            if (GUILayout.Button("PARTICLE BODY — SHOW")) ParticleBodyRequest(particleBody.Show);
+            if (GUILayout.Button("PARTICLE BODY — HIDE")) ParticleBodyRequest(particleBody.Hide);
+            if (GUILayout.Button("PARTICLE BODY — DETACH")) ParticleBodyRequest(particleBody.Detach);
+            if (GUILayout.Button("PARTICLE BODY — TRANSIT A → B")) ParticleBodyRequest(particleBody.TransitToCurrentPerformer);
+            if (GUILayout.Button("PARTICLE BODY — REFORM")) ParticleBodyRequest(particleBody.Reform);
+            if (GUILayout.Button("PARTICLE BODY — RESET")) ParticleBodyRequest(particleBody.ResetBody);
+            GUI.enabled = enabled;
+            GUILayout.Label("Particle body: " + (particleBody != null ? particleBody.Status : "Run Install Particle Body Acceptance Harness in Edit Mode."));
+            if (particleBody != null) GUILayout.Label("Bindings: " + particleBody.BindingCount);
 
             GUILayout.Space(5f);
             GUI.enabled = enabled && performer != null && performer.IsRuntimeReady;
@@ -150,6 +208,7 @@ namespace DazPose.FirstPerformanceVoid
                 }
                 GUILayout.Label("Smoke: " + count + " particles; " + running + "/" + smokeEmitters.Length + " emitters running.");
             }
+            GUILayout.EndScrollView();
             GUILayout.EndArea();
         }
 
@@ -160,6 +219,41 @@ namespace DazPose.FirstPerformanceVoid
         }
 
         private void PlayerViewRequest(Action command, string description) => Request(command, description);
+
+        private void ParticleBodyRequest(Action command)
+        {
+            try { command(); }
+            catch (Exception exception)
+            {
+                status = "Particle body: " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private void SetDissolveShaderAcceptanceState(bool dissolveEnabled, float progress)
+        {
+            try
+            {
+                performer.SetDissolveShaderAcceptanceState(dissolveEnabled, progress);
+                dissolveShaderStatus = "Shader progress " + (progress * 100f).ToString("F0") + "%";
+            }
+            catch (Exception exception)
+            {
+                dissolveShaderStatus = "FAILED — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private void ApplyDissolveShaderState(bool dissolveEnabled, float progress)
+        {
+            try { performer.SetDissolveShaderAcceptanceState(dissolveEnabled, progress); }
+            catch (Exception exception)
+            {
+                dissolveShaderAnimating = false;
+                dissolveShaderStatus = "FAILED — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
 
         private async void RunTeleportTest(Transform target, PerformerPose arrivalPose)
         {
@@ -181,24 +275,5 @@ namespace DazPose.FirstPerformanceVoid
             finally { teleportTestRunning = false; }
         }
 
-        private async void RunDissolveTest(Transform target, PerformerPose arrivalPose)
-        {
-            dissolveTestRunning = true;
-            dissolveStatus = "Dissolving…";
-            string targetName = target != null ? target.name : "destination";
-            try
-            {
-                DissolveCompletion result = await performer.DissolveToAsync(target, arrivalPose);
-                dissolveStatus = result == DissolveCompletion.Arrived
-                    ? "Arrived at " + targetName + (arrivalPose != null ? " in " + arrivalPose.name + "." : ".")
-                    : "Performer disabled during dissolve.";
-            }
-            catch (Exception exception)
-            {
-                dissolveStatus = "ABORTED — " + exception.Message;
-                Debug.LogException(exception, this);
-            }
-            finally { dissolveTestRunning = false; }
-        }
     }
 }

@@ -13694,22 +13694,22 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 3
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3e803fc762b0b434fbc7b1f60e89c9ed, type: 2}
-  - {fileID: 2100000, guid: 8fcf99daa2beec449a577500f88712a5, type: 2}
-  - {fileID: 2100000, guid: 07a7af5fe0f09a94ba19a67d20cfd02c, type: 2}
-  - {fileID: 2100000, guid: 74cffcb34d66e9a4386585f098ec1425, type: 2}
-  - {fileID: 2100000, guid: 807cb31e8b202d14192315d25051a47f, type: 2}
-  - {fileID: 2100000, guid: f1233367148ab484bbe42626ec7d9120, type: 2}
-  - {fileID: 2100000, guid: 9dec1cb1b561f12488a2264026d98656, type: 2}
-  - {fileID: 2100000, guid: c3da288264d263646be64586cd717a8b, type: 2}
-  - {fileID: 2100000, guid: dc93e13e44666a740905bcd82bd9a0c9, type: 2}
-  - {fileID: 2100000, guid: 4126f056389aa774c87d9a138d1c2b17, type: 2}
-  - {fileID: 2100000, guid: 89b9c1bf4b4f00d4182e7e29698ccad1, type: 2}
-  - {fileID: 2100000, guid: 9fdc3989c2e55784392278b7c6bea016, type: 2}
-  - {fileID: 2100000, guid: 092b57b2fb3067a45b9b81ae55ba5fe0, type: 2}
-  - {fileID: 2100000, guid: 0df6eba47885fa247a25061f78c6b3b9, type: 2}
-  - {fileID: 2100000, guid: f78c93f1aae5746458d3d852da265213, type: 2}
-  - {fileID: 2100000, guid: 608fa212d6089064da47b40dff5d35ec, type: 2}
+  - {fileID: 2100000, guid: 09c8bbc7920a4dae886e06deee8e5a69, type: 2}
+  - {fileID: 2100000, guid: 40469cf7c3234492bd8d4a748a59baef, type: 2}
+  - {fileID: 2100000, guid: df839d3913ee4cd2b1cae183c39cc0fd, type: 2}
+  - {fileID: 2100000, guid: 874f8cc535154658a1ccc98fca13927b, type: 2}
+  - {fileID: 2100000, guid: f0839e7a52fe470d9768d23711399eea, type: 2}
+  - {fileID: 2100000, guid: bba3bfaf5f1840a090b8f427155c1874, type: 2}
+  - {fileID: 2100000, guid: ac9f57641dde476c97dcaae78e2ed75a, type: 2}
+  - {fileID: 2100000, guid: 2857fe429f2846829d4d721e117211f8, type: 2}
+  - {fileID: 2100000, guid: e5b1267a0517403189c53440c50a3d4c, type: 2}
+  - {fileID: 2100000, guid: 53a660fb86a147a0bac53c69a5fdae8d, type: 2}
+  - {fileID: 2100000, guid: c694a61e5a6d4e8ebb29137dfb8eaeee, type: 2}
+  - {fileID: 2100000, guid: bb8168ede6d84ed9b2b28a8144b7489b, type: 2}
+  - {fileID: 2100000, guid: d4b54fa5d55a488f9e4aa363d54c9450, type: 2}
+  - {fileID: 2100000, guid: 175f220bb92346a586ef8c2c2809e514, type: 2}
+  - {fileID: 2100000, guid: 076413272f214a4f995aacaa490c4dbb, type: 2}
+  - {fileID: 2100000, guid: 1f25e303491f48108699435eddff56cf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -21900,9 +21900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerDissolveRig
   targetRenderer: {fileID: 790885793}
-  interactiveEffect: {fileID: 1906348045}
   visualEffect: {fileID: 906496369}
-  mask: {fileID: 1840935681}
 --- !u!1 &1085093957
 GameObject:
   m_ObjectHideFlags: 0
