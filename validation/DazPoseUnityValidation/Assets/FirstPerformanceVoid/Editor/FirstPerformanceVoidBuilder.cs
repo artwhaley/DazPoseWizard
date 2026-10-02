@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using DazPose.Performer;
+using DazPose.Player;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -143,9 +144,17 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 stageSpawn.position = new Vector3(-3f, 0.35f + performer.transform.position.y, 2f);
                 // This is only an editor placement marker; WalkTo never targets the elevated stage.
 
-                Camera camera = CreateCamera(room);
-                RemapSceneReferences(actor, source, sourceChairRoot.transform, chair.transform, seat, camera.transform, across);
-                room.gameObject.AddComponent<FirstPerformanceVoidControls>().Configure(performer, across, nearStage, camera.transform);
+                Transform laraHead = FirstPerformanceVoidPlayerMigration.FindLaraHead(performer);
+                if (laraHead == null) throw new InvalidOperationException("Could not find Lara's animated head bone for FaceViewTarget.");
+                Transform faceViewTarget = FirstPerformanceVoidPlayerMigration.EnsureFaceViewTarget(laraHead);
+                Camera camera = CreateCamera(room, out PlayerController playerController, out Transform headPose);
+                RemapSceneReferences(actor, source, sourceChairRoot.transform, chair.transform, seat, headPose, across);
+                FirstPerformanceVoidPlayerMigration.EnsureViewMarkers(room, camera, faceViewTarget, seat,
+                    out Transform wide, out Transform lara, out Transform loungeView);
+                FirstPerformanceVoidPlayerMigration.RebindGazeTargets(performer, playerController.HeadTransform);
+                FirstPerformanceVoidControls controls = room.gameObject.AddComponent<FirstPerformanceVoidControls>();
+                controls.Configure(performer, across, nearStage, playerController.HeadTransform);
+                controls.ConfigurePlayerView(playerController, wide, lara, loungeView, faceViewTarget);
                 CreateLights(Group("Lights", environment));
                 CreateVolume(Group("SceneVolumes", room));
                 CreateFogBanks(Group("Volumetrics", environment));
@@ -213,19 +222,25 @@ namespace DazPose.FirstPerformanceVoid.Editor
             }
         }
 
-        private static Camera CreateCamera(Transform room)
+        private static Camera CreateCamera(Transform room, out PlayerController playerController, out Transform headPose)
         {
-            Transform rig = Group("MainCamera", room);
-            rig.position = new Vector3(9f, 3.2f, -10f);
+            Transform player = Group("Player", room);
+            player.position = new Vector3(9f, 3.2f, -10f);
+            player.rotation = Quaternion.identity;
+            Transform rig = Group("ViewRig", player);
+            rig.position = player.position;
             rig.rotation = Quaternion.LookRotation(new Vector3(0.1f, 1f, 0.7f) - rig.position);
-            rig.gameObject.tag = "MainCamera";
-            Camera camera = rig.gameObject.AddComponent<Camera>();
+            headPose = Group("HeadPose", rig);
+            GameObject cameraObject = new GameObject("MainCamera");
+            cameraObject.transform.SetParent(headPose, false);
+            cameraObject.tag = "MainCamera";
+            Camera camera = cameraObject.AddComponent<Camera>();
             camera.fieldOfView = 58f;
             camera.nearClipPlane = 0.08f;
             camera.farClipPlane = 70f;
             camera.allowHDR = true;
-            rig.gameObject.AddComponent<AudioListener>();
-            HDAdditionalCameraData hd = rig.gameObject.AddComponent<HDAdditionalCameraData>();
+            cameraObject.AddComponent<AudioListener>();
+            HDAdditionalCameraData hd = cameraObject.AddComponent<HDAdditionalCameraData>();
             hd.clearColorMode = HDAdditionalCameraData.ClearColorMode.Color;
             hd.backgroundColorHDR = new Color(0.001f, 0.001f, 0.002f, 1f);
             hd.volumeLayerMask = 1;
@@ -241,6 +256,10 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 mask.mask[(uint)field] = true;
                 hd.renderingPathCustomFrameSettingsOverrideMask = mask;
             }
+            PlayerView view = player.gameObject.AddComponent<PlayerView>();
+            playerController = player.gameObject.AddComponent<PlayerController>();
+            view.Configure(rig, headPose, camera);
+            playerController.Configure(rig, headPose, camera);
             return camera;
         }
 
