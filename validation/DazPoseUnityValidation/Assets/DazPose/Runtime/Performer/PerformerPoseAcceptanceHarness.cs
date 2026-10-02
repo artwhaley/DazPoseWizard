@@ -173,6 +173,12 @@ namespace DazPose.Performer
             yield return CheckExpressionAcceptance(failures);
             yield return CheckSpeechAcceptance(failures);
 
+            var dissolveRuntimeSelfTestFailures = PerformerDissolveRuntimeSelfTests.Run();
+            failures.AddRange(dissolveRuntimeSelfTestFailures);
+            if (dissolveRuntimeSelfTestFailures.Length == 0)
+                Debug.Log("P0.G3 synthetic dissolve phase, hidden relocation, particle lifecycle, cleanup, and serial-request checks passed.", this);
+            yield return CheckDissolveIntegrationAcceptance(failures);
+
             performer.ClearGaze();
             yield return WaitForGazeRelease(2f);
             var lifeReleaseDeadline = Time.realtimeSinceStartup + 5f;
@@ -512,6 +518,175 @@ namespace DazPose.Performer
             if (previousExpression == null) performer.ClearExpression(0f);
             else performer.Expression(previousExpression, previousExpressionIntensity, 0f);
             yield break;
+        }
+
+        private IEnumerator CheckDissolveIntegrationAcceptance(List<string> failures)
+        {
+            if (!performer.DissolveAvailable)
+            {
+                if (performer.gameObject.scene.name == "FirstPerformanceVoid")
+                    failures.Add("P0.G3 DissolveTo is unavailable in FirstPerformanceVoid. Install/validate the native dissolve shaders and particle-body harness first.");
+                else
+                    Debug.Log("P0.G3 scene integration checks skipped because this scene has no installed dissolve particle body.", this);
+                yield break;
+            }
+
+            PerformerDissolveRig rig = performer.GetComponent<PerformerDissolveRig>();
+            PerformerParticleBody body = rig != null ? rig.ParticleBody : null;
+            SkinnedMeshRenderer renderer = performer.GetComponentInChildren<SkinnedMeshRenderer>(true);
+            if (rig == null || body == null || renderer == null)
+            {
+                failures.Add("P0.G3 integration checks require the dissolve rig, its particle body, and Lara's skinned renderer.");
+                yield break;
+            }
+            if (body.BindingCount != PerformerSurfaceBindingAsset.RequiredBindingCount)
+            {
+                failures.Add("P0.G3 integration check found " + body.BindingCount + " particle bindings instead of 32,768.");
+                yield break;
+            }
+            if (body.IsActive) body.Dispose();
+
+            Vector3 initialPosition = performer.transform.position;
+            Quaternion initialRotation = performer.transform.rotation;
+            PerformerPose originalPose = performer.DesiredPose;
+            PerformerExpression originalExpression = performer.DesiredExpression;
+            float originalExpressionIntensity = performer.DesiredExpressionIntensity;
+            bool originalGaze = performer.HasGazeTarget;
+            Vector3 originalGazeTarget = performer.RawGazeTargetPosition;
+            bool originalUpdateWhenOffscreen = renderer.updateWhenOffscreen;
+            Material[] materialsBefore = renderer.sharedMaterials;
+            PerformerPose[] arrivalPoses = { poseA, poseB };
+
+            for (int cycle = 0; cycle < arrivalPoses.Length; cycle++)
+            {
+                PerformerPose arrivalPose = arrivalPoses[cycle];
+                DissolveCompletionObservation observation = StartDissolveRequest(initialPosition, arrivalPose);
+                if (!performer.IsDissolving || !body.IsActive)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " did not allocate its live particle body synchronously.");
+                if (Mathf.Abs(ReadDissolveProperty(renderer, "_DissolveEnabled") - 1f) > 0.0001f)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " did not enable the permanent dissolve shader through its property block.");
+                if (!renderer.updateWhenOffscreen)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " did not enable offscreen skinned-mesh updates for the live particle sampler.");
+
+                bool reportedInactiveDuringRun = false;
+                bool materialReferenceFailureReported = false;
+                float deadline = Time.realtimeSinceStartup + 8f;
+                while (!observation.Completed && Time.realtimeSinceStartup < deadline)
+                {
+                    if (performer.IsDissolving && !body.IsActive && !reportedInactiveDuringRun)
+                    {
+                        failures.Add("P0.G3 cycle " + (cycle + 1) + " lost its particle body before materialization completed.");
+                        reportedInactiveDuringRun = true;
+                    }
+                    if (!materialReferenceFailureReported && !SameMaterialReferences(materialsBefore, renderer.sharedMaterials))
+                    {
+                        CheckMaterialReferences("P0.G3 cycle " + (cycle + 1), materialsBefore, renderer.sharedMaterials, failures);
+                        materialReferenceFailureReported = true;
+                    }
+                    yield return null;
+                }
+
+                if (!observation.Completed)
+                {
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " did not complete within eight seconds.");
+                    performer.enabled = false;
+                    yield return null;
+                    performer.enabled = true;
+                    yield return null;
+                    yield break;
+                }
+                if (observation.Error != null)
+                {
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " failed: " + observation.Error.GetType().Name + ": " + observation.Error.Message);
+                    yield break;
+                }
+                if (observation.Result != DissolveCompletion.Arrived)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " completed as " + observation.Result + " instead of Arrived.");
+                if (performer.IsDissolving || body.IsActive)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " did not dispose the particle body at completion.");
+                if (Mathf.Abs(ReadDissolveProperty(renderer, "_DissolveEnabled")) > 0.0001f
+                    || Mathf.Abs(ReadDissolveProperty(renderer, "_DissolveProgress")) > 0.0001f)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " left nonzero dissolve shader state after completion.");
+                if (renderer.updateWhenOffscreen != originalUpdateWhenOffscreen)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " did not restore SkinnedMeshRenderer.updateWhenOffscreen.");
+                if (!materialReferenceFailureReported)
+                    CheckMaterialReferences("P0.G3 cycle " + (cycle + 1) + " completion", materialsBefore, renderer.sharedMaterials, failures);
+                if (performer.DesiredPose != arrivalPose || performer.SettledPose != arrivalPose)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " did not keep the requested arrival pose as ordinary persistent pose state.");
+                if (performer.DesiredExpression != originalExpression
+                    || Mathf.Abs(performer.DesiredExpressionIntensity - originalExpressionIntensity) > 0.0001f
+                    || performer.HasGazeTarget != originalGaze
+                    || (originalGaze && Vector3.Distance(performer.RawGazeTargetPosition, originalGazeTarget) > 0.0001f))
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " changed expression or gaze state.");
+                if (Vector3.Distance(performer.transform.position, initialPosition) > PositionTolerance
+                    || Quaternion.Angle(performer.transform.rotation, initialRotation) > RotationToleranceDegrees)
+                    failures.Add("P0.G3 cycle " + (cycle + 1) + " changed the requested root position or preserved facing.");
+            }
+
+            if (originalPose != null && performer.DesiredPose != originalPose)
+            {
+                performer.Pose(originalPose, PoseTransition.Snap);
+                yield return null;
+            }
+        }
+
+        private DissolveCompletionObservation StartDissolveRequest(Vector3 position, PerformerPose arrivalPose)
+        {
+            var observation = new DissolveCompletionObservation();
+            try
+            {
+                var awaiter = performer.DissolveToAsync(position, arrivalPose).GetAwaiter();
+                awaiter.OnCompleted(() =>
+                {
+                    try { observation.Result = awaiter.GetResult(); }
+                    catch (Exception exception) { observation.Error = exception; }
+                    finally { observation.Completed = true; }
+                });
+            }
+            catch (Exception exception)
+            {
+                observation.Error = exception;
+                observation.Completed = true;
+            }
+            return observation;
+        }
+
+        private static void CheckMaterialReferences(string description, Material[] expected, Material[] actual,
+            List<string> failures)
+        {
+            if (expected == null || actual == null || expected.Length != actual.Length)
+            {
+                failures.Add(description + " changed Lara's renderer material slot count.");
+                return;
+            }
+            for (int i = 0; i < expected.Length; i++)
+            {
+                if (expected[i] == actual[i]) continue;
+                failures.Add(description + " replaced renderer material reference in slot " + i + ".");
+                return;
+            }
+        }
+
+        private static bool SameMaterialReferences(Material[] expected, Material[] actual)
+        {
+            if (expected == null || actual == null || expected.Length != actual.Length) return false;
+            for (int i = 0; i < expected.Length; i++)
+                if (expected[i] != actual[i]) return false;
+            return true;
+        }
+
+        private static float ReadDissolveProperty(SkinnedMeshRenderer renderer, string propertyName)
+        {
+            var block = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(block);
+            return block.GetFloat(Shader.PropertyToID(propertyName));
+        }
+
+        private sealed class DissolveCompletionObservation
+        {
+            public bool Completed;
+            public DissolveCompletion Result;
+            public Exception Error;
         }
 
         private async void RunExpressionAwaitableChecks(List<string> failures)
@@ -2290,7 +2465,7 @@ namespace DazPose.Performer
             Status = failures.Count == 0 ? "Acceptance checks passed."
                 : "Acceptance checks found " + failures.Count + " issue(s). See Console.";
             if (failures.Count == 0)
-                Debug.Log("Performer checks passed: pose endpoints and awaitables, breathing, P0.6 gaze, P0.7 attention-life determinism and release, exact blink bindings and composition, blink/gaze/pose independence, downstream pose-state isolation, graph lifecycle, and root placement.", this);
+                Debug.Log("Performer checks passed: pose endpoints and awaitables, breathing, P0.6 gaze, P0.7 attention-life determinism and release, exact blink bindings and composition, blink/gaze/pose independence, downstream pose-state isolation, graph lifecycle, root placement, and P0.G3 dissolve phase/cleanup contracts.", this);
             else
                 Debug.LogError("Performer pose checks failed:\n- " + string.Join("\n- ", failures), this);
         }

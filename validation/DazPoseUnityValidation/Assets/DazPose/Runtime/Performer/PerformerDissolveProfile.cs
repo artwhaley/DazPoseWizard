@@ -24,19 +24,31 @@ namespace DazPose.Performer
 
         [Header("Timing")]
         [SerializeField, Min(0.01f)] private float dissolveOutDuration = 0.45f;
-        [SerializeField, Min(0.01f)] private float transitDuration = 0.65f;
+        [SerializeField, Min(0.01f)] private float transitDuration = 0.70f;
         [SerializeField, Min(0.01f)] private float materializeDuration = 0.45f;
         [SerializeField, Min(0f)] private float transitArcHeight = 0.45f;
-        [SerializeField, Min(0f)] private float effectTailLifetime = 0.65f;
 
         [Header("Native Dissolve Shaders")]
         [SerializeField] private Shader sssDissolveShader;
         [SerializeField] private Shader wetDissolveShader;
         [SerializeField] private Material[] laraRuntimeMaterials;
+        [SerializeField] private Vector4 dissolveFieldParams = new Vector4(3.5f, 0.2f, 17f, 1.15f);
+        [SerializeField, Min(0.0001f)] private float dissolveEdgeWidth = 0.035f;
+        [SerializeField] private Color dissolveEdgeColor = new Color(3f, 0.06f, 4f, 1f);
+        [SerializeField, Min(0f)] private float dissolveEdgeEmission = 4f;
 
-        [Header("Existing DissolveTo Effects")]
-        [SerializeField] private VisualEffectAsset dissolveVfx;
-        [SerializeField] private GameObject transitPrefab;
+        [Header("Reusable Particle Body")]
+        [SerializeField] private VisualEffectAsset particleBodyVfxAsset;
+        [SerializeField] private PerformerSurfaceBindingAsset surfaceBindings;
+        [SerializeField] private Color coreColor = new Color(3f, 1.2f, 3.8f, 1f);
+        [SerializeField] private Color glowColor = new Color(1.25f, 0.04f, 2.5f, 0.75f);
+        [SerializeField, Min(0.0001f)] private float coreSize = 0.01f;
+        [SerializeField, Min(0.0001f)] private float glowSize = 0.03f;
+        [SerializeField, Min(0.0001f)] private float cloudScale = 0.60f;
+        [SerializeField, Min(0f)] private float swirlTurns = 1.25f;
+        [SerializeField, Min(0f)] private float turbulenceStrength = 0.025f;
+
+        [Header("Audio")]
         [SerializeField] private AudioClip departureAudio;
         [SerializeField] private AudioClip arrivalAudio;
         [SerializeField, Range(0.1f, 3f)] private float departurePitch = 0.92f;
@@ -46,12 +58,22 @@ namespace DazPose.Performer
         public float TransitDuration => transitDuration;
         public float MaterializeDuration => materializeDuration;
         public float TransitArcHeight => transitArcHeight;
-        public float EffectTailLifetime => effectTailLifetime;
-        public VisualEffectAsset DissolveVfx => dissolveVfx;
-        public GameObject TransitPrefab => transitPrefab;
         public Shader SssDissolveShader => sssDissolveShader;
         public Shader WetDissolveShader => wetDissolveShader;
         public Material[] LaraRuntimeMaterials => laraRuntimeMaterials;
+        public Vector4 DissolveFieldParams => dissolveFieldParams;
+        public float DissolveEdgeWidth => dissolveEdgeWidth;
+        public Color DissolveEdgeColor => dissolveEdgeColor;
+        public float DissolveEdgeEmission => dissolveEdgeEmission;
+        public VisualEffectAsset ParticleBodyVfxAsset => particleBodyVfxAsset;
+        public PerformerSurfaceBindingAsset SurfaceBindings => surfaceBindings;
+        public Color CoreColor => coreColor;
+        public Color GlowColor => glowColor;
+        public float CoreSize => coreSize;
+        public float GlowSize => glowSize;
+        public float CloudScale => cloudScale;
+        public float SwirlTurns => swirlTurns;
+        public float TurbulenceStrength => turbulenceStrength;
         public AudioClip DepartureAudio => departureAudio;
         public AudioClip ArrivalAudio => arrivalAudio;
         public float DeparturePitch => departurePitch;
@@ -100,6 +122,13 @@ namespace DazPose.Performer
                 }
             }
 
+            if (!IsFinite(dissolveFieldParams) || !IsFinite(dissolveEdgeWidth) || dissolveEdgeWidth <= 0f
+                || !IsFinite(dissolveEdgeColor) || !IsFinite(dissolveEdgeEmission) || dissolveEdgeEmission < 0f)
+            {
+                reason = "Dissolve field and edge parameters must contain finite values with positive width and nonnegative emission.";
+                return false;
+            }
+
             reason = null;
             return true;
         }
@@ -107,23 +136,29 @@ namespace DazPose.Performer
         public bool IsReady(out string reason)
         {
             if (!IsShaderReady(out reason)) return false;
-            if (dissolveVfx == null)
+            if (particleBodyVfxAsset == null)
             {
-                reason = "Assign the existing P0.G dissolve VFX Graph in PerformerDissolveProfile.";
+                reason = "Assign the project-owned PerformerParticleBody VFX Graph in PerformerDissolveProfile. Run the Particle Body Acceptance Harness installer.";
                 return false;
             }
-            if (transitPrefab == null)
+            if (surfaceBindings == null || surfaceBindings.BindingCount != PerformerSurfaceBindingAsset.RequiredBindingCount)
             {
-                reason = "Assign the existing project-owned transit prefab in PerformerDissolveProfile.";
+                reason = "Assign the current 32,768-entry PerformerSurfaceBindingAsset in PerformerDissolveProfile.";
                 return false;
             }
             if (!IsFinite(dissolveOutDuration) || dissolveOutDuration <= 0f
                 || !IsFinite(transitDuration) || transitDuration <= 0f
                 || !IsFinite(materializeDuration) || materializeDuration <= 0f
                 || !IsFinite(transitArcHeight) || transitArcHeight < 0f
-                || !IsFinite(effectTailLifetime) || effectTailLifetime < 0f)
+                || !IsFinite(coreColor) || !IsFinite(glowColor)
+                || !IsFinite(coreSize) || coreSize <= 0f || !IsFinite(glowSize) || glowSize <= 0f
+                || !IsFinite(cloudScale) || cloudScale <= 0f
+                || !IsFinite(swirlTurns) || swirlTurns < 0f
+                || !IsFinite(turbulenceStrength) || turbulenceStrength < 0f
+                || !IsFinite(departurePitch) || departurePitch <= 0f
+                || !IsFinite(arrivalPitch) || arrivalPitch <= 0f)
             {
-                reason = "Dissolve timings must be finite, with positive phase durations and nonnegative arc/tail values.";
+                reason = "Dissolve timing and particle parameters must be finite, with positive durations/sizes and nonnegative arc/swirl/turbulence values.";
                 return false;
             }
 
@@ -138,9 +173,17 @@ namespace DazPose.Performer
             wetDissolveShader = wetShader;
             laraRuntimeMaterials = runtimeMaterials;
         }
+
+        public void ConfigureParticleBodyAssets(VisualEffectAsset graph, PerformerSurfaceBindingAsset bindings)
+        {
+            particleBodyVfxAsset = graph;
+            surfaceBindings = bindings;
+        }
 #endif
 
         private static bool IsWetSlot(int index) => index == EyeMoistureSlot || index == CorneaSlot;
         private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+        private static bool IsFinite(Vector4 value) => IsFinite(value.x) && IsFinite(value.y) && IsFinite(value.z) && IsFinite(value.w);
+        private static bool IsFinite(Color value) => IsFinite(value.r) && IsFinite(value.g) && IsFinite(value.b) && IsFinite(value.a);
     }
 }

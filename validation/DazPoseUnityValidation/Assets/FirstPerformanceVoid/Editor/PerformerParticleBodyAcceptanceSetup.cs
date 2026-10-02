@@ -62,7 +62,18 @@ namespace DazPose.FirstPerformanceVoid.Editor
             if (body.BindingCount != PerformerSurfaceBindingAsset.RequiredBindingCount)
                 throw new InvalidOperationException("The particle body must have exactly 32,768 surface bindings.");
 
-            Debug.Log("PARTICLE_BODY_ACCEPTANCE_SETUP_VALID: Lara renderer, current-topology surface bindings, project-owned VFX graph, and isolated scene controls are assigned. No Play Mode or visual acceptance check was performed.", body);
+            PerformerDissolveProfile profile = Read<PerformerDissolveProfile>(new SerializedObject(performer), "dissolveProfile");
+            if (profile != null)
+            {
+                if (profile.ParticleBodyVfxAsset != body.VisualEffectAsset
+                    || profile.SurfaceBindings != bindings)
+                    throw new InvalidOperationException("The dissolve profile does not reference the installed P0.G2 graph and binding asset. Re-run Install Particle Body Acceptance Harness.");
+                PerformerDissolveRig rig = performer.GetComponent<PerformerDissolveRig>();
+                if (rig != null && rig.ParticleBody != body)
+                    throw new InvalidOperationException("The dissolve rig is not wired to the installed particle body. Re-run Install Particle Body Acceptance Harness.");
+            }
+
+            Debug.Log("PARTICLE_BODY_ACCEPTANCE_SETUP_VALID: Lara renderer, current-topology surface bindings, project-owned VFX graph, and isolated scene controls are assigned. Existing dissolve profile/rig references are also checked when present. No Play Mode or visual acceptance check was performed.", body);
         }
 
         private static void InstallInternal(bool rebuildGraph)
@@ -109,6 +120,25 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 controlsData = new SerializedObject(controls);
                 Require(controlsData, "particleBody").objectReferenceValue = body;
                 controlsData.ApplyModifiedProperties();
+
+                SerializedObject performerData = new SerializedObject(performer);
+                PerformerDissolveProfile profile = Read<PerformerDissolveProfile>(performerData, "dissolveProfile");
+                if (profile != null)
+                {
+                    Undo.RecordObject(profile, "Assign Particle Body Assets to Dissolve Profile");
+                    profile.ConfigureParticleBodyAssets(graph, bindings);
+                    EditorUtility.SetDirty(profile);
+
+                    PerformerDissolveRig rig = performer.GetComponent<PerformerDissolveRig>();
+                    if (rig != null)
+                    {
+                        Undo.RecordObject(rig, "Assign Particle Body to Dissolve Rig");
+                        SerializedObject rigData = new SerializedObject(rig);
+                        Require(rigData, "particleBody").objectReferenceValue = body;
+                        rigData.ApplyModifiedProperties();
+                        EditorUtility.SetDirty(rig);
+                    }
+                }
 
                 EditorUtility.SetDirty(body);
                 EditorUtility.SetDirty(controls);

@@ -34,6 +34,8 @@ namespace DazPose.FirstPerformanceVoid
         private Vector2 panelScrollPosition;
         private bool dissolveShaderAnimating;
         private float dissolveShaderAnimationElapsed;
+        private bool dissolveTestRunning;
+        private string dissolveTestStatus = "Run the P0.G3 DissolveTo acceptance checks in Play Mode.";
         private const float DissolveShaderHalfCycleSeconds = 1f;
 
         public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
@@ -115,7 +117,8 @@ namespace DazPose.FirstPerformanceVoid
             if (firstContact != null) GUILayout.Label("Elapsed: " + firstContact.Elapsed.ToString("F1") + "s");
             GUILayout.Space(5f);
             GUILayout.Label("P0.F TELEPORT", GUI.skin.box);
-            bool teleportEnabled = enabled && !teleportTestRunning && performer != null && performer.TeleportAvailable;
+            bool teleportEnabled = enabled && !teleportTestRunning && performer != null
+                && performer.TeleportAvailable && !performer.IsDissolving;
             GUI.enabled = teleportEnabled && teleportMarkA != null && teleportMarkB != null;
             if (GUILayout.Button("TELEPORT A → B")) RunTeleportTest(teleportMarkB, null);
             GUI.enabled = teleportEnabled && teleportMarkA != null && teleportMarkB != null;
@@ -128,7 +131,7 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.Space(5f);
             GUILayout.Label("P0.G1 DISSOLVE SHADER", GUI.skin.box);
             bool shaderAcceptanceEnabled = enabled && !dissolveShaderAnimating && performer != null
-                && performer.DissolveShaderAcceptanceAvailable;
+                && performer.DissolveShaderAcceptanceAvailable && !performer.IsDissolving;
             GUI.enabled = shaderAcceptanceEnabled;
             if (GUILayout.Button("DISSOLVE SHADER 0%")) SetDissolveShaderAcceptanceState(false, 0f);
             if (GUILayout.Button("DISSOLVE SHADER 25%")) SetDissolveShaderAcceptanceState(true, 0.25f);
@@ -145,8 +148,33 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.Label("Shader: " + dissolveShaderStatus);
 
             GUILayout.Space(5f);
+            GUILayout.Label("P0.G3 DISSOLVE TO", GUI.skin.box);
+            bool atDissolveA = teleportMarkA != null
+                && Vector3.Distance(performer != null ? performer.transform.position : Vector3.zero, teleportMarkA.position) < 0.25f;
+            bool atDissolveB = teleportMarkB != null
+                && Vector3.Distance(performer != null ? performer.transform.position : Vector3.zero, teleportMarkB.position) < 0.25f;
+            PerformerPoseSmokeHarness poseHarness = performer != null
+                ? performer.GetComponent<PerformerPoseSmokeHarness>()
+                : null;
+            PerformerPose dissolveArrivalPose = poseHarness != null ? poseHarness.PoseB : null;
+            bool dissolveEnabled = enabled && !dissolveTestRunning && !dissolveShaderAnimating
+                && performer != null && performer.DissolveAvailable && !performer.IsDissolving
+                && !performer.IsTeleporting && !performer.IsLocomoting
+                && performer.SeatingState == PerformerSeatingState.Standing;
+            GUI.enabled = dissolveEnabled && atDissolveA && teleportMarkB != null;
+            if (GUILayout.Button("DISSOLVE A → B")) RunDissolveTest(teleportMarkB, null);
+            GUI.enabled = dissolveEnabled && atDissolveB && teleportMarkA != null;
+            if (GUILayout.Button("DISSOLVE B → A")) RunDissolveTest(teleportMarkA, null);
+            GUI.enabled = dissolveEnabled && atDissolveA && teleportMarkB != null && dissolveArrivalPose != null;
+            if (GUILayout.Button("DISSOLVE A → B + POSE B")) RunDissolveTest(teleportMarkB, dissolveArrivalPose);
+            GUI.enabled = enabled;
+            GUILayout.Label("DissolveTo: " + dissolveTestStatus);
+            GUILayout.Label("A/B dissolves enable within 0.25 m of the matching TeleportMark. Use P0.F teleport controls to reset position.");
+
+            GUILayout.Space(5f);
             GUILayout.Label("P0.G2 PARTICLE BODY", GUI.skin.box);
-            GUI.enabled = enabled && particleBody != null;
+            GUI.enabled = enabled && particleBody != null && !dissolveTestRunning
+                && (performer == null || !performer.IsDissolving);
             if (GUILayout.Button("PARTICLE BODY — SHOW")) ParticleBodyRequest(particleBody.Show);
             if (GUILayout.Button("PARTICLE BODY — HIDE")) ParticleBodyRequest(particleBody.Hide);
             if (GUILayout.Button("PARTICLE BODY — DETACH")) ParticleBodyRequest(particleBody.Detach);
@@ -158,7 +186,7 @@ namespace DazPose.FirstPerformanceVoid
             if (particleBody != null) GUILayout.Label("Bindings: " + particleBody.BindingCount);
 
             GUILayout.Space(5f);
-            GUI.enabled = enabled && performer != null && performer.IsRuntimeReady;
+            GUI.enabled = enabled && performer != null && performer.IsRuntimeReady && !performer.IsDissolving;
             if (GUILayout.Button("Walk across floor")) Request(() => performer.WalkTo(acrossFloor), "Walking across floor");
             if (GUILayout.Button("Walk near platform")) Request(() => performer.WalkTo(nearPlatform), "Walking beside platform");
             if (GUILayout.Button("Look at camera")) Request(() => performer.LookAt(cameraTarget), "Looking at camera");
@@ -273,6 +301,26 @@ namespace DazPose.FirstPerformanceVoid
                 Debug.LogException(exception, this);
             }
             finally { teleportTestRunning = false; }
+        }
+
+        private async void RunDissolveTest(Transform target, PerformerPose arrivalPose)
+        {
+            dissolveTestRunning = true;
+            string targetName = target != null ? target.name : "destination";
+            dissolveTestStatus = "Dissolving to " + targetName + (arrivalPose != null ? " in " + arrivalPose.name + "…" : "…");
+            try
+            {
+                DissolveCompletion result = await performer.DissolveToAsync(target, arrivalPose);
+                dissolveTestStatus = result == DissolveCompletion.Arrived
+                    ? "Arrived at " + targetName + (arrivalPose != null ? " in " + arrivalPose.name + "." : ".")
+                    : "Performer disabled during dissolve.";
+            }
+            catch (Exception exception)
+            {
+                dissolveTestStatus = "ABORTED — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+            finally { dissolveTestRunning = false; }
         }
 
     }

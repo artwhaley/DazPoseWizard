@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using UnityEngine.VFX;
 
 namespace DazPose.Performer
 {
-    /// <summary>Drives Lara's project-owned dissolve shaders without changing renderer materials.</summary>
+    /// <summary>Drives Lara's permanent dissolve shaders and the one reusable skinned particle body.</summary>
     [DisallowMultipleComponent]
     public sealed class PerformerDissolveRig : MonoBehaviour
     {
@@ -12,34 +11,23 @@ namespace DazPose.Performer
         private static readonly int DissolveProgressId = Shader.PropertyToID("_DissolveProgress");
         private static readonly int DissolveBoundsMinId = Shader.PropertyToID("_DissolveBoundsMin");
         private static readonly int DissolveBoundsSizeId = Shader.PropertyToID("_DissolveBoundsSize");
+        private static readonly int DissolveFieldParamsId = Shader.PropertyToID("_DissolveFieldParams");
+        private static readonly int DissolveEdgeWidthId = Shader.PropertyToID("_DissolveEdgeWidth");
+        private static readonly int DissolveEdgeColorId = Shader.PropertyToID("_DissolveEdgeColor");
+        private static readonly int DissolveEdgeEmissionId = Shader.PropertyToID("_DissolveEdgeEmission");
 
         [SerializeField] private SkinnedMeshRenderer targetRenderer;
-        [SerializeField] private VisualEffect visualEffect;
+        [SerializeField] private PerformerParticleBody particleBody;
 
         private MaterialPropertyBlock _propertyBlock;
-        private bool _originalForceRenderingOff;
-        private bool _hasSavedForceRenderingOff;
         private bool _prepared;
-        private bool _effectTailActive;
-        private float _effectTailRemaining;
-        private GameObject _visualEffectRoot;
-        private bool _originalVisualEffectRootActive;
-        private bool _hasVisualEffectRootState;
-        private GameObject _transitObject;
-        private ParticleSystem[] _transitParticles;
 
         public Vector3 BodyCenter => targetRenderer != null ? targetRenderer.bounds.center : transform.position;
-
-        private void Update()
-        {
-            if (!_effectTailActive) return;
-            _effectTailRemaining -= Time.deltaTime;
-            if (_effectTailRemaining <= 0f) CleanupEffectTail();
-        }
+        public PerformerParticleBody ParticleBody => particleBody;
 
         private void OnDisable()
         {
-            Restore(immediateTransitCleanup: false);
+            Restore();
         }
 
         public bool IsShaderReady(PerformerDissolveProfile profile, out string reason)
@@ -82,16 +70,13 @@ namespace DazPose.Performer
         public bool IsReady(PerformerDissolveProfile profile, out string reason)
         {
             if (!IsShaderReady(profile, out reason)) return false;
-            if (visualEffect == null)
+            if (!profile.IsReady(out reason)) return false;
+            if (particleBody == null)
             {
-                reason = "The existing P0.G DissolveTo sequence needs its VFX Graph component. Shader acceptance itself does not.";
+                reason = "Assign the generated PerformerParticleBody component to the dissolve rig. Run the Particle Body Acceptance Harness installer.";
                 return false;
             }
-            if (profile.DissolveVfx == null || profile.TransitPrefab == null)
-            {
-                reason = "The existing P0.G DissolveTo sequence needs its VFX Graph and transit prefab. Shader acceptance itself does not.";
-                return false;
-            }
+            if (!particleBody.ValidateConfiguration(profile, out reason)) return false;
 
             reason = null;
             return true;
@@ -109,123 +94,117 @@ namespace DazPose.Performer
         internal void SetDissolveProgress(float progress)
         {
             if (targetRenderer == null) return;
+            float value = Mathf.Clamp01(progress);
             MaterialPropertyBlock block = GetPropertyBlock();
-            block.SetFloat(DissolveProgressId, Mathf.Clamp01(progress));
+            block.SetFloat(DissolveProgressId, value);
             SetBounds(block);
             targetRenderer.SetPropertyBlock(block);
+            if (_prepared) particleBody.SetDissolveProgress(value);
         }
 
         internal void Begin(PerformerDissolveProfile profile)
         {
             if (_prepared) throw new InvalidOperationException("The dissolve rig is already in use.");
-            CleanupEffectTail();
             if (!IsReady(profile, out string reason)) throw new InvalidOperationException(reason);
 
-            _originalForceRenderingOff = targetRenderer.forceRenderingOff;
-            _hasSavedForceRenderingOff = true;
-            _visualEffectRoot = visualEffect.transform.parent != null ? visualEffect.transform.parent.gameObject : null;
-            _originalVisualEffectRootActive = _visualEffectRoot != null && _visualEffectRoot.activeSelf;
-            _hasVisualEffectRootState = _visualEffectRoot != null;
             _prepared = true;
             try
             {
-                visualEffect.visualEffectAsset = profile.DissolveVfx;
-                if (_visualEffectRoot != null && !_visualEffectRoot.activeSelf)
-                    _visualEffectRoot.SetActive(true);
-                SetDissolveEnabled(true);
-                SetDissolveProgress(0f);
+                particleBody.BeginDissolve(profile);
+                MaterialPropertyBlock block = GetPropertyBlock();
+                block.SetVector(DissolveFieldParamsId, profile.DissolveFieldParams);
+                block.SetFloat(DissolveEdgeWidthId, profile.DissolveEdgeWidth);
+                block.SetColor(DissolveEdgeColorId, profile.DissolveEdgeColor);
+                block.SetFloat(DissolveEdgeEmissionId, profile.DissolveEdgeEmission);
+                block.SetFloat(DissolveEnabledId, 1f);
+                block.SetFloat(DissolveProgressId, 0f);
+                SetBounds(block);
+                targetRenderer.SetPropertyBlock(block);
             }
             catch
             {
-                Restore(immediateTransitCleanup: true);
+                Restore();
                 throw;
             }
         }
 
-        internal float EvaluateEffectCurve(float normalizedTime) => Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(normalizedTime));
+        internal float EvaluateEffectCurve(float normalizedTime) =>
+            Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(normalizedTime));
 
-        internal void StartDissolveVfx()
+        internal void CompleteDeparture()
         {
-            if (visualEffect == null) return;
-            if (_visualEffectRoot != null && !_visualEffectRoot.activeSelf)
-                _visualEffectRoot.SetActive(true);
-            visualEffect.Play();
+            RequirePrepared();
+            particleBody.CompleteDeparture();
         }
 
-        internal void StopDissolveVfx()
+        internal void BeginTransit(Vector3 destinationCenter)
         {
-            if (visualEffect != null) visualEffect.Stop();
+            RequirePrepared();
+            particleBody.BeginTransit(destinationCenter);
         }
 
-        internal void ForceBodyHidden()
+        internal void SetTransitProgress(float progress)
         {
-            if (targetRenderer != null) targetRenderer.forceRenderingOff = true;
+            RequirePrepared();
+            particleBody.SetTransitProgress(progress);
         }
 
-        internal void RevealBody()
+        internal void BeginMaterialize()
         {
-            if (targetRenderer != null && _hasSavedForceRenderingOff)
-                targetRenderer.forceRenderingOff = _originalForceRenderingOff;
+            RequirePrepared();
+            particleBody.BeginMaterialize();
         }
 
-        internal void StartTransit(GameObject prefab, Vector3 worldPosition)
+        internal void SetMaterializeProgress(float progress)
         {
-            if (prefab == null) throw new InvalidOperationException("The dissolve transit prefab is missing.");
-            DestroyTransit(immediate: true);
-            _transitObject = UnityEngine.Object.Instantiate(prefab, worldPosition, Quaternion.identity);
-            _transitObject.name = "Performer Dissolve Transit";
-            _transitParticles = _transitObject.GetComponentsInChildren<ParticleSystem>(true);
-            foreach (ParticleSystem particles in _transitParticles) particles.Play(true);
+            RequirePrepared();
+            float value = Mathf.Clamp01(progress);
+            particleBody.SetMaterializeProgress(value);
+            SetDissolveProgress(1f - value);
         }
 
-        internal void MoveTransit(Vector3 worldPosition)
+        internal void Finish()
         {
-            if (_transitObject != null) _transitObject.transform.position = worldPosition;
-        }
-
-        internal void StopTransit(float tailLifetime)
-        {
-            float destroyDelay = Mathf.Max(0f, tailLifetime);
-            if (_transitParticles != null)
+            if (targetRenderer != null)
             {
-                foreach (ParticleSystem particles in _transitParticles)
-                {
-                    if (particles == null) continue;
-                    ParticleSystem.MainModule main = particles.main;
-                    destroyDelay = Mathf.Max(destroyDelay, main.startLifetime.constantMax);
-                    particles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-                }
+                MaterialPropertyBlock block = GetPropertyBlock();
+                block.SetFloat(DissolveEnabledId, 0f);
+                block.SetFloat(DissolveProgressId, 0f);
+                SetBounds(block);
+                targetRenderer.SetPropertyBlock(block);
             }
-
-            if (_transitObject != null)
-                UnityEngine.Object.Destroy(_transitObject, destroyDelay);
-        }
-
-        internal void Finish(float effectTailLifetime)
-        {
-            RestoreRendererState();
-            _prepared = false;
-            _effectTailRemaining = Mathf.Max(0f, effectTailLifetime);
-            _effectTailActive = true;
-            if (_effectTailRemaining <= 0f) CleanupEffectTail();
-        }
-
-        internal void Restore(bool immediateTransitCleanup)
-        {
             try
             {
-                StopDissolveVfx();
+                if (particleBody != null) particleBody.FinishDissolve();
             }
             finally
             {
-                try { DestroyTransit(immediateTransitCleanup); }
+                _prepared = false;
+            }
+        }
+
+        internal void Restore()
+        {
+            try
+            {
+                if (targetRenderer != null)
+                {
+                    MaterialPropertyBlock block = GetPropertyBlock();
+                    block.SetFloat(DissolveEnabledId, 0f);
+                    block.SetFloat(DissolveProgressId, 0f);
+                    SetBounds(block);
+                    targetRenderer.SetPropertyBlock(block);
+                }
+            }
+            finally
+            {
+                try
+                {
+                    if (particleBody != null) particleBody.FinishDissolve();
+                }
                 finally
                 {
-                    RestoreRendererState();
                     _prepared = false;
-                    _effectTailActive = false;
-                    _effectTailRemaining = 0f;
-                    RestoreVisualEffectRootState();
                 }
             }
         }
@@ -248,53 +227,10 @@ namespace DazPose.Performer
             block.SetVector(DissolveBoundsSizeId, size);
         }
 
-        private void RestoreRendererState()
+        private void RequirePrepared()
         {
-            if (targetRenderer != null)
-            {
-                if (_hasSavedForceRenderingOff)
-                    targetRenderer.forceRenderingOff = _originalForceRenderingOff;
-                _hasSavedForceRenderingOff = false;
-                MaterialPropertyBlock block = GetPropertyBlock();
-                block.SetFloat(DissolveEnabledId, 0f);
-                block.SetFloat(DissolveProgressId, 0f);
-                SetBounds(block);
-                targetRenderer.SetPropertyBlock(block);
-            }
-        }
-
-        private void RestoreVisualEffectRootState()
-        {
-            if (_hasVisualEffectRootState && _visualEffectRoot != null
-                && _visualEffectRoot.activeSelf != _originalVisualEffectRootActive)
-                _visualEffectRoot.SetActive(_originalVisualEffectRootActive);
-            _visualEffectRoot = null;
-            _hasVisualEffectRootState = false;
-        }
-
-        private void CleanupEffectTail()
-        {
-            if (!_effectTailActive) return;
-            try { StopDissolveVfx(); }
-            finally
-            {
-                _effectTailActive = false;
-                _effectTailRemaining = 0f;
-                RestoreVisualEffectRootState();
-            }
-        }
-
-        private void DestroyTransit(bool immediate)
-        {
-            if (_transitObject == null)
-            {
-                _transitParticles = null;
-                return;
-            }
-            if (immediate && !Application.isPlaying) UnityEngine.Object.DestroyImmediate(_transitObject);
-            else UnityEngine.Object.Destroy(_transitObject);
-            _transitObject = null;
-            _transitParticles = null;
+            if (!_prepared || particleBody == null)
+                throw new InvalidOperationException("The dissolve rig has not begun a particle-backed dissolve.");
         }
     }
 }

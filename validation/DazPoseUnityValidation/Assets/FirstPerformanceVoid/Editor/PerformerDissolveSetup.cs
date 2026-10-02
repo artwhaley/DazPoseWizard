@@ -6,7 +6,6 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.VFX;
 
 namespace DazPose.FirstPerformanceVoid.Editor
 {
@@ -71,6 +70,11 @@ namespace DazPose.FirstPerformanceVoid.Editor
             Material[] runtimeMaterials = CreateRuntimeMaterials(sssShader, wetShader);
             PerformerDissolveProfile profile = FindProfile(performer);
             profile.ConfigureNativeMaterials(sssShader, wetShader, runtimeMaterials);
+            PerformerParticleBody configuredParticleBody = controls.GetComponent<PerformerParticleBody>();
+            if (configuredParticleBody != null && configuredParticleBody.VisualEffectAsset != null
+                && configuredParticleBody.SurfaceBindings != null)
+                profile.ConfigureParticleBodyAssets(configuredParticleBody.VisualEffectAsset,
+                    configuredParticleBody.SurfaceBindings);
             EditorUtility.SetDirty(profile);
 
             Undo.IncrementCurrentGroup();
@@ -83,10 +87,10 @@ namespace DazPose.FirstPerformanceVoid.Editor
 
                 PerformerDissolveRig rig = performer.GetComponent<PerformerDissolveRig>();
                 if (rig == null) rig = Undo.AddComponent<PerformerDissolveRig>(performer.gameObject);
-                VisualEffect visualEffect = performer.GetComponentInChildren<VisualEffect>(true);
+                PerformerParticleBody particleBody = controls.GetComponent<PerformerParticleBody>();
                 SerializedObject rigData = new SerializedObject(rig);
                 rigData.FindProperty("targetRenderer").objectReferenceValue = targetRenderer;
-                rigData.FindProperty("visualEffect").objectReferenceValue = visualEffect;
+                rigData.FindProperty("particleBody").objectReferenceValue = particleBody;
                 rigData.ApplyModifiedProperties();
 
                 SerializedObject performerData = new SerializedObject(performer);
@@ -114,7 +118,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 throw;
             }
 
-            Debug.Log("NATIVE_DISSOLVE_SHADER_ACCEPTANCE_INSTALLED: permanently assigned 16 project-owned Lara materials (14 uDTU SSS, 2 Wet); runtime control uses one MaterialPropertyBlock. Existing INAB variants were left untouched for rollback. No camera, lighting, smoke, environment, or vendor source material was changed.", controls);
+            Debug.Log("NATIVE_DISSOLVE_SHADER_ACCEPTANCE_INSTALLED: permanently assigned 16 project-owned Lara materials (14 uDTU SSS, 2 Wet); runtime control uses one MaterialPropertyBlock. Previous dissolve assets remain in place until final visual acceptance. No camera, lighting, smoke, environment, or vendor source material was changed.", controls);
         }
 
         [MenuItem("Tools/DAZ Pose/First Performance Void/Validate Native Dissolve Shader Setup")]

@@ -41,6 +41,9 @@ namespace DazPose.Performer
 
         internal AudioClip SpeechClipA => speechClipA;
         internal AudioClip SpeechClipB => speechClipB;
+        internal PerformerPose PoseA => poseA;
+        internal PerformerPose PoseB => poseB;
+        internal PerformerPose PoseC => poseC;
 
         private void Reset()
         {

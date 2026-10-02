@@ -13,14 +13,24 @@ MonoBehaviour:
   m_Name: FirstContactDissolveProfile
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerDissolveProfile
   dissolveOutDuration: 0.45
-  transitDuration: 0.65
+  transitDuration: 0.7
   materializeDuration: 0.45
   transitArcHeight: 0.45
-  effectTailLifetime: 0.65
-  dissolveVfx: {fileID: 8926484042661614526, guid: 45004183e02f83d44989badd280fbe1e, type: 3}
-  transitPrefab: {fileID: 4687663386673435297, guid: b1ff3165f6756ba4b90bd5d36d8a6762, type: 3}
   sssDissolveShader: {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
   wetDissolveShader: {fileID: -6465566751694194690, guid: b684dcf5875d44c0a12a25f7bec2d87e, type: 3}
+  dissolveFieldParams: {x: 3.5, y: 0.2, z: 17, w: 1.15}
+  dissolveEdgeWidth: 0.035
+  dissolveEdgeColor: {r: 3, g: 0.06, b: 4, a: 1}
+  dissolveEdgeEmission: 4
+  particleBodyVfxAsset: {fileID: 0}
+  surfaceBindings: {fileID: 0}
+  coreColor: {r: 3, g: 1.2, b: 3.8, a: 1}
+  glowColor: {r: 1.25, g: 0.04, b: 2.5, a: 0.75}
+  coreSize: 0.01
+  glowSize: 0.03
+  cloudScale: 0.6
+  swirlTurns: 1.25
+  turbulenceStrength: 0.025
   laraRuntimeMaterials:
   - {fileID: 2100000, guid: 09c8bbc7920a4dae886e06deee8e5a69, type: 2}
   - {fileID: 2100000, guid: 40469cf7c3234492bd8d4a748a59baef, type: 2}

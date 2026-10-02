@@ -48,6 +48,8 @@ void PerformerParticleBodyUpdate(
         cloudOffset.x * sine + cloudOffset.z * cosine);
     cloudOffset.x = rotatedXZ.x;
     cloudOffset.z = rotatedXZ.y;
+    float resolveCloud = smoothstep(0.75, 1.0, saturate(TransitProgress));
+    cloudOffset *= lerp(1.0, 0.82, resolveCloud);
 
     float wobble = sin(TransitProgress * 6.28318530718 + attributes.seed * 19.0) * TurbulenceStrength;
     float3 turbulence = float3(wobble, sin(wobble * 3.1 + attributes.seed * 7.0), -wobble * 0.7);
@@ -81,12 +83,17 @@ void PerformerParticleBodyUpdate(
     }
     else if (Phase == Reform)
     {
-        float arriveAt = saturate(0.08 + field * 0.78 - 0.06);
-        float localProgress = saturate((MaterializeProgress - arriveAt) / max(1.0 - arriveAt, 0.001));
-        localProgress = smoothstep(0.0, 1.0, localProgress);
+        // The mesh reveals when DissolveProgress (1 - MaterializeProgress) falls below
+        // this surface address. Particles converge shortly before that same threshold.
+        float revealAt = saturate(1.0 - field);
+        float arriveBy = max(0.0, revealAt - min(0.04, revealAt * 0.5));
+        float approachStart = max(0.0, arriveBy - 0.22);
+        float localProgress = smoothstep(approachStart, max(approachStart + 0.001, arriveBy),
+            saturate(MaterializeProgress));
         float3 cloudPosition = DestinationCenter + cloudOffset + turbulence;
         attributes.position = lerp(cloudPosition, surfaceWorld, localProgress);
-        attributes.alpha = 1.0;
+        float fadeEnd = max(revealAt, arriveBy + 0.001);
+        attributes.alpha = 1.0 - smoothstep(arriveBy, fadeEnd, saturate(MaterializeProgress));
     }
     else if (Phase == Hidden)
     {

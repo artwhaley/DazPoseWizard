@@ -85,6 +85,8 @@ namespace DazPose.Performer
 
         public bool IsActive => _effect != null && _surfaceBuffer != null;
         public int BindingCount => surfaceBindings != null ? surfaceBindings.BindingCount : 0;
+        public VisualEffectAsset VisualEffectAsset => visualEffectAsset;
+        public PerformerSurfaceBindingAsset SurfaceBindings => surfaceBindings;
         public string Status { get; private set; } = "Particle body is stopped.";
 
         public bool ValidateConfiguration(out string reason)
@@ -113,6 +115,133 @@ namespace DazPose.Performer
 
             reason = null;
             return true;
+        }
+
+        internal bool ValidateConfiguration(PerformerDissolveProfile profile, out string reason)
+        {
+            if (!ValidateConfiguration(out reason)) return false;
+            if (profile == null)
+            {
+                reason = "Assign a PerformerDissolveProfile before using the particle body for DissolveTo.";
+                return false;
+            }
+            if (targetRenderer.sharedMesh == null)
+            {
+                reason = "The particle body target SkinnedMeshRenderer has no mesh.";
+                return false;
+            }
+            if (profile.ParticleBodyVfxAsset != visualEffectAsset)
+            {
+                reason = "PerformerParticleBody and PerformerDissolveProfile must reference the same generated VFX Graph.";
+                return false;
+            }
+            if (profile.SurfaceBindings != surfaceBindings)
+            {
+                reason = "PerformerParticleBody and PerformerDissolveProfile must reference the same 32,768-entry surface binding asset.";
+                return false;
+            }
+            if (surfaceBindings.BindingCount != PerformerSurfaceBindingAsset.RequiredBindingCount)
+            {
+                reason = "DissolveTo requires exactly 32,768 stable surface bindings.";
+                return false;
+            }
+
+            reason = null;
+            return true;
+        }
+
+        internal void BeginDissolve(PerformerDissolveProfile profile)
+        {
+            if (!ValidateConfiguration(profile, out string reason))
+                throw new InvalidOperationException(reason);
+
+            _transition = Transition.None;
+            _dissolveFieldParams = profile.DissolveFieldParams;
+            coreColor = profile.CoreColor;
+            glowColor = profile.GlowColor;
+            coreSize = profile.CoreSize;
+            glowSize = profile.GlowSize;
+            EnsureCreated(BodyPhase.Departure);
+
+            _sourceCenter = targetRenderer.bounds.center;
+            _destinationCenter = _sourceCenter;
+            SetVector3(SourceCenterId, _sourceCenter);
+            SetVector3(DestinationCenterId, _destinationCenter);
+            SetFloat(DepartureProgressId, 0f);
+            SetFloat(DissolveProgressId, 0f);
+            SetFloat(MaterializeProgressId, 0f);
+            SetFloat(TransitProgressId, 0f);
+            SetFloat(TransitArcHeightId, profile.TransitArcHeight);
+            SetFloat(CloudScaleId, profile.CloudScale);
+            SetFloat(SwirlTurnsId, profile.SwirlTurns);
+            SetFloat(TurbulenceStrengthId, profile.TurbulenceStrength);
+            _effect.SetVector4(DissolveFieldParamsId, _dissolveFieldParams);
+            SetPhase(BodyPhase.Departure);
+            Status = "DissolveTo owns one live 32,768-particle body.";
+        }
+
+        internal void SetDissolveProgress(float progress)
+        {
+            if (!IsActive) throw new InvalidOperationException("The particle body must be active before setting dissolve progress.");
+            progress = Mathf.Clamp01(progress);
+            SetFloat(DepartureProgressId, progress);
+            SetFloat(DissolveProgressId, progress);
+        }
+
+        internal void CompleteDeparture()
+        {
+            if (!IsActive) throw new InvalidOperationException("The particle body is not active.");
+            SetDissolveProgress(1f);
+            _transition = Transition.None;
+            SetPhase(BodyPhase.Detached);
+            Status = "The fully dissolved body remains in the same particle population.";
+        }
+
+        internal void BeginTransit(Vector3 destinationCenter)
+        {
+            if (!IsActive || _phase != BodyPhase.Detached)
+                throw new InvalidOperationException("Particle transit requires a fully detached particle body.");
+            _destinationCenter = destinationCenter;
+            SetVector3(DestinationCenterId, _destinationCenter);
+            SetFloat(TransitProgressId, 0f);
+            SetPhase(BodyPhase.Transit);
+            Status = "The detached particle body is travelling to the evaluated destination pose.";
+        }
+
+        internal void SetTransitProgress(float progress)
+        {
+            if (!IsActive || _phase != BodyPhase.Transit)
+                throw new InvalidOperationException("Particle transit has not started.");
+            SetFloat(TransitProgressId, Mathf.Clamp01(progress));
+        }
+
+        internal void BeginMaterialize()
+        {
+            if (!IsActive || _phase != BodyPhase.Transit)
+                throw new InvalidOperationException("Particle materialization requires the transit phase.");
+            SetFloat(TransitProgressId, 1f);
+            SetFloat(MaterializeProgressId, 0f);
+            SetPhase(BodyPhase.Reform);
+            Status = "The same particles are converging onto Lara's current destination pose.";
+        }
+
+        internal void SetMaterializeProgress(float progress)
+        {
+            if (!IsActive || _phase != BodyPhase.Reform)
+                throw new InvalidOperationException("Particle materialization has not started.");
+            SetFloat(MaterializeProgressId, Mathf.Clamp01(progress));
+        }
+
+        internal void FinishDissolve()
+        {
+            if (IsActive)
+            {
+                SetFloat(DepartureProgressId, 0f);
+                SetFloat(DissolveProgressId, 0f);
+                SetFloat(MaterializeProgressId, 0f);
+                SetFloat(TransitProgressId, 0f);
+            }
+            Dispose();
         }
 
         private void Update()
@@ -300,7 +429,7 @@ namespace DazPose.Performer
             }
         }
 
-        private void EnsureCreated()
+        private void EnsureCreated(BodyPhase initialPhase = BodyPhase.Follow)
         {
             if (_disposed) _disposed = false;
             if (IsActive) return;
@@ -329,7 +458,7 @@ namespace DazPose.Performer
                 _destinationCenter = _sourceCenter;
                 SetVector3(SourceCenterId, _sourceCenter);
                 SetVector3(DestinationCenterId, _destinationCenter);
-                SetPhase(BodyPhase.Follow);
+                SetPhase(initialPhase);
                 _effect.Play();
                 Status = "GPU particle body created with " + surfaceBindings.BindingCount + " bindings.";
             }

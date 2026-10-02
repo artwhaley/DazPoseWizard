@@ -21900,7 +21900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerDissolveRig
   targetRenderer: {fileID: 790885793}
-  visualEffect: {fileID: 906496369}
+  particleBody: {fileID: 0}
 --- !u!1 &1085093957
 GameObject:
   m_ObjectHideFlags: 0
