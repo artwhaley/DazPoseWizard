@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71e1055fe37468390d2fd71f83b826b, type: 3}
+  m_Name: FirstContactDissolveProfile
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerDissolveProfile
+  dissolveOutDuration: 0.45
+  transitDuration: 0.65
+  materializeDuration: 0.45
+  transitArcHeight: 0.45
+  effectTailLifetime: 0.65
+  dissolveVfx: {fileID: 8926484042661614526, guid: 45004183e02f83d44989badd280fbe1e, type: 3}
+  transitPrefab: {fileID: 4687663386673435297, guid: b1ff3165f6756ba4b90bd5d36d8a6762, type: 3}
+  dissolveMaterialVariants:
+  - {fileID: 2100000, guid: 930e07ae93e21414d8842ab936265865, type: 2}
+  - {fileID: 2100000, guid: b6ada2ace24b1d84fbfe641ad1ebd7e2, type: 2}
+  - {fileID: 2100000, guid: 5dc387c74530342468e8836793f9db49, type: 2}
+  - {fileID: 2100000, guid: d4d226fb86bff4043b7f74885f3e11da, type: 2}
+  - {fileID: 2100000, guid: b198c350669e86e4a98b0aca504d2ee0, type: 2}
+  - {fileID: 2100000, guid: e13b2529553b7fd43aa9716888e8a1cc, type: 2}
+  - {fileID: 2100000, guid: c47c8d0ea340a704593e227f224e5c6c, type: 2}
+  - {fileID: 2100000, guid: 3abe4c367d4a23042818d36eb1f7a395, type: 2}
+  - {fileID: 2100000, guid: 9eddab122934ea54ab5eaca65b686733, type: 2}
+  - {fileID: 2100000, guid: 04ca2980c805a8643bb884b80b1bf78d, type: 2}
+  - {fileID: 2100000, guid: c94657e80d5bca64bb424ac291799280, type: 2}
+  - {fileID: 2100000, guid: b4de438efb038a243bdc2cc165423317, type: 2}
+  - {fileID: 2100000, guid: 2ad163f2efcd45e4ca62dc32e18d016f, type: 2}
+  - {fileID: 2100000, guid: eb497fe8a5950df45a268f9bcae933cd, type: 2}
+  - {fileID: 2100000, guid: 67342397f83e1eb4396d540b52f6bc0b, type: 2}
+  - {fileID: 2100000, guid: 5fcba4db169394543ba359db63f6bcdc, type: 2}
+  departureAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
+  arrivalAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
+  departurePitch: 0.92
+  arrivalPitch: 1.08

@@ -43,6 +43,10 @@ namespace DazPose.Performer
         [Header("Teleport")]
         [SerializeField] private PerformerTeleportProfile teleportProfile;
 
+        [Header("Dissolve")]
+        [SerializeField] private PerformerDissolveProfile dissolveProfile;
+        [SerializeField] private PerformerDissolveRig dissolveRig;
+
         [Header("Breathing")]
         [SerializeField] private bool breathingEnabled = true;
         [SerializeField, Range(3f, 24f)] private float breathsPerMinute = 10f;
@@ -106,6 +110,7 @@ namespace DazPose.Performer
         private PerformerBodySourceMixer _bodySourceMixer;
         private PerformerLocomotion _locomotion;
         private PerformerTeleport _teleport;
+        private PerformerDissolve _dissolve;
         private PerformerSeatingLayer _seatingLayer;
         private PerformerSeating _seating;
         private PerformerBreathing _breathing;
@@ -139,6 +144,8 @@ namespace DazPose.Performer
         public bool LocomotionAvailable => _locomotion != null;
         public bool TeleportAvailable => _teleport != null && IsRuntimeReady;
         public bool IsTeleporting => _teleport != null && _teleport.IsTeleporting;
+        public bool DissolveAvailable => _dissolve != null && IsRuntimeReady;
+        public bool IsDissolving => _dissolve != null && _dissolve.IsDissolving;
         public bool IsLocomoting => _locomotion != null && _locomotion.IsLocomoting;
         public PerformerLocomotionState LocomotionState => _locomotion == null
             ? PerformerLocomotionState.Idle : _locomotion.State;
@@ -348,6 +355,7 @@ namespace DazPose.Performer
             _locomotion?.Advance(Time.deltaTime);
             _seating?.Advance(Time.deltaTime);
             _teleport?.Advance(Time.deltaTime);
+            _dissolve?.Advance(Time.deltaTime);
             if (_breathing != null)
             {
                 _breathing.Configure(CreateBreathingSettings());
@@ -449,6 +457,36 @@ namespace DazPose.Performer
             return completion.Awaitable;
         }
 
+        public void DissolveTo(Vector3 worldPosition) => DissolveTo(worldPosition, null);
+
+        public void DissolveTo(Transform target) => DissolveTo(target, null);
+
+        public void DissolveTo(Vector3 worldPosition, PerformerPose arrivalPose) =>
+            RequireDissolveRuntime().DissolveTo(worldPosition, arrivalPose, null);
+
+        public void DissolveTo(Transform target, PerformerPose arrivalPose) =>
+            RequireDissolveRuntime().DissolveTo(target, arrivalPose, null);
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition) =>
+            DissolveToAsync(worldPosition, null);
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Transform target) =>
+            DissolveToAsync(target, null);
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition, PerformerPose arrivalPose)
+        {
+            var completion = new AwaitableCompletionSource<DissolveCompletion>();
+            RequireDissolveRuntime().DissolveTo(worldPosition, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Transform target, PerformerPose arrivalPose)
+        {
+            var completion = new AwaitableCompletionSource<DissolveCompletion>();
+            RequireDissolveRuntime().DissolveTo(target, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
         public void Expression(PerformerExpression expression) => Expression(expression, 1f, defaultExpressionBlendTime);
         public void Expression(PerformerExpression expression, float intensity) => Expression(expression, intensity, defaultExpressionBlendTime);
         public void Expression(PerformerExpression expression, float intensity, float blendTime) =>
@@ -516,8 +554,9 @@ namespace DazPose.Performer
 
         public void WalkTo(Vector3 worldPosition)
         {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
             _seating?.PrepareForWalkRequest();
-            RequireLocomotionRuntime().WalkTo(worldPosition);
+            runtime.WalkTo(worldPosition);
         }
 
         /// <summary>Retain the arrived body pose across an authored movement chain until released.</summary>
@@ -525,20 +564,23 @@ namespace DazPose.Performer
 
         public void WalkTo(Transform target)
         {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
             _seating?.PrepareForWalkRequest();
-            RequireLocomotionRuntime().WalkTo(target);
+            runtime.WalkTo(target);
         }
 
         public Awaitable<LocomotionCompletion> WalkToAsync(Vector3 worldPosition)
         {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
             _seating?.PrepareForWalkRequest();
-            return RequireLocomotionRuntime().WalkToAsync(worldPosition);
+            return runtime.WalkToAsync(worldPosition);
         }
 
         public Awaitable<LocomotionCompletion> WalkToAsync(Transform target)
         {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
             _seating?.PrepareForWalkRequest();
-            return RequireLocomotionRuntime().WalkToAsync(target);
+            return runtime.WalkToAsync(target);
         }
 
         public void SitAt(PerformerSeat seat) => RequireSeatingRuntime().SitAt(seat, null, null);
@@ -821,6 +863,20 @@ namespace DazPose.Performer
                 if (teleportProfile != null)
                     _teleport = new PerformerTeleport(transform, teleportProfile,
                         pose => Pose(pose, PoseTransition.Snap));
+
+                if (dissolveProfile != null && dissolveRig != null)
+                {
+                    if (dissolveProfile.IsReady(out string dissolveReason)
+                        && dissolveRig.IsReady(dissolveProfile, out dissolveReason))
+                    {
+                        _dissolve = new PerformerDissolve(transform, dissolveProfile, dissolveRig,
+                            pose => Pose(pose, PoseTransition.Snap));
+                    }
+                    else
+                    {
+                        Debug.LogWarning("DissolveTo is unavailable: " + dissolveReason, this);
+                    }
+                }
             }
             catch
             {
@@ -895,6 +951,8 @@ namespace DazPose.Performer
         {
             if (IsTeleporting)
                 throw new InvalidOperationException("WalkTo is unavailable while a teleport is in progress.");
+            if (IsDissolving)
+                throw new InvalidOperationException("WalkTo is unavailable while a dissolve is in progress.");
             if (_locomotion == null || _isTearingDown || !isActiveAndEnabled)
             {
                 string setup = locomotionProfile == null
@@ -909,6 +967,8 @@ namespace DazPose.Performer
         {
             if (IsTeleporting)
                 throw new InvalidOperationException("SitAt/StandUp is unavailable while a teleport is in progress.");
+            if (IsDissolving)
+                throw new InvalidOperationException("SitAt/StandUp is unavailable while a dissolve is in progress.");
             if (_seating == null || _isTearingDown || !isActiveAndEnabled)
                 throw new InvalidOperationException("SuccubusPerformer can receive SitAt/StandUp commands only while enabled in Play Mode.");
             return _seating;
@@ -918,6 +978,8 @@ namespace DazPose.Performer
         {
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("SuccubusPerformer can teleport only while its runtime is ready in Play Mode.");
+            if (IsDissolving)
+                throw new InvalidOperationException("TeleportTo is unavailable while a dissolve is in progress.");
             if (_teleport == null)
                 throw new InvalidOperationException("Teleport is unavailable. In Edit Mode, run Tools > DAZ Pose > First Performance Void > Install Teleport Acceptance Harness.");
             if (IsLocomoting)
@@ -927,6 +989,23 @@ namespace DazPose.Performer
             if (_teleport.IsTeleporting)
                 throw new InvalidOperationException("A teleport is already in progress; wait for it to arrive before requesting another.");
             return _teleport;
+        }
+
+        private PerformerDissolve RequireDissolveRuntime()
+        {
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("SuccubusPerformer can dissolve only while its runtime is ready in Play Mode.");
+            if (_dissolve == null)
+                throw new InvalidOperationException("DissolveTo is unavailable. In Edit Mode, run Tools > DAZ Pose > First Performance Void > Install Dissolve Acceptance Harness.");
+            if (IsTeleporting)
+                throw new InvalidOperationException("DissolveTo is unavailable while a teleport is in progress.");
+            if (IsLocomoting)
+                throw new InvalidOperationException("DissolveTo requires Lara to finish locomoting first.");
+            if (SeatingState != PerformerSeatingState.Standing)
+                throw new InvalidOperationException("DissolveTo is available only while Lara is standing.");
+            if (_dissolve.IsDissolving)
+                throw new InvalidOperationException("A dissolve is already in progress; wait for it to arrive before requesting another.");
+            return _dissolve;
         }
 
         private void DestroyRuntime()
@@ -939,6 +1018,8 @@ namespace DazPose.Performer
             }
 
             _isTearingDown = true;
+            _dissolve?.Dispose();
+            _dissolve = null;
             _teleport?.Dispose();
             _teleport = null;
             var speech = _speech;

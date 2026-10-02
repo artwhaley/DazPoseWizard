@@ -95,13 +95,13 @@ namespace INab.Common
 
         public static bool GetFoldoutState(string key, Object gameObject)
         {
-            string fullKey = key + "_" + gameObject.GetInstanceID();
+            string fullKey = key + "_" + gameObject.GetEntityId().ToString();
             return SessionState.GetBool(fullKey, false);
         }
 
         public static void SetFoldoutState(string key, Object gameObject, bool value)
         {
-            string fullKey = key + "_" + gameObject.GetInstanceID();
+            string fullKey = key + "_" + gameObject.GetEntityId().ToString();
             SessionState.SetBool(fullKey, value);
         }
 

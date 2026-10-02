@@ -28,6 +28,8 @@ namespace DazPose.FirstPerformanceVoid
         private string status = "Use the existing performer panel for seating, expressions and speech.";
         private string teleportStatus = "Run Install Teleport Acceptance Harness in Edit Mode.";
         private bool teleportTestRunning;
+        private string dissolveStatus = "Run Install Dissolve Acceptance Harness in Edit Mode.";
+        private bool dissolveTestRunning;
 
         public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
 
@@ -84,6 +86,19 @@ namespace DazPose.FirstPerformanceVoid
             if (GUILayout.Button("TELEPORT B + ARRIVAL POSE")) RunTeleportTest(teleportMarkB, teleportArrivalPose);
             GUI.enabled = enabled;
             GUILayout.Label("Teleport: " + teleportStatus);
+
+            GUILayout.Space(5f);
+            GUILayout.Label("P0.G DISSOLVE", GUI.skin.box);
+            bool dissolveEnabled = enabled && !dissolveTestRunning && performer != null && performer.DissolveAvailable;
+            GUI.enabled = dissolveEnabled && teleportMarkA != null && teleportMarkB != null;
+            if (GUILayout.Button("DISSOLVE A → B")) RunDissolveTest(teleportMarkB, null);
+            GUI.enabled = dissolveEnabled && teleportMarkA != null && teleportMarkB != null;
+            if (GUILayout.Button("DISSOLVE B → A")) RunDissolveTest(teleportMarkA, null);
+            GUI.enabled = dissolveEnabled && teleportMarkB != null && teleportArrivalPose != null;
+            if (GUILayout.Button("DISSOLVE B + ARRIVAL POSE")) RunDissolveTest(teleportMarkB, teleportArrivalPose);
+            GUI.enabled = enabled;
+            GUILayout.Label("Dissolve: " + dissolveStatus);
+
             GUILayout.Space(5f);
             GUI.enabled = enabled && performer != null && performer.IsRuntimeReady;
             if (GUILayout.Button("Walk across floor")) Request(() => performer.WalkTo(acrossFloor), "Walking across floor");
@@ -164,6 +179,26 @@ namespace DazPose.FirstPerformanceVoid
                 Debug.LogException(exception, this);
             }
             finally { teleportTestRunning = false; }
+        }
+
+        private async void RunDissolveTest(Transform target, PerformerPose arrivalPose)
+        {
+            dissolveTestRunning = true;
+            dissolveStatus = "Dissolving…";
+            string targetName = target != null ? target.name : "destination";
+            try
+            {
+                DissolveCompletion result = await performer.DissolveToAsync(target, arrivalPose);
+                dissolveStatus = result == DissolveCompletion.Arrived
+                    ? "Arrived at " + targetName + (arrivalPose != null ? " in " + arrivalPose.name + "." : ".")
+                    : "Performer disabled during dissolve.";
+            }
+            catch (Exception exception)
+            {
+                dissolveStatus = "ABORTED — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+            finally { dissolveTestRunning = false; }
         }
     }
 }
