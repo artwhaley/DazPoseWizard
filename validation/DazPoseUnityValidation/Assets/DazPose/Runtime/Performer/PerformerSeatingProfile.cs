@@ -35,9 +35,9 @@ namespace DazPose.Performer
         public PerformerSeatingMotion CrossLegsEnd => crossLegsEnd;
         public PerformerSeatingMotion BasicIdleLoopCandidate => basicIdleLoopCandidate;
         public float PlaybackSpeed => playbackSpeed;
-        public float BodyBlendSeconds => bodyBlendSeconds;
-        public float CrossLegsExitBlendSeconds => crossLegsExitBlendSeconds;
-        public float FinalBlendSeconds => finalBlendSeconds;
+        public float BodyBlendSeconds => Mathf.Max(0.5f, bodyBlendSeconds);
+        public float CrossLegsExitBlendSeconds => Mathf.Max(0.5f, crossLegsExitBlendSeconds);
+        public float FinalBlendSeconds => Mathf.Max(1f, finalBlendSeconds);
         public float ApproachAlignmentSeconds => approachAlignmentSeconds;
         public float MaximumApproachPositionErrorMeters => maximumApproachPositionErrorMeters;
         public float MaximumApproachFacingErrorDegrees => maximumApproachFacingErrorDegrees;

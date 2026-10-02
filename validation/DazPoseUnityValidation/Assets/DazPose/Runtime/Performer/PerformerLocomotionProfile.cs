@@ -42,9 +42,9 @@ namespace DazPose.Performer
         public float SmallTurnThreshold => smallTurnThreshold;
         public float ArrivalPositionTolerance => arrivalPositionTolerance;
         public float ArrivalHeadingTolerance => arrivalHeadingTolerance;
-        public float BodyBlendSeconds => bodyBlendSeconds;
-        public float IdleToLocomotionBlendSeconds => idleToLocomotionBlendSeconds;
-        public float LocomotionToIdleBlendSeconds => locomotionToIdleBlendSeconds;
+        public float BodyBlendSeconds => Mathf.Max(0.5f, bodyBlendSeconds);
+        public float IdleToLocomotionBlendSeconds => Mathf.Max(0.5f, idleToLocomotionBlendSeconds);
+        public float LocomotionToIdleBlendSeconds => Mathf.Max(1f, locomotionToIdleBlendSeconds);
         public float MaxSteeringDegreesPerSecond => maxSteeringDegreesPerSecond;
         public float MaximumEndpointCorrection => maximumEndpointCorrection;
         public float MaximumStopWarpFraction => maximumStopWarpFraction;

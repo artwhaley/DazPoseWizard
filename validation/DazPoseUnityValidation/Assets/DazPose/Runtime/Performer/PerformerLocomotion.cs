@@ -899,9 +899,30 @@ namespace DazPose.Performer
             _settlingTransformActive = false;
         }
 
+        private bool _holdArrivalPose;
+        private bool _holdSeatingApproachPose;
+
+        public void SetHoldArrivalPose(bool hold)
+        {
+            _holdArrivalPose = hold;
+            UpdateArrivalHold();
+        }
+
+        internal void SetHoldSeatingApproachPose(bool hold)
+        {
+            _holdSeatingApproachPose = hold;
+            UpdateArrivalHold();
+        }
+
+        private void UpdateArrivalHold()
+        {
+            _body.HoldArrivalPose = _holdArrivalPose || _holdSeatingApproachPose;
+            if (!_body.HoldArrivalPose && _state == PerformerLocomotionState.Idle) _body.SetOwnership(false);
+        }
+
         private void CompleteSettlingIfReady()
         {
-            if (_settlingTransformActive || _body.LocomotionWeight > 0.001f) return;
+            if (_settlingTransformActive || (!_body.HoldArrivalPose && _body.LocomotionWeight > 0.001f)) return;
             Request arrived = _request;
             _request = null;
             _state = PerformerLocomotionState.Idle;

@@ -72,6 +72,8 @@ namespace DazPose.Performer
         private Quaternion _alignStartRotation;
         private Vector3 _lastContactError;
         private bool _disposed;
+        private bool _holdsApproachPose;
+        private bool _standingReturnPending;
 
         public PerformerSeatingState State => _state;
         public PerformerSeat CurrentSeat => _currentSeat;
@@ -202,6 +204,11 @@ namespace DazPose.Performer
             if (_disposed) return;
             float dt = Mathf.Max(0f, deltaTime);
             _layer.Advance(dt);
+            // Keep the arrived walking pose underneath until seating fully owns the body.
+            if (_holdsApproachPose && _layer.OwnershipWeight >= 0.9999f)
+                ReleaseApproachPose();
+            if (_standingReturnPending && _layer.OwnershipWeight <= 0.001f)
+                CompleteStandingReturn();
 
             switch (_state)
             {
@@ -240,6 +247,7 @@ namespace DazPose.Performer
                 SitRequest interrupted = _sitRequest;
                 _sitRequest = null;
                 _state = PerformerSeatingState.Standing;
+                ReleaseApproachPose();
                 CompleteSitRequest(interrupted, SeatingCompletion.Superseded);
                 return;
             }
@@ -275,6 +283,7 @@ namespace DazPose.Performer
         {
             if (_disposed) return;
             _disposed = true;
+            ReleaseApproachPose();
             _state = PerformerSeatingState.Standing;
             SitRequest request = _sitRequest;
             _sitRequest = null;
@@ -310,6 +319,11 @@ namespace DazPose.Performer
         private void StartApproach(SitRequest request)
         {
             _layer.PrepareProfile(request.Profile);
+            if (!_holdsApproachPose)
+            {
+                _holdsApproachPose = true;
+                _locomotion.SetHoldSeatingApproachPose(true);
+            }
             _sitRequest = request;
             _currentProfile = request.Profile;
             _approachPosition = request.ApproachPosition;
@@ -329,6 +343,7 @@ namespace DazPose.Performer
                 if (_disposed || !ReferenceEquals(request, _sitRequest)) return;
                 if (result != LocomotionCompletion.Arrived)
                 {
+                    ReleaseApproachPose();
                     _sitRequest = null;
                     _state = PerformerSeatingState.Standing;
                     CompleteSitRequest(request, result == LocomotionCompletion.PerformerDisabled
@@ -341,6 +356,7 @@ namespace DazPose.Performer
             {
                 if (_disposed || !ReferenceEquals(request, _sitRequest)) return;
                 Debug.LogException(exception, _actor);
+                ReleaseApproachPose();
                 _sitRequest = null;
                 _state = PerformerSeatingState.Standing;
                 CompleteSitRequest(request, SeatingCompletion.Failed);
@@ -441,15 +457,10 @@ namespace DazPose.Performer
             }
             else
             {
-                _layer.SetOwnership(false, 0f, true);
-                _lastContactError = Vector3.zero;
-                _currentSeat = null;
-                _currentProfile = null;
-                _state = PerformerSeatingState.Standing;
-                _currentStyle = PerformerSeatedStyle.Basic;
+                // Let the full return-to-standing blend finish, even when the clip ends first.
+                _layer.SetOwnership(false, _currentProfile.FinalBlendSeconds);
                 _motion = null;
-                foreach (var waiter in _standWaiters) waiter.TrySetResult(SeatingCompletion.Standing);
-                _standWaiters.Clear();
+                _standingReturnPending = true;
             }
         }
 
@@ -612,6 +623,25 @@ namespace DazPose.Performer
             if (request == null) return;
             foreach (var waiter in request.Waiters) waiter.TrySetResult(result);
             request.Waiters.Clear();
+        }
+
+        private void ReleaseApproachPose()
+        {
+            if (!_holdsApproachPose) return;
+            _holdsApproachPose = false;
+            _locomotion.SetHoldSeatingApproachPose(false);
+        }
+
+        private void CompleteStandingReturn()
+        {
+            _standingReturnPending = false;
+            _lastContactError = Vector3.zero;
+            _currentSeat = null;
+            _currentProfile = null;
+            _state = PerformerSeatingState.Standing;
+            _currentStyle = PerformerSeatedStyle.Basic;
+            foreach (var waiter in _standWaiters) waiter.TrySetResult(SeatingCompletion.Standing);
+            _standWaiters.Clear();
         }
 
         private static float Smooth01(float value)

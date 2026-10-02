@@ -483,6 +483,9 @@ namespace DazPose.Performer
             RequireLocomotionRuntime().WalkTo(worldPosition);
         }
 
+        /// <summary>Retain the arrived body pose across an authored movement chain until released.</summary>
+        public void SetHoldLocomotionArrivalPose(bool hold) => RequireLocomotionRuntime().SetHoldArrivalPose(hold);
+
         public void WalkTo(Transform target)
         {
             _seating?.PrepareForWalkRequest();

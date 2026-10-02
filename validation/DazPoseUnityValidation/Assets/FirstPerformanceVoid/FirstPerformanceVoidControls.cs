@@ -17,10 +17,13 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform viewMarkLara;
         [SerializeField] private Transform viewMarkLounge;
         [SerializeField] private Transform laraFaceViewTarget;
+        [SerializeField] private FirstContactPerformance firstContact;
         [SerializeField, HideInInspector] private int lightingRevision;
         public int LightingRevision => lightingRevision;
         private ParticleSystem[] smokeEmitters;
         private string status = "Use the existing performer panel for seating, expressions and speech.";
+
+        public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
 
         public void Configure(SuccubusPerformer owner, Transform across, Transform platform, Transform camera)
         {
@@ -48,9 +51,16 @@ namespace DazPose.FirstPerformanceVoid
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(Mathf.Max(454f, Screen.width - 286f), 12f, 274f, 480f),
+            GUILayout.BeginArea(new Rect(Mathf.Max(454f, Screen.width - 286f), 12f, 274f, Mathf.Min(610f, Screen.height - 24f)),
                 "First Performance Void", GUI.skin.window);
             bool enabled = GUI.enabled;
+            GUILayout.Label("FIRST CONTACT", GUI.skin.box);
+            GUI.enabled = enabled && firstContact != null && firstContact.CanRun;
+            if (GUILayout.Button("RUN FIRST CONTACT")) firstContact.Run();
+            GUI.enabled = enabled;
+            GUILayout.Label("Status: " + (firstContact != null ? firstContact.Status : "Run Install First Contact Performance"));
+            if (firstContact != null) GUILayout.Label("Elapsed: " + firstContact.Elapsed.ToString("F1") + "s");
+            GUILayout.Space(5f);
             GUI.enabled = enabled && performer != null && performer.IsRuntimeReady;
             if (GUILayout.Button("Walk across floor")) Request(() => performer.WalkTo(acrossFloor), "Walking across floor");
             if (GUILayout.Button("Walk near platform")) Request(() => performer.WalkTo(nearPlatform), "Walking beside platform");

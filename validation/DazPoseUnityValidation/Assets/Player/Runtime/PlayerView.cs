@@ -44,6 +44,9 @@ namespace DazPose.Player
         private MoveOperation activeMove;
         private OrientationOperation activeOrientation;
 
+        public uint PositionCommandRevision { get; private set; }
+        public uint OrientationCommandRevision { get; private set; }
+
         public bool IsMoving => activeMove != null;
         public bool IsLooking => activeOrientation != null && activeOrientation.Mode == OrientationMode.FiniteLook;
         public bool IsAcquiringTrack => activeOrientation != null && activeOrientation.Mode == OrientationMode.TrackAcquire;
@@ -183,6 +186,8 @@ namespace DazPose.Player
             EnsureOperational();
             settings.Validate();
 
+            ++OrientationCommandRevision;
+
             var previous = activeOrientation;
             var next = new OrientationOperation
             {
@@ -205,6 +210,7 @@ namespace DazPose.Player
         public void StopTracking()
         {
             if (activeOrientation == null || activeOrientation.Mode == OrientationMode.FiniteLook) return;
+            ++OrientationCommandRevision;
             activeOrientation = null;
         }
 
@@ -212,6 +218,8 @@ namespace DazPose.Player
         {
             MoveOperation move = activeMove;
             OrientationOperation orientation = activeOrientation;
+            if (move != null) ++PositionCommandRevision;
+            if (orientation != null) ++OrientationCommandRevision;
             activeMove = null;
             activeOrientation = null;
             Complete(move?.Waiter, PlayerViewCompletion.PlayerDisabled);
@@ -223,6 +231,7 @@ namespace DazPose.Player
         {
             EnsureOperational();
             transition.Validate(nameof(transition));
+            ++PositionCommandRevision;
             MoveOperation previous = activeMove;
             var next = new MoveOperation
             {
@@ -252,6 +261,7 @@ namespace DazPose.Player
         {
             EnsureOperational();
             transition.Validate(nameof(transition));
+            ++OrientationCommandRevision;
             Transform rig = RequireViewRig();
             OrientationOperation previous = activeOrientation;
             var next = new OrientationOperation

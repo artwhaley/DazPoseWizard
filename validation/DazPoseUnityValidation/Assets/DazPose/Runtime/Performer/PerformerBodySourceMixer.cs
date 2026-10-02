@@ -35,6 +35,7 @@ namespace DazPose.Performer
         public float ActivePhase => _activeMotion == null || _activeMotion.DurationSeconds <= 0f
             ? 0f : Mathf.Repeat(ActiveTime / _activeMotion.DurationSeconds, 1f);
         public float LocomotionWeight => _ownershipWeight;
+        public bool HoldArrivalPose { get; set; }
 
         public PerformerBodySourceMixer(Animator animator, PlayableGraph graph, Playable poseSource,
             PerformerLocomotionProfile profile)
@@ -74,6 +75,18 @@ namespace DazPose.Performer
             if (motion == null || !_clips.TryGetValue(motion, out AnimationClipPlayable next))
                 throw new ArgumentException("Motion is not part of the configured locomotion profile.", nameof(motion));
 
+            // A repeated clip is one Playable, not two independent blend inputs.
+            // Blending it against itself would overwrite its weight with zero.
+            if (_active.IsValid() && _activeMotion == motion)
+            {
+                _active.SetTime(Mathf.Clamp01(normalizedTime) * motion.DurationSeconds);
+                _outgoing = default;
+                _outgoingMotion = null;
+                _blendElapsed = _blendDuration = 0f;
+                UpdateMotionBlend();
+                return;
+            }
+
             _outgoing = _active;
             _outgoingMotion = _activeMotion;
             if (_ownershipWeight <= 0.0001f && _ownershipTarget == 0f)
@@ -110,12 +123,13 @@ namespace DazPose.Performer
 
         private void SetOwnership(bool locomotion, float blendSeconds, bool immediate)
         {
+            if (!locomotion && HoldArrivalPose && !immediate) return;
             float target = locomotion ? 1f : 0f;
             if (!immediate && target == _ownershipTarget) return;
             _ownershipStart = _ownershipWeight;
             _ownershipTarget = target;
             _ownershipElapsed = 0f;
-            _ownershipDuration = Mathf.Max(0f, blendSeconds);
+            _ownershipDuration = immediate ? 0f : Mathf.Max(locomotion ? 0.5f : 1f, blendSeconds);
             if (immediate || _ownershipDuration <= 0f) _ownershipWeight = _ownershipTarget;
             SetSourceWeights();
         }

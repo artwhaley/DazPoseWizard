@@ -6,6 +6,8 @@ The Cross Legs body clips share a skeleton-root offset of **(0.000, 0.346, 0.000
 
 Basic seated state: **hold the final `KA_Sit_Start` frame** so downstream pose, breathing, gaze, expressions, and blink remain active. `KA_Idle10_Sit_Loop` is baked only as an audition candidate; this source-only pass cannot claim visual seam acceptance.
 
+Body ownership: facial transforms below `head`, plus the `upperFaceRig`/`lowerJaw` facial subtrees, are excluded from sampling, seam scoring and emitted curves. Head, neck, body and finger animation remain included. No blendshape curves are emitted. Every bake replaces all configured clips in place and clears their previous curves, including facial curves from older bakes.
+
 | Motion | Source | Duration (s) | Root X (m) | Root Y (m) | Root Z (m) | Root yaw (°) | Final pelvis offset (m) |
 |---|---|---:|---:|---:|---:|---:|---:|
 | Sit_Start | `Assets/KAWAII_ANIMATIOMS_100/Assets/Animations/@KA_Sit_Start.FBX` | 3.000 | 0.000 | -0.346 | -0.289 | 0.0 | (0.000, 0.939, -0.097) |
