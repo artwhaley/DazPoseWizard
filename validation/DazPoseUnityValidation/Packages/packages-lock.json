@@ -1,11 +1,12 @@
 {
   "dependencies": {
-    "com.nonpolynomial.buttplug-unity": {
-      "version": "4.0.0",
+    "com.dazpose.buttplug-csharp": {
+      "version": "file:com.dazpose.buttplug-csharp",
       "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.2"
+      }
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",

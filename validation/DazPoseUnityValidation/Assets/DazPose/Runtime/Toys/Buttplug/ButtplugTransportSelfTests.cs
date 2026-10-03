@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Buttplug.Core;
 using Buttplug.Core.Messages;
 
 namespace DazPose.Toys.Buttplug

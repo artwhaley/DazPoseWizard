@@ -1,6 +1,8 @@
 # Toy Control BT.1
 
-BT.1 adds the official Buttplug Unity 4.0.0 package and a scene-level `ToyControl` service. The BT.1 diagnostics are part of the existing First Performance Void runtime panel; no additional test window is created.
+BT.1 uses the official Buttplug C# 5.0.1 runtime assembly in the embedded `com.dazpose.buttplug-csharp` Unity package. The current OpenUPM Buttplug Unity 4.0.0 package bundles an older API that lacks the v4 feature output model, including `OutputType.HwPositionWithDuration`. The embedded package preserves the upstream NuGet license and records the assembly checksum in its README.
+
+The scene-level `ToyControl` service remains separate from Lara and MotionDriver. BT.1 diagnostics are part of the existing First Performance Void runtime panel; no additional test window is created.
 
 ## Offline registry checks
 
