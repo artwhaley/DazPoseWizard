@@ -2,6 +2,7 @@ using System;
 using DazPose.Motion;
 using DazPose.Performer;
 using DazPose.Player;
+using DazPose.Toys;
 using UnityEngine;
 
 namespace DazPose.FirstPerformanceVoid
@@ -19,6 +20,8 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform viewMarkLounge;
         [SerializeField] private Transform laraFaceViewTarget;
         [SerializeField] private FirstContactPerformance firstContact;
+        [Header("Toy / Intiface Acceptance")]
+        [SerializeField] private ToyControlService toyControlService;
         [Header("Magic Vocabulary")]
         [SerializeField] private PerformerMagicCatalog magicCatalog;
         [Header("P0.G2 Particle Body Acceptance")]
@@ -107,6 +110,7 @@ namespace DazPose.FirstPerformanceVoid
         {
             smokeEmitters = GetComponentsInChildren<ParticleSystem>();
             if (particleBody != null) particleBody.ConfigureDebugVisibilityOwner(performer);
+            if (toyControlService == null) toyControlService = FindFirstObjectByType<ToyControlService>();
             if (magicCatalog != null)
                 magicStatus = "Ready; Cast events overlap and Aura follows its live target.";
         }
@@ -158,6 +162,7 @@ namespace DazPose.FirstPerformanceVoid
             if (firstContact != null) GUILayout.Label("Elapsed: " + firstContact.Elapsed.ToString("F1") + "s");
             DrawMagicControls(enabled);
             DrawMotionControls(enabled);
+            DrawToyControls(enabled);
             GUILayout.Space(5f);
             GUILayout.Label("P0.F TELEPORT", GUI.skin.box);
             bool teleportEnabled = enabled && !teleportTestRunning && performer != null
@@ -606,6 +611,107 @@ namespace DazPose.FirstPerformanceVoid
             motionRootTranslationDrift = Vector3.Distance(motionRootStartPosition, performer.transform.position);
             motionRootRotationDrift = Quaternion.Angle(motionRootStartRotation, performer.transform.rotation);
             if (!driver.IsRunning) motionTrackingRoot = false;
+        }
+
+        private void DrawToyControls(bool guiEnabled)
+        {
+            GUILayout.Space(5f);
+            GUILayout.Label("TOYS / INTIFACE — BT.1", GUI.skin.box);
+
+            if (toyControlService == null)
+                toyControlService = FindFirstObjectByType<ToyControlService>();
+
+            ToyControlService toys = toyControlService;
+            if (toys == null)
+            {
+                GUILayout.Label("ToyControl scene service is not present.");
+                GUI.enabled = false;
+                GUILayout.Button("STOP ALL");
+                GUI.enabled = guiEnabled;
+                return;
+            }
+
+            GUI.enabled = guiEnabled;
+            if (GUILayout.Button("STOP ALL")) toys.StopAll();
+
+            GUILayout.Label("Server address");
+            toys.ServerAddress = GUILayout.TextField(toys.ServerAddress);
+            GUILayout.BeginHorizontal();
+            GUI.enabled = guiEnabled && toys.ConnectionState != ToyConnectionState.Connected
+                && toys.ConnectionState != ToyConnectionState.Connecting
+                && toys.ConnectionState != ToyConnectionState.Disconnecting;
+            if (GUILayout.Button("CONNECT")) toys.Connect();
+            GUI.enabled = guiEnabled && toys.ConnectionState != ToyConnectionState.Disconnected
+                && toys.ConnectionState != ToyConnectionState.Disconnecting;
+            if (GUILayout.Button("DISCONNECT")) toys.Disconnect();
+            GUI.enabled = guiEnabled;
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("Backend: " + toys.ConnectionState);
+            GUILayout.Label("Server: " + toys.ServerAddress);
+            GUILayout.Label("Scanning: " + (toys.IsScanning ? "YES" : "NO"));
+            GUILayout.Label("Status: " + toys.StatusMessage);
+            if (!string.IsNullOrEmpty(toys.LastError))
+                GUILayout.Label("Last error: " + toys.LastError);
+
+            GUILayout.BeginHorizontal();
+            GUI.enabled = guiEnabled && toys.IsConnected && !toys.IsScanning;
+            if (GUILayout.Button("START SCAN")) toys.StartScanning();
+            GUI.enabled = guiEnabled && toys.IsConnected && toys.IsScanning;
+            if (GUILayout.Button("STOP SCAN")) toys.StopScanning();
+            GUI.enabled = guiEnabled;
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("CONNECTED DEVICES  (" + toys.ConnectedDevices.Count + ")", GUI.skin.box);
+            if (toys.ConnectedDevices.Count == 0)
+            {
+                GUILayout.Label("No connected devices.");
+            }
+            else
+            {
+                foreach (ToyDevice device in toys.ConnectedDevices)
+                {
+                    string shownName = string.IsNullOrWhiteSpace(device.DisplayName)
+                        ? device.Name : device.DisplayName;
+                    GUILayout.Label(shownName + "  [device " + device.DeviceIndex + "]", GUI.skin.box);
+                    GUILayout.Label("Name: " + device.Name + "    Message gap: "
+                        + device.MessageTimingGapMilliseconds + " ms");
+                    if (device.Features.Count == 0)
+                    {
+                        GUILayout.Label("No features reported.");
+                        continue;
+                    }
+
+                    foreach (ToyFeature feature in device.Features)
+                    {
+                        string description = string.IsNullOrWhiteSpace(feature.Description)
+                            ? "(no description)" : feature.Description;
+                        GUILayout.Label("Feature " + feature.FeatureIndex + ": " + description);
+                        if (feature.Outputs.Count == 0)
+                        {
+                            GUILayout.Label("  No supported outputs.");
+                            continue;
+                        }
+
+                        foreach (ToyOutputRange output in feature.Outputs)
+                        {
+                            string range = output.HasValueRange
+                                ? output.MinimumValue + ".." + output.MaximumValue
+                                : "range unavailable";
+                            GUILayout.Label("  " + output.Capability + "  " + range);
+                            if (output.Capability == ToyOutputCapability.HwPositionWithDuration)
+                            {
+                                GUILayout.Label(output.HasDurationRange
+                                    ? "    Duration " + output.MinimumDurationMilliseconds + ".."
+                                        + output.MaximumDurationMilliseconds + " ms"
+                                    : "    Duration range unavailable");
+                            }
+                        }
+                    }
+                }
+            }
+
+            GUI.enabled = guiEnabled;
         }
 
         private void BeginMotionRootTracking()
