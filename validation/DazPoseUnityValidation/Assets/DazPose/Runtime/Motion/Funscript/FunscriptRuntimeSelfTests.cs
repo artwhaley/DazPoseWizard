@@ -142,6 +142,19 @@ namespace DazPose.Motion
             Check(Near(duplicatePlayback.Position01, 0.3f)
                 && duplicatePlayback.CurrentSegment.FromActionIndex == 3,
                 "last of multiple duplicate targets is active at the exact timestamp", failures);
+
+            FunscriptMotionProgram startsAtZero = Parse(
+                "{\"metadata\":{\"duration\":2},\"actions\":["
+                + "{\"at\":0,\"pos\":10},{\"at\":0,\"pos\":40},{\"at\":1000,\"pos\":80}]}", programs);
+            var zeroStartPlayback = new FunscriptPlayback(startsAtZero);
+            var zeroStartEvents = new List<int>();
+            zeroStartPlayback.SegmentChanged += segment => zeroStartEvents.Add(segment.FromActionIndex);
+            Check(Near(zeroStartPlayback.Position01, 0.4f) && zeroStartPlayback.HasCurrentSegment
+                && zeroStartPlayback.CurrentSegment.FromActionIndex == 1,
+                "reset at a duplicate zero timestamp resolves to its last authored action", failures);
+            zeroStartPlayback.Advance(0.25d);
+            Check(zeroStartEvents.Count == 1 && zeroStartEvents[0] == 1,
+                "playback announces its initial segment on first advancement", failures);
         }
 
         private static void CheckSegmentsAndSeek(List<FunscriptMotionProgram> programs, List<string> failures)

@@ -13,6 +13,7 @@ namespace DazPose.Motion
         private double _timeSeconds;
         private FunscriptSegment _currentSegment;
         private bool _hasCurrentSegment;
+        private bool _segmentAnnouncementPending;
 
         public FunscriptMotionProgram Program => _program;
         public double DurationSeconds => _program.DurationSeconds;
@@ -48,6 +49,7 @@ namespace DazPose.Motion
         {
             ValidateNonnegativeFinite(deltaSeconds, nameof(deltaSeconds));
             if (IsComplete) return;
+            FlushPendingSegmentAnnouncement();
 
             double duration = DurationSeconds;
             if (duration <= 0d)
@@ -103,7 +105,7 @@ namespace DazPose.Motion
         public void Reset()
         {
             _timeSeconds = 0d;
-            _cursor = -1;
+            _cursor = _program.FindLastActionAtOrBefore(0d);
             IsComplete = false;
             UpdateSample(false);
         }
@@ -168,7 +170,12 @@ namespace DazPose.Motion
                 _currentSegment = segment;
                 bool segmentChanged = SetCurrentSegment(segment.FromActionIndex, segment.ToActionIndex);
                 SetCurrentSample(position, velocity);
-                if (notifySegmentChange && segmentChanged) RaiseSegmentChanged(segment);
+                if (notifySegmentChange && (segmentChanged || _segmentAnnouncementPending))
+                {
+                    _segmentAnnouncementPending = false;
+                    RaiseSegmentChanged(segment);
+                }
+                else if (segmentChanged) _segmentAnnouncementPending = true;
                 return;
             }
 
@@ -202,6 +209,14 @@ namespace DazPose.Motion
             _segmentFromIndex = -1;
             _segmentToIndex = -1;
             _currentSegment = default;
+            _segmentAnnouncementPending = false;
+        }
+
+        private void FlushPendingSegmentAnnouncement()
+        {
+            if (!_segmentAnnouncementPending || !_hasCurrentSegment) return;
+            _segmentAnnouncementPending = false;
+            RaiseSegmentChanged(_currentSegment);
         }
 
         private void RaiseSegmentChanged(FunscriptSegment segment)
