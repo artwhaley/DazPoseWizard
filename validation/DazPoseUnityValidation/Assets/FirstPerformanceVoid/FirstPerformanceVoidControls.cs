@@ -152,10 +152,13 @@ namespace DazPose.FirstPerformanceVoid
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(Mathf.Max(12f, Screen.width - 286f), 12f, 274f, Mathf.Min(900f, Screen.height - 24f)),
+            const float panelWidth = 430f;
+            const float rightMargin = 32f;
+            float width = Mathf.Min(panelWidth, Mathf.Max(1f, Screen.width - rightMargin - 12f));
+            GUILayout.BeginArea(new Rect(Mathf.Max(12f, Screen.width - rightMargin - width), 12f, width, Mathf.Min(900f, Screen.height - 24f)),
                 "First Performance Void", GUI.skin.window);
             panelScrollPosition = GUILayout.BeginScrollView(panelScrollPosition,
-                GUILayout.Width(274f), GUILayout.Height(Mathf.Max(160f, Mathf.Min(900f, Screen.height - 54f))));
+                GUILayout.ExpandWidth(true), GUILayout.Height(Mathf.Max(160f, Mathf.Min(900f, Screen.height - 54f))));
             bool enabled = GUI.enabled;
             GUILayout.Label("FIRST CONTACT", GUI.skin.box);
             GUI.enabled = enabled && firstContact != null && firstContact.CanRun;
