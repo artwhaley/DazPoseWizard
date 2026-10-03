@@ -24,6 +24,8 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform teleportMarkA;
         [SerializeField] private Transform teleportMarkB;
         [SerializeField] private PerformerPose teleportArrivalPose;
+        [Header("P0.Gesture Acceptance")]
+        [SerializeField] private PerformerGesture gestureAcceptanceWave;
         [Header("Dissolve Test Timing")]
         [Tooltip("Total seconds for the existing DISSOLVE A/B buttons. All effect phases scale together.")]
         [SerializeField, Min(0.01f)] private float dissolveDurationSeconds = 3f;
@@ -41,7 +43,10 @@ namespace DazPose.FirstPerformanceVoid
         private string dissolveTestStatus = "Run the P0.G3 DissolveTo acceptance checks in Play Mode.";
         private bool visibilityTestRunning;
         private string visibilityTestStatus = "DissolveOut leaves Lara hidden; use a matching IN button to restore her.";
+        private string gestureStatus = "Run Tools > DAZ Pose > Gesture > Generate Gesture Acceptance Assets in Edit Mode.";
         private const float DissolveShaderHalfCycleSeconds = 1f;
+
+        public PerformerGesture GestureAcceptanceWave => gestureAcceptanceWave;
 
         public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
 
@@ -255,6 +260,87 @@ namespace DazPose.FirstPerformanceVoid
             }
 
             GUILayout.Space(5f);
+            GUILayout.Label("P0.GESTURE — ADDITIVE UPPER BODY", GUI.skin.box);
+            bool gestureVisible = enabled && performer != null && performer.IsRuntimeReady
+                && performer.GestureAvailable && gestureAcceptanceWave != null
+                && performer.VisibilityState == PerformerVisibilityState.Visible;
+            GUI.enabled = gestureVisible;
+            if (GUILayout.Button("GESTURE: WAVE"))
+                Request(() => performer.Gesture(gestureAcceptanceWave), "Playing RightHandWave");
+            if (GUILayout.Button("GESTURE: WAVE ASYNC")) RunGestureAsync();
+            if (GUILayout.Button("WAVE TWICE / SUPERSEDE")) RunGestureSupersession();
+            GUI.enabled = gestureVisible && acrossFloor != null && performer.LocomotionAvailable;
+            if (GUILayout.Button("WALK + WAVE"))
+                Request(() => { performer.WalkTo(acrossFloor); performer.Gesture(gestureAcceptanceWave); }, "WalkTo + Gesture");
+            GUI.enabled = gestureVisible && turnToEnabled;
+            if (GUILayout.Button("TURN + WAVE"))
+                Request(() => { performer.TurnTo(CreateTurnTarget(90f)); performer.Gesture(gestureAcceptanceWave); }, "TurnTo + Gesture");
+            GUI.enabled = gestureVisible && poseHarness != null && poseHarness.SeatingTestSeatForAcceptance != null;
+            if (GUILayout.Button("SEATED + WAVE"))
+                Request(() =>
+                {
+                    if (performer.SeatingState == PerformerSeatingState.Standing)
+                        performer.SitAt(poseHarness.SeatingTestSeatForAcceptance);
+                    performer.Gesture(gestureAcceptanceWave);
+                }, "SitAt + Gesture");
+            GUI.enabled = gestureVisible && cameraTarget != null;
+            if (GUILayout.Button("LOOK + WAVE"))
+                Request(() => { performer.LookAt(cameraTarget); performer.Gesture(gestureAcceptanceWave); }, "LookAt + Gesture");
+            GUI.enabled = gestureVisible && poseHarness != null && poseHarness.ExpressionAForAcceptance != null;
+            if (GUILayout.Button("EXPRESSION + WAVE"))
+                Request(() =>
+                {
+                    performer.Expression(poseHarness.ExpressionAForAcceptance);
+                    performer.Gesture(gestureAcceptanceWave);
+                }, "Expression + Gesture");
+            GUI.enabled = gestureVisible && poseHarness != null && poseHarness.SpeechClipA != null;
+            if (GUILayout.Button("SAY + WAVE"))
+                Request(() =>
+                {
+                    performer.Say(poseHarness.SpeechClipA);
+                    performer.Gesture(gestureAcceptanceWave);
+                }, "Say + Gesture");
+            Transform dissolveTarget = GetOppositeDissolveMark();
+            bool dissolveGestureAvailable = gestureVisible && dissolveTarget != null
+                && performer.DissolveAvailable && !performer.IsLocomoting && !performer.IsTeleporting
+                && performer.SeatingState == PerformerSeatingState.Standing && !performer.IsDissolving;
+            GUI.enabled = dissolveGestureAvailable;
+            if (GUILayout.Button("DISSOLVE TO + WAVE"))
+                Request(() =>
+                {
+                    performer.Gesture(gestureAcceptanceWave);
+                    performer.DissolveTo(dissolveTarget, dissolveDurationSeconds);
+                }, "DissolveTo + Gesture");
+            GUI.enabled = dissolveGestureAvailable;
+            if (GUILayout.Button("OUT WHILE WAVING"))
+                Request(() =>
+                {
+                    performer.Gesture(gestureAcceptanceWave);
+                    performer.DissolveOut(dissolveDurationSeconds);
+                }, "DissolveOut while Gesture continues");
+            GUI.enabled = enabled;
+            GUILayout.Label("Status: " + gestureStatus);
+            if (performer != null)
+            {
+                GUILayout.Label("IsGesturing: " + performer.IsGesturing
+                    + "  CurrentGesture: " + (performer.CurrentGesture != null ? performer.CurrentGesture.name : "null")
+                    + "  Progress: " + (performer.GestureProgress * 100f).ToString("F0") + "%"
+                    + "  Available: " + performer.GestureAvailable);
+                GUILayout.Label("Visibility: " + performer.VisibilityState
+                    + "  Locomotion: " + performer.LocomotionState
+                    + "  Seating: " + performer.SeatingState);
+            }
+            if (gestureAcceptanceWave == null)
+                GUILayout.Label("Run Tools > DAZ Pose > Gesture > Generate Gesture Acceptance Assets in Edit Mode.");
+            else if (performer != null && performer.VisibilityState != PerformerVisibilityState.Visible
+                && performer.IsRuntimeReady && performer.GestureAvailable)
+            {
+                GUI.enabled = enabled;
+                if (GUILayout.Button("TRY WAVE WHILE HIDDEN / DISSOLVING (SHOULD REJECT)"))
+                    Request(() => performer.Gesture(gestureAcceptanceWave), "Unexpectedly accepted Gesture outside Visible state");
+            }
+
+            GUILayout.Space(5f);
             GUILayout.Label("Player View", GUI.skin.box);
             GUI.enabled = enabled && playerController != null && viewMarkWide != null;
             if (GUILayout.Button("Move Wide — 2 sec")) PlayerViewRequest(() => playerController.MoveTo(viewMarkWide, 2f), "Moving to wide view");
@@ -320,6 +406,8 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.EndHorizontal();
         }
 
+        public void ConfigureGestureAcceptance(PerformerGesture wave) => gestureAcceptanceWave = wave;
+
         private Vector3 CreateTurnTarget(float signedYaw)
         {
             Vector3 forward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up);
@@ -327,6 +415,54 @@ namespace DazPose.FirstPerformanceVoid
                 throw new InvalidOperationException("The performer has no usable planar forward direction.");
             Vector3 facing = Quaternion.AngleAxis(signedYaw, Vector3.up) * forward.normalized;
             return performer.transform.position + facing * 2f;
+        }
+
+        private Transform GetOppositeDissolveMark()
+        {
+            if (teleportMarkA == null || teleportMarkB == null || performer == null) return null;
+            bool atA = Vector3.Distance(performer.transform.position, teleportMarkA.position) < 0.25f;
+            bool atB = Vector3.Distance(performer.transform.position, teleportMarkB.position) < 0.25f;
+            return atA ? teleportMarkB : atB ? teleportMarkA : null;
+        }
+
+        private async void RunGestureAsync()
+        {
+            gestureStatus = "Waiting for RightHandWave…";
+            try
+            {
+                GestureCompletion result = await performer.GestureAsync(gestureAcceptanceWave);
+                gestureStatus = "WAVE ASYNC completed: " + result + ".";
+            }
+            catch (Exception exception)
+            {
+                gestureStatus = "WAVE ASYNC rejected — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private async void RunGestureSupersession()
+        {
+            gestureStatus = "Starting first Wave; second request will arrive at 40%.";
+            try
+            {
+                Awaitable<GestureCompletion> first = performer.GestureAsync(gestureAcceptanceWave);
+                float delay = Mathf.Max(0.1f, gestureAcceptanceWave.Clip.length * 0.4f);
+                float elapsed = 0f;
+                while (elapsed < delay)
+                {
+                    await Awaitable.NextFrameAsync();
+                    elapsed += Time.deltaTime;
+                }
+                Awaitable<GestureCompletion> second = performer.GestureAsync(gestureAcceptanceWave);
+                GestureCompletion firstResult = await first;
+                GestureCompletion secondResult = await second;
+                gestureStatus = "First: " + firstResult + "; restarted Wave: " + secondResult + ".";
+            }
+            catch (Exception exception)
+            {
+                gestureStatus = "SUPERSEDE test failed — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
         }
 
         private void ParticleBodyRequest(Action command)

@@ -44,6 +44,8 @@ namespace DazPose.Performer
         internal PerformerPose PoseA => poseA;
         internal PerformerPose PoseB => poseB;
         internal PerformerPose PoseC => poseC;
+        internal PerformerSeat SeatingTestSeatForAcceptance => seatingTestSeat;
+        internal PerformerExpression ExpressionAForAcceptance => expressionA;
 
         private void Reset()
         {

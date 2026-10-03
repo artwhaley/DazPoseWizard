@@ -22,6 +22,7 @@ namespace DazPose.Performer
         [SerializeField] private PerformerExpression expressionA = null;
         [SerializeField] private PerformerExpression expressionB = null;
         [SerializeField] private PerformerExpression expressionC = null;
+        [SerializeField] private PerformerGesture gestureAcceptanceWave;
         [SerializeField] private Transform gazeTarget;
 
         private bool _running;
@@ -172,6 +173,7 @@ namespace DazPose.Performer
             yield return CheckAttentionAndBlinkAcceptance(failures);
             yield return CheckExpressionAcceptance(failures);
             yield return CheckSpeechAcceptance(failures);
+            yield return CheckGestureAcceptance(animator, failures);
 
             var dissolveRuntimeSelfTestFailures = PerformerDissolveRuntimeSelfTests.Run();
             failures.AddRange(dissolveRuntimeSelfTestFailures);
@@ -625,6 +627,168 @@ namespace DazPose.Performer
             public bool Completed;
             public LocomotionCompletion Result;
             public Exception Error;
+        }
+
+        private sealed class GestureCompletionObservation
+        {
+            public bool Completed;
+            public GestureCompletion Result;
+            public Exception Error;
+        }
+
+        private IEnumerator CheckGestureAcceptance(Animator animator, List<string> failures)
+        {
+            if (gestureAcceptanceWave == null)
+            {
+                if (performer.gameObject.scene.name == "FirstPerformanceVoid")
+                    failures.Add("P0.Gesture acceptance Wave is missing. Run Tools > DAZ Pose > Gesture > Generate Gesture Acceptance Assets.");
+                else
+                    Debug.Log("P0.Gesture scene checks skipped because no acceptance Wave is assigned.", this);
+                yield break;
+            }
+            if (!gestureAcceptanceWave.IsReady(out string reason))
+            {
+                failures.Add("P0.Gesture acceptance asset is invalid: " + reason);
+                yield break;
+            }
+            if (!performer.GestureAvailable)
+            {
+                failures.Add("P0.Gesture is unavailable. Run Tools > DAZ Pose > Gesture > Generate Gesture Acceptance Assets to assign a valid generated chestLower mask.");
+                yield break;
+            }
+            if (performer.VisibilityState != PerformerVisibilityState.Visible
+                || performer.IsLocomoting || performer.IsTeleporting || performer.IsDissolving)
+            {
+                failures.Add("P0.Gesture automated checks require a visible, stationary performer with no teleport or dissolve in progress.");
+                yield break;
+            }
+
+            Vector3 rootPosition = performer.transform.position;
+            Quaternion rootRotation = performer.transform.rotation;
+            PerformerPose desiredPose = performer.DesiredPose;
+            PerformerPose settledPose = performer.SettledPose;
+            PerformerExpression desiredExpression = performer.DesiredExpression;
+            bool hadGaze = performer.HasGazeTarget;
+            Vector3 gazeTargetPosition = performer.RawGazeTargetPosition;
+            Transform[] lowerBody = FindGestureProtectedBones(animator.transform, failures);
+            Vector3[] lowerPositions = lowerBody.Select(bone => bone.localPosition).ToArray();
+            Quaternion[] lowerRotations = lowerBody.Select(bone => bone.localRotation).ToArray();
+
+            PerformerPoseSmokeHarness smokeHarness = GetComponent<PerformerPoseSmokeHarness>();
+            AudioClip speechClip = smokeHarness != null ? smokeHarness.SpeechClipA : null;
+            if (speechClip != null) performer.Say(speechClip);
+            var completion = new GestureCompletionObservation();
+            ObserveGestureCompletion(completion, gestureAcceptanceWave);
+            if (speechClip != null && (!performer.IsSpeaking || performer.CurrentSpeechClip != speechClip))
+                failures.Add("P0.Gesture interrupted or replaced speech when GestureAsync started.");
+            if (speechClip != null) performer.StopSpeaking();
+            yield return null;
+            if (!performer.IsGesturing || performer.CurrentGesture != gestureAcceptanceWave)
+                failures.Add("P0.Gesture did not publish IsGesturing and CurrentGesture immediately after GestureAsync.");
+            if (performer.GestureProgress < 0f || performer.GestureProgress > 1f)
+                failures.Add("P0.GestureProgress left the normalized 0..1 range.");
+
+            float maximumProgress = performer.GestureProgress;
+            float deadline = Time.realtimeSinceStartup + gestureAcceptanceWave.Clip.length + 4f;
+            while (!completion.Completed && Time.realtimeSinceStartup < deadline)
+            {
+                maximumProgress = Mathf.Max(maximumProgress, performer.GestureProgress);
+                yield return null;
+            }
+            if (!completion.Completed)
+                failures.Add("P0.GestureAsync did not complete before the clip-duration timeout.");
+            else if (completion.Error != null || completion.Result != GestureCompletion.Completed)
+                failures.Add("P0.GestureAsync returned " + completion.Result + (completion.Error != null ? ": " + completion.Error.Message : "."));
+            if (maximumProgress < 0.95f)
+                failures.Add("P0.GestureProgress did not advance through the finite clip.");
+            if (performer.IsGesturing || performer.CurrentGesture != null || performer.GestureProgress != 0f)
+                failures.Add("P0.Gesture did not return to the idle status after its final blend-out.");
+
+            CheckGestureRootAndBaseState(rootPosition, rootRotation, desiredPose, settledPose,
+                desiredExpression, hadGaze, gazeTargetPosition, lowerBody, lowerPositions, lowerRotations, failures,
+                "standalone completion");
+
+            var first = new GestureCompletionObservation();
+            ObserveGestureCompletion(first, gestureAcceptanceWave);
+            float supersedeDeadline = Time.realtimeSinceStartup + gestureAcceptanceWave.Clip.length;
+            while (performer.GestureProgress < 0.4f && Time.realtimeSinceStartup < supersedeDeadline)
+                yield return null;
+            var second = new GestureCompletionObservation();
+            ObserveGestureCompletion(second, gestureAcceptanceWave);
+            yield return null;
+            if (!performer.IsGesturing || performer.CurrentGesture != gestureAcceptanceWave
+                || performer.GestureProgress > 0.25f)
+                failures.Add("P0.Gesture repeated same-asset request did not restart the Wave from its beginning.");
+            deadline = Time.realtimeSinceStartup + gestureAcceptanceWave.Clip.length * 2f + 4f;
+            while ((!first.Completed || !second.Completed) && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            if (!first.Completed || first.Error != null || first.Result != GestureCompletion.Superseded)
+                failures.Add("P0.Gesture first waiter was not resolved as Superseded by the restart.");
+            if (!second.Completed || second.Error != null || second.Result != GestureCompletion.Completed)
+                failures.Add("P0.Gesture restarted action did not resolve its waiter as Completed.");
+            CheckGestureRootAndBaseState(rootPosition, rootRotation, desiredPose, settledPose,
+                desiredExpression, hadGaze, gazeTargetPosition, lowerBody, lowerPositions, lowerRotations, failures,
+                "same-gesture supersession");
+
+            var disabled = new GestureCompletionObservation();
+            ObserveGestureCompletion(disabled, gestureAcceptanceWave);
+            performer.enabled = false;
+            float disableDeadline = Time.realtimeSinceStartup + 2f;
+            while (!disabled.Completed && Time.realtimeSinceStartup < disableDeadline)
+                yield return null;
+            if (!disabled.Completed || disabled.Error != null
+                || disabled.Result != GestureCompletion.PerformerDisabled)
+                failures.Add("P0.Gesture active waiter did not resolve as PerformerDisabled when SuccubusPerformer was disabled.");
+            if (performer.IsGesturing || performer.CurrentGesture != null || performer.GestureProgress != 0f)
+                failures.Add("P0.Gesture state was not cleared when SuccubusPerformer was disabled.");
+
+            performer.enabled = true;
+            yield return null;
+            if (!performer.GestureAvailable || performer.IsGesturing
+                || performer.CurrentGesture != null || performer.GestureProgress != 0f)
+                failures.Add("P0.Gesture finite action was restored or the runtime was unavailable after performer re-enable.");
+        }
+
+        private Transform[] FindGestureProtectedBones(Transform animatorRoot, List<string> failures)
+        {
+            var result = new List<Transform>();
+            foreach (string boneName in new[] { "pelvis", "lThighBend", "rThighBend", "lShin", "rShin", "lFoot", "rFoot" })
+            {
+                Transform[] matches = animatorRoot.GetComponentsInChildren<Transform>(true)
+                    .Where(bone => bone.name == boneName).ToArray();
+                if (matches.Length != 1)
+                    failures.Add("P0.Gesture could not uniquely resolve protected lower-body bone '" + boneName + "'.");
+                else result.Add(matches[0]);
+            }
+            return result.ToArray();
+        }
+
+        private void CheckGestureRootAndBaseState(Vector3 rootPosition, Quaternion rootRotation,
+            PerformerPose desiredPose, PerformerPose settledPose, PerformerExpression desiredExpression,
+            bool hadGaze, Vector3 gazeTargetPosition, Transform[] lowerBody, Vector3[] lowerPositions,
+            Quaternion[] lowerRotations, List<string> failures, string phase)
+        {
+            if (Vector3.Distance(rootPosition, performer.transform.position) > PositionTolerance
+                || Quaternion.Angle(rootRotation, performer.transform.rotation) > RotationToleranceDegrees)
+                failures.Add("P0.Gesture changed actor-root position or rotation during " + phase + ".");
+            if (performer.DesiredPose != desiredPose || performer.SettledPose != settledPose)
+                failures.Add("P0.Gesture changed persistent DesiredPose or SettledPose during " + phase + ".");
+            if (performer.DesiredExpression != desiredExpression)
+                failures.Add("P0.Gesture changed the independent expression during " + phase + ".");
+            if (performer.HasGazeTarget != hadGaze
+                || (hadGaze && Vector3.Distance(performer.RawGazeTargetPosition, gazeTargetPosition) > PositionTolerance))
+                failures.Add("P0.Gesture changed the independent gaze target during " + phase + ".");
+            for (int i = 0; i < lowerBody.Length; i++)
+                if (Vector3.Distance(lowerBody[i].localPosition, lowerPositions[i]) > PositionTolerance
+                    || Quaternion.Angle(lowerBody[i].localRotation, lowerRotations[i]) > RotationToleranceDegrees)
+                    failures.Add("P0.Gesture changed protected lower-body bone '" + lowerBody[i].name + "' during " + phase + ".");
+        }
+
+        private async void ObserveGestureCompletion(GestureCompletionObservation observation, PerformerGesture gesture)
+        {
+            try { observation.Result = await performer.GestureAsync(gesture); }
+            catch (Exception exception) { observation.Error = exception; }
+            finally { observation.Completed = true; }
         }
 
         private static void CheckTurnTo(bool condition, string description, List<string> failures)

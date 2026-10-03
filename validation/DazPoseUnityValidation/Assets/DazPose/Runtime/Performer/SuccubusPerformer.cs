@@ -34,6 +34,9 @@ namespace DazPose.Performer
         [SerializeField, Range(0f, 1f)] private float initialExpressionIntensity = 1f;
         [SerializeField, Min(0f)] private float defaultExpressionBlendTime = 0.25f;
 
+        [Header("Gesture")]
+        [SerializeField] private AvatarMask gestureUpperBodyMask;
+
         [Header("Speech")]
         [SerializeField] private AudioSource speechAudioSource;
 
@@ -114,6 +117,7 @@ namespace DazPose.Performer
         private PerformerDissolve _dissolve;
         private PerformerSeatingLayer _seatingLayer;
         private PerformerSeating _seating;
+        private PerformerGestureLayer _gestureLayer;
         private PerformerBreathing _breathing;
         private PerformerGaze _gaze;
         private PerformerAttentionLife _attentionLife;
@@ -188,6 +192,10 @@ namespace DazPose.Performer
         public float SeatingCrossLegsExitBlendDuration => _seating == null ? 0.5f : _seating.CrossLegsExitBlendDuration;
         public float SeatingOwnershipWeight => _seating == null ? 0f : _seating.OwnershipWeight;
         public Vector3 SeatingContactError => _seating == null ? default : _seating.ContactError;
+        public bool GestureAvailable => IsRuntimeReady && _gestureLayer != null;
+        public bool IsGesturing => _gestureLayer != null && _gestureLayer.IsGesturing;
+        public PerformerGesture CurrentGesture => _gestureLayer != null ? _gestureLayer.CurrentGesture : null;
+        public float GestureProgress => _gestureLayer != null ? _gestureLayer.Progress : 0f;
         public float TransitionProgress => _bodyPose == null ? 0f : _bodyPose.TransitionProgress;
         public PerformerExpression DesiredExpression => _lastDesiredExpression;
         public PerformerExpression SettledExpression => _lastSettledExpression;
@@ -369,6 +377,7 @@ namespace DazPose.Performer
             _bodyPose.Advance(Time.deltaTime);
             _locomotion?.Advance(Time.deltaTime);
             _seating?.Advance(Time.deltaTime);
+            _gestureLayer?.Advance(Time.deltaTime);
             _teleport?.Advance(Time.deltaTime);
             _dissolve?.Advance(Time.deltaTime);
             if (_breathing != null)
@@ -594,6 +603,18 @@ namespace DazPose.Performer
 
         public void ClearExpression() => ClearExpression(defaultExpressionBlendTime);
         public void ClearExpression(float blendTime) => RequestExpression(null, 0f, blendTime, null);
+
+        /// <summary>Plays one finite upper-body action over the current body state.</summary>
+        public void Gesture(PerformerGesture gesture) => RequireGestureRuntime(gesture).Request(gesture, null);
+
+        /// <summary>Plays one finite upper-body action and completes when it fades back to the base pose.</summary>
+        public Awaitable<GestureCompletion> GestureAsync(PerformerGesture gesture)
+        {
+            PerformerGestureLayer runtime = RequireGestureRuntime(gesture);
+            var completion = new AwaitableCompletionSource<GestureCompletion>();
+            runtime.Request(gesture, completion);
+            return completion.Awaitable;
+        }
 
         public void Say(AudioClip clip)
         {
@@ -932,6 +953,18 @@ namespace DazPose.Performer
                 _seatingLayer = new PerformerSeatingLayer(_graph, bodySource);
                 _seating = new PerformerSeating(transform, _locomotion, _seatingLayer);
                 bodySource = _seatingLayer.Output;
+                if (gestureUpperBodyMask != null)
+                {
+                    if (PerformerGestureMaskUtility.IsValidMask(animator, gestureUpperBodyMask, out string gestureMaskReason))
+                    {
+                        _gestureLayer = new PerformerGestureLayer(_graph, bodySource, animator, gestureUpperBodyMask);
+                        bodySource = _gestureLayer.OutputPlayable;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Gesture is unavailable: " + gestureMaskReason, this);
+                    }
+                }
                 _breathing = new PerformerBreathing(animator, _graph, bodySource,
                     _bodyPose, breathingBones, _lastBreathPhase);
                 _breathing.Configure(CreateBreathingSettings());
@@ -1057,6 +1090,20 @@ namespace DazPose.Performer
             if (_speech == null || _isTearingDown || !isActiveAndEnabled)
                 throw new InvalidOperationException("SuccubusPerformer can receive speech commands only while enabled in Play Mode.");
             return _speech;
+        }
+
+        private PerformerGestureLayer RequireGestureRuntime(PerformerGesture gesture)
+        {
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("SuccubusPerformer can receive Gesture commands only while enabled in Play Mode.");
+            if (gesture == null) throw new ArgumentNullException(nameof(gesture));
+            if (!gesture.IsReady(out string reason)) throw new InvalidOperationException(reason);
+            if (_gestureLayer == null)
+                throw new InvalidOperationException("Gesture is unavailable because its generated PerformerUpperBodyGesture mask is missing or invalid. Run Tools > DAZ Pose > Gesture > Generate Gesture Acceptance Assets, or bake a Generic upper-body clip as a Performer Gesture.");
+            if (VisibilityState != PerformerVisibilityState.Visible)
+                throw new InvalidOperationException("A new Gesture can start only while Lara is stably Visible. Current visibility state is "
+                    + VisibilityState + ". Existing gestures continue through dissolve transitions.");
+            return _gestureLayer;
         }
 
         private PerformerLocomotion RequireLocomotionRuntime()
@@ -1247,6 +1294,9 @@ namespace DazPose.Performer
             _attentionLife = null;
             _expression?.Dispose();
             _expression = null;
+
+            _gestureLayer?.Dispose();
+            _gestureLayer = null;
 
             _seatingLayer?.Dispose();
             _seatingLayer = null;
