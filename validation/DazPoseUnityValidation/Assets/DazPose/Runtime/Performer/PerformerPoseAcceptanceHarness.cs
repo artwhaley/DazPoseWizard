@@ -175,6 +175,10 @@ namespace DazPose.Performer
             yield return CheckAttentionAndBlinkAcceptance(failures);
             yield return CheckExpressionAcceptance(failures);
             yield return CheckSpeechAcceptance(failures);
+            var magicRuntimeSelfTestFailures = PerformerMagicRuntimeSelfTests.Run();
+            failures.AddRange(magicRuntimeSelfTestFailures);
+            if (magicRuntimeSelfTestFailures.Length == 0)
+                Debug.Log("Cast/Aura synthetic lifetime, replacement, teardown, and target geometry checks passed.", this);
             yield return CheckGestureAcceptance(animator, failures);
             yield return CheckActionAcceptance(failures);
 

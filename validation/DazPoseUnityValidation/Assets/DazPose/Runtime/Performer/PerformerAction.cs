@@ -10,6 +10,7 @@ namespace DazPose.Performer
     public sealed class PerformerAction : ScriptableObject
     {
         public const float GroundReturnToleranceMeters = 0.02f;
+        private const float DefaultBlendOutSeconds = 0.8f;
 
         [SerializeField] private AnimationClip bodyClip;
         [SerializeField] private AnimationCurve rootX = AnimationCurve.Linear(0f, 0f, 1f, 0f);
@@ -20,7 +21,8 @@ namespace DazPose.Performer
         [SerializeField] private Vector3 nominalDisplacement;
         [SerializeField] private float nominalYawDegrees;
         [SerializeField, Min(0f)] private float blendInSeconds = 0.15f;
-        [SerializeField, Min(0f)] private float blendOutSeconds = 0.20f;
+        [SerializeField, Min(0f), Tooltip("Seconds to blend the full-body Action back to the current persistent body pose.")]
+        private float blendOutSeconds = DefaultBlendOutSeconds;
         [SerializeField] private string sourceAssetPath;
         [SerializeField, TextArea(2, 5)] private string bakeNotes;
 
@@ -144,7 +146,7 @@ namespace DazPose.Performer
 #if UNITY_EDITOR
         public void ConfigureInEditor(AnimationClip clip, AnimationCurve x, AnimationCurve y,
             AnimationCurve z, AnimationCurve yaw, float duration, string source,
-            string notes, float blendIn = 0.15f, float blendOut = 0.20f)
+            string notes, float blendIn = 0.15f, float blendOut = DefaultBlendOutSeconds)
         {
             bodyClip = clip;
             rootX = x;

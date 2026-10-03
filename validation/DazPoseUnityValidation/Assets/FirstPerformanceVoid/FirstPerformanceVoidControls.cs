@@ -18,6 +18,8 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform viewMarkLounge;
         [SerializeField] private Transform laraFaceViewTarget;
         [SerializeField] private FirstContactPerformance firstContact;
+        [Header("Magic Vocabulary")]
+        [SerializeField] private PerformerMagicCatalog magicCatalog;
         [Header("P0.G2 Particle Body Acceptance")]
         [SerializeField] private PerformerParticleBody particleBody;
         [Header("P0.F Teleport Acceptance")]
@@ -46,6 +48,11 @@ namespace DazPose.FirstPerformanceVoid
         private string dissolveTestStatus = "Run the P0.G3 DissolveTo acceptance checks in Play Mode.";
         private bool visibilityTestRunning;
         private string visibilityTestStatus = "DissolveOut leaves Lara hidden; use a matching IN button to restore her.";
+        private int selectedSpellIndex;
+        private int selectedAuraIndex;
+        private bool spellDropdownOpen;
+        private bool auraDropdownOpen;
+        private string magicStatus = "Generate the starter Magic catalog in Edit Mode.";
         private string gestureStatus = "Run Tools > DAZ Pose > Gesture > Generate Gesture Acceptance Assets in Edit Mode.";
         private string actionStatus = "Run Tools > DAZ Pose > Action > Generate Jump for Joy Acceptance Assets in Edit Mode.";
         private const float DissolveShaderHalfCycleSeconds = 1f;
@@ -55,6 +62,12 @@ namespace DazPose.FirstPerformanceVoid
         public PerformerAction DisplacedRecoveryTestAction => displacedRecoveryTestAction;
 
         public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
+
+        public void ConfigureMagicCatalog(PerformerMagicCatalog catalog)
+        {
+            magicCatalog = catalog;
+            magicStatus = catalog != null ? "Ready; Cast events overlap and Aura follows its live target." : "No Magic catalog assigned.";
+        }
 
         public void ConfigureTeleportAcceptance(Transform markA, Transform markB, PerformerPose arrivalPose)
         {
@@ -86,6 +99,8 @@ namespace DazPose.FirstPerformanceVoid
         {
             smokeEmitters = GetComponentsInChildren<ParticleSystem>();
             if (particleBody != null) particleBody.ConfigureDebugVisibilityOwner(performer);
+            if (magicCatalog != null)
+                magicStatus = "Ready; Cast events overlap and Aura follows its live target.";
         }
 
         private void Update()
@@ -132,6 +147,7 @@ namespace DazPose.FirstPerformanceVoid
             GUI.enabled = enabled;
             GUILayout.Label("Status: " + (firstContact != null ? firstContact.Status : "Run Install First Contact Performance"));
             if (firstContact != null) GUILayout.Label("Elapsed: " + firstContact.Elapsed.ToString("F1") + "s");
+            DrawMagicControls(enabled);
             GUILayout.Space(5f);
             GUILayout.Label("P0.F TELEPORT", GUI.skin.box);
             bool teleportEnabled = enabled && !teleportTestRunning && performer != null
@@ -434,6 +450,112 @@ namespace DazPose.FirstPerformanceVoid
             }
             GUILayout.EndScrollView();
             GUILayout.EndArea();
+        }
+
+        private void DrawMagicControls(bool guiEnabled)
+        {
+            GUILayout.Space(5f);
+            GUILayout.Label("CAST + AURA", GUI.skin.box);
+            if (magicCatalog == null)
+            {
+                GUI.enabled = false;
+                GUILayout.Button("SPELL  [catalog not assigned]");
+                GUILayout.Button("AURA  [catalog not assigned]");
+                GUILayout.Button("CAST ON LARA");
+                GUILayout.Button("SET ON LARA");
+                GUILayout.Button("CLEAR AURA");
+                GUI.enabled = guiEnabled;
+                GUILayout.Label(magicStatus);
+                return;
+            }
+
+            var spells = magicCatalog.Spells;
+            var auras = magicCatalog.Auras;
+            if (spells == null || spells.Count == 0 || auras == null || auras.Count == 0)
+            {
+                GUI.enabled = false;
+                GUILayout.Button("SPELL  [empty catalog]");
+                GUILayout.Button("AURA  [empty catalog]");
+                GUI.enabled = guiEnabled;
+                GUILayout.Label("Add at least one Spell and Aura to the assigned catalog.");
+                return;
+            }
+
+            selectedSpellIndex = Mathf.Clamp(selectedSpellIndex, 0, spells.Count - 1);
+            selectedAuraIndex = Mathf.Clamp(selectedAuraIndex, 0, auras.Count - 1);
+            PerformerSpell selectedSpell = spells[selectedSpellIndex];
+            PerformerAura selectedAura = auras[selectedAuraIndex];
+
+            GUI.enabled = guiEnabled;
+            if (GUILayout.Button("SPELL  [" + (selectedSpell != null ? selectedSpell.DisplayName : "Missing Spell")
+                + (spellDropdownOpen ? " ▲]" : " ▼]"))) spellDropdownOpen = !spellDropdownOpen;
+            if (spellDropdownOpen)
+            {
+                for (int i = 0; i < spells.Count; i++)
+                {
+                    PerformerSpell option = spells[i];
+                    GUI.enabled = guiEnabled && option != null;
+                    if (GUILayout.Button((i == selectedSpellIndex ? "• " : "  ")
+                        + (option != null ? option.DisplayName : "Missing Spell")))
+                    {
+                        selectedSpellIndex = i;
+                        spellDropdownOpen = false;
+                    }
+                }
+            }
+
+            selectedSpell = spells[selectedSpellIndex];
+            bool magicReady = performer != null && performer.MagicAvailable && selectedSpell != null
+                && selectedSpell.IsReady(out _);
+            GUI.enabled = guiEnabled && magicReady;
+            if (GUILayout.Button("CAST ON LARA"))
+                Request(() => performer.Cast(selectedSpell), "Casting " + selectedSpell.DisplayName + " on Lara");
+            GUI.enabled = guiEnabled && magicReady && playerController != null;
+            if (GUILayout.Button("CAST ON PLAYER"))
+                Request(() => performer.Cast(selectedSpell, playerController.transform),
+                    "Casting " + selectedSpell.DisplayName + " on Player");
+
+            GUILayout.Space(3f);
+            selectedAura = auras[selectedAuraIndex];
+            GUI.enabled = guiEnabled;
+            if (GUILayout.Button("AURA  [" + (selectedAura != null ? selectedAura.DisplayName : "Missing Aura")
+                + (auraDropdownOpen ? " ▲]" : " ▼]"))) auraDropdownOpen = !auraDropdownOpen;
+            if (auraDropdownOpen)
+            {
+                for (int i = 0; i < auras.Count; i++)
+                {
+                    PerformerAura option = auras[i];
+                    GUI.enabled = guiEnabled && option != null;
+                    if (GUILayout.Button((i == selectedAuraIndex ? "• " : "  ")
+                        + (option != null ? option.DisplayName : "Missing Aura")))
+                    {
+                        selectedAuraIndex = i;
+                        auraDropdownOpen = false;
+                    }
+                }
+            }
+
+            selectedAura = auras[selectedAuraIndex];
+            bool auraReady = performer != null && performer.MagicAvailable && selectedAura != null
+                && selectedAura.IsReady(out _);
+            GUI.enabled = guiEnabled && auraReady;
+            if (GUILayout.Button("SET ON LARA"))
+                Request(() => performer.Aura(selectedAura), "Setting " + selectedAura.DisplayName + " Aura on Lara");
+            GUI.enabled = guiEnabled && auraReady && playerController != null;
+            if (GUILayout.Button("SET ON PLAYER"))
+                Request(() => performer.Aura(selectedAura, playerController.transform),
+                    "Setting " + selectedAura.DisplayName + " Aura on Player");
+            GUI.enabled = guiEnabled && performer != null && performer.MagicAvailable;
+            if (GUILayout.Button("CLEAR AURA")) Request(performer.ClearAura, "Cleared Lara's desired Aura");
+            GUI.enabled = guiEnabled;
+
+            string currentAura = performer != null && performer.HasAura && performer.CurrentAura != null
+                ? performer.CurrentAura.DisplayName + " on "
+                    + (performer.AuraTarget == (performer != null ? performer.transform : null) ? "Lara" : "external target")
+                : "none";
+            GUILayout.Label("Current Aura: " + currentAura);
+            GUILayout.Label("Active Spells: " + (performer != null ? performer.ActiveSpellCount : 0));
+            GUILayout.Label("Magic: " + magicStatus);
         }
 
         private void Request(Action command, string description)

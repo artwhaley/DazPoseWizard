@@ -126,6 +126,9 @@ namespace DazPose.Performer
         private PerformerBlink _blink;
         private PerformerExpressionLayer _expression;
         private PerformerSpeech _speech;
+        private PerformerMagicRuntime _magicRuntime;
+        private PerformerAura _desiredAura;
+        private Transform _desiredAuraTarget;
         private PerformerPose _lastDesiredPose;
         private PerformerPose _lastSettledPose;
         private PerformerPoseSnapshot _neutralPoseState;
@@ -161,6 +164,12 @@ namespace DazPose.Performer
             ? _dissolve.VisibilityState
             : _lastStableHidden ? PerformerVisibilityState.Hidden : PerformerVisibilityState.Visible;
         public bool IsHidden => VisibilityState == PerformerVisibilityState.Hidden;
+        public bool MagicAvailable => Application.isPlaying && isActiveAndEnabled && !_isTearingDown
+            && _magicRuntime != null;
+        public PerformerAura CurrentAura => _desiredAura;
+        public Transform AuraTarget => _desiredAura != null ? _desiredAuraTarget : null;
+        public bool HasAura => _desiredAura != null;
+        public int ActiveSpellCount => _magicRuntime != null ? _magicRuntime.ActiveSpellCount : 0;
         public bool DissolveShaderAcceptanceAvailable => IsRuntimeReady
             && dissolveProfile != null && dissolveRig != null
             && dissolveProfile.IsShaderReady(out _) && dissolveRig.IsShaderReady(dissolveProfile, out _);
@@ -383,6 +392,7 @@ namespace DazPose.Performer
 
         private void Update()
         {
+            _magicRuntime?.Advance(Time.deltaTime);
             _speech?.Advance();
             if (_bodyPose == null) return;
 
@@ -598,6 +608,50 @@ namespace DazPose.Performer
             RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false)
                 .DissolveIn(durationSeconds, completion);
             return completion.Awaitable;
+        }
+
+        /// <summary>Starts a finite VFX event centered on this performer.</summary>
+        public void Cast(PerformerSpell spell) => Cast(spell, transform);
+
+        /// <summary>Starts a finite VFX event that follows the supplied Transform.</summary>
+        public void Cast(PerformerSpell spell, Transform target)
+        {
+            if (spell == null) throw new ArgumentNullException(nameof(spell));
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            RequireMagicRuntime().Cast(spell, target, null);
+        }
+
+        public Awaitable<SpellCompletion> CastAsync(PerformerSpell spell) => CastAsync(spell, transform);
+
+        public Awaitable<SpellCompletion> CastAsync(PerformerSpell spell, Transform target)
+        {
+            if (spell == null) throw new ArgumentNullException(nameof(spell));
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            var completion = new AwaitableCompletionSource<SpellCompletion>();
+            RequireMagicRuntime().Cast(spell, target, result => completion.TrySetResult(result));
+            return completion.Awaitable;
+        }
+
+        /// <summary>Sets a persistent VFX state centered on this performer.</summary>
+        public void Aura(PerformerAura aura) => Aura(aura, transform);
+
+        /// <summary>Sets a persistent VFX state that follows the supplied Transform.</summary>
+        public void Aura(PerformerAura aura, Transform target)
+        {
+            if (aura == null) throw new ArgumentNullException(nameof(aura));
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            PerformerMagicRuntime runtime = RequireMagicRuntime();
+            runtime.SetAura(aura, target);
+            _desiredAura = aura;
+            _desiredAuraTarget = target;
+        }
+
+        /// <summary>Fades out and clears this performer's one persistent Aura.</summary>
+        public void ClearAura()
+        {
+            RequireMagicRuntime().ClearAura();
+            _desiredAura = null;
+            _desiredAuraTarget = null;
         }
 
         public void Expression(PerformerExpression expression) => Expression(expression, 1f, defaultExpressionBlendTime);
@@ -969,6 +1023,7 @@ namespace DazPose.Performer
                 }
                 speechAudioSource = ResolveSpeechAudioSource();
                 _speech = new PerformerSpeech(speechAudioSource);
+                _magicRuntime = new PerformerMagicRuntime(transform, OnMagicAuraTargetLost);
 
                 _graph = PlayableGraph.Create("Succubus Performer - " + name);
                 _graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
@@ -1059,6 +1114,8 @@ namespace DazPose.Performer
                         Debug.LogWarning("DissolveTo is unavailable: " + dissolveReason, this);
                     }
                 }
+
+                RestoreDesiredAura();
             }
             catch
             {
@@ -1339,6 +1396,8 @@ namespace DazPose.Performer
             }
 
             _isTearingDown = true;
+            _magicRuntime?.Dispose();
+            _magicRuntime = null;
             _dissolve?.Dispose();
             _dissolve = null;
             _isDissolveShaderAcceptanceActive = false;
@@ -1395,6 +1454,48 @@ namespace DazPose.Performer
                 animator.applyRootMotion = _savedApplyRootMotion;
                 _hasSavedApplyRootMotion = false;
             }
+        }
+
+        private PerformerMagicRuntime RequireMagicRuntime()
+        {
+            if (!Application.isPlaying || !isActiveAndEnabled || _isTearingDown || _magicRuntime == null)
+                throw new InvalidOperationException("SuccubusPerformer can receive Cast/Aura commands only while enabled in Play Mode.");
+            return _magicRuntime;
+        }
+
+        private void RestoreDesiredAura()
+        {
+            if (_desiredAura == null) return;
+            if (_desiredAuraTarget == null)
+            {
+                _desiredAura = null;
+                _desiredAuraTarget = null;
+                return;
+            }
+            if (!_desiredAura.IsReady(out string reason))
+            {
+                Debug.LogWarning("Persistent Aura was not restored: " + reason, this);
+                _desiredAura = null;
+                _desiredAuraTarget = null;
+                return;
+            }
+            try
+            {
+                _magicRuntime.SetAura(_desiredAura, _desiredAuraTarget);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning("Persistent Aura was not restored: " + exception.Message, this);
+                _desiredAura = null;
+                _desiredAuraTarget = null;
+            }
+        }
+
+        private void OnMagicAuraTargetLost(PerformerAura aura, Transform target)
+        {
+            if (!ReferenceEquals(_desiredAura, aura) || !ReferenceEquals(_desiredAuraTarget, target)) return;
+            _desiredAura = null;
+            _desiredAuraTarget = null;
         }
 
         private void OnValidate()

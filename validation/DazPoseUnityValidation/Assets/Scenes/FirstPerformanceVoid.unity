@@ -7216,6 +7216,8 @@ MonoBehaviour:
   teleportMarkB: {fileID: 412335443}
   teleportArrivalPose: {fileID: 11400000, guid: 7f06352d680590c4b8d282cdb165d3ec, type: 2}
   gestureAcceptanceWave: {fileID: 11400000, guid: daefd27735707864eb82e99b0f80fbcf, type: 2}
+  jumpForJoyAction: {fileID: 11400000, guid: 5db26fe1fdabd924082439f11356cbc3, type: 2}
+  displacedRecoveryTestAction: {fileID: 11400000, guid: 2ec759a7518e5aa468a4a0275b778e36, type: 2}
   dissolveDurationSeconds: 3
   lightingRevision: 5
 --- !u!4 &407646200
@@ -20919,6 +20921,8 @@ MonoBehaviour:
   expressionB: {fileID: 0}
   expressionC: {fileID: 0}
   gestureAcceptanceWave: {fileID: 11400000, guid: daefd27735707864eb82e99b0f80fbcf, type: 2}
+  actionAcceptanceJumpForJoy: {fileID: 11400000, guid: 5db26fe1fdabd924082439f11356cbc3, type: 2}
+  actionAcceptanceDisplacedTest: {fileID: 11400000, guid: 2ec759a7518e5aa468a4a0275b778e36, type: 2}
   gazeTarget: {fileID: 174019229}
 --- !u!114 &1080846344
 MonoBehaviour:
