@@ -672,6 +672,27 @@ namespace DazPose.Performer
             return runtime.WalkToAsync(target);
         }
 
+        /// <summary>Turn the performer's body in place toward a world-space point.</summary>
+        public void TurnTo(Transform target)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            RequireTurnRuntime().TurnTo(target);
+        }
+
+        /// <summary>Turn the performer's body in place toward a world-space point.</summary>
+        public void TurnTo(Vector3 worldPosition) => RequireTurnRuntime().TurnTo(worldPosition);
+
+        /// <summary>Turn the performer's body in place toward a snapshot of the target position.</summary>
+        public Awaitable<LocomotionCompletion> TurnToAsync(Transform target)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            return RequireTurnRuntime().TurnToAsync(target);
+        }
+
+        /// <summary>Turn the performer's body in place toward a world-space point.</summary>
+        public Awaitable<LocomotionCompletion> TurnToAsync(Vector3 worldPosition) =>
+            RequireTurnRuntime().TurnToAsync(worldPosition);
+
         public void SitAt(PerformerSeat seat) => RequireSeatingRuntime().SitAt(seat, null, null);
 
         public void SitAt(PerformerSeat seat, PerformerSeatedStyle style) =>
@@ -1052,6 +1073,24 @@ namespace DazPose.Performer
                     : "SuccubusPerformer locomotion is available only while enabled in Play Mode and after its profile has initialized.";
                 throw new InvalidOperationException("SuccubusPerformer cannot receive WalkTo commands. " + setup);
             }
+            return _locomotion;
+        }
+
+        private PerformerLocomotion RequireTurnRuntime()
+        {
+            RequireVisibleForWorldCommands("TurnTo");
+            if (!IsRuntimeReady || _locomotion == null)
+                throw new InvalidOperationException("SuccubusPerformer can receive TurnTo commands only while its locomotion runtime is ready in Play Mode.");
+            if (IsTeleporting)
+                throw new InvalidOperationException("TurnTo is unavailable while a teleport is in progress.");
+            if (IsDissolving)
+                throw new InvalidOperationException("TurnTo is unavailable while a dissolve is in progress.");
+            if (_isDissolveShaderAcceptanceActive)
+                throw new InvalidOperationException("TurnTo is unavailable while shader-only dissolve acceptance is active.");
+            if (SeatingState != PerformerSeatingState.Standing)
+                throw new InvalidOperationException("TurnTo is available only while Lara is standing; it does not interrupt seating or stand Lara up.");
+            if (_locomotion.IsLocomoting)
+                throw new InvalidOperationException("TurnTo requires locomotion to be idle; wait for the current locomotion request to finish.");
             return _locomotion;
         }
 

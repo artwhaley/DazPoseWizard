@@ -229,6 +229,32 @@ namespace DazPose.FirstPerformanceVoid
             GUI.enabled = enabled;
 
             GUILayout.Space(5f);
+            GUILayout.Label("P0 TURN TO — BODY FACING", GUI.skin.box);
+            bool turnToEnabled = enabled && performer != null && performer.IsRuntimeReady
+                && performer.LocomotionAvailable && performer.VisibilityState == PerformerVisibilityState.Visible
+                && performer.SeatingState == PerformerSeatingState.Standing && !performer.IsLocomoting
+                && !performer.IsTeleporting && !performer.IsDissolving
+                && !performer.IsDissolveShaderAcceptanceActive;
+            DrawTurnToPair("0° Forward", 0f, "10° Right", 10f, turnToEnabled);
+            DrawTurnToPair("25° Left", -25f, "35° Right", 35f, turnToEnabled);
+            DrawTurnToPair("60° Left", -60f, "60° Right", 60f, turnToEnabled);
+            DrawTurnToPair("90° Left", -90f, "90° Right", 90f, turnToEnabled);
+            DrawTurnToPair("120° Left", -120f, "120° Right", 120f, turnToEnabled);
+            DrawTurnToPair("170° Left", -170f, "170° Right", 170f, turnToEnabled);
+            GUI.enabled = turnToEnabled && playerController != null;
+            if (GUILayout.Button("TURN TO PLAYER"))
+                Request(() => performer.TurnTo(playerController.transform), "Turning toward Player position snapshot");
+            GUI.enabled = enabled;
+            if (performer != null)
+            {
+                GUILayout.Label("Locomotion: " + performer.LocomotionState
+                    + " / " + performer.LocomotionCurrentMotion);
+                GUILayout.Label("Heading error: " + performer.LocomotionHeadingError.ToString("0.0") + "°");
+                GUILayout.Label("Actor position: " + performer.transform.position.ToString("F4"));
+                GUILayout.Label("Actor yaw: " + performer.transform.eulerAngles.y.ToString("0.0") + "°");
+            }
+
+            GUILayout.Space(5f);
             GUILayout.Label("Player View", GUI.skin.box);
             GUI.enabled = enabled && playerController != null && viewMarkWide != null;
             if (GUILayout.Button("Move Wide — 2 sec")) PlayerViewRequest(() => playerController.MoveTo(viewMarkWide, 2f), "Moving to wide view");
@@ -283,6 +309,25 @@ namespace DazPose.FirstPerformanceVoid
         }
 
         private void PlayerViewRequest(Action command, string description) => Request(command, description);
+
+        private void DrawTurnToPair(string firstLabel, float firstYaw, string secondLabel, float secondYaw,
+            bool turnEnabled)
+        {
+            GUILayout.BeginHorizontal();
+            GUI.enabled = turnEnabled;
+            if (GUILayout.Button(firstLabel)) Request(() => performer.TurnTo(CreateTurnTarget(firstYaw)), "TurnTo " + firstLabel);
+            if (GUILayout.Button(secondLabel)) Request(() => performer.TurnTo(CreateTurnTarget(secondYaw)), "TurnTo " + secondLabel);
+            GUILayout.EndHorizontal();
+        }
+
+        private Vector3 CreateTurnTarget(float signedYaw)
+        {
+            Vector3 forward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up);
+            if (forward.sqrMagnitude < 0.000001f)
+                throw new InvalidOperationException("The performer has no usable planar forward direction.");
+            Vector3 facing = Quaternion.AngleAxis(signedYaw, Vector3.up) * forward.normalized;
+            return performer.transform.position + facing * 2f;
+        }
 
         private void ParticleBodyRequest(Action command)
         {

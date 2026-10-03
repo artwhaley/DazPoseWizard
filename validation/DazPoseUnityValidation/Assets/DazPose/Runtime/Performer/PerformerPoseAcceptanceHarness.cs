@@ -177,6 +177,11 @@ namespace DazPose.Performer
             failures.AddRange(dissolveRuntimeSelfTestFailures);
             if (dissolveRuntimeSelfTestFailures.Length == 0)
                 Debug.Log("P0.G3 synthetic dissolve phase, hidden relocation, particle lifecycle, cleanup, and serial-request checks passed.", this);
+            var locomotionRuntimeSelfTestFailures = PerformerLocomotionRuntimeSelfTests.Run(performer.LocomotionProfile);
+            failures.AddRange(locomotionRuntimeSelfTestFailures);
+            if (locomotionRuntimeSelfTestFailures.Length == 0)
+                Debug.Log("P0.TurnTo synthetic locomotion checks passed for target snapshots, safe authored-turn selection, in-place alignment, and action ownership.", this);
+            yield return CheckTurnToFacadeAcceptance(failures);
             yield return CheckDissolveIntegrationAcceptance(failures);
 
             performer.ClearGaze();
@@ -518,6 +523,120 @@ namespace DazPose.Performer
             if (previousExpression == null) performer.ClearExpression(0f);
             else performer.Expression(previousExpression, previousExpressionIntensity, 0f);
             yield break;
+        }
+
+        private IEnumerator CheckTurnToFacadeAcceptance(List<string> failures)
+        {
+            Vector3 origin = performer.transform.position;
+            Quaternion originalRotation = performer.transform.rotation;
+            if (performer.VisibilityState != PerformerVisibilityState.Visible)
+            {
+                bool hiddenRejected = false;
+                try { performer.TurnTo(origin + Vector3.forward * 3f); }
+                catch (InvalidOperationException) { hiddenRejected = true; }
+                CheckTurnTo(hiddenRejected && performer.IsHidden,
+                    "TurnTo rejects while persistently Hidden without revealing Lara", failures);
+                yield break;
+            }
+
+            if (performer.SeatingState != PerformerSeatingState.Standing)
+            {
+                bool seatedRejected = false;
+                try { performer.TurnTo(origin + Vector3.forward * 3f); }
+                catch (InvalidOperationException) { seatedRejected = true; }
+                CheckTurnTo(seatedRejected && performer.SeatingState != PerformerSeatingState.Standing,
+                    "TurnTo rejects while seated or in a seating transition without auto-standing", failures);
+                yield break;
+            }
+
+            if (!performer.IsRuntimeReady || !performer.LocomotionAvailable
+                || performer.IsLocomoting || performer.IsTeleporting || performer.IsDissolving)
+            {
+                failures.Add("P0.TurnTo: facade composition checks require a visible, standing performer with idle locomotion and no active teleport or dissolve.");
+                yield break;
+            }
+
+            PerformerPose desiredPose = performer.DesiredPose;
+            PerformerPose settledPose = performer.SettledPose;
+            bool hadGazeTarget = performer.HasGazeTarget;
+            Vector3 originalGazeTarget = performer.RawGazeTargetPosition;
+            var target = new GameObject("P0TurnTo_FacadeTargetSnapshot");
+            var gazeTargetObject = new GameObject("P0TurnTo_PersistentGazeTarget");
+            try
+            {
+                Vector3 planarForward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up).normalized;
+                Vector3 capturedDirection = Quaternion.AngleAxis(70f, Vector3.up) * planarForward;
+                target.transform.SetPositionAndRotation(origin + capturedDirection * 4f,
+                    Quaternion.LookRotation(-capturedDirection, Vector3.up));
+                gazeTargetObject.transform.position = origin + Quaternion.AngleAxis(-25f, Vector3.up)
+                    * planarForward * 2f + Vector3.up * 1.4f;
+                performer.LookAt(gazeTargetObject.transform);
+                string gazeDescription = performer.GazeTargetDescription;
+
+                var observation = new TurnToCompletionObservation();
+                ObserveTurnToCompletion(observation, target.transform);
+                // Move and rotate the Transform after the call. The action must keep its
+                // original position snapshot and must ignore the target's forward vector.
+                target.transform.SetPositionAndRotation(origin - capturedDirection * 4f,
+                    Quaternion.LookRotation(capturedDirection, Vector3.up));
+
+                float maximumDrift = 0f;
+                float deadline = Time.realtimeSinceStartup + 15f;
+                while (!observation.Completed && Time.realtimeSinceStartup < deadline)
+                {
+                    maximumDrift = Mathf.Max(maximumDrift,
+                        Vector3.Distance(origin, performer.transform.position));
+                    yield return null;
+                }
+
+                CheckTurnTo(observation.Completed && observation.Error == null
+                    && observation.Result == LocomotionCompletion.Arrived,
+                    "public TurnToAsync(Transform) resolves Arrived", failures);
+                CheckTurnTo(maximumDrift < 0.001f
+                    && Vector3.Distance(origin, performer.transform.position) < 0.001f,
+                    "public TurnTo preserves actor position during and after the turn", failures);
+                Vector3 finalForward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up).normalized;
+                CheckTurnTo(Vector3.Angle(finalForward, capturedDirection)
+                        <= performer.LocomotionProfile.ArrivalHeadingTolerance + 0.01f,
+                    "public TurnTo faces the captured target position instead of target.forward or its later position", failures);
+                CheckTurnTo(performer.DesiredPose == desiredPose && performer.SettledPose == settledPose,
+                    "TurnTo leaves persistent DesiredPose and SettledPose unchanged", failures);
+                CheckTurnTo(performer.GazeTargetDescription == gazeDescription
+                    && Vector3.Distance(performer.RawGazeTargetPosition, gazeTargetObject.transform.position) < 0.001f,
+                    "TurnTo preserves the independent LookAt target", failures);
+
+                Quaternion turnedRotation = performer.transform.rotation;
+                performer.ClearGaze();
+                CheckTurnTo(Quaternion.Angle(performer.transform.rotation, turnedRotation) < 0.001f,
+                    "ClearGaze after TurnTo does not alter body orientation", failures);
+            }
+            finally
+            {
+                if (hadGazeTarget) performer.LookAt(originalGazeTarget);
+                else performer.ClearGaze();
+                performer.transform.SetPositionAndRotation(origin, originalRotation);
+                Destroy(target);
+                Destroy(gazeTargetObject);
+            }
+        }
+
+        private sealed class TurnToCompletionObservation
+        {
+            public bool Completed;
+            public LocomotionCompletion Result;
+            public Exception Error;
+        }
+
+        private static void CheckTurnTo(bool condition, string description, List<string> failures)
+        {
+            if (!condition) failures.Add("P0.TurnTo: " + description + ".");
+        }
+
+        private async void ObserveTurnToCompletion(TurnToCompletionObservation observation, Transform target)
+        {
+            try { observation.Result = await performer.TurnToAsync(target); }
+            catch (Exception exception) { observation.Error = exception; }
+            finally { observation.Completed = true; }
         }
 
         private IEnumerator CheckDissolveIntegrationAcceptance(List<string> failures)

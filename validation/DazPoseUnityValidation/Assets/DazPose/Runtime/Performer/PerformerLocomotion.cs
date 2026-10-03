@@ -14,6 +14,7 @@ namespace DazPose.Performer
             public Vector3 Position;
             public Vector3 Facing;
             public bool HasFacing;
+            public bool IsTurnTo;
             public readonly List<AwaitableCompletionSource<LocomotionCompletion>> Waiters =
                 new List<AwaitableCompletionSource<LocomotionCompletion>>();
         }
@@ -33,6 +34,7 @@ namespace DazPose.Performer
         private bool _stoppingForReversal;
         private bool _arrivalBlendStarted;
         private float _arrivalBlendProgress;
+        private bool _turnToActionActive;
         private bool _settlingTransformActive;
         private float _settlingElapsed;
         private float _settlingDuration;
@@ -59,7 +61,8 @@ namespace DazPose.Performer
         public float GaitPhase => _state == PerformerLocomotionState.Walking && _profile.WalkLoop.DurationSeconds > 0f
             ? Mathf.Repeat(_motionTime / _profile.WalkLoop.DurationSeconds, 1f) : 0f;
         public float RemainingDistance => _request == null ? 0f : Planar(_request.Position - _actor.position).magnitude;
-        public float HeadingError => _request == null ? 0f : SignedHeadingToGoal();
+        public float HeadingError => _request == null ? 0f
+            : _request.IsTurnTo ? SignedAngleTo(_actor.forward, _request.Facing) : SignedHeadingToGoal();
         public float PredictedStopDistance => _predictedStopDistance;
         public string SelectedStopVariant => _selectedStop;
         public string SelectedTurn => _selectedTurn;
@@ -103,6 +106,27 @@ namespace DazPose.Performer
             var source = new AwaitableCompletionSource<LocomotionCompletion>();
             RequestTarget(position, facing, true, source, true);
             return source.Awaitable;
+        }
+
+        public void TurnTo(Vector3 worldPosition) => RequestTurnTo(worldPosition, null);
+
+        public void TurnTo(Transform target)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            RequestTurnTo(target.position, null);
+        }
+
+        public Awaitable<LocomotionCompletion> TurnToAsync(Vector3 worldPosition)
+        {
+            var source = new AwaitableCompletionSource<LocomotionCompletion>();
+            RequestTurnTo(worldPosition, source);
+            return source.Awaitable;
+        }
+
+        public Awaitable<LocomotionCompletion> TurnToAsync(Transform target)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            return TurnToAsync(target.position);
         }
 
         public void Advance(float deltaTime)
@@ -187,8 +211,167 @@ namespace DazPose.Performer
             _request = null;
             _motion = null;
             _state = PerformerLocomotionState.Idle;
+            _turnToActionActive = false;
+            _facingOnlyTurn = false;
+            _turnYawScale = 1f;
+            UpdateArrivalHold();
             _body.SetOwnership(false, true);
             Complete(pending, LocomotionCompletion.PerformerDisabled);
+        }
+
+        private void RequestTurnTo(Vector3 worldPosition,
+            AwaitableCompletionSource<LocomotionCompletion> waiter)
+        {
+            ThrowIfDisposed();
+            ValidateFinite(worldPosition, nameof(worldPosition));
+            if (_request != null || _state != PerformerLocomotionState.Idle)
+                throw new InvalidOperationException("TurnTo is available only while locomotion is idle; finish the active locomotion request first.");
+
+            Vector3 direction = Planar(worldPosition - _actor.position);
+            if (direction.sqrMagnitude < 0.000001f)
+                throw new ArgumentException("TurnTo requires a target at least 0.001 m away in the horizontal plane.", nameof(worldPosition));
+            direction.Normalize();
+
+            Vector3 actorForward = Planar(_actor.forward);
+            if (actorForward.sqrMagnitude < 0.000001f)
+                throw new InvalidOperationException("TurnTo requires the performer root to have a nonzero planar forward direction.");
+            actorForward.Normalize();
+
+            float yaw = Vector3.SignedAngle(actorForward, direction, Vector3.up);
+            bool restoreArrivalPose = _body.HoldArrivalPose;
+            _selectedTurn = "none";
+            _selectedStop = "none";
+            _predictedStopDistance = 0f;
+            _arrivalBlendStarted = false;
+            _arrivalBlendProgress = 0f;
+            EndpointCorrection = Vector3.zero;
+            PredictedStopEndpoint = _actor.position;
+            _facingOnlyTurn = false;
+            _turnYawScale = 1f;
+            if (Mathf.Abs(yaw) <= _profile.ArrivalHeadingTolerance)
+            {
+                _arrivalBlendProgress = 1f;
+                waiter?.TrySetResult(LocomotionCompletion.Arrived);
+                return;
+            }
+
+            var request = new Request
+            {
+                Position = _actor.position,
+                Facing = direction,
+                HasFacing = true,
+                IsTurnTo = true
+            };
+            if (waiter != null) request.Waiters.Add(waiter);
+
+            _request = request;
+            _reversalStopPending = false;
+            _shortWalk = false;
+            _stoppingForReversal = false;
+            _turnToActionActive = true;
+
+            try
+            {
+                UpdateArrivalHold();
+                BeginTurnToFacing(yaw);
+            }
+            catch
+            {
+                _request = null;
+                _motion = null;
+                _state = PerformerLocomotionState.Idle;
+                _turnToActionActive = false;
+                _facingOnlyTurn = false;
+                _turnYawScale = 1f;
+                _selectedTurn = "none";
+                UpdateArrivalHold();
+                _body.SetOwnership(restoreArrivalPose, true);
+                throw;
+            }
+        }
+
+        private bool TrySelectFacingTurn(float yaw, out PerformerLocomotionMotion selected,
+            out float yawScale)
+        {
+            selected = null;
+            yawScale = 1f;
+            float magnitude = Mathf.Abs(yaw);
+            bool turningLeft = yaw < 0f;
+            PerformerLocomotionMotion turn90 = turningLeft ? _profile.TurnLeft90 : _profile.TurnRight90;
+            PerformerLocomotionMotion turn180 = turningLeft ? _profile.TurnLeft180 : _profile.TurnRight180;
+            float bestDifference = float.PositiveInfinity;
+
+            // Keep the 90° candidate first so an exact overlap tie is deterministic.
+            foreach (PerformerLocomotionMotion candidate in new[] { turn90, turn180 })
+            {
+                if (candidate == null || candidate.BodyClip == null) continue;
+                float nominalYaw = candidate.NominalYawDegrees;
+                if (float.IsNaN(nominalYaw) || float.IsInfinity(nominalYaw))
+                    continue;
+                if (Mathf.Abs(nominalYaw) < 1f) continue;
+                if (Mathf.Sign(nominalYaw) != Mathf.Sign(yaw))
+                    continue;
+
+                float difference = Mathf.Abs(magnitude - Mathf.Abs(nominalYaw));
+                if (difference > _profile.MaximumTurnWarpDegrees + 0.0001f
+                    || difference >= bestDifference) continue;
+
+                selected = candidate;
+                bestDifference = difference;
+            }
+
+            if (selected == null) return false;
+            yawScale = magnitude / Mathf.Abs(selected.NominalYawDegrees);
+            return true;
+        }
+
+        private float MinimumSafeAuthoredTurnMagnitude(float yaw)
+        {
+            PerformerLocomotionMotion turn90 = yaw < 0f ? _profile.TurnLeft90 : _profile.TurnRight90;
+            PerformerLocomotionMotion turn180 = yaw < 0f ? _profile.TurnLeft180 : _profile.TurnRight180;
+            float minimum = float.PositiveInfinity;
+            foreach (PerformerLocomotionMotion candidate in new[] { turn90, turn180 })
+            {
+                if (candidate == null || candidate.BodyClip == null) continue;
+                float nominalYaw = candidate.NominalYawDegrees;
+                if (float.IsNaN(nominalYaw) || float.IsInfinity(nominalYaw)
+                    || Mathf.Abs(nominalYaw) < 1f || Mathf.Sign(nominalYaw) != Mathf.Sign(yaw)) continue;
+                minimum = Mathf.Min(minimum,
+                    Mathf.Max(0f, Mathf.Abs(nominalYaw) - _profile.MaximumTurnWarpDegrees));
+            }
+            return minimum;
+        }
+
+        private void BeginTurnToFacing(float yaw)
+        {
+            if (TrySelectFacingTurn(yaw, out PerformerLocomotionMotion turn, out float yawScale))
+            {
+                BeginFacingOnlyTurn(turn, yawScale);
+                return;
+            }
+
+            float minimumSafeMagnitude = MinimumSafeAuthoredTurnMagnitude(yaw);
+            if (float.IsInfinity(minimumSafeMagnitude))
+                throw new InvalidOperationException("No valid baked facing turn is available in the requested direction.");
+            if (Mathf.Abs(yaw) + 0.0001f >= minimumSafeMagnitude)
+                throw new InvalidOperationException("No baked facing turn can represent "
+                    + Mathf.Abs(yaw).ToString("0.0") + "° within MaximumTurnWarpDegrees ("
+                    + _profile.MaximumTurnWarpDegrees.ToString("0.0") + "°). Refusing an unsafe authored turn warp.");
+
+            _selectedTurn = "none";
+            BeginFinalAlignment();
+        }
+
+        private void BeginFacingOnlyTurn(PerformerLocomotionMotion turn, float yawScale)
+        {
+            _turnYawScale = yawScale;
+            _facingOnlyTurn = true;
+            _facingTurnOriginPosition = _actor.position;
+            _facingTurnOriginRotation = _actor.rotation;
+            PredictedStopEndpoint = _request.Position;
+            EndpointCorrection = _request.Position - _actor.position;
+            _selectedTurn = turn.name;
+            BeginMotion(turn, 0f, PerformerLocomotionState.Turning, true);
         }
 
         private void RequestTarget(Vector3 position, Vector3 facing, bool hasFacing,
@@ -701,12 +884,14 @@ namespace DazPose.Performer
             targetPosition.y = _facingTurnOriginPosition.y;
             _actor.position = Vector3.Lerp(_facingTurnOriginPosition, targetPosition, progress);
 
-            Quaternion authoredEnd = _facingTurnOriginRotation
-                * Quaternion.AngleAxis(_motion.YawAt(1f) * _turnYawScale, Vector3.up);
+            Quaternion authoredEnd = _request.IsTurnTo
+                ? Quaternion.AngleAxis(_motion.YawAt(1f) * _turnYawScale, Vector3.up) * _facingTurnOriginRotation
+                : _facingTurnOriginRotation * Quaternion.AngleAxis(_motion.YawAt(1f) * _turnYawScale, Vector3.up);
             float yawCorrection = Vector3.SignedAngle(authoredEnd * Vector3.forward,
                 _request.Facing, Vector3.up);
-            Quaternion authoredNow = _facingTurnOriginRotation
-                * Quaternion.AngleAxis(_motion.YawAt(to) * _turnYawScale, Vector3.up);
+            Quaternion authoredNow = _request.IsTurnTo
+                ? Quaternion.AngleAxis(_motion.YawAt(to) * _turnYawScale, Vector3.up) * _facingTurnOriginRotation
+                : _facingTurnOriginRotation * Quaternion.AngleAxis(_motion.YawAt(to) * _turnYawScale, Vector3.up);
             _actor.rotation = Quaternion.AngleAxis(yawCorrection * progress, Vector3.up) * authoredNow;
         }
 
@@ -788,7 +973,11 @@ namespace DazPose.Performer
                 if (_facingOnlyTurn)
                 {
                     float facingError = _request.HasFacing ? SignedAngleTo(_actor.forward, _request.Facing) : 0f;
-                    if (Mathf.Abs(facingError) > _profile.ArrivalHeadingTolerance) BeginTurn(facingError, true);
+                    if (Mathf.Abs(facingError) > _profile.ArrivalHeadingTolerance)
+                    {
+                        if (_request.IsTurnTo) BeginTurnToFacing(facingError);
+                        else BeginTurn(facingError, true);
+                    }
                     else BeginSettling();
                 }
                 else
@@ -872,8 +1061,16 @@ namespace DazPose.Performer
             _settlingTargetPosition = _request.Position;
             _settlingTargetPosition.y = _actor.position.y;
             _settlingStartRotation = _actor.rotation;
-            _settlingTargetRotation = _request.HasFacing
-                ? Quaternion.LookRotation(_request.Facing, Vector3.up) : _actor.rotation;
+            if (_request.IsTurnTo)
+            {
+                float yawCorrection = SignedAngleTo(_actor.forward, _request.Facing);
+                _settlingTargetRotation = Quaternion.AngleAxis(yawCorrection, Vector3.up) * _actor.rotation;
+            }
+            else
+            {
+                _settlingTargetRotation = _request.HasFacing
+                    ? Quaternion.LookRotation(_request.Facing, Vector3.up) : _actor.rotation;
+            }
             _settlingElapsed = 0f;
             _settlingDuration = Mathf.Max(0.08f, _profile.LocomotionToIdleBlendSeconds);
             _settlingTransformActive = Vector3.Distance(_settlingStartPosition, _settlingTargetPosition) > 0.0005f
@@ -916,7 +1113,7 @@ namespace DazPose.Performer
 
         private void UpdateArrivalHold()
         {
-            _body.HoldArrivalPose = _holdArrivalPose || _holdSeatingApproachPose;
+            _body.HoldArrivalPose = !_turnToActionActive && (_holdArrivalPose || _holdSeatingApproachPose);
             if (!_body.HoldArrivalPose && _state == PerformerLocomotionState.Idle) _body.SetOwnership(false);
         }
 
@@ -926,6 +1123,13 @@ namespace DazPose.Performer
             Request arrived = _request;
             _request = null;
             _state = PerformerLocomotionState.Idle;
+            if (arrived != null && arrived.IsTurnTo)
+            {
+                _turnToActionActive = false;
+                _facingOnlyTurn = false;
+                _turnYawScale = 1f;
+                UpdateArrivalHold();
+            }
             if (arrived != null)
                 Debug.Log("[PerformerLocomotion] Arrived. Target=" + arrived.Position.ToString("F3")
                     + ", actual=" + _actor.position.ToString("F3")
