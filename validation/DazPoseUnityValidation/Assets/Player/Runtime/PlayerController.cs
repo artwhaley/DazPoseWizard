@@ -1,4 +1,5 @@
 using System;
+using DazPose.Toys;
 using UnityEngine;
 
 namespace DazPose.Player
@@ -9,6 +10,19 @@ namespace DazPose.Player
     public sealed class PlayerController : MonoBehaviour
     {
         [SerializeField] private PlayerView view;
+        [SerializeField] private ToyControlService toyControlService;
+
+        /// <summary>Semantic hardware API. The scene-level ToyControlService owns its independent backend.</summary>
+        public ToyControlService Toys
+        {
+            get
+            {
+                if (toyControlService == null) toyControlService = FindFirstObjectByType<ToyControlService>();
+                if (toyControlService == null)
+                    throw new InvalidOperationException("No scene ToyControlService is available.");
+                return toyControlService;
+            }
+        }
 
         public PlayerView View
         {
@@ -63,6 +77,7 @@ namespace DazPose.Player
         private void Awake()
         {
             if (view == null) view = GetComponent<PlayerView>();
+            if (toyControlService == null) toyControlService = FindFirstObjectByType<ToyControlService>();
         }
 
         private void OnDisable() => view?.CancelActiveCommands();

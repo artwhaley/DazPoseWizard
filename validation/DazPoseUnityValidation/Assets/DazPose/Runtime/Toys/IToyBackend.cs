@@ -33,5 +33,7 @@ namespace DazPose.Toys
         Task StartScanningAsync();
         Task StopScanningAsync();
         Task StopAllAsync();
+        Task SendOutputAsync(ToyOutputBinding binding, float normalizedValue, uint durationMilliseconds = 0);
+        Task StopFeatureAsync(ToyOutputBinding binding);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DazPose.Motion;
 using DazPose.Performer;
+using DazPose.Toys;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace DazPose.Motion.Editor
         private const string AcceptancePath = "Assets/motiondrive.funscript";
 
         [MenuItem("Tools/DAZ Pose/Motion/Run Funscript Acceptance Checks")]
-        public static void Run()
+        public static async void Run()
         {
             var failures = new List<string>();
             AssetDatabase.ImportAsset(AcceptancePath, ImportAssetOptions.ForceUpdate);
@@ -29,6 +30,7 @@ namespace DazPose.Motion.Editor
             failures.AddRange(PerformerMotionRuntimeSelfTests.Run());
             ValidateSuppliedProgram(program, failures);
             ValidateSceneReference(program, failures);
+            failures.AddRange(await ToyStackAcceptanceSelfTests.RunAsync(program));
             if (failures.Count == 0)
             {
                 FunscriptAction first = program.GetAction(0);

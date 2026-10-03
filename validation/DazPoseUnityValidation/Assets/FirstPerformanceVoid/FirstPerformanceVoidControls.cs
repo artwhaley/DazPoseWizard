@@ -55,6 +55,9 @@ namespace DazPose.FirstPerformanceVoid
         private float motionRootRotationDrift;
         private Vector3 motionRootStartPosition;
         private Quaternion motionRootStartRotation;
+        private PerformerControlSurface toyControlSurface;
+        private LaraControlAnimator laraControlAnimator;
+        private string laraControlStatus = "Use the normalized-control acceptance buttons during Play Mode.";
         private bool dissolveTestRunning;
         private string dissolveTestStatus = "Run the P0.G3 DissolveTo acceptance checks in Play Mode.";
         private bool visibilityTestRunning;
@@ -615,8 +618,9 @@ namespace DazPose.FirstPerformanceVoid
 
         private void DrawToyControls(bool guiEnabled)
         {
+            EnsureLaraControlAcceptance();
             GUILayout.Space(5f);
-            GUILayout.Label("TOYS / INTIFACE — BT.1", GUI.skin.box);
+            GUILayout.Label("TOYS / INTIFACE — BT.1–BT.5", GUI.skin.box);
 
             if (toyControlService == null)
                 toyControlService = FindFirstObjectByType<ToyControlService>();
@@ -632,7 +636,7 @@ namespace DazPose.FirstPerformanceVoid
             }
 
             GUI.enabled = guiEnabled;
-            if (GUILayout.Button("STOP ALL")) toys.StopAll();
+            if (GUILayout.Button("STOP ALL")) _ = toys.StopAllWithReportAsync();
 
             GUILayout.Label("Server address");
             toys.ServerAddress = GUILayout.TextField(toys.ServerAddress);
@@ -699,6 +703,39 @@ namespace DazPose.FirstPerformanceVoid
                                 ? output.MinimumValue + ".." + output.MaximumValue
                                 : "range unavailable";
                             GUILayout.Label("  " + output.Capability + "  " + range);
+                            var binding = new ToyOutputBinding(device.DeviceIndex, feature.FeatureIndex, output.Capability);
+                            if (output.Capability == ToyOutputCapability.Vibrate
+                                || output.Capability == ToyOutputCapability.Oscillate)
+                            {
+                                bool assigned = GUILayout.Toggle(toys.IsLevelBindingAssigned(binding),
+                                    "Use as Level Output", GUI.skin.button);
+                                if (assigned != toys.IsLevelBindingAssigned(binding))
+                                    toys.SetLevelBinding(binding, assigned);
+                                GUILayout.BeginHorizontal();
+                                foreach (int value in new[] { 0, 10, 30, 66, 100 })
+                                    if (GUILayout.Button(value + "%"))
+                                        _ = toys.TestOutputAsync(binding, value / 100f);
+                                GUILayout.EndHorizontal();
+                            }
+                            else
+                            {
+                                if (output.Capability == ToyOutputCapability.Position)
+                                {
+                                    GUILayout.BeginHorizontal();
+                                    foreach (int value in new[] { 25, 50, 75 })
+                                        if (GUILayout.Button(value + "%"))
+                                            _ = toys.TestOutputAsync(binding, value / 100f);
+                                    GUILayout.EndHorizontal();
+                                }
+                                else
+                                {
+                                    GUILayout.BeginHorizontal();
+                                    foreach (int value in new[] { 25, 50, 75 })
+                                        if (GUILayout.Button(value + "% / 2s"))
+                                            _ = toys.TestOutputAsync(binding, value / 100f, 2000);
+                                    GUILayout.EndHorizontal();
+                                }
+                            }
                             if (output.Capability == ToyOutputCapability.HwPositionWithDuration)
                             {
                                 GUILayout.Label(output.HasDurationRange
@@ -707,11 +744,150 @@ namespace DazPose.FirstPerformanceVoid
                                     : "    Duration range unavailable");
                             }
                         }
+
+                        bool supportsPosition = feature.Supports(ToyOutputCapability.Position);
+                        bool supportsPositionWithDuration = feature.Supports(ToyOutputCapability.HwPositionWithDuration);
+                        if (supportsPosition || supportsPositionWithDuration)
+                        {
+                            ToyOutputCapability primaryMotionOutput = supportsPosition
+                                ? ToyOutputCapability.Position : ToyOutputCapability.HwPositionWithDuration;
+                            var motionBindingKey = new ToyOutputBinding(device.DeviceIndex,
+                                feature.FeatureIndex, primaryMotionOutput);
+                            bool wasAssigned = toys.IsMotionBindingAssigned(motionBindingKey);
+                            bool assigned = GUILayout.Toggle(wasAssigned,
+                                "Use feature as Motion Follower", GUI.skin.button);
+                            if (assigned != wasAssigned)
+                                toys.SetMotionBinding(motionBindingKey, assigned, ToyMotionStrategy.Auto);
+                            if (toys.TryGetMotionBinding(motionBindingKey, out ToyMotionBinding motionBinding))
+                            {
+                                GUILayout.Label("Strategy: " + motionBinding.Strategy
+                                    + (supportsPositionWithDuration && supportsPosition
+                                        ? " (duration segments when available; Position fallback)" : string.Empty));
+                                int selectedStrategy = GUILayout.SelectionGrid((int)motionBinding.Strategy,
+                                    new[] { "AUTO", "POSITION", "POSITION+TIME" }, 3);
+                                if (selectedStrategy != (int)motionBinding.Strategy)
+                                    toys.SetMotionBinding(motionBindingKey, true,
+                                        (ToyMotionStrategy)selectedStrategy, motionBinding.Invert,
+                                        motionBinding.Minimum, motionBinding.Maximum);
+                                bool invert = GUILayout.Toggle(motionBinding.Invert, "Invert position");
+                                if (invert != motionBinding.Invert)
+                                    motionBinding.Invert = invert;
+                                GUILayout.Label("Travel " + motionBinding.Minimum.ToString("F2")
+                                    + ".." + motionBinding.Maximum.ToString("F2"));
+                                motionBinding.Minimum = GUILayout.HorizontalSlider(motionBinding.Minimum, 0f, motionBinding.Maximum);
+                                motionBinding.Maximum = GUILayout.HorizontalSlider(motionBinding.Maximum, motionBinding.Minimum, 1f);
+                                GUILayout.Label(toys.GetFollowerDiagnostic(motionBindingKey));
+                            }
+                        }
                     }
                 }
             }
 
+            GUILayout.Label("LEVEL TEST  " + toys.Level.ToString("P0"), GUI.skin.box);
+            GUILayout.BeginHorizontal();
+            foreach (int value in new[] { 0, 10, 30, 66, 100 })
+                if (GUILayout.Button(value + "%")) toys.SetLevel(value / 100f);
+            GUILayout.EndHorizontal();
+            float requestedLevel = GUILayout.HorizontalSlider(toys.Level, 0f, 1f);
+            if (!Mathf.Approximately(requestedLevel, toys.Level)) toys.SetLevel(requestedLevel);
+
+            MotionDriver motionDriver = performer != null ? performer.MotionSource : null;
+            bool followMotion = motionDriver != null && toys.IsFollowingMotion;
+            bool requestedFollow = GUILayout.Toggle(followMotion, "Follow MotionDriver on assigned outputs", GUI.skin.button);
+            if (requestedFollow != followMotion)
+            {
+                if (requestedFollow && motionDriver != null) toys.Follow(motionDriver);
+                else toys.StopFollowing();
+            }
+            GUILayout.Label("Motion source: " + (motionDriver != null ? motionDriver.SourceMode.ToString() : "unavailable")
+                + "  position " + (motionDriver != null ? motionDriver.CurrentSample.Position01.ToString("F3") : "—"));
+            GUILayout.Label("Last command: " + toys.LastCommandReport.Operation + " — "
+                + toys.LastCommandReport.SuccessfulBindings + " sent / " + toys.LastCommandReport.Errors.Count + " failed");
+            foreach (string error in toys.LastCommandReport.Errors) GUILayout.Label(error);
+
+            GUILayout.Space(4f);
+            GUILayout.Label("LARA NORMALIZED CONTROL — BT.6", GUI.skin.box);
+            GUILayout.Label("Surface value: " + (toyControlSurface != null
+                ? toyControlSurface.Value01.ToString("F2") : "unavailable"));
+            GUI.enabled = guiEnabled && laraControlAnimator != null && !laraControlAnimator.IsMoving;
+            if (GUILayout.Button("LARA OPERATE CONTROL .66")) RunLaraControlAsync(0.66f);
+            if (GUILayout.Button("LARA OPERATE CONTROL .30")) RunLaraControlAsync(0.30f);
+            if (GUILayout.Button("LARA OPERATE CONTROL 1.00")) RunLaraControlAsync(1.00f);
+            if (GUILayout.Button("RUN .30 → .66 → .30 → 1.00 ACCEPTANCE")) RunLaraControlAcceptanceAsync();
             GUI.enabled = guiEnabled;
+            GUILayout.Label("Animation: " + laraControlStatus);
+
+            GUI.enabled = guiEnabled;
+        }
+
+        private void EnsureLaraControlAcceptance()
+        {
+            if (!Application.isPlaying || performer == null || toyControlSurface != null) return;
+            Transform hand = null;
+            foreach (Transform child in performer.GetComponentsInChildren<Transform>(true))
+                if (child.name == "rHand") { hand = child; break; }
+            if (hand == null) return;
+
+            var root = new GameObject("BT.6 Normalized Control Surface");
+            root.transform.position = hand.position + performer.transform.forward * 0.20f
+                + performer.transform.right * 0.07f;
+            root.transform.rotation = performer.transform.rotation;
+            var basePart = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            basePart.name = "Control Base";
+            basePart.transform.SetParent(root.transform, false);
+            basePart.transform.localPosition = Vector3.zero;
+            basePart.transform.localScale = new Vector3(0.09f, 0.12f, 0.035f);
+            RemoveRuntimeCollider(basePart);
+            var handle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            handle.name = "Normalized Lever";
+            handle.transform.SetParent(root.transform, false);
+            handle.transform.localScale = new Vector3(0.018f, 0.055f, 0.018f);
+            RemoveRuntimeCollider(handle);
+            var tip = new GameObject("Hand Grip Target");
+            tip.transform.SetParent(handle.transform, false);
+            tip.transform.localPosition = new Vector3(0f, 0.085f, 0f);
+
+            toyControlSurface = root.AddComponent<PerformerControlSurface>();
+            toyControlSurface.ConfigureHandle(handle.transform,
+                new Vector3(0f, -0.035f, 0f), new Vector3(0f, 0.035f, 0f));
+            toyControlSurface.GripPoint = tip.transform;
+            toyControlSurface.Value01 = 0.30f;
+            laraControlAnimator = performer.gameObject.GetComponent<LaraControlAnimator>();
+            if (laraControlAnimator == null) laraControlAnimator = performer.gameObject.AddComponent<LaraControlAnimator>();
+            laraControlAnimator.Hand = hand;
+        }
+
+        private static void RemoveRuntimeCollider(GameObject part)
+        {
+            Collider collider = part.GetComponent<Collider>();
+            if (collider != null) Destroy(collider);
+        }
+
+        private async void RunLaraControlAsync(float target)
+        {
+            try
+            {
+                if (laraControlAnimator == null || toyControlSurface == null) return;
+                laraControlStatus = "Reaching, moving the control, and returning.";
+                await laraControlAnimator.SetControlAsync(toyControlSurface, target);
+                laraControlStatus = "Finished at " + toyControlSurface.Value01.ToString("F2") + ".";
+            }
+            catch (Exception exception) { laraControlStatus = exception.Message; Debug.LogException(exception, this); }
+        }
+
+        private async void RunLaraControlAcceptanceAsync()
+        {
+            try
+            {
+                if (laraControlAnimator == null || toyControlSurface == null) return;
+                laraControlStatus = "Running the .30 → .66 → .30 → 1.00 sequence.";
+                toyControlSurface.Value01 = 0.30f;
+                await laraControlAnimator.SetControlAsync(toyControlSurface, 0.66f);
+                await laraControlAnimator.SetControlAsync(toyControlSurface, 0.30f);
+                await laraControlAnimator.SetControlAsync(toyControlSurface, 1f);
+                laraControlStatus = "Acceptance sequence complete; final value 1.00.";
+            }
+            catch (Exception exception) { laraControlStatus = exception.Message; Debug.LogException(exception, this); }
         }
 
         private void BeginMotionRootTracking()

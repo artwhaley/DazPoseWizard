@@ -96,6 +96,23 @@ namespace DazPose.Motion
         public MotionSample CurrentSample { get; private set; }
         public event Action<MotionSample> Sampled;
         public event Action<bool> RunningChanged;
+        public event Action Sought;
+
+        public bool TryGetCurrentTargetSegment(out MotionTargetSegment segment)
+        {
+            RefreshActiveSource();
+            if (sourceMode == MotionSourceMode.Funscript && _funscriptPlayback != null
+                && _funscriptPlayback.HasCurrentSegment)
+            {
+                FunscriptSegment current = _funscriptPlayback.CurrentSegment;
+                segment = new MotionTargetSegment(current.StartSeconds, current.EndSeconds,
+                    current.FromPosition01, current.ToPosition01,
+                    current.FromActionIndex, current.ToActionIndex);
+                return segment.EndTimeSeconds > CurrentSample.TimeSeconds;
+            }
+            segment = default;
+            return false;
+        }
 
         private void Awake()
         {
@@ -208,6 +225,10 @@ namespace DazPose.Motion
 
             _activeSource.Seek(timeSeconds);
             PublishSample(_activeSource.CurrentSample);
+            Action sought = Sought;
+            if (sought != null)
+                foreach (Action callback in sought.GetInvocationList())
+                    try { callback(); } catch (Exception exception) { Debug.LogException(exception, this); }
             if (IsRunning && _activeSource.IsComplete) StopMotion();
         }
 
