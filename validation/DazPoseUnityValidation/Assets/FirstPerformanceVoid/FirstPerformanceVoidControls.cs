@@ -152,7 +152,7 @@ namespace DazPose.FirstPerformanceVoid
 
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(Mathf.Max(454f, Screen.width - 286f), 12f, 274f, Mathf.Min(900f, Screen.height - 24f)),
+            GUILayout.BeginArea(new Rect(Mathf.Max(12f, Screen.width - 286f), 12f, 274f, Mathf.Min(900f, Screen.height - 24f)),
                 "First Performance Void", GUI.skin.window);
             panelScrollPosition = GUILayout.BeginScrollView(panelScrollPosition,
                 GUILayout.Width(274f), GUILayout.Height(Mathf.Max(160f, Mathf.Min(900f, Screen.height - 54f))));
