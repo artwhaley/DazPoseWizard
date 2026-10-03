@@ -56,6 +56,7 @@ namespace DazPose.Performer
         [SerializeField] private AudioClip arrivalAudio;
         [SerializeField, Range(0.1f, 3f)] private float departurePitch = 0.92f;
         [SerializeField, Range(0.1f, 3f)] private float arrivalPitch = 1.08f;
+        [SerializeField, Min(0f)] private float visibilityAudioStartOffsetSeconds = 0.85f;
 
         public float DefaultDuration => 2f * dissolveOutDuration + transitDuration + materializeDuration;
         public float DissolveOutDuration => dissolveOutDuration;
@@ -82,6 +83,7 @@ namespace DazPose.Performer
         public AudioClip ArrivalAudio => arrivalAudio;
         public float DeparturePitch => departurePitch;
         public float ArrivalPitch => arrivalPitch;
+        public float VisibilityAudioStartOffsetSeconds => visibilityAudioStartOffsetSeconds;
 
         public bool IsShaderReady(out string reason)
         {
@@ -159,6 +161,7 @@ namespace DazPose.Performer
                 || !IsFinite(cloudScale) || cloudScale <= 0f
                 || !IsFinite(swirlTurns) || swirlTurns < 0f
                 || !IsFinite(turbulenceStrength) || turbulenceStrength < 0f
+                || !IsFinite(visibilityAudioStartOffsetSeconds) || visibilityAudioStartOffsetSeconds < 0f
                 || !IsFinite(departurePitch) || departurePitch <= 0f
                 || !IsFinite(arrivalPitch) || arrivalPitch <= 0f)
             {

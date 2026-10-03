@@ -20111,6 +20111,7 @@ MonoBehaviour:
   teleportProfile: {fileID: 11400000, guid: 787474b37b9c04544916679bcd587c2e, type: 2}
   dissolveProfile: {fileID: 11400000, guid: 44f2643513db9074a9dd45819c3dc562, type: 2}
   dissolveRig: {fileID: 1080846347}
+  startHidden: 0
   breathingEnabled: 1
   breathsPerMinute: 10
   breathingCurve:

@@ -11,6 +11,7 @@ namespace DazPose.Performer
         public static string[] Run()
         {
             var failures = new List<string>();
+            CheckNewPerformerDefaultsHidden(failures);
             var host = new GameObject("P0G3_DissolveRuntimeSelfTest");
             var target = new GameObject("P0G3_DissolveTargetSnapshot");
             var profile = ScriptableObject.CreateInstance<PerformerDissolveProfile>();
@@ -102,6 +103,8 @@ namespace DazPose.Performer
                 Check(!dissolve.IsDissolving && presentation.RestoreCount == 2
                     && !presentation.DissolveEnabled && presentation.ActivePopulationCount == 0,
                     "disable/dispose restores shader state and releases an in-flight particle body", failures);
+
+                RunPersistentVisibilityChecks(profile, failures);
             }
             catch (Exception exception)
             {
@@ -125,6 +128,187 @@ namespace DazPose.Performer
             if (!condition) failures.Add("P0.G3: " + description + ".");
         }
 
+        private static void RunPersistentVisibilityChecks(PerformerDissolveProfile profile, List<string> failures)
+        {
+            FieldInfo releaseField = typeof(PerformerDissolveProfile).GetField("dissolveOutDuration",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            float originalRelease = releaseField != null ? (float)releaseField.GetValue(profile) : 1f;
+            var host = new GameObject("P0H_VisibilityRuntimeSelfTest");
+            var presentation = new FakePresentation { BodyCenter = new Vector3(0f, 1f, 0f) };
+            bool stableHidden = false;
+            PerformerDissolve dissolve = null;
+            try
+            {
+                dissolve = new PerformerDissolve(host.transform, profile, presentation, _ => { }, null,
+                    initiallyHidden: false, stableVisibilityChanged: hidden => stableHidden = hidden);
+
+                bool inWhileVisibleRejected = false;
+                try { dissolve.DissolveIn(1f, null); }
+                catch (InvalidOperationException) { inWhileVisibleRejected = true; }
+                Check(inWhileVisibleRejected && dissolve.VisibilityState == PerformerVisibilityState.Visible,
+                    "IN while Visible is rejected without changing state", failures, "P0.H");
+
+                float[] durations = { 1f, 3f, 5f };
+                foreach (float duration in durations)
+                {
+                    var outCompletion = new AwaitableCompletionSource<VisibilityCompletion>();
+                    dissolve.DissolveOut(duration, outCompletion);
+                    Check(dissolve.VisibilityState == PerformerVisibilityState.DissolvingOut,
+                        duration + " second OUT enters DissolvingOut", failures, "P0.H");
+                    bool secondOutRejected = false;
+                    try { dissolve.DissolveOut(duration, null); }
+                    catch (InvalidOperationException) { secondOutRejected = true; }
+                    bool inDuringOutRejected = false;
+                    try { dissolve.DissolveIn(duration, null); }
+                    catch (InvalidOperationException) { inDuringOutRejected = true; }
+                    Check(secondOutRejected && inDuringOutRejected
+                        && dissolve.VisibilityState == PerformerVisibilityState.DissolvingOut,
+                        "repeated or opposite visibility command during OUT is rejected", failures, "P0.H");
+                    if (releaseField != null) releaseField.SetValue(profile, originalRelease * 4f);
+                    dissolve.Advance(duration * 0.5f);
+                    Check(Mathf.Abs(presentation.VisibilityClock - 0.5f) < 0.001f
+                        && dissolve.VisibilityState == PerformerVisibilityState.DissolvingOut,
+                        duration + " second OUT keeps one captured normalized clock after profile edits", failures, "P0.H");
+                    dissolve.Advance(duration * 0.5f);
+                    Check(dissolve.VisibilityState == PerformerVisibilityState.Hidden && stableHidden
+                        && presentation.ForceRenderingOff && !presentation.DissolveEnabled
+                        && presentation.DissolveProgress == 0f && presentation.ActivePopulationCount == 0,
+                        duration + " second OUT ends in resource-free stable Hidden", failures, "P0.H");
+                    Check(outCompletion.Awaitable.GetAwaiter().GetResult() == VisibilityCompletion.Hidden,
+                        duration + " second OUT waiter resolves Hidden", failures, "P0.H");
+
+                    bool repeatedOutRejected = false;
+                    try { dissolve.DissolveOut(duration, null); }
+                    catch (InvalidOperationException) { repeatedOutRejected = true; }
+                    Check(repeatedOutRejected && dissolve.VisibilityState == PerformerVisibilityState.Hidden,
+                        "OUT while Hidden is rejected without changing state", failures, "P0.H");
+
+                    bool hiddenRelocationRejected = false;
+                    try { dissolve.DissolveTo(host.transform.position, duration, null, null); }
+                    catch (InvalidOperationException) { hiddenRelocationRejected = true; }
+                    Check(hiddenRelocationRejected && dissolve.VisibilityState == PerformerVisibilityState.Hidden,
+                        "DissolveTo while Hidden is rejected without changing state", failures, "P0.H");
+
+                    var inCompletion = new AwaitableCompletionSource<VisibilityCompletion>();
+                    dissolve.DissolveIn(duration, inCompletion);
+                    Check(dissolve.VisibilityState == PerformerVisibilityState.DissolvingIn
+                        && presentation.ForceRenderingOff,
+                        duration + " second IN begins hidden and enters DissolvingIn", failures, "P0.H");
+                    bool repeatedInRejected = false;
+                    try { dissolve.DissolveIn(duration, null); }
+                    catch (InvalidOperationException) { repeatedInRejected = true; }
+                    bool outDuringInRejected = false;
+                    try { dissolve.DissolveOut(duration, null); }
+                    catch (InvalidOperationException) { outDuringInRejected = true; }
+                    Check(repeatedInRejected && outDuringInRejected
+                        && dissolve.VisibilityState == PerformerVisibilityState.DissolvingIn,
+                        "repeated or opposite visibility command during IN is rejected", failures, "P0.H");
+                    dissolve.Advance(duration * 0.5f);
+                    Check(Mathf.Abs(presentation.VisibilityClock - 0.5f) < 0.001f,
+                        duration + " second IN uses its own normalized clock", failures, "P0.H");
+                    dissolve.Advance(duration * 0.5f);
+                    Check(dissolve.VisibilityState == PerformerVisibilityState.Visible && !stableHidden
+                        && !presentation.ForceRenderingOff && !presentation.DissolveEnabled
+                        && presentation.DissolveProgress == 0f && presentation.ActivePopulationCount == 0,
+                        duration + " second IN ends in resource-free stable Visible", failures, "P0.H");
+                    Check(inCompletion.Awaitable.GetAwaiter().GetResult() == VisibilityCompletion.Visible,
+                        duration + " second IN waiter resolves Visible", failures, "P0.H");
+                }
+
+                float[] invalidDurations = { float.NaN, float.PositiveInfinity, 0f, -1f };
+                foreach (float duration in invalidDurations)
+                {
+                    bool rejected = false;
+                    try { dissolve.DissolveOut(duration, null); }
+                    catch (ArgumentOutOfRangeException) { rejected = true; }
+                    Check(rejected && dissolve.VisibilityState == PerformerVisibilityState.Visible,
+                        "invalid OUT duration is rejected without changing Visible state", failures, "P0.H");
+                    bool inRejected = false;
+                    try { dissolve.DissolveIn(duration, null); }
+                    catch (ArgumentOutOfRangeException) { inRejected = true; }
+                    Check(inRejected && dissolve.VisibilityState == PerformerVisibilityState.Visible,
+                        "invalid IN duration is rejected without changing Visible state", failures, "P0.H");
+                }
+
+                var outAbort = new AwaitableCompletionSource<VisibilityCompletion>();
+                dissolve.DissolveOut(3f, outAbort);
+                dissolve.Advance(0.5f);
+                dissolve.Dispose();
+                dissolve = null;
+                Check(stableHidden == false && presentation.ForceRenderingOff == false
+                    && outAbort.Awaitable.GetAwaiter().GetResult() == VisibilityCompletion.PerformerDisabled,
+                    "OUT interruption rolls back Visible and resolves waiter as PerformerDisabled", failures, "P0.H");
+
+                var inPresentation = new FakePresentation { BodyCenter = new Vector3(0f, 1f, 0f), ForceRenderingOff = true };
+                var inHost = new GameObject("P0H_HiddenInInterruptionSelfTest");
+                var inDissolve = new PerformerDissolve(inHost.transform, profile, inPresentation, _ => { }, null,
+                    initiallyHidden: true, stableVisibilityChanged: hidden => stableHidden = hidden);
+                var inAbort = new AwaitableCompletionSource<VisibilityCompletion>();
+                inDissolve.DissolveIn(3f, inAbort);
+                inDissolve.Advance(0.5f);
+                inDissolve.Dispose();
+                Check(stableHidden && inDissolve.VisibilityState == PerformerVisibilityState.Hidden
+                    && inPresentation.ForceRenderingOff && !inPresentation.DissolveEnabled
+                    && inPresentation.ActivePopulationCount == 0
+                    && inAbort.Awaitable.GetAwaiter().GetResult() == VisibilityCompletion.PerformerDisabled,
+                    "IN interruption rolls back Hidden and resolves waiter as PerformerDisabled", failures, "P0.H");
+                UnityEngine.Object.Destroy(inHost);
+
+                // Mirror the facade's stable bool being fed back into a newly constructed
+                // dissolve runtime after teardown; no effect body survives the boundary.
+                var hiddenPresentation = new FakePresentation { ForceRenderingOff = true };
+                var hiddenHost = new GameObject("P0H_StableHiddenRecreateSelfTest");
+                var hiddenRuntime = new PerformerDissolve(hiddenHost.transform, profile, hiddenPresentation,
+                    _ => { }, null, initiallyHidden: true, stableVisibilityChanged: hidden => stableHidden = hidden);
+                hiddenRuntime.Dispose();
+                var recreatedRuntime = new PerformerDissolve(hiddenHost.transform, profile, hiddenPresentation,
+                    _ => { }, null, initiallyHidden: stableHidden, stableVisibilityChanged: hidden => stableHidden = hidden);
+                Check(stableHidden && recreatedRuntime.VisibilityState == PerformerVisibilityState.Hidden
+                    && hiddenPresentation.ForceRenderingOff && hiddenPresentation.ActivePopulationCount == 0
+                    && !hiddenPresentation.DissolveEnabled,
+                    "stable Hidden survives dissolve runtime teardown and recreation without particles", failures, "P0.H");
+                recreatedRuntime.Dispose();
+                UnityEngine.Object.Destroy(hiddenHost);
+            }
+            catch (Exception exception)
+            {
+                failures.Add("P0.H: visibility runtime self-test threw " + exception.GetType().Name + ": " + exception.Message);
+            }
+            finally
+            {
+                if (releaseField != null) releaseField.SetValue(profile, originalRelease);
+                dissolve?.Dispose();
+                UnityEngine.Object.Destroy(host);
+            }
+        }
+
+        private static void CheckNewPerformerDefaultsHidden(List<string> failures)
+        {
+            var host = new GameObject("P0H_NewPerformerVisibilityDefaultSelfTest");
+            host.SetActive(false);
+            try
+            {
+                SuccubusPerformer performer = host.AddComponent<SuccubusPerformer>();
+                FieldInfo startHidden = typeof(SuccubusPerformer).GetField("startHidden",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                Check(startHidden != null && (bool)startHidden.GetValue(performer),
+                    "new SuccubusPerformer instances default to startHidden", failures, "P0.H");
+            }
+            catch (Exception exception)
+            {
+                failures.Add("P0.H: new performer default self-test threw " + exception.GetType().Name + ": " + exception.Message);
+            }
+            finally
+            {
+                UnityEngine.Object.Destroy(host);
+            }
+        }
+
+        private static void Check(bool condition, string description, List<string> failures, string prefix)
+        {
+            if (!condition) failures.Add(prefix + ": " + description + ".");
+        }
+
         private sealed class FakePresentation : IPerformerDissolvePresentation
         {
             public readonly List<string> Events = new List<string>();
@@ -140,6 +324,8 @@ namespace DazPose.Performer
             public int FinishCount { get; private set; }
             public int RestoreCount { get; private set; }
             public bool ThrowOnBegin { get; set; }
+            public bool ForceRenderingOff { get; private set; }
+            public float VisibilityClock { get; private set; }
 
             public float EvaluateEffectCurve(float normalizedTime) => Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(normalizedTime));
 
@@ -149,6 +335,7 @@ namespace DazPose.Performer
                 ActivePopulationCount = 1;
                 DissolveEnabled = true;
                 DissolveProgress = 0f;
+                ForceRenderingOff = false;
                 Events.Add("begin");
                 if (ThrowOnBegin) throw new InvalidOperationException("Synthetic particle setup failure.");
             }
@@ -176,23 +363,63 @@ namespace DazPose.Performer
 
             public void SetMaterializeProgress(float progress) => DissolveProgress = 1f - Mathf.Clamp01(progress);
 
-            public void Finish()
+            public void BeginVisibilityOut(PerformerDissolveProfile profile)
+            {
+                BeginVisibility(profile);
+                ForceRenderingOff = false;
+                Events.Add("visibility-out");
+            }
+
+            public void SetVisibilityOutProgress(float normalizedClock)
+            {
+                VisibilityClock = normalizedClock;
+                DissolveProgress = Mathf.Clamp01(normalizedClock / 0.62f);
+            }
+
+            public void BeginVisibilityIn(PerformerDissolveProfile profile)
+            {
+                BeginVisibility(profile);
+                ForceRenderingOff = true;
+                DissolveProgress = 1f;
+                Events.Add("visibility-in");
+            }
+
+            public void SetVisibilityInProgress(float normalizedClock)
+            {
+                VisibilityClock = normalizedClock;
+                if (normalizedClock >= 0.17f) ForceRenderingOff = false;
+                DissolveProgress = 1f - Mathf.Clamp01((normalizedClock - 0.17f) / 0.66f);
+            }
+
+            public void Finish(bool hidden)
             {
                 LastFinishedPopulationId = CurrentPopulationId;
                 FinishCount++;
                 ActivePopulationCount = 0;
                 DissolveEnabled = false;
                 DissolveProgress = 0f;
-                Events.Add("finish");
+                ForceRenderingOff = hidden;
+                Events.Add(hidden ? "finish-hidden" : "finish-visible");
             }
 
-            public void Restore()
+            public void Restore(bool hidden)
             {
                 RestoreCount++;
                 ActivePopulationCount = 0;
                 DissolveEnabled = false;
                 DissolveProgress = 0f;
-                Events.Add("restore");
+                ForceRenderingOff = hidden;
+                Events.Add(hidden ? "restore-hidden" : "restore-visible");
+            }
+
+            private void BeginVisibility(PerformerDissolveProfile profile)
+            {
+                CurrentPopulationId++;
+                ActivePopulationCount = 1;
+                DissolveEnabled = true;
+                DissolveProgress = 0f;
+                VisibilityClock = 0f;
+                if (ThrowOnBegin) throw new InvalidOperationException("Synthetic visibility particle setup failure.");
             }
         }
     }

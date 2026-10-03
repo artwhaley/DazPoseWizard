@@ -38,6 +38,8 @@ void PerformerParticleBodyUpdate(
     const int Hidden = 5;
     const int StreamDepart = 6;
     const int StreamArrive = 7;
+    const int StreamOut = 8;
+    const int StreamIn = 9;
 
     float3 surfaceWorld = attributes.position;
     float3 surfaceLocal = mul(WorldToLocalMatrix, float4(surfaceWorld, 1.0)).xyz;
@@ -49,6 +51,73 @@ void PerformerParticleBodyUpdate(
     float3 seeds = seed + float3(0.173, 0.617, 0.913);
     float3 randomVector = frac(sin(seeds * float3(127.1, 311.7, 74.7)) * 43758.5453) * 2.0 - 1.0;
     float3 randomDirection = normalize(randomVector + float3(0.0001, 0.0001, 0.0001));
+    if (Phase == StreamOut)
+    {
+        // age remains the frozen source-surface dissolve field; velocity remains the
+        // frozen binding offset. No phase-6/7 attributes or timing are repurposed.
+        if (attributes.age < 0.0) attributes.age = field;
+        const float releaseWindow = 0.62;
+        float clock = saturate(TransitProgress);
+        float releaseAt = saturate(attributes.age) * releaseWindow;
+        float3 start = SourceCenter + attributes.velocity;
+        float rise = TransitArcHeight * lerp(1.4, 3.0, frac(seed * 17.31));
+        float lateralAngle = seed * 6.28318530718 + SwirlTurns * 1.7;
+        float lateralDistance = CloudScale * lerp(0.08, 0.28, frac(seed * 31.416));
+        float3 lateral = float3(cos(lateralAngle), 0.0, sin(lateralAngle)) * lateralDistance;
+        float3 end = start + float3(0.0, rise, 0.0) + lateral;
+        float3 bend1 = start + float3(0.0, rise * 0.28, 0.0) + lateral * 0.18;
+        float3 bend2 = end - float3(0.0, rise * 0.24, 0.0) + lateral * 0.18;
+        float flight = saturate((clock - releaseAt) / max(1.0 - releaseAt, 0.0001));
+        float inverseFlight = 1.0 - flight;
+        float3 path = inverseFlight * inverseFlight * inverseFlight * start
+            + 3.0 * inverseFlight * inverseFlight * flight * bend1
+            + 3.0 * inverseFlight * flight * flight * bend2
+            + flight * flight * flight * end;
+        float envelope = sin(3.14159265359 * flight);
+        float flutter = seed * 6.28318530718 + flight * SwirlTurns * 6.28318530718;
+        float3 wisp = float3(sin(flutter), cos(flutter * 0.71), sin(flutter * 0.47))
+            * (CloudScale * 0.035) + randomDirection * sin(flutter * 1.31) * TurbulenceStrength;
+        attributes.position = path + wisp * envelope
+            + attributes.direction * (0.004 * (1.0 - smoothstep(0.0, 0.06, flight)));
+        float appearAt = max(0.0, releaseAt - 0.055);
+        float visible = smoothstep(appearAt, max(appearAt + 0.001, releaseAt - 0.005), clock);
+        float fade = smoothstep(0.68, 1.0, flight);
+        float shimmer = 0.8 + 0.2 * sin(clock * 29.0 + seed * 47.3);
+        attributes.alpha = visible * (1.0 - fade) * shimmer;
+        return;
+    }
+    if (Phase == StreamIn)
+    {
+        // PositionMesh supplies the live destination binding each update. Reusing age
+        // records that binding's field order while pose changes continue to move its end.
+        if (attributes.age < 0.0) attributes.age = field;
+        float clock = saturate(TransitProgress);
+        float arrivalAt = 0.12 + (1.0 - saturate(attributes.age)) * 0.64;
+        float flight = saturate(clock / max(arrivalAt, 0.0001));
+        float rise = TransitArcHeight * lerp(1.4, 3.0, frac(seed * 17.31));
+        float lateralDistance = CloudScale * lerp(0.08, 0.28, frac(seed * 31.416));
+        float3 lateral = randomDirection * lateralDistance;
+        float3 end = surfaceWorld;
+        float3 start = end + float3(0.0, rise, 0.0) + lateral;
+        float3 delta = end - start;
+        float3 bend1 = start + delta * 0.30 + lateral * 0.18;
+        float3 bend2 = end - delta * 0.24 + lateral * 0.12 + float3(0.0, rise * 0.12, 0.0);
+        float inverseFlight = 1.0 - flight;
+        float3 path = inverseFlight * inverseFlight * inverseFlight * start
+            + 3.0 * inverseFlight * inverseFlight * flight * bend1
+            + 3.0 * inverseFlight * flight * flight * bend2
+            + flight * flight * flight * end;
+        float envelope = sin(3.14159265359 * flight);
+        float flutter = seed * 6.28318530718 + flight * SwirlTurns * 6.28318530718;
+        float3 wisp = float3(sin(flutter), cos(flutter * 0.71), sin(flutter * 0.47))
+            * (CloudScale * 0.035) + randomDirection * sin(flutter * 1.31) * TurbulenceStrength;
+        attributes.position = path + wisp * envelope;
+        float visible = smoothstep(0.0, 0.055, clock);
+        float fade = smoothstep(arrivalAt, min(1.0, arrivalAt + 0.23), clock);
+        float shimmer = 0.8 + 0.2 * sin(clock * 29.0 + seed * 47.3);
+        attributes.alpha = visible * (1.0 - fade) * shimmer;
+        return;
+    }
     if (Phase == StreamDepart || Phase == StreamArrive)
     {
         // Freeze each source surface address and release time. PositionMesh continues to

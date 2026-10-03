@@ -18,7 +18,9 @@ namespace DazPose.Performer
             Reform = 4,
             Hidden = 5,
             StreamDepart = 6,
-            StreamArrive = 7
+            StreamArrive = 7,
+            StreamOut = 8,
+            StreamIn = 9
         }
 
         private enum Transition
@@ -67,6 +69,7 @@ namespace DazPose.Performer
         [SerializeField] private Color glowColor = new Color(2.8f, 0.003250774f, 2.8f, 0.5f);
         [SerializeField, Min(0.0001f)] private float coreSize = 0.003f;
         [SerializeField, Min(0.0001f)] private float glowSize = 0.009f;
+        [SerializeField, HideInInspector] private SuccubusPerformer debugVisibilityOwner;
 
         private GraphicsBuffer _surfaceBuffer;
         private GameObject _effectObject;
@@ -93,6 +96,8 @@ namespace DazPose.Performer
         public VisualEffectAsset VisualEffectAsset => visualEffectAsset;
         public PerformerSurfaceBindingAsset SurfaceBindings => surfaceBindings;
         public string Status { get; private set; } = "Particle body is stopped.";
+
+        internal void ConfigureDebugVisibilityOwner(SuccubusPerformer owner) => debugVisibilityOwner = owner;
 
         public bool ValidateConfiguration(out string reason)
         {
@@ -187,6 +192,59 @@ namespace DazPose.Performer
             _effect.SetVector4(DissolveFieldParamsId, _dissolveFieldParams);
             SetPhase(BodyPhase.Departure);
             Status = "DissolveTo owns one live 32,768-particle body.";
+        }
+
+        internal void BeginVisibilityOut(PerformerDissolveProfile profile)
+        {
+            BeginOneSidedVisibility(profile, BodyPhase.StreamOut,
+                "DissolveOut streams the bound surface embers upward individually.");
+        }
+
+        internal void BeginVisibilityIn(PerformerDissolveProfile profile)
+        {
+            BeginOneSidedVisibility(profile, BodyPhase.StreamIn,
+                "DissolveIn descends particles onto Lara's current skinned surface.");
+        }
+
+        internal void SetVisibilityClock(float normalizedClock)
+        {
+            if (!IsActive || (_phase != BodyPhase.StreamOut && _phase != BodyPhase.StreamIn))
+                throw new InvalidOperationException("The particle body is not in a one-sided visibility phase.");
+            SetFloat(TransitProgressId, Mathf.Clamp01(normalizedClock));
+        }
+
+        private void BeginOneSidedVisibility(PerformerDissolveProfile profile, BodyPhase phase, string status)
+        {
+            if (!ValidateConfiguration(profile, out string reason))
+                throw new InvalidOperationException(reason);
+
+            _transition = Transition.None;
+            _dissolveFieldParams = profile.DissolveFieldParams;
+            coreColor = profile.CoreColor;
+            glowColor = profile.GlowColor;
+            coreSize = profile.CoreSize;
+            glowSize = profile.GlowSize;
+            EnsureCreated(phase);
+            ApplyAppearance();
+
+            _sourceCenter = targetRenderer.bounds.center;
+            _destinationCenter = _sourceCenter;
+            SetVector3(SourceCenterId, _sourceCenter);
+            SetVector3(DestinationCenterId, _destinationCenter);
+            SetFloat(DepartureProgressId, 0f);
+            SetFloat(DissolveProgressId, 0f);
+            SetFloat(MaterializeProgressId, 0f);
+            SetFloat(TransitProgressId, 0f);
+            SetFloat(TransitArcHeightId, profile.TransitArcHeight);
+            SetFloat(CloudScaleId, profile.CloudScale);
+            SetFloat(SwirlTurnsId, profile.SwirlTurns);
+            SetFloat(TurbulenceStrengthId, profile.TurbulenceStrength);
+            _effect.SetVector4(DissolveFieldParamsId, _dissolveFieldParams);
+            SetPhase(phase);
+            // Refresh the stable bindings and frozen per-particle source offset before
+            // the selected one-sided update phase begins evaluating.
+            _effect.Reinit();
+            Status = status;
         }
 
         internal void SetDissolveProgress(float progress)
@@ -347,6 +405,7 @@ namespace DazPose.Performer
 
         public void Show()
         {
+            RequireDebugVisibilityOwnerVisible();
             EnsureCreated();
             _transition = Transition.None;
             _phase = BodyPhase.Follow;
@@ -365,6 +424,7 @@ namespace DazPose.Performer
 
         public void Hide()
         {
+            RequireDebugVisibilityOwnerVisible();
             EnsureCreated();
             _transition = Transition.None;
             _phase = BodyPhase.Hidden;
@@ -374,6 +434,7 @@ namespace DazPose.Performer
 
         public void Detach()
         {
+            RequireDebugVisibilityOwnerVisible();
             EnsureCreated();
             if (_phase != BodyPhase.Follow && _phase != BodyPhase.Hidden)
                 throw new InvalidOperationException("DETACH requires Lara's particle body to be following. Click RESET first if it is already detached.");
@@ -394,6 +455,7 @@ namespace DazPose.Performer
 
         public void TransitToCurrentPerformer()
         {
+            RequireDebugVisibilityOwnerVisible();
             EnsureCreated();
             if (_phase != BodyPhase.Detached)
                 throw new InvalidOperationException("TRANSIT A → B requires a detached cloud. Click DETACH and move Lara to B first.");
@@ -410,6 +472,7 @@ namespace DazPose.Performer
 
         public void Reform()
         {
+            RequireDebugVisibilityOwnerVisible();
             EnsureCreated();
             if (_phase != BodyPhase.Detached)
                 throw new InvalidOperationException("REFORM requires the cloud to be detached or to finish transit first.");
@@ -426,6 +489,7 @@ namespace DazPose.Performer
 
         public void ResetBody()
         {
+            RequireDebugVisibilityOwnerVisible();
             EnsureCreated();
             _transition = Transition.None;
             _phase = BodyPhase.Follow;
@@ -617,6 +681,14 @@ namespace DazPose.Performer
         private void SetVector3(int propertyId, Vector3 value)
         {
             if (_effect != null) _effect.SetVector3(propertyId, value);
+        }
+
+        private void RequireDebugVisibilityOwnerVisible()
+        {
+            if (debugVisibilityOwner == null) return;
+            if (debugVisibilityOwner.VisibilityState != PerformerVisibilityState.Visible
+                || debugVisibilityOwner.IsDissolving)
+                throw new InvalidOperationException("Particle-body acceptance controls require the performer to be in stable Visible state with no active dissolve.");
         }
 
         private static void Require(bool condition, string property, string type)

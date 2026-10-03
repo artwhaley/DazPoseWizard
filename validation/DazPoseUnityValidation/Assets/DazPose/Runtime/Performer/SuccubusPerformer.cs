@@ -46,6 +46,7 @@ namespace DazPose.Performer
         [Header("Dissolve")]
         [SerializeField] private PerformerDissolveProfile dissolveProfile;
         [SerializeField] private PerformerDissolveRig dissolveRig;
+        [SerializeField] private bool startHidden = true;
 
         [Header("Breathing")]
         [SerializeField] private bool breathingEnabled = true;
@@ -135,6 +136,9 @@ namespace DazPose.Performer
         private bool _hasExpressionCommand;
         private bool _hasSavedApplyRootMotion;
         private bool _savedApplyRootMotion;
+        private bool _visibilityInitialized;
+        private bool _lastStableHidden;
+        private bool _isDissolveShaderAcceptanceActive;
 
         public PerformerPose SettledPose => _bodyPose != null ? _bodyPose.SettledPose : _lastSettledPose;
         public PerformerPose DesiredPose => _bodyPose != null ? _bodyPose.DesiredPose : _lastDesiredPose;
@@ -146,6 +150,11 @@ namespace DazPose.Performer
         public bool IsTeleporting => _teleport != null && _teleport.IsTeleporting;
         public bool DissolveAvailable => _dissolve != null && IsRuntimeReady;
         public bool IsDissolving => _dissolve != null && _dissolve.IsDissolving;
+        internal bool IsDissolveShaderAcceptanceActive => _isDissolveShaderAcceptanceActive;
+        public PerformerVisibilityState VisibilityState => _dissolve != null
+            ? _dissolve.VisibilityState
+            : _lastStableHidden ? PerformerVisibilityState.Hidden : PerformerVisibilityState.Visible;
+        public bool IsHidden => VisibilityState == PerformerVisibilityState.Hidden;
         public bool DissolveShaderAcceptanceAvailable => IsRuntimeReady
             && dissolveProfile != null && dissolveRig != null
             && dissolveProfile.IsShaderReady(out _) && dissolveRig.IsShaderReady(dissolveProfile, out _);
@@ -345,7 +354,10 @@ namespace DazPose.Performer
         private void OnEnable()
         {
             _isTearingDown = false;
-            if (Application.isPlaying) CreateRuntime();
+            if (!Application.isPlaying) return;
+            InitializeVisibilityIfNeeded();
+            ApplyStableVisibility(_lastStableHidden);
+            CreateRuntime();
         }
 
         private void Update()
@@ -465,24 +477,29 @@ namespace DazPose.Performer
         public void DissolveTo(Transform target) => DissolveTo(target, null);
 
         public void DissolveTo(Vector3 worldPosition, PerformerPose arrivalPose) =>
-            RequireDissolveRuntime().DissolveTo(worldPosition, arrivalPose, null);
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(worldPosition, arrivalPose, null);
 
         public void DissolveTo(Transform target, PerformerPose arrivalPose) =>
-            RequireDissolveRuntime().DissolveTo(target, arrivalPose, null);
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(target, arrivalPose, null);
 
         /// <summary>Runs the complete dissolve with one total duration in seconds.</summary>
         public void DissolveTo(Vector3 worldPosition, float durationSeconds, PerformerPose arrivalPose = null) =>
-            RequireDissolveRuntime().DissolveTo(worldPosition, durationSeconds, arrivalPose, null);
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(worldPosition, durationSeconds, arrivalPose, null);
 
         /// <summary>Snapshots the destination position/facing and scales the whole dissolve to durationSeconds.</summary>
         public void DissolveTo(Transform target, float durationSeconds, PerformerPose arrivalPose = null) =>
-            RequireDissolveRuntime().DissolveTo(target, durationSeconds, arrivalPose, null);
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(target, durationSeconds, arrivalPose, null);
 
         public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition, float durationSeconds,
             PerformerPose arrivalPose = null)
         {
             var completion = new AwaitableCompletionSource<DissolveCompletion>();
-            RequireDissolveRuntime().DissolveTo(worldPosition, durationSeconds, arrivalPose, completion);
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(worldPosition, durationSeconds, arrivalPose, completion);
             return completion.Awaitable;
         }
 
@@ -490,7 +507,8 @@ namespace DazPose.Performer
             PerformerPose arrivalPose = null)
         {
             var completion = new AwaitableCompletionSource<DissolveCompletion>();
-            RequireDissolveRuntime().DissolveTo(target, durationSeconds, arrivalPose, completion);
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(target, durationSeconds, arrivalPose, completion);
             return completion.Awaitable;
         }
 
@@ -505,8 +523,7 @@ namespace DazPose.Performer
         {
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("Dissolve shader acceptance is available only while the performer is enabled in Play Mode.");
-            if (_dissolve != null && _dissolve.IsDissolving)
-                throw new InvalidOperationException("Shader acceptance controls cannot run while DissolveTo is active.");
+            RequireStableVisibleForDebug("Dissolve shader acceptance");
             if (float.IsNaN(progress) || float.IsInfinity(progress))
                 throw new ArgumentOutOfRangeException(nameof(progress), "Dissolve progress must be finite.");
             if (dissolveRig == null)
@@ -516,19 +533,46 @@ namespace DazPose.Performer
 
             dissolveRig.SetDissolveEnabled(enabled);
             dissolveRig.SetDissolveProgress(Mathf.Clamp01(progress));
+            _isDissolveShaderAcceptanceActive = enabled;
         }
 
         public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition, PerformerPose arrivalPose)
         {
             var completion = new AwaitableCompletionSource<DissolveCompletion>();
-            RequireDissolveRuntime().DissolveTo(worldPosition, arrivalPose, completion);
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(worldPosition, arrivalPose, completion);
             return completion.Awaitable;
         }
 
         public Awaitable<DissolveCompletion> DissolveToAsync(Transform target, PerformerPose arrivalPose)
         {
             var completion = new AwaitableCompletionSource<DissolveCompletion>();
-            RequireDissolveRuntime().DissolveTo(target, arrivalPose, completion);
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(target, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public void DissolveOut(float durationSeconds) =>
+            RequireDissolveRuntime("DissolveOut", PerformerVisibilityState.Visible, requireStanding: false)
+                .DissolveOut(durationSeconds, null);
+
+        public Awaitable<VisibilityCompletion> DissolveOutAsync(float durationSeconds)
+        {
+            var completion = new AwaitableCompletionSource<VisibilityCompletion>();
+            RequireDissolveRuntime("DissolveOut", PerformerVisibilityState.Visible, requireStanding: false)
+                .DissolveOut(durationSeconds, completion);
+            return completion.Awaitable;
+        }
+
+        public void DissolveIn(float durationSeconds) =>
+            RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false)
+                .DissolveIn(durationSeconds, null);
+
+        public Awaitable<VisibilityCompletion> DissolveInAsync(float durationSeconds)
+        {
+            var completion = new AwaitableCompletionSource<VisibilityCompletion>();
+            RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false)
+                .DissolveIn(durationSeconds, completion);
             return completion.Awaitable;
         }
 
@@ -833,6 +877,8 @@ namespace DazPose.Performer
         {
             DestroyRuntime();
             _isTearingDown = false;
+            InitializeVisibilityIfNeeded();
+            ApplyStableVisibility(_lastStableHidden);
             if (animator == null) animator = GetComponent<Animator>();
             if (animator == null)
                 throw new InvalidOperationException("SuccubusPerformer needs an Animator on this GameObject or assigned in its Inspector.");
@@ -915,7 +961,7 @@ namespace DazPose.Performer
                         && dissolveRig.IsReady(dissolveProfile, out dissolveReason))
                     {
                         _dissolve = new PerformerDissolve(transform, dissolveProfile, dissolveRig,
-                            pose => Pose(pose, PoseTransition.Snap));
+                            pose => Pose(pose, PoseTransition.Snap), _lastStableHidden, SetStableHidden);
                     }
                     else
                     {
@@ -994,6 +1040,7 @@ namespace DazPose.Performer
 
         private PerformerLocomotion RequireLocomotionRuntime()
         {
+            RequireVisibleForWorldCommands("WalkTo");
             if (IsTeleporting)
                 throw new InvalidOperationException("WalkTo is unavailable while a teleport is in progress.");
             if (IsDissolving)
@@ -1010,6 +1057,7 @@ namespace DazPose.Performer
 
         private PerformerSeating RequireSeatingRuntime()
         {
+            RequireVisibleForWorldCommands("SitAt/StandUp");
             if (IsTeleporting)
                 throw new InvalidOperationException("SitAt/StandUp is unavailable while a teleport is in progress.");
             if (IsDissolving)
@@ -1021,6 +1069,7 @@ namespace DazPose.Performer
 
         private PerformerTeleport RequireTeleportRuntime()
         {
+            RequireVisibleForWorldCommands("TeleportTo");
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("SuccubusPerformer can teleport only while its runtime is ready in Play Mode.");
             if (IsDissolving)
@@ -1036,21 +1085,88 @@ namespace DazPose.Performer
             return _teleport;
         }
 
-        private PerformerDissolve RequireDissolveRuntime()
+        private PerformerDissolve RequireDissolveRuntime(string command,
+            PerformerVisibilityState requiredState, bool requireStanding)
         {
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("SuccubusPerformer can dissolve only while its runtime is ready in Play Mode.");
             if (_dissolve == null)
-                throw new InvalidOperationException("DissolveTo is unavailable. In Edit Mode, run Tools > DAZ Pose > First Performance Void > Install Dissolve Acceptance Harness.");
+                throw new InvalidOperationException(command + " is unavailable. In Edit Mode, run Tools > DAZ Pose > First Performance Void > Install Dissolve Acceptance Harness.");
+            if (VisibilityState != requiredState)
+                throw new InvalidOperationException(command + " requires Lara to be in stable " + requiredState
+                    + " visibility state; current state is " + VisibilityState + ".");
+            if (_isDissolveShaderAcceptanceActive)
+                throw new InvalidOperationException(command + " is unavailable while shader-only dissolve acceptance is active. Reset the shader acceptance controls first.");
             if (IsTeleporting)
-                throw new InvalidOperationException("DissolveTo is unavailable while a teleport is in progress.");
+                throw new InvalidOperationException(command + " is unavailable while a teleport is in progress.");
             if (IsLocomoting)
-                throw new InvalidOperationException("DissolveTo requires Lara to finish locomoting first.");
-            if (SeatingState != PerformerSeatingState.Standing)
-                throw new InvalidOperationException("DissolveTo is available only while Lara is standing.");
+                throw new InvalidOperationException(command + " requires Lara to finish locomoting first.");
+            if (requireStanding && SeatingState != PerformerSeatingState.Standing)
+                throw new InvalidOperationException(command + " is available only while Lara is standing.");
+            if (!requireStanding && IsSeatingTransitionActive())
+                throw new InvalidOperationException(command + " is unavailable while a seating transition is in progress.");
             if (_dissolve.IsDissolving)
-                throw new InvalidOperationException("A dissolve is already in progress; wait for it to arrive before requesting another.");
+                throw new InvalidOperationException("A dissolve/visibility transition is already in progress; wait for it to finish before requesting " + command + ".");
             return _dissolve;
+        }
+
+        private bool IsSeatingTransitionActive()
+        {
+            switch (SeatingState)
+            {
+                case PerformerSeatingState.Approaching:
+                case PerformerSeatingState.Aligning:
+                case PerformerSeatingState.SittingDown:
+                case PerformerSeatingState.CrossingLegs:
+                case PerformerSeatingState.PreparingUncross:
+                case PerformerSeatingState.UncrossingLegs:
+                case PerformerSeatingState.StandingUp:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private void RequireVisibleForWorldCommands(string command)
+        {
+            PerformerVisibilityState state = VisibilityState;
+            if (state == PerformerVisibilityState.Hidden)
+                throw new InvalidOperationException(command + " is unavailable while Lara is persistently hidden.");
+            if (state == PerformerVisibilityState.DissolvingOut || state == PerformerVisibilityState.DissolvingIn)
+                throw new InvalidOperationException(command + " is unavailable while Lara is changing visibility.");
+        }
+
+        private void RequireStableVisibleForDebug(string command)
+        {
+            if (VisibilityState != PerformerVisibilityState.Visible || IsDissolving)
+                throw new InvalidOperationException(command + " requires stable Visible state and no active dissolve.");
+        }
+
+        private void InitializeVisibilityIfNeeded()
+        {
+            if (_visibilityInitialized) return;
+            _lastStableHidden = startHidden;
+            _visibilityInitialized = true;
+        }
+
+        private void SetStableHidden(bool hidden)
+        {
+            _lastStableHidden = hidden;
+            _visibilityInitialized = true;
+        }
+
+        private void ApplyStableVisibility(bool hidden)
+        {
+            if (dissolveRig != null && dissolveRig.TargetRenderer != null)
+            {
+                dissolveRig.ApplyStableVisibility(hidden);
+                return;
+            }
+
+            if (dissolveRig != null) dissolveRig.ApplyStableVisibility(hidden);
+            SkinnedMeshRenderer[] renderers = GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            foreach (SkinnedMeshRenderer renderer in renderers)
+                if (renderer != null) renderer.forceRenderingOff = hidden;
         }
 
         private void DestroyRuntime()
@@ -1065,6 +1181,7 @@ namespace DazPose.Performer
             _isTearingDown = true;
             _dissolve?.Dispose();
             _dissolve = null;
+            _isDissolveShaderAcceptanceActive = false;
             _teleport?.Dispose();
             _teleport = null;
             var speech = _speech;

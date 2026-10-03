@@ -52,3 +52,4 @@ MonoBehaviour:
   arrivalAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
   departurePitch: 0.92
   arrivalPitch: 1.08
+  visibilityAudioStartOffsetSeconds: 0.85

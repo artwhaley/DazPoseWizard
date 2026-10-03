@@ -539,6 +539,10 @@ namespace DazPose.Performer
                 failures.Add("P0.G3 integration checks require the dissolve rig, its particle body, and Lara's skinned renderer.");
                 yield break;
             }
+            if (performer.gameObject.scene.name == "FirstPerformanceVoid"
+                && (performer.VisibilityState != PerformerVisibilityState.Visible || performer.IsHidden
+                    || renderer.forceRenderingOff))
+                failures.Add("P0.H FirstPerformanceVoid must explicitly start with stable Visible visibility.");
             if (body.BindingCount != PerformerSurfaceBindingAsset.RequiredBindingCount)
             {
                 failures.Add("P0.G3 integration check found " + body.BindingCount + " particle bindings instead of 32,768.");

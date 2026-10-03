@@ -9,6 +9,8 @@ namespace DazPose.Performer
     {
         private const float MeshRevealStartProgress = 0.75f;
         private bool _streaming;
+        private bool _oneSidedVisibility;
+        private bool _visibilityRendererRevealed;
         private float _streamDepartureSeconds;
         private float _streamFadeSeconds;
 
@@ -29,10 +31,13 @@ namespace DazPose.Performer
 
         public Vector3 BodyCenter => targetRenderer != null ? targetRenderer.bounds.center : transform.position;
         public PerformerParticleBody ParticleBody => particleBody;
+        internal SkinnedMeshRenderer TargetRenderer => targetRenderer;
 
         private void OnDisable()
         {
-            Restore();
+            // Component cleanup releases effect resources but preserves the renderer's
+            // current visibility decision. The performer facade owns stable visibility.
+            RestorePreservingVisibility();
         }
 
         public bool IsShaderReady(PerformerDissolveProfile profile, out string reason)
@@ -122,26 +127,91 @@ namespace DazPose.Performer
 
             _prepared = true;
             _streaming = false;
+            _oneSidedVisibility = false;
+            _visibilityRendererRevealed = false;
             _streamDepartureSeconds = timing.DepartureDuration;
             _streamFadeSeconds = timing.FadeDuration;
             try
             {
                 particleBody.BeginDissolve(profile, timing);
-                MaterialPropertyBlock block = GetPropertyBlock();
-                block.SetVector(DissolveFieldParamsId, profile.DissolveFieldParams);
-                block.SetFloat(DissolveEdgeWidthId, profile.DissolveEdgeWidth);
-                block.SetColor(DissolveEdgeColorId, profile.DissolveEdgeColor);
-                block.SetFloat(DissolveEdgeEmissionId, profile.DissolveEdgeEmission);
-                block.SetFloat(DissolveEnabledId, 1f);
-                block.SetFloat(DissolveProgressId, 0f);
-                SetBounds(block);
-                targetRenderer.SetPropertyBlock(block);
+                InitializeDissolveProperties(profile, 0f);
+                targetRenderer.forceRenderingOff = false;
             }
             catch
             {
-                Restore();
+                Restore(false);
                 throw;
             }
+        }
+
+        internal void BeginVisibilityOut(PerformerDissolveProfile profile)
+        {
+            BeginOneSidedVisibility(profile, hiddenAtStart: false, phaseOut: true);
+        }
+
+        internal void BeginVisibilityIn(PerformerDissolveProfile profile)
+        {
+            BeginOneSidedVisibility(profile, hiddenAtStart: true, phaseOut: false);
+        }
+
+        internal void SetVisibilityOutProgress(float normalizedClock)
+        {
+            RequireOneSidedPrepared();
+            float clock = Mathf.Clamp01(normalizedClock);
+            SetTargetDissolveProgress(Mathf.Clamp01(clock / 0.62f));
+            particleBody.SetVisibilityClock(clock);
+        }
+
+        internal void SetVisibilityInProgress(float normalizedClock)
+        {
+            RequireOneSidedPrepared();
+            float clock = Mathf.Clamp01(normalizedClock);
+            if (!_visibilityRendererRevealed && clock >= 0.17f)
+            {
+                // Reveal the renderer while the shader still clips the complete mesh.
+                targetRenderer.forceRenderingOff = false;
+                _visibilityRendererRevealed = true;
+            }
+            float reveal = Mathf.Clamp01((clock - 0.17f) / 0.66f);
+            SetTargetDissolveProgress(1f - reveal);
+            particleBody.SetVisibilityClock(clock);
+        }
+
+        private void BeginOneSidedVisibility(PerformerDissolveProfile profile, bool hiddenAtStart, bool phaseOut)
+        {
+            if (_prepared) throw new InvalidOperationException("The dissolve rig is already in use.");
+            if (!IsReady(profile, out string reason)) throw new InvalidOperationException(reason);
+
+            _prepared = true;
+            _streaming = false;
+            _oneSidedVisibility = true;
+            _visibilityRendererRevealed = false;
+            try
+            {
+                // Keep Lara hidden until the phase-9 mesh reveal actually begins.
+                targetRenderer.forceRenderingOff = hiddenAtStart;
+                if (phaseOut) particleBody.BeginVisibilityOut(profile);
+                else particleBody.BeginVisibilityIn(profile);
+                InitializeDissolveProperties(profile, phaseOut ? 0f : 1f);
+            }
+            catch
+            {
+                Restore(hiddenAtStart);
+                throw;
+            }
+        }
+
+        private void InitializeDissolveProperties(PerformerDissolveProfile profile, float progress)
+        {
+            MaterialPropertyBlock block = GetPropertyBlock();
+            block.SetVector(DissolveFieldParamsId, profile.DissolveFieldParams);
+            block.SetFloat(DissolveEdgeWidthId, profile.DissolveEdgeWidth);
+            block.SetColor(DissolveEdgeColorId, profile.DissolveEdgeColor);
+            block.SetFloat(DissolveEdgeEmissionId, profile.DissolveEdgeEmission);
+            block.SetFloat(DissolveEnabledId, 1f);
+            block.SetFloat(DissolveProgressId, progress);
+            SetBounds(block);
+            targetRenderer.SetPropertyBlock(block);
         }
 
         internal float EvaluateEffectCurve(float normalizedTime) =>
@@ -198,8 +268,9 @@ namespace DazPose.Performer
             SetTargetDissolveProgress(1f - meshRevealProgress);
         }
 
-        internal void Finish()
+        internal void Finish(bool hidden)
         {
+            if (hidden && targetRenderer != null) targetRenderer.forceRenderingOff = true;
             if (targetRenderer != null)
             {
                 MaterialPropertyBlock block = GetPropertyBlock();
@@ -216,11 +287,16 @@ namespace DazPose.Performer
             {
                 _prepared = false;
                 _streaming = false;
+                _oneSidedVisibility = false;
+                _visibilityRendererRevealed = false;
+                if (!hidden && targetRenderer != null) targetRenderer.forceRenderingOff = false;
             }
         }
 
-        internal void Restore()
+        internal void Restore(bool hidden)
         {
+            // Hide first so shader reset cannot flash an outgoing/incomplete mesh.
+            if (hidden && targetRenderer != null) targetRenderer.forceRenderingOff = true;
             try
             {
                 if (targetRenderer != null)
@@ -242,8 +318,26 @@ namespace DazPose.Performer
                 {
                     _prepared = false;
                     _streaming = false;
+                    _oneSidedVisibility = false;
+                    _visibilityRendererRevealed = false;
+                    if (targetRenderer != null) targetRenderer.forceRenderingOff = hidden;
                 }
             }
+        }
+
+        internal void ApplyStableVisibility(bool hidden)
+        {
+            Restore(hidden);
+        }
+
+        private void RestorePreservingVisibility()
+        {
+            if (targetRenderer == null)
+            {
+                Restore(false);
+                return;
+            }
+            Restore(targetRenderer.forceRenderingOff);
         }
 
         private MaterialPropertyBlock GetPropertyBlock()
@@ -268,6 +362,12 @@ namespace DazPose.Performer
         {
             if (!_prepared || particleBody == null)
                 throw new InvalidOperationException("The dissolve rig has not begun a particle-backed dissolve.");
+        }
+
+        private void RequireOneSidedPrepared()
+        {
+            if (!_prepared || !_oneSidedVisibility || particleBody == null)
+                throw new InvalidOperationException("A one-sided visibility dissolve has not begun.");
         }
     }
 }

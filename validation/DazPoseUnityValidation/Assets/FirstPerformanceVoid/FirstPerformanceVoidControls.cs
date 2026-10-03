@@ -39,6 +39,8 @@ namespace DazPose.FirstPerformanceVoid
         private float dissolveShaderAnimationElapsed;
         private bool dissolveTestRunning;
         private string dissolveTestStatus = "Run the P0.G3 DissolveTo acceptance checks in Play Mode.";
+        private bool visibilityTestRunning;
+        private string visibilityTestStatus = "DissolveOut leaves Lara hidden; use a matching IN button to restore her.";
         private const float DissolveShaderHalfCycleSeconds = 1f;
 
         public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
@@ -72,6 +74,7 @@ namespace DazPose.FirstPerformanceVoid
         private void Awake()
         {
             smokeEmitters = GetComponentsInChildren<ParticleSystem>();
+            if (particleBody != null) particleBody.ConfigureDebugVisibilityOwner(performer);
         }
 
         private void Update()
@@ -121,7 +124,8 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.Space(5f);
             GUILayout.Label("P0.F TELEPORT", GUI.skin.box);
             bool teleportEnabled = enabled && !teleportTestRunning && performer != null
-                && performer.TeleportAvailable && !performer.IsDissolving;
+                && performer.TeleportAvailable && performer.VisibilityState == PerformerVisibilityState.Visible
+                && !performer.IsDissolving;
             GUI.enabled = teleportEnabled && teleportMarkA != null && teleportMarkB != null;
             if (GUILayout.Button("TELEPORT A → B")) RunTeleportTest(teleportMarkB, null);
             GUI.enabled = teleportEnabled && teleportMarkA != null && teleportMarkB != null;
@@ -134,7 +138,8 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.Space(5f);
             GUILayout.Label("P0.G1 DISSOLVE SHADER", GUI.skin.box);
             bool shaderAcceptanceEnabled = enabled && !dissolveShaderAnimating && performer != null
-                && performer.DissolveShaderAcceptanceAvailable && !performer.IsDissolving;
+                && performer.DissolveShaderAcceptanceAvailable
+                && performer.VisibilityState == PerformerVisibilityState.Visible && !performer.IsDissolving;
             GUI.enabled = shaderAcceptanceEnabled;
             if (GUILayout.Button("DISSOLVE SHADER 0%")) SetDissolveShaderAcceptanceState(false, 0f);
             if (GUILayout.Button("DISSOLVE SHADER 25%")) SetDissolveShaderAcceptanceState(true, 0.25f);
@@ -161,7 +166,9 @@ namespace DazPose.FirstPerformanceVoid
                 : null;
             PerformerPose dissolveArrivalPose = poseHarness != null ? poseHarness.PoseB : null;
             bool dissolveEnabled = enabled && !dissolveTestRunning && !dissolveShaderAnimating
-                && performer != null && performer.DissolveAvailable && !performer.IsDissolving
+                && performer != null && performer.DissolveAvailable
+                && performer.VisibilityState == PerformerVisibilityState.Visible && !performer.IsDissolving
+                && !performer.IsDissolveShaderAcceptanceActive
                 && !performer.IsTeleporting && !performer.IsLocomoting
                 && performer.SeatingState == PerformerSeatingState.Standing;
             GUI.enabled = dissolveEnabled && atDissolveA && teleportMarkB != null;
@@ -175,9 +182,33 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.Label("A/B dissolves enable within 0.25 m of the matching TeleportMark. Use P0.F teleport controls to reset position.");
 
             GUILayout.Space(5f);
+            GUILayout.Label("P0.H PERSISTENT VISIBILITY", GUI.skin.box);
+            GUILayout.Label("Visibility: " + (performer != null ? performer.VisibilityState.ToString() : "No performer"), GUI.skin.box);
+            bool visibilityAvailable = enabled && !visibilityTestRunning && !dissolveShaderAnimating && performer != null
+                && performer.DissolveAvailable && !performer.IsDissolving && !performer.IsTeleporting
+                && !performer.IsLocomoting && !performer.IsDissolveShaderAcceptanceActive;
+            bool canDissolveOut = visibilityAvailable && performer.VisibilityState == PerformerVisibilityState.Visible;
+            bool canDissolveIn = visibilityAvailable && performer.VisibilityState == PerformerVisibilityState.Hidden;
+            GUI.enabled = canDissolveOut;
+            if (GUILayout.Button("OUT 1s")) RunVisibilityTest(true, 1f);
+            GUI.enabled = canDissolveIn;
+            if (GUILayout.Button("IN 1s")) RunVisibilityTest(false, 1f);
+            GUI.enabled = canDissolveOut;
+            if (GUILayout.Button("OUT 3s")) RunVisibilityTest(true, 3f);
+            GUI.enabled = canDissolveIn;
+            if (GUILayout.Button("IN 3s")) RunVisibilityTest(false, 3f);
+            GUI.enabled = canDissolveOut;
+            if (GUILayout.Button("OUT 5s")) RunVisibilityTest(true, 5f);
+            GUI.enabled = canDissolveIn;
+            if (GUILayout.Button("IN 5s")) RunVisibilityTest(false, 5f);
+            GUI.enabled = enabled;
+            GUILayout.Label("Visibility: " + visibilityTestStatus);
+
+            GUILayout.Space(5f);
             GUILayout.Label("P0.G2 PARTICLE BODY", GUI.skin.box);
             GUI.enabled = enabled && particleBody != null && !dissolveTestRunning
-                && (performer == null || !performer.IsDissolving);
+                && (performer == null || (performer.VisibilityState == PerformerVisibilityState.Visible
+                    && !performer.IsDissolving && !performer.IsDissolveShaderAcceptanceActive));
             if (GUILayout.Button("PARTICLE BODY — SHOW")) ParticleBodyRequest(particleBody.Show);
             if (GUILayout.Button("PARTICLE BODY — HIDE")) ParticleBodyRequest(particleBody.Hide);
             if (GUILayout.Button("PARTICLE BODY — DETACH")) ParticleBodyRequest(particleBody.Detach);
@@ -189,9 +220,11 @@ namespace DazPose.FirstPerformanceVoid
             if (particleBody != null) GUILayout.Label("Bindings: " + particleBody.BindingCount);
 
             GUILayout.Space(5f);
-            GUI.enabled = enabled && performer != null && performer.IsRuntimeReady && !performer.IsDissolving;
+            GUI.enabled = enabled && performer != null && performer.IsRuntimeReady
+                && performer.VisibilityState == PerformerVisibilityState.Visible && !performer.IsDissolving;
             if (GUILayout.Button("Walk across floor")) Request(() => performer.WalkTo(acrossFloor), "Walking across floor");
             if (GUILayout.Button("Walk near platform")) Request(() => performer.WalkTo(nearPlatform), "Walking beside platform");
+            GUI.enabled = enabled && performer != null && performer.IsRuntimeReady;
             if (GUILayout.Button("Look at camera")) Request(() => performer.LookAt(cameraTarget), "Looking at camera");
             GUI.enabled = enabled;
 
@@ -324,6 +357,28 @@ namespace DazPose.FirstPerformanceVoid
                 Debug.LogException(exception, this);
             }
             finally { dissolveTestRunning = false; }
+        }
+
+        private async void RunVisibilityTest(bool dissolveOut, float durationSeconds)
+        {
+            visibilityTestRunning = true;
+            visibilityTestStatus = (dissolveOut ? "Dissolving out over " : "Dissolving in over ")
+                + durationSeconds.ToString("F0") + " seconds…";
+            try
+            {
+                VisibilityCompletion result = dissolveOut
+                    ? await performer.DissolveOutAsync(durationSeconds)
+                    : await performer.DissolveInAsync(durationSeconds);
+                visibilityTestStatus = result == VisibilityCompletion.PerformerDisabled
+                    ? "Performer disabled; transition rolled back to its starting visibility."
+                    : "Completed in stable " + result + " state. You can wait, change Pose/Expression/Gaze, then press IN.";
+            }
+            catch (Exception exception)
+            {
+                visibilityTestStatus = "REJECTED — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+            finally { visibilityTestRunning = false; }
         }
 
     }
