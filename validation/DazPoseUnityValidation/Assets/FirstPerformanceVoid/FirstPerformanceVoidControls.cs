@@ -566,7 +566,7 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.enabled = guiEnabled && driver.IsRunning;
+            GUI.enabled = guiEnabled && driver.SourceReady;
             if (GUILayout.Button("RESTART"))
             {
                 BeginMotionRootTracking();
