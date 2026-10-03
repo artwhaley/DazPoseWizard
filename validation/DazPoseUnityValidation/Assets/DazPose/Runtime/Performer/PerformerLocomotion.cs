@@ -61,6 +61,7 @@ namespace DazPose.Performer
         public float GaitPhase => _state == PerformerLocomotionState.Walking && _profile.WalkLoop.DurationSeconds > 0f
             ? Mathf.Repeat(_motionTime / _profile.WalkLoop.DurationSeconds, 1f) : 0f;
         public float RemainingDistance => _request == null ? 0f : Planar(_request.Position - _actor.position).magnitude;
+        internal bool PersistentPoseOwnsBody => _body.LocomotionWeight <= 0.001f;
         public float HeadingError => _request == null ? 0f
             : _request.IsTurnTo ? SignedAngleTo(_actor.forward, _request.Facing) : SignedHeadingToGoal();
         public float PredictedStopDistance => _predictedStopDistance;
@@ -107,6 +108,9 @@ namespace DazPose.Performer
             RequestTarget(position, facing, true, source, true);
             return source.Awaitable;
         }
+
+        internal void WalkTo(Vector3 position, Vector3 facing) =>
+            RequestTarget(position, facing, true, null, true);
 
         public void TurnTo(Vector3 worldPosition) => RequestTurnTo(worldPosition, null);
 
@@ -1108,6 +1112,13 @@ namespace DazPose.Performer
         internal void SetHoldSeatingApproachPose(bool hold)
         {
             _holdSeatingApproachPose = hold;
+            UpdateArrivalHold();
+        }
+
+        internal void ReleaseArrivalPoseHoldForAction()
+        {
+            _holdArrivalPose = false;
+            _holdSeatingApproachPose = false;
             UpdateArrivalHold();
         }
 

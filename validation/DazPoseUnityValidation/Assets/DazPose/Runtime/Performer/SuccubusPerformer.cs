@@ -117,6 +117,8 @@ namespace DazPose.Performer
         private PerformerDissolve _dissolve;
         private PerformerSeatingLayer _seatingLayer;
         private PerformerSeating _seating;
+        private PerformerActionLayer _actionLayer;
+        private PerformerActionRuntime _actionRuntime;
         private PerformerGestureLayer _gestureLayer;
         private PerformerBreathing _breathing;
         private PerformerGaze _gaze;
@@ -192,6 +194,17 @@ namespace DazPose.Performer
         public float SeatingCrossLegsExitBlendDuration => _seating == null ? 0.5f : _seating.CrossLegsExitBlendDuration;
         public float SeatingOwnershipWeight => _seating == null ? 0f : _seating.OwnershipWeight;
         public Vector3 SeatingContactError => _seating == null ? default : _seating.ContactError;
+        public bool ActionAvailable => IsRuntimeReady && _actionRuntime != null;
+        public bool IsPerforming => _actionRuntime != null && _actionRuntime.IsPerforming;
+        public PerformerAction CurrentAction => _actionRuntime != null ? _actionRuntime.CurrentAction : null;
+        public PerformerActionState ActionState => _actionRuntime != null
+            ? _actionRuntime.State : PerformerActionState.Idle;
+        public float ActionProgress => _actionRuntime != null ? _actionRuntime.Progress : 0f;
+        public bool ActionHasAnchor => _actionRuntime != null && _actionRuntime.HasAnchor;
+        public Vector3 ActionAnchorPosition => _actionRuntime != null ? _actionRuntime.AnchorPosition : default;
+        public Vector3 ActionAnchorForward => _actionRuntime != null ? _actionRuntime.AnchorForward : default;
+        public float ActionPositionError => _actionRuntime != null ? _actionRuntime.PositionError : 0f;
+        public float ActionHeadingError => _actionRuntime != null ? _actionRuntime.HeadingError : 0f;
         public bool GestureAvailable => IsRuntimeReady && _gestureLayer != null;
         public bool IsGesturing => _gestureLayer != null && _gestureLayer.IsGesturing;
         public PerformerGesture CurrentGesture => _gestureLayer != null ? _gestureLayer.CurrentGesture : null;
@@ -377,6 +390,7 @@ namespace DazPose.Performer
             _bodyPose.Advance(Time.deltaTime);
             _locomotion?.Advance(Time.deltaTime);
             _seating?.Advance(Time.deltaTime);
+            _actionRuntime?.Advance(Time.deltaTime);
             _gestureLayer?.Advance(Time.deltaTime);
             _teleport?.Advance(Time.deltaTime);
             _dissolve?.Advance(Time.deltaTime);
@@ -532,6 +546,7 @@ namespace DazPose.Performer
         {
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("Dissolve shader acceptance is available only while the performer is enabled in Play Mode.");
+            RejectWhilePerforming("Dissolve shader acceptance");
             RequireStableVisibleForDebug("Dissolve shader acceptance");
             if (float.IsNaN(progress) || float.IsInfinity(progress))
                 throw new ArgumentOutOfRangeException(nameof(progress), "Dissolve progress must be finite.");
@@ -631,6 +646,23 @@ namespace DazPose.Performer
         public void StopSpeaking()
         {
             RequireSpeechRuntime().StopSpeaking();
+        }
+
+        /// <summary>Temporarily performs a full-body Action, then returns to its captured world anchor.</summary>
+        public void Perform(PerformerAction action)
+        {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            RequirePerformRuntime(action).Request(action, null);
+        }
+
+        /// <summary>Completes after the finite Action and any physical return-to-anchor recovery.</summary>
+        public Awaitable<ActionCompletion> PerformAsync(PerformerAction action)
+        {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            PerformerActionRuntime runtime = RequirePerformRuntime(action);
+            var completion = new AwaitableCompletionSource<ActionCompletion>();
+            runtime.Request(action, completion);
+            return completion.Awaitable;
         }
 
         public void LookAt(Transform target)
@@ -953,6 +985,11 @@ namespace DazPose.Performer
                 _seatingLayer = new PerformerSeatingLayer(_graph, bodySource);
                 _seating = new PerformerSeating(transform, _locomotion, _seatingLayer);
                 bodySource = _seatingLayer.Output;
+                _actionLayer = new PerformerActionLayer(_graph, bodySource);
+                bodySource = _actionLayer.OutputPlayable;
+                if (_locomotion != null && locomotionProfile != null
+                    && locomotionProfile.IsReady(out _))
+                    _actionRuntime = new PerformerActionRuntime(transform, _actionLayer, _locomotion, locomotionProfile);
                 if (gestureUpperBodyMask != null)
                 {
                     if (PerformerGestureMaskUtility.IsValidMask(animator, gestureUpperBodyMask, out string gestureMaskReason))
@@ -1106,8 +1143,41 @@ namespace DazPose.Performer
             return _gestureLayer;
         }
 
+        private PerformerActionRuntime RequirePerformRuntime(PerformerAction action)
+        {
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("SuccubusPerformer can receive Perform commands only while enabled in Play Mode.");
+            if (_actionRuntime == null)
+                throw new InvalidOperationException("Perform is unavailable because a ready Locomotion Profile is required for return-home recovery. Bake and assign the KAWAII Walk01 locomotion profile first.");
+            if (_actionRuntime.IsPerforming)
+                throw new InvalidOperationException("A PerformerAction is already active, including its recovery phase. Wait for it to return home before starting another.");
+            if (!action.IsReady(out string reason)) throw new InvalidOperationException(reason);
+            if (VisibilityState != PerformerVisibilityState.Visible)
+                throw new InvalidOperationException("Perform requires Lara to be stably Visible. Current visibility state is " + VisibilityState + ".");
+            if (SeatingState != PerformerSeatingState.Standing || IsSeatingTransitionActive())
+                throw new InvalidOperationException("Perform is available only while Lara is stably Standing; it does not interrupt seating or stand Lara up.");
+            if (_locomotion == null)
+                throw new InvalidOperationException("Perform requires the locomotion runtime for physical return-home recovery.");
+            if (_locomotion.IsLocomoting)
+                throw new InvalidOperationException("Perform requires locomotion to be idle; wait for WalkTo or TurnTo to finish.");
+            if (IsTeleporting)
+                throw new InvalidOperationException("Perform is unavailable while a teleport is in progress.");
+            if (IsDissolving)
+                throw new InvalidOperationException("Perform is unavailable while a dissolve or visibility transition is in progress.");
+            if (_isDissolveShaderAcceptanceActive)
+                throw new InvalidOperationException("Perform is unavailable while shader-only dissolve acceptance is active.");
+            return _actionRuntime;
+        }
+
+        private void RejectWhilePerforming(string command)
+        {
+            if (IsPerforming)
+                throw new InvalidOperationException(command + " is unavailable while Perform owns Lara, including the return-home recovery phase.");
+        }
+
         private PerformerLocomotion RequireLocomotionRuntime()
         {
+            RejectWhilePerforming("WalkTo");
             RequireVisibleForWorldCommands("WalkTo");
             if (IsTeleporting)
                 throw new InvalidOperationException("WalkTo is unavailable while a teleport is in progress.");
@@ -1125,6 +1195,7 @@ namespace DazPose.Performer
 
         private PerformerLocomotion RequireTurnRuntime()
         {
+            RejectWhilePerforming("TurnTo");
             RequireVisibleForWorldCommands("TurnTo");
             if (!IsRuntimeReady || _locomotion == null)
                 throw new InvalidOperationException("SuccubusPerformer can receive TurnTo commands only while its locomotion runtime is ready in Play Mode.");
@@ -1143,6 +1214,7 @@ namespace DazPose.Performer
 
         private PerformerSeating RequireSeatingRuntime()
         {
+            RejectWhilePerforming("SitAt/StandUp");
             RequireVisibleForWorldCommands("SitAt/StandUp");
             if (IsTeleporting)
                 throw new InvalidOperationException("SitAt/StandUp is unavailable while a teleport is in progress.");
@@ -1155,6 +1227,7 @@ namespace DazPose.Performer
 
         private PerformerTeleport RequireTeleportRuntime()
         {
+            RejectWhilePerforming("TeleportTo");
             RequireVisibleForWorldCommands("TeleportTo");
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("SuccubusPerformer can teleport only while its runtime is ready in Play Mode.");
@@ -1174,6 +1247,7 @@ namespace DazPose.Performer
         private PerformerDissolve RequireDissolveRuntime(string command,
             PerformerVisibilityState requiredState, bool requireStanding)
         {
+            RejectWhilePerforming(command);
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("SuccubusPerformer can dissolve only while its runtime is ready in Play Mode.");
             if (_dissolve == null)
@@ -1281,6 +1355,9 @@ namespace DazPose.Performer
             _activeExpressionRequest = null;
             if (expressionRequest != null) CompleteExpressionRequest(expressionRequest, ExpressionCompletion.PerformerDisabled);
 
+            _actionRuntime?.Dispose();
+            _actionRuntime = null;
+
             _locomotion?.Dispose();
             _locomotion = null;
 
@@ -1297,6 +1374,9 @@ namespace DazPose.Performer
 
             _gestureLayer?.Dispose();
             _gestureLayer = null;
+
+            _actionLayer?.Dispose();
+            _actionLayer = null;
 
             _seatingLayer?.Dispose();
             _seatingLayer = null;

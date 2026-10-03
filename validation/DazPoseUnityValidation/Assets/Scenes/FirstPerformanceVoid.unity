@@ -7215,6 +7215,8 @@ MonoBehaviour:
   teleportMarkA: {fileID: 1336767648}
   teleportMarkB: {fileID: 412335443}
   teleportArrivalPose: {fileID: 11400000, guid: 7f06352d680590c4b8d282cdb165d3ec, type: 2}
+  gestureAcceptanceWave: {fileID: 11400000, guid: daefd27735707864eb82e99b0f80fbcf, type: 2}
+  dissolveDurationSeconds: 3
   lightingRevision: 5
 --- !u!4 &407646200
 Transform:
@@ -7277,6 +7279,7 @@ MonoBehaviour:
   glowColor: {r: 2.8, g: 0.003250774, b: 2.8, a: 0.5}
   coreSize: 0.003
   glowSize: 0.009
+  debugVisibilityOwner: {fileID: 0}
 --- !u!1 &407682793
 GameObject:
   m_ObjectHideFlags: 0
@@ -20106,12 +20109,13 @@ MonoBehaviour:
   initialExpression: {fileID: 0}
   initialExpressionIntensity: 1
   defaultExpressionBlendTime: 0.25
+  gestureUpperBodyMask: {fileID: 31900000, guid: 571b376f8aec30e42848fff7db759b56, type: 2}
   speechAudioSource: {fileID: 64725181}
   locomotionProfile: {fileID: 11400000, guid: b41f3e2279fd4b6428b58e48b2995ffc, type: 2}
   teleportProfile: {fileID: 11400000, guid: 787474b37b9c04544916679bcd587c2e, type: 2}
   dissolveProfile: {fileID: 11400000, guid: 44f2643513db9074a9dd45819c3dc562, type: 2}
   dissolveRig: {fileID: 1080846347}
-  startHidden: 0
+  startHidden: 1
   breathingEnabled: 1
   breathsPerMinute: 10
   breathingCurve:
@@ -20914,6 +20918,7 @@ MonoBehaviour:
   expressionA: {fileID: 0}
   expressionB: {fileID: 0}
   expressionC: {fileID: 0}
+  gestureAcceptanceWave: {fileID: 11400000, guid: daefd27735707864eb82e99b0f80fbcf, type: 2}
   gazeTarget: {fileID: 174019229}
 --- !u!114 &1080846344
 MonoBehaviour:

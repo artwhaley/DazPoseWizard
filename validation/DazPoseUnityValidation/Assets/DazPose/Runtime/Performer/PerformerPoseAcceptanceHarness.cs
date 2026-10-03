@@ -23,6 +23,8 @@ namespace DazPose.Performer
         [SerializeField] private PerformerExpression expressionB = null;
         [SerializeField] private PerformerExpression expressionC = null;
         [SerializeField] private PerformerGesture gestureAcceptanceWave;
+        [SerializeField] private PerformerAction actionAcceptanceJumpForJoy;
+        [SerializeField] private PerformerAction actionAcceptanceDisplacedTest;
         [SerializeField] private Transform gazeTarget;
 
         private bool _running;
@@ -174,6 +176,7 @@ namespace DazPose.Performer
             yield return CheckExpressionAcceptance(failures);
             yield return CheckSpeechAcceptance(failures);
             yield return CheckGestureAcceptance(animator, failures);
+            yield return CheckActionAcceptance(failures);
 
             var dissolveRuntimeSelfTestFailures = PerformerDissolveRuntimeSelfTests.Run();
             failures.AddRange(dissolveRuntimeSelfTestFailures);
@@ -747,6 +750,337 @@ namespace DazPose.Performer
             if (!performer.GestureAvailable || performer.IsGesturing
                 || performer.CurrentGesture != null || performer.GestureProgress != 0f)
                 failures.Add("P0.Gesture finite action was restored or the runtime was unavailable after performer re-enable.");
+        }
+
+        private sealed class ActionCompletionObservation
+        {
+            public bool Completed;
+            public ActionCompletion Result;
+            public Exception Error;
+        }
+
+        private sealed class LocomotionCompletionObservation
+        {
+            public bool Completed;
+            public LocomotionCompletion Result;
+            public Exception Error;
+        }
+
+        private IEnumerator CheckActionAcceptance(List<string> failures)
+        {
+            if (actionAcceptanceJumpForJoy == null)
+            {
+                if (performer.gameObject.scene.name == "FirstPerformanceVoid")
+                    failures.Add("P0.Perform JumpForJoy acceptance Action is missing. Run Tools > DAZ Pose > Action > Generate Jump for Joy Acceptance Assets.");
+                else Debug.Log("P0.Perform scene checks skipped because no acceptance Action is assigned.", this);
+                yield break;
+            }
+            if (!actionAcceptanceJumpForJoy.IsReady(out string reason))
+            {
+                failures.Add("P0.Perform JumpForJoy acceptance asset is invalid: " + reason);
+                yield break;
+            }
+            if (!performer.ActionAvailable)
+            {
+                failures.Add("P0.Perform is unavailable. Assign a ready locomotion profile and rebuild the Action acceptance assets.");
+                yield break;
+            }
+            if (performer.VisibilityState != PerformerVisibilityState.Visible
+                || performer.SeatingState != PerformerSeatingState.Standing || performer.IsLocomoting
+                || performer.IsTeleporting || performer.IsDissolving || performer.IsPerforming)
+            {
+                failures.Add("P0.Perform checks require a visible, standing performer with no active locomotion, seating, teleport, dissolve, or Action request.");
+                yield break;
+            }
+
+            PerformerPose restorePose = performer.DesiredPose != null ? performer.DesiredPose : poseA;
+            PerformerExpression restoreExpression = performer.DesiredExpression;
+            float restoreExpressionIntensity = performer.DesiredExpressionIntensity;
+            bool restoreGaze = performer.HasGazeTarget;
+            Vector3 restoreGazePosition = performer.RawGazeTargetPosition;
+            PerformerPoseSmokeHarness smoke = GetComponent<PerformerPoseSmokeHarness>();
+            AudioClip speechClip = smoke != null ? smoke.SpeechClipA : null;
+
+            performer.Pose(poseA, PoseTransition.Snap);
+            yield return null;
+            Vector3 anchor = performer.transform.position;
+            Vector3 anchorForward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up).normalized;
+            PerformerPose poseBeforeAction = performer.DesiredPose;
+            PerformerPose settledBeforeAction = performer.SettledPose;
+            PerformerExpression expressionBeforeAction = performer.DesiredExpression;
+            bool gazeBeforeAction = performer.HasGazeTarget;
+            Vector3 gazePositionBeforeAction = performer.RawGazeTargetPosition;
+
+            var basic = new ActionCompletionObservation();
+            ObserveActionCompletion(basic, actionAcceptanceJumpForJoy);
+            if (!performer.IsPerforming || performer.CurrentAction != actionAcceptanceJumpForJoy
+                || performer.ActionState != PerformerActionState.Performing)
+                failures.Add("P0.PerformAsync did not immediately publish Performing and CurrentAction.");
+            if (performer.ActionProgress < 0f || performer.ActionProgress > 1f)
+                failures.Add("P0.Perform ActionProgress left the normalized 0..1 range.");
+
+            CheckActionCommandRejected(() => performer.Perform(actionAcceptanceJumpForJoy), "second Perform", failures);
+            CheckActionCommandRejected(() => performer.WalkTo(performer.transform.position + performer.transform.forward * 2f), "WalkTo", failures);
+            CheckActionCommandRejected(() => performer.TurnTo(performer.transform.position + performer.transform.forward * 2f), "TurnTo", failures);
+            CheckActionCommandRejected(() => performer.SitAt(null), "SitAt", failures);
+            CheckActionCommandRejected(performer.StandUp, "StandUp", failures);
+            CheckActionCommandRejected(() => performer.TeleportTo(performer.transform.position), "TeleportTo", failures);
+            CheckActionCommandRejected(() => performer.DissolveTo(performer.transform.position), "DissolveTo", failures);
+            CheckActionCommandRejected(() => performer.DissolveOut(0.2f), "DissolveOut", failures);
+            CheckActionCommandRejected(() => performer.DissolveIn(0.2f), "DissolveIn", failures);
+            if (!performer.IsPerforming || performer.CurrentAction != actionAcceptanceJumpForJoy)
+                failures.Add("A rejected spatial command damaged the active PerformerAction.");
+
+            float peakWorldY = performer.transform.position.y;
+            float maximumProgress = performer.ActionProgress;
+            bool sawRecovery = false;
+            float deadline = Time.realtimeSinceStartup + actionAcceptanceJumpForJoy.DurationSeconds + 45f;
+            while (!basic.Completed && Time.realtimeSinceStartup < deadline)
+            {
+                peakWorldY = Mathf.Max(peakWorldY, performer.transform.position.y);
+                maximumProgress = Mathf.Max(maximumProgress, performer.ActionProgress);
+                sawRecovery |= performer.ActionState == PerformerActionState.Recovering;
+                if (performer.CurrentAction != null && performer.CurrentAction != actionAcceptanceJumpForJoy)
+                    failures.Add("P0.Perform changed CurrentAction before the authored action completed.");
+                yield return null;
+            }
+            if (!basic.Completed)
+                failures.Add("P0.PerformAsync did not complete after the action and return-home timeout.");
+            else if (basic.Error != null || basic.Result != ActionCompletion.Completed)
+                failures.Add("P0.PerformAsync returned " + basic.Result + (basic.Error != null ? ": " + basic.Error.Message : "."));
+            if (maximumProgress < 0.95f)
+                failures.Add("P0.Perform ActionProgress did not advance through the finite clip.");
+            if (peakWorldY - anchor.y < 0.02f)
+                failures.Add("KAWAII JumpForJoy did not produce measurable actor-root vertical movement during Perform.");
+            if (performer.IsPerforming || performer.CurrentAction != null || performer.ActionState != PerformerActionState.Idle)
+                failures.Add("P0.Perform did not publish its idle state after completion.");
+            if (performer.DesiredPose != poseBeforeAction || performer.SettledPose != settledBeforeAction)
+                failures.Add("P0.Perform changed the persistent DesiredPose or SettledPose.");
+            if (performer.DesiredExpression != expressionBeforeAction)
+                failures.Add("P0.Perform changed the independent expression.");
+            if (performer.HasGazeTarget != gazeBeforeAction
+                || (gazeBeforeAction && Vector3.Distance(performer.RawGazeTargetPosition, gazePositionBeforeAction) > PositionTolerance))
+                failures.Add("P0.Perform changed the independent gaze target.");
+            if (performer.ActionPositionError > performer.LocomotionProfile.ArrivalPositionTolerance + 0.005f
+                || performer.ActionHeadingError > performer.LocomotionProfile.ArrivalHeadingTolerance + 0.1f)
+                failures.Add("P0.Perform returned outside the configured anchor/facing tolerances.");
+            Vector2 basicPlanarDisplacement = new Vector2(actionAcceptanceJumpForJoy.NominalDisplacement.x,
+                actionAcceptanceJumpForJoy.NominalDisplacement.z);
+            bool basicNeedsRecovery = basicPlanarDisplacement.magnitude > performer.LocomotionProfile.ArrivalPositionTolerance
+                || Mathf.Abs(actionAcceptanceJumpForJoy.NominalYawDegrees) > performer.LocomotionProfile.ArrivalHeadingTolerance;
+            if (basicNeedsRecovery && !sawRecovery)
+                failures.Add("P0.Perform did not publish Recovering for a JumpForJoy trajectory that ended outside locomotion tolerances.");
+
+            if (gestureAcceptanceWave != null && gestureAcceptanceWave.IsReady(out _)
+                && !performer.IsGesturing)
+            {
+                performer.Pose(poseA, PoseTransition.Snap);
+                yield return null;
+                performer.Gesture(gestureAcceptanceWave);
+                if (!performer.IsGesturing)
+                    failures.Add("P0.Perform composition test could not start Gesture before the next Action.");
+                if (expressionA != null) performer.Expression(expressionA, 1f, 0f);
+                if (gazeTarget != null) performer.LookAt(gazeTarget);
+                if (speechClip != null)
+                {
+                    performer.StopSpeaking();
+                    performer.Say(speechClip);
+                }
+                performer.Perform(actionAcceptanceJumpForJoy);
+                bool changedPose = false;
+                deadline = Time.realtimeSinceStartup + actionAcceptanceJumpForJoy.DurationSeconds + 45f;
+                while (performer.IsPerforming && Time.realtimeSinceStartup < deadline)
+                {
+                    if (!changedPose && performer.ActionState == PerformerActionState.Performing
+                        && performer.ActionProgress >= 0.2f)
+                    {
+                        performer.Pose(poseC, PoseTransition.Smooth(0.2f));
+                        changedPose = true;
+                    }
+                    if (performer.CurrentAction != actionAcceptanceJumpForJoy)
+                        failures.Add("A Pose/Gesture/life-layer command interrupted the active PerformerAction.");
+                    yield return null;
+                }
+                if (!changedPose) failures.Add("P0.Perform did not remain active long enough to test a mid-action persistent Pose change.");
+                if (performer.DesiredPose != poseC)
+                    failures.Add("The most recently requested Pose did not remain desired after Perform.");
+                if (expressionA != null && performer.DesiredExpression != expressionA)
+                    failures.Add("P0.Perform cleared or replaced the independent expression.");
+                if (gazeTarget != null && (!performer.HasGazeTarget
+                    || Vector3.Distance(performer.RawGazeTargetPosition, gazeTarget.position) > PositionTolerance))
+                    failures.Add("P0.Perform cleared or replaced the independent gaze target.");
+                if (speechClip != null && !performer.IsSpeaking && performer.CurrentSpeechClip != speechClip)
+                    failures.Add("P0.Perform interrupted the independent speech request.");
+                performer.StopSpeaking();
+            }
+
+            PerformerAction recoveryAction = actionAcceptanceDisplacedTest != null
+                && actionAcceptanceDisplacedTest.IsReady(out _) ? actionAcceptanceDisplacedTest : actionAcceptanceJumpForJoy;
+            if (performer.IsPerforming)
+            {
+                float recoveryWaitDeadline = Time.realtimeSinceStartup + recoveryAction.DurationSeconds + 45f;
+                while (performer.IsPerforming && Time.realtimeSinceStartup < recoveryWaitDeadline) yield return null;
+            }
+            if (!performer.IsPerforming && performer.DesiredPose != restorePose)
+            {
+                performer.Pose(restorePose, PoseTransition.Snap);
+                yield return null;
+            }
+            if (restoreExpression == null) performer.ClearExpression(0f);
+            else performer.Expression(restoreExpression, restoreExpressionIntensity, 0f);
+            if (restoreGaze) performer.LookAt(restoreGazePosition);
+            else performer.ClearGaze();
+            performer.StopSpeaking();
+            yield return null;
+
+            yield return CheckDisplacedActionRecovery(recoveryAction, failures);
+            yield return CheckActionDisableSemantics(actionAcceptanceJumpForJoy, failures);
+
+            if (performer.IsPerforming)
+                failures.Add("P0.Perform left an action active after its acceptance checks.");
+            if (Vector3.Distance(anchor, performer.transform.position) > performer.LocomotionProfile.ArrivalPositionTolerance + 0.005f
+                || Vector3.Angle(Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up), anchorForward)
+                    > performer.LocomotionProfile.ArrivalHeadingTolerance + 0.1f)
+                failures.Add("P0.Perform acceptance cleanup did not physically restore the original anchor/facing.");
+        }
+
+        private IEnumerator CheckDisplacedActionRecovery(PerformerAction action, List<string> failures)
+        {
+            if (action == null || !action.IsReady(out _)) yield break;
+            Vector3 anchor = performer.transform.position;
+            Vector3 forward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up).normalized;
+            var observation = new ActionCompletionObservation();
+            ObserveActionCompletion(observation, action);
+            float maximumDisplacement = 0f;
+            bool sawRecovery = false;
+            bool checkedRecoveryGuards = false;
+            float deadline = Time.realtimeSinceStartup + action.DurationSeconds + 60f;
+            while (!observation.Completed && Time.realtimeSinceStartup < deadline)
+            {
+                maximumDisplacement = Mathf.Max(maximumDisplacement,
+                    Vector3.Distance(anchor, performer.transform.position));
+                if (performer.ActionState == PerformerActionState.Recovering)
+                {
+                    sawRecovery = true;
+                    if (performer.IsPerforming && performer.CurrentAction == action)
+                    {
+                        CheckActionCommandRejected(() => performer.WalkTo(performer.transform.position + performer.transform.forward * 2f), "WalkTo during recovery", failures);
+                        CheckActionCommandRejected(() => performer.TurnTo(performer.transform.position + performer.transform.forward * 2f), "TurnTo during recovery", failures);
+                        CheckActionCommandRejected(() => performer.Perform(action), "Perform during recovery", failures);
+                        checkedRecoveryGuards = true;
+                    }
+                }
+                yield return null;
+            }
+            if (maximumDisplacement < 0.2f)
+                failures.Add("The displaced recovery acceptance Action did not visibly displace Lara during its authored phase.");
+            if (!sawRecovery)
+                failures.Add("The displaced recovery acceptance Action did not enter ActionState.Recovering.");
+            if (!checkedRecoveryGuards)
+                failures.Add("The action's recovery phase was not observed with spatial-command guards active.");
+            if (!observation.Completed)
+                failures.Add("The displaced PerformAsync did not complete before its recovery timeout.");
+            else if (observation.Error != null || observation.Result != ActionCompletion.Completed)
+                failures.Add("Displaced PerformAsync returned " + observation.Result
+                    + (observation.Error != null ? ": " + observation.Error.Message : "."));
+            if (performer.IsPerforming || performer.CurrentAction != null)
+                failures.Add("The displaced action remained active after recovery completed.");
+            if (Vector3.Distance(anchor, performer.transform.position) > performer.LocomotionProfile.ArrivalPositionTolerance + 0.005f)
+                failures.Add("Existing locomotion did not return the displaced Action to its captured position.");
+            if (Vector3.Angle(Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up), forward)
+                > performer.LocomotionProfile.ArrivalHeadingTolerance + 0.1f)
+                failures.Add("Existing locomotion did not restore the displaced Action's captured facing.");
+        }
+
+        private IEnumerator CheckActionDisableSemantics(PerformerAction action, List<string> failures)
+        {
+            var duringAction = new ActionCompletionObservation();
+            ObserveActionCompletion(duringAction, action);
+            if (performer.ActionState != PerformerActionState.Performing)
+                failures.Add("The disable-during-Perform acceptance Action did not enter Performing.");
+            performer.enabled = false;
+            float deadline = Time.realtimeSinceStartup + 2f;
+            while (!duringAction.Completed && Time.realtimeSinceStartup < deadline) yield return null;
+            if (!duringAction.Completed || duringAction.Error != null
+                || duringAction.Result != ActionCompletion.PerformerDisabled)
+                failures.Add("PerformAsync during the authored action did not resolve as PerformerDisabled.");
+            performer.enabled = true;
+            yield return null;
+            if (performer.IsPerforming || performer.CurrentAction != null
+                || performer.ActionState != PerformerActionState.Idle || !performer.ActionAvailable)
+                failures.Add("Re-enabling Lara restarted or retained the finite Action.");
+
+            PerformerAction displaced = actionAcceptanceDisplacedTest;
+            if (displaced == null || !displaced.IsReady(out _)) yield break;
+            Vector3 anchor = performer.transform.position;
+            Vector3 forward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up).normalized;
+            var duringRecovery = new ActionCompletionObservation();
+            ObserveActionCompletion(duringRecovery, displaced);
+            deadline = Time.realtimeSinceStartup + displaced.DurationSeconds + 30f;
+            while (performer.ActionState != PerformerActionState.Recovering
+                && !duringRecovery.Completed && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            if (performer.ActionState != PerformerActionState.Recovering)
+            {
+                failures.Add("The disable-during-recovery test did not reach ActionState.Recovering.");
+                while (!duringRecovery.Completed && Time.realtimeSinceStartup < deadline) yield return null;
+                yield break;
+            }
+            Vector3 positionAtDisable = performer.transform.position;
+            performer.enabled = false;
+            deadline = Time.realtimeSinceStartup + 2f;
+            while (!duringRecovery.Completed && Time.realtimeSinceStartup < deadline) yield return null;
+            if (!duringRecovery.Completed || duringRecovery.Error != null
+                || duringRecovery.Result != ActionCompletion.PerformerDisabled)
+                failures.Add("PerformAsync during return-home recovery did not resolve as PerformerDisabled.");
+            if (Vector3.Distance(positionAtDisable, anchor) < 0.1f
+                || Vector3.Distance(performer.transform.position, anchor) < 0.1f)
+                failures.Add("Disabling during recovery teleported Lara to her captured anchor.");
+
+            performer.enabled = true;
+            yield return null;
+            var returnTarget = new GameObject("ActionAcceptanceReturnHome");
+            returnTarget.transform.SetPositionAndRotation(anchor, Quaternion.LookRotation(forward, Vector3.up));
+            var locomotion = new LocomotionCompletionObservation();
+            ObserveLocomotionCompletion(locomotion, returnTarget.transform);
+            deadline = Time.realtimeSinceStartup + 45f;
+            while (!locomotion.Completed && Time.realtimeSinceStartup < deadline) yield return null;
+            Destroy(returnTarget);
+            if (!locomotion.Completed || locomotion.Error != null || locomotion.Result != LocomotionCompletion.Arrived)
+                failures.Add("Acceptance cleanup could not use WalkTo to restore Lara after the disable-during-recovery test."
+                    + (locomotion.Error != null ? " " + locomotion.Error.Message : string.Empty));
+            if (Vector3.Distance(anchor, performer.transform.position) > performer.LocomotionProfile.ArrivalPositionTolerance + 0.005f
+                || Vector3.Angle(Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up), forward)
+                    > performer.LocomotionProfile.ArrivalHeadingTolerance + 0.1f)
+                failures.Add("Acceptance cleanup did not return Lara to the pre-disable location after the recovery teardown test.");
+        }
+
+        private static void CheckActionCommandRejected(Action command, string name, List<string> failures)
+        {
+            try
+            {
+                command();
+                failures.Add("P0.Perform did not reject " + name + " while the Action owned Lara.");
+            }
+            catch (InvalidOperationException) { }
+            catch (Exception exception)
+            {
+                failures.Add("P0.Perform rejected " + name + " with the wrong exception: " + exception.Message);
+            }
+        }
+
+        private async void ObserveActionCompletion(ActionCompletionObservation observation, PerformerAction action)
+        {
+            try { observation.Result = await performer.PerformAsync(action); }
+            catch (Exception exception) { observation.Error = exception; }
+            finally { observation.Completed = true; }
+        }
+
+        private async void ObserveLocomotionCompletion(LocomotionCompletionObservation observation, Transform target)
+        {
+            try { observation.Result = await performer.WalkToAsync(target); }
+            catch (Exception exception) { observation.Error = exception; }
+            finally { observation.Completed = true; }
         }
 
         private Transform[] FindGestureProtectedBones(Transform animatorRoot, List<string> failures)

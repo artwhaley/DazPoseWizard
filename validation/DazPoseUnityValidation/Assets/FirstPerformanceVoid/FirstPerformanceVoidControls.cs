@@ -26,6 +26,9 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private PerformerPose teleportArrivalPose;
         [Header("P0.Gesture Acceptance")]
         [SerializeField] private PerformerGesture gestureAcceptanceWave;
+        [Header("P0.Perform Acceptance")]
+        [SerializeField] private PerformerAction jumpForJoyAction;
+        [SerializeField] private PerformerAction displacedRecoveryTestAction;
         [Header("Dissolve Test Timing")]
         [Tooltip("Total seconds for the existing DISSOLVE A/B buttons. All effect phases scale together.")]
         [SerializeField, Min(0.01f)] private float dissolveDurationSeconds = 3f;
@@ -44,9 +47,12 @@ namespace DazPose.FirstPerformanceVoid
         private bool visibilityTestRunning;
         private string visibilityTestStatus = "DissolveOut leaves Lara hidden; use a matching IN button to restore her.";
         private string gestureStatus = "Run Tools > DAZ Pose > Gesture > Generate Gesture Acceptance Assets in Edit Mode.";
+        private string actionStatus = "Run Tools > DAZ Pose > Action > Generate Jump for Joy Acceptance Assets in Edit Mode.";
         private const float DissolveShaderHalfCycleSeconds = 1f;
 
         public PerformerGesture GestureAcceptanceWave => gestureAcceptanceWave;
+        public PerformerAction JumpForJoyAction => jumpForJoyAction;
+        public PerformerAction DisplacedRecoveryTestAction => displacedRecoveryTestAction;
 
         public void ConfigureFirstContact(FirstContactPerformance performance) => firstContact = performance;
 
@@ -341,6 +347,48 @@ namespace DazPose.FirstPerformanceVoid
             }
 
             GUILayout.Space(5f);
+            GUILayout.Label("P0.PERFORM — FULL BODY + RETURN HOME", GUI.skin.box);
+            bool actionCanStart = enabled && performer != null && performer.IsRuntimeReady
+                && performer.ActionAvailable && performer.VisibilityState == PerformerVisibilityState.Visible
+                && performer.SeatingState == PerformerSeatingState.Standing && !performer.IsLocomoting
+                && !performer.IsTeleporting && !performer.IsDissolving && !performer.IsPerforming;
+            GUI.enabled = actionCanStart && jumpForJoyAction != null;
+            if (GUILayout.Button("PERFORM: JUMP FOR JOY")) StartPerform(jumpForJoyAction);
+            GUI.enabled = actionCanStart && jumpForJoyAction != null;
+            if (GUILayout.Button("PERFORM ASYNC: JUMP FOR JOY")) RunPerformAsync(jumpForJoyAction);
+            GUI.enabled = actionCanStart && displacedRecoveryTestAction != null;
+            if (GUILayout.Button("PERFORM: DISPLACED RECOVERY TEST")) StartPerform(displacedRecoveryTestAction);
+            GUI.enabled = enabled;
+            GUILayout.Label("Status: " + actionStatus);
+            if (performer != null)
+            {
+                GUILayout.Label("IsPerforming: " + performer.IsPerforming
+                    + "  CurrentAction: " + (performer.CurrentAction != null ? performer.CurrentAction.name : "none")
+                    + "  State: " + performer.ActionState
+                    + "  Progress: " + (performer.ActionProgress * 100f).ToString("F0") + "%");
+                if (performer.ActionHasAnchor)
+                {
+                    GUILayout.Label("Anchor: " + performer.ActionAnchorPosition.ToString("F3")
+                        + "  Current: " + performer.transform.position.ToString("F3")
+                        + "  Position error: " + performer.ActionPositionError.ToString("F3") + " m");
+                    Vector3 anchorForward = Vector3.ProjectOnPlane(performer.ActionAnchorForward, Vector3.up);
+                    Vector3 currentForward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up);
+                    float anchorYaw = anchorForward.sqrMagnitude > 0.000001f
+                        ? Quaternion.LookRotation(anchorForward.normalized, Vector3.up).eulerAngles.y : 0f;
+                    float currentYaw = currentForward.sqrMagnitude > 0.000001f
+                        ? Quaternion.LookRotation(currentForward.normalized, Vector3.up).eulerAngles.y : performer.transform.eulerAngles.y;
+                    GUILayout.Label("Anchor facing: " + anchorYaw.ToString("0.0") + "°"
+                        + "  Current facing: " + currentYaw.ToString("0.0") + "°"
+                        + "  Heading error: " + performer.ActionHeadingError.ToString("0.0") + "°");
+                }
+                else GUILayout.Label("Anchor: none yet");
+                GUILayout.Label("Locomotion: " + performer.LocomotionState
+                    + "  Visibility: " + performer.VisibilityState);
+            }
+            if (jumpForJoyAction == null || displacedRecoveryTestAction == null)
+                GUILayout.Label("Run Tools > DAZ Pose > Action > Generate Jump for Joy Acceptance Assets in Edit Mode.");
+
+            GUILayout.Space(5f);
             GUILayout.Label("Player View", GUI.skin.box);
             GUI.enabled = enabled && playerController != null && viewMarkWide != null;
             if (GUILayout.Button("Move Wide — 2 sec")) PlayerViewRequest(() => playerController.MoveTo(viewMarkWide, 2f), "Moving to wide view");
@@ -408,6 +456,12 @@ namespace DazPose.FirstPerformanceVoid
 
         public void ConfigureGestureAcceptance(PerformerGesture wave) => gestureAcceptanceWave = wave;
 
+        public void ConfigureActionAcceptance(PerformerAction jumpForJoy, PerformerAction displacedRecoveryTest)
+        {
+            jumpForJoyAction = jumpForJoy;
+            displacedRecoveryTestAction = displacedRecoveryTest;
+        }
+
         private Vector3 CreateTurnTarget(float signedYaw)
         {
             Vector3 forward = Vector3.ProjectOnPlane(performer.transform.forward, Vector3.up);
@@ -461,6 +515,37 @@ namespace DazPose.FirstPerformanceVoid
             catch (Exception exception)
             {
                 gestureStatus = "SUPERSEDE test failed — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private void StartPerform(PerformerAction action)
+        {
+            try
+            {
+                performer.Perform(action);
+                actionStatus = "Performing " + action.name + "; completion includes any physical return-home recovery.";
+            }
+            catch (Exception exception)
+            {
+                actionStatus = "REJECTED — " + exception.Message;
+                Debug.LogException(exception, this);
+            }
+        }
+
+        private async void RunPerformAsync(PerformerAction action)
+        {
+            actionStatus = "Awaiting " + action.name + " and return-home recovery…";
+            try
+            {
+                ActionCompletion result = await performer.PerformAsync(action);
+                actionStatus = result == ActionCompletion.Completed
+                    ? action.name + " completed after recovery."
+                    : "Performer was disabled during " + action.name + ".";
+            }
+            catch (Exception exception)
+            {
+                actionStatus = "FAILED — " + exception.Message;
                 Debug.LogException(exception, this);
             }
         }
