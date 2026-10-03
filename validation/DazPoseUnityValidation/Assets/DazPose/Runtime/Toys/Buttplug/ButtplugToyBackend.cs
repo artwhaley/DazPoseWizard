@@ -113,6 +113,7 @@ namespace DazPose.Toys.Buttplug
                 }
                 catch (Exception exception)
                 {
+                    Debug.LogException(exception);
                     ClearDevices();
                     SetScanning(false);
                     SetLastError(Describe(exception));
@@ -122,6 +123,7 @@ namespace DazPose.Toys.Buttplug
             }
             catch (Exception exception)
             {
+                Debug.LogException(exception);
                 SetLastError(Describe(exception));
                 SetState(ToyConnectionState.Faulted, LastError);
             }

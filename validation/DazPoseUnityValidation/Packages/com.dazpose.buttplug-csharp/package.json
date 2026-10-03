@@ -1,8 +1,8 @@
 {
   "name": "com.dazpose.buttplug-csharp",
-  "version": "5.0.1",
+  "version": "5.0.1-unity.1",
   "displayName": "Buttplug C# Runtime",
-  "description": "Unity runtime assembly from the official Buttplug C# 5.0.1 NuGet package.",
+  "description": "Buttplug C# 5.0.1 rebuilt against Unity's Newtonsoft.Json runtime.",
   "unity": "2021.3",
   "license": "BSD-3-Clause",
   "author": {

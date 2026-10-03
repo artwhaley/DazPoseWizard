@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DazPose.Motion;
 using DazPose.Performer;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace DazPose.Motion.Editor
@@ -27,6 +28,7 @@ namespace DazPose.Motion.Editor
             failures.AddRange(FunscriptRuntimeSelfTests.Run());
             failures.AddRange(PerformerMotionRuntimeSelfTests.Run());
             ValidateSuppliedProgram(program, failures);
+            ValidateSceneReference(program, failures);
             if (failures.Count == 0)
             {
                 FunscriptAction first = program.GetAction(0);
@@ -40,6 +42,30 @@ namespace DazPose.Motion.Editor
                     + "s; range=" + program.Range + "; inverted=" + program.Inverted + ".", program);
             }
             Finish(failures, program);
+        }
+
+        private static void ValidateSceneReference(FunscriptMotionProgram program, List<string> failures)
+        {
+            var scene = EditorSceneManager.OpenPreviewScene("Assets/Scenes/FirstPerformanceVoid.unity");
+            try
+            {
+                MotionDriver driver = null;
+                foreach (GameObject root in scene.GetRootGameObjects())
+                {
+                    driver = root.GetComponentInChildren<MotionDriver>(true);
+                    if (driver != null) break;
+                }
+                if (driver == null || !driver.HasFunscriptProgram || driver.FunscriptProgram != program)
+                {
+                    failures.Add("FirstPerformanceVoid MotionDriver does not resolve the imported Funscript asset; the source button will be disabled.");
+                    return;
+                }
+                driver.SourceMode = MotionSourceMode.Funscript;
+                driver.Seek(12.280d);
+                if (Mathf.Abs(driver.CurrentSample.Position01 - 0.20f) > 0.0001f)
+                    failures.Add("Scene MotionDriver did not publish the Funscript midpoint after selecting and seeking the source.");
+            }
+            finally { EditorSceneManager.ClosePreviewScene(scene); }
         }
 
         private static void ValidateSuppliedProgram(FunscriptMotionProgram program, List<string> failures)

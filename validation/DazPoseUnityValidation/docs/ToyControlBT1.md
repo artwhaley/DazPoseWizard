@@ -1,6 +1,6 @@
 # Toy Control BT.1
 
-BT.1 uses the official Buttplug C# 5.0.1 runtime assembly in the embedded `com.dazpose.buttplug-csharp` Unity package. The current OpenUPM Buttplug Unity 4.0.0 package bundles an older API that lacks the v4 feature output model, including `OutputType.HwPositionWithDuration`. The embedded package preserves the upstream NuGet license and records the assembly checksum in its README.
+BT.1 uses Buttplug C# 5.0.1 rebuilt from its official source against Unity's Newtonsoft.Json runtime in the embedded `com.dazpose.buttplug-csharp` package. The upstream NuGet binary requires a JSON method missing from Unity's bundled version and faults during connection; rebuilding selects the compatible overload. The current OpenUPM Buttplug Unity 4.0.0 package bundles an older API that lacks the v4 feature output model, including `OutputType.HwPositionWithDuration`. The embedded package preserves the upstream license, records the assembly checksum in its README, and can be rebuilt with `scripts/build-buttplug-unity.ps1`.
 
 The scene-level `ToyControl` service remains separate from Lara and MotionDriver. BT.1 diagnostics are part of the existing First Performance Void runtime panel; no additional test window is created.
 
@@ -18,3 +18,14 @@ In Unity, run **Tools > DAZ Pose > Toys > Run BT.1 Offline Registry Tests**. The
 6. Stop or close the Intiface server and confirm the panel reports a fault and clears connected-device availability.
 
 BT.2 and later work must wait until that manual gate has been completed.
+
+## Connection regression verification — 2026-10-03
+
+The original NuGet binary reproduced `MissingMethodException` for
+`Newtonsoft.Json.Linq.JToken.ToString(Newtonsoft.Json.Formatting)` under Unity's
+Mono runtime. The rebuilt library passed an isolated Unity 6000.5.9f1 run using
+the real `ToyControlService`: connect to the running local Intiface server, start
+scanning, stop scanning, stop all, disconnect, and confirm registry cleanup.
+The offline capability/range/registry checks also passed. Intiface reported zero
+connected devices, so physical feature discovery and hardware stop behavior
+still require the manual gate above.
