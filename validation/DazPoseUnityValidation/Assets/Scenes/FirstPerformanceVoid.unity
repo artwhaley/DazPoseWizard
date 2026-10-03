@@ -517,6 +517,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1679794098}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &45479550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 45479552}
+  - component: {fileID: 45479551}
+  m_Layer: 0
+  m_Name: MotionDriver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &45479551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45479550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8904787922a42a5a545a40bcf45eabc, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Motion.MotionDriver
+  frequencyHz: 1
+  playOnEnable: 0
+--- !u!4 &45479552
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45479550}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &50537067
 GameObject:
   m_ObjectHideFlags: 0
@@ -7211,6 +7257,7 @@ MonoBehaviour:
   viewMarkLounge: {fileID: 1942173269}
   laraFaceViewTarget: {fileID: 1436712012}
   firstContact: {fileID: 407646201}
+  magicCatalog: {fileID: 11400000, guid: 33e482bb7631d804cad7fb98f4efaa73, type: 2}
   particleBody: {fileID: 407646202}
   teleportMarkA: {fileID: 1336767648}
   teleportMarkB: {fileID: 412335443}
@@ -20112,6 +20159,10 @@ MonoBehaviour:
   initialExpressionIntensity: 1
   defaultExpressionBlendTime: 0.25
   gestureUpperBodyMask: {fileID: 31900000, guid: 571b376f8aec30e42848fff7db759b56, type: 2}
+  motionDriver: {fileID: 45479551}
+  motionSet: {fileID: 11400000, guid: cb2be8eef3f3232429082720981f3f0f, type: 2}
+  rightArmMotionMask: {fileID: 31900000, guid: de4ef9d327d615b43a71886951f5ae0e, type: 2}
+  motionOwnershipBlendSeconds: 0.18
   speechAudioSource: {fileID: 64725181}
   locomotionProfile: {fileID: 11400000, guid: b41f3e2279fd4b6428b58e48b2995ffc, type: 2}
   teleportProfile: {fileID: 11400000, guid: 787474b37b9c04544916679bcd587c2e, type: 2}
@@ -32313,3 +32364,4 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 407646200}
+  - {fileID: 45479552}

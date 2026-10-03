@@ -6,6 +6,7 @@ namespace DazPose.Performer
     internal struct MagicTargetSample
     {
         public Vector3 Center;
+        public Vector3 BaseCenter;
         public float Radius;
         public float Height;
     }
@@ -50,6 +51,7 @@ namespace DazPose.Performer
             return new MagicTargetSample
             {
                 Center = center,
+                BaseCenter = center - Vector3.up * worldExtents.y,
                 Radius = Mathf.Max(0.05f, Mathf.Max(worldExtents.x, worldExtents.z) * safeScale + safePadding),
                 Height = Mathf.Max(0.1f, worldExtents.y * 2f * safeScale + safePadding * 2f)
             };

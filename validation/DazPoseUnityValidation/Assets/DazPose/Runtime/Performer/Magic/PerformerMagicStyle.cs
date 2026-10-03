@@ -22,9 +22,9 @@ namespace DazPose.Performer
         [SerializeField, Min(0f)] private float targetPadding;
 
         [Header("Spell Event")]
-        [SerializeField, Min(0.1f)] private float spellDurationSeconds = 2f;
+        [SerializeField, Min(0.1f)] private float spellDurationSeconds = 3f;
         [SerializeField, Range(1, 2048)] private int spellBurstCount = 500;
-        [SerializeField, Min(0.1f)] private float spellParticleLifetimeSeconds = 1.4f;
+        [SerializeField, Min(0.1f)] private float spellParticleLifetimeSeconds = 3.15f;
 
         [Header("Persistent Aura State")]
         [SerializeField, Min(0f)] private float auraFadeInSeconds = 0.3f;

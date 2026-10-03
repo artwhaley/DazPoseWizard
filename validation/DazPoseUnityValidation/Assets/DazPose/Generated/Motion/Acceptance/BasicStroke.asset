@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d350a8ea4fc4a90bd3ecf9b3fc42d03, type: 3}
+  m_Name: BasicStroke
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerMotionVariant
+  clip: {fileID: 7400000, guid: d4bf76ee8a5007c498f3cc1e3cdf491e, type: 2}
+  displayName: BasicStroke
+  sourceAssetPath: Assets/DazPose/Generated/Motion/Acceptance/BasicStroke.anim
+  bakeNotes: Project-owned one-way right-arm acceptance motion. Endpoint 0 is lowered
+    and forward; endpoint 1 is raised. MotionDriver supplies all reversal by scrubbing.

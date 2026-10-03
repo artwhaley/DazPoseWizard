@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DazPose.Motion;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
@@ -36,6 +37,12 @@ namespace DazPose.Performer
 
         [Header("Gesture")]
         [SerializeField] private AvatarMask gestureUpperBodyMask;
+
+        [Header("Motion")]
+        [SerializeField] private MotionDriver motionDriver;
+        [SerializeField] private PerformerMotionSet motionSet;
+        [SerializeField] private AvatarMask rightArmMotionMask;
+        [SerializeField, Min(0f)] private float motionOwnershipBlendSeconds = 0.18f;
 
         [Header("Speech")]
         [SerializeField] private AudioSource speechAudioSource;
@@ -120,6 +127,8 @@ namespace DazPose.Performer
         private PerformerActionLayer _actionLayer;
         private PerformerActionRuntime _actionRuntime;
         private PerformerGestureLayer _gestureLayer;
+        private PerformerMotionLayer _motionLayer;
+        private PerformerMotionConsumer _motionConsumer;
         private PerformerBreathing _breathing;
         private PerformerGaze _gaze;
         private PerformerAttentionLife _attentionLife;
@@ -218,6 +227,13 @@ namespace DazPose.Performer
         public bool IsGesturing => _gestureLayer != null && _gestureLayer.IsGesturing;
         public PerformerGesture CurrentGesture => _gestureLayer != null ? _gestureLayer.CurrentGesture : null;
         public float GestureProgress => _gestureLayer != null ? _gestureLayer.Progress : 0f;
+        public bool MotionAvailable => IsRuntimeReady && _motionConsumer != null && _motionConsumer.IsBound;
+        public bool MotionConsumerBound => _motionConsumer != null && _motionConsumer.IsBound;
+        public float MotionOwnershipWeight => _motionLayer != null ? _motionLayer.MotionWeight : 0f;
+        public string MotionActiveVariantName => _motionLayer != null ? _motionLayer.ActiveVariantName : "none";
+        public float MotionSampledPosition01 => _motionLayer != null ? _motionLayer.SampledPosition01 : 0f;
+        public int MotionVariantCount => motionSet != null ? motionSet.VariantCount : 0;
+        public MotionDriver MotionSource => motionDriver;
         public float TransitionProgress => _bodyPose == null ? 0f : _bodyPose.TransitionProgress;
         public PerformerExpression DesiredExpression => _lastDesiredExpression;
         public PerformerExpression SettledExpression => _lastSettledExpression;
@@ -401,6 +417,7 @@ namespace DazPose.Performer
             _locomotion?.Advance(Time.deltaTime);
             _seating?.Advance(Time.deltaTime);
             _actionRuntime?.Advance(Time.deltaTime);
+            _motionConsumer?.Advance(Time.deltaTime);
             _gestureLayer?.Advance(Time.deltaTime);
             _teleport?.Advance(Time.deltaTime);
             _dissolve?.Advance(Time.deltaTime);
@@ -675,6 +692,14 @@ namespace DazPose.Performer
 
         /// <summary>Plays one finite upper-body action over the current body state.</summary>
         public void Gesture(PerformerGesture gesture) => RequireGestureRuntime(gesture).Request(gesture, null);
+
+        /// <summary>Selects a visual motion variant without changing the authoritative motion sample.</summary>
+        public void SetMotionVariant(int index, float blendSeconds = 0.2f)
+        {
+            if (_motionConsumer == null || !IsRuntimeReady)
+                throw new InvalidOperationException("Motion variants are unavailable until a ready MotionSet and right-arm mask are assigned to SuccubusPerformer.");
+            _motionConsumer.SetVariant(index, blendSeconds);
+        }
 
         /// <summary>Plays one finite upper-body action and completes when it fades back to the base pose.</summary>
         public Awaitable<GestureCompletion> GestureAsync(PerformerGesture gesture)
@@ -1045,6 +1070,22 @@ namespace DazPose.Performer
                 if (_locomotion != null && locomotionProfile != null
                     && locomotionProfile.IsReady(out _))
                     _actionRuntime = new PerformerActionRuntime(transform, _actionLayer, _locomotion, locomotionProfile);
+                if (motionDriver != null && motionSet != null && rightArmMotionMask != null)
+                {
+                    string motionReason;
+                    if (!motionSet.IsReady(out motionReason)
+                        || !PerformerMotionMaskUtility.IsValidMask(animator, rightArmMotionMask, out motionReason))
+                    {
+                        Debug.LogWarning("Motion is unavailable: " + motionReason, this);
+                    }
+                    else
+                    {
+                        _motionLayer = new PerformerMotionLayer(_graph, bodySource, animator,
+                            motionSet, rightArmMotionMask, motionOwnershipBlendSeconds);
+                        _motionConsumer = new PerformerMotionConsumer(motionDriver, _motionLayer);
+                        bodySource = _motionLayer.OutputPlayable;
+                    }
+                }
                 if (gestureUpperBodyMask != null)
                 {
                     if (PerformerGestureMaskUtility.IsValidMask(animator, gestureUpperBodyMask, out string gestureMaskReason))
@@ -1433,6 +1474,11 @@ namespace DazPose.Performer
 
             _gestureLayer?.Dispose();
             _gestureLayer = null;
+
+            _motionConsumer?.Dispose();
+            _motionConsumer = null;
+            _motionLayer?.Dispose();
+            _motionLayer = null;
 
             _actionLayer?.Dispose();
             _actionLayer = null;

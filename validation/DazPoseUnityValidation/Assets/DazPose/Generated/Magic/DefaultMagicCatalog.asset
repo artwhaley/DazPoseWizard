@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71a995fbc7c44d77a918e4421200a10a, type: 3}
+  m_Name: DefaultMagicCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerMagicCatalog
+  spells:
+  - {fileID: 11400000, guid: 060896aeeed6a7c40be6507a3df5c442, type: 2}
+  - {fileID: 11400000, guid: 7fe82dc106d0985439348f0c1135661e, type: 2}
+  - {fileID: 11400000, guid: 26665b4b88dbd8d43b6d52143610916b, type: 2}
+  - {fileID: 11400000, guid: 44544546be2be8747bc03e1d7d8e913a, type: 2}
+  - {fileID: 11400000, guid: 7376eff5b73fdbf439fb69402846a5d7, type: 2}
+  auras:
+  - {fileID: 11400000, guid: cb2a6eca381be0c4f9a1c832d72c2fa0, type: 2}
+  - {fileID: 11400000, guid: 7e7faeb958831224c8fe87f7872b5161, type: 2}
+  - {fileID: 11400000, guid: 72162692be3d8674686d1927b8b184d6, type: 2}
+  - {fileID: 11400000, guid: d3ba4ba166a03c64d854281dfb757f0e, type: 2}
+  - {fileID: 11400000, guid: 04fe90ce795464d41a1492ff9f8cf6c5, type: 2}

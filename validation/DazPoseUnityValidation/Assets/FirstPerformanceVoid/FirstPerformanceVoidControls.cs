@@ -1,4 +1,5 @@
 using System;
+using DazPose.Motion;
 using DazPose.Performer;
 using DazPose.Player;
 using UnityEngine;
@@ -44,6 +45,13 @@ namespace DazPose.FirstPerformanceVoid
         private Vector2 panelScrollPosition;
         private bool dissolveShaderAnimating;
         private float dissolveShaderAnimationElapsed;
+        private bool motionTrackingRoot;
+        private float motionRunStartedRealtime;
+        private float motionMeasuredRunSeconds;
+        private float motionRootTranslationDrift;
+        private float motionRootRotationDrift;
+        private Vector3 motionRootStartPosition;
+        private Quaternion motionRootStartRotation;
         private bool dissolveTestRunning;
         private string dissolveTestStatus = "Run the P0.G3 DissolveTo acceptance checks in Play Mode.";
         private bool visibilityTestRunning;
@@ -105,6 +113,7 @@ namespace DazPose.FirstPerformanceVoid
 
         private void Update()
         {
+            UpdateMotionRootDrift();
             if (!dissolveShaderAnimating) return;
             if (performer == null || !performer.DissolveShaderAcceptanceAvailable)
             {
@@ -148,6 +157,7 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.Label("Status: " + (firstContact != null ? firstContact.Status : "Run Install First Contact Performance"));
             if (firstContact != null) GUILayout.Label("Elapsed: " + firstContact.Elapsed.ToString("F1") + "s");
             DrawMagicControls(enabled);
+            DrawMotionControls(enabled);
             GUILayout.Space(5f);
             GUILayout.Label("P0.F TELEPORT", GUI.skin.box);
             bool teleportEnabled = enabled && !teleportTestRunning && performer != null
@@ -450,6 +460,103 @@ namespace DazPose.FirstPerformanceVoid
             }
             GUILayout.EndScrollView();
             GUILayout.EndArea();
+        }
+
+        private void DrawMotionControls(bool guiEnabled)
+        {
+            GUILayout.Space(5f);
+            GUILayout.Label("MOTION DRIVER", GUI.skin.box);
+            MotionDriver driver = performer != null ? performer.MotionSource : null;
+            if (driver == null)
+            {
+                GUI.enabled = false;
+                GUILayout.Button("START");
+                GUI.enabled = guiEnabled;
+                GUILayout.Label("Run Tools > DAZ Pose > Motion > Generate BasicStroke and Install Acceptance Harness in Edit Mode.");
+                return;
+            }
+
+            MotionSample sample = driver.CurrentSample;
+            GUILayout.Label("Running: " + (driver.IsRunning ? "YES" : "NO"));
+            GUILayout.Label("Frequency: " + driver.FrequencyHz.ToString("F2") + " Hz");
+            GUI.enabled = guiEnabled && driver.IsRunning;
+            float frequency = GUILayout.HorizontalSlider(driver.FrequencyHz, 0.25f, 3f);
+            GUI.enabled = guiEnabled;
+            if (!Mathf.Approximately(frequency, driver.FrequencyHz)) driver.FrequencyHz = frequency;
+
+            GUILayout.Label("Sequence: " + sample.Sequence + "    Phase: " + sample.Phase01.ToString("F3"));
+            GUILayout.Label("Position: " + sample.Position01.ToString("F3")
+                + "    Velocity: " + sample.Velocity.ToString("+0.00;-0.00;0.00"));
+            GUILayout.Label("Direction: " + sample.Direction + "    Time: " + sample.TimeSeconds.ToString("F2") + " s");
+            GUI.enabled = false;
+            GUILayout.HorizontalSlider(sample.Position01, 0f, 1f);
+            GUI.enabled = guiEnabled;
+
+            GUILayout.BeginHorizontal();
+            GUI.enabled = guiEnabled && !driver.IsRunning;
+            if (GUILayout.Button("START"))
+            {
+                BeginMotionRootTracking();
+                driver.StartMotion();
+            }
+            GUI.enabled = guiEnabled && driver.IsRunning;
+            if (GUILayout.Button("STOP")) driver.StopMotion();
+            GUI.enabled = guiEnabled;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUI.enabled = guiEnabled && driver.IsRunning;
+            if (GUILayout.Button("RESTART"))
+            {
+                BeginMotionRootTracking();
+                driver.RestartMotion();
+            }
+            GUI.enabled = guiEnabled;
+            if (GUILayout.Button("RESET"))
+            {
+                driver.ResetMotion();
+                motionTrackingRoot = false;
+            }
+            GUI.enabled = guiEnabled;
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(5f);
+            GUILayout.Label("Consumer bound: " + (performer != null && performer.MotionConsumerBound ? "YES" : "NO"));
+            GUILayout.Label("Motion ownership: " + (performer != null ? performer.MotionOwnershipWeight : 0f).ToString("F2"));
+            GUILayout.Label("Active variant: " + (performer != null ? performer.MotionActiveVariantName : "none"));
+            GUILayout.Label("Scrubbed Position01: " + (performer != null ? performer.MotionSampledPosition01 : 0f).ToString("F3"));
+            GUILayout.Space(5f);
+            GUILayout.Label("Root drift from run start");
+            GUILayout.Label("Run duration: " + motionMeasuredRunSeconds.ToString("F1") + " s"
+                + (motionTrackingRoot ? " (live)" : string.Empty));
+            GUILayout.Label("Translation: " + motionRootTranslationDrift.ToString("F5") + " m"
+                + "    Rotation: " + motionRootRotationDrift.ToString("F4") + "°");
+            GUI.enabled = guiEnabled;
+        }
+
+        private void UpdateMotionRootDrift()
+        {
+            MotionDriver driver = performer != null ? performer.MotionSource : null;
+            if (driver == null) return;
+            if (driver.IsRunning && !motionTrackingRoot) BeginMotionRootTracking();
+            if (!motionTrackingRoot) return;
+
+            motionMeasuredRunSeconds = Time.realtimeSinceStartup - motionRunStartedRealtime;
+            motionRootTranslationDrift = Vector3.Distance(motionRootStartPosition, performer.transform.position);
+            motionRootRotationDrift = Quaternion.Angle(motionRootStartRotation, performer.transform.rotation);
+            if (!driver.IsRunning) motionTrackingRoot = false;
+        }
+
+        private void BeginMotionRootTracking()
+        {
+            if (performer == null) return;
+            motionTrackingRoot = true;
+            motionRunStartedRealtime = Time.realtimeSinceStartup;
+            motionMeasuredRunSeconds = 0f;
+            motionRootTranslationDrift = 0f;
+            motionRootRotationDrift = 0f;
+            motionRootStartPosition = performer.transform.position;
+            motionRootStartRotation = performer.transform.rotation;
         }
 
         private void DrawMagicControls(bool guiEnabled)

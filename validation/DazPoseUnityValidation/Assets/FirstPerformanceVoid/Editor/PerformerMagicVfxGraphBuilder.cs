@@ -24,10 +24,26 @@ namespace DazPose.FirstPerformanceVoid.Editor
         private static readonly BindingFlags AllInstance = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         private static readonly BindingFlags AllStatic = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
-        public static VisualEffectAsset GetOrCreate(string path)
+        public static VisualEffectAsset GetOrCreate(string path, int familyId)
         {
             VisualEffectAsset existing = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
-            if (existing != null) return existing;
+            if (existing != null)
+            {
+                // Rebuild the project-owned starter layout in the same asset so references retain their GUID.
+                if (!File.Exists(HlslPath))
+                    throw new InvalidOperationException("Magic shader source is missing at " + HlslPath + ".");
+                object resource = InvokeExtension("UnityEditor.VFX.VisualEffectObjectExtensions", "GetOrCreateResource", existing);
+                object graph = InvokeExtension("UnityEditor.VFX.VisualEffectResourceExtensions", "GetOrCreateGraph", resource);
+                Call(graph, "RemoveAllChildren", true);
+                BuildGraph(existing, familyId);
+                EditorUtility.SetDirty(existing);
+                AssetDatabase.SaveAssetIfDirty(existing);
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+                VisualEffectAsset refreshed = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                if (refreshed == null)
+                    throw new InvalidOperationException("Unity did not reload the refreshed Magic graph at " + path + ".");
+                return refreshed;
+            }
             if (File.Exists(path))
                 throw new InvalidOperationException("A VFX asset exists but Unity could not load it: " + path
                     + ". Remove or repair that Magic graph before running the generator again.");
@@ -43,7 +59,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
 
             try
             {
-                BuildGraph(asset);
+                BuildGraph(asset, familyId);
                 AssetDatabase.SaveAssetIfDirty(asset);
                 AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
                 asset = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
@@ -59,36 +75,38 @@ namespace DazPose.FirstPerformanceVoid.Editor
             }
         }
 
-        private static void BuildGraph(VisualEffectAsset asset)
+        private static void BuildGraph(VisualEffectAsset asset, int familyId)
         {
             object resource = InvokeExtension("UnityEditor.VFX.VisualEffectObjectExtensions", "GetOrCreateResource", asset);
             object graph = InvokeExtension("UnityEditor.VFX.VisualEffectResourceExtensions", "GetOrCreateGraph", resource);
             object spawner = CreateModel("UnityEditor.VFX.VFXBasicSpawner");
             object initialize = CreateModel("UnityEditor.VFX.VFXBasicInitialize");
             object update = CreateModel("UnityEditor.VFX.VFXBasicUpdate");
-            object coreOutput = CreatePlanarOutput();
-            object glowOutput = CreatePlanarOutput();
-            object lineOutput = CreateModel("UnityEditor.VFX.VFXLineOutput");
-            SetField(lineOutput, "useTargetOffset", false);
-            SetField(lineOutput, "useNativeLines", false);
+            object coreOutput = CreatePlanarOutput("Mote", "Additive");
+            object glowOutput = CreatePlanarOutput("Glow", "Additive");
+            object wispOutput = CreatePlanarOutput(familyId == 0 ? "Flame" : "Wisp", "Additive", 0.035f);
+            object smokeOutput = CreatePlanarOutput("Smoke", "Alpha", 0.06f);
 
             SetPosition(spawner, new Vector2(330f, 80f));
             SetPosition(initialize, new Vector2(650f, 80f));
             SetPosition(update, new Vector2(960f, 80f));
             SetPosition(coreOutput, new Vector2(1280f, 0f));
             SetPosition(glowOutput, new Vector2(1280f, 360f));
-            SetPosition(lineOutput, new Vector2(1280f, 720f));
+            SetPosition(wispOutput, new Vector2(1640f, 0f));
+            SetPosition(smokeOutput, new Vector2(1640f, 360f));
             AddChild(graph, spawner);
             AddChild(graph, initialize);
             AddChild(graph, update);
             AddChild(graph, coreOutput);
             AddChild(graph, glowOutput);
-            AddChild(graph, lineOutput);
+            AddChild(graph, wispOutput);
+            AddChild(graph, smokeOutput);
             Call(spawner, "LinkTo", initialize, 0, 0);
             Call(initialize, "LinkTo", update, 0, 0);
             Call(update, "LinkTo", coreOutput, 0, 0);
             Call(update, "LinkTo", glowOutput, 0, 0);
-            Call(update, "LinkTo", lineOutput, 0, 0);
+            Call(update, "LinkTo", wispOutput, 0, 0);
+            Call(update, "LinkTo", smokeOutput, 0, 0);
 
             object data = Call(initialize, "GetData");
             if (data == null) throw new InvalidOperationException("VFX Graph did not create Magic particle data.");
@@ -124,6 +142,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
             ParameterNode spawnRate = AddParameter(graph, "SpawnRate", typeof(float), 100f, 20f, 1370f);
             ParameterNode spawnBurstCount = AddParameter(graph, "SpawnBurstCount", typeof(float), 0f, 20f, 1445f);
             ParameterNode particleLifetime = AddParameter(graph, "ParticleLifetime", typeof(float), 2f, 20f, 1520f);
+            ParameterNode targetBase = AddParameter(graph, "TargetBase", typeof(Vector3), new Vector3(0f, -0.9f, 0f), 20f, 1595f);
 
             object burst = CreateModel("UnityEditor.VFX.VFXSpawnerBurst");
             AddChild(spawner, burst);
@@ -155,8 +174,10 @@ namespace DazPose.FirstPerformanceVoid.Editor
             LinkParameter(effectTime, FindHlslInputSlot(updateHlsl, "EffectTime"));
             LinkParameter(effectProgress, FindHlslInputSlot(updateHlsl, "EffectProgress"));
             LinkParameter(targetCenter, FindHlslInputSlot(updateHlsl, "TargetCenter"));
+            LinkParameter(targetBase, FindHlslInputSlot(updateHlsl, "TargetBase"));
             LinkParameter(targetRadius, FindHlslInputSlot(updateHlsl, "TargetRadius"));
             LinkParameter(targetHeight, FindHlslInputSlot(updateHlsl, "TargetHeight"));
+            LinkParameter(particleSize, FindHlslInputSlot(updateHlsl, "ParticleSize"));
             LinkParameter(riseSpeed, FindHlslInputSlot(updateHlsl, "RiseSpeed"));
             LinkParameter(swirlStrength, FindHlslInputSlot(updateHlsl, "SwirlStrength"));
             LinkParameter(turbulence, FindHlslInputSlot(updateHlsl, "Turbulence"));
@@ -171,16 +192,19 @@ namespace DazPose.FirstPerformanceVoid.Editor
             LinkOutputProperties(LastChildOfType(glowOutput, "CustomHLSL"), styleId, effectMode,
                 effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
                 intensity, pulseFrequency, seed);
-            AddHlslBlock(lineOutput, "PerformerMagicLineOutput");
-            object lineHlsl = LastChildOfType(lineOutput, "CustomHLSL");
-            LinkParameter(styleId, FindHlslInputSlot(lineHlsl, "StyleId"));
-            LinkParameter(effectMode, FindHlslInputSlot(lineHlsl, "EffectMode"));
-            LinkParameter(effectTime, FindHlslInputSlot(lineHlsl, "EffectTime"));
-            LinkParameter(primaryColor, FindHlslInputSlot(lineHlsl, "PrimaryColor"));
-            LinkParameter(secondaryColor, FindHlslInputSlot(lineHlsl, "SecondaryColor"));
-            LinkParameter(intensity, FindHlslInputSlot(lineHlsl, "Intensity"));
-            LinkParameter(pulseFrequency, FindHlslInputSlot(lineHlsl, "PulseFrequency"));
-            LinkParameter(seed, FindHlslInputSlot(lineHlsl, "Seed"));
+            AddHlslBlock(wispOutput, "PerformerMagicWispOutput");
+            LinkOutputProperties(LastChildOfType(wispOutput, "CustomHLSL"), styleId, effectMode,
+                effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
+                intensity, pulseFrequency, seed);
+            AddHlslBlock(smokeOutput, "PerformerMagicSmokeOutput");
+            LinkOutputProperties(LastChildOfType(smokeOutput, "CustomHLSL"), styleId, effectMode,
+                effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
+                intensity, pulseFrequency, seed);
+
+            AddOrientation(coreOutput, "FaceCameraPlane");
+            AddOrientation(glowOutput, "FaceCameraPlane");
+            AddOrientation(wispOutput, "FaceCameraPlane");
+            AddOrientation(smokeOutput, "FaceCameraPlane");
 
             InvokeExtension("UnityEditor.VFX.VisualEffectResourceExtensions", "WriteAssetWithSubAssets", resource);
         }
@@ -202,16 +226,32 @@ namespace DazPose.FirstPerformanceVoid.Editor
             LinkParameter(seed, FindHlslInputSlot(block, "Seed"));
         }
 
-        private static object CreatePlanarOutput()
+        private static object CreatePlanarOutput(string texture, string blend, float softFadeDistance = 0f)
         {
             object output = CreateModel("UnityEditor.VFX.VFXPlanarPrimitiveOutput");
             SetEnumField(output, "primitiveType", "Quad");
             SetEnumField(output, "useBaseColorMap", "ColorAndAlpha");
             SetEnumField(output, "uvMode", "Default");
-            Texture2D glow = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/DazPose/Effects/ParticleBody/FireflyGlow.png");
-            if (glow == null) throw new InvalidOperationException("Magic Graphs reuse the existing ParticleBody FireflyGlow.png sprite.");
-            SetSlotValue(FindSlot(output, "mainTexture"), glow);
+            SetEnumField(output, "blendMode", blend);
+            SetEnumField(output, "cullMode", "Off");
+            SetEnumField(output, "zWriteMode", "Off");
+            if (softFadeDistance > 0f)
+            {
+                // Centimeter-scale depth fading integrates vapor with the body and floor.
+                // The package's one-meter default would hide these compact effects.
+                Call(output, "SetSettingValue", "useSoftParticle", true);
+                SetSlotValue(FindSlot(output, "softParticleFadeDistance"), softFadeDistance);
+            }
+            SetSlotValue(FindSlot(output, "mainTexture"), PerformerMagicTextureBuilder.Load(texture));
             return output;
+        }
+
+        private static void AddOrientation(object output, string mode)
+        {
+            object orientation = CreateModel("UnityEditor.VFX.Block.Orient");
+            SetEnumField(orientation, "mode", mode);
+            SetField(orientation, "faceRay", false);
+            AddChild(output, orientation);
         }
 
         private static void SetManualBounds(object initialize)
@@ -277,9 +317,10 @@ namespace DazPose.FirstPerformanceVoid.Editor
             choiceType.GetProperty("values", AllInstance).SetValue(choice, new List<string>
             {
                 "PerformerMagicInitialize", "PerformerMagicUpdate",
-                "PerformerMagicCoreOutput", "PerformerMagicGlowOutput", "PerformerMagicLineOutput"
+                "PerformerMagicCoreOutput", "PerformerMagicGlowOutput",
+                "PerformerMagicWispOutput", "PerformerMagicSmokeOutput"
             }, null);
-            Call(block, "SetSelection", function);
+            Call(choice, "SetSelection", function);
             selection.SetValue(block, choice);
             Call(block, "ResyncSlots", true);
         }

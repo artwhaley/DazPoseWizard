@@ -26,6 +26,7 @@ namespace DazPose.Performer
         private static readonly int EffectTimeId = Shader.PropertyToID("EffectTime");
         private static readonly int EffectProgressId = Shader.PropertyToID("EffectProgress");
         private static readonly int TargetCenterId = Shader.PropertyToID("TargetCenter");
+        private static readonly int TargetBaseId = Shader.PropertyToID("TargetBase");
         private static readonly int TargetRadiusId = Shader.PropertyToID("TargetRadius");
         private static readonly int TargetHeightId = Shader.PropertyToID("TargetHeight");
         private static readonly int StyleId = Shader.PropertyToID("StyleId");
@@ -91,7 +92,8 @@ namespace DazPose.Performer
                 _effect.SetFloat(SpawnRateId, mode == MagicEffectMode.Aura ? style.AuraSpawnRate : 0f);
                 _effect.SetFloat(SpawnBurstCountId, mode == MagicEffectMode.Spell ? style.SpellBurstCount : 0f);
                 _effect.SetFloat(ParticleLifetimeId, mode == MagicEffectMode.Spell
-                    ? style.SpellParticleLifetimeSeconds : style.AuraParticleLifetimeSeconds);
+                    ? Mathf.Max(style.SpellParticleLifetimeSeconds, style.SpellDurationSeconds + 0.05f)
+                    : style.AuraParticleLifetimeSeconds);
                 _effect.SetFloat(EffectProgressId, 0f);
                 _effect.SetFloat(EffectTimeId, 0f);
                 _effect.SetFloat(IntensityId, _currentIntensity);
@@ -173,6 +175,7 @@ namespace DazPose.Performer
         {
             _effect.SetInt(EffectModeId, (int)_mode);
             _effect.SetVector3(TargetCenterId, sample.Center);
+            _effect.SetVector3(TargetBaseId, sample.BaseCenter);
             _effect.SetFloat(TargetRadiusId, sample.Radius);
             _effect.SetFloat(TargetHeightId, sample.Height);
             _effect.SetInt(StyleId, Style.StyleId);
@@ -194,6 +197,7 @@ namespace DazPose.Performer
             Require(_effect.HasFloat(EffectTimeId), "EffectTime", "float");
             Require(_effect.HasFloat(EffectProgressId), "EffectProgress", "float");
             Require(_effect.HasVector3(TargetCenterId), "TargetCenter", "Vector3");
+            Require(_effect.HasVector3(TargetBaseId), "TargetBase", "Vector3");
             Require(_effect.HasFloat(TargetRadiusId), "TargetRadius", "float");
             Require(_effect.HasFloat(TargetHeightId), "TargetHeight", "float");
             Require(_effect.HasInt(StyleId), "StyleId", "int");

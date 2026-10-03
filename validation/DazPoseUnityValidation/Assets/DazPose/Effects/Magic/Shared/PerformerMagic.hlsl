@@ -1,252 +1,214 @@
-float PerformerMagicHash(float value)
-{
-    return frac(sin(value * 12.9898 + 78.233) * 43758.5453);
-}
-
+// VFX Graph embeds only the selected entry point. Keep each function self-contained.
+// Every particle has an independent path: 12 vapor wisps, 8 smoke puffs, 44 motes
+// per group of 64. Output-local filtering does not kill the shared simulation.
 void PerformerMagicInitialize(
     inout VFXAttributes attributes,
-    in int StyleId,
-    in int EffectMode,
-    in float3 TargetCenter,
-    in float TargetRadius,
-    in float TargetHeight,
-    in float ParticleSize,
-    in float ParticleLifetime,
-    in int Seed)
+    in int StyleId, in int EffectMode, in float3 TargetCenter,
+    in float TargetRadius, in float TargetHeight, in float ParticleSize,
+    in float ParticleLifetime, in int Seed)
 {
-    float particleSeed = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + Seed * 0.00317);
-    float x = (PerformerMagicHash(particleSeed * 71.3 + 1.1) * 2.0 - 1.0) * TargetRadius;
-    float y = (PerformerMagicHash(particleSeed * 31.7 + 4.2) * 2.0 - 1.0) * TargetHeight * 0.43;
-    float z = (PerformerMagicHash(particleSeed * 89.9 + 8.4) * 2.0 - 1.0) * TargetRadius;
-
-    if (StyleId == 3) // Verdant Pulse begins at the floor ring.
-        y = -TargetHeight * 0.43 + PerformerMagicHash(particleSeed * 11.7) * 0.10;
-    else if (StyleId == 0 && particleSeed > 0.82) // A slower stratum becomes soft smoke.
-        y = -TargetHeight * 0.32 + PerformerMagicHash(particleSeed * 41.1) * TargetHeight * 0.12;
-
-    attributes.velocity = float3(x, y, z); // Persistent random offset; graph integration is disabled.
-    attributes.position = TargetCenter + attributes.velocity;
-    attributes.lifetime = max(0.1, ParticleLifetime);
+    float s = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + (float)((uint)Seed & 0x0000FFFFu) / 65536.0);
+    attributes.position = TargetCenter;
+    attributes.targetPosition = TargetCenter + float3(0.0, 0.001, 0.0);
+    attributes.velocity = float3(0.0, 1.0, 0.0);
+    attributes.lifetime = max(0.1, ParticleLifetime) * (EffectMode == 0 ? 1.0 : lerp(0.85, 1.15, s));
     attributes.age = 0.0;
-    attributes.size = ParticleSize * lerp(0.65, 1.35, PerformerMagicHash(particleSeed * 17.9));
-    attributes.angle = float3(0.0, 0.0, particleSeed * 6.2831853);
+    attributes.size = ParticleSize;
+    attributes.angleZ = 0.0;
     attributes.color = float3(1.0, 1.0, 1.0);
-    attributes.alpha = 1.0;
+    attributes.alpha = 0.0;
 }
 
 void PerformerMagicUpdate(
     inout VFXAttributes attributes,
-    in int StyleId,
-    in int EffectMode,
-    in float EffectTime,
-    in float EffectProgress,
-    in float3 TargetCenter,
-    in float TargetRadius,
-    in float TargetHeight,
-    in float RiseSpeed,
-    in float SwirlStrength,
-    in float Turbulence,
-    in float PulseFrequency,
-    in int Seed)
+    in int StyleId, in int EffectMode, in float EffectTime, in float EffectProgress,
+    in float3 TargetCenter, in float3 TargetBase, in float TargetRadius, in float TargetHeight,
+    in float ParticleSize, in float RiseSpeed, in float SwirlStrength,
+    in float Turbulence, in float PulseFrequency, in int Seed)
 {
-    float seed = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + Seed * 0.00317);
-    float life = saturate(attributes.age / max(attributes.lifetime, 0.1));
-    float angle = seed * 6.2831853;
-    float3 offset = attributes.velocity;
-    float3 position = TargetCenter;
+    const float tau = 6.2831853;
+    uint lane = attributes.particleId % 64u;
+    float s = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + (float)((uint)Seed & 0x0000FFFFu) / 65536.0);
+    float a = frac(sin((s * 71.3 + 1.1) * 12.9898 + 78.233) * 43758.5453);
+    float b = frac(sin((s * 31.7 + 4.2) * 12.9898 + 78.233) * 43758.5453);
+    float c = frac(sin((s * 53.1 + 2.7) * 12.9898 + 78.233) * 43758.5453);
+    float life = saturate(attributes.age / max(0.1, attributes.lifetime));
+    float p = saturate(EffectProgress);
+    float envelope = EffectMode == 0
+        ? smoothstep(0.0, 0.08 + b * 0.05, p) * (1.0 - smoothstep(0.68 + a * 0.10, 1.0, p))
+        : smoothstep(0.0, 0.12, life) * (1.0 - smoothstep(0.72, 1.0, life));
+    float radius = max(TargetRadius, 0.01);
+    float height = max(TargetHeight, 0.02);
+    float floorOffset = TargetBase.y - TargetCenter.y;
+    float rate = lerp(0.23, 0.46, c) * (0.65 + RiseSpeed * 0.45);
+    if (StyleId == 2) rate *= 1.30;
+    if (StyleId == 4) rate *= 0.48;
+    float flow = frac(EffectTime * rate + s);
+    float cycleFade = smoothstep(0.0, 0.14, flow) * (1.0 - smoothstep(0.65, 1.0, flow));
+    float breathing = 0.88 + 0.12 * sin(EffectTime * PulseFrequency * 1.7 + b * tau);
+    float surge = EffectMode == 0 ? exp(-pow((p - (0.25 + c * 0.10)) / 0.16, 2.0)) : 0.0;
+    attributes.alpha = envelope * cycleFade * breathing;
+    attributes.size = ParticleSize * lerp(0.45, 1.25, a);
+    attributes.angleZ = b * 360.0 + EffectTime * lerp(-13.0, 13.0, c);
 
-    if (StyleId == 0) // Emberfire: licking upward motion, turbulence, distinct smoke drift.
+    // Evaluate the same continuous path twice to obtain its local tangent. No linked
+    // ribbon endpoints, shared helix, or clock-stepped random jumps are involved.
+    float3 currentLocal = float3(0.0, 0.0, 0.0);
+    float3 nextLocal = float3(0.0, 0.0, 0.0);
+    for (int sampleIndex = 0; sampleIndex < 2; sampleIndex++)
     {
-        bool smoke = seed > 0.82;
-        float flicker = EffectTime * (smoke ? 1.8 : 8.0) + angle;
-        float lateral = Turbulence * (smoke ? 1.2 : 0.65);
-        position += offset * lerp(1.0, 0.45, life);
-        position += float3(sin(flicker) * lateral, life * RiseSpeed * (smoke ? 0.52 : 1.0),
-            cos(flicker * 0.73) * lateral);
-        attributes.angle = float3(0.0, 0.0, angle + sin(flicker) * 0.35);
-    }
-    else if (StyleId == 1) // Rift Bloom: curling magenta wisps around the target volume.
-    {
-        float orbit = angle + EffectTime * max(0.2, SwirlStrength) * 1.8 + life * 2.1;
-        float radius = TargetRadius * lerp(0.95, 0.48, life);
-        position += float3(cos(orbit) * radius + offset.x * 0.18,
-            offset.y * 0.35 + life * RiseSpeed * 0.55,
-            sin(orbit) * radius + offset.z * 0.18);
-        float curl = sin(orbit * 1.7 + seed * 19.0) * Turbulence * 0.35;
-        position += float3(curl, cos(orbit * 1.3) * curl, -curl);
-        attributes.angle = float3(0.0, 0.0, orbit);
-    }
-    else if (StyleId == 2) // Arc Cyan: short, fast, jagged GPU streaks.
-    {
-        float crackle = EffectTime * (13.0 + PulseFrequency * 4.0) + angle;
-        float snap = sin(floor(crackle * 2.0) * 7.13 + seed * 23.0);
-        position += offset * 0.68;
-        position += float3(sin(crackle * 1.4) * Turbulence + snap * 0.045,
-            cos(crackle * 1.9) * Turbulence * 0.55,
-            cos(crackle * 1.2) * Turbulence + snap * 0.045);
-        position += float3(0.0, life * RiseSpeed * 0.2, 0.0);
-        attributes.angle = float3(0.0, 0.0, crackle + snap * 0.4);
-    }
-    else if (StyleId == 3) // Verdant Pulse: outward energy ring with rising organic motes.
-    {
-        float2 direction = normalize(offset.xz + float2(0.0001, 0.0001));
-        float radial = TargetRadius * (0.12 + life * 1.25);
-        float wobble = sin(life * 9.0 + seed * 39.0) * Turbulence * 0.25;
-        position += float3(direction.x * (radial + wobble), offset.y * 0.12 + life * RiseSpeed * 0.45,
-            direction.y * (radial + wobble));
-        attributes.angle = float3(0.0, 0.0, atan2(direction.y, direction.x));
-    }
-    else // Violet Serenity: slow, smooth orbit and gentle breathing drift.
-    {
-        float orbit = angle + EffectTime * max(0.1, SwirlStrength) * 0.34 + life * 0.6;
-        float radius = TargetRadius * lerp(0.74, 0.56, life);
-        float breathing = sin(EffectTime * max(0.1, PulseFrequency) * 0.8 + seed * 6.2831853) * 0.08;
-        position += float3(cos(orbit) * (radius + breathing),
-            offset.y * 0.48 + sin(orbit * 0.55) * Turbulence * 0.18 + life * RiseSpeed * 0.16,
-            sin(orbit) * (radius + breathing));
-        attributes.angle = float3(0.0, 0.0, orbit);
-    }
+        float t = EffectTime + (float)sampleIndex * 0.02;
+        float f = frac(t * rate + s);
+        float theta = s * tau + t * SwirlStrength * (0.12 + b * 0.10)
+            + sin(t * 0.71 + c * tau) * 0.22;
+        float r = radius * lerp(0.52, 1.08, a);
+        float3 q = float3(theta * 1.7 + b * 7.0, f * 5.0 + c * 9.0, a * 6.0);
+        float3 eddy = float3(
+            sin(q.y * 1.3 + t * 1.17) + cos(q.z * 1.6 - t * 0.63),
+            sin(q.z * 1.1 + t * 0.91) + cos(q.x * 1.4 + t * 0.53),
+            sin(q.x * 1.2 - t * 0.79) + cos(q.y * 1.5 + t * 0.67));
+        float3 local = float3(cos(theta) * r, floorOffset + height * (0.06 + f * 0.90), sin(theta) * r);
 
-    attributes.position = position;
-    if (StyleId == 2)
-    {
-        float sparkAngle = seed * 6.2831853 + EffectTime * (18.0 + PulseFrequency * 5.0);
-        float3 lineDirection = normalize(float3(cos(sparkAngle), sin(sparkAngle * 1.7) * 0.65, sin(sparkAngle)));
-        float lineLength = TargetRadius * lerp(0.10, 0.38, PerformerMagicHash(seed * 29.0));
-        attributes.targetPosition = position + lineDirection * lineLength;
-    }
-    else attributes.targetPosition = position;
-}
-
-void PerformerMagicApplyOutput(
-    inout VFXAttributes attributes,
-    in int StyleId,
-    in int EffectMode,
-    in float EffectTime,
-    in float EffectProgress,
-    in float4 PrimaryColor,
-    in float4 SecondaryColor,
-    in float4 AccentColor,
-    in float4 SmokeColor,
-    in float Intensity,
-    in float PulseFrequency,
-    in int Seed,
-    in float SizeScale,
-    in float AlphaScale)
-{
-    float seed = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + Seed * 0.00317);
-    float life = saturate(attributes.age / max(attributes.lifetime, 0.1));
-    float3 color = lerp(PrimaryColor.rgb, SecondaryColor.rgb, PerformerMagicHash(seed * 13.9));
-    float alpha = 1.0;
-
-    if (StyleId == 0)
-    {
-        if (seed > 0.82)
+        if (StyleId == 0)
         {
-            color = SmokeColor.rgb;
-            alpha *= SmokeColor.a * 0.52;
-            attributes.size *= 1.8;
+            // Buoyant combustion: widening embers and compact rolling flame fragments.
+            local.xz *= 0.82 + f * 0.34;
+            local.y = floorOffset + 0.04 + height * f * 0.94;
+            local += eddy * Turbulence * radius * (0.16 + f * 0.22);
+        }
+        else if (StyleId == 1)
+        {
+            // Uneven inward gathering and release through twisting pockets of vapor.
+            float gather = EffectMode == 0
+                ? lerp(1.15, 0.65, smoothstep(0.0, 0.19, p))
+                    + 0.46 * smoothstep(0.20 + b * 0.10, 0.56 + b * 0.10, p)
+                : 0.95;
+            local.xz *= gather;
+            local += eddy * Turbulence * radius * 0.38;
+        }
+        else if (StyleId == 2)
+        {
+            // Local charged dust and tiny discharges rather than target-height bolts.
+            local.xz *= 0.92;
+            local += eddy * Turbulence * radius * 0.28;
+            local += float3(sin(t * 8.0 + b * 23.0), cos(t * 6.1 + c * 17.0), sin(t * 7.3 + a * 19.0)) * radius * 0.025;
+        }
+        else if (StyleId == 3)
+        {
+            // Fine luminous dust carried upward in irregular, slowly opening currents.
+            local.xz *= 0.75 + f * 0.30;
+            local += eddy * Turbulence * radius * 0.30;
         }
         else
         {
-            color = lerp(PrimaryColor.rgb, SecondaryColor.rgb, life * 0.72 + PerformerMagicHash(seed * 27.0) * 0.2);
-            color = lerp(color, AccentColor.rgb, life * 0.42);
-            alpha *= 0.82 + 0.18 * sin(EffectTime * 21.0 + seed * 49.0);
+            // Quiet suspended mist, with independent drift rather than rising halos.
+            local.y = floorOffset + height * (0.14 + b * 0.70)
+                + sin(t * 0.42 + s * tau) * height * 0.04;
+            local += eddy * Turbulence * radius * 0.24;
         }
+        // Leave floor clearance for the puffs, including the small turbulent excursions.
+        local.y = max(local.y, floorOffset + 0.025);
+        if (sampleIndex == 0) currentLocal = local;
+        else nextLocal = local;
     }
-    else if (StyleId == 1)
+    attributes.position = TargetCenter + currentLocal;
+    attributes.targetPosition = TargetCenter + nextLocal;
+    attributes.velocity = (nextLocal - currentLocal) / 0.02;
+
+    if (lane < 12u)
     {
-        color = lerp(PrimaryColor.rgb, SecondaryColor.rgb, 0.25 + 0.6 * PerformerMagicHash(seed * 31.0));
-        color = lerp(color, AccentColor.rgb, 0.12 + 0.25 * life);
+        attributes.size = ParticleSize * lerp(5.0, 9.0, a) * lerp(0.70, 1.10, flow);
+        attributes.alpha *= 0.72 + surge * 0.28;
     }
-    else if (StyleId == 2)
+    else if (lane < 20u)
     {
-        float flash = step(0.58, PerformerMagicHash(floor(EffectTime * (14.0 + seed * 18.0)) + seed * 91.0));
-        color = lerp(SecondaryColor.rgb, PrimaryColor.rgb, flash * 0.8);
-        color = lerp(color, AccentColor.rgb, 0.15 + 0.25 * PerformerMagicHash(seed * 83.0));
-        alpha *= flash > 0.0 ? 1.0 : 0.42;
-        attributes.size *= 0.8;
-    }
-    else if (StyleId == 3)
-    {
-        color = lerp(SecondaryColor.rgb, AccentColor.rgb, 0.18 + 0.38 * PerformerMagicHash(seed * 53.0));
-        alpha *= 0.82 + 0.18 * sin(EffectTime * PulseFrequency * 2.0 + seed * 6.2831853);
+        attributes.size = radius * lerp(0.24, 0.46, a) * lerp(0.65, 1.25, flow);
     }
     else
     {
-        color = lerp(SecondaryColor.rgb, PrimaryColor.rgb, 0.32 + 0.3 * PerformerMagicHash(seed * 17.0));
-        alpha *= 0.76 + 0.12 * sin(EffectTime * PulseFrequency * 0.75 + seed * 6.2831853);
+        // Per-particle shimmer gives the cyan family energy without synchronized flashes.
+        if (StyleId == 2)
+            attributes.alpha *= 0.30 + 0.70 * pow(0.5 + 0.5 * sin(EffectTime * (4.0 + c * 4.0) + b * tau), 3.0);
+        attributes.alpha *= lerp(0.55, 1.0, c) * (0.85 + surge * 0.15);
     }
-
-    float particleIn = smoothstep(0.0, 0.06, life);
-    float particleOut = 1.0 - smoothstep(0.82, 1.0, life);
-    float eventEnvelope = 1.0;
-    if (EffectMode == 0)
-        eventEnvelope = smoothstep(0.0, 0.06, EffectProgress)
-            * (1.0 - smoothstep(0.80, 1.0, EffectProgress));
-    attributes.color = color * Intensity;
-    attributes.alpha *= alpha * particleIn * particleOut * eventEnvelope * AlphaScale;
-    attributes.size *= SizeScale;
 }
 
 void PerformerMagicCoreOutput(
     inout VFXAttributes attributes,
-    in int StyleId,
-    in int EffectMode,
-    in float EffectTime,
-    in float EffectProgress,
-    in float4 PrimaryColor,
-    in float4 SecondaryColor,
-    in float4 AccentColor,
-    in float4 SmokeColor,
-    in float Intensity,
-    in float PulseFrequency,
-    in int Seed)
+    in int StyleId, in int EffectMode, in float EffectTime, in float EffectProgress,
+    in float4 PrimaryColor, in float4 SecondaryColor, in float4 AccentColor,
+    in float4 SmokeColor, in float Intensity, in float PulseFrequency, in int Seed)
 {
-    PerformerMagicApplyOutput(attributes, StyleId, EffectMode, EffectTime, EffectProgress,
-        PrimaryColor, SecondaryColor, AccentColor, SmokeColor, Intensity, PulseFrequency,
-        Seed, 0.68, 0.86);
+    uint lane = attributes.particleId % 64u;
+    if (lane < 20u)
+    {
+        attributes.alive = false;
+        return;
+    }
+    float s = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + (float)((uint)Seed & 0x0000FFFFu) / 65536.0);
+    float hot = lerp(0.18, 0.90, pow(s, 3.0));
+    attributes.color = lerp(SecondaryColor.rgb, PrimaryColor.rgb, hot) * Intensity;
+    attributes.scaleX = 1.0;
+    attributes.scaleY = StyleId == 0 || StyleId == 2 ? 1.45 : 1.0;
+    attributes.alpha *= saturate(Intensity) * (StyleId == 4 ? 0.65 : 0.90);
 }
 
 void PerformerMagicGlowOutput(
     inout VFXAttributes attributes,
-    in int StyleId,
-    in int EffectMode,
-    in float EffectTime,
-    in float EffectProgress,
-    in float4 PrimaryColor,
-    in float4 SecondaryColor,
-    in float4 AccentColor,
-    in float4 SmokeColor,
-    in float Intensity,
-    in float PulseFrequency,
-    in int Seed)
+    in int StyleId, in int EffectMode, in float EffectTime, in float EffectProgress,
+    in float4 PrimaryColor, in float4 SecondaryColor, in float4 AccentColor,
+    in float4 SmokeColor, in float Intensity, in float PulseFrequency, in int Seed)
 {
-    PerformerMagicApplyOutput(attributes, StyleId, EffectMode, EffectTime, EffectProgress,
-        PrimaryColor, SecondaryColor, AccentColor, SmokeColor, Intensity, PulseFrequency,
-        Seed, 2.6, 0.3);
-}
-
-void PerformerMagicLineOutput(
-    inout VFXAttributes attributes,
-    in int StyleId,
-    in int EffectMode,
-    in float EffectTime,
-    in float4 PrimaryColor,
-    in float4 SecondaryColor,
-    in float Intensity,
-    in float PulseFrequency,
-    in int Seed)
-{
-    if (StyleId != 2)
+    uint lane = attributes.particleId % 64u;
+    if (lane < 20u || lane % 4u != 0u)
     {
-        attributes.alpha = 0.0;
+        attributes.alive = false;
         return;
     }
-
-    float seed = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + Seed * 0.00317);
-    float flicker = step(0.38, PerformerMagicHash(floor(EffectTime * (18.0 + PulseFrequency * 8.0)) + seed * 73.0));
-    attributes.color = lerp(SecondaryColor.rgb, PrimaryColor.rgb, 0.28 + 0.55 * flicker);
-    attributes.alpha *= Intensity * (EffectMode == 0 ? 0.92 : 0.64) * flicker;
-    attributes.size = lerp(0.004, 0.012, PerformerMagicHash(seed * 61.0));
+    attributes.color = SecondaryColor.rgb * Intensity;
+    attributes.scaleX = 1.0;
+    attributes.scaleY = 1.0;
+    attributes.size *= 3.5;
+    attributes.alpha *= saturate(Intensity) * 0.16;
 }
+
+void PerformerMagicWispOutput(
+    inout VFXAttributes attributes,
+    in int StyleId, in int EffectMode, in float EffectTime, in float EffectProgress,
+    in float4 PrimaryColor, in float4 SecondaryColor, in float4 AccentColor,
+    in float4 SmokeColor, in float Intensity, in float PulseFrequency, in int Seed)
+{
+    uint lane = attributes.particleId % 64u;
+    if (lane >= 12u)
+    {
+        attributes.alive = false;
+        return;
+    }
+    float s = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + (float)((uint)Seed & 0x0000FFFFu) / 65536.0);
+    attributes.color = lerp(SecondaryColor.rgb, AccentColor.rgb, s * 0.18) * Intensity;
+    if (StyleId == 0) attributes.color = lerp(attributes.color, PrimaryColor.rgb * Intensity, 0.18);
+    attributes.scaleX = lerp(0.75, 1.10, s);
+    attributes.scaleY = StyleId == 0 ? 1.65 : 1.25;
+    attributes.alpha *= saturate(Intensity) * (StyleId == 0 ? 0.42 : (StyleId == 4 ? 0.20 : 0.32));
+}
+
+void PerformerMagicSmokeOutput(
+    inout VFXAttributes attributes,
+    in int StyleId, in int EffectMode, in float EffectTime, in float EffectProgress,
+    in float4 PrimaryColor, in float4 SecondaryColor, in float4 AccentColor,
+    in float4 SmokeColor, in float Intensity, in float PulseFrequency, in int Seed)
+{
+    uint lane = attributes.particleId % 64u;
+    if (lane < 12u || lane >= 20u)
+    {
+        attributes.alive = false;
+        return;
+    }
+    float s = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + (float)((uint)Seed & 0x0000FFFFu) / 65536.0);
+    attributes.scaleX = 1.0;
+    attributes.scaleY = lerp(0.85, 1.20, s);
+    attributes.color = StyleId == 0 ? SmokeColor.rgb
+        : lerp(SmokeColor.rgb, SecondaryColor.rgb * Intensity, 0.06 + s * 0.06);
+    attributes.alpha *= SmokeColor.a * saturate(Intensity) * (StyleId == 0 ? 0.50 : 0.38);
+}
+

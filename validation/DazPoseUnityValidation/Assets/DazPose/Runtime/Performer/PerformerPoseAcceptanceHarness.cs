@@ -179,6 +179,10 @@ namespace DazPose.Performer
             failures.AddRange(magicRuntimeSelfTestFailures);
             if (magicRuntimeSelfTestFailures.Length == 0)
                 Debug.Log("Cast/Aura synthetic lifetime, replacement, teardown, and target geometry checks passed.", this);
+            var motionRuntimeSelfTestFailures = PerformerMotionRuntimeSelfTests.Run();
+            failures.AddRange(motionRuntimeSelfTestFailures);
+            if (motionRuntimeSelfTestFailures.Length == 0)
+                Debug.Log("Motion sine, subscription, frozen-clip scrubbing, ownership blend, and phase-preserving variant checks passed.", this);
             yield return CheckGestureAcceptance(animator, failures);
             yield return CheckActionAcceptance(failures);
 
