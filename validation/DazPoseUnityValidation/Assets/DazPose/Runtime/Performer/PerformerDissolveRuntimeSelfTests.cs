@@ -324,7 +324,7 @@ namespace DazPose.Performer
             public int FinishCount { get; private set; }
             public int RestoreCount { get; private set; }
             public bool ThrowOnBegin { get; set; }
-            public bool ForceRenderingOff { get; private set; }
+            public bool ForceRenderingOff { get; set; }
             public float VisibilityClock { get; private set; }
 
             public float EvaluateEffectCurve(float normalizedTime) => Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(normalizedTime));
