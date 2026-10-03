@@ -476,13 +476,74 @@ namespace DazPose.FirstPerformanceVoid
                 return;
             }
 
-            MotionSample sample = driver.CurrentSample;
-            GUILayout.Label("Running: " + (driver.IsRunning ? "YES" : "NO"));
-            GUILayout.Label("Frequency: " + driver.FrequencyHz.ToString("F2") + " Hz");
-            GUI.enabled = guiEnabled && driver.IsRunning;
-            float frequency = GUILayout.HorizontalSlider(driver.FrequencyHz, 0.25f, 3f);
+            GUILayout.Label("MOTION SOURCE");
+            GUILayout.BeginHorizontal();
             GUI.enabled = guiEnabled;
-            if (!Mathf.Approximately(frequency, driver.FrequencyHz)) driver.FrequencyHz = frequency;
+            bool sineSelected = GUILayout.Toggle(driver.SourceMode == MotionSourceMode.Sine, "Sine", GUI.skin.button);
+            if (sineSelected && driver.SourceMode != MotionSourceMode.Sine)
+                driver.SourceMode = MotionSourceMode.Sine;
+            GUI.enabled = guiEnabled && driver.HasFunscriptProgram;
+            bool funscriptSelected = GUILayout.Toggle(driver.SourceMode == MotionSourceMode.Funscript,
+                "Funscript", GUI.skin.button);
+            if (funscriptSelected && driver.SourceMode != MotionSourceMode.Funscript)
+                driver.SourceMode = MotionSourceMode.Funscript;
+            GUI.enabled = guiEnabled;
+            GUILayout.EndHorizontal();
+
+            if (!driver.HasFunscriptProgram)
+                GUILayout.Label("Assign the imported Assets/motiondrive.funscript asset to MotionDriver.");
+
+            MotionSample sample = driver.CurrentSample;
+            if (driver.SourceMode == MotionSourceMode.Sine)
+            {
+                GUILayout.Label("Frequency: " + driver.FrequencyHz.ToString("F2") + " Hz");
+                GUI.enabled = guiEnabled && driver.IsRunning;
+                float frequency = GUILayout.HorizontalSlider(driver.FrequencyHz, 0.25f, 3f);
+                GUI.enabled = guiEnabled;
+                if (!Mathf.Approximately(frequency, driver.FrequencyHz)) driver.FrequencyHz = frequency;
+            }
+            else if (driver.FunscriptProgram != null)
+            {
+                FunscriptMotionProgram program = driver.FunscriptProgram;
+                FunscriptPlayback playback = driver.FunscriptPlayback;
+                GUILayout.Label("Program: " + program.name);
+                GUILayout.Label("Actions: " + program.ActionCount
+                    + "    Duration: " + program.DurationSeconds.ToString("F3") + " s");
+                GUILayout.Label("Playback: " + sample.TimeSeconds.ToString("F3")
+                    + " s    Phase: " + sample.Phase01.ToString("F3"));
+
+                bool loop = GUILayout.Toggle(driver.Loop, "Loop");
+                if (loop != driver.Loop) driver.Loop = loop;
+                float duration = (float)program.DurationSeconds;
+                float currentTime = Mathf.Clamp((float)sample.TimeSeconds, 0f, duration);
+                GUI.enabled = guiEnabled && duration > 0f;
+                float seekTime = GUILayout.HorizontalSlider(currentTime, 0f, duration);
+                GUI.enabled = guiEnabled;
+                if (Mathf.Abs(seekTime - currentTime) > 0.005f) driver.Seek(seekTime);
+                GUILayout.Label("Seek: " + currentTime.ToString("F3") + " → " + seekTime.ToString("F3") + " s");
+
+                if (playback != null && playback.HasCurrentSegment)
+                {
+                    FunscriptSegment segment = playback.CurrentSegment;
+                    GUILayout.Label("Action/segment: " + segment.FromActionIndex + " → " + segment.ToActionIndex);
+                    GUILayout.Label("From: t=" + segment.From.AtMilliseconds.ToString("F0") + " ms  pos=" + segment.From.Position);
+                    GUILayout.Label("To: t=" + segment.To.AtMilliseconds.ToString("F0") + " ms  pos=" + segment.To.Position);
+                    GUILayout.Label("Segment remaining: " + Math.Max(0d,
+                        segment.EndSeconds - playback.CurrentTimeSeconds).ToString("F3") + " s");
+                }
+                else if (program.ActionCount > 0)
+                {
+                    FunscriptAction first = program.GetAction(0);
+                    FunscriptAction last = program.GetAction(program.ActionCount - 1);
+                    string hold = sample.TimeSeconds < first.AtMilliseconds / 1000d
+                        ? "pre-first hold" : "post-last hold";
+                    GUILayout.Label("Action/segment: " + hold);
+                    GUILayout.Label("First: t=" + first.AtMilliseconds.ToString("F0") + " ms  pos=" + first.Position
+                        + "    Last: t=" + last.AtMilliseconds.ToString("F0") + " ms  pos=" + last.Position);
+                }
+            }
+
+            GUILayout.Label("Running: " + (driver.IsRunning ? "YES" : "NO"));
 
             GUILayout.Label("Sequence: " + sample.Sequence + "    Phase: " + sample.Phase01.ToString("F3"));
             GUILayout.Label("Position: " + sample.Position01.ToString("F3")
@@ -493,7 +554,7 @@ namespace DazPose.FirstPerformanceVoid
             GUI.enabled = guiEnabled;
 
             GUILayout.BeginHorizontal();
-            GUI.enabled = guiEnabled && !driver.IsRunning;
+            GUI.enabled = guiEnabled && driver.SourceReady && !driver.IsRunning;
             if (GUILayout.Button("START"))
             {
                 BeginMotionRootTracking();

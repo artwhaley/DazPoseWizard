@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DazPose.Motion;
 using UnityEngine;
 
 namespace DazPose.Performer
@@ -182,7 +183,11 @@ namespace DazPose.Performer
             var motionRuntimeSelfTestFailures = PerformerMotionRuntimeSelfTests.Run();
             failures.AddRange(motionRuntimeSelfTestFailures);
             if (motionRuntimeSelfTestFailures.Length == 0)
-                Debug.Log("Motion sine, subscription, frozen-clip scrubbing, ownership blend, and phase-preserving variant checks passed.", this);
+                Debug.Log("Motion sine/Funscript source selection, source-neutral consumer scrubbing, ownership blend, and variant checks passed.", this);
+            var funscriptRuntimeSelfTestFailures = FunscriptRuntimeSelfTests.Run();
+            failures.AddRange(funscriptRuntimeSelfTestFailures);
+            if (funscriptRuntimeSelfTestFailures.Length == 0)
+                Debug.Log("Funscript parser, authored segments, interpolation, seek, pause/resume, loop, and end checks passed.", this);
             yield return CheckGestureAcceptance(animator, failures);
             yield return CheckActionAcceptance(failures);
 

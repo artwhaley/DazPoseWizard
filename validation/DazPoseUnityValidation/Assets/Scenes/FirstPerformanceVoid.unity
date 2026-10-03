@@ -548,6 +548,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Motion.MotionDriver
   frequencyHz: 1
   playOnEnable: 0
+  sourceMode: 0
+  funscriptProgram: {fileID: 11400000, guid: 2674d394f246d7247a8c887eafbe2c8f, type: 3}
+  loopFunscript: 0
 --- !u!4 &45479552
 Transform:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ using UnityEngine.Playables;
 namespace DazPose.Performer
 {
     /// <summary>Deterministic driver, consumer, frozen-clip and variant-mixer checks.</summary>
-    internal static class PerformerMotionRuntimeSelfTests
+    public static class PerformerMotionRuntimeSelfTests
     {
         private const float Tolerance = 0.0002f;
 
@@ -20,8 +20,9 @@ namespace DazPose.Performer
             CheckDriver(driver, failures);
 #if UNITY_EDITOR
             CheckLayerAndConsumer(driver, failures);
+            CheckFunscriptSourceFeedsConsumer(driver, failures);
 #endif
-            UnityEngine.Object.Destroy(host);
+            DestroyObject(host);
             return failures.ToArray();
         }
 
@@ -209,16 +210,91 @@ namespace DazPose.Performer
                 consumer?.Dispose();
                 layer?.Dispose();
                 if (graph.IsValid()) graph.Destroy();
-                UnityEngine.Object.Destroy(animatorObject);
-                UnityEngine.Object.Destroy(baseClip);
-                UnityEngine.Object.Destroy(shortClip);
-                UnityEngine.Object.Destroy(longClip);
-                UnityEngine.Object.Destroy(shortVariant);
-                UnityEngine.Object.Destroy(longVariant);
-                UnityEngine.Object.Destroy(set);
-                UnityEngine.Object.Destroy(mask);
+                DestroyObject(animatorObject);
+                DestroyObject(baseClip);
+                DestroyObject(shortClip);
+                DestroyObject(longClip);
+                DestroyObject(shortVariant);
+                DestroyObject(longVariant);
+                DestroyObject(set);
+                DestroyObject(mask);
             }
             driver.StopMotion();
+        }
+
+        private static void CheckFunscriptSourceFeedsConsumer(MotionDriver driver, List<string> failures)
+        {
+            FunscriptMotionProgram program = null;
+            var animatorObject = new GameObject("FunscriptMotionSyntheticAnimator");
+            PlayableGraph graph = PlayableGraph.Create("Funscript source consumer self-test");
+            AnimationClip baseClip = null;
+            AnimationClip motionClip = null;
+            PerformerMotionVariant variant = null;
+            PerformerMotionSet set = null;
+            AvatarMask mask = null;
+            PerformerMotionLayer layer = null;
+            PerformerMotionConsumer consumer = null;
+            try
+            {
+                program = FunscriptJsonParser.Parse("{\"range\":100,\"metadata\":{\"duration\":4},"
+                    + "\"actions\":[{\"at\":1000,\"pos\":10},{\"at\":2000,\"pos\":50},{\"at\":3000,\"pos\":0}]}");
+                driver.StopMotion();
+                driver.FunscriptProgram = program;
+                driver.SourceMode = MotionSourceMode.Funscript;
+
+                Animator animator = animatorObject.AddComponent<Animator>();
+                baseClip = MakeClip(1f, 0f, 0.1f);
+                motionClip = MakeClip(2f, 0f, 1f);
+                variant = MakeVariant(motionClip, "FunscriptScrub");
+                set = ScriptableObject.CreateInstance<PerformerMotionSet>();
+                set.Configure(new[] { variant });
+                mask = new AvatarMask { transformCount = 1 };
+                mask.SetTransformPath(0, "joint");
+                mask.SetTransformActive(0, true);
+
+                Playable basePlayable = AnimationClipPlayable.Create(graph, baseClip);
+                layer = new PerformerMotionLayer(graph, basePlayable, animator, set, mask,
+                    ownershipBlendSeconds: 0f, validateMask: false);
+                consumer = new PerformerMotionConsumer(driver, layer);
+                driver.StartMotion();
+                driver.Advance(1.5f);
+                Check(Near(driver.CurrentSample.Position01, 0.3f)
+                    && Near(layer.SampledPosition01, driver.CurrentSample.Position01)
+                    && Near(layer.GetVariantSampleTime(0), 0.6f),
+                    "Funscript Position01 reaches the existing frozen-clip consumer unchanged", failures);
+
+                float forwardClipTime = layer.GetVariantSampleTime(0);
+                driver.Advance(1f);
+                Check(driver.CurrentSample.Direction == MotionDirection.Decreasing
+                    && Near(driver.CurrentSample.Position01, 0.25f)
+                    && Near(layer.SampledPosition01, 0.25f)
+                    && layer.GetVariantSampleTime(0) < forwardClipTime
+                    && Near(layer.GetVariantSampleTime(0), 0.5f),
+                    "reverse Funscript motion scrubs the same clip backward without a source-specific consumer", failures);
+                Check(Near(animator.transform.position.sqrMagnitude, 0f),
+                    "Funscript sampling leaves the animator root untouched", failures);
+            }
+            catch (Exception exception)
+            {
+                failures.Add("Funscript consumer integration test threw " + exception.GetType().Name + ": " + exception.Message);
+            }
+            finally
+            {
+                driver.StopMotion();
+                driver.FunscriptProgram = null;
+                driver.SourceMode = MotionSourceMode.Sine;
+                driver.ResetMotion();
+                consumer?.Dispose();
+                layer?.Dispose();
+                if (graph.IsValid()) graph.Destroy();
+                DestroyObject(animatorObject);
+                DestroyObject(baseClip);
+                DestroyObject(motionClip);
+                DestroyObject(variant);
+                DestroyObject(set);
+                DestroyObject(mask);
+                DestroyObject(program);
+            }
         }
 
         private static PerformerMotionVariant MakeVariant(AnimationClip clip, string displayName)
@@ -236,6 +312,13 @@ namespace DazPose.Performer
             return clip;
         }
 #endif
+
+        private static void DestroyObject(UnityEngine.Object value)
+        {
+            if (value == null) return;
+            if (Application.isPlaying) UnityEngine.Object.Destroy(value);
+            else UnityEngine.Object.DestroyImmediate(value);
+        }
 
         private static bool SameSample(MotionSample a, MotionSample b) =>
             a.Sequence == b.Sequence && Math.Abs(a.TimeSeconds - b.TimeSeconds) < 0.000001d
