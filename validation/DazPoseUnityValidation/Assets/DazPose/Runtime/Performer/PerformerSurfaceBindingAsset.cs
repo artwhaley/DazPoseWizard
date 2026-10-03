@@ -6,6 +6,7 @@ using UnityEngine.VFX;
 namespace DazPose.Performer
 {
     /// <summary>A stable, blittable address on one triangle of a skinned surface.</summary>
+    [Serializable]
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = Stride)]
     [VFXType(VFXTypeAttribute.Usage.GraphicsBuffer)]
     public struct PerformerSurfaceBinding

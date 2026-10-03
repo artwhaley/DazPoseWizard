@@ -1,15 +1,15 @@
 #ifndef PERFORMER_DISSOLVE_FIELD_INCLUDED
 #define PERFORMER_DISSOLVE_FIELD_INCLUDED
-float PerformerDissolveHash3D(float3 point)
+float PerformerDissolveHash3D(float3 samplePosition)
 {
-    point = frac(point * 0.1031);
-    point += dot(point, point.yzx + 33.33);
-    return frac((point.x + point.y) * point.z);
+    samplePosition = frac(samplePosition * 0.1031);
+    samplePosition += dot(samplePosition, samplePosition.yzx + 33.33);
+    return frac((samplePosition.x + samplePosition.y) * samplePosition.z);
 }
-float PerformerDissolveValueNoise3D(float3 point)
+float PerformerDissolveValueNoise3D(float3 samplePosition)
 {
-    float3 cell = floor(point);
-    float3 local = frac(point);
+    float3 cell = floor(samplePosition);
+    float3 local = frac(samplePosition);
     local = local * local * (3.0 - 2.0 * local);
     float c000 = PerformerDissolveHash3D(cell + float3(0,0,0));
     float c100 = PerformerDissolveHash3D(cell + float3(1,0,0));
@@ -47,7 +47,11 @@ void PerformerDissolveEvaluate_float(
     float progress=saturate(DissolveProgress);
     float field=PerformerDissolveField(LocalPosition,BoundsMin,BoundsSize,FieldParams);
     Keep=lerp(1.0,step(progress,field),enabled);
-    ResultAlpha=SourceAlpha*Keep;
+    // Alpha zero survives HDRP's clip(alpha - 0). A negative masked alpha is rejected
+    // even when the original threshold is zero, while kept pixels retain SourceAlpha.
+    // Both project-owned graphs enable alpha testing, including transparent Wet, so
+    // dissolved pixels also lose their specular highlights and depth/shadow coverage.
+    ResultAlpha=lerp(-1.0,SourceAlpha,Keep);
     float lower=max(abs(EdgeWidth)*0.35,0.0001);
     float upper=max(abs(EdgeWidth),lower+0.0001);
     float band=1.0-smoothstep(lower,upper,abs(field-progress));

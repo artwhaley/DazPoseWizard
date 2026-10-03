@@ -24,6 +24,9 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform teleportMarkA;
         [SerializeField] private Transform teleportMarkB;
         [SerializeField] private PerformerPose teleportArrivalPose;
+        [Header("Dissolve Test Timing")]
+        [Tooltip("Total seconds for the existing DISSOLVE A/B buttons. All effect phases scale together.")]
+        [SerializeField, Min(0.01f)] private float dissolveDurationSeconds = 3f;
         [SerializeField, HideInInspector] private int lightingRevision;
         public int LightingRevision => lightingRevision;
         private ParticleSystem[] smokeEmitters;
@@ -310,7 +313,7 @@ namespace DazPose.FirstPerformanceVoid
             dissolveTestStatus = "Dissolving to " + targetName + (arrivalPose != null ? " in " + arrivalPose.name + "…" : "…");
             try
             {
-                DissolveCompletion result = await performer.DissolveToAsync(target, arrivalPose);
+                DissolveCompletion result = await performer.DissolveToAsync(target, dissolveDurationSeconds, arrivalPose);
                 dissolveTestStatus = result == DissolveCompletion.Arrived
                     ? "Arrived at " + targetName + (arrivalPose != null ? " in " + arrivalPose.name + "." : ".")
                     : "Performer disabled during dissolve.";

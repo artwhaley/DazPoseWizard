@@ -4,14 +4,43 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
+    /// <summary>Snapshots one request's duration and the profile's relative phase weights.</summary>
+    internal readonly struct PerformerDissolveTiming
+    {
+        public float Duration { get; }
+        public float DepartureFraction { get; }
+        public float FirstArrivalFraction { get; }
+        public float FadeFraction { get; }
+        public float DepartureDuration => Duration * DepartureFraction;
+        public float FlightBaseDuration => Duration * FirstArrivalFraction;
+        public float FadeDuration => Duration * FadeFraction;
+
+        public PerformerDissolveTiming(PerformerDissolveProfile profile, float durationSeconds)
+        {
+            if (float.IsNaN(durationSeconds) || float.IsInfinity(durationSeconds) || durationSeconds <= 0f)
+                throw new ArgumentOutOfRangeException(nameof(durationSeconds), "Dissolve duration must be finite and greater than zero.");
+            double release = profile.DissolveOutDuration;
+            double travel = profile.TransitDuration;
+            double fade = profile.MaterializeDuration;
+            double total = 2.0 * release + travel + fade;
+            if (double.IsNaN(total) || double.IsInfinity(total) || release <= 0.0 || travel <= 0.0 || fade <= 0.0)
+                throw new ArgumentException("Dissolve profile timing weights must be finite and positive.", nameof(profile));
+            Duration = durationSeconds;
+            DepartureFraction = (float)(release / total);
+            FirstArrivalFraction = (float)((release + travel) / total);
+            FadeFraction = (float)(fade / total);
+        }
+    }
+
     internal interface IPerformerDissolvePresentation
     {
         Vector3 BodyCenter { get; }
         float EvaluateEffectCurve(float normalizedTime);
-        void Begin(PerformerDissolveProfile profile);
+        void Begin(PerformerDissolveProfile profile, PerformerDissolveTiming timing);
         void SetDissolveProgress(float progress);
         void CompleteDeparture();
         void BeginTransit(Vector3 destinationCenter);
+        void RetargetTransit(Vector3 destinationCenter);
         void SetTransitProgress(float progress);
         void BeginMaterialize();
         void SetMaterializeProgress(float progress);
@@ -19,7 +48,7 @@ namespace DazPose.Performer
         void Restore();
     }
 
-    /// <summary>Directs dissolve-out, hidden relocation, transit, and materialization.</summary>
+    /// <summary>Streams surface embers between poses while keeping root relocation hidden.</summary>
     internal sealed class PerformerDissolve : IDisposable
     {
         private enum Phase
@@ -42,7 +71,9 @@ namespace DazPose.Performer
         private bool _active;
         private bool _disposed;
         private Phase _phase;
-        private float _phaseElapsed;
+        private PerformerDissolveTiming _timing;
+        private float _elapsed;
+        private float _progress;
         private int _relocationFrame;
         private Vector3 _destination;
         private Quaternion? _arrivalRotation;
@@ -69,19 +100,27 @@ namespace DazPose.Performer
         }
 
         public void DissolveTo(Vector3 position, PerformerPose arrivalPose,
-            AwaitableCompletionSource<DissolveCompletion> waiter)
-        {
-            Begin(position, null, arrivalPose, waiter);
-        }
+            AwaitableCompletionSource<DissolveCompletion> waiter) =>
+            DissolveTo(position, _profile.DefaultDuration, arrivalPose, waiter);
 
         public void DissolveTo(Transform target, PerformerPose arrivalPose,
+            AwaitableCompletionSource<DissolveCompletion> waiter) =>
+            DissolveTo(target, _profile.DefaultDuration, arrivalPose, waiter);
+
+        public void DissolveTo(Vector3 position, float durationSeconds, PerformerPose arrivalPose,
+            AwaitableCompletionSource<DissolveCompletion> waiter)
+        {
+            Begin(position, null, durationSeconds, arrivalPose, waiter);
+        }
+
+        public void DissolveTo(Transform target, float durationSeconds, PerformerPose arrivalPose,
             AwaitableCompletionSource<DissolveCompletion> waiter)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
             Vector3 forward = Vector3.ProjectOnPlane(target.forward, Vector3.up);
             if (forward.sqrMagnitude < 0.0001f)
                 throw new ArgumentException("Dissolve target must have a nonzero planar forward vector.", nameof(target));
-            Begin(target.position, Quaternion.LookRotation(forward.normalized, Vector3.up), arrivalPose, waiter);
+            Begin(target.position, Quaternion.LookRotation(forward.normalized, Vector3.up), durationSeconds, arrivalPose, waiter);
         }
 
         public void Advance(float deltaTime)
@@ -90,19 +129,24 @@ namespace DazPose.Performer
             if (!_active || _disposed) return;
             try
             {
+                // One clock drives release, trajectories, shimmer, reveal, completion and cues.
+                // Profile edits during a request cannot alter its captured timing proportions.
+                _elapsed = Mathf.Min(_timing.Duration, _elapsed + Mathf.Max(0f, deltaTime));
+                _progress = Mathf.Clamp01(_elapsed / _timing.Duration);
+                _presentation.SetTransitProgress(_progress / _timing.FirstArrivalFraction);
                 switch (_phase)
                 {
                     case Phase.DissolveOut:
-                        AdvanceDissolveOut(deltaTime);
+                        AdvanceDissolveOut();
                         break;
                     case Phase.HiddenRelocate:
                         AdvanceHiddenRelocate();
                         break;
                     case Phase.Transit:
-                        AdvanceTransit(deltaTime);
+                        AdvanceTransit();
                         break;
                     case Phase.Materialize:
-                        AdvanceMaterialize(deltaTime);
+                        AdvanceMaterialize();
                         break;
                 }
             }
@@ -136,7 +180,7 @@ namespace DazPose.Performer
             }
         }
 
-        private void Begin(Vector3 destination, Quaternion? rotation, PerformerPose arrivalPose,
+        private void Begin(Vector3 destination, Quaternion? rotation, float durationSeconds, PerformerPose arrivalPose,
             AwaitableCompletionSource<DissolveCompletion> waiter)
         {
             if (_disposed) throw new ObjectDisposedException(nameof(PerformerDissolve));
@@ -145,19 +189,26 @@ namespace DazPose.Performer
             if (arrivalPose != null && arrivalPose.Clip == null)
                 throw new ArgumentException("The arrival PerformerPose has no AnimationClip.", nameof(arrivalPose));
 
+            var timing = new PerformerDissolveTiming(_profile, durationSeconds);
             Quaternion actorRotation = _actor.rotation;
             _destination = destination;
             _arrivalRotation = rotation;
             _arrivalPose = arrivalPose;
             _transitStart = _presentation.BodyCenter;
-            _phaseElapsed = 0f;
+            _timing = timing;
+            _elapsed = 0f;
+            _progress = 0f;
             _phase = Phase.DissolveOut;
             _active = true;
 
             try
             {
-                _presentation.Begin(_profile);
+                _presentation.Begin(_profile, _timing);
                 _presentation.SetDissolveProgress(0f);
+                Vector3 bodyOffset = _transitStart - _actor.position;
+                Quaternion destinationRotation = _arrivalRotation ?? actorRotation;
+                Vector3 predictedCenter = _destination + destinationRotation * Quaternion.Inverse(actorRotation) * bodyOffset;
+                _presentation.BeginTransit(predictedCenter);
                 PlaySpatialAudio(_profile.DepartureAudio, _transitStart, actorRotation,
                     _profile.DeparturePitch, "Performer Dissolve Departure Audio");
                 if (waiter != null) _waiters.Add(waiter);
@@ -170,11 +221,10 @@ namespace DazPose.Performer
             }
         }
 
-        private void AdvanceDissolveOut(float deltaTime)
+        private void AdvanceDissolveOut()
         {
-            _phaseElapsed += Mathf.Max(0f, deltaTime);
-            float normalized = Mathf.Clamp01(_phaseElapsed / _profile.DissolveOutDuration);
-            _presentation.SetDissolveProgress(_presentation.EvaluateEffectCurve(normalized));
+            float normalized = Mathf.Clamp01(_progress / _timing.DepartureFraction);
+            _presentation.SetDissolveProgress(normalized);
             if (normalized < 1f) return;
 
             _presentation.SetDissolveProgress(1f);
@@ -185,7 +235,6 @@ namespace DazPose.Performer
             if (_arrivalPose != null) _assertArrivalPose(_arrivalPose);
             _relocationFrame = _frameCount();
             _phase = Phase.HiddenRelocate;
-            _phaseElapsed = 0f;
         }
 
         private void AdvanceHiddenRelocate()
@@ -193,34 +242,32 @@ namespace DazPose.Performer
             if (_frameCount() <= _relocationFrame) return;
 
             // Sample after a later animation evaluation so pose-dependent renderer bounds are current.
-            _presentation.BeginTransit(_presentation.BodyCenter);
+            _presentation.RetargetTransit(_presentation.BodyCenter);
             _phase = Phase.Transit;
-            _phaseElapsed = 0f;
         }
 
-        private void AdvanceTransit(float deltaTime)
+        private void AdvanceTransit()
         {
-            _phaseElapsed += Mathf.Max(0f, deltaTime);
-            float normalized = Mathf.Clamp01(_phaseElapsed / _profile.TransitDuration);
-            _presentation.SetTransitProgress(_presentation.EvaluateEffectCurve(normalized));
-            if (normalized < 1f) return;
+            if (_progress < _timing.FirstArrivalFraction) return;
 
-            _presentation.SetTransitProgress(1f);
             _presentation.BeginMaterialize();
             PlaySpatialAudio(_profile.ArrivalAudio, _destination, _actor.rotation,
                 _profile.ArrivalPitch, "Performer Dissolve Arrival Audio");
             _phase = Phase.Materialize;
-            _phaseElapsed = 0f;
+            UpdateMaterialize();
         }
 
-        private void AdvanceMaterialize(float deltaTime)
+        private void AdvanceMaterialize()
         {
-            _phaseElapsed += Mathf.Max(0f, deltaTime);
-            float normalized = Mathf.Clamp01(_phaseElapsed / _profile.MaterializeDuration);
-            _presentation.SetMaterializeProgress(_presentation.EvaluateEffectCurve(normalized));
+            UpdateMaterialize();
+        }
+
+        private void UpdateMaterialize()
+        {
+            float normalized = Mathf.Clamp01((_progress - _timing.FirstArrivalFraction) / (1f - _timing.FirstArrivalFraction));
+            _presentation.SetMaterializeProgress(normalized);
             if (normalized < 1f) return;
 
-            _presentation.SetMaterializeProgress(1f);
             _presentation.Finish();
             _active = false;
             _phase = Phase.Complete;
@@ -281,10 +328,11 @@ namespace DazPose.Performer
 
             public Vector3 BodyCenter => _rig.BodyCenter;
             public float EvaluateEffectCurve(float normalizedTime) => _rig.EvaluateEffectCurve(normalizedTime);
-            public void Begin(PerformerDissolveProfile profile) => _rig.Begin(profile);
+            public void Begin(PerformerDissolveProfile profile, PerformerDissolveTiming timing) => _rig.Begin(profile, timing);
             public void SetDissolveProgress(float progress) => _rig.SetDissolveProgress(progress);
             public void CompleteDeparture() => _rig.CompleteDeparture();
             public void BeginTransit(Vector3 destinationCenter) => _rig.BeginTransit(destinationCenter);
+            public void RetargetTransit(Vector3 destinationCenter) => _rig.RetargetTransit(destinationCenter);
             public void SetTransitProgress(float progress) => _rig.SetTransitProgress(progress);
             public void BeginMaterialize() => _rig.BeginMaterialize();
             public void SetMaterializeProgress(float progress) => _rig.SetMaterializeProgress(progress);

@@ -470,6 +470,30 @@ namespace DazPose.Performer
         public void DissolveTo(Transform target, PerformerPose arrivalPose) =>
             RequireDissolveRuntime().DissolveTo(target, arrivalPose, null);
 
+        /// <summary>Runs the complete dissolve with one total duration in seconds.</summary>
+        public void DissolveTo(Vector3 worldPosition, float durationSeconds, PerformerPose arrivalPose = null) =>
+            RequireDissolveRuntime().DissolveTo(worldPosition, durationSeconds, arrivalPose, null);
+
+        /// <summary>Snapshots the destination position/facing and scales the whole dissolve to durationSeconds.</summary>
+        public void DissolveTo(Transform target, float durationSeconds, PerformerPose arrivalPose = null) =>
+            RequireDissolveRuntime().DissolveTo(target, durationSeconds, arrivalPose, null);
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition, float durationSeconds,
+            PerformerPose arrivalPose = null)
+        {
+            var completion = new AwaitableCompletionSource<DissolveCompletion>();
+            RequireDissolveRuntime().DissolveTo(worldPosition, durationSeconds, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Transform target, float durationSeconds,
+            PerformerPose arrivalPose = null)
+        {
+            var completion = new AwaitableCompletionSource<DissolveCompletion>();
+            RequireDissolveRuntime().DissolveTo(target, durationSeconds, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
         public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition) =>
             DissolveToAsync(worldPosition, null);
 

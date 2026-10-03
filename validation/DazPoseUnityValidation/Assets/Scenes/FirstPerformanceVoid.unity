@@ -7181,6 +7181,7 @@ GameObject:
   - component: {fileID: 407646200}
   - component: {fileID: 407646199}
   - component: {fileID: 407646201}
+  - component: {fileID: 407646202}
   m_Layer: 0
   m_Name: FirstPerformanceVoid
   m_TagString: Untagged
@@ -7210,6 +7211,7 @@ MonoBehaviour:
   viewMarkLounge: {fileID: 1942173269}
   laraFaceViewTarget: {fileID: 1436712012}
   firstContact: {fileID: 407646201}
+  particleBody: {fileID: 407646202}
   teleportMarkA: {fileID: 1336767648}
   teleportMarkB: {fileID: 412335443}
   teleportArrivalPose: {fileID: 11400000, guid: 7f06352d680590c4b8d282cdb165d3ec, type: 2}
@@ -7256,6 +7258,25 @@ MonoBehaviour:
   viewMarkFinal: {fileID: 1051642148}
   speechClipA: {fileID: 8300000, guid: 4284b0d5624bc0f49a0463d2f8374245, type: 3}
   speechClipB: {fileID: 8300000, guid: 85425b705aedcf840ac41b53f1062cd1, type: 3}
+--- !u!114 &407646202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407646198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade4c6175ed14c838ca15853698903e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerParticleBody
+  targetRenderer: {fileID: 790885793}
+  surfaceBindings: {fileID: 11400000, guid: 59fb8573e3470ba41bba90ddb16ba94e, type: 2}
+  visualEffectAsset: {fileID: 8926484042661614526, guid: 760708caf4abbb245b788448744f90f4, type: 3}
+  coreColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  glowColor: {r: 2.8, g: 0.003250774, b: 2.8, a: 0.5}
+  coreSize: 0.003
+  glowSize: 0.009
 --- !u!1 &407682793
 GameObject:
   m_ObjectHideFlags: 0
@@ -21900,7 +21921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerDissolveRig
   targetRenderer: {fileID: 790885793}
-  particleBody: {fileID: 0}
+  particleBody: {fileID: 407646202}
 --- !u!1 &1085093957
 GameObject:
   m_ObjectHideFlags: 0

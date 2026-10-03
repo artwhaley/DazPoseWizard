@@ -12,25 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b71e1055fe37468390d2fd71f83b826b, type: 3}
   m_Name: FirstContactDissolveProfile
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerDissolveProfile
-  dissolveOutDuration: 0.45
-  transitDuration: 0.7
-  materializeDuration: 0.45
+  dissolveOutDuration: 1
+  transitDuration: 0.6666667
+  materializeDuration: 0.33333334
   transitArcHeight: 0.45
   sssDissolveShader: {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
   wetDissolveShader: {fileID: -6465566751694194690, guid: b684dcf5875d44c0a12a25f7bec2d87e, type: 3}
-  dissolveFieldParams: {x: 3.5, y: 0.2, z: 17, w: 1.15}
-  dissolveEdgeWidth: 0.035
-  dissolveEdgeColor: {r: 3, g: 0.06, b: 4, a: 1}
-  dissolveEdgeEmission: 4
-  particleBodyVfxAsset: {fileID: 0}
-  surfaceBindings: {fileID: 0}
-  coreColor: {r: 3, g: 1.2, b: 3.8, a: 1}
-  glowColor: {r: 1.25, g: 0.04, b: 2.5, a: 0.75}
-  coreSize: 0.01
-  glowSize: 0.03
-  cloudScale: 0.6
-  swirlTurns: 1.25
-  turbulenceStrength: 0.025
   laraRuntimeMaterials:
   - {fileID: 2100000, guid: 09c8bbc7920a4dae886e06deee8e5a69, type: 2}
   - {fileID: 2100000, guid: 40469cf7c3234492bd8d4a748a59baef, type: 2}
@@ -48,6 +35,19 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 175f220bb92346a586ef8c2c2809e514, type: 2}
   - {fileID: 2100000, guid: 076413272f214a4f995aacaa490c4dbb, type: 2}
   - {fileID: 2100000, guid: 1f25e303491f48108699435eddff56cf, type: 2}
+  dissolveFieldParams: {x: 3.5, y: 0.85, z: 17, w: 1.15}
+  dissolveEdgeWidth: 0.035
+  dissolveEdgeColor: {r: 3, g: 0.06, b: 4, a: 1}
+  dissolveEdgeEmission: 4
+  particleBodyVfxAsset: {fileID: 8926484042661614526, guid: 760708caf4abbb245b788448744f90f4, type: 3}
+  surfaceBindings: {fileID: 11400000, guid: 59fb8573e3470ba41bba90ddb16ba94e, type: 2}
+  coreColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  glowColor: {r: 2.8, g: 0.003250774, b: 2.8, a: 0.5}
+  coreSize: 0.003
+  glowSize: 0.009
+  cloudScale: 1.4
+  swirlTurns: 3
+  turbulenceStrength: 0.22
   departureAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
   arrivalAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
   departurePitch: 0.92

@@ -23,16 +23,19 @@ namespace DazPose.Performer
         };
 
         [Header("Timing")]
-        [SerializeField, Min(0.01f)] private float dissolveOutDuration = 0.45f;
-        [SerializeField, Min(0.01f)] private float transitDuration = 0.70f;
-        [SerializeField, Min(0.01f)] private float materializeDuration = 0.45f;
+        [Tooltip("Seconds for the source surface to dissolve and release its embers. Also sets the stagger between the first and last destination patches.")]
+        [SerializeField, Min(0.01f)] private float dissolveOutDuration = 1f;
+        [Tooltip("Additional travel time between the end of source dissolution and the first destination arrivals. Total streaming duration is twice Dissolve Out Duration plus Transit Duration plus Materialize Duration.")]
+        [SerializeField, Min(0.01f)] private float transitDuration = 2f / 3f;
+        [Tooltip("Local overlap in seconds between each arriving particle patch and the native mesh beneath it.")]
+        [SerializeField, Min(0.01f)] private float materializeDuration = 1f / 3f;
         [SerializeField, Min(0f)] private float transitArcHeight = 0.45f;
 
         [Header("Native Dissolve Shaders")]
         [SerializeField] private Shader sssDissolveShader;
         [SerializeField] private Shader wetDissolveShader;
         [SerializeField] private Material[] laraRuntimeMaterials;
-        [SerializeField] private Vector4 dissolveFieldParams = new Vector4(3.5f, 0.2f, 17f, 1.15f);
+        [SerializeField] private Vector4 dissolveFieldParams = new Vector4(3.5f, 0.85f, 17f, 1.15f);
         [SerializeField, Min(0.0001f)] private float dissolveEdgeWidth = 0.035f;
         [SerializeField] private Color dissolveEdgeColor = new Color(3f, 0.06f, 4f, 1f);
         [SerializeField, Min(0f)] private float dissolveEdgeEmission = 4f;
@@ -40,13 +43,13 @@ namespace DazPose.Performer
         [Header("Reusable Particle Body")]
         [SerializeField] private VisualEffectAsset particleBodyVfxAsset;
         [SerializeField] private PerformerSurfaceBindingAsset surfaceBindings;
-        [SerializeField] private Color coreColor = new Color(3f, 1.2f, 3.8f, 1f);
-        [SerializeField] private Color glowColor = new Color(1.25f, 0.04f, 2.5f, 0.75f);
-        [SerializeField, Min(0.0001f)] private float coreSize = 0.01f;
-        [SerializeField, Min(0.0001f)] private float glowSize = 0.03f;
-        [SerializeField, Min(0.0001f)] private float cloudScale = 0.60f;
-        [SerializeField, Min(0f)] private float swirlTurns = 1.25f;
-        [SerializeField, Min(0f)] private float turbulenceStrength = 0.025f;
+        [SerializeField] private Color coreColor = new Color(3.2f, 3.2f, 3.2f, 0.85f);
+        [SerializeField] private Color glowColor = new Color(2.8f, 0.003250774f, 2.8f, 0.5f);
+        [SerializeField, Min(0.0001f)] private float coreSize = 0.003f;
+        [SerializeField, Min(0.0001f)] private float glowSize = 0.009f;
+        [SerializeField, Min(0.0001f)] private float cloudScale = 1.4f;
+        [SerializeField, Min(0f)] private float swirlTurns = 3f;
+        [SerializeField, Min(0f)] private float turbulenceStrength = 0.22f;
 
         [Header("Audio")]
         [SerializeField] private AudioClip departureAudio;
@@ -54,6 +57,7 @@ namespace DazPose.Performer
         [SerializeField, Range(0.1f, 3f)] private float departurePitch = 0.92f;
         [SerializeField, Range(0.1f, 3f)] private float arrivalPitch = 1.08f;
 
+        public float DefaultDuration => 2f * dissolveOutDuration + transitDuration + materializeDuration;
         public float DissolveOutDuration => dissolveOutDuration;
         public float TransitDuration => transitDuration;
         public float MaterializeDuration => materializeDuration;

@@ -47,8 +47,8 @@ namespace DazPose.Performer
                     "arrival Pose is asserted after complete departure", failures);
 
                 dissolve.Advance(profile.TransitDuration + 0.1f);
-                Check(presentation.TransitCount == 0 && presentation.MaterializeCount == 0,
-                    "transit waits while the relocation frame is still current", failures);
+                Check(presentation.TransitCount == 1 && presentation.MaterializeCount == 0,
+                    "embers already travel while destination evaluation waits for the next frame", failures);
                 frame++;
                 Vector3 evaluatedDestinationCenter = presentation.BodyCenter;
                 dissolve.Advance(0f);
@@ -61,7 +61,7 @@ namespace DazPose.Performer
                     && presentation.CurrentPopulationId == populationDuringTransit
                     && presentation.ActivePopulationCount == 1,
                     "the same single particle population proceeds from transit into materialization", failures);
-                dissolve.Advance(profile.MaterializeDuration + 0.01f);
+                dissolve.Advance(profile.DissolveOutDuration + profile.MaterializeDuration + 0.01f);
                 Check(!dissolve.IsDissolving && presentation.FinishCount == 1
                     && !presentation.DissolveEnabled && presentation.ActivePopulationCount == 0,
                     "successful materialization restores shader state and disposes the particle body", failures);
@@ -80,7 +80,7 @@ namespace DazPose.Performer
                 dissolve.Advance(0f);
                 int secondPopulation = presentation.CurrentPopulationId;
                 dissolve.Advance(profile.TransitDuration + 0.01f);
-                dissolve.Advance(profile.MaterializeDuration + 0.01f);
+                dissolve.Advance(profile.DissolveOutDuration + profile.MaterializeDuration + 0.01f);
                 Check(presentation.FinishCount == 2 && !dissolve.IsDissolving
                     && presentation.LastFinishedPopulationId == secondPopulation
                     && presentation.ActivePopulationCount == 0,
@@ -143,7 +143,7 @@ namespace DazPose.Performer
 
             public float EvaluateEffectCurve(float normalizedTime) => Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(normalizedTime));
 
-            public void Begin(PerformerDissolveProfile profile)
+            public void Begin(PerformerDissolveProfile profile, PerformerDissolveTiming timing)
             {
                 CurrentPopulationId++;
                 ActivePopulationCount = 1;
@@ -163,6 +163,8 @@ namespace DazPose.Performer
                 TransitDestination = destinationCenter;
                 Events.Add("transit");
             }
+
+            public void RetargetTransit(Vector3 destinationCenter) => TransitDestination = destinationCenter;
 
             public void SetTransitProgress(float progress) { }
 

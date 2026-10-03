@@ -7,6 +7,11 @@ namespace DazPose.Performer
     [DisallowMultipleComponent]
     public sealed class PerformerDissolveRig : MonoBehaviour
     {
+        private const float MeshRevealStartProgress = 0.75f;
+        private bool _streaming;
+        private float _streamDepartureSeconds;
+        private float _streamFadeSeconds;
+
         private static readonly int DissolveEnabledId = Shader.PropertyToID("_DissolveEnabled");
         private static readonly int DissolveProgressId = Shader.PropertyToID("_DissolveProgress");
         private static readonly int DissolveBoundsMinId = Shader.PropertyToID("_DissolveBoundsMin");
@@ -95,22 +100,33 @@ namespace DazPose.Performer
         {
             if (targetRenderer == null) return;
             float value = Mathf.Clamp01(progress);
+            // Streaming releases embers as the matching source surface dissolves.
+            SetTargetDissolveProgress(_prepared && !_streaming ? PerformerParticleBody.DepartureDissolveProgress(value) : value);
+            if (_prepared) particleBody.SetDissolveProgress(value);
+        }
+
+        private void SetTargetDissolveProgress(float progress)
+        {
+            if (targetRenderer == null) return;
+            float value = Mathf.Clamp01(progress);
             MaterialPropertyBlock block = GetPropertyBlock();
             block.SetFloat(DissolveProgressId, value);
             SetBounds(block);
             targetRenderer.SetPropertyBlock(block);
-            if (_prepared) particleBody.SetDissolveProgress(value);
         }
 
-        internal void Begin(PerformerDissolveProfile profile)
+        internal void Begin(PerformerDissolveProfile profile, PerformerDissolveTiming timing)
         {
             if (_prepared) throw new InvalidOperationException("The dissolve rig is already in use.");
             if (!IsReady(profile, out string reason)) throw new InvalidOperationException(reason);
 
             _prepared = true;
+            _streaming = false;
+            _streamDepartureSeconds = timing.DepartureDuration;
+            _streamFadeSeconds = timing.FadeDuration;
             try
             {
-                particleBody.BeginDissolve(profile);
+                particleBody.BeginDissolve(profile, timing);
                 MaterialPropertyBlock block = GetPropertyBlock();
                 block.SetVector(DissolveFieldParamsId, profile.DissolveFieldParams);
                 block.SetFloat(DissolveEdgeWidthId, profile.DissolveEdgeWidth);
@@ -140,7 +156,14 @@ namespace DazPose.Performer
         internal void BeginTransit(Vector3 destinationCenter)
         {
             RequirePrepared();
-            particleBody.BeginTransit(destinationCenter);
+            particleBody.BeginStreaming(destinationCenter);
+            _streaming = true;
+        }
+
+        internal void RetargetTransit(Vector3 destinationCenter)
+        {
+            RequirePrepared();
+            particleBody.RetargetStreaming(destinationCenter);
         }
 
         internal void SetTransitProgress(float progress)
@@ -159,8 +182,20 @@ namespace DazPose.Performer
         {
             RequirePrepared();
             float value = Mathf.Clamp01(progress);
+            if (_streaming)
+            {
+                // A destination patch appears only after its own embers have reached the
+                // surface. The particle glow then fades over the local overlap interval.
+                float arrivalElapsed = value * (_streamDepartureSeconds + _streamFadeSeconds);
+                float reveal = Mathf.Clamp01((arrivalElapsed - _streamFadeSeconds * 0.2f) / _streamDepartureSeconds);
+                SetTargetDissolveProgress(1f - reveal);
+                return;
+            }
+            // The particle body completes its surface convergence by 60%; keep Lara fully
+            // dissolved until 75%, then reveal her through the assembled particle cloud.
             particleBody.SetMaterializeProgress(value);
-            SetDissolveProgress(1f - value);
+            float meshRevealProgress = Mathf.InverseLerp(MeshRevealStartProgress, 1f, value);
+            SetTargetDissolveProgress(1f - meshRevealProgress);
         }
 
         internal void Finish()
@@ -180,6 +215,7 @@ namespace DazPose.Performer
             finally
             {
                 _prepared = false;
+                _streaming = false;
             }
         }
 
@@ -205,6 +241,7 @@ namespace DazPose.Performer
                 finally
                 {
                     _prepared = false;
+                    _streaming = false;
                 }
             }
         }

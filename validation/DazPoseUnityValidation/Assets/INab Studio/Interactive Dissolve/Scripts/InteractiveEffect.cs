@@ -89,8 +89,8 @@ namespace INab.Common
         [Range(0.01f, 10f), SerializeField, Tooltip("Multiply sample count by this value to control density of the particles. Keep this as low as possible.")]
         public float sampleCountMultiplier = 1f;
 
-        public Coroutine EffectCoroutine;
-        public Coroutine EditorCoroutine;
+        [NonSerialized] public Coroutine EffectCoroutine;
+        [NonSerialized] public Coroutine EditorCoroutine;
 
         #endregion
 

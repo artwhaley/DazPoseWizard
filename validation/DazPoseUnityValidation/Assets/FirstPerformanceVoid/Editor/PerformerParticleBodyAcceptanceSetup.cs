@@ -326,10 +326,10 @@ namespace DazPose.FirstPerformanceVoid.Editor
             ParameterNode fieldParams = AddParameter(graph, "DissolveFieldParams", typeof(Vector4), new Vector4(3.5f, 0.2f, 17f, 1.15f), 20f, 1070f);
             ParameterNode boundsMin = AddParameter(graph, "DissolveBoundsMin", typeof(Vector3), Vector3.zero, 20f, 1145f);
             ParameterNode boundsSize = AddParameter(graph, "DissolveBoundsSize", typeof(Vector3), Vector3.one, 20f, 1220f);
-            ParameterNode coreColor = AddParameter(graph, "CoreColor", typeof(Vector4), new Vector4(1f, 0.86f, 1f, 1f), 20f, 1295f);
-            ParameterNode glowColor = AddParameter(graph, "GlowColor", typeof(Vector4), new Vector4(0.72f, 0.12f, 1f, 0.75f), 20f, 1370f);
-            ParameterNode coreSize = AddParameter(graph, "CoreSize", typeof(float), 0.006f, 20f, 1445f);
-            ParameterNode glowSize = AddParameter(graph, "GlowSize", typeof(float), 0.015f, 20f, 1520f);
+            ParameterNode coreColor = AddParameter(graph, "CoreColor", typeof(Vector4), new Vector4(3.2f, 3.2f, 3.2f, 0.85f), 20f, 1295f);
+            ParameterNode glowColor = AddParameter(graph, "GlowColor", typeof(Vector4), new Vector4(2.8f, 0.003250774f, 2.8f, 0.5f), 20f, 1370f);
+            ParameterNode coreSize = AddParameter(graph, "CoreSize", typeof(float), 0.003f, 20f, 1445f);
+            ParameterNode glowSize = AddParameter(graph, "GlowSize", typeof(float), 0.009f, 20f, 1520f);
             ParameterNode worldToLocal = AddParameter(graph, "WorldToLocalMatrix", typeof(Matrix4x4), Matrix4x4.identity, 20f, 1595f);
 
             object burst = CreateModel("UnityEditor.VFX.VFXSpawnerBurst");
@@ -366,36 +366,36 @@ namespace DazPose.FirstPerformanceVoid.Editor
             LinkInputToOutput(FindSlot(updatePosition, "square"), FindSlot(sampleBuffer, "Square"));
 
             AddHlslBlock(initialize, "PerformerParticleBodyInitialize");
-            LinkParameter(sourceCenter, FindSlot(LastChildOfType(initialize, "CustomHLSL"), "SourceCenter"));
-            LinkInputToOutput(FindSlot(LastChildOfType(initialize, "CustomHLSL"), "SurfaceSeed"), FindSlot(sampleBuffer, "Seed"));
+            LinkParameter(sourceCenter, FindHlslInputSlot(LastChildOfType(initialize, "CustomHLSL"), "SourceCenter"));
+            LinkInputToOutput(FindHlslInputSlot(LastChildOfType(initialize, "CustomHLSL"), "SurfaceSeed"), FindSlot(sampleBuffer, "Seed"));
 
             AddHlslBlock(update, "PerformerParticleBodyUpdate");
             object updateHlsl = LastChildOfType(update, "CustomHLSL");
-            LinkParameter(phase, FindSlot(updateHlsl, "Phase"));
-            LinkParameter(dissolveProgress, FindSlot(updateHlsl, "DissolveProgress"));
-            LinkParameter(departureProgress, FindSlot(updateHlsl, "DepartureProgress"));
-            LinkParameter(materializeProgress, FindSlot(updateHlsl, "MaterializeProgress"));
-            LinkParameter(transitProgress, FindSlot(updateHlsl, "TransitProgress"));
-            LinkParameter(sourceCenter, FindSlot(updateHlsl, "SourceCenter"));
-            LinkParameter(destinationCenter, FindSlot(updateHlsl, "DestinationCenter"));
-            LinkParameter(transitArcHeight, FindSlot(updateHlsl, "TransitArcHeight"));
-            LinkParameter(cloudScale, FindSlot(updateHlsl, "CloudScale"));
-            LinkParameter(swirlTurns, FindSlot(updateHlsl, "SwirlTurns"));
-            LinkParameter(turbulenceStrength, FindSlot(updateHlsl, "TurbulenceStrength"));
-            LinkParameter(fieldParams, FindSlot(updateHlsl, "DissolveFieldParams"));
-            LinkParameter(boundsMin, FindSlot(updateHlsl, "DissolveBoundsMin"));
-            LinkParameter(boundsSize, FindSlot(updateHlsl, "DissolveBoundsSize"));
-            LinkParameter(worldToLocal, FindSlot(updateHlsl, "WorldToLocalMatrix"));
+            LinkParameter(phase, FindHlslInputSlot(updateHlsl, "Phase"));
+            LinkParameter(dissolveProgress, FindHlslInputSlot(updateHlsl, "DissolveProgress"));
+            LinkParameter(departureProgress, FindHlslInputSlot(updateHlsl, "DepartureProgress"));
+            LinkParameter(materializeProgress, FindHlslInputSlot(updateHlsl, "MaterializeProgress"));
+            LinkParameter(transitProgress, FindHlslInputSlot(updateHlsl, "TransitProgress"));
+            LinkParameter(sourceCenter, FindHlslInputSlot(updateHlsl, "SourceCenter"));
+            LinkParameter(destinationCenter, FindHlslInputSlot(updateHlsl, "DestinationCenter"));
+            LinkParameter(transitArcHeight, FindHlslInputSlot(updateHlsl, "TransitArcHeight"));
+            LinkParameter(cloudScale, FindHlslInputSlot(updateHlsl, "CloudScale"));
+            LinkParameter(swirlTurns, FindHlslInputSlot(updateHlsl, "SwirlTurns"));
+            LinkParameter(turbulenceStrength, FindHlslInputSlot(updateHlsl, "TurbulenceStrength"));
+            LinkParameter(fieldParams, FindHlslInputSlot(updateHlsl, "DissolveFieldParams"));
+            LinkParameter(boundsMin, FindHlslInputSlot(updateHlsl, "DissolveBoundsMin"));
+            LinkParameter(boundsSize, FindHlslInputSlot(updateHlsl, "DissolveBoundsSize"));
+            LinkParameter(worldToLocal, FindHlslInputSlot(updateHlsl, "WorldToLocalMatrix"));
 
             AddHlslBlock(coreOutput, "PerformerParticleBodyCoreOutput");
             object coreHlsl = LastChildOfType(coreOutput, "CustomHLSL");
-            LinkParameter(coreColor, FindSlot(coreHlsl, "CoreColor"));
-            LinkParameter(coreSize, FindSlot(coreHlsl, "CoreSize"));
+            LinkParameter(coreColor, FindHlslInputSlot(coreHlsl, "CoreColor"));
+            LinkParameter(coreSize, FindHlslInputSlot(coreHlsl, "CoreSize"));
 
             AddHlslBlock(glowOutput, "PerformerParticleBodyGlowOutput");
             object glowHlsl = LastChildOfType(glowOutput, "CustomHLSL");
-            LinkParameter(glowColor, FindSlot(glowHlsl, "GlowColor"));
-            LinkParameter(glowSize, FindSlot(glowHlsl, "GlowSize"));
+            LinkParameter(glowColor, FindHlslInputSlot(glowHlsl, "GlowColor"));
+            LinkParameter(glowSize, FindHlslInputSlot(glowHlsl, "GlowSize"));
 
             InvokeExtension("UnityEditor.VFX.VisualEffectResourceExtensions", "WriteAssetWithSubAssets", resource);
         }
@@ -409,7 +409,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
             SetEnumField(positionMesh, "spawnMode", "Custom");
             SetEnumField(positionMesh, "positionMode", "Surface");
             SetEnumField(positionMesh, "skinnedTransform", "ApplyWorldRootTransform");
-            SetEnumField(positionMesh, "applyOrientation", "None");
+            SetEnumField(positionMesh, "applyOrientation", "Direction");
             SetEnumField(positionMesh, "compositionPosition", "Overwrite");
             AddChild(context, positionMesh);
             Call(positionMesh, "ResyncSlots", true);
@@ -422,6 +422,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             SetEnumField(output, "primitiveType", "Quad");
             SetEnumField(output, "useBaseColorMap", "ColorAndAlpha");
             SetEnumField(output, "uvMode", "Default");
+            Texture2D glowTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/DazPose/Effects/ParticleBody/FireflyGlow.png");
+            if (glowTexture == null) throw new InvalidOperationException("The particle body requires FireflyGlow.png for soft particle edges.");
+            SetSlotValue(FindSlot(output, "mainTexture"), glowTexture);
             return output;
         }
 
@@ -624,6 +627,12 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 if (match != null) return match;
             }
             throw new InvalidOperationException(model.GetType().Name + " has no VFX slot named '" + name + "'.");
+        }
+
+        private static object FindHlslInputSlot(object model, string name)
+        {
+            // VFX Graph prefixes CustomHLSL input properties with "_" (see its CustomHLSL.parameterPrefix).
+            return FindSlot(model, "_" + name);
         }
 
         private static IEnumerable<object> GetSlots(object model, string propertyName)

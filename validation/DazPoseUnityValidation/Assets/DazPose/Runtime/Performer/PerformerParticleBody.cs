@@ -16,7 +16,9 @@ namespace DazPose.Performer
             Detached = 2,
             Transit = 3,
             Reform = 4,
-            Hidden = 5
+            Hidden = 5,
+            StreamDepart = 6,
+            StreamArrive = 7
         }
 
         private enum Transition
@@ -27,7 +29,7 @@ namespace DazPose.Performer
             Reform
         }
 
-        private const float DepartureSeconds = 1.1f;
+        private const float DepartureSeconds = 4f;
         private const float TransitSeconds = 0.9f;
         private const float ReformSeconds = 1.1f;
         private const float DefaultTransitArcHeight = 0.45f;
@@ -61,10 +63,10 @@ namespace DazPose.Performer
         [SerializeField] private SkinnedMeshRenderer targetRenderer;
         [SerializeField] private PerformerSurfaceBindingAsset surfaceBindings;
         [SerializeField] private VisualEffectAsset visualEffectAsset;
-        [SerializeField] private Color coreColor = new Color(1f, 0.86f, 1f, 1f);
-        [SerializeField] private Color glowColor = new Color(0.72f, 0.12f, 1f, 0.75f);
-        [SerializeField, Min(0.0001f)] private float coreSize = 0.006f;
-        [SerializeField, Min(0.0001f)] private float glowSize = 0.015f;
+        [SerializeField] private Color coreColor = new Color(3.2f, 3.2f, 3.2f, 0.85f);
+        [SerializeField] private Color glowColor = new Color(2.8f, 0.003250774f, 2.8f, 0.5f);
+        [SerializeField, Min(0.0001f)] private float coreSize = 0.003f;
+        [SerializeField, Min(0.0001f)] private float glowSize = 0.009f;
 
         private GraphicsBuffer _surfaceBuffer;
         private GameObject _effectObject;
@@ -75,6 +77,9 @@ namespace DazPose.Performer
         private BodyPhase _phase = BodyPhase.Follow;
         private Transition _transition;
         private float _transitionElapsed;
+        private float _streamDepartureSeconds;
+        private float _streamFlightBaseSeconds;
+        private float _streamFadeSeconds;
         private Vector3 _sourceCenter;
         private Vector3 _destinationCenter;
         private Vector4 _dissolveFieldParams = new Vector4(FieldScale, FieldVerticalBlend, FieldSeed, FieldContrast);
@@ -150,18 +155,22 @@ namespace DazPose.Performer
             return true;
         }
 
-        internal void BeginDissolve(PerformerDissolveProfile profile)
+        internal void BeginDissolve(PerformerDissolveProfile profile, PerformerDissolveTiming timing)
         {
             if (!ValidateConfiguration(profile, out string reason))
                 throw new InvalidOperationException(reason);
 
             _transition = Transition.None;
+            _streamDepartureSeconds = timing.DepartureDuration;
+            _streamFlightBaseSeconds = timing.FlightBaseDuration;
+            _streamFadeSeconds = timing.FadeDuration;
             _dissolveFieldParams = profile.DissolveFieldParams;
             coreColor = profile.CoreColor;
             glowColor = profile.GlowColor;
             coreSize = profile.CoreSize;
             glowSize = profile.GlowSize;
             EnsureCreated(BodyPhase.Departure);
+            ApplyAppearance();
 
             _sourceCenter = targetRenderer.bounds.center;
             _destinationCenter = _sourceCenter;
@@ -184,17 +193,48 @@ namespace DazPose.Performer
         {
             if (!IsActive) throw new InvalidOperationException("The particle body must be active before setting dissolve progress.");
             progress = Mathf.Clamp01(progress);
+            if (_phase == BodyPhase.StreamDepart || _phase == BodyPhase.StreamArrive) return;
             SetFloat(DepartureProgressId, progress);
-            SetFloat(DissolveProgressId, progress);
+            SetFloat(DissolveProgressId, DepartureDissolveProgress(progress));
         }
 
         internal void CompleteDeparture()
         {
             if (!IsActive) throw new InvalidOperationException("The particle body is not active.");
+            if (_effect.aliveParticleCount == 0)
+                throw new InvalidOperationException("DissolveTo cannot relocate Lara: the particle body has no live particles after dissolve-out. Resolve the PerformerParticleBody VFX shader/import errors in the Console.");
+            if (_phase == BodyPhase.StreamDepart || _phase == BodyPhase.StreamArrive) return;
             SetDissolveProgress(1f);
             _transition = Transition.None;
             SetPhase(BodyPhase.Detached);
             Status = "The fully dissolved body remains in the same particle population.";
+        }
+
+        internal void BeginStreaming(Vector3 destinationCenter)
+        {
+            if (!IsActive) throw new InvalidOperationException("The particle body must be active before streaming.");
+            _destinationCenter = destinationCenter;
+            SetVector3(DestinationCenterId, destinationCenter);
+            // In streaming mode these existing graph inputs carry clock ratios, rather
+            // than independent phase progress. No particle population is replaced.
+            SetFloat(DepartureProgressId, _streamDepartureSeconds / _streamFlightBaseSeconds);
+            SetFloat(MaterializeProgressId, _streamFadeSeconds / _streamFlightBaseSeconds);
+            SetFloat(TransitProgressId, 0f);
+            SetPhase(BodyPhase.StreamDepart);
+            // Refresh the frozen source positions even when the acceptance preview already
+            // had this reusable effect active. Reinit keeps the same buffer and bindings.
+            _effect.Reinit();
+            Status = "Surface embers are leaving individually along curved paths.";
+        }
+
+        internal void RetargetStreaming(Vector3 destinationCenter)
+        {
+            if (!IsActive || _phase != BodyPhase.StreamDepart)
+                throw new InvalidOperationException("Streaming departure must start before destination retargeting.");
+            _destinationCenter = destinationCenter;
+            SetVector3(DestinationCenterId, destinationCenter);
+            SetPhase(BodyPhase.StreamArrive);
+            Status = "The same embers are streaming onto Lara's evaluated destination surface.";
         }
 
         internal void BeginTransit(Vector3 destinationCenter)
@@ -210,6 +250,11 @@ namespace DazPose.Performer
 
         internal void SetTransitProgress(float progress)
         {
+            if (IsActive && (_phase == BodyPhase.StreamDepart || _phase == BodyPhase.StreamArrive))
+            {
+                SetFloat(TransitProgressId, Mathf.Max(0f, progress));
+                return;
+            }
             if (!IsActive || _phase != BodyPhase.Transit)
                 throw new InvalidOperationException("Particle transit has not started.");
             SetFloat(TransitProgressId, Mathf.Clamp01(progress));
@@ -217,6 +262,7 @@ namespace DazPose.Performer
 
         internal void BeginMaterialize()
         {
+            if (IsActive && _phase == BodyPhase.StreamArrive) return;
             if (!IsActive || _phase != BodyPhase.Transit)
                 throw new InvalidOperationException("Particle materialization requires the transit phase.");
             SetFloat(TransitProgressId, 1f);
@@ -501,6 +547,11 @@ namespace DazPose.Performer
             _effect.SetFloat(CloudScaleId, DefaultCloudScale);
             _effect.SetFloat(SwirlTurnsId, DefaultSwirlTurns);
             _effect.SetFloat(TurbulenceStrengthId, DefaultTurbulenceStrength);
+            ApplyAppearance();
+        }
+
+        private void ApplyAppearance()
+        {
             _effect.SetVector4(CoreColorId, coreColor);
             _effect.SetVector4(GlowColorId, glowColor);
             _effect.SetFloat(CoreSizeId, coreSize);
@@ -539,10 +590,17 @@ namespace DazPose.Performer
             RefreshSharedFieldInputs(false);
         }
 
+        // Match the mesh replacement to the first 40% of departure. The next 30%
+        // holds a complete particle body; scattering occupies the final 30%.
+        internal static float DepartureDissolveProgress(float progress)
+        {
+            return Mathf.Clamp01(progress / 0.4f);
+        }
+
         private void SetDepartureProgress(float progress)
         {
             SetFloat(DepartureProgressId, progress);
-            SetFloat(DissolveProgressId, progress);
+            SetFloat(DissolveProgressId, DepartureDissolveProgress(progress));
         }
 
         private void SetPhase(BodyPhase phase)
