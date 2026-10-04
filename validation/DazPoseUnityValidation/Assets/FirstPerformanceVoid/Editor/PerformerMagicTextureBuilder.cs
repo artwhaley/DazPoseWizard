@@ -11,18 +11,18 @@ namespace DazPose.FirstPerformanceVoid.Editor
         private const string Root = "Assets/DazPose/Effects/Magic/Shared";
         private const int Resolution = 256;
 
-        public static void Generate()
+        public static void Generate(bool overwriteExisting = true)
         {
             Write("Mote", (x, y) =>
             {
                 float radius = x * x + y * y;
                 return Mask((Mathf.Exp(-radius * 35f) + Mathf.Exp(-radius * 8f) * 0.08f) * EdgeFade(radius));
-            });
+            }, overwriteExisting);
             Write("Glow", (x, y) =>
             {
                 float radius = x * x + y * y;
                 return Mask(Mathf.Exp(-radius * 5f) * 0.55f * EdgeFade(radius));
-            });
+            }, overwriteExisting);
             Write("Flame", (x, y) =>
             {
                 float t = (y + 1f) * 0.5f;
@@ -34,7 +34,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 float fringe = Mathf.Exp(-Mathf.Pow((noise - 0.45f) * 15f, 2f)) * 0.22f;
                 float taper = Smooth(0f, 0.14f, t) * (1f - Smooth(0.66f, 1f, t));
                 return Mask(body * (pockets + fringe) * taper * EdgeFade(x * x + y * y));
-            });
+            }, overwriteExisting);
             Write("Wisp", (x, y) =>
             {
                 float radius = x * x + y * y;
@@ -44,14 +44,14 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 float detail = 0.60f + Fractal(x * 13f, y * 13f) * 0.40f;
                 float falloff = Mathf.Exp(-radius * 3.2f) * EdgeFade(radius);
                 return Mask((density * 0.70f + rim * 0.30f) * detail * falloff);
-            });
+            }, overwriteExisting);
             Write("Smoke", (x, y) =>
             {
                 float radius = x * x + y * y;
                 float billow = WarpedNoise(x * 2.6f + 31.7f, y * 2.6f + 6.1f);
                 float detail = 0.65f + Fractal(x * 11f + 3f, y * 11f) * 0.35f;
                 return Mask(Mathf.Exp(-radius * 3.6f) * Smooth(0.25f, 0.73f, billow) * detail * EdgeFade(radius));
-            });
+            }, overwriteExisting);
         }
 
         public static Texture2D Load(string name)
@@ -98,8 +98,10 @@ namespace DazPose.FirstPerformanceVoid.Editor
             return t * t * (3f - 2f * t);
         }
 
-        private static void Write(string name, Func<float, float, Color> sample)
+        private static void Write(string name, Func<float, float, Color> sample, bool overwriteExisting)
         {
+            string path = Root + "/Magic" + name + ".png";
+            if (!overwriteExisting && File.Exists(path)) return;
             var pixels = new Color[Resolution * Resolution];
             for (int y = 0; y < Resolution; y++)
                 for (int x = 0; x < Resolution; x++)
@@ -107,7 +109,6 @@ namespace DazPose.FirstPerformanceVoid.Editor
             var texture = new Texture2D(Resolution, Resolution, TextureFormat.RGBA32, false);
             texture.SetPixels(pixels);
             texture.Apply(false, false);
-            string path = Root + "/Magic" + name + ".png";
             File.WriteAllBytes(path, texture.EncodeToPNG());
             UnityEngine.Object.DestroyImmediate(texture);
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);

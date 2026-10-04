@@ -33,6 +33,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
             public float AuraLifetime;
             public float Intensity;
             public float Size;
+            public float GlowSize = 0.009f;
             public float Rise;
             public float Swirl;
             public float Turbulence;
@@ -55,7 +56,8 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 if (!File.Exists(hlslPath))
                     throw new InvalidOperationException("Magic shader source is missing at " + hlslPath + ".");
                 AssetDatabase.ImportAsset(hlslPath, ImportAssetOptions.ForceSynchronousImport);
-                PerformerMagicTextureBuilder.Generate();
+                // The accepted purple graph shares these textures. Keep their current pixels.
+                PerformerMagicTextureBuilder.Generate(overwriteExisting: false);
 
                 var spells = new List<PerformerSpell>();
                 var auras = new List<PerformerAura>();
@@ -79,12 +81,12 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 int controlsWired = AssignCatalogToLoadedControls(catalog);
                 if (controlsWired > 0)
                 {
-                    Debug.Log("Magic art presets refreshed with three-second casts, fine motes and turbulent vapor. Updated the five starter pairs in DefaultMagicCatalog and assigned it to "
+                    Debug.Log("Four Magic families refreshed using DissolveTo fireflies and three-second casts; existing Violet Serenity was preserved. Assigned DefaultMagicCatalog to "
                         + controlsWired + " loaded FirstPerformanceVoid control component(s). Existing scene objects and camera were left untouched.", catalog);
                 }
                 else
                 {
-                    Debug.Log("Magic art presets refreshed with three-second casts at " + GeneratedRoot
+                    Debug.Log("Four Magic families refreshed using DissolveTo fireflies at " + GeneratedRoot + "; existing Violet Serenity was preserved"
                         + ". No FirstPerformanceVoid controls are loaded; open the existing scene and assign DefaultMagicCatalog "
                         + "to its FirstPerformanceVoidControls component.", catalog);
                 }
@@ -99,6 +101,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
         {
             string path = GeneratedRoot + "/Styles/Style_" + definition.Key + ".asset";
             PerformerMagicStyle style = AssetDatabase.LoadAssetAtPath<PerformerMagicStyle>(path);
+            if (style != null && familyId == 4) return style;
             if (style == null)
             {
                 style = ScriptableObject.CreateInstance<PerformerMagicStyle>();
@@ -124,7 +127,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 1f, 0.12f, definition.Duration, definition.Burst, definition.SpellLifetime,
                 definition.AuraFadeIn, definition.AuraFadeOut, definition.AuraRate, definition.AuraLifetime,
                 definition.Intensity, definition.Size, definition.Rise, definition.Swirl,
-                definition.Turbulence, definition.Pulse);
+                definition.Turbulence, definition.Pulse, definition.GlowSize);
         }
 
         private static PerformerSpell GetOrCreateSpell(StarterStyle definition, PerformerMagicStyle style)
@@ -205,43 +208,55 @@ namespace DazPose.FirstPerformanceVoid.Editor
 
         private static StarterStyle[] CreateStarterStyles()
         {
+            PerformerDissolveProfile reference = AssetDatabase.LoadAssetAtPath<PerformerDissolveProfile>(
+                "Assets/DazPose/Effects/Dissolve/FirstContactDissolveProfile.asset");
+            if (reference == null)
+                throw new InvalidOperationException("The accepted FirstContactDissolveProfile is required to match Magic's firefly appearance.");
+            Color core = reference.CoreColor;
+            float glowPeak = Mathf.Max(reference.GlowColor.r, Mathf.Max(reference.GlowColor.g, reference.GlowColor.b));
+            float glowAlpha = reference.GlowColor.a;
+
             return new[]
             {
                 new StarterStyle
                 {
                     Key = "Emberfire", Label = "Emberfire",
-                    Primary = new Color(3.2f, 2.7f, 1.8f, 1f), Secondary = new Color(1.8f, 0.65f, 0.12f, 1f),
-                    Accent = new Color(0.8f, 0.16f, 0.025f, 1f), Smoke = new Color(0.12f, 0.095f, 0.08f, 0.38f),
-                    Duration = 3f, Burst = 768, SpellLifetime = 3.15f, AuraFadeIn = 0.6f, AuraFadeOut = 0.8f,
-                    AuraRate = 170f, AuraLifetime = 2.8f, Intensity = 1.15f, Size = 0.026f, Rise = 1.0f,
-                    Swirl = 0.40f, Turbulence = 0.55f, Pulse = 0.9f
+                    Primary = core, Secondary = new Color(glowPeak, glowPeak * 0.28f, glowPeak * 0.035f, glowAlpha),
+                    Accent = new Color(glowPeak, glowPeak * 0.45f, glowPeak * 0.07f, glowAlpha), Smoke = Color.clear,
+                    Duration = 3f, Burst = 6144, SpellLifetime = 3.15f, AuraFadeIn = 0.6f, AuraFadeOut = 0.8f,
+                    AuraRate = 1700f, AuraLifetime = 2.8f, Intensity = 1f,
+                    Size = reference.CoreSize, GlowSize = reference.GlowSize, Rise = 1.0f,
+                    Swirl = 1.6f, Turbulence = 0.045f, Pulse = 1f
                 },
                 new StarterStyle
                 {
                     Key = "RiftBloom", Label = "Rift Bloom",
-                    Primary = new Color(2.8f, 2.3f, 2.7f, 1f), Secondary = new Color(1.45f, 0.35f, 0.95f, 1f),
-                    Accent = new Color(0.42f, 0.18f, 0.85f, 1f), Smoke = new Color(0.11f, 0.07f, 0.14f, 0.30f),
-                    Duration = 3f, Burst = 768, SpellLifetime = 3.15f, AuraFadeIn = 0.7f, AuraFadeOut = 0.9f,
-                    AuraRate = 175f, AuraLifetime = 2.8f, Intensity = 1.1f, Size = 0.024f, Rise = 0.50f,
-                    Swirl = 0.85f, Turbulence = 0.60f, Pulse = 0.8f
+                    Primary = core, Secondary = new Color(glowPeak, glowPeak * 0.006f, glowPeak * 0.80f, glowAlpha),
+                    Accent = new Color(glowPeak, glowPeak * 0.012f, glowPeak * 0.55f, glowAlpha), Smoke = Color.clear,
+                    Duration = 3f, Burst = 6144, SpellLifetime = 3.15f, AuraFadeIn = 0.7f, AuraFadeOut = 0.9f,
+                    AuraRate = 1700f, AuraLifetime = 2.8f, Intensity = 1f,
+                    Size = reference.CoreSize, GlowSize = reference.GlowSize, Rise = 0.9f,
+                    Swirl = 2.2f, Turbulence = 0.040f, Pulse = 0.8f
                 },
                 new StarterStyle
                 {
                     Key = "ArcCyan", Label = "Arc Cyan",
-                    Primary = new Color(2.6f, 3.0f, 3.3f, 1f), Secondary = new Color(0.20f, 1.25f, 1.8f, 1f),
-                    Accent = new Color(0.12f, 0.35f, 0.80f, 1f), Smoke = new Color(0.06f, 0.10f, 0.14f, 0.25f),
-                    Duration = 3f, Burst = 768, SpellLifetime = 3.15f, AuraFadeIn = 0.5f, AuraFadeOut = 0.8f,
-                    AuraRate = 185f, AuraLifetime = 2.3f, Intensity = 1.1f, Size = 0.022f, Rise = 0.45f,
-                    Swirl = 0.55f, Turbulence = 0.65f, Pulse = 1.1f
+                    Primary = core, Secondary = new Color(glowPeak * 0.006f, glowPeak * 0.80f, glowPeak, glowAlpha),
+                    Accent = new Color(glowPeak * 0.012f, glowPeak * 0.60f, glowPeak, glowAlpha), Smoke = Color.clear,
+                    Duration = 3f, Burst = 4096, SpellLifetime = 3.15f, AuraFadeIn = 0.5f, AuraFadeOut = 0.8f,
+                    AuraRate = 1500f, AuraLifetime = 2.3f, Intensity = 1f,
+                    Size = reference.CoreSize, GlowSize = reference.GlowSize, Rise = 1.8f,
+                    Swirl = 1.1f, Turbulence = 0.015f, Pulse = 1.4f
                 },
                 new StarterStyle
                 {
                     Key = "VerdantPulse", Label = "Verdant Pulse",
-                    Primary = new Color(2.1f, 2.7f, 2.15f, 1f), Secondary = new Color(0.30f, 1.05f, 0.45f, 1f),
-                    Accent = new Color(0.65f, 1.20f, 0.40f, 1f), Smoke = new Color(0.065f, 0.11f, 0.08f, 0.27f),
-                    Duration = 3f, Burst = 640, SpellLifetime = 3.15f, AuraFadeIn = 0.8f, AuraFadeOut = 1f,
-                    AuraRate = 145f, AuraLifetime = 3.0f, Intensity = 1.05f, Size = 0.023f, Rise = 0.60f,
-                    Swirl = 0.40f, Turbulence = 0.48f, Pulse = 0.65f
+                    Primary = core, Secondary = new Color(glowPeak * 0.06f, glowPeak, glowPeak * 0.20f, glowAlpha),
+                    Accent = new Color(glowPeak * 0.18f, glowPeak, glowPeak * 0.30f, glowAlpha), Smoke = Color.clear,
+                    Duration = 3f, Burst = 6144, SpellLifetime = 3.15f, AuraFadeIn = 0.8f, AuraFadeOut = 1f,
+                    AuraRate = 1500f, AuraLifetime = 3.0f, Intensity = 1f,
+                    Size = reference.CoreSize, GlowSize = reference.GlowSize, Rise = 0.55f,
+                    Swirl = 1.3f, Turbulence = 0.028f, Pulse = 0.65f
                 },
                 new StarterStyle
                 {

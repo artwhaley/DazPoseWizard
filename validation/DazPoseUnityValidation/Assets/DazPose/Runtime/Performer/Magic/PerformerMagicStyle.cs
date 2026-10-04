@@ -23,7 +23,7 @@ namespace DazPose.Performer
 
         [Header("Spell Event")]
         [SerializeField, Min(0.1f)] private float spellDurationSeconds = 3f;
-        [SerializeField, Range(1, 2048)] private int spellBurstCount = 500;
+        [SerializeField, Range(1, 8192)] private int spellBurstCount = 500;
         [SerializeField, Min(0.1f)] private float spellParticleLifetimeSeconds = 3.15f;
 
         [Header("Persistent Aura State")]
@@ -35,6 +35,8 @@ namespace DazPose.Performer
         [Header("Shared Motion and Appearance")]
         [SerializeField, Range(0f, 4f)] private float intensity = 1f;
         [SerializeField, Min(0.001f)] private float particleSize = 0.035f;
+        [Tooltip("Colored glow diameter for the DissolveTo-style firefly graphs. Particle Size controls the white core.")]
+        [SerializeField, Min(0.0001f)] private float particleGlowSize = 0.009f;
         [SerializeField, Min(0f)] private float riseSpeed = 0.4f;
         [SerializeField, Min(0f)] private float swirlStrength = 1f;
         [SerializeField, Min(0f)] private float turbulence = 0.2f;
@@ -58,6 +60,7 @@ namespace DazPose.Performer
         public float AuraParticleLifetimeSeconds => auraParticleLifetimeSeconds;
         public float Intensity => intensity;
         public float ParticleSize => particleSize;
+        public float ParticleGlowSize => particleGlowSize;
         public float RiseSpeed => riseSpeed;
         public float SwirlStrength => swirlStrength;
         public float Turbulence => turbulence;
@@ -79,7 +82,7 @@ namespace DazPose.Performer
                 || spellBurstCount < 1 || spellParticleLifetimeSeconds <= 0f
                 || auraFadeInSeconds < 0f || auraFadeOutSeconds < 0f
                 || auraSpawnRate <= 0f || auraParticleLifetimeSeconds <= 0f
-                || intensity < 0f || particleSize <= 0f)
+                || intensity < 0f || particleSize <= 0f || particleGlowSize <= 0f)
             {
                 reason = "Magic Style '" + name + "' has invalid size, lifetime, rate, or fade settings.";
                 return false;
@@ -94,7 +97,8 @@ namespace DazPose.Performer
             float geometryScale, float padding, float spellDuration, int burstCount,
             float spellParticleLifetime, float auraFadeIn, float auraFadeOut,
             float auraRate, float auraParticleLifetime, float effectIntensity,
-            float size, float rise, float swirl, float turbulenceStrength, float pulse)
+            float size, float rise, float swirl, float turbulenceStrength, float pulse,
+            float glowSize = 0.009f)
         {
             displayName = label;
             visualEffectAsset = graph;
@@ -114,6 +118,7 @@ namespace DazPose.Performer
             auraParticleLifetimeSeconds = auraParticleLifetime;
             intensity = effectIntensity;
             particleSize = size;
+            particleGlowSize = glowSize;
             riseSpeed = rise;
             swirlStrength = swirl;
             turbulence = turbulenceStrength;

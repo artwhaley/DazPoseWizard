@@ -36,6 +36,7 @@ namespace DazPose.Performer
         private static readonly int SmokeColorId = Shader.PropertyToID("SmokeColor");
         private static readonly int IntensityId = Shader.PropertyToID("Intensity");
         private static readonly int ParticleSizeId = Shader.PropertyToID("ParticleSize");
+        private static readonly int GlowSizeId = Shader.PropertyToID("GlowSize");
         private static readonly int RiseSpeedId = Shader.PropertyToID("RiseSpeed");
         private static readonly int SwirlStrengthId = Shader.PropertyToID("SwirlStrength");
         private static readonly int TurbulenceId = Shader.PropertyToID("Turbulence");
@@ -184,6 +185,8 @@ namespace DazPose.Performer
             _effect.SetVector4(AccentColorId, ToVector4(Style.AccentColor));
             _effect.SetVector4(SmokeColorId, ToVector4(Style.SmokeColor));
             _effect.SetFloat(ParticleSizeId, Style.ParticleSize);
+            // The accepted purple graph keeps its original inputs and rendering.
+            if (_effect.HasFloat(GlowSizeId)) _effect.SetFloat(GlowSizeId, Style.ParticleGlowSize);
             _effect.SetFloat(RiseSpeedId, Style.RiseSpeed);
             _effect.SetFloat(SwirlStrengthId, Style.SwirlStrength);
             _effect.SetFloat(TurbulenceId, Style.Turbulence);

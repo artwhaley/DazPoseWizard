@@ -27,6 +27,8 @@ namespace DazPose.FirstPerformanceVoid.Editor
         public static VisualEffectAsset GetOrCreate(string path, int familyId)
         {
             VisualEffectAsset existing = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+            // The accepted purple effect owns its existing layout and embedded shader code.
+            if (existing != null && familyId == 4) return existing;
             if (existing != null)
             {
                 // Rebuild the project-owned starter layout in the same asset so references retain their GUID.
@@ -77,40 +79,44 @@ namespace DazPose.FirstPerformanceVoid.Editor
 
         private static void BuildGraph(VisualEffectAsset asset, int familyId)
         {
+            bool fireflies = familyId != 4;
             object resource = InvokeExtension("UnityEditor.VFX.VisualEffectObjectExtensions", "GetOrCreateResource", asset);
             object graph = InvokeExtension("UnityEditor.VFX.VisualEffectResourceExtensions", "GetOrCreateGraph", resource);
             object spawner = CreateModel("UnityEditor.VFX.VFXBasicSpawner");
             object initialize = CreateModel("UnityEditor.VFX.VFXBasicInitialize");
             object update = CreateModel("UnityEditor.VFX.VFXBasicUpdate");
-            object coreOutput = CreatePlanarOutput("Mote", "Additive");
-            object glowOutput = CreatePlanarOutput("Glow", "Additive");
-            object wispOutput = CreatePlanarOutput(familyId == 0 ? "Flame" : "Wisp", "Additive", 0.035f);
-            object smokeOutput = CreatePlanarOutput("Smoke", "Alpha", 0.06f);
+            object coreOutput = fireflies ? CreateFireflyOutput() : CreatePlanarOutput("Mote", "Additive");
+            object glowOutput = fireflies ? CreateFireflyOutput() : CreatePlanarOutput("Glow", "Additive");
+            object wispOutput = fireflies ? null : CreatePlanarOutput("Wisp", "Additive", 0.035f);
+            object smokeOutput = fireflies ? null : CreatePlanarOutput("Smoke", "Alpha", 0.06f);
 
             SetPosition(spawner, new Vector2(330f, 80f));
             SetPosition(initialize, new Vector2(650f, 80f));
             SetPosition(update, new Vector2(960f, 80f));
             SetPosition(coreOutput, new Vector2(1280f, 0f));
             SetPosition(glowOutput, new Vector2(1280f, 360f));
-            SetPosition(wispOutput, new Vector2(1640f, 0f));
-            SetPosition(smokeOutput, new Vector2(1640f, 360f));
             AddChild(graph, spawner);
             AddChild(graph, initialize);
             AddChild(graph, update);
             AddChild(graph, coreOutput);
             AddChild(graph, glowOutput);
-            AddChild(graph, wispOutput);
-            AddChild(graph, smokeOutput);
             Call(spawner, "LinkTo", initialize, 0, 0);
             Call(initialize, "LinkTo", update, 0, 0);
             Call(update, "LinkTo", coreOutput, 0, 0);
             Call(update, "LinkTo", glowOutput, 0, 0);
-            Call(update, "LinkTo", wispOutput, 0, 0);
-            Call(update, "LinkTo", smokeOutput, 0, 0);
+            if (!fireflies)
+            {
+                SetPosition(wispOutput, new Vector2(1640f, 0f));
+                SetPosition(smokeOutput, new Vector2(1640f, 360f));
+                AddChild(graph, wispOutput);
+                AddChild(graph, smokeOutput);
+                Call(update, "LinkTo", wispOutput, 0, 0);
+                Call(update, "LinkTo", smokeOutput, 0, 0);
+            }
 
             object data = Call(initialize, "GetData");
             if (data == null) throw new InvalidOperationException("VFX Graph did not create Magic particle data.");
-            Call(data, "SetSettingValue", "capacity", (uint)2048);
+            Call(data, "SetSettingValue", "capacity", fireflies ? (uint)8192 : (uint)2048);
             Type boundsModeType = FindField(data.GetType(), "boundsMode").FieldType;
             Call(data, "SetSettingValue", "boundsMode", Enum.Parse(boundsModeType, "Manual"));
             PropertyInfo dataSpace = FindProperty(data.GetType(), "space");
@@ -133,7 +139,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
             ParameterNode accentColor = AddParameter(graph, "AccentColor", typeof(Vector4), Vector4.one, 20f, 695f);
             ParameterNode smokeColor = AddParameter(graph, "SmokeColor", typeof(Vector4), new Vector4(0.08f, 0.06f, 0.09f, 0.4f), 20f, 770f);
             ParameterNode intensity = AddParameter(graph, "Intensity", typeof(float), 1f, 20f, 845f);
-            ParameterNode particleSize = AddParameter(graph, "ParticleSize", typeof(float), 0.035f, 20f, 920f);
+            ParameterNode particleSize = AddParameter(graph, "ParticleSize", typeof(float), fireflies ? 0.003f : 0.035f, 20f, 920f);
             ParameterNode riseSpeed = AddParameter(graph, "RiseSpeed", typeof(float), 0.4f, 20f, 995f);
             ParameterNode swirlStrength = AddParameter(graph, "SwirlStrength", typeof(float), 1f, 20f, 1070f);
             ParameterNode turbulence = AddParameter(graph, "Turbulence", typeof(float), 0.2f, 20f, 1145f);
@@ -143,6 +149,8 @@ namespace DazPose.FirstPerformanceVoid.Editor
             ParameterNode spawnBurstCount = AddParameter(graph, "SpawnBurstCount", typeof(float), 0f, 20f, 1445f);
             ParameterNode particleLifetime = AddParameter(graph, "ParticleLifetime", typeof(float), 2f, 20f, 1520f);
             ParameterNode targetBase = AddParameter(graph, "TargetBase", typeof(Vector3), new Vector3(0f, -0.9f, 0f), 20f, 1595f);
+            ParameterNode glowSize = fireflies
+                ? AddParameter(graph, "GlowSize", typeof(float), 0.009f, 20f, 1670f) : null;
 
             object burst = CreateModel("UnityEditor.VFX.VFXSpawnerBurst");
             AddChild(spawner, burst);
@@ -167,7 +175,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
             LinkParameter(particleLifetime, FindHlslInputSlot(initHlsl, "ParticleLifetime"));
             LinkParameter(seed, FindHlslInputSlot(initHlsl, "Seed"));
 
-            AddHlslBlock(update, "PerformerMagicUpdate");
+            AddHlslBlock(update, fireflies ? "PerformerMagicFireflyUpdate" : "PerformerMagicUpdate");
             object updateHlsl = LastChildOfType(update, "CustomHLSL");
             LinkParameter(styleId, FindHlslInputSlot(updateHlsl, "StyleId"));
             LinkParameter(effectMode, FindHlslInputSlot(updateHlsl, "EffectMode"));
@@ -184,27 +192,34 @@ namespace DazPose.FirstPerformanceVoid.Editor
             LinkParameter(pulseFrequency, FindHlslInputSlot(updateHlsl, "PulseFrequency"));
             LinkParameter(seed, FindHlslInputSlot(updateHlsl, "Seed"));
 
-            AddHlslBlock(coreOutput, "PerformerMagicCoreOutput");
+            AddHlslBlock(coreOutput, fireflies ? "PerformerMagicFireflyCoreOutput" : "PerformerMagicCoreOutput");
             LinkOutputProperties(LastChildOfType(coreOutput, "CustomHLSL"), styleId, effectMode,
                 effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
                 intensity, pulseFrequency, seed);
-            AddHlslBlock(glowOutput, "PerformerMagicGlowOutput");
+            AddHlslBlock(glowOutput, fireflies ? "PerformerMagicFireflyGlowOutput" : "PerformerMagicGlowOutput");
             LinkOutputProperties(LastChildOfType(glowOutput, "CustomHLSL"), styleId, effectMode,
                 effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
                 intensity, pulseFrequency, seed);
-            AddHlslBlock(wispOutput, "PerformerMagicWispOutput");
-            LinkOutputProperties(LastChildOfType(wispOutput, "CustomHLSL"), styleId, effectMode,
-                effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
-                intensity, pulseFrequency, seed);
-            AddHlslBlock(smokeOutput, "PerformerMagicSmokeOutput");
-            LinkOutputProperties(LastChildOfType(smokeOutput, "CustomHLSL"), styleId, effectMode,
-                effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
-                intensity, pulseFrequency, seed);
-
-            AddOrientation(coreOutput, "FaceCameraPlane");
-            AddOrientation(glowOutput, "FaceCameraPlane");
-            AddOrientation(wispOutput, "FaceCameraPlane");
-            AddOrientation(smokeOutput, "FaceCameraPlane");
+            if (fireflies)
+            {
+                LinkParameter(particleSize, FindHlslInputSlot(LastChildOfType(coreOutput, "CustomHLSL"), "ParticleSize"));
+                LinkParameter(glowSize, FindHlslInputSlot(LastChildOfType(glowOutput, "CustomHLSL"), "GlowSize"));
+            }
+            else
+            {
+                AddHlslBlock(wispOutput, "PerformerMagicWispOutput");
+                LinkOutputProperties(LastChildOfType(wispOutput, "CustomHLSL"), styleId, effectMode,
+                    effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
+                    intensity, pulseFrequency, seed);
+                AddHlslBlock(smokeOutput, "PerformerMagicSmokeOutput");
+                LinkOutputProperties(LastChildOfType(smokeOutput, "CustomHLSL"), styleId, effectMode,
+                    effectTime, effectProgress, primaryColor, secondaryColor, accentColor, smokeColor,
+                    intensity, pulseFrequency, seed);
+                AddOrientation(coreOutput, "FaceCameraPlane");
+                AddOrientation(glowOutput, "FaceCameraPlane");
+                AddOrientation(wispOutput, "FaceCameraPlane");
+                AddOrientation(smokeOutput, "FaceCameraPlane");
+            }
 
             InvokeExtension("UnityEditor.VFX.VisualEffectResourceExtensions", "WriteAssetWithSubAssets", resource);
         }
@@ -224,6 +239,21 @@ namespace DazPose.FirstPerformanceVoid.Editor
             LinkParameter(intensity, FindHlslInputSlot(block, "Intensity"));
             LinkParameter(pulse, FindHlslInputSlot(block, "PulseFrequency"));
             LinkParameter(seed, FindHlslInputSlot(block, "Seed"));
+        }
+
+        private static object CreateFireflyOutput()
+        {
+            // Match PerformerParticleBody's two outputs, including Alpha blending and
+            // its default camera-facing orientation. Reuse the actual accepted sprite.
+            object output = CreateModel("UnityEditor.VFX.VFXPlanarPrimitiveOutput");
+            SetEnumField(output, "primitiveType", "Quad");
+            SetEnumField(output, "useBaseColorMap", "ColorAndAlpha");
+            SetEnumField(output, "uvMode", "Default");
+            SetEnumField(output, "blendMode", "Alpha");
+            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/DazPose/Effects/ParticleBody/FireflyGlow.png");
+            if (texture == null) throw new InvalidOperationException("Magic requires the DissolveTo FireflyGlow.png sprite.");
+            SetSlotValue(FindSlot(output, "mainTexture"), texture);
+            return output;
         }
 
         private static object CreatePlanarOutput(string texture, string blend, float softFadeDistance = 0f)
@@ -318,7 +348,8 @@ namespace DazPose.FirstPerformanceVoid.Editor
             {
                 "PerformerMagicInitialize", "PerformerMagicUpdate",
                 "PerformerMagicCoreOutput", "PerformerMagicGlowOutput",
-                "PerformerMagicWispOutput", "PerformerMagicSmokeOutput"
+                "PerformerMagicWispOutput", "PerformerMagicSmokeOutput",
+                "PerformerMagicFireflyUpdate", "PerformerMagicFireflyCoreOutput", "PerformerMagicFireflyGlowOutput"
             }, null);
             Call(choice, "SetSelection", function);
             selection.SetValue(block, choice);

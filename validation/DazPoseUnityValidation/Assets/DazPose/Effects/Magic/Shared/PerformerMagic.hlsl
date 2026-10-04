@@ -212,3 +212,148 @@ void PerformerMagicSmokeOutput(
     attributes.alpha *= SmokeColor.a * saturate(Intensity) * (StyleId == 0 ? 0.50 : 0.38);
 }
 
+// The four revised families use only the accepted particle body's core/glow pair.
+// The original entry points above remain intact for the accepted purple effect.
+void PerformerMagicFireflyUpdate(
+    inout VFXAttributes attributes,
+    in int StyleId, in int EffectMode, in float EffectTime, in float EffectProgress,
+    in float3 TargetCenter, in float3 TargetBase, in float TargetRadius, in float TargetHeight,
+    in float ParticleSize, in float RiseSpeed, in float SwirlStrength,
+    in float Turbulence, in float PulseFrequency, in int Seed)
+{
+    const float tau = 6.28318530718;
+    float s = frac((float)(attributes.seed & 0x00FFFFFFu) / 16777216.0 + (float)((uint)Seed & 0x0000FFFFu) / 65536.0);
+    float3 seeds = s + float3(0.173, 0.617, 0.913);
+    float3 randomVector = frac(sin(seeds * float3(127.1, 311.7, 74.7)) * 43758.5453) * 2.0 - 1.0;
+    float3 randomDirection = normalize(randomVector + float3(0.0001, 0.0001, 0.0001));
+    float a = frac(s * 53.13);
+    float b = frac(s * 31.416);
+    float c = frac(s * 17.31);
+    float radius = max(TargetRadius, 0.01);
+    float height = max(TargetHeight, 0.02);
+    float floorOffset = TargetBase.y - TargetCenter.y;
+    float rate = max(0.03, RiseSpeed / max(height * 0.85, 0.25));
+    if (StyleId == 2) rate = max(0.4, RiseSpeed);
+    float flight = frac(EffectTime * rate * lerp(0.85, 1.15, a) + s);
+    float angle = s * tau;
+    float3 radial = float3(cos(angle), 0.0, sin(angle));
+    float3 tangent = float3(-radial.z, 0.0, radial.x);
+    float3 start;
+    float3 end;
+    float3 bend1;
+    float3 bend2;
+
+    if (StyleId == 0)
+    {
+        // Orange embers rise along individual bowed convection paths.
+        start = radial * radius * lerp(0.65, 1.05, a);
+        start.y = floorOffset + 0.025 + height * b * 0.22;
+        end = start * float3(1.15, 0.0, 1.15) + randomDirection * radius * 0.28;
+        end.y = floorOffset + height * lerp(0.78, 1.12, c);
+        bend1 = start + float3(0.0, height * 0.30, 0.0) + tangent * radius * 0.28;
+        bend2 = end - float3(0.0, height * 0.24, 0.0) - tangent * radius * 0.12;
+    }
+    else if (StyleId == 1)
+    {
+        // Pink currents draw toward the target, then peel upward and outward.
+        float gather = EffectMode == 0
+            ? 1.12 - 0.28 * smoothstep(0.0, 0.24, EffectProgress)
+                + 0.32 * smoothstep(0.30, 0.65, EffectProgress)
+            : 1.0;
+        start = radial * radius * 1.20 * gather;
+        start.y = floorOffset + height * lerp(0.08, 0.78, b);
+        end = (radial * 0.88 + tangent * 0.48) * radius * gather;
+        end.y = floorOffset + height * lerp(0.55, 1.02, c);
+        bend1 = radial * radius * 0.65 * gather + tangent * radius * 0.12;
+        bend1.y = start.y + height * 0.10;
+        bend2 = radial * radius * 0.68 * gather + tangent * radius * 0.45;
+        bend2.y = end.y - height * 0.16;
+    }
+    else if (StyleId == 2)
+    {
+        // Cyan embers travel short curved paths around slowly drifting charge pockets.
+        // Each point has its own flight clock; there are no connected bolt segments.
+        float group = (float)(attributes.particleId / 64u);
+        float g = frac(sin((group + (float)((uint)Seed & 0xFFFFu) * 0.001) * 127.1) * 43758.5453);
+        float j = frac(sin((group + 1.3) * 311.7) * 43758.5453);
+        float knotAngle = g * tau + EffectTime * SwirlStrength * 0.18;
+        float3 knot = float3(cos(knotAngle), 0.0, sin(knotAngle)) * radius * lerp(0.70, 1.10, g);
+        knot.y = floorOffset + height * (0.06 + j * 0.90)
+            + sin(EffectTime * 0.8 + g * tau) * height * 0.025;
+        start = knot + randomDirection * radius * 0.20;
+        end = knot - randomDirection * radius * 0.18 + tangent * radius * 0.16;
+        bend1 = start + tangent * radius * 0.20 + float3(0.0, radius * 0.14, 0.0);
+        bend2 = end - tangent * radius * 0.12 - float3(0.0, radius * 0.10, 0.0);
+    }
+    else
+    {
+        // Green follows slow, opening upward currents of discrete fireflies.
+        start = radial * radius * lerp(0.55, 0.95, a);
+        start.y = floorOffset + height * lerp(0.05, 0.28, b);
+        float endAngle = angle + lerp(0.75, 1.65, c);
+        end = float3(cos(endAngle), 0.0, sin(endAngle)) * radius * lerp(0.82, 1.18, b);
+        end.y = floorOffset + height * lerp(0.84, 1.10, c);
+        bend1 = start + tangent * radius * 0.48 + float3(0.0, height * 0.28, 0.0);
+        bend2 = end - float3(0.0, height * 0.24, 0.0) - tangent * radius * 0.22;
+    }
+
+    // Same individual arcing strand and flutter construction as DissolveTo.
+    float inverseFlight = 1.0 - flight;
+    float3 path = inverseFlight * inverseFlight * inverseFlight * start
+        + 3.0 * inverseFlight * inverseFlight * flight * bend1
+        + 3.0 * inverseFlight * flight * flight * bend2
+        + flight * flight * flight * end;
+    float flutter = s * tau + flight * SwirlStrength * tau;
+    float3 wisp = tangent * sin(flutter) * radius * 0.16
+        + float3(0.0, cos(flutter * 0.83), 0.0) * radius * 0.09
+        + randomDirection * sin(flutter * 1.37) * Turbulence;
+    path += wisp * sin(3.14159265359 * flight);
+    path.y = max(path.y, floorOffset + 0.015);
+    attributes.position = TargetCenter + path;
+    attributes.targetPosition = attributes.position;
+    attributes.velocity = float3(0.0, 1.0, 0.0);
+    attributes.angleZ = 0.0;
+    attributes.size = ParticleSize;
+    float life = saturate(attributes.age / max(0.1, attributes.lifetime));
+    float progress = saturate(EffectProgress);
+    float envelope = EffectMode == 0
+        ? smoothstep(0.0, 0.08, progress) * (1.0 - smoothstep(0.72, 1.0, progress))
+        : smoothstep(0.0, 0.10, life) * (1.0 - smoothstep(0.78, 1.0, life));
+    // Fade before the phase wraps so there is no visible return jump or collective reset.
+    float strandFade = smoothstep(0.0, 0.08, flight) * (1.0 - smoothstep(0.84, 1.0, flight));
+    float shimmer = 0.78 + 0.22 * sin(EffectTime * (7.0 + PulseFrequency * 2.0) + s * 43.7);
+    attributes.alpha = envelope * strandFade * shimmer;
+}
+
+void PerformerMagicFireflyCoreOutput(
+    inout VFXAttributes attributes,
+    in int StyleId, in int EffectMode, in float EffectTime, in float EffectProgress,
+    in float4 PrimaryColor, in float4 SecondaryColor, in float4 AccentColor,
+    in float4 SmokeColor, in float Intensity, in float PulseFrequency, in int Seed,
+    in float ParticleSize)
+{
+    // Match PerformerParticleBodyCoreOutput: white HDR core, alpha and seed sizing.
+    attributes.color = PrimaryColor.rgb * Intensity;
+    attributes.alpha *= PrimaryColor.a * saturate(Intensity);
+    float emberSeed = (float)(attributes.seed & 0x00FFFFFFu) / 16777216.0;
+    attributes.size = ParticleSize * lerp(0.65, 1.0, frac(emberSeed * 53.13));
+    attributes.scaleX = 1.0;
+    attributes.scaleY = 1.0;
+}
+
+void PerformerMagicFireflyGlowOutput(
+    inout VFXAttributes attributes,
+    in int StyleId, in int EffectMode, in float EffectTime, in float EffectProgress,
+    in float4 PrimaryColor, in float4 SecondaryColor, in float4 AccentColor,
+    in float4 SmokeColor, in float Intensity, in float PulseFrequency, in int Seed,
+    in float GlowSize)
+{
+    // Every core has its own glow, using the same sprite, sizing and opacity as DissolveTo.
+    attributes.color = SecondaryColor.rgb * Intensity;
+    attributes.alpha *= SecondaryColor.a * saturate(Intensity);
+    float emberSeed = (float)(attributes.seed & 0x00FFFFFFu) / 16777216.0;
+    attributes.size = GlowSize * lerp(0.65, 1.0, frac(emberSeed * 53.13));
+    attributes.scaleX = 1.0;
+    attributes.scaleY = 1.0;
+}
+
