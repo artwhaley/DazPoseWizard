@@ -12,6 +12,29 @@ using UnityEngine;
 
 namespace DazPose.Toys.Buttplug
 {
+    /// <summary>
+    /// Orders only the invocation that submits a request to Buttplug. Callers await the
+    /// returned request task after this gate has been released.
+    /// </summary>
+    internal sealed class ToyTransportDispatchOrderGate
+    {
+        private readonly SemaphoreSlim _gate = new SemaphoreSlim(1, 1);
+
+        internal async Task<Task> SubmitAsync(Func<bool> isCurrent, Func<Task> submit,
+            Func<Task> beforeSubmitForTesting = null)
+        {
+            await _gate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                if (isCurrent != null && !isCurrent()) return null;
+                if (beforeSubmitForTesting != null)
+                    await beforeSubmitForTesting().ConfigureAwait(false);
+                return submit() ?? Task.CompletedTask;
+            }
+            finally { _gate.Release(); }
+        }
+    }
+
     /// <summary>Buttplug client transport and event-backed runtime device registry.</summary>
     internal sealed class ButtplugToyBackend : IToyBackend
     {
@@ -26,6 +49,7 @@ namespace DazPose.Toys.Buttplug
 
         private readonly object _stateLock = new object();
         private readonly SemaphoreSlim _operationGate = new SemaphoreSlim(1, 1);
+        private readonly ToyTransportDispatchOrderGate _dispatchOrderGate = new ToyTransportDispatchOrderGate();
         private readonly ToyDeviceRegistry _registry = new ToyDeviceRegistry();
         private readonly Dictionary<uint, ButtplugClientDevice> _nativeDevices = new Dictionary<uint, ButtplugClientDevice>();
         private readonly ConcurrentDictionary<uint, DeviceOutputScheduler> _outputSchedulers =
@@ -165,8 +189,9 @@ namespace DazPose.Toys.Buttplug
                 {
                     await TryShutdownOperationAsync(
                         token => client.StopScanningAsync(token), "Stop scanning").ConfigureAwait(false);
-                    await TryShutdownOperationAsync(
-                        token => client.StopAllDevicesAsync(token), "Stop all devices").ConfigureAwait(false);
+                    await TryShutdownOrderedOperationAsync(
+                        token => client.StopAllDevicesAsync(token), () => IsCurrentClient(client),
+                        "Stop all devices").ConfigureAwait(false);
                     await TryShutdownOperationAsync(
                         _ => client.DisconnectAsync(), "Disconnect").ConfigureAwait(false);
                 }
@@ -256,8 +281,9 @@ namespace DazPose.Toys.Buttplug
             }
             try
             {
-                await RunRequestAsync(token => client.StopAllDevicesAsync(token), "Stop all devices",
-                    ShutdownRequestTimeoutMilliseconds).ConfigureAwait(false);
+                await RunOrderedRequestAsync(token => client.StopAllDevicesAsync(token),
+                    "Stop all devices", ShutdownRequestTimeoutMilliseconds,
+                    () => IsCurrentClient(client)).ConfigureAwait(false);
                 SetLastError(string.Empty);
             }
             catch (Exception exception) { ReportError("Stop all failed: " + Describe(exception)); }
@@ -298,31 +324,34 @@ namespace DazPose.Toys.Buttplug
 
             DeviceOutputScheduler scheduler = _outputSchedulers.GetOrAdd(binding.DeviceIndex,
                 _ => new DeviceOutputScheduler());
-            await scheduler.Gate.WaitAsync().ConfigureAwait(false);
-            try
+            using (var cancellation = new CancellationTokenSource())
             {
-                int messageGapMilliseconds = (int)Math.Max(50u, device.MessageTimingGap);
-                if (scheduler.LastDispatchAt > 0)
+                Task request = null;
+                await scheduler.Gate.WaitAsync().ConfigureAwait(false);
+                try
                 {
-                    double waitMilliseconds = messageGapMilliseconds
-                        - (Stopwatch.GetTimestamp() - scheduler.LastDispatchAt) * 1000d / Stopwatch.Frequency;
-                    if (waitMilliseconds > 0d)
-                        await Task.Delay((int)Math.Ceiling(waitMilliseconds)).ConfigureAwait(false);
-                }
-                lock (_stateLock)
-                {
-                    if (_disposed || !_nativeDevices.TryGetValue(binding.DeviceIndex, out ButtplugClientDevice current)
-                        || !ReferenceEquals(current, device)) return;
-                }
-                if (stillCurrent != null && !stillCurrent()) return;
-                scheduler.LastDispatchAt = Stopwatch.GetTimestamp();
-            }
-            finally { scheduler.Gate.Release(); }
+                    int messageGapMilliseconds = (int)Math.Max(50u, device.MessageTimingGap);
+                    if (scheduler.LastDispatchAt > 0)
+                    {
+                        double waitMilliseconds = messageGapMilliseconds
+                            - (Stopwatch.GetTimestamp() - scheduler.LastDispatchAt) * 1000d / Stopwatch.Frequency;
+                        if (waitMilliseconds > 0d)
+                            await Task.Delay((int)Math.Ceiling(waitMilliseconds)).ConfigureAwait(false);
+                    }
 
-            // The client serializes its short socket writes. Do not hold either the lifecycle
-            // gate or a device pacing gate while waiting for the hardware acknowledgement.
-            await RunRequestAsync(token => feature.RunOutputAsync(command, token),
-                "Output " + binding, RequestTimeoutMilliseconds).ConfigureAwait(false);
+                    request = await _dispatchOrderGate.SubmitAsync(
+                        () => IsCurrentDevice(client, binding.DeviceIndex, device)
+                            && (stillCurrent == null || stillCurrent()),
+                        () => feature.RunOutputAsync(command, cancellation.Token)).ConfigureAwait(false);
+                    if (request == null) return;
+                    scheduler.LastDispatchAt = Stopwatch.GetTimestamp();
+                }
+                finally { scheduler.Gate.Release(); }
+
+                // Both ordering and pacing gates are released before waiting for hardware acknowledgement.
+                await AwaitRequestAsync(request, cancellation, "Output " + binding,
+                    RequestTimeoutMilliseconds).ConfigureAwait(false);
+            }
         }
 
         private static OutputType ToOutputType(ToyOutputCapability capability)
@@ -355,6 +384,26 @@ namespace DazPose.Toys.Buttplug
             if (client != null && client.Connected && ConnectionState == ToyConnectionState.Connected)
                 return client;
             return null;
+        }
+
+        private bool IsCurrentClient(ButtplugClient client)
+        {
+            lock (_stateLock)
+            {
+                if (_disposed || !ReferenceEquals(_client, client)) return false;
+            }
+            return client != null && client.Connected;
+        }
+
+        private bool IsCurrentDevice(ButtplugClient client, uint deviceIndex, ButtplugClientDevice device)
+        {
+            lock (_stateLock)
+            {
+                if (_disposed || !ReferenceEquals(_client, client)
+                    || !_nativeDevices.TryGetValue(deviceIndex, out ButtplugClientDevice current)
+                    || !ReferenceEquals(current, device)) return false;
+            }
+            return client != null && client.Connected;
         }
 
         private void Subscribe(ButtplugClient client)
@@ -520,15 +569,35 @@ namespace DazPose.Toys.Buttplug
             using (var cancellation = new CancellationTokenSource())
             {
                 Task request = operation(cancellation.Token);
-                Task timeout = Task.Delay(timeoutMilliseconds);
-                if (await Task.WhenAny(request, timeout).ConfigureAwait(false) != request)
-                {
-                    cancellation.Cancel();
-                    ObserveAbandonedTask(request);
-                    throw new TimeoutException(operationName + " timed out after " + timeoutMilliseconds + " ms.");
-                }
-                await request.ConfigureAwait(false);
+                await AwaitRequestAsync(request, cancellation, operationName, timeoutMilliseconds)
+                    .ConfigureAwait(false);
             }
+        }
+
+        private async Task RunOrderedRequestAsync(Func<CancellationToken, Task> operation,
+            string operationName, int timeoutMilliseconds, Func<bool> isCurrent)
+        {
+            using (var cancellation = new CancellationTokenSource())
+            {
+                Task request = await _dispatchOrderGate.SubmitAsync(isCurrent,
+                    () => operation(cancellation.Token)).ConfigureAwait(false);
+                if (request == null) return;
+                await AwaitRequestAsync(request, cancellation, operationName, timeoutMilliseconds)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        private static async Task AwaitRequestAsync(Task request, CancellationTokenSource cancellation,
+            string operationName, int timeoutMilliseconds)
+        {
+            Task timeout = Task.Delay(timeoutMilliseconds);
+            if (await Task.WhenAny(request, timeout).ConfigureAwait(false) != request)
+            {
+                cancellation.Cancel();
+                ObserveAbandonedTask(request);
+                throw new TimeoutException(operationName + " timed out after " + timeoutMilliseconds + " ms.");
+            }
+            await request.ConfigureAwait(false);
         }
 
         private async Task TryShutdownOperationAsync(Func<CancellationToken, Task> operation, string operationName)
@@ -536,6 +605,20 @@ namespace DazPose.Toys.Buttplug
             try
             {
                 await RunRequestAsync(operation, operationName, ShutdownRequestTimeoutMilliseconds).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                SetLastError(operationName + ": " + Describe(exception));
+            }
+        }
+
+        private async Task TryShutdownOrderedOperationAsync(Func<CancellationToken, Task> operation,
+            Func<bool> isCurrent, string operationName)
+        {
+            try
+            {
+                await RunOrderedRequestAsync(operation, operationName,
+                    ShutdownRequestTimeoutMilliseconds, isCurrent).ConfigureAwait(false);
             }
             catch (Exception exception)
             {

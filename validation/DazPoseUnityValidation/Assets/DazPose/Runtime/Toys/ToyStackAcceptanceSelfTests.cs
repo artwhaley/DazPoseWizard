@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DazPose.Motion;
 using DazPose.Performer;
+using DazPose.Toys.Buttplug;
 using UnityEngine;
 
 namespace DazPose.Toys
@@ -15,6 +16,13 @@ namespace DazPose.Toys
         {
             private readonly List<ToyDevice> _devices;
             private readonly object _gate = new object();
+            private readonly ToyTransportDispatchOrderGate _dispatchOrderGate = new ToyTransportDispatchOrderGate();
+            private readonly List<string> _submissionEvents = new List<string>();
+            private ToyOutputBinding _pauseBeforeSubmitBinding;
+            private bool _pauseBeforeSubmit;
+            private TaskCompletionSource<bool> _preSubmitReached = NewSignal();
+            private TaskCompletionSource<bool> _releasePreSubmit = NewSignal();
+            private TaskCompletionSource<bool> _stopRequested = NewSignal();
             public readonly List<Tuple<ToyOutputBinding, float, uint>> Commands = new List<Tuple<ToyOutputBinding, float, uint>>();
             public readonly List<ToyOutputBinding> Failures = new List<ToyOutputBinding>();
             public TaskCompletionSource<bool> BlockStarted { get; private set; } = new TaskCompletionSource<bool>();
@@ -28,6 +36,8 @@ namespace DazPose.Toys
             public bool IsScanning => false;
             public IReadOnlyList<ToyDevice> Devices { get { lock (_gate) return _devices.ToArray(); } }
             public int TotalCount { get { lock (_gate) return Commands.Count; } }
+            public Task PreSubmitReached { get { lock (_gate) return _preSubmitReached.Task; } }
+            public Task StopRequested { get { lock (_gate) return _stopRequested.Task; } }
             public event Action<ToyConnectionState, string> StateChanged { add { } remove { } }
             public event Action<ToyDevice> DeviceAdded { add { } remove { } }
             public event Action<uint> DeviceRemoved { add { } remove { } }
@@ -44,7 +54,49 @@ namespace DazPose.Toys
             public Task DisconnectAsync() => Task.CompletedTask;
             public Task StartScanningAsync() => Task.CompletedTask;
             public Task StopScanningAsync() => Task.CompletedTask;
-            public Task StopAllAsync() { StopAllCount++; return Task.CompletedTask; }
+            public async Task StopAllAsync()
+            {
+                TaskCompletionSource<bool> requested;
+                lock (_gate) requested = _stopRequested;
+                requested.TrySetResult(true);
+
+                Task request = await _dispatchOrderGate.SubmitAsync(null, () =>
+                {
+                    lock (_gate)
+                    {
+                        StopAllCount++;
+                        _submissionEvents.Add("STOP");
+                    }
+                    return Task.CompletedTask;
+                });
+                if (request != null) await request;
+            }
+
+            public void PauseBeforeSubmit(ToyOutputBinding binding)
+            {
+                lock (_gate)
+                {
+                    _pauseBeforeSubmitBinding = binding;
+                    _pauseBeforeSubmit = true;
+                    _preSubmitReached = NewSignal();
+                    _releasePreSubmit = NewSignal();
+                    _stopRequested = NewSignal();
+                    _submissionEvents.Clear();
+                }
+            }
+
+            public void ReleasePreSubmit()
+            {
+                TaskCompletionSource<bool> release;
+                lock (_gate) release = _releasePreSubmit;
+                release.TrySetResult(true);
+            }
+
+            public string[] SubmissionEvents()
+            { lock (_gate) return _submissionEvents.ToArray(); }
+
+            public string OutputEvent(ToyOutputBinding binding) =>
+                "output:" + binding.DeviceIndex + "/" + binding.FeatureIndex;
 
             public async Task SendOutputAsync(ToyOutputBinding binding, float value,
                 uint durationMilliseconds = 0, Func<bool> stillCurrent = null)
@@ -55,9 +107,44 @@ namespace DazPose.Toys
                     BlockStarted.TrySetResult(true);
                     await ReleaseBlock.Task;
                 }
-                if (stillCurrent != null && !stillCurrent()) return;
-                lock (_gate) Commands.Add(Tuple.Create(binding, value, durationMilliseconds));
+
+                bool pauseBeforeSubmit;
+                TaskCompletionSource<bool> reached = null;
+                TaskCompletionSource<bool> releaseBarrier = null;
+                lock (_gate)
+                {
+                    pauseBeforeSubmit = _pauseBeforeSubmit && binding.Equals(_pauseBeforeSubmitBinding);
+                    if (pauseBeforeSubmit)
+                    {
+                        _pauseBeforeSubmit = false;
+                        reached = _preSubmitReached;
+                        releaseBarrier = _releasePreSubmit;
+                    }
+                }
+
+                Task request = await _dispatchOrderGate.SubmitAsync(
+                    () => stillCurrent == null || stillCurrent(),
+                    () =>
+                    {
+                        lock (_gate)
+                        {
+                            Commands.Add(Tuple.Create(binding, value, durationMilliseconds));
+                            _submissionEvents.Add(OutputEvent(binding));
+                        }
+                        return Task.CompletedTask;
+                    },
+                    pauseBeforeSubmit
+                        ? (Func<Task>)(async () =>
+                        {
+                            reached.TrySetResult(true);
+                            await releaseBarrier.Task;
+                        })
+                        : null);
+                if (request != null) await request;
             }
+
+            private static TaskCompletionSource<bool> NewSignal() =>
+                new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             public void Dispose() { }
             public int Count(ToyOutputBinding binding)
@@ -71,6 +158,8 @@ namespace DazPose.Toys
         public static async Task<string[]> RunAsync(FunscriptMotionProgram program)
         {
             var failures = new List<string>();
+            failures.AddRange(ButtplugTransportSelfTests.Run());
+            failures.AddRange(await ButtplugTransportSelfTests.RunDispatchOrderChecksAsync());
             var devices = new List<ToyDevice>
             {
                 Device(1, Feature(0, ToyOutputCapability.Vibrate), Feature(2, ToyOutputCapability.Vibrate),
@@ -246,8 +335,35 @@ namespace DazPose.Toys
                     "zero-duration authored ramp completes at the requested target", failures);
 
                 int stopCountBefore = backend.StopAllCount;
-                service.Stop();
-                await Task.Delay(30);
+                backend.PauseBeforeSubmit(vibrate0);
+                service.Vibrate(0.31f);
+                Task preSubmitBarrier = backend.PreSubmitReached;
+                if (await Task.WhenAny(preSubmitBarrier, Task.Delay(1000)) != preSubmitBarrier)
+                {
+                    backend.ReleasePreSubmit();
+                    failures.Add("the fake backend pauses the normal command after validation and before submission");
+                }
+                else
+                {
+                    Task stopTask = service.StopAsync();
+                    Task stopRequested = backend.StopRequested;
+                    bool stopQueuedBehindOutput = await Task.WhenAny(stopRequested, Task.Delay(1000)) == stopRequested
+                        && !backend.SubmissionEvents().Contains("STOP");
+                    backend.ReleasePreSubmit();
+                    await stopTask;
+                    await Task.Delay(50);
+
+                    string[] submissions = backend.SubmissionEvents();
+                    int stopIndex = Array.IndexOf(submissions, "STOP");
+                    bool pausedOutputPrecedesStop = stopIndex > 0
+                        && submissions.Take(stopIndex).Contains(backend.OutputEvent(vibrate0));
+                    bool outputSubmittedAfterStop = stopIndex >= 0 && submissions.Skip(stopIndex + 1)
+                        .Any(entry => entry.StartsWith("output:", StringComparison.Ordinal));
+                    Check(stopQueuedBehindOutput && pausedOutputPrecedesStop && stopIndex >= 0
+                        && !outputSubmittedAfterStop,
+                        "StopAsync invalidates the generation and no older output submits after broad Stop", failures);
+                }
+
                 Check(backend.StopAllCount == stopCountBefore + 1 && !service.IsFollowingMotion,
                     "Stop invalidates active effects and issues broad backend stop", failures);
                 int beforePostStopCommand = backend.Count(vibrate0);

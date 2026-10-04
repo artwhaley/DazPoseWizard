@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Buttplug.Core.Messages;
 
 namespace DazPose.Toys.Buttplug
@@ -14,6 +16,107 @@ namespace DazPose.Toys.Buttplug
             CheckSnapshotRangesAndFeatureGranularity(failures);
             CheckRegistryLifecycle(failures);
             return failures.ToArray();
+        }
+
+        public static async Task<string[]> RunDispatchOrderChecksAsync()
+        {
+            var failures = new List<string>();
+            try
+            {
+                var raceGate = new ToyTransportDispatchOrderGate();
+                var raceSubmissions = new List<string>();
+                var reachedPreSubmitBarrier = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+                var releasePreSubmitBarrier = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+                int activeGeneration = 1;
+
+                Task<Task> outputSubmission = raceGate.SubmitAsync(
+                    () => activeGeneration == 1,
+                    () => RecordSubmission(raceSubmissions, "output"),
+                    async () =>
+                    {
+                        reachedPreSubmitBarrier.TrySetResult(true);
+                        await releasePreSubmitBarrier.Task.ConfigureAwait(false);
+                    });
+
+                Task barrier = await Task.WhenAny(reachedPreSubmitBarrier.Task, Task.Delay(1000))
+                    .ConfigureAwait(false);
+                if (barrier != reachedPreSubmitBarrier.Task)
+                {
+                    failures.Add("the dispatch race fake reaches its post-validation, pre-submit barrier");
+                    releasePreSubmitBarrier.TrySetResult(true);
+                    return failures.ToArray();
+                }
+
+                // StopAsync invalidates the active generation before asking the backend to submit Stop.
+                activeGeneration = 2;
+                Task<Task> stopSubmission = raceGate.SubmitAsync(
+                    () => true, () => RecordSubmission(raceSubmissions, "stop"));
+                bool stopQueuedBehindOutput = !stopSubmission.IsCompleted;
+                releasePreSubmitBarrier.TrySetResult(true);
+
+                Task outputRequest = await outputSubmission.ConfigureAwait(false);
+                Task stopRequest = await stopSubmission.ConfigureAwait(false);
+                Check(stopQueuedBehindOutput && outputRequest != null && stopRequest != null
+                    && raceSubmissions.SequenceEqual(new[] { "output", "stop" }),
+                    "a command paused after validation submits before queued Stop, never after Stop", failures);
+
+                var stopFirstGate = new ToyTransportDispatchOrderGate();
+                var stopFirstSubmissions = new List<string>();
+                int currentGeneration = 2;
+                Task stopFirstRequest = await stopFirstGate.SubmitAsync(
+                    () => true, () => RecordSubmission(stopFirstSubmissions, "stop"))
+                    .ConfigureAwait(false);
+                Task staleOutputRequest = await stopFirstGate.SubmitAsync(
+                    () => currentGeneration == 1,
+                    () => RecordSubmission(stopFirstSubmissions, "obsolete output"))
+                    .ConfigureAwait(false);
+                Check(stopFirstRequest != null && staleOutputRequest == null
+                    && stopFirstSubmissions.SequenceEqual(new[] { "stop" }),
+                    "when Stop submits first, an older generation is rejected at the gate", failures);
+
+                var acknowledgementGate = new ToyTransportDispatchOrderGate();
+                var acknowledgementSubmissions = new List<string>();
+                var deviceAAcknowledgement = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+                var stopAcknowledgement = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+                var deviceBAcknowledgement = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+
+                Task deviceARequest = await acknowledgementGate.SubmitAsync(
+                    () => true, () => RecordSubmission(acknowledgementSubmissions,
+                        "device A", deviceAAcknowledgement.Task)).ConfigureAwait(false);
+                Task broadStopRequest = await acknowledgementGate.SubmitAsync(
+                    () => true, () => RecordSubmission(acknowledgementSubmissions,
+                        "stop", stopAcknowledgement.Task)).ConfigureAwait(false);
+                Task deviceBRequest = await acknowledgementGate.SubmitAsync(
+                    () => true, () => RecordSubmission(acknowledgementSubmissions,
+                        "device B", deviceBAcknowledgement.Task)).ConfigureAwait(false);
+
+                Check(deviceARequest != null && broadStopRequest != null && deviceBRequest != null
+                    && !deviceAAcknowledgement.Task.IsCompleted
+                    && acknowledgementSubmissions.SequenceEqual(new[] { "device A", "stop", "device B" }),
+                    "Stop and another device submit while device A acknowledgement remains blocked", failures);
+
+                deviceAAcknowledgement.TrySetResult(true);
+                stopAcknowledgement.TrySetResult(true);
+                deviceBAcknowledgement.TrySetResult(true);
+                await Task.WhenAll(deviceARequest, broadStopRequest, deviceBRequest).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                failures.Add("dispatch-order regression self-test threw: " + exception);
+            }
+
+            return failures.ToArray();
+        }
+
+        private static Task RecordSubmission(List<string> submissions, string name, Task request = null)
+        {
+            submissions.Add(name);
+            return request ?? Task.CompletedTask;
         }
 
         private static void CheckCapabilityProjection(List<string> failures)
