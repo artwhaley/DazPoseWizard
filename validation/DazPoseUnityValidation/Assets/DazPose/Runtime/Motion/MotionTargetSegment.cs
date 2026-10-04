@@ -11,10 +11,13 @@ namespace DazPose.Motion
         public readonly float TargetPosition01;
         public readonly int FromActionIndex;
         public readonly int ToActionIndex;
+        public readonly long Revision;
+        public readonly double ObservedAtTimeSeconds;
         public double DurationSeconds => Math.Max(0d, EndTimeSeconds - StartTimeSeconds);
 
         public MotionTargetSegment(double startTimeSeconds, double endTimeSeconds,
-            float startPosition01, float targetPosition01, int fromActionIndex = -1, int toActionIndex = -1)
+            float startPosition01, float targetPosition01, int fromActionIndex = -1, int toActionIndex = -1,
+            long revision = 0, double observedAtTimeSeconds = -1d)
         {
             StartTimeSeconds = startTimeSeconds;
             EndTimeSeconds = endTimeSeconds;
@@ -22,6 +25,8 @@ namespace DazPose.Motion
             TargetPosition01 = UnityEngine.Mathf.Clamp01(targetPosition01);
             FromActionIndex = fromActionIndex;
             ToActionIndex = toActionIndex;
+            Revision = revision;
+            ObservedAtTimeSeconds = observedAtTimeSeconds < 0d ? startTimeSeconds : observedAtTimeSeconds;
         }
     }
 }

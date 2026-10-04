@@ -4,7 +4,7 @@ namespace DazPose.Toys
 {
     /// <summary>Runtime-only identity for one output on one independently addressable feature.</summary>
     [Serializable]
-    public readonly struct ToyOutputBinding : IEquatable<ToyOutputBinding>
+    internal readonly struct ToyOutputBinding : IEquatable<ToyOutputBinding>
     {
         public uint DeviceIndex { get; }
         public uint FeatureIndex { get; }

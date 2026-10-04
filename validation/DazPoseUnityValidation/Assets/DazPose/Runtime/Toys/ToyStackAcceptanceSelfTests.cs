@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DazPose.Motion;
 using DazPose.Performer;
@@ -7,60 +8,63 @@ using UnityEngine;
 
 namespace DazPose.Toys
 {
-    /// <summary>Hardware-free routing, fan-out, motion sync, and output-coalescing checks.</summary>
+    /// <summary>Hardware-free acceptance checks for automatic routes and bounded dispatch.</summary>
     public static class ToyStackAcceptanceSelfTests
     {
         private sealed class FakeBackend : IToyBackend
         {
             private readonly List<ToyDevice> _devices;
+            private readonly object _gate = new object();
             public readonly List<Tuple<ToyOutputBinding, float, uint>> Commands = new List<Tuple<ToyOutputBinding, float, uint>>();
             public readonly List<ToyOutputBinding> Failures = new List<ToyOutputBinding>();
-            public readonly List<string> Operations = new List<string>();
-            public readonly TaskCompletionSource<bool> FirstOutputStarted = new TaskCompletionSource<bool>();
-            public readonly TaskCompletionSource<bool> ReleaseFirstOutput = new TaskCompletionSource<bool>();
-            public bool BlockNextOutput;
+            public TaskCompletionSource<bool> BlockStarted { get; private set; } = new TaskCompletionSource<bool>();
+            public TaskCompletionSource<bool> ReleaseBlock { get; private set; } = new TaskCompletionSource<bool>();
+            public uint BlockedDevice = uint.MaxValue;
             public int StopAllCount;
             public bool IsConnected => true;
             public ToyConnectionState ConnectionState => ToyConnectionState.Connected;
             public string StatusMessage => "Connected (acceptance fake).";
             public string LastError => string.Empty;
             public bool IsScanning => false;
-            public IReadOnlyList<ToyDevice> Devices => _devices.AsReadOnly();
-            public event Action<ToyConnectionState, string> StateChanged;
-            public event Action<ToyDevice> DeviceAdded;
-            public event Action<uint> DeviceRemoved;
-            public event Action<bool> ScanningChanged;
+            public IReadOnlyList<ToyDevice> Devices { get { lock (_gate) return _devices.ToArray(); } }
+            public int TotalCount { get { lock (_gate) return Commands.Count; } }
+            public event Action<ToyConnectionState, string> StateChanged { add { } remove { } }
+            public event Action<ToyDevice> DeviceAdded { add { } remove { } }
+            public event Action<uint> DeviceRemoved { add { } remove { } }
+            public event Action<bool> ScanningChanged { add { } remove { } }
 
             public FakeBackend(List<ToyDevice> devices) => _devices = devices;
+            public void BlockDevice(uint device)
+            {
+                BlockedDevice = device;
+                BlockStarted = new TaskCompletionSource<bool>();
+                ReleaseBlock = new TaskCompletionSource<bool>();
+            }
             public Task ConnectAsync(string address) => Task.CompletedTask;
             public Task DisconnectAsync() => Task.CompletedTask;
             public Task StartScanningAsync() => Task.CompletedTask;
             public Task StopScanningAsync() => Task.CompletedTask;
-            public Task StopAllAsync()
-            {
-                StopAllCount++;
-                Operations.Add("stop all");
-                return Task.CompletedTask;
-            }
-            public async Task SendOutputAsync(ToyOutputBinding binding, float value, uint durationMilliseconds = 0)
+            public Task StopAllAsync() { StopAllCount++; return Task.CompletedTask; }
+
+            public async Task SendOutputAsync(ToyOutputBinding binding, float value,
+                uint durationMilliseconds = 0, Func<bool> stillCurrent = null)
             {
                 if (Failures.Contains(binding)) throw new InvalidOperationException("Simulated feature failure.");
-                Commands.Add(Tuple.Create(binding, value, durationMilliseconds));
-                Operations.Add("output " + binding);
-                if (BlockNextOutput)
+                if (binding.DeviceIndex == BlockedDevice)
                 {
-                    BlockNextOutput = false;
-                    FirstOutputStarted.TrySetResult(true);
-                    await ReleaseFirstOutput.Task;
+                    BlockStarted.TrySetResult(true);
+                    await ReleaseBlock.Task;
                 }
+                if (stillCurrent != null && !stillCurrent()) return;
+                lock (_gate) Commands.Add(Tuple.Create(binding, value, durationMilliseconds));
             }
-            public Task StopFeatureAsync(ToyOutputBinding binding) => Task.CompletedTask;
+
             public void Dispose() { }
-            public void Add(ToyDevice device) { _devices.Add(device); DeviceAdded?.Invoke(device); }
-            public void Remove(uint index)
+            public int Count(ToyOutputBinding binding)
+            { lock (_gate) return Commands.Count(command => command.Item1 == binding); }
+            public Tuple<ToyOutputBinding, float, uint> Last(ToyOutputBinding binding)
             {
-                _devices.RemoveAll(device => device.DeviceIndex == index);
-                DeviceRemoved?.Invoke(index);
+                lock (_gate) return Commands.LastOrDefault(command => command.Item1 == binding);
             }
         }
 
@@ -69,11 +73,12 @@ namespace DazPose.Toys
             var failures = new List<string>();
             var devices = new List<ToyDevice>
             {
-                Device(1, Feature(0, ToyOutputCapability.Vibrate)),
-                Device(2, Feature(0, ToyOutputCapability.Oscillate)),
+                Device(1, Feature(0, ToyOutputCapability.Vibrate), Feature(2, ToyOutputCapability.Vibrate),
+                    Feature(4, ToyOutputCapability.Oscillate)),
+                Device(2, Feature(0, ToyOutputCapability.Vibrate, ToyOutputCapability.Oscillate)),
                 Device(3, Feature(0, ToyOutputCapability.Vibrate)),
                 Device(4, Feature(0, ToyOutputCapability.Position, ToyOutputCapability.HwPositionWithDuration),
-                    Feature(1, ToyOutputCapability.Position))
+                    Feature(1, ToyOutputCapability.Position), Feature(2, ToyOutputCapability.HwPositionWithDuration))
             };
             var backend = new FakeBackend(devices);
             var host = new GameObject("ToyStackAcceptanceSelfTests");
@@ -83,126 +88,191 @@ namespace DazPose.Toys
             {
                 service = host.AddComponent<ToyControlService>();
                 service.SetBackendForAcceptance(backend);
-                var vibrate = new ToyOutputBinding(1, 0, ToyOutputCapability.Vibrate);
-                var oscillate = new ToyOutputBinding(2, 0, ToyOutputCapability.Oscillate);
-                var isolatedFailure = new ToyOutputBinding(3, 0, ToyOutputCapability.Vibrate);
-                backend.Failures.Add(isolatedFailure);
-                Check(service.SetLevelBinding(vibrate, true) && service.SetLevelBinding(oscillate, true)
-                    && service.SetLevelBinding(isolatedFailure, true), "compatible level bindings can be assigned", failures);
-                Check(!service.SetLevelBinding(new ToyOutputBinding(2, 0, ToyOutputCapability.Position), true),
-                    "a capability mismatch cannot be assigned as a level", failures);
+                Check(service.CanVibrate && service.CanOscillate && service.CanStroke,
+                    "capability availability reflects discovered outputs", failures);
+                Check(service.HasVibrationChannel(1) && service.HasOscillationChannel(0)
+                    && !service.HasOscillationChannel(1), "channels are numbered within each capability and device", failures);
+                Check(backend.TotalCount == 0, "discovery alone sends no output", failures);
 
-                ToyCommandReport report = await service.SetLevelAsync(1.5f);
-                Check(service.Level == 1f && report.SuccessfulBindings == 2 && report.Errors.Count == 1
-                    && backend.Commands.Count == 2, "level clamps and per-feature failures do not stop fan-out", failures);
-                Check(backend.Commands[0].Item1 == vibrate && backend.Commands[0].Item2 == 1f
-                    && backend.Commands[1].Item1 == oscillate && backend.Commands[1].Item2 == 1f,
-                    "level values route as normalized percentages to exact features", failures);
-                report = await service.SetLevelAsync(0f);
-                Check(report.SuccessfulBindings == 2 && backend.Commands[2].Item2 == 0f
-                    && backend.Commands[3].Item2 == 0f, "zero explicitly stops each assigned level output", failures);
-                bool rejectedNaN = false;
-                try { await service.SetLevelAsync(float.NaN); }
-                catch (ArgumentOutOfRangeException) { rejectedNaN = true; }
-                Check(rejectedNaN, "non-finite level commands are rejected", failures);
+                var vibrate0 = new ToyOutputBinding(1, 0, ToyOutputCapability.Vibrate);
+                var vibrate1 = new ToyOutputBinding(1, 2, ToyOutputCapability.Vibrate);
+                var oscillate = new ToyOutputBinding(1, 4, ToyOutputCapability.Oscillate);
+                service.Vibrate(1.5f);
+                await WaitForCommands(backend, 4);
+                Check(backend.Count(vibrate0) == 1 && backend.Count(vibrate1) == 1
+                    && backend.Last(vibrate0).Item2 == 1f
+                    && backend.Count(oscillate) == 0,
+                    "Vibrate clamps and automatically routes across every vibration feature", failures);
+
+                service.Vibrate(0.4f, 1);
+                await WaitForCommands(backend, 5);
+                Check(backend.Last(vibrate1).Item2 == 0.4f
+                    && backend.Last(vibrate0).Item2 == 1f,
+                    "channel one affects the second vibration feature without changing channel zero", failures);
+                service.Oscillate(0.7f);
+                await WaitForCommands(backend, 7);
+                Check(backend.Last(oscillate).Item2 == 0.7f,
+                    "oscillation has independent automatic output routing", failures);
+
+                GameObject controlObject = new GameObject("ToyBindingAcceptanceControl");
+                controlObject.transform.SetParent(host.transform, false);
+                PerformerControlSurface control = controlObject.AddComponent<PerformerControlSurface>();
+                control.Value01 = 0.33f;
+                int beforeBinding = backend.Count(vibrate0);
+                service.BindVibration(control);
+                await WaitUntil(() => backend.Count(vibrate0) > beforeBinding);
+                Check(Mathf.Abs(backend.Last(vibrate0).Item2 - 0.33f) < 0.001f,
+                    "binding sends the current visible-control value", failures);
+                service.Vibrate(0.8f);
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2 - 0.8f) < 0.001f);
+                int afterOverride = backend.Count(vibrate0);
+                control.Value01 = 0.9f;
+                await Task.Delay(30);
+                Check(backend.Count(vibrate0) == afterOverride
+                    && Mathf.Abs(backend.Last(vibrate0).Item2 - 0.8f) < 0.001f,
+                    "a newer direct command prevents the old control binding from resuming", failures);
+                service.UnbindControl(control);
+                await Task.Delay(20);
+                Check(Mathf.Abs(backend.Last(vibrate0).Item2 - 0.8f) < 0.001f,
+                    "unbinding a superseded control does not overwrite the newer command", failures);
+
+                GameObject ownedControlObject = new GameObject("ToyUnbindAcceptanceControl");
+                ownedControlObject.transform.SetParent(host.transform, false);
+                PerformerControlSurface ownedControl = ownedControlObject.AddComponent<PerformerControlSurface>();
+                ownedControl.Value01 = 0.42f;
+                service.BindVibration(ownedControl);
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2 - 0.42f) < 0.001f);
+                service.UnbindControl(ownedControl);
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2) < 0.001f);
+                Check(Mathf.Abs(backend.Last(vibrate0).Item2) < 0.001f,
+                    "unbinding an active control zeros the outputs it still owns", failures);
+
+                var missingFailure = new ToyOutputBinding(3, 0, ToyOutputCapability.Vibrate);
+                backend.Failures.Add(missingFailure);
+                var healthyVibration = new ToyOutputBinding(2, 0, ToyOutputCapability.Vibrate);
+                int healthyBeforeFailure = backend.Count(healthyVibration);
+                service.Vibrate(0.2f);
+                await Task.Delay(50);
+                Check(backend.Count(healthyVibration) == healthyBeforeFailure + 1,
+                    "a failed feature does not prevent other devices from receiving the command", failures);
+                backend.Failures.Clear();
+
+                // Block one device while another gets the same capability command.
+                backend.BlockDevice(1);
+                int healthyBeforeBlock = backend.Count(healthyVibration);
+                service.Vibrate(0.6f);
+                await backend.BlockStarted.Task;
+                await WaitUntil(() => backend.Count(healthyVibration) >= healthyBeforeBlock + 1);
+                Check(backend.Count(healthyVibration) >= healthyBeforeBlock + 1,
+                    "a blocked device does not hold up another device", failures);
+                backend.ReleaseBlock.TrySetResult(true);
+                await Task.Delay(50);
+                backend.BlockedDevice = uint.MaxValue;
+
+                // One active worker and one latest pending value per feature under a flood.
+                int beforeFlood = backend.Count(vibrate0);
+                backend.BlockDevice(1);
+                service.Vibrate(0.1f);
+                await backend.BlockStarted.Task;
+                for (int i = 0; i < 40; i++) service.Vibrate(i / 40f);
+                backend.ReleaseBlock.TrySetResult(true);
+                await Task.Delay(150);
+                Check(backend.Count(vibrate0) - beforeFlood == 1
+                    && Mathf.Abs(backend.Last(vibrate0).Item2 - 0.975f) < 0.001f,
+                    "repeated input keeps bounded work and delivers the newest pending value", failures);
+                backend.BlockedDevice = uint.MaxValue;
 
                 var bounded = new ToyMotionBinding(new ToyOutputBinding(4, 1, ToyOutputCapability.Position),
                     ToyMotionStrategy.Position, true, 0.2f, 0.8f);
                 Check(Mathf.Abs(bounded.Map(0f) - 0.8f) < 0.0001f
                     && Mathf.Abs(bounded.Map(1f) - 0.2f) < 0.0001f,
-                    "motion travel limits and inversion map both endpoints", failures);
+                    "scene range and inversion map both movement endpoints", failures);
 
-                if (program == null) failures.Add("The imported Funscript is required for motion follower checks.");
+                if (program == null) failures.Add("The imported Funscript is required for timed-position checks.");
                 else
                 {
                     driver = host.AddComponent<MotionDriver>();
                     driver.SourceMode = MotionSourceMode.Funscript;
                     driver.FunscriptProgram = program;
                     driver.Seek(12.280d);
-                    var positionBinding = new ToyOutputBinding(4, 1, ToyOutputCapability.Position);
-                    var durationBinding = new ToyOutputBinding(4, 0, ToyOutputCapability.HwPositionWithDuration);
-                    service.SetMotionBinding(positionBinding, true, ToyMotionStrategy.Position, true, 0.2f, 0.8f);
-                    service.SetMotionBinding(durationBinding, true);
                     service.Follow(driver);
                     driver.StartMotion();
-                    await Task.Delay(140);
-
-                    Tuple<ToyOutputBinding, float, uint> firstDuration = Last(backend, durationBinding);
+                    await Task.Delay(120);
+                    var durationBinding = new ToyOutputBinding(4, 0, ToyOutputCapability.HwPositionWithDuration);
+                    var positionBinding = new ToyOutputBinding(4, 1, ToyOutputCapability.Position);
+                    Tuple<ToyOutputBinding, float, uint> firstDuration = backend.Last(durationBinding);
                     Check(firstDuration != null && Mathf.Abs(firstDuration.Item2 - 0.3f) < 0.0001f
-                        && firstDuration.Item3 == 840,
-                        "a mid-segment bind sends its target with remaining Funscript duration", failures);
-                    Tuple<ToyOutputBinding, float, uint> firstPosition = Last(backend, positionBinding);
-                    Check(firstPosition != null && Mathf.Abs(firstPosition.Item2 - 0.68f) < 0.0001f,
-                        "continuous position follows and maps the same MotionDriver sample", failures);
+                        && firstDuration.Item3 > 0,
+                        "a timed-position feature receives the current authored Funscript target", failures);
+                    Check(backend.Last(positionBinding) != null,
+                        "direct Position features follow the same MotionDriver sample", failures);
 
-                    int durationCommands = Count(backend, durationBinding);
+                    int timedBeforeSampledAdvance = backend.Count(durationBinding);
                     for (int i = 0; i < 20; i++) driver.Advance(0.005f);
-                    await Task.Delay(100);
-                    Check(Count(backend, durationBinding) == durationCommands,
-                        "duration output sends once per authored Funscript segment rather than per frame", failures);
-                    Tuple<ToyOutputBinding, float, uint> coalesced = Last(backend, positionBinding);
-                    Check(Count(backend, positionBinding) <= 5 && coalesced != null
-                        && Mathf.Abs(coalesced.Item2 - bounded.Map(driver.CurrentSample.Position01)) < 0.0051f,
-                        "continuous positions coalesce updates and deliver the newest value", failures);
+                    await Task.Delay(60);
+                    Check(backend.Count(durationBinding) == timedBeforeSampledAdvance,
+                        "timed-position output sends no frame-rate corrections between authored segments", failures);
 
-                    driver.Seek(12.700d);
-                    await Task.Delay(100);
-                    Tuple<ToyOutputBinding, float, uint> sought = Last(backend, durationBinding);
-                    Check(sought != null && sought.Item3 == 420 && Mathf.Abs(sought.Item2 - 0.3f) < 0.0001f,
-                        "seek immediately resynchronizes a duration follower to the remaining segment", failures);
+                    int beforeNextSegment = backend.Count(durationBinding);
+                    driver.Advance(0.8f);
+                    await Task.Delay(60);
+                    Check(backend.Count(durationBinding) == beforeNextSegment + 1,
+                        "a new authored Funscript segment sends one new timed target", failures);
+
+                    int beforeSourceReplacement = backend.Count(durationBinding);
+                    backend.BlockDevice(4);
+                    driver.Seek(14.0d);
+                    await backend.BlockStarted.Task;
+                    driver.SourceMode = MotionSourceMode.Sine;
+                    backend.ReleaseBlock.TrySetResult(true);
+                    await Task.Delay(60);
+                    Check(backend.Count(durationBinding) == beforeSourceReplacement,
+                        "source replacement cancels a timed command that has not reached the device", failures);
+                    backend.BlockedDevice = uint.MaxValue;
+
                     driver.StopMotion();
-                    int pausedPositionCommands = Count(backend, positionBinding);
-                    int pausedDurationCommands = Count(backend, durationBinding);
-                    driver.Advance(1f);
+                    int beforeSine = backend.Count(new ToyOutputBinding(4, 2, ToyOutputCapability.HwPositionWithDuration));
+                    service.Follow(driver);
+                    driver.StartMotion();
+                    for (int i = 0; i < 20; i++) driver.Advance(0.01f);
                     await Task.Delay(100);
-                    Check(Count(backend, positionBinding) == pausedPositionCommands
-                        && Count(backend, durationBinding) == pausedDurationCommands,
-                        "pause stops future motion sends", failures);
-                driver.StartMotion();
-                await Task.Delay(100);
-                Tuple<ToyOutputBinding, float, uint> resumed = Last(backend, durationBinding);
-                Check(resumed != null && resumed.Item3 == 420,
-                    "resume immediately resynchronizes from the current motion segment", failures);
-
-                driver.StopMotion();
-                driver.SourceMode = MotionSourceMode.Sine;
-                driver.Seek(0.25d);
-                var automaticPosition = new ToyOutputBinding(4, 0, ToyOutputCapability.Position);
-                driver.StartMotion();
-                await Task.Delay(100);
-                Tuple<ToyOutputBinding, float, uint> sine = Last(backend, automaticPosition);
-                Check(sine != null && Mathf.Abs(sine.Item2 - 0.5f) < 0.0051f,
-                    "Auto strategy falls back to continuous Position for a Sine source", failures);
-                driver.StopMotion();
+                    Check(backend.Count(new ToyOutputBinding(4, 2, ToyOutputCapability.HwPositionWithDuration)) == beforeSine,
+                        "a duration-only feature stays idle for sampled sine motion", failures);
+                    driver.StopMotion();
                 }
 
-                int commandCountBeforeStop = backend.Commands.Count;
-                backend.BlockNextOutput = true;
-                Task<ToyCommandReport> pendingLevel = service.SetLevelAsync(0.42f);
-                await backend.FirstOutputStarted.Task;
-                Task stopDuringFanOut = service.StopAllAsync();
-                backend.ReleaseFirstOutput.TrySetResult(true);
-                await Task.WhenAll(pendingLevel, stopDuringFanOut);
-                Check(backend.Commands.Count == commandCountBeforeStop + 1 && backend.StopAllCount == 1
-                    && backend.Operations[backend.Operations.Count - 1] == "stop all"
-                    && service.Level == 0f,
-                    "Stop All cancels queued level fan-out and is the final hardware command", failures);
+                await service.RampVibrationAsync(0.35f, 0f);
+                Check(backend.Last(vibrate0) != null && backend.Last(vibrate0).Item2 == 0.35f,
+                    "zero-duration authored ramp completes at the requested target", failures);
 
-                await service.StopAllWithReportAsync();
-                Check(!service.IsFollowingMotion && service.Level == 0f,
-                    "emergency stop clears desired level and terminates the follower", failures);
-                failures.AddRange(RunLaraControlAnimationChecks());
+                int stopCountBefore = backend.StopAllCount;
+                service.Stop();
+                await Task.Delay(30);
+                Check(backend.StopAllCount == stopCountBefore + 1 && !service.IsFollowingMotion,
+                    "Stop invalidates active effects and issues broad backend stop", failures);
+                int beforePostStopCommand = backend.Count(vibrate0);
+                service.Vibrate(0.25f);
+                await WaitUntil(() => backend.Count(vibrate0) > beforePostStopCommand);
+                Check(Mathf.Abs(backend.Last(vibrate0).Item2 - 0.25f) < 0.001f,
+                    "an explicit command after Stop starts output normally", failures);
                 return failures.ToArray();
             }
             catch (Exception exception)
             {
-                failures.Add("Unexpected acceptance-test exception: " + exception);
+                failures.Add("Unexpected toy acceptance exception: " + exception);
                 return failures.ToArray();
             }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(host);
-            }
+            finally { UnityEngine.Object.DestroyImmediate(host); }
+        }
+
+        private static async Task WaitForCommands(FakeBackend backend, int expected)
+        {
+            await WaitUntil(() => backend.TotalCount >= expected);
+        }
+
+        private static async Task WaitUntil(Func<bool> condition)
+        {
+            for (int i = 0; i < 100 && !condition(); i++) await Task.Delay(10);
         }
 
         private static ToyDevice Device(uint index, params ToyFeature[] features) =>
@@ -216,64 +286,6 @@ namespace DazPose.Toys
                     ? ToyOutputRange.PositionWithDuration(0, 100, 20, 5000)
                     : ToyOutputRange.Value(capability, 0, 100));
             return new ToyFeature(index, "Generic feature", ranges);
-        }
-
-        private static Tuple<ToyOutputBinding, float, uint> Last(FakeBackend backend, ToyOutputBinding binding)
-        {
-            for (int i = backend.Commands.Count - 1; i >= 0; i--)
-                if (backend.Commands[i].Item1 == binding) return backend.Commands[i];
-            return null;
-        }
-
-        private static int Count(FakeBackend backend, ToyOutputBinding binding)
-        {
-            int count = 0;
-            foreach (var command in backend.Commands) if (command.Item1 == binding) count++;
-            return count;
-        }
-
-        private static string[] RunLaraControlAnimationChecks()
-        {
-            var failures = new List<string>();
-            var controlObject = new GameObject("BT.6 Control Animation Test");
-            try
-            {
-                var handle = new GameObject("BT.6 Test Handle");
-                handle.transform.SetParent(controlObject.transform, false);
-                var grip = new GameObject("BT.6 Grip");
-                grip.transform.SetParent(handle.transform, false);
-                grip.transform.localPosition = Vector3.up * 0.15f;
-                var surface = controlObject.AddComponent<PerformerControlSurface>();
-                surface.ConfigureHandle(handle.transform, Vector3.zero, Vector3.up * 0.1f);
-                surface.GripPoint = grip.transform;
-                surface.Value01 = 0.3f;
-
-                var hand = new GameObject("BT.6 Test Hand");
-                hand.transform.SetParent(controlObject.transform, false);
-                hand.transform.position = Vector3.zero;
-                var animator = controlObject.AddComponent<LaraControlAnimator>();
-                animator.Hand = hand.transform;
-                float maximumReach = 0f;
-                foreach (float target in new[] { 0.66f, 0.30f, 1f })
-                {
-                    Task action = animator.SetControlAsync(surface, target);
-                    for (int i = 0; i < 120 && !action.IsCompleted; i++)
-                    {
-                        animator.AdvanceControl(0.02f);
-                        maximumReach = Mathf.Max(maximumReach, hand.transform.position.magnitude);
-                    }
-                    if (!action.IsCompleted) failures.Add("Lara control animation did not finish for target " + target + ".");
-                    else action.GetAwaiter().GetResult();
-                    if (Mathf.Abs(surface.Value01 - target) > 0.0001f)
-                        failures.Add("Lara control surface missed normalized target " + target + ".");
-                    if (hand.transform.position.sqrMagnitude > 0.0001f)
-                        failures.Add("Lara did not return her hand to its captured pose.");
-                }
-                if (maximumReach < 0.1f) failures.Add("Lara hand did not reach toward and track the control surface.");
-            }
-            catch (Exception exception) { failures.Add("Lara control animation check threw: " + exception.Message); }
-            finally { UnityEngine.Object.DestroyImmediate(controlObject); }
-            return failures.ToArray();
         }
 
         private static void Check(bool condition, string description, List<string> failures)

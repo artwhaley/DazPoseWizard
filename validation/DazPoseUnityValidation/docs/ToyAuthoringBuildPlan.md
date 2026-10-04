@@ -1,6 +1,6 @@
 # Toy authoring and test panel build plan
 
-Status: proposed implementation plan, 2026-10-03. This document does not indicate that the changes below are implemented.
+Status: implementation in place; Unity acceptance pending, 2026-10-03. The plan is not marked complete until the editor, panel, and device checks below are reviewed.
 
 ## Outcome
 

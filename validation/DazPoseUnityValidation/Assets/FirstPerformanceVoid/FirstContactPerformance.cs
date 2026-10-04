@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DazPose.Performer;
 using DazPose.Player;
+using DazPose.Toys;
 using UnityEngine;
 
 namespace DazPose.FirstPerformanceVoid
@@ -139,6 +140,8 @@ namespace DazPose.FirstPerformanceVoid
                 PendingAction lineB = ObserveAction(performer.SayAsync(speechClipB), SpeechCompletion.Finished, "Speech B");
                 await WaitFor(id, finalMove, lineB);
 
+                await RunToyVibrationBeat(id);
+
                 SetBeat("Final hold");
                 await Delay(1f, id);
                 player.StopTracking();
@@ -164,6 +167,25 @@ namespace DazPose.FirstPerformanceVoid
             PendingAction action = ObserveAction(player.MoveToAsync(mark, duration), PlayerViewCompletion.Completed, name);
             positionRevision = player.View.PositionCommandRevision;
             return action;
+        }
+
+        private async Awaitable RunToyVibrationBeat(int id)
+        {
+            ToyControlService toys = null;
+            try { toys = player.Toys; }
+            catch (InvalidOperationException) { }
+
+            if (toys == null || !toys.CanVibrate)
+            {
+                SetBeat("Toy alternate — continue without vibration");
+                await Delay(2f, id);
+                return;
+            }
+
+            SetBeat("Vibration response");
+            toys.Vibrate(0.5f);
+            await Delay(1.5f, id);
+            await toys.RampVibrationAsync(0f, 0.5f);
         }
 
         // Consume every Unity Awaitable exactly once, immediately after starting it.

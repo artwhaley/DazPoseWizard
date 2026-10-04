@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DazPose.Toys
 {
-    public enum ToyConnectionState
+    internal enum ToyConnectionState
     {
         Disconnected,
         Connecting,
@@ -33,7 +33,7 @@ namespace DazPose.Toys
         Task StartScanningAsync();
         Task StopScanningAsync();
         Task StopAllAsync();
-        Task SendOutputAsync(ToyOutputBinding binding, float normalizedValue, uint durationMilliseconds = 0);
-        Task StopFeatureAsync(ToyOutputBinding binding);
+        Task SendOutputAsync(ToyOutputBinding binding, float normalizedValue,
+            uint durationMilliseconds = 0, Func<bool> stillCurrent = null);
     }
 }

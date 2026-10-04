@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace DazPose.Toys
 {
-    public enum ToyMotionStrategy { Auto, Position, HwPositionWithDuration }
+    internal enum ToyMotionStrategy { Auto, Position, HwPositionWithDuration }
 
     [Serializable]
-    public sealed class ToyMotionBinding
+    internal sealed class ToyMotionBinding
     {
         public ToyOutputBinding Output { get; }
         public ToyMotionStrategy Strategy { get; set; }

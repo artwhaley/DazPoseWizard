@@ -18,8 +18,11 @@ namespace DazPose.Motion
         private FunscriptPlayback _funscriptPlayback;
         private IMotionSource _activeSource;
         private long _sequence;
+        private long _targetSegmentRevision;
+        private long _sourceRevision;
 
         public bool IsRunning { get; private set; }
+        public long SourceRevision => _sourceRevision;
 
         public MotionSourceMode SourceMode
         {
@@ -31,6 +34,7 @@ namespace DazPose.Motion
                 if (sourceMode == value) return;
 
                 sourceMode = value;
+                _sourceRevision++;
                 RefreshActiveSource();
                 if (_activeSource == null)
                 {
@@ -66,7 +70,8 @@ namespace DazPose.Motion
             {
                 if (funscriptProgram == value) return;
                 funscriptProgram = value;
-                _funscriptPlayback = value != null ? new FunscriptPlayback(value, loopFunscript) : null;
+                _sourceRevision++;
+                CreateFunscriptPlayback();
                 RefreshActiveSource();
                 if (sourceMode != MotionSourceMode.Funscript) return;
                 if (_activeSource == null)
@@ -97,6 +102,7 @@ namespace DazPose.Motion
         public event Action<MotionSample> Sampled;
         public event Action<bool> RunningChanged;
         public event Action Sought;
+        public event Action<MotionTargetSegment> TargetSegmentChanged;
 
         public bool TryGetCurrentTargetSegment(out MotionTargetSegment segment)
         {
@@ -107,7 +113,8 @@ namespace DazPose.Motion
                 FunscriptSegment current = _funscriptPlayback.CurrentSegment;
                 segment = new MotionTargetSegment(current.StartSeconds, current.EndSeconds,
                     current.FromPosition01, current.ToPosition01,
-                    current.FromActionIndex, current.ToActionIndex);
+                    current.FromActionIndex, current.ToActionIndex, _targetSegmentRevision,
+                    CurrentSample.TimeSeconds);
                 return segment.EndTimeSeconds > CurrentSample.TimeSeconds;
             }
             segment = default;
@@ -121,7 +128,7 @@ namespace DazPose.Motion
                 sourceMode = MotionSourceMode.Sine;
             EnsureSineSource();
             if (funscriptProgram != null)
-                _funscriptPlayback = new FunscriptPlayback(funscriptProgram, loopFunscript);
+                CreateFunscriptPlayback();
             RefreshActiveSource();
             CurrentSample = _activeSource != null
                 ? CreateSample(_sequence, _activeSource.CurrentSample)
@@ -189,6 +196,7 @@ namespace DazPose.Motion
                 Debug.LogError("Funscript source is selected, but no FunscriptMotionProgram is assigned.", this);
                 return;
             }
+            _sourceRevision++;
             _activeSource.Reset();
             if (IsRunning)
             {
@@ -223,6 +231,7 @@ namespace DazPose.Motion
             if (_activeSource == null)
                 throw new InvalidOperationException("Cannot seek because the selected motion source is unavailable.");
 
+            _sourceRevision++;
             _activeSource.Seek(timeSeconds);
             PublishSample(_activeSource.CurrentSample);
             Action sought = Sought;
@@ -242,7 +251,7 @@ namespace DazPose.Motion
             EnsureSineSource();
             if (funscriptProgram != null && (_funscriptPlayback == null
                 || _funscriptPlayback.Program != funscriptProgram))
-                _funscriptPlayback = new FunscriptPlayback(funscriptProgram, loopFunscript);
+                CreateFunscriptPlayback();
             if (_funscriptPlayback != null) _funscriptPlayback.Loop = loopFunscript;
             _activeSource = sourceMode == MotionSourceMode.Sine ? (IMotionSource)_sineSource : _funscriptPlayback;
         }
@@ -268,6 +277,29 @@ namespace DazPose.Motion
             foreach (Action<bool> handler in handlers.GetInvocationList())
             {
                 try { handler(running); }
+                catch (Exception exception) { Debug.LogException(exception, this); }
+            }
+        }
+
+        private void CreateFunscriptPlayback()
+        {
+            if (_funscriptPlayback != null) _funscriptPlayback.SegmentChanged -= OnFunscriptSegmentChanged;
+            _funscriptPlayback = funscriptProgram != null
+                ? new FunscriptPlayback(funscriptProgram, loopFunscript) : null;
+            if (_funscriptPlayback != null) _funscriptPlayback.SegmentChanged += OnFunscriptSegmentChanged;
+        }
+
+        private void OnFunscriptSegmentChanged(FunscriptSegment segment)
+        {
+            var target = new MotionTargetSegment(segment.StartSeconds, segment.EndSeconds,
+                segment.FromPosition01, segment.ToPosition01,
+                segment.FromActionIndex, segment.ToActionIndex, ++_targetSegmentRevision,
+                _funscriptPlayback != null ? _funscriptPlayback.CurrentTimeSeconds : segment.StartSeconds);
+            Action<MotionTargetSegment> handlers = TargetSegmentChanged;
+            if (handlers == null) return;
+            foreach (Action<MotionTargetSegment> handler in handlers.GetInvocationList())
+            {
+                try { handler(target); }
                 catch (Exception exception) { Debug.LogException(exception, this); }
             }
         }

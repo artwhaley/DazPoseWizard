@@ -17,7 +17,7 @@ namespace DazPose.Player
         {
             get
             {
-                if (toyControlService == null) toyControlService = FindFirstObjectByType<ToyControlService>();
+                if (toyControlService == null) toyControlService = FindAnyObjectByType<ToyControlService>();
                 if (toyControlService == null)
                     throw new InvalidOperationException("No scene ToyControlService is available.");
                 return toyControlService;
@@ -77,7 +77,7 @@ namespace DazPose.Player
         private void Awake()
         {
             if (view == null) view = GetComponent<PlayerView>();
-            if (toyControlService == null) toyControlService = FindFirstObjectByType<ToyControlService>();
+            if (toyControlService == null) toyControlService = FindAnyObjectByType<ToyControlService>();
         }
 
         private void OnDisable() => view?.CancelActiveCommands();

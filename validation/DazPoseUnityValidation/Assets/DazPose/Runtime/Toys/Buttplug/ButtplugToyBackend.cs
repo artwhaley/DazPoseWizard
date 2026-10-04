@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading;
@@ -17,11 +18,18 @@ namespace DazPose.Toys.Buttplug
         private const int RequestTimeoutMilliseconds = 5000;
         private const int ShutdownRequestTimeoutMilliseconds = 1500;
 
+        private sealed class DeviceOutputScheduler
+        {
+            public readonly SemaphoreSlim Gate = new SemaphoreSlim(1, 1);
+            public long LastDispatchAt;
+        }
+
         private readonly object _stateLock = new object();
         private readonly SemaphoreSlim _operationGate = new SemaphoreSlim(1, 1);
         private readonly ToyDeviceRegistry _registry = new ToyDeviceRegistry();
         private readonly Dictionary<uint, ButtplugClientDevice> _nativeDevices = new Dictionary<uint, ButtplugClientDevice>();
-        private readonly Dictionary<uint, long> _lastOutputSentAt = new Dictionary<uint, long>();
+        private readonly ConcurrentDictionary<uint, DeviceOutputScheduler> _outputSchedulers =
+            new ConcurrentDictionary<uint, DeviceOutputScheduler>();
 
         private ButtplugClient _client;
         private volatile bool _intentionalDisconnect;
@@ -235,103 +243,86 @@ namespace DazPose.Toys.Buttplug
 
         public async Task StopAllAsync()
         {
-            await _operationGate.WaitAsync().ConfigureAwait(false);
+            ButtplugClient client = GetConnectedClient();
+            if (client == null)
+            {
+                SetLastError("Intiface is not connected.");
+                return;
+            }
+            if (Devices.Count == 0)
+            {
+                SetLastError(string.Empty);
+                return;
+            }
             try
             {
-                ButtplugClient client = GetConnectedClient();
-                if (client == null)
-                {
-                    SetLastError("Intiface is not connected.");
-                    return;
-                }
-                if (Devices.Count == 0)
-                {
-                    SetLastError(string.Empty);
-                    return;
-                }
                 await RunRequestAsync(token => client.StopAllDevicesAsync(token), "Stop all devices",
                     ShutdownRequestTimeoutMilliseconds).ConfigureAwait(false);
                 SetLastError(string.Empty);
             }
-            catch (Exception exception)
-            {
-                ReportError("Stop all failed: " + Describe(exception));
-            }
-            finally
-            {
-                _operationGate.Release();
-            }
+            catch (Exception exception) { ReportError("Stop all failed: " + Describe(exception)); }
         }
 
         public async Task SendOutputAsync(ToyOutputBinding binding, float normalizedValue,
-            uint durationMilliseconds = 0)
+            uint durationMilliseconds = 0, Func<bool> stillCurrent = null)
         {
             if (float.IsNaN(normalizedValue) || float.IsInfinity(normalizedValue))
                 throw new ArgumentOutOfRangeException(nameof(normalizedValue));
             if (binding.Capability == ToyOutputCapability.HwPositionWithDuration && durationMilliseconds == 0)
                 throw new ArgumentOutOfRangeException(nameof(durationMilliseconds), "PositionWithDuration requires a positive duration.");
 
-            await _operationGate.WaitAsync().ConfigureAwait(false);
+            ButtplugClient client = GetConnectedClient();
+            if (client == null) throw new InvalidOperationException("Intiface is not connected.");
+            ButtplugClientDevice device;
+            lock (_stateLock)
+            {
+                if (!_nativeDevices.TryGetValue(binding.DeviceIndex, out device))
+                    throw new InvalidOperationException("The assigned device is no longer connected: " + binding);
+            }
+
+            DeviceOutputCommand command;
+            float clamped = UnityEngine.Mathf.Clamp01(normalizedValue);
+            switch (binding.Capability)
+            {
+                case ToyOutputCapability.Vibrate: command = DeviceOutput.Vibrate.Percent(clamped); break;
+                case ToyOutputCapability.Oscillate: command = DeviceOutput.Oscillate.Percent(clamped); break;
+                case ToyOutputCapability.Position: command = DeviceOutput.Position.Percent(clamped); break;
+                case ToyOutputCapability.HwPositionWithDuration:
+                    command = DeviceOutput.PositionWithDuration.Percent(clamped, durationMilliseconds); break;
+                default: throw new ArgumentOutOfRangeException(nameof(binding));
+            }
+
+            if (!device.Features.TryGetValue(binding.FeatureIndex, out ButtplugClientDeviceFeature feature)
+                || !feature.HasOutput(ToOutputType(binding.Capability)))
+                throw new InvalidOperationException("The assigned feature is unavailable: " + binding);
+
+            DeviceOutputScheduler scheduler = _outputSchedulers.GetOrAdd(binding.DeviceIndex,
+                _ => new DeviceOutputScheduler());
+            await scheduler.Gate.WaitAsync().ConfigureAwait(false);
             try
             {
-                ButtplugClient client = GetConnectedClient();
-                if (client == null) throw new InvalidOperationException("Intiface is not connected.");
-                ButtplugClientDevice device;
-                lock (_stateLock)
-                {
-                    if (!_nativeDevices.TryGetValue(binding.DeviceIndex, out device))
-                        throw new InvalidOperationException("The assigned device is no longer connected: " + binding);
-                }
-
-                DeviceOutputCommand command;
-                float clamped = UnityEngine.Mathf.Clamp01(normalizedValue);
-                switch (binding.Capability)
-                {
-                    case ToyOutputCapability.Vibrate: command = DeviceOutput.Vibrate.Percent(clamped); break;
-                    case ToyOutputCapability.Oscillate: command = DeviceOutput.Oscillate.Percent(clamped); break;
-                    case ToyOutputCapability.Position: command = DeviceOutput.Position.Percent(clamped); break;
-                    case ToyOutputCapability.HwPositionWithDuration:
-                        command = DeviceOutput.PositionWithDuration.Percent(clamped, durationMilliseconds); break;
-                    default: throw new ArgumentOutOfRangeException(nameof(binding));
-                }
-
-                if (!device.Features.TryGetValue(binding.FeatureIndex, out ButtplugClientDeviceFeature feature)
-                    || !feature.HasOutput(ToOutputType(binding.Capability)))
-                    throw new InvalidOperationException("The assigned feature is unavailable: " + binding);
-                long priorSend;
-                lock (_stateLock) _lastOutputSentAt.TryGetValue(binding.DeviceIndex, out priorSend);
                 int messageGapMilliseconds = (int)Math.Max(50u, device.MessageTimingGap);
-                if (priorSend > 0)
+                if (scheduler.LastDispatchAt > 0)
                 {
                     double waitMilliseconds = messageGapMilliseconds
-                        - (Stopwatch.GetTimestamp() - priorSend) * 1000d / Stopwatch.Frequency;
+                        - (Stopwatch.GetTimestamp() - scheduler.LastDispatchAt) * 1000d / Stopwatch.Frequency;
                     if (waitMilliseconds > 0d)
                         await Task.Delay((int)Math.Ceiling(waitMilliseconds)).ConfigureAwait(false);
                 }
-                lock (_stateLock) _lastOutputSentAt[binding.DeviceIndex] = Stopwatch.GetTimestamp();
-                await RunRequestAsync(token => feature.RunOutputAsync(command, token),
-                    "Output " + binding, RequestTimeoutMilliseconds).ConfigureAwait(false);
-            }
-            finally { _operationGate.Release(); }
-        }
-
-        public async Task StopFeatureAsync(ToyOutputBinding binding)
-        {
-            await _operationGate.WaitAsync().ConfigureAwait(false);
-            try
-            {
-                ButtplugClient client = GetConnectedClient();
-                if (client == null) return;
-                ButtplugClientDevice device;
                 lock (_stateLock)
                 {
-                    if (!_nativeDevices.TryGetValue(binding.DeviceIndex, out device)) return;
+                    if (_disposed || !_nativeDevices.TryGetValue(binding.DeviceIndex, out ButtplugClientDevice current)
+                        || !ReferenceEquals(current, device)) return;
                 }
-                if (!device.Features.ContainsKey(binding.FeatureIndex)) return;
-                await RunRequestAsync(token => device.StopAsync(token), "Stop " + binding,
-                    ShutdownRequestTimeoutMilliseconds).ConfigureAwait(false);
+                if (stillCurrent != null && !stillCurrent()) return;
+                scheduler.LastDispatchAt = Stopwatch.GetTimestamp();
             }
-            finally { _operationGate.Release(); }
+            finally { scheduler.Gate.Release(); }
+
+            // The client serializes its short socket writes. Do not hold either the lifecycle
+            // gate or a device pacing gate while waiting for the hardware acknowledgement.
+            await RunRequestAsync(token => feature.RunOutputAsync(command, token),
+                "Output " + binding, RequestTimeoutMilliseconds).ConfigureAwait(false);
         }
 
         private static OutputType ToOutputType(ToyOutputCapability capability)
@@ -445,6 +436,7 @@ namespace DazPose.Toys.Buttplug
                 if (!_registry.Remove(deviceIndex, out removed)) return;
                 _nativeDevices.Remove(deviceIndex);
             }
+            _outputSchedulers.TryRemove(deviceIndex, out _);
             RaiseDeviceRemoved(removed.DeviceIndex);
         }
 
@@ -455,8 +447,8 @@ namespace DazPose.Toys.Buttplug
             {
                 removedIndices = _registry.Clear().Select(device => device.DeviceIndex).ToArray();
                 _nativeDevices.Clear();
-                _lastOutputSentAt.Clear();
             }
+            _outputSchedulers.Clear();
             foreach (uint index in removedIndices) RaiseDeviceRemoved(index);
         }
 

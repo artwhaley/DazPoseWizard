@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DazPose.Toys
 {
-    public sealed class ToyCommandReport
+    internal sealed class ToyCommandReport
     {
         private readonly ReadOnlyCollection<string> _errors;
         public string Operation { get; }
