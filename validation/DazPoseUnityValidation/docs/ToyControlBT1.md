@@ -118,9 +118,12 @@ API remains a quiet no-op.
 Each output feature keeps one active request and one replaceable pending value.
 Each device has its own timing scheduler; the scheduler honors the advertised
 `MessageTimingGap` with a 50 ms conservative minimum and releases its gate before
-waiting for the output acknowledgement. A stalled feature does not serialize
-other devices. Stop and disconnect invalidate work that has not been sent;
-hardware movement already accepted by a device may finish.
+waiting for the output acknowledgement. Ordinary output and broad Stop share a
+separate short transport submit-order gate. That gate and the pacing gate are
+released before waiting for hardware acknowledgement, and Stop bypasses normal
+output pacing. A stalled feature does not serialize other devices. Stop and
+disconnect invalidate work that has not been sent; hardware movement already
+accepted by a device may finish.
 
 The embedded Buttplug C# runtime remains the source-pinned 5.0.1 Unity rebuild.
 The exact Unity editor, Roslyn SDK, Newtonsoft.Json package and binary checksums
@@ -129,10 +132,17 @@ are recorded in the package README and enforced by
 
 ## Validation status
 
-The revised Assembly-CSharp sources compiled with Unity's pinned Roslyn 8.0.318
-and the installed project response file. The compile reported only existing
-deprecated object-finder warnings and unused fake-backend event warnings. The
-fake-backend acceptance runner and visual panel review remain unrun. Fake
-backend coverage does not establish physical actuator behavior. The current
-Handy boundaries above come from upstream definitions and were not captured
-from a live device in this change.
+T0 toy integration was physically accepted on real hardware by the user. Testing
+verified Intiface connection and device discovery, command delivery to compatible
+connected hardware, Funscript timed motion, generic vibration and oscillation
+where supported, and manual Stop behavior. The supported T0 capability paths
+were verified against real connected hardware as available; the current T0
+hardware vocabulary is accepted.
+
+This acceptance does not claim every device supports every capability or identify
+a particular device, firmware, Bluetooth chipset, latency, or Intiface build.
+Automatic routing remains capability driven, and hardware remains optional. A
+timed movement already accepted by a device may finish according to that device's
+semantics. Sampled motion is not converted into fabricated timed-position
+commands. `PerformerControlSurface` can animate and bind toy output independently;
+Lara physically reaching for or manipulating that surface is deferred work.

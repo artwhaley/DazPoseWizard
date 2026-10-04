@@ -1,6 +1,9 @@
 # Toy authoring and test panel build plan
 
-Status: implementation in place; Unity acceptance pending, 2026-10-03. The plan is not marked complete until the editor, panel, and device checks below are reviewed.
+Status: T0 accepted, 2026-10-03. Runtime, panel, Funscript motion, generic toy
+output, and real-hardware validation are complete. This document records the
+accepted T0 implementation; additional toy vocabulary and Lara's physical
+lever/knob interaction are deferred to later work, not open T0 acceptance items.
 
 ## Outcome
 
@@ -28,7 +31,10 @@ Sources checked on 2026-10-03:
 - [Buttplug output semantics](https://buttplug.io/docs/spec/output/)
 - [Buttplug device information and dispatch timing](https://buttplug.io/docs/spec/device_information/)
 
-These are upstream definitions, not a captured live device snapshot from this review. Capture the installed Intiface version and actual feature snapshot during implementation acceptance.
+These are upstream definitions, not a captured live device snapshot in this
+repository. The physical acceptance record documents only user-confirmed
+outcomes and intentionally omits an installed Intiface build or a specific
+live device feature snapshot.
 
 ## Authoring contract
 
@@ -98,7 +104,7 @@ else
 }
 ~~~
 
-The implementation acceptance scene must use actual compiling APIs for dialogue, performer motion, and waits. Do not claim illustrative calls are implemented.
+Authoring examples show intent; scene code uses the project's actual dialogue, performer-motion, and wait APIs.
 
 ## Runtime rules
 
@@ -204,7 +210,7 @@ Extend the physical control with a change notification and an authored MoveTo/Mo
 
 Connect initial control value when explicitly bound, then send changes only while the binding owns the outputs. Superseding commands stop its writes. Remove/unbind zeros still-owned outputs. Disable/destroy completes active awaits and cleans up bindings.
 
-Defer LaraControlAnimator, IK, grip acquisition, and character contact gating. Existing BT.6 animation proof is not required for toy binding.
+Defer Lara's physical reach, grip, and manipulation of the visible control, along with IK and contact gating. T0 accepts normalized control animation and toy binding independently of character animation.
 
 Acceptance: independent vibration/oscillation ramps; wait completion at authored time even without hardware; direct commands interrupt ramps; an authored lever/knob changes real toy output; visuals run without toys; toy output runs without Lara; unbinding stops; a superseded binding cannot override a newer command.
 
