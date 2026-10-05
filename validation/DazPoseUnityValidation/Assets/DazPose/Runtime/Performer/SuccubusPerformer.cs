@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DazPose.Motion;
+using DazPose.Performer.HandGrip;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
@@ -127,6 +128,7 @@ namespace DazPose.Performer
         private PerformerActionLayer _actionLayer;
         private PerformerActionRuntime _actionRuntime;
         private PerformerGestureLayer _gestureLayer;
+        private PerformerHandGripController _handGripController;
         private PerformerMotionLayer _motionLayer;
         private PerformerMotionConsumer _motionConsumer;
         private PerformerBreathing _breathing;
@@ -419,6 +421,7 @@ namespace DazPose.Performer
             _actionRuntime?.Advance(Time.deltaTime);
             _motionConsumer?.Advance(Time.deltaTime);
             _gestureLayer?.Advance(Time.deltaTime);
+            _handGripController?.Advance(Time.deltaTime);
             _teleport?.Advance(Time.deltaTime);
             _dissolve?.Advance(Time.deltaTime);
             if (_breathing != null)
@@ -1098,6 +1101,9 @@ namespace DazPose.Performer
                         Debug.LogWarning("Gesture is unavailable: " + gestureMaskReason, this);
                     }
                 }
+                _handGripController = GetComponent<PerformerHandGripController>();
+                if (_handGripController != null)
+                    bodySource = _handGripController.AttachToGraph(_graph, bodySource, animator, motionDriver);
                 _breathing = new PerformerBreathing(animator, _graph, bodySource,
                     _bodyPose, breathingBones, _lastBreathPhase);
                 _breathing.Configure(CreateBreathingSettings());
@@ -1475,6 +1481,8 @@ namespace DazPose.Performer
             _gestureLayer?.Dispose();
             _gestureLayer = null;
 
+            _handGripController?.Detach();
+            _handGripController = null;
             _motionConsumer?.Dispose();
             _motionConsumer = null;
             _motionLayer?.Dispose();
