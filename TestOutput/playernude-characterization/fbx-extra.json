@@ -1,0 +1,6535 @@
+{
+  "meshes": [
+    {
+      "name": "Genesis8Male",
+      "uvSets": [
+        {
+          "index": 0,
+          "name": "Model_UV",
+          "uvCount": 20335,
+          "mapping": "ByPolygonVertex"
+        }
+      ],
+      "usedSlots": {
+        "0": 1588,
+        "1": 170,
+        "2": 1080,
+        "3": 2832,
+        "4": 434,
+        "5": 3364,
+        "6": 112,
+        "7": 978,
+        "8": 3886,
+        "9": 64,
+        "10": 216,
+        "11": 560,
+        "12": 64,
+        "13": 96,
+        "14": 248,
+        "15": 418,
+        "16": 400,
+        "17": 738,
+        "18": 344,
+        "19": 54,
+        "20": 91,
+        "21": 88,
+        "22": 462
+      },
+      "boundaryEdges": 314,
+      "nonmanifoldEdges": 0,
+      "hostGraftSeamEdges": 36,
+      "seamVertices": 36,
+      "weights": [
+        {
+          "bones": [
+            "lIndex3"
+          ],
+          "positiveCount": 152,
+          "weightSum": 138.02475013351642,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              65.9565200805664,
+              99.38145446777344,
+              5.990919589996338
+            ],
+            "max": [
+              68.80674743652344,
+              102.37810516357422,
+              8.005670547485352
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lMid3"
+          ],
+          "positiveCount": 152,
+          "weightSum": 137.49172198062104,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              67.20611572265625,
+              98.25164794921875,
+              3.0612964630126953
+            ],
+            "max": [
+              70.32362365722656,
+              101.46964263916016,
+              5.160666465759277
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lRing3"
+          ],
+          "positiveCount": 152,
+          "weightSum": 137.12753490501257,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              66.49700164794922,
+              98.91001892089844,
+              0.1674017608165741
+            ],
+            "max": [
+              69.44715118408203,
+              101.91143798828125,
+              2.0834474563598633
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lPinky3"
+          ],
+          "positiveCount": 152,
+          "weightSum": 136.62560463874263,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              64.74971008300781,
+              100.72329711914062,
+              -2.4577600955963135
+            ],
+            "max": [
+              67.07205200195312,
+              103.18482208251953,
+              -0.8067611455917358
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rIndex3"
+          ],
+          "positiveCount": 152,
+          "weightSum": 138.02475013351642,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -68.80964660644531,
+              99.38256072998047,
+              5.991004467010498
+            ],
+            "max": [
+              -65.95938110351562,
+              102.37907409667969,
+              8.00574779510498
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rMid3"
+          ],
+          "positiveCount": 152,
+          "weightSum": 137.49172198062104,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -70.32648468017578,
+              98.2528305053711,
+              3.061394453048706
+            ],
+            "max": [
+              -67.2089614868164,
+              101.47077178955078,
+              5.16082763671875
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rRing3"
+          ],
+          "positiveCount": 152,
+          "weightSum": 137.12753490501257,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -69.45001220703125,
+              98.91091918945312,
+              0.16744732856750488
+            ],
+            "max": [
+              -66.49984741210938,
+              101.91263580322266,
+              2.0835204124450684
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rPinky3"
+          ],
+          "positiveCount": 152,
+          "weightSum": 136.62560463874263,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -67.07493591308594,
+              100.72444915771484,
+              -2.4576785564422607
+            ],
+            "max": [
+              -64.75259399414062,
+              103.1863021850586,
+              -0.8066783547401428
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lThumb3"
+          ],
+          "positiveCount": 178,
+          "weightSum": 144.92079041733427,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              57.31447219848633,
+              103.14985656738281,
+              7.898097515106201
+            ],
+            "max": [
+              60.67524337768555,
+              107.4770278930664,
+              11.910382270812988
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 128,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lIndex2"
+          ],
+          "positiveCount": 94,
+          "weightSum": 42.59974059662776,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              64.31767272949219,
+              99.73670196533203,
+              5.483325481414795
+            ],
+            "max": [
+              67.83162689208984,
+              104.86053466796875,
+              8.005670547485352
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 94
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lMid2"
+          ],
+          "positiveCount": 89,
+          "weightSum": 45.888029297322056,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              65.24089050292969,
+              99.00213623046875,
+              2.6476683616638184
+            ],
+            "max": [
+              69.21288299560547,
+              104.2683334350586,
+              5.160666465759277
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 89
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lRing2"
+          ],
+          "positiveCount": 91,
+          "weightSum": 45.72491035324637,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              64.87213134765625,
+              99.69921112060547,
+              0.05221832916140556
+            ],
+            "max": [
+              68.37459564208984,
+              104.44934844970703,
+              2.1266262531280518
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 91
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lPinky2"
+          ],
+          "positiveCount": 90,
+          "weightSum": 48.14346532387276,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              63.341270446777344,
+              101.34090423583984,
+              -2.4577600955963135
+            ],
+            "max": [
+              66.22721099853516,
+              105.22447204589844,
+              -0.4820123314857483
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 90
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rThumb3"
+          ],
+          "positiveCount": 178,
+          "weightSum": 144.92079041733427,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -60.67811965942383,
+              103.15129852294922,
+              7.89818811416626
+            ],
+            "max": [
+              -57.31732940673828,
+              107.47857666015625,
+              11.910462379455566
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 128,
+            "11": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rIndex2"
+          ],
+          "positiveCount": 94,
+          "weightSum": 42.59974059662776,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -67.8346176147461,
+              99.73772430419922,
+              5.483402729034424
+            ],
+            "max": [
+              -64.32050323486328,
+              104.86213684082031,
+              8.00574779510498
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 94
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rMid2"
+          ],
+          "positiveCount": 89,
+          "weightSum": 45.888029297322056,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -69.21614074707031,
+              99.00328063964844,
+              2.647756576538086
+            ],
+            "max": [
+              -65.2437973022461,
+              104.26917266845703,
+              5.16082763671875
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 89
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rRing2"
+          ],
+          "positiveCount": 91,
+          "weightSum": 45.72491035324637,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -68.37742614746094,
+              99.70043182373047,
+              0.05231455713510513
+            ],
+            "max": [
+              -64.87491607666016,
+              104.45084381103516,
+              2.126643180847168
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 91
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rPinky2"
+          ],
+          "positiveCount": 90,
+          "weightSum": 48.14346532387276,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -66.23049926757812,
+              101.34184265136719,
+              -2.4576785564422607
+            ],
+            "max": [
+              -63.344139099121094,
+              105.22599792480469,
+              -0.48192715644836426
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 90
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "tongue04"
+          ],
+          "positiveCount": 87,
+          "weightSum": 28.197344930189967,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -1.8671762943267822,
+              167.65036010742188,
+              5.780550003051758
+            ],
+            "max": [
+              1.8538038730621338,
+              169.72837829589844,
+              8.954703330993652
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "7": 87
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lThumb2"
+          ],
+          "positiveCount": 143,
+          "weightSum": 66.46092927443352,
+          "maxWeight": 0.9917448691538873,
+          "boundsCm": {
+            "min": [
+              55.902671813964844,
+              103.28990173339844,
+              5.636415481567383
+            ],
+            "max": [
+              60.35829162597656,
+              110.35247039794922,
+              11.129368782043457
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 142,
+            "11": 2
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lIndex1"
+          ],
+          "positiveCount": 137,
+          "weightSum": 61.26350804913411,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              60.64895248413086,
+              101.70696258544922,
+              2.7862484455108643
+            ],
+            "max": [
+              66.85289001464844,
+              108.14683532714844,
+              7.807900428771973
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 137
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lMid1"
+          ],
+          "positiveCount": 136,
+          "weightSum": 57.08328374151221,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              60.84827423095703,
+              100.90726470947266,
+              1.5545475482940674
+            ],
+            "max": [
+              68.296142578125,
+              108.11677551269531,
+              5.22366189956665
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 136
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lRing1"
+          ],
+          "positiveCount": 143,
+          "weightSum": 56.421667811093364,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              60.27227783203125,
+              100.21907043457031,
+              -1.1329890489578247
+            ],
+            "max": [
+              67.51536560058594,
+              107.3694076538086,
+              3.145265817642212
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 143
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lPinky1"
+          ],
+          "positiveCount": 123,
+          "weightSum": 54.68467231250479,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              60.12346267700195,
+              102.71925354003906,
+              -2.3764774799346924
+            ],
+            "max": [
+              65.30266571044922,
+              107.7040786743164,
+              0.6302078366279602
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 123
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rThumb2"
+          ],
+          "positiveCount": 143,
+          "weightSum": 66.46092927443352,
+          "maxWeight": 0.9917448691538873,
+          "boundsCm": {
+            "min": [
+              -60.36116409301758,
+              103.29138946533203,
+              5.636362075805664
+            ],
+            "max": [
+              -55.905517578125,
+              110.3546371459961,
+              11.129685401916504
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 142,
+            "11": 2
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rIndex1"
+          ],
+          "positiveCount": 137,
+          "weightSum": 61.26350804913411,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -66.85589599609375,
+              101.70808410644531,
+              2.7863450050354004
+            ],
+            "max": [
+              -60.65205001831055,
+              108.14893341064453,
+              7.807993412017822
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 137
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rMid1"
+          ],
+          "positiveCount": 136,
+          "weightSum": 57.08328374151221,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -68.29907989501953,
+              100.90837860107422,
+              1.5546280145645142
+            ],
+            "max": [
+              -60.85115432739258,
+              108.11837768554688,
+              5.223763942718506
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 136
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rRing1"
+          ],
+          "positiveCount": 143,
+          "weightSum": 56.421667811093364,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -67.51826477050781,
+              100.22023010253906,
+              -1.1329026222229004
+            ],
+            "max": [
+              -60.27511215209961,
+              107.3710708618164,
+              3.1453888416290283
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 143
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rPinky1"
+          ],
+          "positiveCount": 123,
+          "weightSum": 54.68467231250479,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -65.30558013916016,
+              102.7202377319336,
+              -2.376399517059326
+            ],
+            "max": [
+              -60.12633514404297,
+              107.70555114746094,
+              0.6302760243415833
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 123
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "tongue03"
+          ],
+          "positiveCount": 102,
+          "weightSum": 25.043228809033334,
+          "maxWeight": 0.7825131609063859,
+          "boundsCm": {
+            "min": [
+              -1.8671762943267822,
+              167.59371948242188,
+              4.124409198760986
+            ],
+            "max": [
+              1.8538038730621338,
+              169.72837829589844,
+              8.814874649047852
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "7": 102
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lThumb1"
+          ],
+          "positiveCount": 178,
+          "weightSum": 78.0905928130007,
+          "maxWeight": 0.9484245059891661,
+          "boundsCm": {
+            "min": [
+              54.620330810546875,
+              105.24476623535156,
+              2.252190351486206
+            ],
+            "max": [
+              61.8873176574707,
+              113.01317596435547,
+              9.489580154418945
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 178
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lCarpal1"
+          ],
+          "positiveCount": 138,
+          "weightSum": 63.7375448233768,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              58.43478012084961,
+              103.60335540771484,
+              3.1228291988372803
+            ],
+            "max": [
+              64.63578796386719,
+              112.82244873046875,
+              7.699249267578125
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 138
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lCarpal2"
+          ],
+          "positiveCount": 113,
+          "weightSum": 48.023956664377785,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              58.91826629638672,
+              103.92021942138672,
+              1.5923612117767334
+            ],
+            "max": [
+              64.95952606201172,
+              112.8376235961914,
+              5.22366189956665
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 113
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lCarpal3"
+          ],
+          "positiveCount": 125,
+          "weightSum": 49.418020904859986,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              57.521915435791016,
+              103.92021942138672,
+              -1.2967418432235718
+            ],
+            "max": [
+              65.01388549804688,
+              112.73053741455078,
+              3.702279806137085
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 125
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lCarpal4"
+          ],
+          "positiveCount": 102,
+          "weightSum": 50.606805523765914,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              57.60966110229492,
+              104.42804718017578,
+              -2.4598159790039062
+            ],
+            "max": [
+              63.889495849609375,
+              112.56351470947266,
+              0.6302078366279602
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rThumb1"
+          ],
+          "positiveCount": 178,
+          "weightSum": 78.0905928130007,
+          "maxWeight": 0.9484245059891661,
+          "boundsCm": {
+            "min": [
+              -61.89024353027344,
+              105.24614715576172,
+              2.2522544860839844
+            ],
+            "max": [
+              -54.62333297729492,
+              113.01480102539062,
+              9.489971160888672
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 178
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rCarpal1"
+          ],
+          "positiveCount": 138,
+          "weightSum": 63.7375448233768,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -64.63872528076172,
+              103.6045913696289,
+              3.123086452484131
+            ],
+            "max": [
+              -58.4376220703125,
+              112.82392883300781,
+              7.698446750640869
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 138
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rCarpal2"
+          ],
+          "positiveCount": 113,
+          "weightSum": 48.023956664377785,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -64.96241760253906,
+              103.92137908935547,
+              1.592443585395813
+            ],
+            "max": [
+              -58.921085357666016,
+              112.83914184570312,
+              5.223763942718506
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 113
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rCarpal3"
+          ],
+          "positiveCount": 125,
+          "weightSum": 49.418020904859986,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -65.0167465209961,
+              103.92137908935547,
+              -1.2967393398284912
+            ],
+            "max": [
+              -57.524715423583984,
+              112.73200988769531,
+              3.7023186683654785
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 125
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rCarpal4"
+          ],
+          "positiveCount": 102,
+          "weightSum": 50.606805523765914,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -63.89244842529297,
+              104.42887878417969,
+              -2.46002197265625
+            ],
+            "max": [
+              -57.61246871948242,
+              112.56499481201172,
+              0.6302760243415833
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 102
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "tongue02"
+          ],
+          "positiveCount": 117,
+          "weightSum": 32.550606546120385,
+          "maxWeight": 0.7956359197375448,
+          "boundsCm": {
+            "min": [
+              -1.882952094078064,
+              167.50489807128906,
+              3.775933265686035
+            ],
+            "max": [
+              1.8685073852539062,
+              169.72837829589844,
+              8.814874649047852
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "7": 117
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lHand"
+          ],
+          "positiveCount": 289,
+          "weightSum": 103.97157244220661,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              53.401493072509766,
+              106.35924530029297,
+              -2.4598159790039062
+            ],
+            "max": [
+              62.30196762084961,
+              116.0224609375,
+              8.747217178344727
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 289
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rHand"
+          ],
+          "positiveCount": 289,
+          "weightSum": 103.97157244220661,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -62.30538558959961,
+              106.36076354980469,
+              -2.46002197265625
+            ],
+            "max": [
+              -53.404441833496094,
+              116.02437591552734,
+              8.748852729797363
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 289
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "tongue01"
+          ],
+          "positiveCount": 93,
+          "weightSum": 33.13002212558176,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -1.882952094078064,
+              167.50489807128906,
+              1.9167907238006592
+            ],
+            "max": [
+              1.8685073852539062,
+              169.72837829589844,
+              7.019003868103027
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "7": 93
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lNasolabialLower"
+          ],
+          "positiveCount": 79,
+          "weightSum": 14.243274586099025,
+          "maxWeight": 0.6513771267261769,
+          "boundsCm": {
+            "min": [
+              1.0292012691497803,
+              164.97084045410156,
+              5.308021545410156
+            ],
+            "max": [
+              5.874253273010254,
+              171.79263305664062,
+              9.36026382446289
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 78,
+            "1": 4
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rNasolabialLower"
+          ],
+          "positiveCount": 79,
+          "weightSum": 14.243274586099025,
+          "maxWeight": 0.6513771267261769,
+          "boundsCm": {
+            "min": [
+              -5.868688106536865,
+              164.96844482421875,
+              5.306748390197754
+            ],
+            "max": [
+              -1.0244371891021729,
+              171.79147338867188,
+              9.35881233215332
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 78,
+            "1": 4
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lNasolabialMouthCorner"
+          ],
+          "positiveCount": 105,
+          "weightSum": 10.764873731593802,
+          "maxWeight": 0.4874036774242771,
+          "boundsCm": {
+            "min": [
+              1.0292012691497803,
+              165.86143493652344,
+              4.496465682983398
+            ],
+            "max": [
+              6.55316686630249,
+              173.87881469726562,
+              9.254898071289062
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 102,
+            "1": 8
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rNasolabialMouthCorner"
+          ],
+          "positiveCount": 105,
+          "weightSum": 10.764873731593802,
+          "maxWeight": 0.4874036774242771,
+          "boundsCm": {
+            "min": [
+              -6.548888206481934,
+              165.85716247558594,
+              4.49493932723999
+            ],
+            "max": [
+              -1.0244371891021729,
+              173.88414001464844,
+              9.259160041809082
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 102,
+            "1": 8
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lLipCorner"
+          ],
+          "positiveCount": 130,
+          "weightSum": 22.153582055390224,
+          "maxWeight": 0.5241321431296254,
+          "boundsCm": {
+            "min": [
+              1.3519386053085327,
+              166.68800354003906,
+              5.909231662750244
+            ],
+            "max": [
+              4.376627445220947,
+              171.38003540039062,
+              10.015060424804688
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 66,
+            "1": 60,
+            "7": 24
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lLipLowerOuter"
+          ],
+          "positiveCount": 71,
+          "weightSum": 20.147264820325013,
+          "maxWeight": 0.6587167162584878,
+          "boundsCm": {
+            "min": [
+              1.053584337234497,
+              167.46778869628906,
+              7.041014671325684
+            ],
+            "max": [
+              3.6253371238708496,
+              169.5804901123047,
+              9.612553596496582
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 31,
+            "1": 42,
+            "7": 12
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lLipLowerInner"
+          ],
+          "positiveCount": 88,
+          "weightSum": 15.14634927901121,
+          "maxWeight": 0.6043030441748684,
+          "boundsCm": {
+            "min": [
+              0.00036719441413879395,
+              167.46778869628906,
+              8.243988990783691
+            ],
+            "max": [
+              3.079536199569702,
+              169.39146423339844,
+              10.088810920715332
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 33,
+            "1": 59,
+            "7": 14
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "LipLowerMiddle"
+          ],
+          "positiveCount": 153,
+          "weightSum": 40.05444419012745,
+          "maxWeight": 0.974517433432517,
+          "boundsCm": {
+            "min": [
+              -3.3476812839508057,
+              166.68499755859375,
+              7.926999568939209
+            ],
+            "max": [
+              3.3513505458831787,
+              169.39146423339844,
+              10.088810920715332
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 71,
+            "1": 74,
+            "7": 32
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rLipLowerInner"
+          ],
+          "positiveCount": 88,
+          "weightSum": 15.14634927901121,
+          "maxWeight": 0.6043030441748684,
+          "boundsCm": {
+            "min": [
+              -3.0755138397216797,
+              167.46522521972656,
+              8.248276710510254
+            ],
+            "max": [
+              0.0027789920568466187,
+              169.39031982421875,
+              10.088810920715332
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 33,
+            "1": 59,
+            "7": 14
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rLipLowerOuter"
+          ],
+          "positiveCount": 71,
+          "weightSum": 20.147264820325013,
+          "maxWeight": 0.6587167162584878,
+          "boundsCm": {
+            "min": [
+              -3.622032642364502,
+              167.46522521972656,
+              7.041014671325684
+            ],
+            "max": [
+              -1.0535519123077393,
+              169.57701110839844,
+              9.615583419799805
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 31,
+            "1": 42,
+            "7": 12
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rLipCorner"
+          ],
+          "positiveCount": 130,
+          "weightSum": 22.153582055390224,
+          "maxWeight": 0.5241321431296254,
+          "boundsCm": {
+            "min": [
+              -4.373204708099365,
+              166.68499755859375,
+              5.909935474395752
+            ],
+            "max": [
+              -1.3519386053085327,
+              171.3781280517578,
+              10.01803970336914
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 66,
+            "1": 60,
+            "7": 24
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "LipBelow"
+          ],
+          "positiveCount": 75,
+          "weightSum": 23.235370412756538,
+          "maxWeight": 0.8185397116044861,
+          "boundsCm": {
+            "min": [
+              -3.3645033836364746,
+              165.5615692138672,
+              7.574352264404297
+            ],
+            "max": [
+              3.3676869869232178,
+              168.4490966796875,
+              9.757957458496094
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 75
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "Chin"
+          ],
+          "positiveCount": 115,
+          "weightSum": 30.445792324711974,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -3.5850300788879395,
+              164.08909606933594,
+              3.8478314876556396
+            ],
+            "max": [
+              3.5880117416381836,
+              168.20999145507812,
+              9.40188980102539
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 115
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lCheekLower"
+          ],
+          "positiveCount": 82,
+          "weightSum": 13.593377584496828,
+          "maxWeight": 0.6547188525215534,
+          "boundsCm": {
+            "min": [
+              3.13399338722229,
+              166.33383178710938,
+              0.6271000504493713
+            ],
+            "max": [
+              7.52411413192749,
+              175.05886840820312,
+              8.479353904724121
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 82
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rCheekLower"
+          ],
+          "positiveCount": 82,
+          "weightSum": 13.593377584496828,
+          "maxWeight": 0.6547188525215534,
+          "boundsCm": {
+            "min": [
+              -7.517996788024902,
+              166.3295440673828,
+              0.6261862516403198
+            ],
+            "max": [
+              -3.130462408065796,
+              175.06578063964844,
+              8.483492851257324
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 82
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "BelowJaw"
+          ],
+          "positiveCount": 182,
+          "weightSum": 31.858625162127066,
+          "maxWeight": 0.5512626840619517,
+          "boundsCm": {
+            "min": [
+              -7.517996788024902,
+              162.67071533203125,
+              -1.0303541421890259
+            ],
+            "max": [
+              7.52411413192749,
+              173.7811279296875,
+              7.928600788116455
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 165,
+            "3": 30
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lJawClench"
+          ],
+          "positiveCount": 65,
+          "weightSum": 10.486610208285644,
+          "maxWeight": 0.5095140001525902,
+          "boundsCm": {
+            "min": [
+              4.516424179077148,
+              165.7939453125,
+              -1.6243170499801636
+            ],
+            "max": [
+              7.52411413192749,
+              174.17344665527344,
+              6.070565223693848
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 62,
+            "3": 7,
+            "4": 3
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rJawClench"
+          ],
+          "positiveCount": 65,
+          "weightSum": 10.486610208285644,
+          "maxWeight": 0.5095140001525902,
+          "boundsCm": {
+            "min": [
+              -7.517996788024902,
+              165.77145385742188,
+              -1.624879002571106
+            ],
+            "max": [
+              -4.505721092224121,
+              174.1761016845703,
+              6.069367408752441
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 62,
+            "3": 7,
+            "4": 3
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSmallToe4_2"
+          ],
+          "positiveCount": 120,
+          "weightSum": 105.9985656519417,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              28.664737701416016,
+              1.35307776927948,
+              7.5318121910095215
+            ],
+            "max": [
+              30.40610122680664,
+              3.8135712146759033,
+              10.15954303741455
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 84,
+            "15": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSmallToe3_2"
+          ],
+          "positiveCount": 120,
+          "weightSum": 109.99989318684669,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              27.491365432739258,
+              1.436884880065918,
+              9.143329620361328
+            ],
+            "max": [
+              29.483198165893555,
+              4.148562431335449,
+              11.818831443786621
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 84,
+            "15": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSmallToe2_2"
+          ],
+          "positiveCount": 120,
+          "weightSum": 109.99999999999997,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              26.229801177978516,
+              1.4509044885635376,
+              10.77157211303711
+            ],
+            "max": [
+              28.448293685913086,
+              4.495587348937988,
+              13.573661804199219
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 84,
+            "15": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSmallToe1_2"
+          ],
+          "positiveCount": 120,
+          "weightSum": 110.0,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              24.531780242919922,
+              1.2979005575180054,
+              11.60250473022461
+            ],
+            "max": [
+              27.024965286254883,
+              4.570808410644531,
+              14.72402572631836
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 84,
+            "15": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lBigToe_2"
+          ],
+          "positiveCount": 130,
+          "weightSum": 114.01200885023269,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              21.316579818725586,
+              0.6425880193710327,
+              11.784211158752441
+            ],
+            "max": [
+              25.070674896240234,
+              3.870511054992676,
+              16.125253677368164
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 86,
+            "15": 56
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSmallToe4_2"
+          ],
+          "positiveCount": 120,
+          "weightSum": 105.9985656519417,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -30.406068801879883,
+              1.3530638217926025,
+              7.531829833984375
+            ],
+            "max": [
+              -28.664602279663086,
+              3.8145546913146973,
+              10.159573554992676
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 84,
+            "15": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSmallToe3_2"
+          ],
+          "positiveCount": 120,
+          "weightSum": 109.99989318684669,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -29.483169555664062,
+              1.4368715286254883,
+              9.143343925476074
+            ],
+            "max": [
+              -27.491199493408203,
+              4.149507522583008,
+              11.818825721740723
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 84,
+            "15": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSmallToe2_2"
+          ],
+          "positiveCount": 120,
+          "weightSum": 109.99999999999997,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -28.448169708251953,
+              1.4508891105651855,
+              10.772141456604004
+            ],
+            "max": [
+              -26.229639053344727,
+              4.497142314910889,
+              13.573678016662598
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 84,
+            "15": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSmallToe1_2"
+          ],
+          "positiveCount": 120,
+          "weightSum": 110.0,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -27.02484893798828,
+              1.2978898286819458,
+              11.602602005004883
+            ],
+            "max": [
+              -24.531635284423828,
+              4.5715532302856445,
+              14.724034309387207
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 84,
+            "15": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rBigToe_2"
+          ],
+          "positiveCount": 130,
+          "weightSum": 114.01200885023269,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -25.07052993774414,
+              0.6425643563270569,
+              11.78425121307373
+            ],
+            "max": [
+              -21.316436767578125,
+              3.8722074031829834,
+              16.125253677368164
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 86,
+            "15": 56
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lForearmTwist"
+          ],
+          "positiveCount": 472,
+          "weightSum": 178.09134050507373,
+          "maxWeight": 0.9986114290074006,
+          "boundsCm": {
+            "min": [
+              31.271499633789062,
+              109.53038787841797,
+              -10.654651641845703
+            ],
+            "max": [
+              60.81257247924805,
+              136.12692260742188,
+              5.736166477203369
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 472
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rForearmTwist"
+          ],
+          "positiveCount": 472,
+          "weightSum": 178.09134050507373,
+          "maxWeight": 0.9986114290074006,
+          "boundsCm": {
+            "min": [
+              -60.815773010253906,
+              109.53178405761719,
+              -10.655306816101074
+            ],
+            "max": [
+              -31.271121978759766,
+              136.1229705810547,
+              5.7366838455200195
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 472
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lowerTeeth"
+          ],
+          "positiveCount": 981,
+          "weightSum": 940.683756771191,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -3.0405125617980957,
+              167.50489807128906,
+              3.1279473304748535
+            ],
+            "max": [
+              3.053490400314331,
+              169.97926330566406,
+              9.329629898071289
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "7": 343,
+            "2": 638
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lowerFaceRig"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rBrowInner"
+          ],
+          "positiveCount": 72,
+          "weightSum": 15.46964217593652,
+          "maxWeight": 0.6545510032806897,
+          "boundsCm": {
+            "min": [
+              -4.287766456604004,
+              176.16932678222656,
+              8.206485748291016
+            ],
+            "max": [
+              -0.6202530860900879,
+              182.40846252441406,
+              10.539046287536621
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 72
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rBrowMid"
+          ],
+          "positiveCount": 81,
+          "weightSum": 19.7717402914473,
+          "maxWeight": 0.7747920958266575,
+          "boundsCm": {
+            "min": [
+              -5.943750381469727,
+              176.6085662841797,
+              6.203009605407715
+            ],
+            "max": [
+              -1.5280202627182007,
+              183.85202026367188,
+              10.365753173828125
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 81
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rBrowOuter"
+          ],
+          "positiveCount": 83,
+          "weightSum": 19.382055390249466,
+          "maxWeight": 0.7475089646753643,
+          "boundsCm": {
+            "min": [
+              -7.116970062255859,
+              176.2454833984375,
+              3.7847371101379395
+            ],
+            "max": [
+              -3.555750846862793,
+              182.6597900390625,
+              9.423674583435059
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 83
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lBrowInner"
+          ],
+          "positiveCount": 72,
+          "weightSum": 15.46964217593652,
+          "maxWeight": 0.6545510032806897,
+          "boundsCm": {
+            "min": [
+              0.6255835890769958,
+              176.16879272460938,
+              8.206528663635254
+            ],
+            "max": [
+              4.296329975128174,
+              182.40821838378906,
+              10.539372444152832
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 72
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lBrowMid"
+          ],
+          "positiveCount": 81,
+          "weightSum": 19.7717402914473,
+          "maxWeight": 0.7747920958266575,
+          "boundsCm": {
+            "min": [
+              1.5342686176300049,
+              176.60818481445312,
+              6.20326566696167
+            ],
+            "max": [
+              5.951066017150879,
+              183.8513946533203,
+              10.366586685180664
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 81
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lBrowOuter"
+          ],
+          "positiveCount": 83,
+          "weightSum": 19.382055390249466,
+          "maxWeight": 0.7475089646753643,
+          "boundsCm": {
+            "min": [
+              3.5618040561676025,
+              176.24436950683594,
+              3.785968542098999
+            ],
+            "max": [
+              7.124039173126221,
+              182.65908813476562,
+              9.42358684539795
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 83
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "CenterBrow"
+          ],
+          "positiveCount": 79,
+          "weightSum": 25.56971084153505,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -3.0963499546051025,
+              176.59494018554688,
+              8.553370475769043
+            ],
+            "max": [
+              3.1038978099823,
+              183.7201385498047,
+              10.574566841125488
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 79
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "MidNoseBridge"
+          ],
+          "positiveCount": 64,
+          "weightSum": 7.081376363775081,
+          "maxWeight": 0.31406118867780575,
+          "boundsCm": {
+            "min": [
+              -2.901437282562256,
+              173.51979064941406,
+              8.449505805969238
+            ],
+            "max": [
+              2.907398223876953,
+              176.71885681152344,
+              10.712626457214355
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 64
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidInner"
+          ],
+          "positiveCount": 85,
+          "weightSum": 25.229541466391986,
+          "maxWeight": 0.9185168230716411,
+          "boundsCm": {
+            "min": [
+              1.5398286581039429,
+              174.7960662841797,
+              7.784438133239746
+            ],
+            "max": [
+              3.588901996612549,
+              177.14430236816406,
+              8.501483917236328
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 76,
+            "6": 18
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidUpperInner"
+          ],
+          "positiveCount": 42,
+          "weightSum": 13.476249332417789,
+          "maxWeight": 0.8234988937209125,
+          "boundsCm": {
+            "min": [
+              1.5398286581039429,
+              176.16879272460938,
+              7.922648906707764
+            ],
+            "max": [
+              3.1992833614349365,
+              177.337646484375,
+              8.755971908569336
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 42,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidUpper"
+          ],
+          "positiveCount": 35,
+          "weightSum": 11.680506599526968,
+          "maxWeight": 0.8154421301594568,
+          "boundsCm": {
+            "min": [
+              2.4673233032226562,
+              176.60940551757812,
+              7.886776924133301
+            ],
+            "max": [
+              4.40001916885376,
+              177.3994598388672,
+              8.755971908569336
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 35,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidUpperOuter"
+          ],
+          "positiveCount": 48,
+          "weightSum": 14.04998855573357,
+          "maxWeight": 0.8089417868314641,
+          "boundsCm": {
+            "min": [
+              3.539231538772583,
+              176.22442626953125,
+              7.4016594886779785
+            ],
+            "max": [
+              5.357746124267578,
+              177.3994598388672,
+              8.77117919921875
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 48,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidOuter"
+          ],
+          "positiveCount": 64,
+          "weightSum": 19.617044327458615,
+          "maxWeight": 0.8856946669718471,
+          "boundsCm": {
+            "min": [
+              3.9749386310577393,
+              174.5433807373047,
+              7.064874172210693
+            ],
+            "max": [
+              5.487199783325195,
+              177.12640380859375,
+              8.384111404418945
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 64,
+            "6": 5
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidLowerOuter"
+          ],
+          "positiveCount": 61,
+          "weightSum": 11.549538414587618,
+          "maxWeight": 0.6908827344167239,
+          "boundsCm": {
+            "min": [
+              3.1862831115722656,
+              173.90396118164062,
+              7.386066913604736
+            ],
+            "max": [
+              5.22037410736084,
+              176.39617919921875,
+              8.458707809448242
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 61,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidLower"
+          ],
+          "positiveCount": 44,
+          "weightSum": 10.644266422522316,
+          "maxWeight": 0.8326390478370337,
+          "boundsCm": {
+            "min": [
+              2.798567295074463,
+              173.90396118164062,
+              7.655858993530273
+            ],
+            "max": [
+              4.817595481872559,
+              175.94784545898438,
+              8.458707809448242
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 44,
+            "6": 5
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidLowerInner"
+          ],
+          "positiveCount": 53,
+          "weightSum": 8.971831845578699,
+          "maxWeight": 0.5222095063706417,
+          "boundsCm": {
+            "min": [
+              1.8669705390930176,
+              174.43182373046875,
+              7.941952705383301
+            ],
+            "max": [
+              4.329485893249512,
+              176.23675537109375,
+              8.458707809448242
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 53,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidInner"
+          ],
+          "positiveCount": 85,
+          "weightSum": 25.229541466391986,
+          "maxWeight": 0.9185168230716411,
+          "boundsCm": {
+            "min": [
+              -3.582639455795288,
+              174.7970428466797,
+              7.78347635269165
+            ],
+            "max": [
+              -1.533324956893921,
+              177.14620971679688,
+              8.499387741088867
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 76,
+            "6": 18
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidUpperInner"
+          ],
+          "positiveCount": 42,
+          "weightSum": 13.476249332417789,
+          "maxWeight": 0.8234988937209125,
+          "boundsCm": {
+            "min": [
+              -3.1929216384887695,
+              176.16932678222656,
+              7.921794414520264
+            ],
+            "max": [
+              -1.533324956893921,
+              177.3402099609375,
+              8.755643844604492
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 42,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidUpper"
+          ],
+          "positiveCount": 35,
+          "weightSum": 11.680506599526968,
+          "maxWeight": 0.8154421301594568,
+          "boundsCm": {
+            "min": [
+              -4.394071578979492,
+              176.61009216308594,
+              7.887698173522949
+            ],
+            "max": [
+              -2.4606690406799316,
+              177.40216064453125,
+              8.755643844604492
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 35,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidUpperOuter"
+          ],
+          "positiveCount": 48,
+          "weightSum": 14.04998855573357,
+          "maxWeight": 0.8089417868314641,
+          "boundsCm": {
+            "min": [
+              -5.352264881134033,
+              176.22532653808594,
+              7.401444435119629
+            ],
+            "max": [
+              -3.5334503650665283,
+              177.40216064453125,
+              8.771076202392578
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 48,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidOuter"
+          ],
+          "positiveCount": 64,
+          "weightSum": 19.617044327458615,
+          "maxWeight": 0.8856946669718471,
+          "boundsCm": {
+            "min": [
+              -5.481963157653809,
+              174.5455780029297,
+              7.064459800720215
+            ],
+            "max": [
+              -3.969444990158081,
+              177.12857055664062,
+              8.384037017822266
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 64,
+            "6": 5
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidLowerOuter"
+          ],
+          "positiveCount": 61,
+          "weightSum": 11.549538414587618,
+          "maxWeight": 0.6908827344167239,
+          "boundsCm": {
+            "min": [
+              -5.215145111083984,
+              173.90626525878906,
+              7.386137962341309
+            ],
+            "max": [
+              -3.1797335147857666,
+              176.3970184326172,
+              8.458209991455078
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 61,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidLower"
+          ],
+          "positiveCount": 44,
+          "weightSum": 10.644266422522316,
+          "maxWeight": 0.8326390478370337,
+          "boundsCm": {
+            "min": [
+              -4.81161642074585,
+              173.90626525878906,
+              7.655669689178467
+            ],
+            "max": [
+              -2.7919139862060547,
+              175.9476776123047,
+              8.458209991455078
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 44,
+            "6": 5
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidLowerInner"
+          ],
+          "positiveCount": 53,
+          "weightSum": 8.971831845578699,
+          "maxWeight": 0.5222095063706417,
+          "boundsCm": {
+            "min": [
+              -4.323822498321533,
+              174.43321228027344,
+              7.940820217132568
+            ],
+            "max": [
+              -1.8598110675811768,
+              176.23712158203125,
+              8.458209991455078
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 53,
+            "6": 6
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSquintInner"
+          ],
+          "positiveCount": 69,
+          "weightSum": 14.600442511634999,
+          "maxWeight": 0.8034943160143435,
+          "boundsCm": {
+            "min": [
+              1.2290695905685425,
+              171.85452270507812,
+              7.654449462890625
+            ],
+            "max": [
+              5.22037410736084,
+              175.9453582763672,
+              9.500288963317871
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 69
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSquintOuter"
+          ],
+          "positiveCount": 60,
+          "weightSum": 14.002502479591058,
+          "maxWeight": 0.852170595864805,
+          "boundsCm": {
+            "min": [
+              3.1862831115722656,
+              172.49148559570312,
+              3.484848737716675
+            ],
+            "max": [
+              7.346168041229248,
+              176.5525360107422,
+              8.515573501586914
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 60
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSquintInner"
+          ],
+          "positiveCount": 69,
+          "weightSum": 14.600442511634999,
+          "maxWeight": 0.8034943160143435,
+          "boundsCm": {
+            "min": [
+              -5.215145111083984,
+              171.85308837890625,
+              7.65419864654541
+            ],
+            "max": [
+              -1.2353993654251099,
+              175.9457550048828,
+              9.490211486816406
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 69
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSquintOuter"
+          ],
+          "positiveCount": 60,
+          "weightSum": 14.002502479591058,
+          "maxWeight": 0.852170595864805,
+          "boundsCm": {
+            "min": [
+              -7.340882301330566,
+              172.49151611328125,
+              3.48408579826355
+            ],
+            "max": [
+              -3.1797335147857666,
+              176.55413818359375,
+              8.517004013061523
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 60
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lCheekUpper"
+          ],
+          "positiveCount": 136,
+          "weightSum": 28.170107576104357,
+          "maxWeight": 0.8521553368429083,
+          "boundsCm": {
+            "min": [
+              1.6181937456130981,
+              169.4600830078125,
+              0.6271000504493713
+            ],
+            "max": [
+              7.614394664764404,
+              177.48240661621094,
+              9.157414436340332
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 136
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rCheekUpper"
+          ],
+          "positiveCount": 136,
+          "weightSum": 28.170107576104357,
+          "maxWeight": 0.8521553368429083,
+          "boundsCm": {
+            "min": [
+              -7.60795783996582,
+              169.45738220214844,
+              0.6261862516403198
+            ],
+            "max": [
+              -1.6220779418945312,
+              177.48277282714844,
+              9.1510648727417
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 136
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "Nose"
+          ],
+          "positiveCount": 231,
+          "weightSum": 79.56614023041135,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -2.722672462463379,
+              170.67333984375,
+              8.895983695983887
+            ],
+            "max": [
+              2.7276453971862793,
+              175.99806213378906,
+              12.116326332092285
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 231
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lNostril"
+          ],
+          "positiveCount": 150,
+          "weightSum": 66.03962767986575,
+          "maxWeight": 0.9999694819562066,
+          "boundsCm": {
+            "min": [
+              -0.6372224688529968,
+              170.41970825195312,
+              8.628332138061523
+            ],
+            "max": [
+              3.3953189849853516,
+              174.7605438232422,
+              11.953521728515625
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 150
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rNostril"
+          ],
+          "positiveCount": 150,
+          "weightSum": 66.03962767986575,
+          "maxWeight": 0.9999694819562066,
+          "boundsCm": {
+            "min": [
+              -3.388869524002075,
+              170.4174346923828,
+              8.629714012145996
+            ],
+            "max": [
+              0.6356595754623413,
+              174.75592041015625,
+              11.952457427978516
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 150
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lLipBelowNose"
+          ],
+          "positiveCount": 81,
+          "weightSum": 7.26248569466697,
+          "maxWeight": 0.33107499809262225,
+          "boundsCm": {
+            "min": [
+              -0.6372224688529968,
+              169.2246856689453,
+              8.351781845092773
+            ],
+            "max": [
+              4.102574348449707,
+              172.54299926757812,
+              11.16759204864502
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 81,
+            "1": 5
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rLipBelowNose"
+          ],
+          "positiveCount": 81,
+          "weightSum": 7.262363622491797,
+          "maxWeight": 0.33107499809262225,
+          "boundsCm": {
+            "min": [
+              -4.099192142486572,
+              169.2205810546875,
+              8.355117797851562
+            ],
+            "max": [
+              0.6356595754623413,
+              172.53662109375,
+              11.166555404663086
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 81,
+            "1": 5
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lLipNasolabialCrease"
+          ],
+          "positiveCount": 73,
+          "weightSum": 6.928007934691386,
+          "maxWeight": 0.3752498664835584,
+          "boundsCm": {
+            "min": [
+              1.4634952545166016,
+              168.2523956298828,
+              5.909231662750244
+            ],
+            "max": [
+              5.455876350402832,
+              173.282958984375,
+              10.231956481933594
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 62,
+            "1": 4,
+            "7": 10
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rLipNasolabialCrease"
+          ],
+          "positiveCount": 73,
+          "weightSum": 6.928007934691386,
+          "maxWeight": 0.3752498664835584,
+          "boundsCm": {
+            "min": [
+              -5.450042724609375,
+              168.25241088867188,
+              5.909935474395752
+            ],
+            "max": [
+              -1.4671216011047363,
+              173.27525329589844,
+              10.219132423400879
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 62,
+            "1": 4,
+            "7": 10
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lNasolabialUpper"
+          ],
+          "positiveCount": 87,
+          "weightSum": 11.75355153734645,
+          "maxWeight": 0.46472877088578624,
+          "boundsCm": {
+            "min": [
+              0.3593240976333618,
+              170.0740966796875,
+              7.792355537414551
+            ],
+            "max": [
+              5.217489242553711,
+              175.74237060546875,
+              11.065767288208008
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 87
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rNasolabialUpper"
+          ],
+          "positiveCount": 87,
+          "weightSum": 11.75355153734645,
+          "maxWeight": 0.46472877088578624,
+          "boundsCm": {
+            "min": [
+              -5.212301731109619,
+              170.07098388671875,
+              7.792599678039551
+            ],
+            "max": [
+              -0.3729684054851532,
+              175.740966796875,
+              11.06081485748291
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 87
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lNasolabialMiddle"
+          ],
+          "positiveCount": 100,
+          "weightSum": 17.638925764858463,
+          "maxWeight": 0.6168459601739529,
+          "boundsCm": {
+            "min": [
+              1.1614454984664917,
+              169.0835418701172,
+              5.751267910003662
+            ],
+            "max": [
+              6.55316686630249,
+              175.2053985595703,
+              10.046844482421875
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 100
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rNasolabialMiddle"
+          ],
+          "positiveCount": 100,
+          "weightSum": 17.638925764858463,
+          "maxWeight": 0.6168459601739529,
+          "boundsCm": {
+            "min": [
+              -6.548888206481934,
+              169.0794219970703,
+              5.750438213348389
+            ],
+            "max": [
+              -1.1768717765808105,
+              175.20550537109375,
+              10.038132667541504
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 100
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "LipUpperMiddle"
+          ],
+          "positiveCount": 161,
+          "weightSum": 50.22122529945837,
+          "maxWeight": 0.9742275120164797,
+          "boundsCm": {
+            "min": [
+              -2.6176557540893555,
+              169.2152557373047,
+              9.057172775268555
+            ],
+            "max": [
+              2.6242945194244385,
+              172.28466796875,
+              10.704095840454102
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 87,
+            "1": 72,
+            "7": 26
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lLipUpperOuter"
+          ],
+          "positiveCount": 88,
+          "weightSum": 18.490653849088268,
+          "maxWeight": 0.5542076752880141,
+          "boundsCm": {
+            "min": [
+              1.0062835216522217,
+              168.6098175048828,
+              6.110589504241943
+            ],
+            "max": [
+              3.81480073928833,
+              171.78848266601562,
+              10.015060424804688
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 38,
+            "1": 47,
+            "7": 17
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lLipUpperInner"
+          ],
+          "positiveCount": 123,
+          "weightSum": 22.756725413900966,
+          "maxWeight": 0.7303120469977874,
+          "boundsCm": {
+            "min": [
+              -0.707460343837738,
+              169.03115844726562,
+              6.110589504241943
+            ],
+            "max": [
+              3.7574286460876465,
+              171.63983154296875,
+              10.65971565246582
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 55,
+            "1": 67,
+            "7": 22
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rLipUpperInner"
+          ],
+          "positiveCount": 123,
+          "weightSum": 22.756725413900963,
+          "maxWeight": 0.7303120469977874,
+          "boundsCm": {
+            "min": [
+              -3.754668951034546,
+              169.0279541015625,
+              6.111255168914795
+            ],
+            "max": [
+              0.7132647633552551,
+              171.6328887939453,
+              10.65971565246582
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 55,
+            "1": 67,
+            "7": 22
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rLipUpperOuter"
+          ],
+          "positiveCount": 88,
+          "weightSum": 18.490653849088268,
+          "maxWeight": 0.5542076752880141,
+          "boundsCm": {
+            "min": [
+              -3.812002182006836,
+              168.60569763183594,
+              6.111255168914795
+            ],
+            "max": [
+              -1.0062835216522217,
+              171.78549194335938,
+              10.01803970336914
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 38,
+            "1": 47,
+            "7": 17
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSmallToe4"
+          ],
+          "positiveCount": 54,
+          "weightSum": 28.072617685206385,
+          "maxWeight": 0.895201037613489,
+          "boundsCm": {
+            "min": [
+              28.00773811340332,
+              1.0179929733276367,
+              4.983733654022217
+            ],
+            "max": [
+              30.358461380004883,
+              4.439023017883301,
+              9.070926666259766
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 54
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSmallToe3"
+          ],
+          "positiveCount": 67,
+          "weightSum": 27.407660028992133,
+          "maxWeight": 0.9938506141756314,
+          "boundsCm": {
+            "min": [
+              26.517253875732422,
+              1.2926589250564575,
+              6.531007289886475
+            ],
+            "max": [
+              29.241310119628906,
+              4.809820175170898,
+              10.583527565002441
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 67
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSmallToe2"
+          ],
+          "positiveCount": 68,
+          "weightSum": 27.50034332799267,
+          "maxWeight": 0.9557640955214771,
+          "boundsCm": {
+            "min": [
+              25.150224685668945,
+              1.1894989013671875,
+              7.365358829498291
+            ],
+            "max": [
+              27.9984130859375,
+              5.074477195739746,
+              11.95754337310791
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 68
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lSmallToe1"
+          ],
+          "positiveCount": 69,
+          "weightSum": 25.478751812008834,
+          "maxWeight": 0.8517891203173876,
+          "boundsCm": {
+            "min": [
+              23.521595001220703,
+              0.4924943447113037,
+              7.365358829498291
+            ],
+            "max": [
+              26.413732528686523,
+              4.933292388916016,
+              12.75301456451416
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 69
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lBigToe"
+          ],
+          "positiveCount": 79,
+          "weightSum": 40.32803845273517,
+          "maxWeight": 0.985778591592279,
+          "boundsCm": {
+            "min": [
+              19.831079483032227,
+              0.4290860891342163,
+              8.53176212310791
+            ],
+            "max": [
+              24.93766975402832,
+              5.340664386749268,
+              14.761882781982422
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 79
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSmallToe4"
+          ],
+          "positiveCount": 54,
+          "weightSum": 28.072617685206385,
+          "maxWeight": 0.895201037613489,
+          "boundsCm": {
+            "min": [
+              -30.35843276977539,
+              1.0179592370986938,
+              4.983711242675781
+            ],
+            "max": [
+              -28.007726669311523,
+              4.439196586608887,
+              9.071146965026855
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 54
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSmallToe3"
+          ],
+          "positiveCount": 67,
+          "weightSum": 27.407660028992133,
+          "maxWeight": 0.9938506141756314,
+          "boundsCm": {
+            "min": [
+              -29.24138641357422,
+              1.2927464246749878,
+              6.531017780303955
+            ],
+            "max": [
+              -26.51715850830078,
+              4.809872150421143,
+              10.583857536315918
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 67
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSmallToe2"
+          ],
+          "positiveCount": 68,
+          "weightSum": 27.50034332799267,
+          "maxWeight": 0.9557640955214771,
+          "boundsCm": {
+            "min": [
+              -27.99868392944336,
+              1.1894317865371704,
+              7.365363597869873
+            ],
+            "max": [
+              -25.15015983581543,
+              5.07447624206543,
+              11.95777702331543
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 68
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rSmallToe1"
+          ],
+          "positiveCount": 69,
+          "weightSum": 25.478751812008834,
+          "maxWeight": 0.8517891203173876,
+          "boundsCm": {
+            "min": [
+              -26.413864135742188,
+              0.49234747886657715,
+              7.365363597869873
+            ],
+            "max": [
+              -23.521509170532227,
+              4.934206008911133,
+              12.753140449523926
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 69
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rBigToe"
+          ],
+          "positiveCount": 79,
+          "weightSum": 40.32803845273517,
+          "maxWeight": 0.985778591592279,
+          "boundsCm": {
+            "min": [
+              -24.937557220458984,
+              0.42885345220565796,
+              8.531768798828125
+            ],
+            "max": [
+              -19.83100128173828,
+              5.341127395629883,
+              14.761919021606445
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 79
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lForearmBend"
+          ],
+          "positiveCount": 477,
+          "weightSum": 177.68873121232926,
+          "maxWeight": 0.9167467765316243,
+          "boundsCm": {
+            "min": [
+              23.628440856933594,
+              113.57935333251953,
+              -13.106531143188477
+            ],
+            "max": [
+              57.833641052246094,
+              144.1837615966797,
+              3.818441867828369
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 477
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rForearmBend"
+          ],
+          "positiveCount": 477,
+          "weightSum": 177.68873121232926,
+          "maxWeight": 0.9167467765316243,
+          "boundsCm": {
+            "min": [
+              -57.8371467590332,
+              113.58055877685547,
+              -13.105040550231934
+            ],
+            "max": [
+              -23.635173797607422,
+              144.18243408203125,
+              3.818871259689331
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "8": 477
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "upperTeeth"
+          ],
+          "positiveCount": 963,
+          "weightSum": 949.3208361943999,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -3.0414326190948486,
+              168.8511505126953,
+              3.7955775260925293
+            ],
+            "max": [
+              3.0432493686676025,
+              170.94110107421875,
+              9.621604919433594
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "7": 343,
+            "2": 620
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lowerJaw"
+          ],
+          "positiveCount": 361,
+          "weightSum": 148.51827267872136,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -7.517996788024902,
+              160.2166290283203,
+              -2.67067813873291
+            ],
+            "max": [
+              7.52411413192749,
+              173.7811279296875,
+              9.492314338684082
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 182,
+            "3": 66,
+            "4": 2,
+            "7": 130,
+            "1": 15
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "upperFaceRig"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEye"
+          ],
+          "positiveCount": 348,
+          "weightSum": 348.0,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              1.710625171661377,
+              174.87696838378906,
+              5.277953624725342
+            ],
+            "max": [
+              5.317347049713135,
+              178.47377014160156,
+              8.623494148254395
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "9": 41,
+            "13": 64,
+            "10": 117,
+            "12": 41,
+            "14": 133
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEye"
+          ],
+          "positiveCount": 348,
+          "weightSum": 348.0,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -5.314077377319336,
+              174.87713623046875,
+              5.27730655670166
+            ],
+            "max": [
+              -1.7071934938430786,
+              178.47393798828125,
+              8.623982429504395
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "9": 41,
+            "13": 64,
+            "10": 117,
+            "12": 41,
+            "14": 133
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEar"
+          ],
+          "positiveCount": 243,
+          "weightSum": 113.8693522545206,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              6.419372081756592,
+              170.51683044433594,
+              -4.518187046051025
+            ],
+            "max": [
+              9.622504234313965,
+              177.57717895507812,
+              0.03452441841363907
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 22,
+            "4": 229,
+            "0": 18
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEar"
+          ],
+          "positiveCount": 243,
+          "weightSum": 113.8693522545206,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -9.61499309539795,
+              170.51791381835938,
+              -4.518813133239746
+            ],
+            "max": [
+              -6.409303188323975,
+              177.57846069335938,
+              0.03359294682741165
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 22,
+            "4": 229,
+            "0": 18
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lToe"
+          ],
+          "positiveCount": 326,
+          "weightSum": 59.717158770122985,
+          "maxWeight": 0.8486457618066682,
+          "boundsCm": {
+            "min": [
+              19.831079483032227,
+              0.4290860891342163,
+              2.037644863128662
+            ],
+            "max": [
+              30.358461380004883,
+              6.245424747467041,
+              13.601140022277832
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 326
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rToe"
+          ],
+          "positiveCount": 326,
+          "weightSum": 59.717158770122985,
+          "maxWeight": 0.8486457618066682,
+          "boundsCm": {
+            "min": [
+              -30.35843276977539,
+              0.42885345220565796,
+              2.0374233722686768
+            ],
+            "max": [
+              -19.83100128173828,
+              6.245768070220947,
+              13.601239204406738
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 326
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lShldrTwist"
+          ],
+          "positiveCount": 463,
+          "weightSum": 179.43872739757387,
+          "maxWeight": 0.910933089188983,
+          "boundsCm": {
+            "min": [
+              17.298145294189453,
+              122.45540618896484,
+              -13.630433082580566
+            ],
+            "max": [
+              45.49368667602539,
+              157.81434631347656,
+              3.5537407398223877
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 59,
+            "8": 426
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rShldrTwist"
+          ],
+          "positiveCount": 463,
+          "weightSum": 179.43872739757387,
+          "maxWeight": 0.910933089188983,
+          "boundsCm": {
+            "min": [
+              -45.48920822143555,
+              122.45132446289062,
+              -13.607743263244629
+            ],
+            "max": [
+              -17.356796264648438,
+              157.8284912109375,
+              3.556795835494995
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 59,
+            "8": 426
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "head"
+          ],
+          "positiveCount": 2145,
+          "weightSum": 1200.4896009765782,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -9.61463451385498,
+              162.67071533203125,
+              -11.780499458312988
+            ],
+            "max": [
+              9.622118949890137,
+              188.65855407714844,
+              11.492779731750488
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 1020,
+            "3": 378,
+            "1": 118,
+            "4": 442,
+            "6": 120,
+            "7": 231
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lMetatarsals"
+          ],
+          "positiveCount": 312,
+          "weightSum": 167.14488441290916,
+          "maxWeight": 0.9997100785839628,
+          "boundsCm": {
+            "min": [
+              16.806737899780273,
+              0.4290860891342163,
+              -9.03689956665039
+            ],
+            "max": [
+              29.859603881835938,
+              14.04235553741455,
+              11.01449203491211
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 312
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rMetatarsals"
+          ],
+          "positiveCount": 312,
+          "weightSum": 167.14488441290916,
+          "maxWeight": 0.9997100785839628,
+          "boundsCm": {
+            "min": [
+              -29.859542846679688,
+              0.42885345220565796,
+              -9.036905288696289
+            ],
+            "max": [
+              -16.806270599365234,
+              14.042036056518555,
+              11.014538764953613
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 312
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lShldrBend"
+          ],
+          "positiveCount": 382,
+          "weightSum": 132.87972838941047,
+          "maxWeight": 0.9152361333638513,
+          "boundsCm": {
+            "min": [
+              9.376296043395996,
+              128.93804931640625,
+              -15.009298324584961
+            ],
+            "max": [
+              37.944496154785156,
+              158.85971069335938,
+              7.473061561584473
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 132,
+            "8": 276
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rShldrBend"
+          ],
+          "positiveCount": 382,
+          "weightSum": 132.87972838941047,
+          "maxWeight": 0.9152361333638513,
+          "boundsCm": {
+            "min": [
+              -37.94480895996094,
+              128.93731689453125,
+              -15.007521629333496
+            ],
+            "max": [
+              -9.377840042114258,
+              158.85928344726562,
+              7.474397659301758
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 132,
+            "8": 276
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "neckUpper"
+          ],
+          "positiveCount": 417,
+          "weightSum": 96.7350118257422,
+          "maxWeight": 0.8635385671778439,
+          "boundsCm": {
+            "min": [
+              -8.15737533569336,
+              157.22657775878906,
+              -11.163281440734863
+            ],
+            "max": [
+              8.157642364501953,
+              175.43173217773438,
+              8.418107986450195
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 154,
+            "3": 280,
+            "4": 2
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lFoot"
+          ],
+          "positiveCount": 336,
+          "weightSum": 131.15312428473356,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              16.491086959838867,
+              0.7099742889404297,
+              -11.084383010864258
+            ],
+            "max": [
+              28.60712242126465,
+              17.80318260192871,
+              5.661792755126953
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 336
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rFoot"
+          ],
+          "positiveCount": 336,
+          "weightSum": 131.15312428473356,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -28.607391357421875,
+              0.7099473476409912,
+              -11.08478832244873
+            ],
+            "max": [
+              -16.490583419799805,
+              17.8033447265625,
+              5.662017345428467
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 336
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lCollar"
+          ],
+          "positiveCount": 609,
+          "weightSum": 141.98825055314006,
+          "maxWeight": 0.859357595178149,
+          "boundsCm": {
+            "min": [
+              0.6170425415039062,
+              126.89148712158203,
+              -17.213281631469727
+            ],
+            "max": [
+              29.464550018310547,
+              164.04518127441406,
+              12.69312572479248
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 547,
+            "8": 88
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rCollar"
+          ],
+          "positiveCount": 609,
+          "weightSum": 141.98825055314006,
+          "maxWeight": 0.859357595178149,
+          "boundsCm": {
+            "min": [
+              -29.468015670776367,
+              126.890625,
+              -17.211654663085938
+            ],
+            "max": [
+              -0.6236429810523987,
+              164.04483032226562,
+              12.69357681274414
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 547,
+            "8": 88
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "neckLower"
+          ],
+          "positiveCount": 365,
+          "weightSum": 59.09971770809504,
+          "maxWeight": 0.43138780804150456,
+          "boundsCm": {
+            "min": [
+              -13.884943008422852,
+              153.04302978515625,
+              -14.452260971069336
+            ],
+            "max": [
+              13.884929656982422,
+              169.4462127685547,
+              6.015839576721191
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 32,
+            "3": 344
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lShin"
+          ],
+          "positiveCount": 899,
+          "weightSum": 481.54338902876367,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              4.261291027069092,
+              1.9972120523452759,
+              -11.57478141784668
+            ],
+            "max": [
+              29.322343826293945,
+              73.64207458496094,
+              10.73779296875
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 899
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rShin"
+          ],
+          "positiveCount": 899,
+          "weightSum": 481.54338902876367,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -29.322429656982422,
+              1.9970377683639526,
+              -11.574799537658691
+            ],
+            "max": [
+              -4.260944366455078,
+              73.65052032470703,
+              10.746603012084961
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 899
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "chestUpper"
+          ],
+          "positiveCount": 1059,
+          "weightSum": 277.72512397955364,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -27.82334327697754,
+              133.75979614257812,
+              -17.213281631469727
+            ],
+            "max": [
+              27.819902420043945,
+              169.65293884277344,
+              12.127025604248047
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "0": 55,
+            "3": 959,
+            "8": 110
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lPectoral"
+          ],
+          "positiveCount": 261,
+          "weightSum": 96.27057297627212,
+          "maxWeight": 0.9437857633325704,
+          "boundsCm": {
+            "min": [
+              0.0022841189056634903,
+              131.02774047851562,
+              -2.9648404121398926
+            ],
+            "max": [
+              21.4645938873291,
+              153.95571899414062,
+              12.69312572479248
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 251,
+            "8": 18
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rPectoral"
+          ],
+          "positiveCount": 261,
+          "weightSum": 96.27057297627212,
+          "maxWeight": 0.9437857633325704,
+          "boundsCm": {
+            "min": [
+              -21.464479446411133,
+              131.02696228027344,
+              -2.9651029109954834
+            ],
+            "max": [
+              0.0022841189056634903,
+              153.955810546875,
+              12.69357681274414
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 251,
+            "8": 18
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lThighTwist"
+          ],
+          "positiveCount": 1480,
+          "weightSum": 806.790997177081,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -2.2137057781219482,
+              38.16423416137695,
+              -14.280010223388672
+            ],
+            "max": [
+              23.35505485534668,
+              110.36370086669922,
+              30.981454849243164
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 572,
+            "3": 285,
+            "20": 10,
+            "21": 8,
+            "19": 1,
+            "16": 428,
+            "17": 254
+          },
+          "anatomyInfluence": {
+            "maxWeight": 1.0,
+            "sumWeights": 457.56729991607574,
+            "over001": 566,
+            "over01": 507
+          }
+        },
+        {
+          "bones": [
+            "rThighTwist"
+          ],
+          "positiveCount": 1479,
+          "weightSum": 806.7470817120623,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -23.356473922729492,
+              38.164344787597656,
+              -14.2777738571167
+            ],
+            "max": [
+              2.206947088241577,
+              110.36322784423828,
+              30.981454849243164
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 572,
+            "3": 285,
+            "20": 10,
+            "21": 7,
+            "19": 1,
+            "16": 428,
+            "17": 254
+          },
+          "anatomyInfluence": {
+            "maxWeight": 1.0,
+            "sumWeights": 457.52338445105704,
+            "over001": 565,
+            "over01": 507
+          }
+        },
+        {
+          "bones": [
+            "chestLower"
+          ],
+          "positiveCount": 1059,
+          "weightSum": 412.847959105822,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -21.464479446411133,
+              118.80072784423828,
+              -17.213281631469727
+            ],
+            "max": [
+              21.4645938873291,
+              155.4842987060547,
+              12.69357681274414
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 1039,
+            "8": 46
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lThighBend"
+          ],
+          "positiveCount": 1180,
+          "weightSum": 575.7121843289849,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -2.2137057781219482,
+              61.00993728637695,
+              -14.280010223388672
+            ],
+            "max": [
+              21.825420379638672,
+              111.84476470947266,
+              30.981454849243164
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 245,
+            "3": 312,
+            "20": 9,
+            "21": 8,
+            "19": 1,
+            "16": 428,
+            "17": 254
+          },
+          "anatomyInfluence": {
+            "maxWeight": 1.0,
+            "sumWeights": 457.95391775387236,
+            "over001": 567,
+            "over01": 511
+          }
+        },
+        {
+          "bones": [
+            "rThighBend"
+          ],
+          "positiveCount": 1179,
+          "weightSum": 575.6447852292672,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -21.832374572753906,
+              61.00393295288086,
+              -14.2777738571167
+            ],
+            "max": [
+              2.206947088241577,
+              111.84644317626953,
+              30.981454849243164
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "5": 245,
+            "3": 312,
+            "20": 9,
+            "21": 7,
+            "19": 1,
+            "16": 428,
+            "17": 254
+          },
+          "anatomyInfluence": {
+            "maxWeight": 1.0,
+            "sumWeights": 457.88651865415466,
+            "over001": 566,
+            "over01": 511
+          }
+        },
+        {
+          "bones": [
+            "abdomenUpper"
+          ],
+          "positiveCount": 612,
+          "weightSum": 218.48117799649103,
+          "maxWeight": 0.9414816510261692,
+          "boundsCm": {
+            "min": [
+              -19.05183982849121,
+              113.37149047851562,
+              -15.89445972442627
+            ],
+            "max": [
+              19.052980422973633,
+              138.5131378173828,
+              12.61744213104248
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 612
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "pelvis"
+          ],
+          "positiveCount": 1008,
+          "weightSum": 453.31198596169963,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -21.64324378967285,
+              78.63898468017578,
+              -14.280010223388672
+            ],
+            "max": [
+              21.63798713684082,
+              116.32886505126953,
+              13.885351181030273
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 903,
+            "21": 16,
+            "19": 5,
+            "5": 156,
+            "20": 20
+          },
+          "anatomyInfluence": {
+            "maxWeight": 1.0,
+            "sumWeights": 31.532585641260408,
+            "over001": 37,
+            "over01": 37
+          }
+        },
+        {
+          "bones": [
+            "abdomenLower"
+          ],
+          "positiveCount": 667,
+          "weightSum": 298.5754329747466,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -16.411540985107422,
+              96.67630767822266,
+              -13.567925453186035
+            ],
+            "max": [
+              16.40553855895996,
+              125.97613525390625,
+              13.885351181030273
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "3": 667
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "hip"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "shaft7"
+          ],
+          "positiveCount": 648,
+          "weightSum": 456.3659266041051,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -2.2137057781219482,
+              90.87379455566406,
+              26.324710845947266
+            ],
+            "max": [
+              2.206947088241577,
+              95.21954345703125,
+              30.981454849243164
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "16": 428,
+            "17": 254
+          },
+          "anatomyInfluence": {
+            "maxWeight": 1.0,
+            "sumWeights": 456.3659266041051,
+            "over001": 551,
+            "over01": 504
+          }
+        },
+        {
+          "bones": [
+            "shaft6"
+          ],
+          "positiveCount": 627,
+          "weightSum": 376.98667887388416,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -2.3503189086914062,
+              89.92268371582031,
+              20.383333206176758
+            ],
+            "max": [
+              2.484750747680664,
+              95.33233642578125,
+              30.350757598876953
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "16": 113,
+            "17": 548
+          },
+          "anatomyInfluence": {
+            "maxWeight": 1.0,
+            "sumWeights": 376.98667887388416,
+            "over001": 524,
+            "over01": 454
+          }
+        },
+        {
+          "bones": [
+            "shaft5"
+          ],
+          "positiveCount": 322,
+          "weightSum": 61.413305867094266,
+          "maxWeight": 0.8581063553826199,
+          "boundsCm": {
+            "min": [
+              -2.3503189086914062,
+              89.90904235839844,
+              18.13019371032715
+            ],
+            "max": [
+              2.484750747680664,
+              95.33233642578125,
+              29.048831939697266
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "17": 322
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.8581063553826199,
+            "sumWeights": 61.413305867094266,
+            "over001": 182,
+            "over01": 109
+          }
+        },
+        {
+          "bones": [
+            "shaft4"
+          ],
+          "positiveCount": 320,
+          "weightSum": 65.64570077058077,
+          "maxWeight": 0.8274509803921568,
+          "boundsCm": {
+            "min": [
+              -2.3503189086914062,
+              89.90904235839844,
+              15.416705131530762
+            ],
+            "max": [
+              2.484750747680664,
+              95.33233642578125,
+              27.499774932861328
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "17": 320
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.8274509803921568,
+            "sumWeights": 65.64570077058077,
+            "over001": 194,
+            "over01": 129
+          }
+        },
+        {
+          "bones": [
+            "shaft3"
+          ],
+          "positiveCount": 322,
+          "weightSum": 65.55959411001774,
+          "maxWeight": 0.8341191729610132,
+          "boundsCm": {
+            "min": [
+              -2.3503189086914062,
+              89.73367309570312,
+              14.17292594909668
+            ],
+            "max": [
+              2.484750747680664,
+              95.32908630371094,
+              25.649900436401367
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "17": 322,
+            "18": 9,
+            "19": 9,
+            "20": 2
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.8341191729610132,
+            "sumWeights": 65.55959411001774,
+            "over001": 194,
+            "over01": 134
+          }
+        },
+        {
+          "bones": [
+            "shaft2"
+          ],
+          "positiveCount": 332,
+          "weightSum": 66.5531242847333,
+          "maxWeight": 0.8513008316166933,
+          "boundsCm": {
+            "min": [
+              -2.6401615142822266,
+              87.85807037353516,
+              12.838739395141602
+            ],
+            "max": [
+              2.638732671737671,
+              95.24658203125,
+              22.329452514648438
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "17": 260,
+            "18": 58,
+            "19": 32,
+            "20": 18
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.8513008316166933,
+            "sumWeights": 66.5531242847333,
+            "over001": 180,
+            "over01": 132
+          }
+        },
+        {
+          "bones": [
+            "lTesticle"
+          ],
+          "positiveCount": 242,
+          "weightSum": 104.57914091706725,
+          "maxWeight": 0.9997863736934463,
+          "boundsCm": {
+            "min": [
+              -1.9335322380065918,
+              83.95001983642578,
+              5.502208709716797
+            ],
+            "max": [
+              2.986793041229248,
+              91.05265808105469,
+              14.080973625183105
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "18": 231,
+            "20": 27
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.9997863736934463,
+            "sumWeights": 104.57914091706725,
+            "over001": 201,
+            "over01": 162
+          }
+        },
+        {
+          "bones": [
+            "rTesticle"
+          ],
+          "positiveCount": 205,
+          "weightSum": 92.452307927062,
+          "maxWeight": 0.9999389639124132,
+          "boundsCm": {
+            "min": [
+              -2.989910840988159,
+              83.95001983642578,
+              6.501031398773193
+            ],
+            "max": [
+              1.3484562635421753,
+              91.05255126953125,
+              14.080973625183105
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "18": 196,
+            "20": 20
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.9999389639124132,
+            "sumWeights": 92.452307927062,
+            "over001": 163,
+            "over01": 136
+          }
+        },
+        {
+          "bones": [
+            "colon"
+          ],
+          "positiveCount": 270,
+          "weightSum": 115.98597695887695,
+          "maxWeight": 1.0,
+          "boundsCm": {
+            "min": [
+              -1.7267813682556152,
+              89.82049560546875,
+              -6.018711566925049
+            ],
+            "max": [
+              1.505261778831482,
+              95.67221069335938,
+              -0.8923847675323486
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "22": 270
+          },
+          "anatomyInfluence": {
+            "maxWeight": 1.0,
+            "sumWeights": 115.98597695887695,
+            "over001": 199,
+            "over01": 151
+          }
+        },
+        {
+          "bones": [
+            "shaft1"
+          ],
+          "positiveCount": 365,
+          "weightSum": 120.38635843442461,
+          "maxWeight": 0.9878538185702297,
+          "boundsCm": {
+            "min": [
+              -4.173014163970947,
+              84.77133178710938,
+              7.930253028869629
+            ],
+            "max": [
+              4.173305988311768,
+              95.45545959472656,
+              19.951414108276367
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "17": 186,
+            "18": 110,
+            "20": 63,
+            "19": 63
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.9878538185702297,
+            "sumWeights": 120.38635843442461,
+            "over001": 254,
+            "over01": 174
+          }
+        },
+        {
+          "bones": [
+            "scrotum"
+          ],
+          "positiveCount": 474,
+          "weightSum": 117.87215991454985,
+          "maxWeight": 0.9400015259021897,
+          "boundsCm": {
+            "min": [
+              -4.173014163970947,
+              83.95001983642578,
+              1.661706805229187
+            ],
+            "max": [
+              4.173305988311768,
+              95.09172058105469,
+              16.59393882751465
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "17": 45,
+            "18": 367,
+            "20": 106,
+            "19": 22,
+            "21": 4
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.9400015259021897,
+            "sumWeights": 117.87215991454985,
+            "over001": 313,
+            "over01": 211
+          }
+        },
+        {
+          "bones": [
+            "rectum2"
+          ],
+          "positiveCount": 515,
+          "weightSum": 283.12632944228267,
+          "maxWeight": 0.9997863736934463,
+          "boundsCm": {
+            "min": [
+              -1.7267813682556152,
+              88.1607894897461,
+              -7.898141384124756
+            ],
+            "max": [
+              1.505261778831482,
+              93.938720703125,
+              -0.8923847675323486
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "21": 80,
+            "22": 456
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.9997863736934463,
+            "sumWeights": 283.12632944228267,
+            "over001": 428,
+            "over01": 372
+          }
+        },
+        {
+          "bones": [
+            "shaftRoot"
+          ],
+          "positiveCount": 403,
+          "weightSum": 70.50464637216777,
+          "maxWeight": 0.9976348516060121,
+          "boundsCm": {
+            "min": [
+              -4.173014163970947,
+              84.69157409667969,
+              -5.523929119110107
+            ],
+            "max": [
+              4.173305988311768,
+              95.45545959472656,
+              16.16216278076172
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "18": 231,
+            "17": 48,
+            "20": 109,
+            "19": 63,
+            "21": 23
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.9976348516060121,
+            "sumWeights": 70.50464637216777,
+            "over001": 192,
+            "over01": 120
+          }
+        },
+        {
+          "bones": [
+            "rectum1"
+          ],
+          "positiveCount": 338,
+          "weightSum": 132.0884107728696,
+          "maxWeight": 0.9991912718394751,
+          "boundsCm": {
+            "min": [
+              -2.4087252616882324,
+              88.01402282714844,
+              -7.898141384124756
+            ],
+            "max": [
+              2.4110846519470215,
+              91.83141326904297,
+              9.216095924377441
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "20": 25,
+            "21": 93,
+            "22": 248
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.9991912718394751,
+            "sumWeights": 132.0884107728696,
+            "over001": 248,
+            "over01": 186
+          }
+        },
+        {
+          "bones": [
+            "legsCrease"
+          ],
+          "positiveCount": 217,
+          "weightSum": 38.48033875028611,
+          "maxWeight": 0.9987792782482643,
+          "boundsCm": {
+            "min": [
+              -4.173014163970947,
+              84.91807556152344,
+              -7.898141384124756
+            ],
+            "max": [
+              4.173305988311768,
+              95.09172058105469,
+              12.497261047363281
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "18": 85,
+            "20": 81,
+            "19": 4,
+            "21": 72,
+            "22": 17
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0.9987792782482643,
+            "sumWeights": 38.48033875028611,
+            "over001": 84,
+            "over01": 55
+          }
+        }
+      ],
+      "boneSensitivity": [
+        {
+          "bone": "shaftRoot",
+          "pivotCm": [
+            -0.0007004695362411439,
+            94.30352783203125,
+            5.062916278839111
+          ],
+          "test": "analytic 5-degree raw bind-space X rotation with normalized subtree skin weights; not rendered/DAZ-evaluated",
+          "stats": {
+            "entries": 1646,
+            "moved": 1646,
+            "maxCm": 2.1097948008693956,
+            "meanMovedCm": 1.0135830428264367,
+            "rmsAllCm": 0.3457812427510024,
+            "axisRmsCm": [
+              0.0,
+              1.094575256954,
+              0.3802290043667323
+            ]
+          }
+        },
+        {
+          "bone": "shaft1",
+          "pivotCm": [
+            -0.009429186582565308,
+            92.10443115234375,
+            12.045180320739746
+          ],
+          "test": "analytic 5-degree raw bind-space X rotation with normalized subtree skin weights; not rendered/DAZ-evaluated",
+          "stats": {
+            "entries": 1339,
+            "moved": 1339,
+            "maxCm": 1.4845260057473986,
+            "meanMovedCm": 0.6210876825619437,
+            "rmsAllCm": 0.20697200175196492,
+            "axisRmsCm": [
+              0.0,
+              0.7612780884888604,
+              0.10861619280865602
+            ]
+          }
+        },
+        {
+          "bone": "shaft2",
+          "pivotCm": [
+            -0.0007063942030072212,
+            92.2319564819336,
+            16.013927459716797
+          ],
+          "test": "analytic 5-degree raw bind-space X rotation with normalized subtree skin weights; not rendered/DAZ-evaluated",
+          "stats": {
+            "entries": 1232,
+            "moved": 1232,
+            "maxCm": 1.1410752362258356,
+            "meanMovedCm": 0.4576235861639056,
+            "rmsAllCm": 0.14797663601724834,
+            "axisRmsCm": [
+              0.0,
+              0.5640936647843104,
+              0.10161547070262093
+            ]
+          }
+        },
+        {
+          "bone": "shaft3",
+          "pivotCm": [
+            0.00030019006226211786,
+            92.2608642578125,
+            18.246416091918945
+          ],
+          "test": "analytic 5-degree raw bind-space X rotation with normalized subtree skin weights; not rendered/DAZ-evaluated",
+          "stats": {
+            "entries": 1152,
+            "moved": 1152,
+            "maxCm": 0.9481622299117529,
+            "meanMovedCm": 0.37749117570933505,
+            "rmsAllCm": 0.11718167249805592,
+            "axisRmsCm": [
+              0.0,
+              0.459022455915446,
+              0.09809649092594318
+            ]
+          }
+        },
+        {
+          "bone": "shaft4",
+          "pivotCm": [
+            0.0003768514434341341,
+            92.28639221191406,
+            20.543453216552734
+          ],
+          "test": "analytic 5-degree raw bind-space X rotation with normalized subtree skin weights; not rendered/DAZ-evaluated",
+          "stats": {
+            "entries": 1090,
+            "moved": 1090,
+            "maxCm": 0.750437574743653,
+            "meanMovedCm": 0.29020755156815037,
+            "rmsAllCm": 0.08736734363548194,
+            "axisRmsCm": [
+              0.0,
+              0.34747644839003516,
+              0.09327317652959381
+            ]
+          }
+        },
+        {
+          "bone": "shaft5",
+          "pivotCm": [
+            -0.00042846877477131784,
+            92.28691864013672,
+            22.94445037841797
+          ],
+          "test": "analytic 5-degree raw bind-space X rotation with normalized subtree skin weights; not rendered/DAZ-evaluated",
+          "stats": {
+            "entries": 1019,
+            "moved": 1019,
+            "maxCm": 0.5450807609314192,
+            "meanMovedCm": 0.2035841345269743,
+            "rmsAllCm": 0.0585938798051939,
+            "axisRmsCm": [
+              0.0,
+              0.23359219874676315,
+              0.08781505845181653
+            ]
+          }
+        },
+        {
+          "bone": "shaft6",
+          "pivotCm": [
+            -0.0007577703217975795,
+            92.28317260742188,
+            25.7158145904541
+          ],
+          "test": "analytic 5-degree raw bind-space X rotation with normalized subtree skin weights; not rendered/DAZ-evaluated",
+          "stats": {
+            "entries": 942,
+            "moved": 942,
+            "maxCm": 0.3153567087099207,
+            "meanMovedCm": 0.11415824091081446,
+            "rmsAllCm": 0.031104708624093317,
+            "axisRmsCm": [
+              0.0,
+              0.10985287831804405,
+              0.08316709120155448
+            ]
+          }
+        },
+        {
+          "bone": "shaft7",
+          "pivotCm": [
+            -0.0005482416599988937,
+            92.28179168701172,
+            28.570281982421875
+          ],
+          "test": "analytic 5-degree raw bind-space X rotation with normalized subtree skin weights; not rendered/DAZ-evaluated",
+          "stats": {
+            "entries": 648,
+            "moved": 648,
+            "maxCm": 0.050333375393253346,
+            "meanMovedCm": 0.023822580001106833,
+            "rmsAllCm": 0.005341514038653911,
+            "axisRmsCm": [
+              0.0,
+              0.02402934396070929,
+              0.01537695110993759
+            ]
+          }
+        }
+      ],
+      "rawWeightTotals": {
+        "min": 0.9999999999999998,
+        "max": 5.0,
+        "verticesAbove1001": 615,
+        "anatomyMin": 0.9999999999999999,
+        "anatomyMax": 5.0,
+        "anatomyAbove1001": 615
+      },
+      "anatomyRegionBoundaryEdges": 58
+    },
+    {
+      "name": "Genesis8MaleEyelashes",
+      "uvSets": [
+        {
+          "index": 0,
+          "name": "Model_UV",
+          "uvCount": 490,
+          "mapping": "ByPolygonVertex"
+        }
+      ],
+      "usedSlots": {
+        "1": 252,
+        "0": 100
+      },
+      "boundaryEdges": 200,
+      "nonmanifoldEdges": 0,
+      "hostGraftSeamEdges": 0,
+      "seamVertices": 0,
+      "weights": [
+        {
+          "bones": [
+            "lEyelidInner"
+          ],
+          "positiveCount": 86,
+          "weightSum": 30.62058442053865,
+          "maxWeight": 0.8385595483329519,
+          "boundsCm": {
+            "min": [
+              1.8130794763565063,
+              175.4910888671875,
+              7.89916467666626
+            ],
+            "max": [
+              3.2705538272857666,
+              177.16064453125,
+              9.257852554321289
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 62,
+            "0": 24
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidUpperInner"
+          ],
+          "positiveCount": 40,
+          "weightSum": 21.738918135347518,
+          "maxWeight": 0.73334859235523,
+          "boundsCm": {
+            "min": [
+              1.8130794763565063,
+              176.48403930664062,
+              8.13669490814209
+            ],
+            "max": [
+              3.203366756439209,
+              177.36172485351562,
+              9.38438892364502
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 40
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidUpper"
+          ],
+          "positiveCount": 60,
+          "weightSum": 26.63492790112154,
+          "maxWeight": 0.803219653620203,
+          "boundsCm": {
+            "min": [
+              2.1024973392486572,
+              176.6222381591797,
+              8.22390365600586
+            ],
+            "max": [
+              5.0409698486328125,
+              177.45233154296875,
+              9.41285228729248
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 60
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidUpperOuter"
+          ],
+          "positiveCount": 64,
+          "weightSum": 25.97607385366596,
+          "maxWeight": 0.6719768062867171,
+          "boundsCm": {
+            "min": [
+              3.5948128700256348,
+              176.2398681640625,
+              7.678805828094482
+            ],
+            "max": [
+              6.175789833068848,
+              177.45233154296875,
+              9.41285228729248
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 60,
+            "0": 4
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidOuter"
+          ],
+          "positiveCount": 92,
+          "weightSum": 44.7780270084688,
+          "maxWeight": 0.8132906080720226,
+          "boundsCm": {
+            "min": [
+              4.24901008605957,
+              175.54623413085938,
+              7.678805828094482
+            ],
+            "max": [
+              6.175789833068848,
+              177.2394561767578,
+              9.035003662109375
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 72,
+            "0": 20
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidLowerOuter"
+          ],
+          "positiveCount": 98,
+          "weightSum": 30.420599679560528,
+          "maxWeight": 0.6778973067826353,
+          "boundsCm": {
+            "min": [
+              3.2237977981567383,
+              175.45245361328125,
+              7.678805828094482
+            ],
+            "max": [
+              6.175789833068848,
+              176.44525146484375,
+              8.948415756225586
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 66,
+            "0": 32
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidLower"
+          ],
+          "positiveCount": 60,
+          "weightSum": 31.288258182650505,
+          "maxWeight": 0.8326390478370337,
+          "boundsCm": {
+            "min": [
+              2.7977535724639893,
+              175.45245361328125,
+              8.103836059570312
+            ],
+            "max": [
+              4.587063312530518,
+              176.0291290283203,
+              8.948415756225586
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 40,
+            "0": 20
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "lEyelidLowerInner"
+          ],
+          "positiveCount": 80,
+          "weightSum": 20.54261081864651,
+          "maxWeight": 0.4776684214541848,
+          "boundsCm": {
+            "min": [
+              1.8175349235534668,
+              175.45245361328125,
+              7.89916467666626
+            ],
+            "max": [
+              4.154437065124512,
+              176.19483947753906,
+              8.948415756225586
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 48,
+            "0": 32
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidInner"
+          ],
+          "positiveCount": 86,
+          "weightSum": 30.62058442053865,
+          "maxWeight": 0.8385595483329519,
+          "boundsCm": {
+            "min": [
+              -3.26432466506958,
+              175.49105834960938,
+              7.898161888122559
+            ],
+            "max": [
+              -1.8063815832138062,
+              177.16146850585938,
+              9.257704734802246
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 62,
+            "0": 24
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidUpperInner"
+          ],
+          "positiveCount": 40,
+          "weightSum": 21.738918135347518,
+          "maxWeight": 0.73334859235523,
+          "boundsCm": {
+            "min": [
+              -3.196990728378296,
+              176.48568725585938,
+              8.136024475097656
+            ],
+            "max": [
+              -1.8063815832138062,
+              177.36282348632812,
+              9.384349822998047
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 40
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidUpper"
+          ],
+          "positiveCount": 60,
+          "weightSum": 26.63492790112154,
+          "maxWeight": 0.803219653620203,
+          "boundsCm": {
+            "min": [
+              -5.035058975219727,
+              176.62295532226562,
+              8.2234525680542
+            ],
+            "max": [
+              -2.0957868099212646,
+              177.4534149169922,
+              9.413042068481445
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 60
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidUpperOuter"
+          ],
+          "positiveCount": 64,
+          "weightSum": 25.97607385366596,
+          "maxWeight": 0.6719768062867171,
+          "boundsCm": {
+            "min": [
+              -6.169494152069092,
+              176.24069213867188,
+              7.678988933563232
+            ],
+            "max": [
+              -3.5885696411132812,
+              177.4534149169922,
+              9.413042068481445
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 60,
+            "0": 4
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidOuter"
+          ],
+          "positiveCount": 92,
+          "weightSum": 44.7780270084688,
+          "maxWeight": 0.8132906080720226,
+          "boundsCm": {
+            "min": [
+              -6.169494152069092,
+              175.54710388183594,
+              7.678988933563232
+            ],
+            "max": [
+              -4.243523120880127,
+              177.2401580810547,
+              9.035451889038086
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 72,
+            "0": 20
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidLowerOuter"
+          ],
+          "positiveCount": 98,
+          "weightSum": 30.420599679560528,
+          "maxWeight": 0.6778973067826353,
+          "boundsCm": {
+            "min": [
+              -6.169494152069092,
+              175.45285034179688,
+              7.678988933563232
+            ],
+            "max": [
+              -3.2175683975219727,
+              176.44613647460938,
+              8.948144912719727
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 66,
+            "0": 32
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidLower"
+          ],
+          "positiveCount": 60,
+          "weightSum": 31.288258182650505,
+          "maxWeight": 0.8326390478370337,
+          "boundsCm": {
+            "min": [
+              -4.581575393676758,
+              175.45285034179688,
+              8.10377311706543
+            ],
+            "max": [
+              -2.7913105487823486,
+              176.0289306640625,
+              8.948144912719727
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 40,
+            "0": 20
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "rEyelidLowerInner"
+          ],
+          "positiveCount": 80,
+          "weightSum": 20.54261081864651,
+          "maxWeight": 0.4776684214541848,
+          "boundsCm": {
+            "min": [
+              -4.148849010467529,
+              175.45285034179688,
+              7.898161888122559
+            ],
+            "max": [
+              -1.8103618621826172,
+              176.1951446533203,
+              8.948144912719727
+            ]
+          },
+          "positiveVerticesBySlot": {
+            "1": 48,
+            "0": 32
+          },
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "upperFaceRig"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "head"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "neckUpper"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "neckLower"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "chestUpper"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "chestLower"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "abdomenUpper"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "abdomenLower"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        },
+        {
+          "bones": [
+            "hip"
+          ],
+          "positiveCount": 0,
+          "weightSum": 0,
+          "maxWeight": 0,
+          "boundsCm": null,
+          "positiveVerticesBySlot": {},
+          "anatomyInfluence": {
+            "maxWeight": 0,
+            "sumWeights": 0,
+            "over001": 0,
+            "over01": 0
+          }
+        }
+      ],
+      "boneSensitivity": []
+    },
+    {
+      "name": "Dicktator Shell",
+      "uvSets": [
+        {
+          "index": 0,
+          "name": "Model_UV",
+          "uvCount": 2389,
+          "mapping": "ByPolygonVertex"
+        }
+      ],
+      "usedSlots": {
+        "16": 400,
+        "17": 738,
+        "18": 344,
+        "19": 54,
+        "20": 91,
+        "21": 88,
+        "22": 462
+      },
+      "boundaryEdges": 58,
+      "nonmanifoldEdges": 0,
+      "hostGraftSeamEdges": 0,
+      "seamVertices": 0,
+      "weights": [],
+      "boneSensitivity": []
+    }
+  ],
+  "poses": [
+    {
+      "name": "Genesis8Male_BindPose",
+      "nodeCount": 194,
+      "type": [
+        "4987458000",
+        "b'Genesis8Male_BindPose\\x00\\x01Pose'",
+        "b'BindPose'"
+      ]
+    },
+    {
+      "name": "Genesis8MaleEyelashes_BindPose",
+      "nodeCount": 32,
+      "type": [
+        "4987458176",
+        "b'Genesis8MaleEyelashes_BindPose\\x00\\x01Pose'",
+        "b'BindPose'"
+      ]
+    }
+  ],
+  "animationObjects": {
+    "AnimationStack": 1,
+    "AnimationLayer": 1
+  },
+  "embeddedVideoBytes": [
+    {
+      "name": "Caine-Face",
+      "bytes": 3719958
+    },
+    {
+      "name": "Caine-Face",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Teeth",
+      "bytes": 1974645
+    },
+    {
+      "name": "Caine-Torso",
+      "bytes": 3043938
+    },
+    {
+      "name": "Caine-Face",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Legs",
+      "bytes": 2954210
+    },
+    {
+      "name": "Caine-Face",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Teeth",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Arms",
+      "bytes": 2961251
+    },
+    {
+      "name": "Caine-Eyes-01",
+      "bytes": 613142
+    },
+    {
+      "name": "Caine-Arms",
+      "bytes": 0
+    },
+    {
+      "name": "Caine Ref",
+      "bytes": 67109046
+    },
+    {
+      "name": "Caine-Eyes-01",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Eyes-01",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Legs",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Torso",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Torso",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Torso",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Torso",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Torso",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Torso",
+      "bytes": 0
+    },
+    {
+      "name": "Caine-Torso",
+      "bytes": 0
+    },
+    {
+      "name": "Caine Lashes",
+      "bytes": 67109046
+    },
+    {
+      "name": "Dicktator_DK_S1_DifM02a",
+      "bytes": 16777398
+    },
+    {
+      "name": "Dicktator_DK_S1_DifM02a",
+      "bytes": 0
+    },
+    {
+      "name": "Dicktator_DK_S1_DifM02a",
+      "bytes": 0
+    },
+    {
+      "name": "Dicktator_DK_S1_DifM02a",
+      "bytes": 0
+    },
+    {
+      "name": "Dicktator_DK_S1_DifM02a",
+      "bytes": 0
+    },
+    {
+      "name": "Dicktator_DK_S1_DifM02a",
+      "bytes": 0
+    },
+    {
+      "name": "Dicktator_DK_S1_DifM02a",
+      "bytes": 0
+    }
+  ]
+}

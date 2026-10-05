@@ -1,0 +1,37 @@
+{
+  "threshold": 0.001,
+  "endpoints": {
+    "playererect.fbx": {
+      "path": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playererect.fbx",
+      "sha256": "ba2bcca1dadb350a59e86e118a1b9b0195fef6033c00c472cc1523bf9c3481f1",
+      "body": {
+        "controlPoints": 18484,
+        "skinClusters": 185,
+        "maximumSourceInfluencesPerPoint": 10,
+        "positiveSourceInfluences": 44228,
+        "positiveInfluencesBelowThreshold": 2402,
+        "belowThresholdInfluenceShare": 0.05430948720267704,
+        "sumOfWeightsBelowThreshold": 0.7990081635767144,
+        "pointsWithAtLeastOneBelowThresholdInfluence": 1801,
+        "anatomyPointsWithAtLeastOneBelowThresholdInfluence": 847,
+        "anatomyPointCount": 2205
+      }
+    },
+    "playerflacid.fbx": {
+      "path": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playerflacid.fbx",
+      "sha256": "7a8e9188ca04e205870f0ef7619cc0f10ab59af81dab2cff4ff3590ed6a0cda4",
+      "body": {
+        "controlPoints": 18484,
+        "skinClusters": 185,
+        "maximumSourceInfluencesPerPoint": 10,
+        "positiveSourceInfluences": 44228,
+        "positiveInfluencesBelowThreshold": 2402,
+        "belowThresholdInfluenceShare": 0.05430948720267704,
+        "sumOfWeightsBelowThreshold": 0.7990081635767144,
+        "pointsWithAtLeastOneBelowThresholdInfluence": 1801,
+        "anatomyPointsWithAtLeastOneBelowThresholdInfluence": 847,
+        "anatomyPointCount": 2205
+      }
+    }
+  }
+}

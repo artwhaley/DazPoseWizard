@@ -158,7 +158,9 @@ namespace DazPose.Performer
         private bool _savedApplyRootMotion;
         private bool _visibilityInitialized;
         private bool _lastStableHidden;
+        private object _wardrobeEffectTransitionOwner;
         private bool _isDissolveShaderAcceptanceActive;
+        private PerformerDissolveProfile _runtimeWardrobeProfile;
 
         public PerformerPose SettledPose => _bodyPose != null ? _bodyPose.SettledPose : _lastSettledPose;
         public PerformerPose DesiredPose => _bodyPose != null ? _bodyPose.DesiredPose : _lastDesiredPose;
@@ -422,6 +424,7 @@ namespace DazPose.Performer
             _motionConsumer?.Advance(Time.deltaTime);
             _gestureLayer?.Advance(Time.deltaTime);
             _handGripController?.Advance(Time.deltaTime);
+            _motionLayer?.SetSpatialSuppression(_handGripController != null ? _handGripController.MotionSuppression : 0f);
             _teleport?.Advance(Time.deltaTime);
             _dissolve?.Advance(Time.deltaTime);
             if (_breathing != null)
@@ -471,6 +474,174 @@ namespace DazPose.Performer
         private void OnDestroy()
         {
             DestroyRuntime();
+            if (_runtimeWardrobeProfile != null)
+            {
+                Destroy(_runtimeWardrobeProfile);
+                _runtimeWardrobeProfile = null;
+            }
+        }
+
+        public WardrobeState CurrentWardrobe => GetComponent<PerformerWardrobe>()?.CurrentWardrobe;
+
+        public void Outfit(WardrobePreset preset)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.Outfit(preset);
+        }
+
+        public void Outfit(string presetId)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.Outfit(presetId);
+        }
+
+        public void SetHair(string stableHairId)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.SetHair(stableHairId);
+        }
+
+        public Awaitable<WardrobeChangeResult> OutfitAsync(WardrobePreset preset, WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.OutfitAsync(preset, transition);
+            return CompletedWardrobeResult(new WardrobeChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        public Awaitable<WardrobeChangeResult> OutfitAsync(string presetId, WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.OutfitAsync(presetId, transition);
+            return CompletedWardrobeResult(new WardrobeChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        public Awaitable<WardrobeChangeResult> SetHairAsync(string stableHairId, WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.SetHairAsync(stableHairId, transition);
+            return CompletedWardrobeResult(new WardrobeChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        public void TryRemoveLayer()
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.TryRemoveLayer();
+        }
+
+        public void TryAddLayer()
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.TryAddLayer();
+        }
+
+        public Awaitable<WardrobeLayerChangeResult> TryRemoveLayerAsync(WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.TryRemoveLayerAsync(transition);
+            return CompletedWardrobeLayerResult(new WardrobeLayerChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        public Awaitable<WardrobeLayerChangeResult> TryAddLayerAsync(WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.TryAddLayerAsync(transition);
+            return CompletedWardrobeLayerResult(new WardrobeLayerChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        private static Awaitable<WardrobeChangeResult> CompletedWardrobeResult(WardrobeChangeResult result)
+        { var source = new AwaitableCompletionSource<WardrobeChangeResult>(); source.TrySetResult(result); return source.Awaitable; }
+        private static Awaitable<WardrobeLayerChangeResult> CompletedWardrobeLayerResult(WardrobeLayerChangeResult result)
+        { var source = new AwaitableCompletionSource<WardrobeLayerChangeResult>(); source.TrySetResult(result); return source.Awaitable; }
+
+        internal bool TrySetWardrobeEffectProfile(PerformerDissolveProfile source,
+            PerformerSurfaceBindingAsset bindings, object transitionOwner, out string error)
+        {
+            error = null;
+            if (!Application.isPlaying) { error = "Wardrobe effect profiles can be rebound only in Play Mode."; return false; }
+            if (_wardrobeEffectTransitionOwner != null && !ReferenceEquals(_wardrobeEffectTransitionOwner, transitionOwner))
+            { error = "The wardrobe scene transition currently owns the performer's effect lifecycle."; return false; }
+            if (source == null || bindings == null || dissolveRig == null || dissolveRig.ParticleBody == null)
+            { error = "Wardrobe dissolve profile, surface bindings or rig are missing."; return false; }
+            if (_dissolve != null && _dissolve.IsDissolving)
+            { error = "The dissolve runtime currently owns the performer."; return false; }
+            var candidate = Instantiate(source);
+            candidate.name = source.name + " (Performer Wardrobe Instance)";
+            candidate.SetRuntimeSurfaceBindings(bindings);
+            if (candidate.SurfaceBindings != bindings || !dissolveRig.CanConfigureWardrobe(candidate, out error))
+            {
+                Destroy(candidate);
+                if (string.IsNullOrEmpty(error)) error = "Runtime dissolve bindings failed validation.";
+                return false;
+            }
+            try
+            {
+                _dissolve?.Dispose();
+                _dissolve = null;
+                dissolveRig.ConfigureWardrobeRuntime(candidate);
+                var previous = _runtimeWardrobeProfile;
+                _runtimeWardrobeProfile = candidate;
+                dissolveProfile = candidate;
+                if (IsRuntimeReady && isActiveAndEnabled)
+                    _dissolve = new PerformerDissolve(transform, candidate, dissolveRig,
+                        pose => Pose(pose, PoseTransition.Snap), _lastStableHidden, SetStableHidden);
+                if (previous != null) Destroy(previous);
+                error = null;
+                return true;
+            }
+            catch (Exception exception)
+            {
+                Destroy(candidate);
+                error = exception.Message;
+                return false;
+            }
+        }
+
+        internal bool TryAcquireWardrobeEffectTransition(object owner, out string error)
+        {
+            error = null;
+            if (owner == null) { error = "Wardrobe effect transition owner is required."; return false; }
+            if (!IsRuntimeReady || _dissolve == null)
+            { error = "The performer dissolve runtime is unavailable."; return false; }
+            if (_wardrobeEffectTransitionOwner != null)
+            { error = "Another wardrobe scene transition already owns the performer effect lifecycle."; return false; }
+            if (IsDissolving || IsTeleporting || IsLocomoting || IsPerforming)
+            { error = "The performer is busy with another effect, teleport, walk or action."; return false; }
+            if (VisibilityState != PerformerVisibilityState.Visible && VisibilityState != PerformerVisibilityState.Hidden)
+            { error = "The performer must have stable visibility before wardrobe recall."; return false; }
+            _wardrobeEffectTransitionOwner = owner;
+            return true;
+        }
+
+        internal void ReleaseWardrobeEffectTransition(object owner)
+        {
+            if (owner != null && ReferenceEquals(_wardrobeEffectTransitionOwner, owner))
+                _wardrobeEffectTransitionOwner = null;
+        }
+
+        internal Awaitable<VisibilityCompletion> DissolveOutForWardrobeAsync(object owner, float durationSeconds)
+        {
+            var completion = new AwaitableCompletionSource<VisibilityCompletion>();
+            RequireDissolveRuntime("DissolveOut", PerformerVisibilityState.Visible, requireStanding: false, transitionOwner: owner)
+                .DissolveOut(Mathf.Max(.001f, durationSeconds), completion);
+            return completion.Awaitable;
+        }
+
+        internal Awaitable<VisibilityCompletion> DissolveInForWardrobeAsync(object owner, float durationSeconds)
+        {
+            var completion = new AwaitableCompletionSource<VisibilityCompletion>();
+            RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false, transitionOwner: owner)
+                .DissolveIn(Mathf.Max(.001f, durationSeconds), completion);
+            return completion.Awaitable;
         }
 
         public void Pose(PerformerPose pose)
@@ -793,6 +964,29 @@ namespace DazPose.Performer
             runtime.WalkTo(target);
         }
 
+        public GripInteractionState GripState => _handGripController != null ? _handGripController.State : GripInteractionState.Idle;
+        public bool IsGripping => _handGripController != null && _handGripController.IsGripping;
+        public IGripTarget GripTarget => _handGripController != null ? _handGripController.Target : null;
+        public float GripPosition01 => _handGripController != null ? _handGripController.Position01 : 0f;
+        public bool GripRequiredLocomotion => _handGripController != null && _handGripController.RequiredLocomotion;
+        public float GripPositionError => _handGripController != null ? _handGripController.AlignmentDiagnostics.PositionErrorMeters : 0f;
+        public float GripRotationError => _handGripController != null ? _handGripController.AlignmentDiagnostics.OrientationErrorDegrees : 0f;
+        public float GripReachFraction => _handGripController != null ? _handGripController.ReachFraction : 0f;
+        public GripFailureReason GripFailureReason => _handGripController != null ? _handGripController.FailureReason : DazPose.Performer.HandGrip.GripFailureReason.InvalidProfile;
+        public Awaitable<GripCompletion> GripAsync(IGripTarget target)
+        {
+            if (_handGripController == null) throw new InvalidOperationException("No grip runtime configured.");
+            return _handGripController.GripAsync(target);
+        }
+        public void Grip(IGripTarget target) { GripAsync(target); }
+        public void ReleaseGrip() => _handGripController?.ReleaseGrip();
+        internal Awaitable<LocomotionCompletion> WalkToGripAsync(Vector3 position, Vector3 facing)
+        {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
+            _seating?.PrepareForWalkRequest();
+            return runtime.WalkToAsync(position, facing);
+        }
+
         public Awaitable<LocomotionCompletion> WalkToAsync(Vector3 worldPosition)
         {
             PerformerLocomotion runtime = RequireLocomotionRuntime();
@@ -1101,15 +1295,16 @@ namespace DazPose.Performer
                         Debug.LogWarning("Gesture is unavailable: " + gestureMaskReason, this);
                     }
                 }
-                _handGripController = GetComponent<PerformerHandGripController>();
-                if (_handGripController != null)
-                    bodySource = _handGripController.AttachToGraph(_graph, bodySource, animator, motionDriver);
                 _breathing = new PerformerBreathing(animator, _graph, bodySource,
                     _bodyPose, breathingBones, _lastBreathPhase);
                 _breathing.Configure(CreateBreathingSettings());
                 _breathing.Advance(0f);
 
-                _gaze = new PerformerGaze(animator, _graph, _breathing.OutputPlayable);
+                bodySource = _breathing.OutputPlayable;
+                _handGripController = GetComponent<PerformerHandGripController>();
+                if (_handGripController != null)
+                    bodySource = _handGripController.AttachToGraph(_graph, bodySource, animator, motionDriver);
+                _gaze = new PerformerGaze(animator, _graph, bodySource);
                 _attentionLife = new PerformerAttentionLife(_gaze.HeadCalibration.LocalAim,
                     _gaze.HeadCalibration.LocalRight, CreateAttentionLifeSettings());
                 _gaze.AttachAttentionLife(_attentionLife);
@@ -1349,8 +1544,10 @@ namespace DazPose.Performer
         }
 
         private PerformerDissolve RequireDissolveRuntime(string command,
-            PerformerVisibilityState requiredState, bool requireStanding)
+            PerformerVisibilityState requiredState, bool requireStanding, object transitionOwner = null)
         {
+            if (_wardrobeEffectTransitionOwner != null && !ReferenceEquals(_wardrobeEffectTransitionOwner, transitionOwner))
+                throw new InvalidOperationException(command + " is unavailable while a wardrobe scene transition owns the effect lifecycle.");
             RejectWhilePerforming(command);
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("SuccubusPerformer can dissolve only while its runtime is ready in Play Mode.");
@@ -1483,6 +1680,7 @@ namespace DazPose.Performer
 
             _handGripController?.Detach();
             _handGripController = null;
+
             _motionConsumer?.Dispose();
             _motionConsumer = null;
             _motionLayer?.Dispose();

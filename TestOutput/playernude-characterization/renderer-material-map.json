@@ -1,0 +1,674 @@
+[
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 0,
+    "fbxMaterial": "Face",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Face-2",
+    "sourceSurface": "Face",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 1588
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 1,
+    "fbxMaterial": "Lips",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Lips-2",
+    "sourceSurface": "Lips",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 170
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 2,
+    "fbxMaterial": "Teeth",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Teeth-2",
+    "sourceSurface": "Teeth",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 1080
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 3,
+    "fbxMaterial": "Torso",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Torso-2",
+    "sourceSurface": "Torso",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 2832
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 4,
+    "fbxMaterial": "Ears",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Ears-2",
+    "sourceSurface": "Ears",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 434
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 5,
+    "fbxMaterial": "Legs",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Legs-2",
+    "sourceSurface": "Legs",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 3364
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 6,
+    "fbxMaterial": "EyeSocket",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "EyeSocket-2",
+    "sourceSurface": "EyeSocket",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 112
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 7,
+    "fbxMaterial": "Mouth",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Mouth-2",
+    "sourceSurface": "Mouth",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 978
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 8,
+    "fbxMaterial": "Arms",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Arms-2",
+    "sourceSurface": "Arms",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 3886
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 9,
+    "fbxMaterial": "Pupils",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Pupils-2",
+    "sourceSurface": "Pupils",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 64
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 10,
+    "fbxMaterial": "EyeMoisture",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "EyeMoisture-3",
+    "sourceSurface": "EyeMoisture",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 216
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 11,
+    "fbxMaterial": "Fingernails",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Fingernails-2",
+    "sourceSurface": "Fingernails",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 560
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 12,
+    "fbxMaterial": "Cornea",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Cornea-2",
+    "sourceSurface": "Cornea",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 64
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 13,
+    "fbxMaterial": "Irises",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Irises-2",
+    "sourceSurface": "Irises",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 96
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 14,
+    "fbxMaterial": "Sclera",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Sclera-2",
+    "sourceSurface": "Sclera",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 248
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 15,
+    "fbxMaterial": "Toenails",
+    "sourceNode": "Genesis8Male",
+    "sourceMaterial": "Toenails-2",
+    "sourceSurface": "Toenails",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male/UV%20Sets/DAZ%203D/Base/Base%20Male.dsf#Base%20Male",
+    "polygonCount": 418
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 16,
+    "fbxMaterial": "Glans",
+    "sourceNode": "Dicktator_Genitalia_G8M",
+    "sourceMaterial": "Glans-1",
+    "sourceSurface": "Glans",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/Meipex/Dicktator_Genitalia_G8M/Dicktator_Genitalia_G8M_v3/UV%20Sets/Meipex/Base/default.dsf#default",
+    "polygonCount": 400
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 17,
+    "fbxMaterial": "Shaft",
+    "sourceNode": "Dicktator_Genitalia_G8M",
+    "sourceMaterial": "Shaft-1",
+    "sourceSurface": "Shaft",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/Meipex/Dicktator_Genitalia_G8M/Dicktator_Genitalia_G8M_v3/UV%20Sets/Meipex/Base/default.dsf#default",
+    "polygonCount": 738
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 18,
+    "fbxMaterial": "Testicles",
+    "sourceNode": "Dicktator_Genitalia_G8M",
+    "sourceMaterial": "Testicles-1",
+    "sourceSurface": "Testicles",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/Meipex/Dicktator_Genitalia_G8M/Dicktator_Genitalia_G8M_v3/UV%20Sets/Meipex/Base/default.dsf#default",
+    "polygonCount": 344
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 19,
+    "fbxMaterial": "Torso_Front",
+    "sourceNode": "Dicktator_Genitalia_G8M",
+    "sourceMaterial": "Torso_Front-1",
+    "sourceSurface": "Torso_Front",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/Meipex/Dicktator_Genitalia_G8M/Dicktator_Genitalia_G8M_v3/UV%20Sets/Meipex/Base/default.dsf#default",
+    "polygonCount": 54
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 20,
+    "fbxMaterial": "Torso_Middle",
+    "sourceNode": "Dicktator_Genitalia_G8M",
+    "sourceMaterial": "Torso_Middle-1",
+    "sourceSurface": "Torso_Middle",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/Meipex/Dicktator_Genitalia_G8M/Dicktator_Genitalia_G8M_v3/UV%20Sets/Meipex/Base/default.dsf#default",
+    "polygonCount": 91
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 21,
+    "fbxMaterial": "Torso_Back",
+    "sourceNode": "Dicktator_Genitalia_G8M",
+    "sourceMaterial": "Torso_Back-1",
+    "sourceSurface": "Torso_Back",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/Meipex/Dicktator_Genitalia_G8M/Dicktator_Genitalia_G8M_v3/UV%20Sets/Meipex/Base/default.dsf#default",
+    "polygonCount": 88
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8Male.Shape",
+    "mesh": "Genesis8Male",
+    "slot": 22,
+    "fbxMaterial": "Rectum",
+    "sourceNode": "Dicktator_Genitalia_G8M",
+    "sourceMaterial": "Rectum-1",
+    "sourceSurface": "Rectum",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/Meipex/Dicktator_Genitalia_G8M/Dicktator_Genitalia_G8M_v3/UV%20Sets/Meipex/Base/default.dsf#default",
+    "polygonCount": 462
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8MaleEyelashes/Genesis8MaleEyelashes.Shape",
+    "mesh": "Genesis8MaleEyelashes",
+    "slot": 0,
+    "fbxMaterial": "EyeMoisture",
+    "sourceNode": "Genesis8MaleEyelashes",
+    "sourceMaterial": "EyeMoisture-4",
+    "sourceSurface": "EyeMoisture",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male%20Eyelashes/UV%20Sets/DAZ%203D/Base/Basic%20Male.dsf#Basic%20Male",
+    "polygonCount": 100
+  },
+  {
+    "rendererPath": "Genesis8Male/Genesis8MaleEyelashes/Genesis8MaleEyelashes.Shape",
+    "mesh": "Genesis8MaleEyelashes",
+    "slot": 1,
+    "fbxMaterial": "Eyelashes",
+    "sourceNode": "Genesis8MaleEyelashes",
+    "sourceMaterial": "Eyelashes-1",
+    "sourceSurface": "Eyelashes",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": "/data/DAZ%203D/Genesis%208/Male%20Eyelashes/UV%20Sets/DAZ%203D/Base/Basic%20Male.dsf#Basic%20Male",
+    "polygonCount": 252
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 0,
+    "fbxMaterial": "Face",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Face-3",
+    "sourceSurface": "Face",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 1,
+    "fbxMaterial": "Lips",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Lips-3",
+    "sourceSurface": "Lips",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 2,
+    "fbxMaterial": "Teeth",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Teeth-3",
+    "sourceSurface": "Teeth",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 3,
+    "fbxMaterial": "Torso",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Torso-3",
+    "sourceSurface": "Torso",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 4,
+    "fbxMaterial": "Ears",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Ears-3",
+    "sourceSurface": "Ears",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 5,
+    "fbxMaterial": "Legs",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Legs-3",
+    "sourceSurface": "Legs",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 6,
+    "fbxMaterial": "EyeSocket",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "EyeSocket-3",
+    "sourceSurface": "EyeSocket",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 7,
+    "fbxMaterial": "Mouth",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Mouth-3",
+    "sourceSurface": "Mouth",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 8,
+    "fbxMaterial": "Arms",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Arms-3",
+    "sourceSurface": "Arms",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 9,
+    "fbxMaterial": "Pupils",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Pupils-3",
+    "sourceSurface": "Pupils",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 10,
+    "fbxMaterial": "EyeMoisture",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "EyeMoisture-5",
+    "sourceSurface": "EyeMoisture",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 11,
+    "fbxMaterial": "Fingernails",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Fingernails-3",
+    "sourceSurface": "Fingernails",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 12,
+    "fbxMaterial": "Cornea",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Cornea-3",
+    "sourceSurface": "Cornea",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 13,
+    "fbxMaterial": "Irises",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Irises-3",
+    "sourceSurface": "Irises",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 14,
+    "fbxMaterial": "Sclera",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Sclera-3",
+    "sourceSurface": "Sclera",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 15,
+    "fbxMaterial": "Toenails",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Toenails-3",
+    "sourceSurface": "Toenails",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 0
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 16,
+    "fbxMaterial": "Dicktator_Genitalia_G8M_Glans",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Dicktator_Genitalia_G8M_Glans-1",
+    "sourceSurface": "Dicktator_Genitalia_G8M_Glans",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 400
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 17,
+    "fbxMaterial": "Dicktator_Genitalia_G8M_Shaft",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Dicktator_Genitalia_G8M_Shaft-1",
+    "sourceSurface": "Dicktator_Genitalia_G8M_Shaft",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 738
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 18,
+    "fbxMaterial": "Dicktator_Genitalia_G8M_Testicles",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Dicktator_Genitalia_G8M_Testicles-1",
+    "sourceSurface": "Dicktator_Genitalia_G8M_Testicles",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 344
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 19,
+    "fbxMaterial": "Dicktator_Genitalia_G8M_Torso_Front",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Dicktator_Genitalia_G8M_Torso_Front-1",
+    "sourceSurface": "Dicktator_Genitalia_G8M_Torso_Front",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 54
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 20,
+    "fbxMaterial": "Dicktator_Genitalia_G8M_Torso_Middle",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Dicktator_Genitalia_G8M_Torso_Middle-1",
+    "sourceSurface": "Dicktator_Genitalia_G8M_Torso_Middle",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 91
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 21,
+    "fbxMaterial": "Dicktator_Genitalia_G8M_Torso_Back",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Dicktator_Genitalia_G8M_Torso_Back-1",
+    "sourceSurface": "Dicktator_Genitalia_G8M_Torso_Back",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 88
+  },
+  {
+    "rendererPath": "Genesis8Male/Dicktator Shell/Dicktator Shell.Shape",
+    "mesh": "Dicktator Shell",
+    "slot": 22,
+    "fbxMaterial": "Dicktator_Genitalia_G8M_Rectum",
+    "sourceNode": "Dicktator Shell",
+    "sourceMaterial": "Dicktator_Genitalia_G8M_Rectum-1",
+    "sourceSurface": "Dicktator_Genitalia_G8M_Rectum",
+    "shaderTypes": [
+      "studio/material/uber_iray"
+    ],
+    "uvSet": null,
+    "polygonCount": 462
+  }
+]

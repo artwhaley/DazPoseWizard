@@ -15,22 +15,23 @@ MonoBehaviour:
   displayName: Emberfire
   visualEffectAsset: {fileID: 8926484042661614526, guid: e2a2b58b7dc275845be469e0563a3418, type: 3}
   styleId: 0
-  primaryColor: {r: 3.2, g: 2.7, b: 1.8, a: 1}
-  secondaryColor: {r: 1.8, g: 0.65, b: 0.12, a: 1}
-  accentColor: {r: 0.8, g: 0.16, b: 0.025, a: 1}
-  smokeColor: {r: 0.12, g: 0.095, b: 0.08, a: 0.38}
+  primaryColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  secondaryColor: {r: 2.8, g: 0.784, b: 0.098, a: 0.5}
+  accentColor: {r: 2.8, g: 1.26, b: 0.196, a: 0.5}
+  smokeColor: {r: 0, g: 0, b: 0, a: 0}
   targetScale: 1
   targetPadding: 0.12
   spellDurationSeconds: 3
-  spellBurstCount: 768
+  spellBurstCount: 6144
   spellParticleLifetimeSeconds: 3.15
   auraFadeInSeconds: 0.6
   auraFadeOutSeconds: 0.8
-  auraSpawnRate: 170
+  auraSpawnRate: 1700
   auraParticleLifetimeSeconds: 2.8
-  intensity: 1.15
-  particleSize: 0.026
+  intensity: 1
+  particleSize: 0.003
+  particleGlowSize: 0.009
   riseSpeed: 1
-  swirlStrength: 0.4
-  turbulence: 0.55
-  pulseFrequency: 0.9
+  swirlStrength: 1.6
+  turbulence: 0.045
+  pulseFrequency: 1

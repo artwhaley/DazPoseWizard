@@ -15,22 +15,23 @@ MonoBehaviour:
   displayName: Rift Bloom
   visualEffectAsset: {fileID: 8926484042661614526, guid: e4696fffc1aa0144a844ade118e2ea7c, type: 3}
   styleId: 1
-  primaryColor: {r: 2.8, g: 2.3, b: 2.7, a: 1}
-  secondaryColor: {r: 1.45, g: 0.35, b: 0.95, a: 1}
-  accentColor: {r: 0.42, g: 0.18, b: 0.85, a: 1}
-  smokeColor: {r: 0.11, g: 0.07, b: 0.14, a: 0.3}
+  primaryColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  secondaryColor: {r: 2.8, g: 0.0168, b: 2.24, a: 0.5}
+  accentColor: {r: 2.8, g: 0.0336, b: 1.54, a: 0.5}
+  smokeColor: {r: 0, g: 0, b: 0, a: 0}
   targetScale: 1
   targetPadding: 0.12
   spellDurationSeconds: 3
-  spellBurstCount: 768
+  spellBurstCount: 6144
   spellParticleLifetimeSeconds: 3.15
   auraFadeInSeconds: 0.7
   auraFadeOutSeconds: 0.9
-  auraSpawnRate: 175
+  auraSpawnRate: 1700
   auraParticleLifetimeSeconds: 2.8
-  intensity: 1.1
-  particleSize: 0.024
-  riseSpeed: 0.5
-  swirlStrength: 0.85
-  turbulence: 0.6
+  intensity: 1
+  particleSize: 0.003
+  particleGlowSize: 0.009
+  riseSpeed: 0.9
+  swirlStrength: 2.2
+  turbulence: 0.04
   pulseFrequency: 0.8

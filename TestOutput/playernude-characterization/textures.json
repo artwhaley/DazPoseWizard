@@ -1,0 +1,1504 @@
+[
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-Face.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-Face.jpg",
+    "sha256": "c91e4dd60a9ec4960ab7a49b8346879ee2579f4e31bd8ff2a9a9cad1fbff4a6b",
+    "exportCopy": true,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Caine-Face.jpg"
+    ],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Face"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Face"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Lips"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Lips"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Ears"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Ears"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "EyeSocket"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "EyeSocket"
+        ],
+        "channel": "Translucency Color"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-FaceSPB.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-FaceSPB.jpg",
+    "sha256": "4a0c4912372d51c7eca2146e6b4274de4d6c922800b2c3b3294c3532ce615044",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Face"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Face"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Ears"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Ears"
+        ],
+        "channel": "Top Coat Weight"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-FaceSP.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-FaceSP.jpg",
+    "sha256": "14a7479559beaae53ee16d519904492ddca1f7625ed7e949ed8181d1a108cc2c",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Face"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Face"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Lips"
+        ],
+        "channel": "Dual Lobe Specular Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Lips"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Lips"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Ears"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Ears"
+        ],
+        "channel": "Top Coat Bump"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-FaceN.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-FaceN.jpg",
+    "sha256": "2857eeeadccdad550d9de9fcfe3e1ac256f2a23c2a04e052510c42f4e7767afc",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Face"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Lips"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Ears"
+        ],
+        "channel": "Normal Map"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-Teeth.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-Teeth.jpg",
+    "sha256": "dd986a04c3e0f82bea6af8c13676f46c44964aa75c17a4aaf4b82229a142f32a",
+    "exportCopy": true,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Caine-Teeth.jpg"
+    ],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Teeth"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Teeth"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Mouth"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Mouth"
+        ],
+        "channel": "Translucency Color"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-TeethB.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-TeethB.jpg",
+    "sha256": "f0a112dd55c6a38bdb52ce96027e7ba9c03456270ea037b6c0aaa8b32a846b8f",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Teeth"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Mouth"
+        ],
+        "channel": "Bump Strength"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-Torso.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-Torso.jpg",
+    "sha256": "6dcd437d9f2f0319130aef91c91e3983b2fc90f86ee3d345d4439c9c62c0ea98",
+    "exportCopy": true,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Caine-Torso.jpg"
+    ],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Torso"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Torso"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Testicles"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Testicles"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Back"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Back"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Shaft"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Shaft"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Front"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Front"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Glans"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Glans"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Rectum"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Rectum"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Middle"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Middle"
+        ],
+        "channel": "Translucency Color"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-TorsoSPB.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-TorsoSPB.jpg",
+    "sha256": "0e4f06737e05ac3f46d80c9dd0045ab630c356938ce434adf64c4bc4d1422cb1",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Torso"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Torso"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Legs"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Legs"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Arms"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Arms"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Testicles"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Testicles"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Back"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Back"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Shaft"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Shaft"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Front"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Front"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Glans"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Glans"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Rectum"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Rectum"
+        ],
+        "channel": "Top Coat Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Middle"
+        ],
+        "channel": "Glossy Layered Weight"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Middle"
+        ],
+        "channel": "Top Coat Weight"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-TorsoSP.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-TorsoSP.jpg",
+    "sha256": "477472a50c1b511ddfd0b0f9b953cc76b589d6c681806d8eb7af8633b5067f8d",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Torso"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Torso"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Legs"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Legs"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Arms"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Fingernails"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Toenails"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Testicles"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Testicles"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Back"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Back"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Shaft"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Shaft"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Front"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Front"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Glans"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Glans"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Rectum"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Rectum"
+        ],
+        "channel": "Top Coat Bump"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Middle"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Middle"
+        ],
+        "channel": "Top Coat Bump"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-TorsoN.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-TorsoN.jpg",
+    "sha256": "ca86955aef4d50dabaddb4809f41d2b02dfea73b4bbcc543f93b8f07e7d10d2c",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Torso"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Testicles"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Back"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Shaft"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Front"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Glans"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Rectum"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Dicktator_Genitalia_G8M",
+        "surface": [
+          "Torso_Middle"
+        ],
+        "channel": "Normal Map"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-Legs.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-Legs.jpg",
+    "sha256": "6db95c618f586534b95c0739ef80d87711b87cf4e4ddc45c4ecb18708f31ff33",
+    "exportCopy": true,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Caine-Legs.jpg"
+    ],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Legs"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Legs"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Toenails"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Toenails"
+        ],
+        "channel": "Translucency Color"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-LegsN.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-LegsN.jpg",
+    "sha256": "c1ddbd1e48cecc5d0b2d21957b2b37e814d3980120f318fa37e2f0ed8c2d6a81",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Legs"
+        ],
+        "channel": "Normal Map"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-LegsDis.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-LegsDis.jpg",
+    "sha256": "6ee1a8205ebf9293d539722fb18dc7fe14456500baa1364ed43e222d059a820b",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Legs"
+        ],
+        "channel": "Displacement Strength"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-Arms.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-Arms.jpg",
+    "sha256": "e48619738ed55aaa99d91d5ab200cae63dbc7f36cb39ee28c26f1da9f8f24f4b",
+    "exportCopy": true,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Caine-Arms.jpg"
+    ],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Arms"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Arms"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Fingernails"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Fingernails"
+        ],
+        "channel": "Translucency Color"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-ArmsN.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-ArmsN.jpg",
+    "sha256": "821fcfa63b7c548c49c7b15f65efc85022ec6bd58d93aef53e20bd5bb1fa863b",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Arms"
+        ],
+        "channel": "Normal Map"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-ArmsDis.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-ArmsDis.jpg",
+    "sha256": "cda67bac4b77e519410dd938984f16ae837a7ab5291de9d842686f2e7e55dc7d",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Arms"
+        ],
+        "channel": "Displacement Strength"
+      }
+    ]
+  },
+  {
+    "size": [
+      2048,
+      2048
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine-Eyes-01.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine-Eyes-01.jpg",
+    "sha256": "576e78ccc6021fe5bb18ff62891178ca81c5673a600c50d2f6e8238c4a30a7e6",
+    "exportCopy": true,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Caine-Eyes-01.jpg"
+    ],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Pupils"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Pupils"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Irises"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Irises"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Sclera"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Sclera"
+        ],
+        "channel": "Translucency Color"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine EyesSP.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine%20EyesSP.jpg",
+    "sha256": "01b31a2ba850345989eeda20cf52eb5e4fc0793311123790a1b8e07937e28870",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Pupils"
+        ],
+        "channel": "Glossy Roughness"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Pupils"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Irises"
+        ],
+        "channel": "Glossy Roughness"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Irises"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Sclera"
+        ],
+        "channel": "Glossy Roughness"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Sclera"
+        ],
+        "channel": "Bump Strength"
+      }
+    ]
+  },
+  {
+    "size": [
+      2048,
+      2048
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine EyesN.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine%20EyesN.jpg",
+    "sha256": "95058a1fbb6dbbc587d8226b2e172df5b034b559ce15e83b3d5fc4d2281d1a44",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Pupils"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Irises"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Sclera"
+        ],
+        "channel": "Normal Map"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine Ref.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine%20Ref.jpg",
+    "sha256": "c789c70527a9cfb5b16810f17c52e7f7175baf59a53457cd65443b97708a03a1",
+    "exportCopy": false,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Caine Ref.tif"
+    ],
+    "uses": [
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Cornea"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Genesis8Male",
+        "surface": [
+          "Cornea"
+        ],
+        "channel": "Cutout Opacity"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\TMHL\\Caine\\Caine Lashes.jpg",
+    "sourceReference": "/Runtime/Textures/TMHL/Caine/Caine%20Lashes.jpg",
+    "sha256": "330c884c6d30e023fff096a7de4a7f03b6668f101f543240b63cfc1b6ec624f3",
+    "exportCopy": false,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Caine Lashes.tif"
+    ],
+    "uses": [
+      {
+        "node": "Genesis8MaleEyelashes",
+        "surface": [
+          "Eyelashes"
+        ],
+        "channel": "Cutout Opacity"
+      }
+    ]
+  },
+  {
+    "size": [
+      2048,
+      2048
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\Meipex\\M_Dicktalicious\\Genitalia_v3\\Dicktator\\Texture Set 1\\Dicktator_DK_S1_DifM02a.jpg",
+    "sourceReference": "/Runtime/Textures/Meipex/M_Dicktalicious/Genitalia_v3/Dicktator/Texture%20Set%201/Dicktator_DK_S1_DifM02a.jpg",
+    "sha256": "5c21977f40f90d0850deecb2a4ead8f16501c5e87355203f8d2a8d303fac744a",
+    "exportCopy": false,
+    "exportStemMatches": [
+      "validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playernude.images\\Dicktator_DK_S1_DifM02a.tif"
+    ],
+    "uses": [
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Glans"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Glans"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Shaft"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Shaft"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Testicles"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Testicles"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Front"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Front"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Middle"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Middle"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Back"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Back"
+        ],
+        "channel": "Translucency Color"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Rectum"
+        ],
+        "channel": "diffuse"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Rectum"
+        ],
+        "channel": "Translucency Color"
+      }
+    ]
+  },
+  {
+    "size": [
+      2048,
+      2048
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\Meipex\\M_Dicktalicious\\Genitalia_v3\\Dicktator\\Texture Set 1\\Dicktator_DK_S1_SM.jpg",
+    "sourceReference": "/Runtime/Textures/Meipex/M_Dicktalicious/Genitalia_v3/Dicktator/Texture%20Set%201/Dicktator_DK_S1_SM.jpg",
+    "sha256": "ded1d52668fa50b5c54f656423df91c60a98eed2b66a56c73a38bd713557c828",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Glans"
+        ],
+        "channel": "Dual Lobe Specular Reflectivity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Shaft"
+        ],
+        "channel": "Dual Lobe Specular Reflectivity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Testicles"
+        ],
+        "channel": "Dual Lobe Specular Reflectivity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Front"
+        ],
+        "channel": "Dual Lobe Specular Reflectivity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Middle"
+        ],
+        "channel": "Dual Lobe Specular Reflectivity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Back"
+        ],
+        "channel": "Dual Lobe Specular Reflectivity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Rectum"
+        ],
+        "channel": "Dual Lobe Specular Reflectivity"
+      }
+    ]
+  },
+  {
+    "size": [
+      2048,
+      2048
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\Meipex\\M_Dicktalicious\\Genitalia_v3\\Dicktator\\Texture Set 1\\Dicktator_DK_S1_BM.jpg",
+    "sourceReference": "/Runtime/Textures/Meipex/M_Dicktalicious/Genitalia_v3/Dicktator/Texture%20Set%201/Dicktator_DK_S1_BM.jpg",
+    "sha256": "54d5b6987ce1d4c7e891eea3b7860c445dd6effb82c2e53f52cb197a783415c4",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Glans"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Shaft"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Testicles"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Front"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Middle"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Back"
+        ],
+        "channel": "Bump Strength"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Rectum"
+        ],
+        "channel": "Bump Strength"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\Meipex\\M_Dicktalicious\\Genitalia_v3\\Dicktator\\Dicktator_DK_TM.jpg",
+    "sourceReference": "/Runtime/Textures/Meipex/M_Dicktalicious/Genitalia_v3/Dicktator/Dicktator_DK_TM.jpg",
+    "sha256": "50cdc888a2fd4a82f4953a114b5d3f7465628388098c9ce8df9feac8966ac646",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Glans"
+        ],
+        "channel": "Cutout Opacity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Shaft"
+        ],
+        "channel": "Cutout Opacity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Testicles"
+        ],
+        "channel": "Cutout Opacity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Front"
+        ],
+        "channel": "Cutout Opacity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Middle"
+        ],
+        "channel": "Cutout Opacity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Back"
+        ],
+        "channel": "Cutout Opacity"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Rectum"
+        ],
+        "channel": "Cutout Opacity"
+      }
+    ]
+  },
+  {
+    "size": [
+      4096,
+      4096
+    ],
+    "format": "JPEG",
+    "path": "F:\\Daz3D\\Runtime\\Textures\\Meipex\\M_Dicktalicious\\Genitalia_v3\\Dicktator\\Displacement\\Dicktator_DK_NM00.jpg",
+    "sourceReference": "/Runtime/Textures/Meipex/M_Dicktalicious/Genitalia_v3/Dicktator/Displacement/Dicktator_DK_NM00.jpg",
+    "sha256": "c549cda2b5a4e1c15b512c03dd3a442fd0c8a1a6a5ed6faee0dd83c5e3d5e02b",
+    "exportCopy": false,
+    "exportStemMatches": [],
+    "uses": [
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Torso_Back"
+        ],
+        "channel": "Normal Map"
+      },
+      {
+        "node": "Dicktator Shell",
+        "surface": [
+          "Dicktator_Genitalia_G8M_Rectum"
+        ],
+        "channel": "Normal Map"
+      }
+    ]
+  }
+]

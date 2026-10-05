@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DazPose.Motion;
 using DazPose.Performer;
+using DazPose.Performer.HandGrip;
 using DazPose.Player;
 using DazPose.Toys;
 using UnityEngine;
@@ -28,6 +29,8 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private PerformerMagicCatalog magicCatalog;
         [Header("P0.G2 Particle Body Acceptance")]
         [SerializeField] private PerformerParticleBody particleBody;
+        [Header("HG HandGrip Acceptance")]
+        [SerializeField] private HandGripAcceptanceHarness handGripAcceptanceHarness;
         [Header("P0.F Teleport Acceptance")]
         [SerializeField] private Transform teleportMarkA;
         [SerializeField] private Transform teleportMarkB;
@@ -614,6 +617,25 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.Label("Translation: " + motionRootTranslationDrift.ToString("F5") + " m"
                 + "    Rotation: " + motionRootRotationDrift.ToString("F4") + "°");
             GUI.enabled = guiEnabled;
+            DrawHandGripAcceptanceControls(guiEnabled);
+        }
+
+        private void DrawHandGripAcceptanceControls(bool guiEnabled)
+        {
+            if (handGripAcceptanceHarness == null)
+            {
+                HandGripAcceptanceHarness[] candidates = UnityEngine.Object.FindObjectsByType<HandGripAcceptanceHarness>(
+                    FindObjectsSortMode.None);
+                for (int index = 0; index < candidates.Length; index++)
+                {
+                    if (candidates[index] == null || candidates[index].gameObject.scene != gameObject.scene) continue;
+                    handGripAcceptanceHarness = candidates[index];
+                    break;
+                }
+            }
+
+            if (handGripAcceptanceHarness != null)
+                handGripAcceptanceHarness.DrawControls(guiEnabled);
         }
 
         private void UpdateMotionRootDrift()
@@ -1021,6 +1043,11 @@ namespace DazPose.FirstPerformanceVoid
         {
             jumpForJoyAction = jumpForJoy;
             displacedRecoveryTestAction = displacedRecoveryTest;
+        }
+
+        public void ConfigureHandGripAcceptanceHarness(HandGripAcceptanceHarness harness)
+        {
+            handGripAcceptanceHarness = harness;
         }
 
         private Vector3 CreateTurnTarget(float signedYaw)

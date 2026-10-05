@@ -1,0 +1,126 @@
+{
+  "playerflacid.duf": {
+    "path": "C:\\Users\\artwh\\OneDrive\\Documents\\DAZ 3D\\Studio\\My Library\\Scenes\\playerflacid.duf",
+    "bytes": 273299,
+    "sha256": "a76a8765bd14f16121805c04e0459398cc380b10ddafd30b790e55ab6c93b9ba",
+    "mtimeUtc": "2026-10-05T00:04:19.061975+00:00"
+  },
+  "playerflacid.fbx": {
+    "path": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playerflacid.fbx",
+    "bytes": 168773792,
+    "sha256": "7a8e9188ca04e205870f0ef7619cc0f10ab59af81dab2cff4ff3590ed6a0cda4",
+    "mtimeUtc": "2026-10-05T00:06:13.549228+00:00"
+  },
+  "playerflacid.images": {
+    "path": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playerflacid.images",
+    "files": [
+      {
+        "name": "Caine Lashes.tif",
+        "bytes": 67109046,
+        "sha256": "867e51e462a176b221560f1cb37565f2a3621f90eb5a30310789d8f12a534974"
+      },
+      {
+        "name": "Caine Ref.tif",
+        "bytes": 67109046,
+        "sha256": "e6e0d3ac01df20169e44a10f8e42964f4e3f01bc0ec8685ef6a47c24b0efbdfa"
+      },
+      {
+        "name": "Caine-Arms.jpg",
+        "bytes": 2961251,
+        "sha256": "e48619738ed55aaa99d91d5ab200cae63dbc7f36cb39ee28c26f1da9f8f24f4b"
+      },
+      {
+        "name": "Caine-Eyes-01.jpg",
+        "bytes": 613142,
+        "sha256": "576e78ccc6021fe5bb18ff62891178ca81c5673a600c50d2f6e8238c4a30a7e6"
+      },
+      {
+        "name": "Caine-Face.jpg",
+        "bytes": 3719958,
+        "sha256": "c91e4dd60a9ec4960ab7a49b8346879ee2579f4e31bd8ff2a9a9cad1fbff4a6b"
+      },
+      {
+        "name": "Caine-Legs.jpg",
+        "bytes": 2954210,
+        "sha256": "6db95c618f586534b95c0739ef80d87711b87cf4e4ddc45c4ecb18708f31ff33"
+      },
+      {
+        "name": "Caine-Teeth.jpg",
+        "bytes": 1974645,
+        "sha256": "dd986a04c3e0f82bea6af8c13676f46c44964aa75c17a4aaf4b82229a142f32a"
+      },
+      {
+        "name": "Caine-Torso.jpg",
+        "bytes": 3043938,
+        "sha256": "6dcd437d9f2f0319130aef91c91e3983b2fc90f86ee3d345d4439c9c62c0ea98"
+      },
+      {
+        "name": "Dicktator_DK_S1_DifM02a.tif",
+        "bytes": 16777398,
+        "sha256": "9b13b9747d73f3ec9efe97028ed64c25ad186bd9d29b6bce0036eadccc29ffe5"
+      }
+    ]
+  },
+  "playererect.duf": {
+    "path": "C:\\Users\\artwh\\OneDrive\\Documents\\DAZ 3D\\Studio\\My Library\\Scenes\\playererect.duf",
+    "bytes": 273090,
+    "sha256": "21cf79e53dbad71d3252edf9f99772eadac020cd69c02cf9b2651510b2a394b4",
+    "mtimeUtc": "2026-10-05T00:02:19.924972+00:00"
+  },
+  "playererect.fbx": {
+    "path": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playererect.fbx",
+    "bytes": 168773744,
+    "sha256": "ba2bcca1dadb350a59e86e118a1b9b0195fef6033c00c472cc1523bf9c3481f1",
+    "mtimeUtc": "2026-10-05T00:06:49.193070+00:00"
+  },
+  "playererect.images": {
+    "path": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestCharacter\\playererect.images",
+    "files": [
+      {
+        "name": "Caine Lashes.tif",
+        "bytes": 67109046,
+        "sha256": "867e51e462a176b221560f1cb37565f2a3621f90eb5a30310789d8f12a534974"
+      },
+      {
+        "name": "Caine Ref.tif",
+        "bytes": 67109046,
+        "sha256": "e6e0d3ac01df20169e44a10f8e42964f4e3f01bc0ec8685ef6a47c24b0efbdfa"
+      },
+      {
+        "name": "Caine-Arms.jpg",
+        "bytes": 2961251,
+        "sha256": "e48619738ed55aaa99d91d5ab200cae63dbc7f36cb39ee28c26f1da9f8f24f4b"
+      },
+      {
+        "name": "Caine-Eyes-01.jpg",
+        "bytes": 613142,
+        "sha256": "576e78ccc6021fe5bb18ff62891178ca81c5673a600c50d2f6e8238c4a30a7e6"
+      },
+      {
+        "name": "Caine-Face.jpg",
+        "bytes": 3719958,
+        "sha256": "c91e4dd60a9ec4960ab7a49b8346879ee2579f4e31bd8ff2a9a9cad1fbff4a6b"
+      },
+      {
+        "name": "Caine-Legs.jpg",
+        "bytes": 2954210,
+        "sha256": "6db95c618f586534b95c0739ef80d87711b87cf4e4ddc45c4ecb18708f31ff33"
+      },
+      {
+        "name": "Caine-Teeth.jpg",
+        "bytes": 1974645,
+        "sha256": "dd986a04c3e0f82bea6af8c13676f46c44964aa75c17a4aaf4b82229a142f32a"
+      },
+      {
+        "name": "Caine-Torso.jpg",
+        "bytes": 3043938,
+        "sha256": "6dcd437d9f2f0319130aef91c91e3983b2fc90f86ee3d345d4439c9c62c0ea98"
+      },
+      {
+        "name": "Dicktator_DK_S1_DifM02a.tif",
+        "bytes": 16777398,
+        "sha256": "9b13b9747d73f3ec9efe97028ed64c25ad186bd9d29b6bce0036eadccc29ffe5"
+      }
+    ]
+  }
+}

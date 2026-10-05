@@ -15,22 +15,23 @@ MonoBehaviour:
   displayName: Arc Cyan
   visualEffectAsset: {fileID: 8926484042661614526, guid: 0d045adf229a6164587c822f5caabe59, type: 3}
   styleId: 2
-  primaryColor: {r: 2.6, g: 3, b: 3.3, a: 1}
-  secondaryColor: {r: 0.2, g: 1.25, b: 1.8, a: 1}
-  accentColor: {r: 0.12, g: 0.35, b: 0.8, a: 1}
-  smokeColor: {r: 0.06, g: 0.1, b: 0.14, a: 0.25}
+  primaryColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  secondaryColor: {r: 0.0168, g: 2.24, b: 2.8, a: 0.5}
+  accentColor: {r: 0.0336, g: 1.6800001, b: 2.8, a: 0.5}
+  smokeColor: {r: 0, g: 0, b: 0, a: 0}
   targetScale: 1
   targetPadding: 0.12
   spellDurationSeconds: 3
-  spellBurstCount: 768
+  spellBurstCount: 4096
   spellParticleLifetimeSeconds: 3.15
   auraFadeInSeconds: 0.5
   auraFadeOutSeconds: 0.8
-  auraSpawnRate: 185
+  auraSpawnRate: 1500
   auraParticleLifetimeSeconds: 2.3
-  intensity: 1.1
-  particleSize: 0.022
-  riseSpeed: 0.45
-  swirlStrength: 0.55
-  turbulence: 0.65
-  pulseFrequency: 1.1
+  intensity: 1
+  particleSize: 0.003
+  particleGlowSize: 0.009
+  riseSpeed: 1.8
+  swirlStrength: 1.1
+  turbulence: 0.015
+  pulseFrequency: 1.4

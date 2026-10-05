@@ -397,6 +397,7 @@ GameObject:
   - component: {fileID: 1090292042}
   - component: {fileID: 1090292041}
   - component: {fileID: 1090292040}
+  - component: {fileID: 2098383310}
   m_Layer: 0
   m_Name: Acceptance Camera
   m_TagString: Untagged
@@ -478,6 +479,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2098383310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090292039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7a1a5de8cfe49a4870cd23e7dac8f81, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerPoseSmokeHarness
+  performer: {fileID: 0}
+  poseA: {fileID: 0}
+  poseB: {fileID: 0}
+  poseC: {fileID: 0}
+  expressionA: {fileID: 0}
+  expressionB: {fileID: 0}
+  expressionC: {fileID: 0}
+  speechClipA: {fileID: 0}
+  speechClipB: {fileID: 0}
+  speechClipC: {fileID: 0}
+  expressionIntensity: 1
+  expressionBlendTime: 0.25
+  acceptanceHarness: {fileID: 0}
+  gazeTarget: {fileID: 0}
+  locomotionTarget: {fileID: 0}
+  locomotionTestDistance: 5
+  seatingTestSeat: {fileID: 0}
+  partnerAnatomyAcceptance: {fileID: 537019875}
 --- !u!1001 &1545532974
 PrefabInstance:
   m_ObjectHideFlags: 0

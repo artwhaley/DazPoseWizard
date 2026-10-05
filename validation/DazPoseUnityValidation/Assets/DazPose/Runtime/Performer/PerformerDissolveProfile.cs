@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -35,6 +36,8 @@ namespace DazPose.Performer
         [SerializeField] private Shader sssDissolveShader;
         [SerializeField] private Shader wetDissolveShader;
         [SerializeField] private Material[] laraRuntimeMaterials;
+        [Tooltip("Optional explicit shader per material slot for converted bodies. Empty retains the original 16-slot Lara contract.")]
+        [SerializeField] private Shader[] convertedSlotShaders;
         [SerializeField] private Vector4 dissolveFieldParams = new Vector4(3.5f, 0.85f, 17f, 1.15f);
         [SerializeField, Min(0.0001f)] private float dissolveEdgeWidth = 0.035f;
         [SerializeField] private Color dissolveEdgeColor = new Color(3f, 0.06f, 4f, 1f);
@@ -85,6 +88,14 @@ namespace DazPose.Performer
         public float ArrivalPitch => arrivalPitch;
         public float VisibilityAudioStartOffsetSeconds => visibilityAudioStartOffsetSeconds;
 
+        /// <summary>Rebind only a per-performer runtime clone; authored profiles stay immutable.</summary>
+        internal void SetRuntimeSurfaceBindings(PerformerSurfaceBindingAsset bindings)
+        {
+            if (!Application.isPlaying) throw new InvalidOperationException("Wardrobe effect profiles may be rebound only on the runtime instance.");
+            if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            surfaceBindings = bindings;
+        }
+
         public bool IsShaderReady(out string reason)
         {
             if (sssDissolveShader == null || wetDissolveShader == null)
@@ -97,9 +108,10 @@ namespace DazPose.Performer
                 reason = "The SSS and Wet dissolve shader references must be distinct.";
                 return false;
             }
-            if (laraRuntimeMaterials == null || laraRuntimeMaterials.Length != MaterialSlotCount)
+            bool converted = convertedSlotShaders != null && convertedSlotShaders.Length > 0;
+            if (laraRuntimeMaterials == null || (converted ? laraRuntimeMaterials.Length != convertedSlotShaders.Length : laraRuntimeMaterials.Length != MaterialSlotCount))
             {
-                reason = "The profile must contain exactly 16 permanent Lara runtime materials.";
+                reason = "The profile material count must match its explicit converted slots, or the original 16-slot Lara contract.";
                 return false;
             }
 
@@ -112,11 +124,16 @@ namespace DazPose.Performer
                     return false;
                 }
 
-                Shader expectedShader = IsWetSlot(i) ? wetDissolveShader : sssDissolveShader;
+                Shader expectedShader = converted ? convertedSlotShaders[i] : IsWetSlot(i) ? wetDissolveShader : sssDissolveShader;
+                if (expectedShader == null)
+                {
+                    reason = "Converted material slot " + i + " has no expected dissolve shader.";
+                    return false;
+                }
                 if (material.shader != expectedShader)
                 {
                     reason = "Lara runtime material slot " + i + " must use "
-                        + (IsWetSlot(i) ? "the Wet dissolve shader." : "the uDTU SSS dissolve shader.");
+                        + expectedShader.name + ".";
                     return false;
                 }
                 for (int propertyIndex = 0; propertyIndex < RequiredDissolveProperties.Length; propertyIndex++)
@@ -179,6 +196,15 @@ namespace DazPose.Performer
             sssDissolveShader = sssShader;
             wetDissolveShader = wetShader;
             laraRuntimeMaterials = runtimeMaterials;
+            convertedSlotShaders = null;
+        }
+
+        public void ConfigureConvertedMaterials(Shader sssShader, Shader wetShader, Material[] runtimeMaterials, Shader[] expectedShaders)
+        {
+            sssDissolveShader = sssShader;
+            wetDissolveShader = wetShader;
+            laraRuntimeMaterials = runtimeMaterials;
+            convertedSlotShaders = expectedShaders;
         }
 
         public void ConfigureParticleBodyAssets(VisualEffectAsset graph, PerformerSurfaceBindingAsset bindings)

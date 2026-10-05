@@ -9,14 +9,18 @@ namespace DazPose.Performer.HandGrip
     public static class HandGripRuntimeSelfTests
     {
         private const float Tolerance = 0.002f;
+        public static int AssertionCount { get; private set; }
 
         public static string[] Run()
         {
+            AssertionCount = 0;
             var failures = new List<string>();
             CheckFrameAndRod(failures);
             CheckProbeClassification(failures);
             CheckSolver(failures);
             CheckBlendOwnership(failures);
+            CheckCalibrationEndpoints(failures);
+            CheckPalmAndReach(failures);
             return failures.ToArray();
         }
 
@@ -207,6 +211,118 @@ namespace DazPose.Performer.HandGrip
                 "release to zero returns ownership to the incoming animation", failures);
         }
 
+        private static void CheckCalibrationEndpoints(List<string> failures)
+        {
+            Quaternion open = Quaternion.Euler(13f, 21f, -8f);
+            Quaternion closed = open * Quaternion.AngleAxis(65f, new Vector3(1f, 2f, 3f).normalized);
+            Check(Quaternion.Angle(open, Quaternion.Slerp(open, closed, Mathf.Clamp01(-1f))) < Tolerance,
+                "raw curl zero/clamping returns calibrated open endpoint", failures);
+            Check(Quaternion.Angle(closed, Quaternion.Slerp(open, closed, Mathf.Clamp01(2f))) < Tolerance,
+                "raw curl one/clamping returns calibrated closed endpoint", failures);
+            Quaternion first = Quaternion.Slerp(open, closed, 0.4f);
+            Quaternion repeated = first;
+            for (int index = 0; index < 100; index++) repeated = Quaternion.Slerp(open, closed, 0.4f);
+            Check(Quaternion.Angle(first, repeated) < Tolerance,
+                "absolute quaternion calibration does not accumulate", failures);
+
+            NativeArray<HandGripJobJoint> joints = default;
+            NativeArray<Quaternion> incoming = default;
+            NativeArray<HandGripJobDigit> digits = default;
+            NativeArray<HandGripJobProbe> probes = default;
+            NativeArray<float> curls = default;
+            NativeArray<HandGripStatus> statuses = default;
+            NativeArray<HandGripProbeDiagnostic> diagnostics = default;
+            try
+            {
+                joints = new NativeArray<HandGripJobJoint>(1, Allocator.Temp);
+                incoming = new NativeArray<Quaternion>(1, Allocator.Temp);
+                digits = new NativeArray<HandGripJobDigit>(1, Allocator.Temp);
+                probes = new NativeArray<HandGripJobProbe>(1, Allocator.Temp);
+                curls = new NativeArray<float>(1, Allocator.Temp);
+                statuses = new NativeArray<HandGripStatus>(1, Allocator.Temp);
+                diagnostics = new NativeArray<HandGripProbeDiagnostic>(1, Allocator.Temp);
+                joints[0] = SyntheticJoint(Vector3.zero, 0f);
+                incoming[0] = Quaternion.identity;
+                digits[0] = new HandGripJobDigit
+                {
+                    JointCount = 1, ProbeCount = 1, HasParentPose = true,
+                    ParentPosition = new Vector3(2f, 0f, 0f), ParentRotation = Quaternion.identity
+                };
+                probes[0] = new HandGripJobProbe { JointIndex = 0, LocalPosition = Vector3.right, Radius = 0.01f };
+                GripFrame frame = GripFrame.Create(Vector3.zero, Vector3.up, Vector3.forward, 0.1f);
+                HandGripSolver.Solve(frame, Vector3.zero, Quaternion.identity, 1f, 0f, 0f, 0.01f, 7,
+                    digits, joints, probes, incoming, curls, statuses, diagnostics);
+                Check(Vector3.Distance(diagnostics[0].WorldPosition, new Vector3(3f, 0f, 0f)) < Tolerance,
+                    "candidate FK includes actual uncontrolled carpal parent pose", failures);
+            }
+            finally
+            {
+                Dispose(ref diagnostics); Dispose(ref statuses); Dispose(ref curls);
+                Dispose(ref probes); Dispose(ref digits); Dispose(ref incoming); Dispose(ref joints);
+            }
+        }
+
+        private sealed class LinearTarget : IGripTarget
+        {
+            public Vector3 Center;
+            public GripFrame Evaluate(float position01) => GripFrame.Create(
+                Center + Vector3.up * (Mathf.Clamp01(position01) - 0.5f) * 0.2f,
+                Vector3.up, Vector3.back, 0.025f);
+        }
+
+        private static void CheckPalmAndReach(List<string> failures)
+        {
+            Vector3 anchor = new Vector3(0.04f, 0.01f, -0.02f);
+            Quaternion rotation = Quaternion.Euler(12f, 34f, 56f);
+            GripFrame small = GripFrame.Create(Vector3.one, Vector3.up, Vector3.right, 0.02f);
+            GripFrame large = GripFrame.Create(Vector3.one, Vector3.up, Vector3.right, 0.05f);
+            GripPalmTarget a = GripPalmTarget.Evaluate(small, anchor, rotation, Quaternion.identity, 0.003f);
+            GripPalmTarget b = GripPalmTarget.Evaluate(large, anchor, rotation, Quaternion.identity, 0.003f);
+            Check(Vector3.Distance(b.Palm.position - a.Palm.position, Vector3.right * 0.03f) < 0.00001f,
+                "radius delta shifts palm along outward normal", failures);
+            Check(Vector3.Distance(a.Wrist.position + a.Wrist.rotation * anchor, a.Palm.position) < 0.00001f
+                && Quaternion.Angle(a.Wrist.rotation * rotation, a.Palm.rotation) < 0.02f,
+                "wrist-to-palm calibration round trip", failures);
+            foreach (float twist in new[] { -90f, -45f, 45f, 90f })
+            {
+                GripPalmTarget turned = GripPalmTarget.Evaluate(small, anchor, rotation,
+                    Quaternion.identity, 0.003f, twist);
+                Quaternion turn = Quaternion.AngleAxis(twist, small.Tangent);
+                Check(Vector3.Distance(turned.Palm.position - small.Center,
+                    turn * (a.Palm.position - small.Center)) < 0.00001f,
+                    "wrist twist orbits the contact anchor at " + twist, failures);
+                Check(Quaternion.Angle(turned.Palm.rotation, turn * a.Palm.rotation) < 0.02f
+                    && Vector3.Distance(turned.Wrist.position + turned.Wrist.rotation * anchor,
+                        turned.Palm.position) < 0.00001f,
+                    "twisted wrist keeps the calibrated palm pose at " + twist, failures);
+            }
+            var envelope = new GripReachEnvelope(0.3f, 0.3f);
+            Check(envelope.Contains(0.48f) && envelope.Contains(0.56f) && !envelope.Contains(0.6f)
+                && !envelope.Contains(0.01f), "safe reach excludes full extension and collapse", failures);
+            var planner = new GripReachPlanner();
+            var target = new LinearTarget { Center = new Vector3(0f, 1.4f, 0.45f) };
+            Vector3 shoulderLocal = new Vector3(0.15f, 1.4f, 0f);
+            GripReachPlan near = planner.Plan(new Pose(Vector3.zero, Quaternion.identity), shoulderLocal,
+                envelope, target, Vector3.zero, Quaternion.identity, Quaternion.identity, 0.003f);
+            Check(near.Valid && !near.RequiresWalking, "valid current stance does not walk", failures);
+            target.Center = new Vector3(0f, 1.4f, 3f);
+            GripReachPlan far = planner.Plan(new Pose(Vector3.zero, Quaternion.identity), shoulderLocal,
+                envelope, target, Vector3.zero, Quaternion.identity, Quaternion.identity, 0.003f);
+            Check(far.Valid && far.RequiresWalking, "far target finds bounded deterministic staging stance", failures);
+            if (far.Valid)
+            {
+                Vector3 shoulder = far.Root.position + far.Root.rotation * shoulderLocal;
+                for (int index = 0; index < GripReachPlanner.SampleCount; index++)
+                    Check(envelope.Contains(Vector3.Distance(shoulder, planner.GetSampleWrist(index))),
+                        "staging sample " + index + " is safely reachable", failures);
+            }
+            target.Center = new Vector3(0f, 5f, 3f);
+            GripReachPlan impossible = planner.Plan(new Pose(Vector3.zero, Quaternion.identity), shoulderLocal,
+                envelope, target, Vector3.zero, Quaternion.identity, Quaternion.identity, 0.003f);
+            Check(!impossible.Valid && impossible.Failure == GripPlanFailure.VerticalReachImpossible,
+                "planar walking cannot solve vertically impossible target", failures);
+        }
+
         private static HandGripJobJoint SyntheticJoint(Vector3 localPosition, float closedDegrees = 90f)
         {
             return new HandGripJobJoint
@@ -234,6 +350,7 @@ namespace DazPose.Performer.HandGrip
 
         private static void Check(bool condition, string description, List<string> failures)
         {
+            AssertionCount++;
             if (!condition) failures.Add("HandGrip: " + description + ".");
         }
     }

@@ -1,0 +1,335 @@
+2026-10-05T03:19:45.4891636Z
+PASS: 52 geometry, palm, reach and synthetic contact assertions
+
+Thumb: joints=3, probes=4, closed terminal=(0.53096, 1.02805, -3.46849)
+Index: joints=3, probes=4, closed terminal=(0.50888, 1.01987, -3.44558)
+Middle: joints=3, probes=4, closed terminal=(0.51083, 1.01829, -3.46577)
+Ring: joints=3, probes=4, closed terminal=(0.50920, 1.02050, -3.48362)
+Little: joints=3, probes=4, closed terminal=(0.51376, 1.02447, -3.50567)
+PASS: existing expression runtime regression checks.
+radius=0.015 p=0.00 error_mm=0.000 angle=0.000 contact=Contact curls=0.798/0.731/0.735/0.720/0.638
+ probe=0 radial=0.02939 allowed=0.02483 NearContact
+ probe=1 radial=0.02448 allowed=0.02292 NearContact
+ probe=2 radial=0.02418 allowed=0.02300 NearContact
+ probe=3 radial=0.02499 allowed=0.02500 NearContact
+ probe=4 radial=0.03619 allowed=0.02445 Clear
+ probe=5 radial=0.03846 allowed=0.02200 Clear
+ probe=6 radial=0.02945 allowed=0.02300 Clear
+ probe=7 radial=0.02499 allowed=0.02500 NearContact
+ probe=8 radial=0.04151 allowed=0.02512 Clear
+ probe=9 radial=0.04250 allowed=0.02220 Clear
+ probe=10 radial=0.03055 allowed=0.02300 Clear
+ probe=11 radial=0.02499 allowed=0.02500 NearContact
+ probe=12 radial=0.03619 allowed=0.02463 Clear
+ probe=13 radial=0.03771 allowed=0.02200 Clear
+ probe=14 radial=0.02890 allowed=0.02300 NearContact
+ probe=15 radial=0.02499 allowed=0.02500 NearContact
+ probe=16 radial=0.03157 allowed=0.02257 Clear
+ probe=17 radial=0.03308 allowed=0.02200 Clear
+ probe=18 radial=0.02741 allowed=0.02300 NearContact
+ probe=19 radial=0.02499 allowed=0.02500 NearContact
+radius=0.015 p=0.25 error_mm=0.000 angle=0.000 contact=Contact curls=0.798/0.731/0.735/0.720/0.638
+ probe=0 radial=0.02939 allowed=0.02483 NearContact
+ probe=1 radial=0.02447 allowed=0.02292 NearContact
+ probe=2 radial=0.02418 allowed=0.02300 NearContact
+ probe=3 radial=0.02499 allowed=0.02500 NearContact
+ probe=4 radial=0.03619 allowed=0.02445 Clear
+ probe=5 radial=0.03846 allowed=0.02200 Clear
+ probe=6 radial=0.02945 allowed=0.02300 Clear
+ probe=7 radial=0.02499 allowed=0.02500 NearContact
+ probe=8 radial=0.04151 allowed=0.02512 Clear
+ probe=9 radial=0.04250 allowed=0.02220 Clear
+ probe=10 radial=0.03055 allowed=0.02300 Clear
+ probe=11 radial=0.02499 allowed=0.02500 NearContact
+ probe=12 radial=0.03619 allowed=0.02463 Clear
+ probe=13 radial=0.03771 allowed=0.02200 Clear
+ probe=14 radial=0.02890 allowed=0.02300 NearContact
+ probe=15 radial=0.02499 allowed=0.02500 NearContact
+ probe=16 radial=0.03157 allowed=0.02257 Clear
+ probe=17 radial=0.03308 allowed=0.02200 Clear
+ probe=18 radial=0.02741 allowed=0.02300 NearContact
+ probe=19 radial=0.02499 allowed=0.02500 NearContact
+radius=0.015 p=0.50 error_mm=0.000 angle=0.000 contact=Contact curls=0.798/0.731/0.735/0.720/0.638
+ probe=0 radial=0.02939 allowed=0.02483 NearContact
+ probe=1 radial=0.02448 allowed=0.02292 NearContact
+ probe=2 radial=0.02418 allowed=0.02300 NearContact
+ probe=3 radial=0.02499 allowed=0.02500 NearContact
+ probe=4 radial=0.03619 allowed=0.02445 Clear
+ probe=5 radial=0.03846 allowed=0.02200 Clear
+ probe=6 radial=0.02945 allowed=0.02300 Clear
+ probe=7 radial=0.02499 allowed=0.02500 NearContact
+ probe=8 radial=0.04151 allowed=0.02512 Clear
+ probe=9 radial=0.04250 allowed=0.02220 Clear
+ probe=10 radial=0.03055 allowed=0.02300 Clear
+ probe=11 radial=0.02499 allowed=0.02500 NearContact
+ probe=12 radial=0.03619 allowed=0.02463 Clear
+ probe=13 radial=0.03771 allowed=0.02200 Clear
+ probe=14 radial=0.02890 allowed=0.02300 NearContact
+ probe=15 radial=0.02499 allowed=0.02500 NearContact
+ probe=16 radial=0.03157 allowed=0.02257 Clear
+ probe=17 radial=0.03308 allowed=0.02200 Clear
+ probe=18 radial=0.02741 allowed=0.02300 NearContact
+ probe=19 radial=0.02499 allowed=0.02500 NearContact
+radius=0.015 p=0.75 error_mm=0.000 angle=0.000 contact=Contact curls=0.798/0.731/0.735/0.720/0.638
+ probe=0 radial=0.02939 allowed=0.02483 NearContact
+ probe=1 radial=0.02447 allowed=0.02292 NearContact
+ probe=2 radial=0.02418 allowed=0.02300 NearContact
+ probe=3 radial=0.02499 allowed=0.02500 NearContact
+ probe=4 radial=0.03619 allowed=0.02445 Clear
+ probe=5 radial=0.03846 allowed=0.02200 Clear
+ probe=6 radial=0.02945 allowed=0.02300 Clear
+ probe=7 radial=0.02499 allowed=0.02500 NearContact
+ probe=8 radial=0.04151 allowed=0.02512 Clear
+ probe=9 radial=0.04250 allowed=0.02220 Clear
+ probe=10 radial=0.03055 allowed=0.02300 Clear
+ probe=11 radial=0.02499 allowed=0.02500 NearContact
+ probe=12 radial=0.03619 allowed=0.02463 Clear
+ probe=13 radial=0.03771 allowed=0.02200 Clear
+ probe=14 radial=0.02890 allowed=0.02300 NearContact
+ probe=15 radial=0.02499 allowed=0.02500 NearContact
+ probe=16 radial=0.03157 allowed=0.02257 Clear
+ probe=17 radial=0.03308 allowed=0.02200 Clear
+ probe=18 radial=0.02741 allowed=0.02300 NearContact
+ probe=19 radial=0.02499 allowed=0.02500 NearContact
+radius=0.015 p=1.00 error_mm=0.000 angle=0.000 contact=Contact curls=0.798/0.731/0.735/0.720/0.638
+ probe=0 radial=0.02939 allowed=0.02483 NearContact
+ probe=1 radial=0.02448 allowed=0.02292 NearContact
+ probe=2 radial=0.02418 allowed=0.02300 NearContact
+ probe=3 radial=0.02499 allowed=0.02500 NearContact
+ probe=4 radial=0.03619 allowed=0.02445 Clear
+ probe=5 radial=0.03846 allowed=0.02200 Clear
+ probe=6 radial=0.02945 allowed=0.02300 Clear
+ probe=7 radial=0.02499 allowed=0.02500 NearContact
+ probe=8 radial=0.04151 allowed=0.02512 Clear
+ probe=9 radial=0.04250 allowed=0.02220 Clear
+ probe=10 radial=0.03055 allowed=0.02300 Clear
+ probe=11 radial=0.02499 allowed=0.02500 NearContact
+ probe=12 radial=0.03619 allowed=0.02463 Clear
+ probe=13 radial=0.03771 allowed=0.02200 Clear
+ probe=14 radial=0.02890 allowed=0.02300 NearContact
+ probe=15 radial=0.02499 allowed=0.02500 NearContact
+ probe=16 radial=0.03157 allowed=0.02257 Clear
+ probe=17 radial=0.03308 allowed=0.02200 Clear
+ probe=18 radial=0.02741 allowed=0.02300 NearContact
+ probe=19 radial=0.02499 allowed=0.02500 NearContact
+radius=0.025 p=0.00 error_mm=0.000 angle=0.000 contact=Contact curls=0.711/0.602/0.620/0.594/0.503
+ probe=0 radial=0.03867 allowed=0.03483 NearContact
+ probe=1 radial=0.03593 allowed=0.03292 NearContact
+ probe=2 radial=0.03445 allowed=0.03300 NearContact
+ probe=3 radial=0.03499 allowed=0.03500 NearContact
+ probe=4 radial=0.04371 allowed=0.03445 Clear
+ probe=5 radial=0.04541 allowed=0.03200 Clear
+ probe=6 radial=0.03832 allowed=0.03300 NearContact
+ probe=7 radial=0.03499 allowed=0.03500 NearContact
+ probe=8 radial=0.04889 allowed=0.03512 Clear
+ probe=9 radial=0.04945 allowed=0.03220 Clear
+ probe=10 radial=0.03943 allowed=0.03300 Clear
+ probe=11 radial=0.03499 allowed=0.03500 NearContact
+ probe=12 radial=0.04436 allowed=0.03463 Clear
+ probe=13 radial=0.04529 allowed=0.03200 Clear
+ probe=14 radial=0.03806 allowed=0.03300 NearContact
+ probe=15 radial=0.03499 allowed=0.03500 NearContact
+ probe=16 radial=0.03953 allowed=0.03257 Clear
+ probe=17 radial=0.04082 allowed=0.03200 Clear
+ probe=18 radial=0.03664 allowed=0.03300 NearContact
+ probe=19 radial=0.03499 allowed=0.03500 NearContact
+radius=0.025 p=0.25 error_mm=0.000 angle=0.000 contact=Contact curls=0.711/0.602/0.620/0.594/0.503
+ probe=0 radial=0.03867 allowed=0.03483 NearContact
+ probe=1 radial=0.03593 allowed=0.03292 NearContact
+ probe=2 radial=0.03445 allowed=0.03300 NearContact
+ probe=3 radial=0.03499 allowed=0.03500 NearContact
+ probe=4 radial=0.04371 allowed=0.03445 Clear
+ probe=5 radial=0.04541 allowed=0.03200 Clear
+ probe=6 radial=0.03832 allowed=0.03300 NearContact
+ probe=7 radial=0.03499 allowed=0.03500 NearContact
+ probe=8 radial=0.04889 allowed=0.03512 Clear
+ probe=9 radial=0.04945 allowed=0.03220 Clear
+ probe=10 radial=0.03943 allowed=0.03300 Clear
+ probe=11 radial=0.03499 allowed=0.03500 NearContact
+ probe=12 radial=0.04436 allowed=0.03463 Clear
+ probe=13 radial=0.04529 allowed=0.03200 Clear
+ probe=14 radial=0.03806 allowed=0.03300 NearContact
+ probe=15 radial=0.03499 allowed=0.03500 NearContact
+ probe=16 radial=0.03953 allowed=0.03257 Clear
+ probe=17 radial=0.04082 allowed=0.03200 Clear
+ probe=18 radial=0.03664 allowed=0.03300 NearContact
+ probe=19 radial=0.03499 allowed=0.03500 NearContact
+radius=0.025 p=0.50 error_mm=0.000 angle=0.000 contact=Contact curls=0.711/0.602/0.620/0.594/0.503
+ probe=0 radial=0.03867 allowed=0.03483 NearContact
+ probe=1 radial=0.03593 allowed=0.03292 NearContact
+ probe=2 radial=0.03445 allowed=0.03300 NearContact
+ probe=3 radial=0.03499 allowed=0.03500 NearContact
+ probe=4 radial=0.04371 allowed=0.03445 Clear
+ probe=5 radial=0.04541 allowed=0.03200 Clear
+ probe=6 radial=0.03832 allowed=0.03300 NearContact
+ probe=7 radial=0.03499 allowed=0.03500 NearContact
+ probe=8 radial=0.04889 allowed=0.03512 Clear
+ probe=9 radial=0.04945 allowed=0.03220 Clear
+ probe=10 radial=0.03943 allowed=0.03300 Clear
+ probe=11 radial=0.03499 allowed=0.03500 NearContact
+ probe=12 radial=0.04437 allowed=0.03463 Clear
+ probe=13 radial=0.04529 allowed=0.03200 Clear
+ probe=14 radial=0.03806 allowed=0.03300 NearContact
+ probe=15 radial=0.03499 allowed=0.03500 NearContact
+ probe=16 radial=0.03953 allowed=0.03257 Clear
+ probe=17 radial=0.04082 allowed=0.03200 Clear
+ probe=18 radial=0.03664 allowed=0.03300 NearContact
+ probe=19 radial=0.03499 allowed=0.03500 NearContact
+radius=0.025 p=0.75 error_mm=0.000 angle=0.000 contact=Contact curls=0.711/0.602/0.620/0.594/0.503
+ probe=0 radial=0.03867 allowed=0.03483 NearContact
+ probe=1 radial=0.03593 allowed=0.03292 NearContact
+ probe=2 radial=0.03445 allowed=0.03300 NearContact
+ probe=3 radial=0.03499 allowed=0.03500 NearContact
+ probe=4 radial=0.04371 allowed=0.03445 Clear
+ probe=5 radial=0.04541 allowed=0.03200 Clear
+ probe=6 radial=0.03832 allowed=0.03300 NearContact
+ probe=7 radial=0.03499 allowed=0.03500 NearContact
+ probe=8 radial=0.04889 allowed=0.03512 Clear
+ probe=9 radial=0.04945 allowed=0.03220 Clear
+ probe=10 radial=0.03943 allowed=0.03300 Clear
+ probe=11 radial=0.03499 allowed=0.03500 NearContact
+ probe=12 radial=0.04437 allowed=0.03463 Clear
+ probe=13 radial=0.04530 allowed=0.03200 Clear
+ probe=14 radial=0.03807 allowed=0.03300 NearContact
+ probe=15 radial=0.03499 allowed=0.03500 NearContact
+ probe=16 radial=0.03953 allowed=0.03257 Clear
+ probe=17 radial=0.04082 allowed=0.03200 Clear
+ probe=18 radial=0.03664 allowed=0.03300 NearContact
+ probe=19 radial=0.03499 allowed=0.03500 NearContact
+radius=0.025 p=1.00 error_mm=0.000 angle=0.000 contact=Contact curls=0.711/0.602/0.620/0.594/0.503
+ probe=0 radial=0.03867 allowed=0.03483 NearContact
+ probe=1 radial=0.03593 allowed=0.03292 NearContact
+ probe=2 radial=0.03445 allowed=0.03300 NearContact
+ probe=3 radial=0.03499 allowed=0.03500 NearContact
+ probe=4 radial=0.04371 allowed=0.03445 Clear
+ probe=5 radial=0.04541 allowed=0.03200 Clear
+ probe=6 radial=0.03832 allowed=0.03300 NearContact
+ probe=7 radial=0.03499 allowed=0.03500 NearContact
+ probe=8 radial=0.04889 allowed=0.03512 Clear
+ probe=9 radial=0.04945 allowed=0.03220 Clear
+ probe=10 radial=0.03943 allowed=0.03300 Clear
+ probe=11 radial=0.03499 allowed=0.03500 NearContact
+ probe=12 radial=0.04437 allowed=0.03463 Clear
+ probe=13 radial=0.04530 allowed=0.03200 Clear
+ probe=14 radial=0.03807 allowed=0.03300 NearContact
+ probe=15 radial=0.03499 allowed=0.03500 NearContact
+ probe=16 radial=0.03953 allowed=0.03257 Clear
+ probe=17 radial=0.04082 allowed=0.03200 Clear
+ probe=18 radial=0.03664 allowed=0.03300 NearContact
+ probe=19 radial=0.03499 allowed=0.03500 NearContact
+radius=0.035 p=0.00 error_mm=0.000 angle=0.000 contact=Contact curls=0.656/0.504/0.530/0.500/0.409
+ probe=0 radial=0.04818 allowed=0.04483 NearContact
+ probe=1 radial=0.04697 allowed=0.04292 NearContact
+ probe=2 radial=0.04472 allowed=0.04300 NearContact
+ probe=3 radial=0.04499 allowed=0.04500 NearContact
+ probe=4 radial=0.05226 allowed=0.04445 Clear
+ probe=5 radial=0.05350 allowed=0.04200 Clear
+ probe=6 radial=0.04764 allowed=0.04300 NearContact
+ probe=7 radial=0.04499 allowed=0.04500 NearContact
+ probe=8 radial=0.05728 allowed=0.04512 Clear
+ probe=9 radial=0.05747 allowed=0.04220 Clear
+ probe=10 radial=0.04875 allowed=0.04300 NearContact
+ probe=11 radial=0.04499 allowed=0.04500 NearContact
+ probe=12 radial=0.05331 allowed=0.04463 Clear
+ probe=13 radial=0.05379 allowed=0.04200 Clear
+ probe=14 radial=0.04757 allowed=0.04300 NearContact
+ probe=15 radial=0.04499 allowed=0.04500 NearContact
+ probe=16 radial=0.04837 allowed=0.04257 NearContact
+ probe=17 radial=0.04950 allowed=0.04200 Clear
+ probe=18 radial=0.04621 allowed=0.04300 NearContact
+ probe=19 radial=0.04499 allowed=0.04500 NearContact
+radius=0.035 p=0.25 error_mm=0.000 angle=0.000 contact=Contact curls=0.656/0.504/0.530/0.500/0.409
+ probe=0 radial=0.04818 allowed=0.04483 NearContact
+ probe=1 radial=0.04697 allowed=0.04292 NearContact
+ probe=2 radial=0.04472 allowed=0.04300 NearContact
+ probe=3 radial=0.04499 allowed=0.04500 NearContact
+ probe=4 radial=0.05226 allowed=0.04445 Clear
+ probe=5 radial=0.05350 allowed=0.04200 Clear
+ probe=6 radial=0.04764 allowed=0.04300 NearContact
+ probe=7 radial=0.04499 allowed=0.04500 NearContact
+ probe=8 radial=0.05728 allowed=0.04512 Clear
+ probe=9 radial=0.05747 allowed=0.04220 Clear
+ probe=10 radial=0.04875 allowed=0.04300 NearContact
+ probe=11 radial=0.04499 allowed=0.04500 NearContact
+ probe=12 radial=0.05331 allowed=0.04463 Clear
+ probe=13 radial=0.05379 allowed=0.04200 Clear
+ probe=14 radial=0.04757 allowed=0.04300 NearContact
+ probe=15 radial=0.04499 allowed=0.04500 NearContact
+ probe=16 radial=0.04837 allowed=0.04257 NearContact
+ probe=17 radial=0.04950 allowed=0.04200 Clear
+ probe=18 radial=0.04621 allowed=0.04300 NearContact
+ probe=19 radial=0.04499 allowed=0.04500 NearContact
+radius=0.035 p=0.50 error_mm=0.000 angle=0.000 contact=Contact curls=0.656/0.504/0.530/0.500/0.409
+ probe=0 radial=0.04818 allowed=0.04483 NearContact
+ probe=1 radial=0.04697 allowed=0.04292 NearContact
+ probe=2 radial=0.04472 allowed=0.04300 NearContact
+ probe=3 radial=0.04499 allowed=0.04500 NearContact
+ probe=4 radial=0.05226 allowed=0.04445 Clear
+ probe=5 radial=0.05350 allowed=0.04200 Clear
+ probe=6 radial=0.04764 allowed=0.04300 NearContact
+ probe=7 radial=0.04499 allowed=0.04500 NearContact
+ probe=8 radial=0.05728 allowed=0.04512 Clear
+ probe=9 radial=0.05747 allowed=0.04220 Clear
+ probe=10 radial=0.04875 allowed=0.04300 NearContact
+ probe=11 radial=0.04499 allowed=0.04500 NearContact
+ probe=12 radial=0.05331 allowed=0.04463 Clear
+ probe=13 radial=0.05379 allowed=0.04200 Clear
+ probe=14 radial=0.04757 allowed=0.04300 NearContact
+ probe=15 radial=0.04499 allowed=0.04500 NearContact
+ probe=16 radial=0.04837 allowed=0.04257 NearContact
+ probe=17 radial=0.04950 allowed=0.04200 Clear
+ probe=18 radial=0.04621 allowed=0.04300 NearContact
+ probe=19 radial=0.04499 allowed=0.04500 NearContact
+radius=0.035 p=0.75 error_mm=0.000 angle=0.000 contact=Contact curls=0.656/0.504/0.530/0.500/0.409
+ probe=0 radial=0.04818 allowed=0.04483 NearContact
+ probe=1 radial=0.04697 allowed=0.04292 NearContact
+ probe=2 radial=0.04472 allowed=0.04300 NearContact
+ probe=3 radial=0.04499 allowed=0.04500 NearContact
+ probe=4 radial=0.05226 allowed=0.04445 Clear
+ probe=5 radial=0.05350 allowed=0.04200 Clear
+ probe=6 radial=0.04764 allowed=0.04300 NearContact
+ probe=7 radial=0.04499 allowed=0.04500 NearContact
+ probe=8 radial=0.05728 allowed=0.04512 Clear
+ probe=9 radial=0.05747 allowed=0.04220 Clear
+ probe=10 radial=0.04875 allowed=0.04300 NearContact
+ probe=11 radial=0.04499 allowed=0.04500 NearContact
+ probe=12 radial=0.05331 allowed=0.04463 Clear
+ probe=13 radial=0.05379 allowed=0.04200 Clear
+ probe=14 radial=0.04757 allowed=0.04300 NearContact
+ probe=15 radial=0.04499 allowed=0.04500 NearContact
+ probe=16 radial=0.04837 allowed=0.04257 NearContact
+ probe=17 radial=0.04950 allowed=0.04200 Clear
+ probe=18 radial=0.04621 allowed=0.04300 NearContact
+ probe=19 radial=0.04499 allowed=0.04500 NearContact
+radius=0.035 p=1.00 error_mm=0.000 angle=0.000 contact=Contact curls=0.656/0.504/0.530/0.500/0.409
+ probe=0 radial=0.04818 allowed=0.04483 NearContact
+ probe=1 radial=0.04697 allowed=0.04292 NearContact
+ probe=2 radial=0.04472 allowed=0.04300 NearContact
+ probe=3 radial=0.04499 allowed=0.04500 NearContact
+ probe=4 radial=0.05226 allowed=0.04445 Clear
+ probe=5 radial=0.05350 allowed=0.04200 Clear
+ probe=6 radial=0.04764 allowed=0.04300 NearContact
+ probe=7 radial=0.04499 allowed=0.04500 NearContact
+ probe=8 radial=0.05728 allowed=0.04512 Clear
+ probe=9 radial=0.05747 allowed=0.04220 Clear
+ probe=10 radial=0.04875 allowed=0.04300 NearContact
+ probe=11 radial=0.04499 allowed=0.04500 NearContact
+ probe=12 radial=0.05331 allowed=0.04463 Clear
+ probe=13 radial=0.05379 allowed=0.04200 Clear
+ probe=14 radial=0.04757 allowed=0.04300 NearContact
+ probe=15 radial=0.04499 allowed=0.04500 NearContact
+ probe=16 radial=0.04837 allowed=0.04257 NearContact
+ probe=17 radial=0.04950 allowed=0.04200 Clear
+ probe=18 radial=0.04621 allowed=0.04300 NearContact
+ probe=19 radial=0.04499 allowed=0.04500 NearContact
+tilt=0 twist=-20 error_mm=0.0002799674 contact=Contact
+tilt=0 twist=0 error_mm=0.0002384186 contact=Contact
+tilt=0 twist=20 error_mm=0.0002935188 contact=Contact
+tilt=30 twist=-20 error_mm=0.0001192093 contact=Contact
+tilt=30 twist=0 error_mm=0.000286242 contact=Contact
+tilt=30 twist=20 error_mm=0.0002149076 contact=Contact
+1000 evaluated IK/contact frames: 304.65 ms; main-thread managed allocation=0 bytes (editor graph evaluation, not player profiler).
+PASS: actual Generic arm position/orientation and valid contact, 15 radius/path combinations plus six tilt/twist combinations.
+
+CALIBRATION_CAPTURED: Genesis8Female/hip/abdomenLower/abdomenUpper/chestLower/chestUpper/rCollar/rShldrBend/rShldrTwist/rForearmBend/rForearmTwist/rHand
+Visual inward-curl approval remains required.

@@ -53,13 +53,22 @@ namespace DazPose.Performer.HandGrip
                 }
 
                 float solved = desiredCurl;
-                bool requestedPenetrates = desiredCurl > 0f && PosePenetrates(frame,
-                    handPosition, handRotation, weight, desiredCurl, clearance, nearContactDistance,
-                    digit, joints, probes, incomingRotations, default, false, out _);
+                // Bracket the first collision, not merely a penetrating endpoint:
+                // a highly curled digit can exit the cylinder on its far side.
+                float low = 0f;
+                float high = desiredCurl;
+                bool requestedPenetrates = false;
+                const int bracketSteps = 32;
+                for (int step = 1; step <= bracketSteps; step++)
+                {
+                    float candidate = desiredCurl * step / bracketSteps;
+                    if (PosePenetrates(frame, handPosition, handRotation, weight, candidate,
+                        clearance, nearContactDistance, digit, joints, probes, incomingRotations, default, false, out _))
+                    { high = candidate; requestedPenetrates = true; break; }
+                    low = candidate;
+                }
                 if (requestedPenetrates)
                 {
-                    float low = 0f;
-                    float high = desiredCurl;
                     for (int iteration = 0; iteration < iterations; iteration++)
                     {
                         float candidate = (low + high) * 0.5f;
@@ -141,8 +150,8 @@ namespace DazPose.Performer.HandGrip
             float gripWeight, float curl, HandGripJobProbe probe, HandGripJobDigit digit,
             NativeArray<HandGripJobJoint> joints, NativeArray<Quaternion> incomingRotations)
         {
-            Vector3 parentPosition = handPosition;
-            Quaternion parentRotation = handRotation;
+            Vector3 parentPosition = digit.HasParentPose ? digit.ParentPosition : handPosition;
+            Quaternion parentRotation = digit.HasParentPose ? digit.ParentRotation : handRotation;
             for (int jointIndex = digit.JointStart; jointIndex <= probe.JointIndex; jointIndex++)
             {
                 HandGripJobJoint joint = joints[jointIndex];

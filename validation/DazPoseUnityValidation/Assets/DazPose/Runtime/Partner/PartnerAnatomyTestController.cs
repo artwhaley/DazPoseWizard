@@ -214,9 +214,9 @@ namespace DazPose.UnityValidation.Partner
             return Vector3.Lerp(a, b, t);
         }
 
-        private void OnGUI()
+        public void DrawSmokeTestControls()
         {
-            GUILayout.BeginArea(new Rect(14, 14, 360, Screen.height - 28), "G8M Partner Anatomy Acceptance", GUI.skin.window);
+            GUILayout.Label("G8M Partner Anatomy Acceptance", GUI.skin.box);
             GUILayout.Label("Erection01: " + Erection01.ToString("0.00"));
             float next = GUILayout.HorizontalSlider(Erection01, 0f, 1f);
             if (!Mathf.Approximately(next, Erection01)) Erection01 = next;
@@ -268,7 +268,6 @@ namespace DazPose.UnityValidation.Partner
             pelvisTest = GUILayout.HorizontalSlider(pelvisTest, 0f, 1f);
             GUILayout.Label("main pelvis: small translation + 10° rotation; donor follows explicitly");
             if (GUILayout.Button("Restore canonical erect state")) Restore();
-            GUILayout.EndArea();
         }
 
         private void DrawAngleControl(string label, float current, Action<float> setter)

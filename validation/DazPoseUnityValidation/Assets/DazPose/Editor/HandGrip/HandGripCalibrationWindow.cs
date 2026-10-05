@@ -25,7 +25,7 @@ namespace DazPose.Editor.HandGrip
         private bool _previewActive;
         private Vector2 _scroll;
 
-        [MenuItem("Tools/DAZ Pose/HandGrip/Open Calibration Window")]
+        [MenuItem("Tools/DAZ Pose/Handjob/Open Calibration Window")]
         public static void Open()
         {
             HandGripCalibrationWindow window = GetWindow<HandGripCalibrationWindow>("Hand Grip Calibration");
@@ -34,7 +34,7 @@ namespace DazPose.Editor.HandGrip
             window.Show();
         }
 
-        [MenuItem("Tools/DAZ Pose/HandGrip/Capture Lara Right Hand Profile From Selection")]
+        [MenuItem("Tools/DAZ Pose/Handjob/Capture Lara Right Hand Profile From Selection")]
         public static void CaptureProfileFromSelection()
         {
             Animator animator = Selection.activeGameObject != null
@@ -139,7 +139,36 @@ namespace DazPose.Editor.HandGrip
             }
         }
 
-        private void OnDisable() => RestorePreview();
+        private void OnEnable() => SceneView.duringSceneGui += DrawPalmCalibration;
+        private void OnDisable()
+        {
+            SceneView.duringSceneGui -= DrawPalmCalibration;
+            RestorePreview();
+        }
+
+        private void DrawPalmCalibration(SceneView view)
+        {
+            if (_profile == null || _animator == null || EditorApplication.isPlaying) return;
+            Transform hand = _animator.transform.Find(_profile.HandPath);
+            if (hand == null) return;
+            Vector3 position = hand.TransformPoint(_profile.PalmAnchorLocalPosition);
+            Quaternion rotation = hand.rotation * _profile.PalmAnchorLocalRotation;
+            Handles.color = Color.cyan;
+            Handles.DrawLine(hand.position, position);
+            Handles.ArrowHandleCap(0, position, rotation, 0.05f, EventType.Repaint);
+            Handles.color = Color.green;
+            Handles.DrawLine(position, position + rotation * Vector3.up * 0.05f);
+            EditorGUI.BeginChangeCheck();
+            Vector3 moved = Handles.PositionHandle(position, rotation);
+            Quaternion rotated = Handles.RotationHandle(rotation, moved);
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_profile, "Calibrate Palm Anchor");
+                _profile.ConfigurePalmForEditor(hand.InverseTransformPoint(moved),
+                    Quaternion.Inverse(hand.rotation) * rotated, _profile.GripFrameCalibration);
+                EditorUtility.SetDirty(_profile);
+            }
+        }
 
         private void TryResolveSelection()
         {
@@ -296,6 +325,17 @@ namespace DazPose.Editor.HandGrip
             Vector3 palmCenter = (rootPositions[(int)HandGripDigit.Index]
                 + rootPositions[(int)HandGripDigit.Little] + hand.position) / 3f;
 
+            // The thumb lies on the contact side of the palm plane in the imported
+            // reference pose. Unlike distance to an in-plane point, this establishes
+            // an anatomical half-space shared by all four wrapping fingers.
+            Vector3 fingerDirection = (digitBones[(int)HandGripDigit.Middle][2].position
+                - digitBones[(int)HandGripDigit.Middle][0].position).normalized;
+            Vector3 inward = Vector3.Cross(fingerDirection, acrossPalm).normalized;
+            Vector3 thumbSide = digitBones[(int)HandGripDigit.Thumb][1].position - palmCenter;
+            if (Mathf.Abs(Vector3.Dot(inward, thumbSide)) < 0.0001f)
+                throw new InvalidOperationException("Reference thumb does not establish a palm contact side; calibrate from a neutral open hand.");
+            if (Vector3.Dot(inward, thumbSide) < 0f) inward = -inward;
+
             for (int digitIndex = 0; digitIndex < Digits.Length; digitIndex++)
             {
                 Transform[] bones = digitBones[digitIndex];
@@ -303,28 +343,48 @@ namespace DazPose.Editor.HandGrip
                 Vector3[] localPositions = new Vector3[bones.Length];
                 Quaternion[] open = new Quaternion[bones.Length];
                 Quaternion[] positive = new Quaternion[bones.Length];
-                Quaternion[] negative = new Quaternion[bones.Length];
                 Vector3[] flexAxes = new Vector3[bones.Length];
-                float[] flexDegrees = { 55f, 55f, 35f };
+                float[] flexDegrees = digitIndex == (int)HandGripDigit.Thumb
+                    ? new[] { 100f, 65f, 55f } : new[] { 85f, 95f, 65f };
+                // Thumb starts on the other side of the cylinder and bends in the
+                // opposite cross-sectional direction, like holding a drinking glass.
+                Vector3 opposedDirection = -Vector3.Cross(-inward, acrossPalm).normalized;
+                Vector3 thumbWrapAxis = Vector3.Cross(opposedDirection, inward).normalized;
+                Quaternion thumbOpenWorld = bones[0].parent.rotation;
                 for (int jointIndex = 0; jointIndex < bones.Length; jointIndex++)
                 {
                     Transform bone = bones[jointIndex];
                     paths[jointIndex] = HierarchyPath(animator.transform, bone);
                     localPositions[jointIndex] = bone.localPosition;
                     open[jointIndex] = bone.localRotation;
-                    flexAxes[jointIndex] = bone.InverseTransformDirection(acrossPalm).normalized;
+                    if (digitIndex == (int)HandGripDigit.Thumb)
+                    {
+                        if (jointIndex == 0)
+                        {
+                            Quaternion worldOpen = Quaternion.FromToRotation(
+                                bones[1].position - bone.position, opposedDirection) * bone.rotation;
+                            open[jointIndex] = Quaternion.Inverse(bone.parent.rotation) * worldOpen;
+                        }
+                        thumbOpenWorld *= open[jointIndex];
+                        flexAxes[jointIndex] = Quaternion.Inverse(thumbOpenWorld) * thumbWrapAxis;
+                        positive[jointIndex] = open[jointIndex]
+                            * Quaternion.AngleAxis(flexDegrees[jointIndex], flexAxes[jointIndex]);
+                        continue;
+                    }
+                    Vector3 direction = jointIndex < bones.Length - 1
+                        ? bones[jointIndex + 1].position - bone.position
+                        : bone.position - bones[jointIndex - 1].position;
+                    Vector3 toward = inward;
+                    Vector3 axis = Vector3.Cross(direction.normalized, toward.normalized);
+                    if (axis.sqrMagnitude < 1e-8f)
+                        throw new InvalidOperationException("Cannot establish inward flexion for " + bone.name);
+                    flexAxes[jointIndex] = bone.InverseTransformDirection(axis.normalized);
                     positive[jointIndex] = open[jointIndex]
                         * Quaternion.AngleAxis(flexDegrees[jointIndex], flexAxes[jointIndex]);
-                    negative[jointIndex] = open[jointIndex]
-                        * Quaternion.AngleAxis(-flexDegrees[jointIndex], flexAxes[jointIndex]);
                 }
 
                 Vector3 terminalOffset = EstimateTerminalOffset(bones);
-                float positiveDistance = EstimateTipDistance(hand, bones, localPositions,
-                    positive, terminalOffset, palmCenter);
-                float negativeDistance = EstimateTipDistance(hand, bones, localPositions,
-                    negative, terminalOffset, palmCenter);
-                Quaternion[] closed = positiveDistance <= negativeDistance ? positive : negative;
+                Quaternion[] closed = positive;
 
                 var probes = new List<HandGripProbeDefinition>(4);
                 for (int jointIndex = 0; jointIndex < bones.Length - 1; jointIndex++)
@@ -348,7 +408,14 @@ namespace DazPose.Editor.HandGrip
             Vector3 centerLocal = hand.InverseTransformPoint(gripCenterWorld);
             profile.ConfigureForEditor(HierarchyPath(animator.transform, hand), digitProfiles,
                 centerLocal, Quaternion.identity, clearance: 0.003f, nearDistance: 0.006f,
-                blendIn: 0.25f, blendOut: 0.25f, iterations: 7);
+                blendIn: 0.3f, blendOut: 0.3f, iterations: 10);
+            // Canonical anchor forward follows the cylinder; up points away from
+            // its axis. Finger extension points around the cylinder, toward contact.
+            Vector3 longitudinal = acrossPalm;
+            Vector3 outward = -inward;
+            Quaternion anchorWorld = Quaternion.LookRotation(longitudinal, outward);
+            profile.ConfigurePalmForEditor(hand.InverseTransformPoint(palmCenter + inward * 0.008f),
+                Quaternion.Inverse(hand.rotation) * anchorWorld, Quaternion.identity);
         }
 
         private static float EstimateProbeRadius(Transform from, Transform to, float fraction)
@@ -371,8 +438,8 @@ namespace DazPose.Editor.HandGrip
             Vector3[] localPositions, Quaternion[] localRotations, Vector3 terminalOffset,
             Vector3 target)
         {
-            Vector3 parentPosition = hand.position;
-            Quaternion parentRotation = hand.rotation;
+            Vector3 parentPosition = bones[0].parent.position;
+            Quaternion parentRotation = bones[0].parent.rotation;
             for (int index = 0; index < bones.Length; index++)
             {
                 parentPosition += parentRotation * localPositions[index];

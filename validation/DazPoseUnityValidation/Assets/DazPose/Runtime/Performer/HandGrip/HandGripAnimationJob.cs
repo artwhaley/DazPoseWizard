@@ -6,7 +6,7 @@ namespace DazPose.Performer.HandGrip
 {
     internal struct HandGripAnimationJob : IAnimationJob
     {
-        [ReadOnly] public NativeArray<HandGripJobDigit> Digits;
+        public NativeArray<HandGripJobDigit> Digits;
         [ReadOnly] public NativeArray<HandGripJobProbe> Probes;
         public NativeArray<HandGripJobJoint> Joints;
         public NativeArray<Quaternion> IncomingRotations;
@@ -21,6 +21,10 @@ namespace DazPose.Performer.HandGrip
         public float NearContactDistance;
         public int BinarySearchIterations;
         public bool Enabled;
+        public UnityEngine.Animations.Rigging.FloatProperty ArmEvaluationMarker;
+        public bool CalibrationMode;
+        public Vector4 RawCurls;
+        public float LittleCurl;
 
         public void ProcessRootMotion(AnimationStream stream)
         {
@@ -28,9 +32,15 @@ namespace DazPose.Performer.HandGrip
 
         public void ProcessAnimation(AnimationStream stream)
         {
-            if (!stream.isValid || !Enabled || !Frame.IsValid || GripWeight <= 0f
+            if (!stream.isValid || !Enabled || (!CalibrationMode && !Frame.IsValid) || GripWeight <= 0f
                 || !HandHandle.IsValid(stream)) return;
 
+            if (!CalibrationMode && ArmEvaluationMarker.Get(stream) < 0.5f)
+            {
+                for (int digit = 0; digit < DigitStatuses.Length; digit++)
+                    DigitStatuses[digit] = HandGripStatus.InvalidProfile;
+                return;
+            }
             bool allHandlesValid = true;
             for (int index = 0; index < Joints.Length; index++)
             {
@@ -42,12 +52,35 @@ namespace DazPose.Performer.HandGrip
                     continue;
                 }
                 IncomingRotations[index] = joint.Handle.GetLocalRotation(stream);
+                joint.LocalPosition = joint.Handle.GetLocalPosition(stream);
+                Joints[index] = joint;
             }
             if (!allHandlesValid) return;
 
             Vector3 handPosition = HandHandle.GetPosition(stream);
             Quaternion handRotation = HandHandle.GetRotation(stream);
-            HandGripSolver.Solve(Frame, handPosition, handRotation, GripWeight, GripStrength,
+            for (int index = 0; index < Digits.Length; index++)
+            {
+                HandGripJobDigit digit = Digits[index];
+                if (!digit.ParentHandle.IsValid(stream))
+                {
+                    DigitStatuses[index] = HandGripStatus.InvalidProfile;
+                    return;
+                }
+                digit.ParentPosition = digit.ParentHandle.GetPosition(stream);
+                digit.ParentRotation = digit.ParentHandle.GetRotation(stream);
+                digit.HasParentPose = true;
+                Digits[index] = digit;
+            }
+            if (CalibrationMode)
+            {
+                for (int index = 0; index < Digits.Length; index++)
+                {
+                    SolvedCurls[index] = Mathf.Clamp01(index < 4 ? RawCurls[index] : LittleCurl);
+                    DigitStatuses[index] = HandGripStatus.Clear;
+                }
+            }
+            else HandGripSolver.Solve(Frame, handPosition, handRotation, GripWeight, GripStrength,
                 ContactClearance, NearContactDistance, BinarySearchIterations, Digits,
                 Joints, Probes, IncomingRotations, SolvedCurls, DigitStatuses, ProbeDiagnostics);
 

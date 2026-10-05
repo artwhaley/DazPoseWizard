@@ -18,6 +18,33 @@ namespace DazPose.Performer.HandGrip
         [SerializeField, Min(0f)] private float releaseSeconds = 0.25f;
         [SerializeField, Range(1, 16)] private int binarySearchIterations = 7;
 
+        [SerializeField] private Vector3 palmAnchorLocalPosition;
+        [SerializeField] private Quaternion palmAnchorLocalRotation = Quaternion.identity;
+        [SerializeField] private Quaternion gripFrameCalibration = Quaternion.identity;
+        [SerializeField] private Vector3 elbowHintLocalDirection = new Vector3(1f, -0.6f, -0.5f);
+        [SerializeField, Min(0f)] private float palmClearance = 0.003f;
+        [SerializeField, Range(0f, 1f)] private float minimumReachFraction = 0.2f;
+        [SerializeField, Range(0f, 1f)] private float maximumReachFraction = 0.95f;
+        [SerializeField, Range(0f, 1f)] private float preferredReachFraction = 0.8f;
+
+        public Vector3 PalmAnchorLocalPosition => palmAnchorLocalPosition;
+        public Quaternion PalmAnchorLocalRotation => palmAnchorLocalRotation;
+        public Quaternion GripFrameCalibration => gripFrameCalibration;
+        public Vector3 ElbowHintLocalDirection => elbowHintLocalDirection;
+        public float PalmClearance => palmClearance;
+        public float MinimumReachFraction => minimumReachFraction;
+        public float MaximumReachFraction => maximumReachFraction;
+        public float PreferredReachFraction => preferredReachFraction;
+        public GripPalmTarget EvaluatePalm(GripFrame frame, float twist = 0f) => GripPalmTarget.Evaluate(
+            frame, palmAnchorLocalPosition, palmAnchorLocalRotation, gripFrameCalibration, palmClearance, twist);
+
+        public void ConfigurePalmForEditor(Vector3 position, Quaternion rotation, Quaternion calibration)
+        {
+            palmAnchorLocalPosition = position;
+            palmAnchorLocalRotation = rotation.normalized;
+            gripFrameCalibration = calibration.normalized;
+        }
+
         public string HandPath => handPath;
         public HandGripDigitProfile[] Digits => digits ?? Array.Empty<HandGripDigitProfile>();
         public Vector3 GripCenterLocalPosition => gripCenterLocalPosition;
@@ -102,7 +129,7 @@ namespace DazPose.Performer.HandGrip
                         reason = digit.Digit + " joint '" + bone.name + "' is outside the configured hand subtree.";
                         return false;
                     }
-                    if (previousJoint != null && !bone.IsChildOf(previousJoint))
+                    if (previousJoint != null && bone.parent != previousJoint)
                     {
                         reason = digit.Digit + " joints are not ordered from proximal to distal.";
                         return false;
@@ -130,6 +157,15 @@ namespace DazPose.Performer.HandGrip
                 || !GripFrame.IsFinite(releaseSeconds) || releaseSeconds < 0f)
             {
                 reason = "Clearance, contact range and blend durations must be finite and nonnegative.";
+                return false;
+            }
+            if (!IsFinite(palmAnchorLocalPosition) || !IsFinite(palmAnchorLocalRotation)
+                || !IsFinite(gripFrameCalibration) || !IsFinite(elbowHintLocalDirection)
+                || elbowHintLocalDirection.sqrMagnitude < 1e-8f || !GripFrame.IsFinite(palmClearance)
+                || palmClearance < 0f || minimumReachFraction < 0f || maximumReachFraction >= 1f
+                || minimumReachFraction >= preferredReachFraction || preferredReachFraction >= maximumReachFraction)
+            {
+                reason = "Invalid palm, hint or safe reach calibration.";
                 return false;
             }
             reason = null;

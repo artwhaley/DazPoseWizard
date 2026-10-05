@@ -1,0 +1,545 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.5/staging' branch; Version is '6000.5.9f1 (b57deb96f08d) revision 11894251'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'en' Physical Memory: 31861 MB
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-artwh" at "2026-10-04T19:00:46.2169803Z"
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-10-04T19:00:46Z
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Unity.exe
+-batchmode
+-force-d3d11
+-projectPath
+C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation
+-executeMethod
+DazPose.UnityValidation.LaraWardrobeMotionDiagnostics.RunSecondOutfit
+-logFile
+C:\Users\artwh\OneDrive\Documents\DazPoseWizard\TestOutput\second-outfit-footwear-motion.log
+Successfully changed project path to: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation
+C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/p0c-native-generation
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=0"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.Player connection [13836]  Target information:
+
+Player connection [13836]  * "[IP] 192.168.0.102 [Port] 55505 [Flags] 2 [Guid] 867731689 [EditorId] 867731689 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-MQUSNML) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [13836] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [13836] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 67516, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              2687a6175a0c4f30b20b2611e434ce9e
+  Correlation Id:          84d56e9fda93b96851beaee8aae988e8
+  External correlation Id: 2715511244275192552
+  Machine Id:              uMYvu+fANik4mYyGQuRzt3fcWno=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-artwh" (connect: 0.00s, validation: 0.00s, handshake: 0.03s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-artwh-notifications" at "2026-10-04T19:00:46.2471012Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 2879081-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.03s
+[Package Manager] Connected to IPC stream "Upm-29596" after 0.2 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Artifact Garbage Collection - Removed 1 unused hashed content files
+Initialize engine version: 6000.5.9f1 (b57deb96f08d)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/p0c-native-generation/Assets
+Forcing GfxDevice: Direct3D 11
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 4060 Ti (ID=0x2803)
+    Vendor:   NVIDIA
+    VRAM:     7949 MB
+    Driver:   32.0.15.6094
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56596
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.002198 seconds.
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.519 seconds
+Domain Reload Profiling: 926ms
+	BeginReloadAssembly (117ms)
+		CreateAndSetChildDomain (18ms)
+	RebuildCommonClasses (4ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (51ms)
+	LoadAllAssembliesAndSetupDomain (220ms)
+		LoadAssemblies (97ms)
+		AnalyzeDomain (160ms)
+			TypeCache.Refresh (159ms)
+				TypeCache.ScanAssembly (148ms)
+	FinalizeReload (520ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (64ms)
+			ProcessInitializeOnLoadAttributes (73ms)
+			ProcessInitializeOnLoadMethodAttributes (327ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 34 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.ai.assistant@2.20.0-pre.1 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.ai.assistant@ceb45b7b3ebd)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64)
+    com.unity.burst@1.8.30 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.burst@2f3d916873ea)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.test-framework.performance@3.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.test-framework.performance@8b56083ec0f0)
+    com.unity.searcher@4.9.5 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.searcher@a463122f2c00)
+  Built-in packages:
+    com.unity.collections@6.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.collections@ec2c217e4cb2)
+    com.unity.render-pipelines.high-definition@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.render-pipelines.high-definition@6461a40020a9)
+    com.unity.ugui@2.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.ugui@1c4864518158)
+    com.unity.modules.animation@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.cloth@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.imgui@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.ui@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.audio@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.physics2d@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.video@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.render-pipelines.core@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.render-pipelines.core@a4c9a9793789)
+    com.unity.shadergraph@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.shadergraph@8d7376ec43ee)
+    com.unity.visualeffectgraph@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.visualeffectgraph@b1f03b147b92)
+    com.unity.render-pipelines.high-definition-config@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.render-pipelines.high-definition-config@77f033cbf9c5)
+    com.unity.test-framework@1.7.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.test-framework@1405238725ab)
+    com.unity.2d.sprite@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.2d.sprite@053a968eab56)
+    com.unity.mathematics@1.4.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.mathematics@981956d94fb6)
+    com.unity.modules.uielements@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.modules.terrain@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.ext.nunit@2.1.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.ext.nunit@44f7d31723bd)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.hierarchycore)
+  Embedded packages:
+    com.dazpose.buttplug-csharp@file:C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Packages\com.dazpose.buttplug-csharp (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Packages\com.dazpose.buttplug-csharp)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/p0c-native-generation
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 3s486ms
+[ 833/1078  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[1074/1078  1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+Assets\DazPose\Editor\DazGraftPairProbe.cs(45,91): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\DazPose\Editor\DazGraftPairProbe.cs(45,33): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\DazPose\Editor\LaraCandidateRenderValidation.cs(97,113): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\DazPose\Editor\LaraCandidateRenderValidation.cs(97,38): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+[1075/1078  1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 140 defines and 345 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+[1076/1078  0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[1077/1078  0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (3.43 seconds), 5 items updated, 1078 evaluated
+Assets\DazPose\Editor\DazGraftPairProbe.cs(45,91): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\DazPose\Editor\DazGraftPairProbe.cs(45,33): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\DazPose\Editor\LaraCandidateRenderValidation.cs(97,113): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\DazPose\Editor\LaraCandidateRenderValidation.cs(97,38): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Total cache size 268092378
+Total cache size after purge 268092378, took 00:00:00.2207978
+AssetDatabase: script compilation time: 4.080042s
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  3.832 seconds
+Domain Reload Profiling: 4680ms
+	BeginReloadAssembly (165ms)
+		DisableScriptedObjects (18ms)
+		CreateAndSetChildDomain (31ms)
+	RebuildCommonClasses (7ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (61ms)
+	LoadAllAssembliesAndSetupDomain (597ms)
+		LoadAssemblies (335ms)
+		AnalyzeDomain (241ms)
+			TypeCache.Refresh (187ms)
+				TypeCache.ScanAssembly (175ms)
+			BuildScriptInfoCaches (47ms)
+			ResolveRequiredComponents (6ms)
+	FinalizeReload (3837ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (73ms)
+			ProcessInitializeOnLoadAttributes (2569ms)
+			ProcessInitializeOnLoadMethodAttributes (873ms)
+			AfterProcessingInitializeOnLoad (6ms)
+		AwakeInstancesAfterBackupRestoration (45ms)
+Starting new worker id: 0 with log in C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/p0c-native-generation/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=ae75a92153f814a41a0edfca891ff089): Total: 10.124 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=4554 ms
+		Asset DB Callback time: managed=525 ms, native=18 ms
+		Scripting: domain reloads=1, domain reload time=888 ms, compile time=4085 ms, other=51 ms
+		Project Asset Count: scripts=1891, non-scripts=5036
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 14.993ms
+	ApplyChangesToAssetFolders: 0.707ms
+	Scan: 179.065ms
+	Collect global state as custom dependencies: 23.307ms
+	OnSourceAssetsModified: 0.546ms
+	CategorizeScriptCompilationAssets: 45.997ms
+	ProcessAssetsWithTransientArtifactChanges: 73.808ms
+	CategorizeAssets: 112.311ms
+	CompileScripts: 4085.241ms
+	ImportOutOfDateAssets: 3958.103ms (3852.214ms without children)
+		UnloadImportedAssets: 2.336ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.803ms
+		ImportSchedulerStart: 102.707ms
+	PostProcessAllAssets: 528.211ms
+		VCAutoAddAssetPostprocess 2.346ms
+		MonoPostProcessAllAssets: 525.251ms
+			AssetPostprocessor.OnPostprocessAllAssets 116.991ms
+			AssetReferenceReimportMonitor.OnPostprocessAllAssets 36.540ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 18.463ms
+			HDRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 14.796ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 9.556ms
+			MaterialPostprocessor.OnPostprocessAllAssets 4.579ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 3.329ms
+			SyncVS.PostprocessSyncProject 3.117ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.882ms
+			VersionUpdater.OnPostprocessAllAssets 2.758ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 2.702ms
+			AssetChangedListener.OnPostprocessAllAssets 2.040ms
+			GraphRefreshPostprocessor.OnPostprocessAllAssets 1.870ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 1.841ms
+			AssetChangeDetector.OnPostprocessAllAssets 1.795ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.643ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.327ms
+			DazPoseBrowserImportPostprocessor.OnPostprocessAllAssets 1.252ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 1.146ms
+			VFXGraphPreprocessor.OnPostprocessAllAssets 1.067ms
+			SampleDependencyImporterPostProcessor.OnPostprocessAllAssets 0.604ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.592ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.527ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.453ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.427ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.402ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.401ms
+			SkillsProjectAssetPostprocessor.OnPostprocessAllAssets 0.396ms
+			ZombieFileCleanup.OnPostprocessAllAssets 0.378ms
+			PostProcessor.OnPostprocessAllAssets 0.378ms
+			AssetEvents.OnPostprocessAllAssets 0.376ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.265ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.265ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.239ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.211ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.193ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.125ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.094ms
+			TrackSelectedAssetsProcessor.OnPostprocessAllAssets 0.058ms
+	PostAssetChangesProfiler: 2.435ms
+	UnloadStreamsBegin: 1.801ms
+	PersistCurrentRevisions: 0.201ms
+	GenerateScriptTypeHashes: 4.468ms
+	GenerateScriptTypeSerializationHashes: 7.554ms
+	Untracked: 1093.513ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 20.698ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-DazPoseUnityValidation
+Unloading 155 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 6698 unused Assets / (26.3 MB). Loaded Objects now: 7889.
+Memory consumption went from 0.61 GB to 0.59 GB.
+Total: 24.372500 ms (FindLiveObjects: 0.631500 ms CreateObjectMapping: 1.554900 ms MarkObjects: 12.929800 ms  DeleteObjects: 9.254400 ms)
+
+Opening scene 'Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity'
+Worker ready: AssetImportWorkerHW0 0
+Unloading 91 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity'
+	Deserialize:            5050.103 ms
+	Integration:            6267.666 ms
+	Integration of assets:  17.482 ms
+	Thread Wait Time:       -0.290 ms
+	Total Operation Time:   11334.961 ms
+Unloading 3 unused Assets / (44.9 KB). Loaded Objects now: 9791.
+Memory consumption went from 0.82 GB to 0.82 GB.
+Total: 15.602000 ms (FindLiveObjects: 0.858600 ms CreateObjectMapping: 0.668800 ms MarkObjects: 13.954500 ms  DeleteObjects: 0.118600 ms)
+
+[Project] Loading completed in 24.332 seconds
+	Project init time: 				12.332 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		0.212 seconds
+		Asset Database init time: 		0.166 seconds
+		Global illumination init time: 	0.004 seconds
+		Assemblies load time: 			1.027 seconds
+		Unity extensions init time: 	0.015 seconds
+		Asset Database refresh time: 	10.125 seconds
+	Scene opening time: 			11.531 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1791140470147,"processId":29596,"projectLoad":24.332017200000004,"projectInit":12.3320785,"templateInit":0.0,"packageManagerInit":0.2116399,"assetDatabaseInit":0.1658146,"globalIlluminationInit":0.0037413,"assembliesLoad":1.0271973,"unityExtensionsInit":0.01498,"assetDatabaseRefresh":10.124595,"sceneOpening":11.5313704}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1791140470147,"processId":29596,"editorVersion":"6000.5.9f1 (b57deb96f08d)","branch":"6000.5/staging","buildType":"Release","platform":"Windows"}
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  1.108 seconds
+Domain Reload Profiling: 1879ms
+	BeginReloadAssembly (508ms)
+		DisableScriptedObjects (40ms)
+		CreateAndSetChildDomain (339ms)
+	RebuildCommonClasses (7ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (66ms)
+	LoadAllAssembliesAndSetupDomain (176ms)
+		LoadAssemblies (136ms)
+		AnalyzeDomain (16ms)
+			TypeCache.Refresh (6ms)
+			ResolveRequiredComponents (6ms)
+	FinalizeReload (1109ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (70ms)
+			ProcessInitializeOnLoadAttributes (376ms)
+			ProcessInitializeOnLoadMethodAttributes (266ms)
+			AfterProcessingInitializeOnLoad (6ms)
+		AwakeInstancesAfterBackupRestoration (95ms)
+No restricted APIs configured; Validation skipped.
+Checking 29 assemblies for restricted APIs found 0 usage(s) in 2 ms
+
+Asset Pipeline Refresh (id=803f433a1c9a17e46ad2216b988219b2): Total: 3.169 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=1458 ms
+		Asset DB Callback time: managed=507 ms, native=294 ms
+		Scripting: domain reloads=1, domain reload time=906 ms, compile time=2 ms, other=0 ms
+		Project Asset Count: scripts=1891, non-scripts=5036
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 2.123ms
+	ApplyChangesToAssetFolders: 0.236ms
+	Collect global state as custom dependencies: 2.812ms
+	ProcessAssetsWithTransientArtifactChanges: 134.246ms
+	CategorizeAssets: 91.458ms
+	CompileScripts: 1.818ms
+	ImportOutOfDateAssets: 1183.247ms (1119.890ms without children)
+		CollectScriptTypesHashes: 3.227ms
+		ReloadNativeAssets: 2.085ms
+		UnloadImportedAssets: 0.133ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.834ms
+		ImportSchedulerStart: 60.266ms
+	PostProcessAllAssets: 799.554ms
+		AssemblyValidation.PostprocessAllAssets 26.878ms
+		PostProcessCallbackCreateDeferredMaterials 23.827ms
+		ShaderAssetModifiedCallback 13.246ms
+		RaytracingShaderImportPostprocess 4.844ms
+		ComputeShaderImportPostprocess 4.704ms
+		SpeedTreeImporter.PostprocessAllAssets 4.016ms
+		BlockShaderImporter.PostprocessAllAssets 2.879ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 2.384ms
+		MonoPostProcessAllAssets: 507.170ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 144.567ms
+			PostProcessor.OnPostprocessAllAssets 35.841ms
+			AssetReferenceReimportMonitor.OnPostprocessAllAssets 28.000ms
+			AssetPostprocessor.OnPostprocessAllAssets 22.192ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 13.661ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 13.559ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 12.767ms
+			HDRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 9.530ms
+			AssetChangedListener.OnPostprocessAllAssets 9.433ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 4.389ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 3.996ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 3.338ms
+			SyncVS.PostprocessSyncProject 3.049ms
+			MaterialPostprocessor.OnPostprocessAllAssets 3.013ms
+			VersionUpdater.OnPostprocessAllAssets 2.514ms
+			GraphRefreshPostprocessor.OnPostprocessAllAssets 1.574ms
+			VFXGraphPreprocessor.OnPostprocessAllAssets 1.315ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.311ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 1.121ms
+			AssetChangeDetector.OnPostprocessAllAssets 0.734ms
+			SkillsProjectAssetPostprocessor.OnPostprocessAllAssets 0.729ms
+			DazPoseBrowserImportPostprocessor.OnPostprocessAllAssets 0.722ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.600ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.462ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.408ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.343ms
+			SampleDependencyImporterPostProcessor.OnPostprocessAllAssets 0.270ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.256ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.221ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.217ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.207ms
+			ZombieFileCleanup.OnPostprocessAllAssets 0.186ms
+			AssetEvents.OnPostprocessAllAssets 0.181ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.174ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.124ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.100ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.099ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.056ms
+			TrackSelectedAssetsProcessor.OnPostprocessAllAssets 0.055ms
+	PostAssetChangesProfiler: 1.832ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.401ms
+	UnloadStreamsBegin: 0.355ms
+	PersistCurrentRevisions: 0.139ms
+	GenerateScriptTypeHashes: 5.348ms
+	GenerateScriptTypeSerializationHashes: 8.552ms
+	Untracked: 942.949ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            276.133 ms
+	Integration:            277.264 ms
+	Integration of assets:  77.801 ms
+	Thread Wait Time:       -0.059 ms
+	Total Operation Time:   631.139 ms
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+LARA_WALK_BINDINGS: Lara — Validated Performer / 95
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraWardrobeMotionDiagnostics:Tick () (at Assets/DazPose/Editor/LaraWardrobeMotionDiagnostics.cs:91)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/DazPose/Editor/LaraWardrobeMotionDiagnostics.cs Line: 91)
+
+DazToUnity Bridge initalized and running.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+Daz3D.Daz3DBridge:AutoexecBridge () (at Assets/Daz3D/Scripts/Editor/Daz3DBridge.cs:51)
+UnityEditor.EditorApplication:Internal_CallDelayFunctions ()
+
+(Filename: Assets/Daz3D/Scripts/Editor/Daz3DBridge.cs Line: 51)
+
+Start Indexing on Editor startup
+ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+  at System.Collections.Generic.List`1[T].get_Item (System.Int32 index) [0x00009] in <816f70bc2a9c4332b0bd119906a8d40e>:0 
+  at UnityEditor.Search.SearchDatabase+<EnumerateAll>d__76.MoveNext () [0x00089] in <62b4de64a41f441d820235b9258b7895>:0 
+  at System.Linq.Enumerable.TryGetFirst[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Boolean& found) [0x00045] in <fe644d7ad1cf499ebe4e7ad937bc03bf>:0 
+  at System.Linq.Enumerable.First[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x00000] in <fe644d7ad1cf499ebe4e7ad937bc03bf>:0 
+  at UnityEditor.Search.SearchDatabase.GetDefaultSearchDatabase () [0x00005] in <62b4de64a41f441d820235b9258b7895>:0 
+  at UnityEditor.Search.SearchInit.IndexationOnStartup () [0x0000a] in <62b4de64a41f441d820235b9258b7895>:0 
+  at UnityEditor.EditorApplication.Internal_CallDelayFunctions () [0x00029] in <f61864b98d514a7796d400c6975fc870>:0 
+
+Created GICache directory at C:/Users/artwh/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.024s, timestamps: [28.216 - 28.240]
+[Licensing::Client] Successfully resolved entitlement details
+LARA_WARDROBE_WALKING_VALIDATED
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraWardrobeMotionDiagnostics:Tick () (at Assets/DazPose/Editor/LaraWardrobeMotionDiagnostics.cs:144)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/DazPose/Editor/LaraWardrobeMotionDiagnostics.cs Line: 144)
+
+MonoPathRemapper: Attempts to remap: 35360; Successful remaps: 1648
+Serialized file version minimum: 23, current 23
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-artwh-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-artwh channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1791140477896,"processId":29596,"allocatedMemory":22595811,"memoryLabels":[{"Default":234635},{"Permanent":15516},{"NewDelete":67539},{"Thread":4197560},{"Manager":1419557},{"VertexData":968},{"Geometry":816},{"Texture":24},{"Shader":848657},{"Material":24},{"GfxDevice":55904},{"Animation":952},{"Audio":1168},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":5032},{"Input":42840},{"JobScheduler":256},{"TextLib":280},{"Mono":48},{"MonoCode":704},{"ScriptingNativeRuntime":1735420},{"BaseObject":1621896},{"Resource":1208},{"Renderer":3080},{"Transform":4685},{"File":4029},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":26605},{"StaticString":3808},{"Utility":2673782},{"Curl":2478},{"PoolAlloc":2552},{"AI":80},{"TypeTree":14869},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":10664},{"WebRequest":552},{"VR":47114},{"SceneManager":608},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":552},{"Hierarchy":1176},{"UIElements":72},{"CoreStats":13688},{"Identifiers":6768},{"Gui":128},{"EditorUtility":119404},{"VersionControl":8},{"Undo":931},{"AssetDatabase":8968268},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":38929},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3480},{"Windowing":456},{"Licensing":664},{"AssetReference":32},{"IPCStream":32}]}

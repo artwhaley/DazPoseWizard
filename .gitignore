@@ -30,7 +30,7 @@ validation/DazPoseUnityValidation/Assets/Animations/
 validation/DazPoseUnityValidation/Assets/Animations.meta
 validation/DazPoseUnityValidation/Assets/DazPoseImports/
 validation/DazPoseUnityValidation/Assets/DazPoseImports.meta
-validation/DazPoseUnityValidation/Assets/TestCharacter/lara.images/
+validation/DazPoseUnityValidation/Assets/TestCharacter/*.images/
 validation/DazPoseUnityValidation/Assets/TestData/
 unity/
 validation/DazPoseUnityValidation/Assets/Generated/

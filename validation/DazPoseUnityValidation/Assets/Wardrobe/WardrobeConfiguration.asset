@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e32913915537134a85fcd6ace591b93, type: 3}
+  m_Name: WardrobeConfiguration
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobeConfiguration
+  schemaVersion: 1
+  revision: 2
+  generationHash: 685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854
+  assignments:
+  - presetId: first-outfit
+    sourcePieceId: CharlenesCloset_Panty_1981
+    layer: 2
+  - presetId: first-outfit
+    sourcePieceId: PeekaBoo_16572
+    layer: 1
+  - presetId: second-outfit
+    sourcePieceId: ArmStrapL_G8F_1050
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: ArmStrapR_G8F_1050
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: BraTop_G8F_7446
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: ChokerRing_G8F_312
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Corset Laces_1152
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Garter_G8F_7018
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: NewUnderwear_G8F_5197
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: SleeveL_G8F_2373
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: SleeveR_G8F_2373
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Stocking L G8F_6421
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Stocking R G8F_6421
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Umbra Bra Top Gloss Shell
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Umbra Sleeve L Gloss Shell
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Umbra Sleeve R Gloiss Shell
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Umbra Stocking L Gloss Shell
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: Umbra Stocking R Gloss Shell
+    layer: 0
+  - presetId: second-outfit
+    sourcePieceId: shoe_6146
+    layer: 0
+  - presetId: third-outfit
+    sourcePieceId: Apron_6708
+    layer: 0
+  - presetId: third-outfit
+    sourcePieceId: Stockings_5340
+    layer: 0
+  - presetId: third-outfit
+    sourcePieceId: dress_7510
+    layer: 0
+  - presetId: third-outfit
+    sourcePieceId: shoe_12520
+    layer: 0
+  materialOverrides: []
+  footwearOverrides: []
+  inputHashes:
+  - 685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854

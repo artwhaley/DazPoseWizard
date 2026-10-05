@@ -23,7 +23,7 @@ The governing rule remains: expose a small semantic command and keep implementat
 
 7. **`Aura(aura)` / `ClearAura()`** — Persistent magical visual state, conceptually parallel to `Pose` and `Expression`.
 
-8. **`ChangeOutfit(outfit)`** — Finite/state transition for changing Lara's clothing presentation. Exact wardrobe implementation remains open until this item is taken up.
+8. **`Outfit(outfit)`**, **`TryRemoveLayer()`**, **`TryAddLayer()`** and **`CurrentWardrobe`** — Specified on 2026-10-04; not yet implemented. Named outfits have Base/1/2 mesh layers, all shown on load. Relative commands undress/redress through populated layers, with state queries, layer-owned shoe effects and retained hair. The authoritative [runtime/setup specification](../validation/DazPoseUnityValidation/docs/WardrobeRuntimeAndSetupSpec.md) supersedes the tentative ChangeOutfit name and wardrobe sketch.
 
 9. **`Stroke(motionPlayback)`** — Lara consumes a shared normalized motion source to drive procedural hand motion. The public concept is motion, not the funscript file format.
 

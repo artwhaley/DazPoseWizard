@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "assignment": "wardrobe-runtime-and-setup",
+  "implementationStatus": "incomplete",
+  "currentStage": "E3",
+  "completedGates": [
+    "runner",
+    "contract",
+    "migration",
+    "setup",
+    "persistence"
+  ],
+  "gates": {
+    "runner": "passed",
+    "contract": "passed",
+    "migration": "passed",
+    "runtime": "running",
+    "layers": "running",
+    "setup": "passed",
+    "persistence": "passed",
+    "integration": "failed"
+  },
+  "changedFiles": [
+    "scripts/run-wardrobe-execution.ps1",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraFirstOutfit.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraHeelReview.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerFootwearProfile.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/WardrobeOutfitDefinition.cs",
+    "validation/DazPoseUnityValidation/docs/wardrobe-execution/",
+    "validation/DazPoseUnityValidation/docs/WardrobeRuntimeAndSetupSpec.md"
+  ],
+  "lastEvidence": [
+    {
+      "inputAssetHash": "73e08a7904b0275ad9363a38576220cc095de69b64aee49c0ff72e6914294ac7",
+      "assertionsPassed": 3,
+      "assertionCount": 3,
+      "limitations": [],
+      "sourceHash": "a6858fe19cdb2da1733462b704da7a11d3764850e44ccb81b6b10ba829764677",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/runner/report.json",
+      "complete": true,
+      "stage": "Runner",
+      "passed": true
+    },
+    {
+      "inputAssetHash": "73e08a7904b0275ad9363a38576220cc095de69b64aee49c0ff72e6914294ac7",
+      "assertionsPassed": 13,
+      "assertionCount": 13,
+      "limitations": [],
+      "sourceHash": "a6858fe19cdb2da1733462b704da7a11d3764850e44ccb81b6b10ba829764677",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/contract/report.json",
+      "complete": true,
+      "stage": "Contract",
+      "passed": true
+    },
+    {
+      "inputAssetHash": "73e08a7904b0275ad9363a38576220cc095de69b64aee49c0ff72e6914294ac7",
+      "assertionsPassed": 7,
+      "assertionCount": 7,
+      "limitations": [],
+      "sourceHash": "a6858fe19cdb2da1733462b704da7a11d3764850e44ccb81b6b10ba829764677",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/migration/report.json",
+      "complete": true,
+      "stage": "Migration",
+      "passed": true
+    },
+    {
+      "inputAssetHash": "73e08a7904b0275ad9363a38576220cc095de69b64aee49c0ff72e6914294ac7",
+      "assertionsPassed": 22,
+      "assertionCount": 22,
+      "limitations": [
+        "Runtime assertions currently cover one performer only; transformed actor, independent second actor, expression/speech/gaze/pose preservation, preparation rollback and 100-cycle bounded cache/disposal checks remain unimplemented."
+      ],
+      "sourceHash": "a6858fe19cdb2da1733462b704da7a11d3764850e44ccb81b6b10ba829764677",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/runtime/report.json",
+      "complete": false,
+      "stage": "Runtime",
+      "passed": false
+    },
+    {
+      "inputAssetHash": "73e08a7904b0275ad9363a38576220cc095de69b64aee49c0ff72e6914294ac7",
+      "assertionsPassed": 7,
+      "assertionCount": 7,
+      "limitations": [
+        "The maid fixture intentionally leaves the heel pose/lift active while stockings remain without shoes. Shoe-floor contact is disabled in that state, so the author may see awkward foot/floor placement until the hosiery layer is removed.",
+        "181-frame walk support/rigid shoe distortion and live renderer-culling metrics are still missing."
+      ],
+      "sourceHash": "a6858fe19cdb2da1733462b704da7a11d3764850e44ccb81b6b10ba829764677",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/layers/report.json",
+      "complete": false,
+      "stage": "Layers",
+      "passed": false
+    },
+    {
+      "inputAssetHash": "73e08a7904b0275ad9363a38576220cc095de69b64aee49c0ff72e6914294ac7",
+      "assertionsPassed": 9,
+      "assertionCount": 9,
+      "limitations": [],
+      "sourceHash": "a6858fe19cdb2da1733462b704da7a11d3764850e44ccb81b6b10ba829764677",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/setup/report.json",
+      "complete": true,
+      "stage": "Setup",
+      "passed": true
+    },
+    {
+      "inputAssetHash": "73e08a7904b0275ad9363a38576220cc095de69b64aee49c0ff72e6914294ac7",
+      "assertionsPassed": 9,
+      "assertionCount": 9,
+      "limitations": [],
+      "sourceHash": "a6858fe19cdb2da1733462b704da7a11d3764850e44ccb81b6b10ba829764677",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/persistence/report.json",
+      "complete": true,
+      "stage": "Persistence",
+      "passed": true
+    },
+    {
+      "inputAssetHash": "73e08a7904b0275ad9363a38576220cc095de69b64aee49c0ff72e6914294ac7",
+      "assertionsPassed": 0,
+      "assertionCount": 1,
+      "limitations": [
+        "E7 scene recall, dissolve switching and player validation are not implemented."
+      ],
+      "sourceHash": "a6858fe19cdb2da1733462b704da7a11d3764850e44ccb81b6b10ba829764677",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/integration/report.json",
+      "complete": true,
+      "stage": "Integration",
+      "passed": false
+    }
+  ],
+  "setupScene": {
+    "path": ".dazposewizard/p0c-native-generation/Assets/Scenes/ClothingSetup.unity",
+    "status": "isolated, validated; not published to main project",
+    "manualEditor": "not launched"
+  },
+  "remaining": [
+    "E3 Runtime: transformed actor, two-performer isolation, expression/speech/gaze/pose preservation, rollback, and 100-cycle bounded-cache/disposal evidence.",
+    "E4 Layers: 181-frame walk support/rigidity measurements and live renderer-culling bounds checks.",
+    "E7 Integration: scene wardrobe capture/recall, queued dissolve transitions with attachment effect ownership, multi-actor recall, cycle/disposal, and Windows player validation.",
+    "After required gates pass, publish generated catalog/setup data with conflict checks, open ClothingSetup in the signed-in Unity editor, and request human visual review."
+  ],
+  "blockers": [],
+  "visualReview": "pending",
+  "cleanContextImportGate": "unpassed-separate-task"
+}

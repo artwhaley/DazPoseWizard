@@ -1,0 +1,17 @@
+2026-10-05T03:29:01.3874359Z
+PASS near no-walk: error_mm=0.000120137
+PASS sine target tracking for two seconds.
+PASS release Idle, MotionDriver untouched.
+PASS far walk-to-grip: error_mm=0.0003874302 margin=0.177249
+PASS moved-target release/walk/reacquire.
+PASS impossible vertical explicit failure.
+PASS funscript seek p=0 error_mm=0.0003998401
+PASS funscript seek p=0.25 error_mm=0.0003209808
+PASS funscript seek p=0.5 error_mm=0.001328796
+PASS funscript seek p=0.75 error_mm=0.0003998401
+PASS funscript seek p=1 error_mm=0.0003998401
+PASS continuous funscript tracking.
+PASS Stop holds physical position.
+PASS resume continues physical motion.
+PASS superseded GripAsync resolves once, newer GripAsync acquires once.
+PASS locomotion supersession fails GripAsync once.

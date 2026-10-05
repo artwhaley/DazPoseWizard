@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DazPose.FirstPerformanceVoid;
 using DazPose.Motion;
 using DazPose.Performer;
 using DazPose.Performer.HandGrip;
@@ -18,22 +19,28 @@ namespace DazPose.Editor.HandGrip
         public const string AcceptanceScenePath = "Assets/Scenes/HandGripAcceptance.unity";
         public const string ProfilePath = "Assets/DazPose/Generated/HandGrip/Profiles/LaraRightHandGrip.asset";
 
-        [MenuItem("Tools/DAZ Pose/HandGrip/Create Isolated Acceptance Scene")]
+        [MenuItem("Tools/DAZ Pose/Handjob/Create Acceptance Scene")]
         public static void CreateAcceptanceScene()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
                 throw new InvalidOperationException("Create the HandGrip acceptance scene in Edit Mode.");
-            if (!File.Exists(SourceScenePath))
-                throw new FileNotFoundException("The functioning FirstPerformanceVoid source scene is missing.", SourceScenePath);
+            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                return;
 
             if (!File.Exists(AcceptanceScenePath))
             {
+                if (!File.Exists(SourceScenePath))
+                    throw new FileNotFoundException("The FirstPerformanceVoid source scene is missing.", SourceScenePath);
                 if (!AssetDatabase.CopyAsset(SourceScenePath, AcceptanceScenePath))
-                    throw new IOException("Could not duplicate FirstPerformanceVoid into the isolated HandGrip acceptance scene.");
+                    throw new IOException("Could not duplicate FirstPerformanceVoid into the HandGrip acceptance scene.");
                 AssetDatabase.Refresh();
             }
             Scene scene = EditorSceneManager.OpenScene(AcceptanceScenePath, OpenSceneMode.Single);
             SuccubusPerformer performer = FindPerformer(scene);
+            FirstPerformanceVoidControls controls = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<FirstPerformanceVoidControls>(true)).FirstOrDefault();
+            if (controls == null)
+                throw new InvalidOperationException("The duplicated scene must contain its existing First Performance Void runtime test panel.");
             Animator animator = performer != null ? performer.GetComponent<Animator>() : null;
             if (performer == null || animator == null)
                 throw new InvalidOperationException("The duplicated scene must contain one Lara SuccubusPerformer with a Generic Animator.");
@@ -41,13 +48,7 @@ namespace DazPose.Editor.HandGrip
                 throw new InvalidOperationException("HandGrip acceptance expects Lara's Generic Animator on her performer root.");
 
             MotionDriver driver = performer.MotionSource;
-            PerformerMotionSet motionSet = ReadReference<PerformerMotionSet>(performer, "motionSet");
-            string motionReason = null;
-            bool motionReady = motionSet != null && motionSet.IsReady(out motionReason);
-            if (driver == null || motionSet == null || !motionReady)
-                throw new InvalidOperationException("The source scene must have its existing MotionDriver acceptance setup. "
-                    + (driver == null ? "MotionDriver is missing."
-                        : motionSet == null ? "PerformerMotionSet is missing." : motionReason));
+            if (driver == null) throw new InvalidOperationException("MotionDriver is missing.");
             if (!PerformerMotionMaskUtility.TryResolveRightArm(animator, out _, out _, out _,
                     out Transform hand, out _, out string handReason))
                 throw new InvalidOperationException(handReason);
@@ -69,23 +70,19 @@ namespace DazPose.Editor.HandGrip
                 fixtureRoot = new GameObject("HandGripFixture").transform;
                 SceneManager.MoveGameObjectToScene(fixtureRoot.gameObject, scene);
                 Undo.RegisterCreatedObjectUndo(fixtureRoot.gameObject, "Create HandGrip acceptance rod");
-                Vector3[] handCenters = SampleMotionGripCenters(motionSet.Variants[0].Clip,
-                    performer.gameObject, hand, profile.GripCenterLocalPosition);
-                Vector3 stroke = handCenters[1] - handCenters[0];
-                if (stroke.sqrMagnitude < 1e-8f)
-                    stroke = animator.transform.up;
-                Vector3 tangent = stroke.normalized;
-                Vector3 center = (handCenters[0] + handCenters[1]) * 0.5f;
+                Vector3 tangent = Vector3.up;
+                Vector3 center = performer.transform.position + performer.transform.forward * 0.45f
+                    + performer.transform.right * 0.15f + Vector3.up * 1.35f;
                 fixtureRoot.position = center;
                 fixtureRoot.rotation = Quaternion.FromToRotation(Vector3.up, tangent);
-                float halfLength = Mathf.Max(0.45f, stroke.magnitude * 0.5f + 0.15f);
+                float halfLength = 0.06f;
                 Transform start = CreateChild(fixtureRoot, "Start", Vector3.down * halfLength);
                 Transform end = CreateChild(fixtureRoot, "End", Vector3.up * halfLength);
                 rod = Undo.AddComponent<GripContactRod>(fixtureRoot.gameObject);
                 rod.StartPoint = start;
                 rod.EndPoint = end;
                 rod.Radius = 0.035f;
-                Vector3 normal = Vector3.ProjectOnPlane(animator.transform.right, tangent);
+                Vector3 normal = Vector3.ProjectOnPlane(-animator.transform.forward, tangent);
                 if (normal.sqrMagnitude < 1e-8f)
                     normal = Vector3.ProjectOnPlane(animator.transform.forward, tangent);
                 if (normal.sqrMagnitude < 1e-8f)
@@ -99,7 +96,7 @@ namespace DazPose.Editor.HandGrip
 
             SetReference(controller, "profile", profile);
             SetReference(controller, "targetSource", rod);
-            SetBool(controller, "gripOnEnable", true);
+            SetBool(controller, "gripOnEnable", false);
             SetFloat(controller, "gripStrength01", 1f);
             SetBool(controller, "drawDiagnostics", true);
             SetBool(performer, "startHidden", false);
@@ -108,8 +105,10 @@ namespace DazPose.Editor.HandGrip
                 .SelectMany(root => root.GetComponentsInChildren<HandGripAcceptanceHarness>(true)).FirstOrDefault();
             if (harness == null) harness = Undo.AddComponent<HandGripAcceptanceHarness>(fixtureRoot.gameObject);
             harness.ConfigureForEditor(controller, rod, driver, fixtureRoot);
+            controls.ConfigureHandGripAcceptanceHarness(harness);
 
             EditorUtility.SetDirty(performer);
+            EditorUtility.SetDirty(controls);
             EditorUtility.SetDirty(controller);
             EditorUtility.SetDirty(rod);
             EditorUtility.SetDirty(harness);
@@ -117,7 +116,9 @@ namespace DazPose.Editor.HandGrip
             EditorSceneManager.MarkSceneDirty(scene);
             AssetDatabase.SaveAssets();
             if (!EditorSceneManager.SaveScene(scene))
-                throw new IOException("Could not save the isolated HandGripAcceptance scene.");
+                throw new IOException("Could not save the HandGripAcceptance scene.");
+
+            ValidateScene(scene);
 
             string hierarchy = string.Join("; ", profile.Digits.Select(digit =>
                 digit.Digit + "=[" + string.Join(",", digit.JointPaths.Select(PathLeaf)) + "] probes=" + digit.Probes.Length));
@@ -126,16 +127,35 @@ namespace DazPose.Editor.HandGrip
                 + "; clearance=" + profile.ContactClearance.ToString("0.000") + "m"
                 + "; blend=" + profile.GripInSeconds.ToString("0.00") + "/" + profile.ReleaseSeconds.ToString("0.00")
                 + "s; solver iterations=" + profile.BinarySearchIterations
-                + "; graph=Motion → Gesture → HandGrip AnimationScriptPlayable → Breathing; Position01 comes from MotionDriver.CurrentSample.", controller);
+                + "; graph=Motion → Gesture → Breathing → Arm IK → FingerGrip; Position01 comes from MotionDriver.CurrentSample.", controller);
         }
 
-        [MenuItem("Tools/DAZ Pose/HandGrip/Run Geometry and Solver Tests")]
+        [MenuItem("Tools/DAZ Pose/Handjob/Run Geometry and Solver Tests")]
         public static void RunSolverTests()
         {
             string[] failures = HandGripRuntimeSelfTests.Run();
             if (failures.Length != 0)
                 throw new InvalidOperationException("HandGrip self-tests failed:\n - " + string.Join("\n - ", failures));
             Debug.Log("HANDGRIP_SELF_TESTS_PASSED: geometry, clamping, invalid rod/frame, probe classification, adaptive radius/strength solve, base-penetration reporting, digit independence, and ownership blending.");
+        }
+
+        public static void ValidateScene(Scene scene)
+        {
+            SuccubusPerformer performer = FindPerformer(scene);
+            Animator animator = performer.GetComponent<Animator>();
+            PerformerHandGripController controller = performer.GetComponent<PerformerHandGripController>();
+            HandGripAcceptanceHarness harness = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<HandGripAcceptanceHarness>(true)).Single();
+            FirstPerformanceVoidControls controls = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<FirstPerformanceVoidControls>(true)).Single();
+            if (controller == null || controller.Profile == null || !controller.Profile.IsReady(animator, out _)
+                || harness.HandGrip != controller || harness.MotionDriver != performer.MotionSource
+                || harness.Rod == null || !harness.Rod.TryEvaluate(0.5f, out _, out _)
+                || ReadReference<MonoBehaviour>(controller, "targetSource") != harness.Rod
+                || ReadReference<HandGripAcceptanceHarness>(controls, "handGripAcceptanceHarness") != harness)
+                throw new InvalidOperationException("HandGrip acceptance scene references or calibration are incomplete.");
+            RunSolverTests();
+            Debug.Log("HANDGRIP_SCENE_WIRING_PASSED: " + scene.path);
         }
 
         private static SuccubusPerformer FindPerformer(Scene scene)

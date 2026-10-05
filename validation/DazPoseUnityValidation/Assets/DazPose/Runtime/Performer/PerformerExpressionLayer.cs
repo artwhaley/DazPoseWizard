@@ -332,6 +332,13 @@ namespace DazPose.Performer
                     string.Equals(HierarchyPath(_animator.transform, transform), channel.TransformPath, StringComparison.Ordinal)).ToArray();
                 if (transformMatches.Length != 1)
                     throw new InvalidOperationException("PerformerExpression facial-bone path '" + channel.TransformPath + "' does not uniquely resolve under the performer Animator.");
+                // Downstream expression ownership must remain facial: imported metadata
+                // is not permission to move a shoulder ancestor after spatial arm IK.
+                Transform head = _animator.GetComponentsInChildren<Transform>(true)
+                    .SingleOrDefault(candidate => candidate.name == "head");
+                if (_animator.GetComponent<HandGrip.PerformerHandGripController>() != null
+                    && (head == null || !transformMatches[0].IsChildOf(head)))
+                    throw new InvalidOperationException("Expression transform is outside the head/face-only ownership subtree: " + channel.TransformPath);
 
                 if ((properties & PerformerExpressionBoneProperties.LocalPosition) != 0)
                 {

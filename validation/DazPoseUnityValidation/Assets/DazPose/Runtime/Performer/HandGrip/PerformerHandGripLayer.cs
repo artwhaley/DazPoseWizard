@@ -53,6 +53,7 @@ namespace DazPose.Performer.HandGrip
                     DigitStatuses = _digitStatuses,
                     ProbeDiagnostics = _probeDiagnostics,
                     HandHandle = _animator.BindStreamTransform(_hand),
+                    ArmEvaluationMarker = UnityEngine.Animations.Rigging.FloatProperty.BindCustom(_animator, "Grip.IK.Evaluated"),
                     ContactClearance = _profile.ContactClearance,
                     NearContactDistance = _profile.NearContactDistance,
                     BinarySearchIterations = _profile.BinarySearchIterations
@@ -91,6 +92,18 @@ namespace DazPose.Performer.HandGrip
                 for (int index = 0; index < _probeDiagnostics.Length; index++)
                     _probeDiagnostics[index] = default;
             }
+        }
+
+        public void SetCalibration(bool enabled, Vector4 curls, float littleCurl)
+        {
+            if (!_playable.IsValid()) return;
+            HandGripAnimationJob job = _playable.GetJobData<HandGripAnimationJob>();
+            job.CalibrationMode = enabled;
+            job.RawCurls = curls;
+            job.LittleCurl = littleCurl;
+            if (enabled) { job.Enabled = true; job.GripWeight = 1f; }
+            _playable.SetJobData(job);
+            if (enabled) _immediateStatus = HandGripStatus.Clear;
         }
 
         public HandGripSolveResult GetSolveResult()
@@ -231,7 +244,9 @@ namespace DazPose.Performer.HandGrip
                     JointCount = digit.JointPaths.Length,
                     ProbeStart = digitProbeStart,
                     ProbeCount = digit.Probes.Length,
-                    CurlBias = digit.CurlBias
+                    CurlBias = digit.CurlBias,
+                    ParentHandle = _animator.BindStreamTransform(
+                        FindByPath(_animator.transform, digit.JointPaths[0]).parent)
                 };
             }
         }

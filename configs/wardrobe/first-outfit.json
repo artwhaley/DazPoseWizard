@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "first-outfit",
+  "duf": "C:/Users/artwh/OneDrive/Documents/DAZ 3D/Studio/My Library/Scenes/larafirstoutfit.duf",
+  "fbx": "Assets/TestCharacter/larafirstoutfit.fbx",
+  "destination": "Assets/TestData/Wardrobe/first-outfit",
+  "characterScene": "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+  "characterPoints": "Assets/TestData/LaraCandidate/manifest.json",
+  "referenceFbx": "Assets/TestCharacter/larafirstoutfit.fbx",
+  "ownership": [],
+  "shapeNames": [],
+  "policies": [
+    {"node": "EmikoHair_59875", "role": "hair", "coverage": "none", "allowLocalBones": true, "transferBodyMorphs": false},
+    {"node": "CharlenesCloset_Panty_1981", "role": "underwear", "coverage": "opaque-front", "allowLocalBones": true, "transferBodyMorphs": true},
+    {"node": "PeekaBoo_16572", "role": "dress", "coverage": "opaque-envelope", "allowLocalBones": true, "transferBodyMorphs": true}
+  ]
+}

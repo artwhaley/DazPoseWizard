@@ -26,6 +26,12 @@ namespace DazPose.Performer
         private float _variantBlendDuration;
         private int _activeVariantIndex;
         private bool _disposed;
+        private float _spatialSuppression;
+        public void SetSpatialSuppression(float weight)
+        {
+            _spatialSuppression = Mathf.Clamp01(weight);
+            if (_layers.IsValid()) _layers.SetInputWeight(1, _motionWeight * (1f - _spatialSuppression));
+        }
 
         public Playable OutputPlayable => _layers;
         public float MotionWeight => _motionWeight;
@@ -121,7 +127,7 @@ namespace DazPose.Performer
             if (_ownershipBlendDuration <= 0f)
             {
                 _motionWeight = target;
-                _layers.SetInputWeight(1, target);
+                _layers.SetInputWeight(1, target * (1f - _spatialSuppression));
             }
         }
 
@@ -155,7 +161,7 @@ namespace DazPose.Performer
                     float t = SmoothStep01(_ownershipBlendElapsed / _ownershipBlendDuration);
                     _motionWeight = Mathf.LerpUnclamped(_ownershipStartWeight, _ownershipTargetWeight, t);
                 }
-                _layers.SetInputWeight(1, Mathf.Clamp01(_motionWeight));
+                _layers.SetInputWeight(1, Mathf.Clamp01(_motionWeight) * (1f - _spatialSuppression));
             }
             if (_variantBlendElapsed < _variantBlendDuration)
             {

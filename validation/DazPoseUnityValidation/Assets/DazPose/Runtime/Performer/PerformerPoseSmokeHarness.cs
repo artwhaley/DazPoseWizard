@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DazPose.UnityValidation.Partner;
 
 namespace DazPose.Performer
 {
@@ -29,6 +30,8 @@ namespace DazPose.Performer
         [SerializeField, Min(0.5f)] private float locomotionTestDistance = 5f;
         [Header("P0.B Anchored Seating")]
         [SerializeField] private PerformerSeat seatingTestSeat;
+        [Header("Partner Anatomy Acceptance")]
+        [SerializeField] private PartnerAnatomyTestController partnerAnatomyAcceptance;
         private Vector2 _scrollPosition;
         private string _seedText = string.Empty;
         private bool _lipSyncCheckRunning;
@@ -51,6 +54,7 @@ namespace DazPose.Performer
         {
             if (performer == null) performer = GetComponent<SuccubusPerformer>();
             if (acceptanceHarness == null) acceptanceHarness = GetComponent<PerformerPoseAcceptanceHarness>();
+            if (partnerAnatomyAcceptance == null) partnerAnatomyAcceptance = GetComponent<PartnerAnatomyTestController>();
         }
 
         private void Awake()
@@ -73,18 +77,18 @@ namespace DazPose.Performer
             GUILayout.BeginArea(new Rect(12f, 12f, 430f, 900f), "Performer Pose Smoke Test", GUI.skin.window);
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
             var previousGuiEnabled = GUI.enabled;
-            var runtimeReady = performer != null && performer.IsRuntimeReady;
-            GUI.enabled = previousGuiEnabled && runtimeReady;
-            if (!runtimeReady)
-                GUILayout.Label("Performer runtime is unavailable. Speech setup is attempted automatically at Play Mode startup; inspect the Console if startup failed.");
-            GUILayout.Label("1 / 2 / 3 also selects these persistent poses.");
-            DrawPoseButton("Pose A", poseA);
-            DrawPoseButton("Pose B", poseB);
-            DrawPoseButton("Pose C", poseC);
-            if (GUILayout.Button("Run acceptance checks (F5)")) RunAcceptanceChecks();
-
             if (performer != null)
             {
+                var runtimeReady = performer.IsRuntimeReady;
+                GUI.enabled = previousGuiEnabled && runtimeReady;
+                if (!runtimeReady)
+                    GUILayout.Label("Performer runtime is unavailable. Speech setup is attempted automatically at Play Mode startup; inspect the Console if startup failed.");
+                GUILayout.Label("1 / 2 / 3 also selects these persistent poses.");
+                DrawPoseButton("Pose A", poseA);
+                DrawPoseButton("Pose B", poseB);
+                DrawPoseButton("Pose C", poseC);
+                if (GUILayout.Button("Run acceptance checks (F5)")) RunAcceptanceChecks();
+
                 DrawBreathingControls();
                 DrawExpressionControls();
                 DrawSpeechControls();
@@ -99,6 +103,11 @@ namespace DazPose.Performer
             }
             GUI.enabled = previousGuiEnabled;
             if (acceptanceHarness != null) GUILayout.Label(acceptanceHarness.Status);
+            if (partnerAnatomyAcceptance != null)
+            {
+                GUILayout.Space(8f);
+                partnerAnatomyAcceptance.DrawSmokeTestControls();
+            }
             GUILayout.EndScrollView();
             GUILayout.EndArea();
         }

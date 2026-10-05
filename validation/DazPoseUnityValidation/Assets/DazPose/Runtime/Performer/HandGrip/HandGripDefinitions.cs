@@ -103,6 +103,10 @@ namespace DazPose.Performer.HandGrip
         public int ProbeStart;
         public int ProbeCount;
         public float CurlBias;
+        public UnityEngine.Animations.TransformStreamHandle ParentHandle;
+        public bool HasParentPose;
+        public Vector3 ParentPosition;
+        public Quaternion ParentRotation;
     }
 
     internal struct HandGripJobJoint

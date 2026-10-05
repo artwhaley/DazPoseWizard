@@ -1,0 +1,681 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.5/staging' branch; Version is '6000.5.9f1 (b57deb96f08d) revision 11894251'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-artwh" at "2026-10-04T19:19:10.5557557Z"
+OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'en' Physical Memory: 31861 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-10-04T19:19:10Z
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Unity.exe
+-batchmode
+-force-d3d11
+-quit
+-projectPath
+C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation
+-executeMethod
+DazPose.UnityValidation.LaraSecondOutfitRepair.RepairAndRender
+-logFile
+C:\Users\artwh\OneDrive\Documents\DazPoseWizard\TestOutput\second-outfit-surface-assignment-repair.log
+Successfully changed project path to: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation
+C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/p0c-native-generation
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=0"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.Player connection [57300]  Target information:
+
+Player connection [57300]  * "[IP] 192.168.0.102 [Port] 55505 [Flags] 2 [Guid] 826170262 [EditorId] 826170262 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-MQUSNML) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [57300] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [57300] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 67516, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              91b47ddf393d4151b0b7c2d035589184
+  Correlation Id:          84d56e9fda93b96851beaee8aae988e8
+  External correlation Id: 8780802723822007531
+  Machine Id:              uMYvu+fANik4mYyGQuRzt3fcWno=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-artwh" (connect: 0.00s, validation: 0.00s, handshake: 0.03s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-artwh-notifications" at "2026-10-04T19:19:10.5857804Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 2879081-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.06s
+[Package Manager] Connected to IPC stream "Upm-95688" after 0.2 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Artifact Garbage Collection - Removed 1 unused hashed content files
+Initialize engine version: 6000.5.9f1 (b57deb96f08d)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/p0c-native-generation/Assets
+Forcing GfxDevice: Direct3D 11
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 4060 Ti (ID=0x2803)
+    Vendor:   NVIDIA
+    VRAM:     7949 MB
+    Driver:   32.0.15.6094
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56688
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.001846 seconds.
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.397 seconds
+Domain Reload Profiling: 817ms
+	BeginReloadAssembly (108ms)
+		CreateAndSetChildDomain (5ms)
+	RebuildCommonClasses (4ms)
+	RebuildNativeTypeToScriptingClass (14ms)
+	initialDomainReloadingComplete (53ms)
+	LoadAllAssembliesAndSetupDomain (241ms)
+		LoadAssemblies (100ms)
+		AnalyzeDomain (164ms)
+			TypeCache.Refresh (162ms)
+				TypeCache.ScanAssembly (151ms)
+	FinalizeReload (398ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (70ms)
+			ProcessInitializeOnLoadAttributes (77ms)
+			ProcessInitializeOnLoadMethodAttributes (187ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 34 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.ai.assistant@2.20.0-pre.1 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.ai.assistant@ceb45b7b3ebd)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64)
+    com.unity.burst@1.8.30 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.burst@2f3d916873ea)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.test-framework.performance@3.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.test-framework.performance@8b56083ec0f0)
+    com.unity.searcher@4.9.5 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.searcher@a463122f2c00)
+  Built-in packages:
+    com.unity.collections@6.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.collections@ec2c217e4cb2)
+    com.unity.render-pipelines.high-definition@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.render-pipelines.high-definition@6461a40020a9)
+    com.unity.ugui@2.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.ugui@1c4864518158)
+    com.unity.modules.animation@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.cloth@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.imgui@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.ui@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.audio@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.physics2d@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.video@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.render-pipelines.core@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.render-pipelines.core@a4c9a9793789)
+    com.unity.shadergraph@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.shadergraph@8d7376ec43ee)
+    com.unity.visualeffectgraph@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.visualeffectgraph@b1f03b147b92)
+    com.unity.render-pipelines.high-definition-config@17.5.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.render-pipelines.high-definition-config@77f033cbf9c5)
+    com.unity.test-framework@1.7.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.test-framework@1405238725ab)
+    com.unity.2d.sprite@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.2d.sprite@053a968eab56)
+    com.unity.mathematics@1.4.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.mathematics@981956d94fb6)
+    com.unity.modules.uielements@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.modules.terrain@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.ext.nunit@2.1.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.ext.nunit@44f7d31723bd)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Library\PackageCache\com.unity.modules.hierarchycore)
+  Embedded packages:
+    com.dazpose.buttplug-csharp@file:C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Packages\com.dazpose.buttplug-csharp (location: C:\Users\artwh\OneDrive\Documents\DazPoseWizard\.dazposewizard\p0c-native-generation\Packages\com.dazpose.buttplug-csharp)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/p0c-native-generation
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 2s714ms
+[ 833/1078  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[1074/1078  1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+Assets\DazPose\Editor\DazGraftPairProbe.cs(45,91): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\DazPose\Editor\DazGraftPairProbe.cs(45,33): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\DazPose\Editor\LaraCandidateRenderValidation.cs(97,113): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\DazPose\Editor\LaraCandidateRenderValidation.cs(97,38): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+[1075/1078  0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 140 defines and 345 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+[1076/1078  0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[1077/1078  0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (2.68 seconds), 5 items updated, 1078 evaluated
+Assets\DazPose\Editor\DazGraftPairProbe.cs(45,91): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\DazPose\Editor\DazGraftPairProbe.cs(45,33): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\DazPose\Editor\LaraCandidateRenderValidation.cs(97,113): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\DazPose\Editor\LaraCandidateRenderValidation.cs(97,38): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Total cache size 268092378
+Total cache size after purge 268092378, took 00:00:00.1328308
+AssetDatabase: script compilation time: 3.334363s
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  3.648 seconds
+Domain Reload Profiling: 4446ms
+	BeginReloadAssembly (173ms)
+		DisableScriptedObjects (18ms)
+		CreateAndSetChildDomain (34ms)
+	RebuildCommonClasses (7ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (64ms)
+	LoadAllAssembliesAndSetupDomain (540ms)
+		LoadAssemblies (286ms)
+		AnalyzeDomain (244ms)
+			TypeCache.Refresh (189ms)
+				TypeCache.ScanAssembly (178ms)
+			BuildScriptInfoCaches (47ms)
+			ResolveRequiredComponents (6ms)
+	FinalizeReload (3649ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (75ms)
+			ProcessInitializeOnLoadAttributes (2673ms)
+			ProcessInitializeOnLoadMethodAttributes (707ms)
+			AfterProcessingInitializeOnLoad (5ms)
+		AwakeInstancesAfterBackupRestoration (30ms)
+Starting new worker id: 0 with log in C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/p0c-native-generation/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=e188f8edb0866a44bb4bf83a97b8bc56): Total: 9.093 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=4272 ms
+		Asset DB Callback time: managed=573 ms, native=13 ms
+		Scripting: domain reloads=1, domain reload time=843 ms, compile time=3337 ms, other=53 ms
+		Project Asset Count: scripts=1891, non-scripts=5036
+		Asset File Changes: new=0, changed=3, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 11.444ms
+	ApplyChangesToAssetFolders: 0.510ms
+	Scan: 145.167ms
+	Collect global state as custom dependencies: 17.891ms
+	OnSourceAssetsModified: 0.558ms
+	CategorizeScriptCompilationAssets: 33.070ms
+	ProcessAssetsWithTransientArtifactChanges: 68.209ms
+	CategorizeAssets: 111.946ms
+	CompileScripts: 3336.539ms
+	ImportOutOfDateAssets: 3774.081ms (3664.926ms without children)
+		UnloadImportedAssets: 2.185ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.841ms
+		ImportSchedulerStart: 106.086ms
+	PostProcessAllAssets: 574.611ms
+		VCAutoAddAssetPostprocess 0.936ms
+		MonoPostProcessAllAssets: 573.221ms
+			AssetPostprocessor.OnPostprocessAllAssets 123.134ms
+			HDRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 119.522ms
+			AssetReferenceReimportMonitor.OnPostprocessAllAssets 40.412ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 28.171ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 10.432ms
+			SyncVS.PostprocessSyncProject 5.700ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 5.339ms
+			MaterialPostprocessor.OnPostprocessAllAssets 4.838ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 3.197ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.761ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.121ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 2.104ms
+			VersionUpdater.OnPostprocessAllAssets 1.766ms
+			AssetChangedListener.OnPostprocessAllAssets 1.680ms
+			GraphRefreshPostprocessor.OnPostprocessAllAssets 1.615ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 1.614ms
+			AssetChangeDetector.OnPostprocessAllAssets 1.226ms
+			VFXGraphPreprocessor.OnPostprocessAllAssets 1.077ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.920ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.816ms
+			DazPoseBrowserImportPostprocessor.OnPostprocessAllAssets 0.735ms
+			PostProcessor.OnPostprocessAllAssets 0.682ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.662ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.624ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.583ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.514ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.473ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.454ms
+			AssetEvents.OnPostprocessAllAssets 0.413ms
+			SkillsProjectAssetPostprocessor.OnPostprocessAllAssets 0.392ms
+			SampleDependencyImporterPostProcessor.OnPostprocessAllAssets 0.385ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.353ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.314ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.294ms
+			ZombieFileCleanup.OnPostprocessAllAssets 0.197ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.188ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.184ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.137ms
+			TrackSelectedAssetsProcessor.OnPostprocessAllAssets 0.054ms
+	PostAssetChangesProfiler: 2.990ms
+	UnloadStreamsBegin: 1.555ms
+	PersistCurrentRevisions: 0.151ms
+	GenerateScriptTypeHashes: 1.997ms
+	GenerateScriptTypeSerializationHashes: 3.131ms
+	Untracked: 1010.681ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 24.674ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-DazPoseUnityValidation
+Unloading 155 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 6698 unused Assets / (26.4 MB). Loaded Objects now: 7891.
+Memory consumption went from 0.62 GB to 0.59 GB.
+Total: 26.164500 ms (FindLiveObjects: 0.626200 ms CreateObjectMapping: 1.908500 ms MarkObjects: 13.609100 ms  DeleteObjects: 10.018600 ms)
+
+Opening scene 'Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity'
+Worker ready: AssetImportWorkerHW0 0
+Unloading 91 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity'
+	Deserialize:            4123.712 ms
+	Integration:            5092.402 ms
+	Integration of assets:  16.080 ms
+	Thread Wait Time:       -0.200 ms
+	Total Operation Time:   9231.993 ms
+Unloading 3 unused Assets / (44.9 KB). Loaded Objects now: 9793.
+Memory consumption went from 0.82 GB to 0.82 GB.
+Total: 14.022900 ms (FindLiveObjects: 0.523700 ms CreateObjectMapping: 0.668800 ms MarkObjects: 12.761000 ms  DeleteObjects: 0.068700 ms)
+
+LARA_SURFACE_SLOTS_REPAIRED: BraTop_G8F_7446 / Choker,Choker Straps,Buttons,Straps,Shape Support,Cup,Fastner,Cup Support,Clips,Cup Trim
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: Umbra Bra Top Gloss Shell / Choker,Choker Straps,Buttons,Straps,Shape Support,Cup,Fastner,Cup Support,Clips,Cup Trim
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: Garter_G8F_7018 / Laces,Area Front,Area 2,Area 1,Trim,Loops,Area Back
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: NewUnderwear_G8F_5197 / Ruffles Mesh,Ruffles Trim,Underwear
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: Stocking L G8F_6421 / Band,Stocking,Band Trim
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: Umbra Stocking L Gloss Shell / Band,Stocking,Band Trim
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: Stocking R G8F_6421 / Band,Stocking,Band Trim
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: Umbra Stocking R Gloss Shell / Band,Stocking,Band Trim
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: ArmStrapR_G8F_1050 / Ring,Arm Strap
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+LARA_SURFACE_SLOTS_REPAIRED: ArmStrapL_G8F_1050 / Ring,Arm Strap
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:AlignMaterials (DazPose.Performer.LaraWardrobe) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:110)
+DazPose.UnityValidation.LaraSecondOutfitRepair:BindLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:30)
+DazPose.UnityValidation.LaraSecondOutfitRepair:OnSceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode) (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:23)
+UnityEditor.SceneManagement.EditorSceneManager:Internal_SceneOpened (UnityEngine.SceneManagement.Scene,UnityEditor.SceneManagement.OpenSceneMode)
+UnityEditor.SceneManagement.EditorSceneManager:OpenScene (string,UnityEditor.SceneManagement.OpenSceneMode)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:39)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 110)
+
+Importing 'GUID: 2099163631b715340b1d295ff054636e - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Sleeve L Gloss Shell/RuntimeMaterials/00_Umbra Sleeve L Gloss Shell_Sleeve.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 2099163631b715340b1d295ff054636e' -> (Import Result ID: '4aa84a782c3a5280a3931234fa090c9c') in 0.004 seconds [static dependencies only]. Details - ImportResultOutputID=bdf52283806aae883223a0e0021352f2 DependenciesID=12e5611416bb8fdbf9e77a62fae1904b StaticDependenciesID=113c8429b088a968880a108013a68cae 
+Importing 'GUID: 90814d5ace82e5f4388a7b5911e91f09 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/03_Umbra Bra Top Gloss Shell_Clips.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 90814d5ace82e5f4388a7b5911e91f09' -> (Import Result ID: '200a19562808ce3ec04e0f3c1366fe99') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=15072c8696ed206047712eb5ab3cc37d DependenciesID=5087b3ec9f3c4c4b779f841279aa68e8 StaticDependenciesID=df08b47d36edb6fed9b91d5337af51e1 
+Importing 'GUID: a048b334b13ba8d4c87ceb6e47dfa80e - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/04_Umbra Bra Top Gloss Shell_Fastner.mat' with importer (NativeFormatImporter)
+Imported 'GUID: a048b334b13ba8d4c87ceb6e47dfa80e' -> (Import Result ID: '522b81fa7e22f87e32d6d4623a4db690') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=7a85ddc5a3c61e8a224b89e22261eb5b DependenciesID=72447d68d8dcaf974f501cbdf8316a7b StaticDependenciesID=719422decad6401d912ccafde99f769c 
+Importing 'GUID: 2114ff151f004064ab6b4ed3be432a88 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/09_Umbra Bra Top Gloss Shell_Cup Support.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 2114ff151f004064ab6b4ed3be432a88' -> (Import Result ID: '6f540c3e47cc8c4977927fe4aa3431d6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=051dd524dd2c84b653acd03201cce975 DependenciesID=f4210cd573f4c36f64f5c5c9060df114 StaticDependenciesID=6ffd2623c217ff3a80518abcf0f1e760 
+Importing 'GUID: 21760cdfdb7df1c4d9ee2f051200182a - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/08_Umbra Bra Top Gloss Shell_Buttons.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 21760cdfdb7df1c4d9ee2f051200182a' -> (Import Result ID: '51c15ff1ad832f8e3d70b15066293687') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=18ffc323b965d10523a5343535546fd2 DependenciesID=01554aeb4ea31110387d16aeef5b04eb StaticDependenciesID=5cabbf011b9ec3192c0b5236476f06ae 
+Importing 'GUID: 9188c22e41d1e9a45a9859d65537b8e4 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Stocking R Gloss Shell/RuntimeMaterials/00_Umbra Stocking R Gloss Shell_Stocking.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 9188c22e41d1e9a45a9859d65537b8e4' -> (Import Result ID: 'f0876f054c691cf92c57821f5a9e0628') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6b93973f1d554da100a201211df142cd DependenciesID=0162cf0095cd21be88e8a558d4a6215b StaticDependenciesID=5f358ed3d1cd9b7f6cab9ed83efefe99 
+Importing 'GUID: 029f9105835e22645b60487c6d8df156 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Stocking R Gloss Shell/RuntimeMaterials/02_Umbra Stocking R Gloss Shell_Band Trim.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 029f9105835e22645b60487c6d8df156' -> (Import Result ID: '9446b3e27d68414df06ca5accbc2c5da') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f0a65fa3dbeb3be4fc81b940352f383a DependenciesID=e8e6047e3d14073ad2f7d94779e716af StaticDependenciesID=9f29754e970db909456602745540cbe7 
+Importing 'GUID: 73137ced4c5dea14ebacf44918c290c0 - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/01_BraTop_G8F_7446_Straps.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 73137ced4c5dea14ebacf44918c290c0' -> (Import Result ID: 'ef9b7320cc5dce3f0a0c7941eab90816') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=0283fece7ca7d24f41293220ba63a56f DependenciesID=29d8d32b4018783febb92911b1441d5a StaticDependenciesID=21f9c8216795e845b89a3dfebc80ddbd 
+Importing 'GUID: c340bd76eb35f5a44b72349405361de1 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Sleeve R Gloiss Shell/RuntimeMaterials/01_Umbra Sleeve R Gloiss Shell_Trim.mat' with importer (NativeFormatImporter)
+Imported 'GUID: c340bd76eb35f5a44b72349405361de1' -> (Import Result ID: '46ce753d0c3a761a6ccbdc70d4d35ae7') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=54435bf72a408f017cf533276a215ade DependenciesID=eb41517ac09aa84f4c15064bce28c0fe StaticDependenciesID=9d025fd74248ffe3fe32a0f307dbaa97 
+Importing 'GUID: d356df189e323404e9d5437c7d2c74b2 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Stocking L Gloss Shell/RuntimeMaterials/02_Umbra Stocking L Gloss Shell_Band Trim.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d356df189e323404e9d5437c7d2c74b2' -> (Import Result ID: 'bb99a7a630616a63af8621bd34fcc7a2') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=d9b84a7285c612d8dea39fef61c78e11 DependenciesID=31641e681c4b010edf0bf818a5e41149 StaticDependenciesID=ad3650513ec3a862f3cc4efb3393c452 
+Importing 'GUID: 245eec6991a0b1448892ae074bdc9af3 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Sleeve L Gloss Shell/RuntimeMaterials/01_Umbra Sleeve L Gloss Shell_Trim.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 245eec6991a0b1448892ae074bdc9af3' -> (Import Result ID: '4fb2fd7ddf0f9e47e8836931cb2bac4c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=57763a01984d4c43d6da6da5373617dd DependenciesID=853de528eeee57cf17d95d2720a16e61 StaticDependenciesID=9cd0eb433fc59f1634aeacdd9b1c281c 
+Importing 'GUID: 54812adb9b0152f4ab98903feac30ad9 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/01_Umbra Bra Top Gloss Shell_Straps.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 54812adb9b0152f4ab98903feac30ad9' -> (Import Result ID: 'd1e30b8e9ea53cc0a60e69ea900b483b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=df640adddb6e022268e603a1d2de17d8 DependenciesID=140b562cc24612ac83e4d25d4bdeeea9 StaticDependenciesID=6cb5ea60a019d7aa7df861e042bf4872 
+Importing 'GUID: 84666ee5ae0bbc34e9d38751814420aa - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/04_BraTop_G8F_7446_Fastner.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 84666ee5ae0bbc34e9d38751814420aa' -> (Import Result ID: 'ef141b1da19773b86ba9738fc93f1163') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=56872800da3bbfa292464e0b3c79b8b2 DependenciesID=ef1bdbd39b8709b0a599dd12f0915929 StaticDependenciesID=64558d8ef4e137c61605c5df91484d5b 
+Importing 'GUID: c4e0dbbfe12e48645924478e3c83190d - Path: Assets/TestData/LaraCandidate/SecondOutfit/SleeveR_G8F_2373/RuntimeMaterials/00_SleeveR_G8F_2373_Sleeve.mat' with importer (NativeFormatImporter)
+Imported 'GUID: c4e0dbbfe12e48645924478e3c83190d' -> (Import Result ID: '092bfc4aa2ed199b86a903037782f0c0') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b9abf0277db83f081b43b43e8b555c0b DependenciesID=1ed320f66e4d7676554c1583481ce5b8 StaticDependenciesID=e50555f6aeb48779132c57eca27b557c 
+Importing 'GUID: 357a87bb38a23b544b0388ec721d2f1d - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/00_BraTop_G8F_7446_Cup.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 357a87bb38a23b544b0388ec721d2f1d' -> (Import Result ID: 'cbe519f27db5ce0c94aefc6e56f727db') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a1c0da78410427eda3719d3b3dcf169e DependenciesID=f15ef774738fe51b147bcdff0963136d StaticDependenciesID=47649de69c66a910f3fdebf41df113ec 
+Importing 'GUID: a557d0f777faa5b4e84199af6f9b9049 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Garter_G8F_7018/RuntimeMaterials/06_Garter_G8F_7018_Area Front.mat' with importer (NativeFormatImporter)
+Imported 'GUID: a557d0f777faa5b4e84199af6f9b9049' -> (Import Result ID: '24d0398d79c81ab6371b8b0c2f738575') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b1477e3c58764dc9c958a683bfb1b29c DependenciesID=10c7b302f16b88f82d816422f55f152a StaticDependenciesID=cfc60c37f1258152bc8a9f80224ab72d 
+Importing 'GUID: 062892eb976b4a34588ceea0118ce761 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Stocking R Gloss Shell/RuntimeMaterials/01_Umbra Stocking R Gloss Shell_Band.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 062892eb976b4a34588ceea0118ce761' -> (Import Result ID: 'd37378a112a17a7d620f722f2be0b410') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f0c59de303e4ac83ba0c1c74b3e0b4ec DependenciesID=bae70648bf2827c3ce57847424133806 StaticDependenciesID=599e55761cd7e8e48dc88e5a5988f915 
+Importing 'GUID: 3609bb644111f7a4d9f3f68f845621e7 - Path: Assets/TestData/LaraCandidate/SecondOutfit/NewUnderwear_G8F_5197/RuntimeMaterials/01_NewUnderwear_G8F_5197_Ruffles Mesh.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 3609bb644111f7a4d9f3f68f845621e7' -> (Import Result ID: 'c63286ee91df99b88f2e52dc1189b75b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f56456980e5294628fcc5e349fce5307 DependenciesID=b0e1414137abf683714c6edc626ef501 StaticDependenciesID=778138e8b6f69b68c629ab2bd39bd063 
+Importing 'GUID: 566c25c12ae4856499822d4b8bebcff7 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/05_Umbra Bra Top Gloss Shell_Choker.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 566c25c12ae4856499822d4b8bebcff7' -> (Import Result ID: 'a035db790171f199d5cef88557f0128a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f037dd573e4531ae02c4eff607c5d9aa DependenciesID=6eda07b83f427504d63c5148fffaec98 StaticDependenciesID=2534e8dd398c86a0fb80ee588765dbc4 
+Importing 'GUID: a67fcda15e3a4624ea7e10cb77676e96 - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/09_BraTop_G8F_7446_Cup Support.mat' with importer (NativeFormatImporter)
+Imported 'GUID: a67fcda15e3a4624ea7e10cb77676e96' -> (Import Result ID: 'e8843da187746d26c42df0be65b836f2') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=d8881f6c65da54b62ccd7e480322989e DependenciesID=e1f2e149932dabdc009ed818b67fe8c3 StaticDependenciesID=400be51d6719e2f2eba8a85c7be15bcf 
+Importing 'GUID: b62fdb187fadfda4eadbd76179a1e258 - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/02_BraTop_G8F_7446_Shape Support.mat' with importer (NativeFormatImporter)
+Imported 'GUID: b62fdb187fadfda4eadbd76179a1e258' -> (Import Result ID: 'a181a7f29fa634464675ab2239346e86') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=7f6f53cd88348a567fc378975759d8db DependenciesID=337199b1d6f774d503a443aba31587ad StaticDependenciesID=07f585d5848ad58c95de1b8af9293c50 
+Importing 'GUID: c6f567eb4612a074caf0a828ba94a726 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Stocking L Gloss Shell/RuntimeMaterials/00_Umbra Stocking L Gloss Shell_Stocking.mat' with importer (NativeFormatImporter)
+Imported 'GUID: c6f567eb4612a074caf0a828ba94a726' -> (Import Result ID: '7cd43986601565cc36beab0dc27ee411') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bd3020d0add155e36888f90b9db9d4c9 DependenciesID=4f346bcc8486484f39d8d1226b88884c StaticDependenciesID=90f50cfb3b4b0dcb2e76b6188803b465 
+Importing 'GUID: 27b35b1075b21994c963940a718f72c1 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/07_Umbra Bra Top Gloss Shell_Choker Straps.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 27b35b1075b21994c963940a718f72c1' -> (Import Result ID: '486f6c878d84cd406c850fd412542d6f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=9f36be487028444dc1b54be556a64792 DependenciesID=67818cb2549d166e44bf6c5eb4b74994 StaticDependenciesID=0f75e854df1520d6cd2b68a6c5a19257 
+Importing 'GUID: 582f868c238b498408f77a551c9bb8a8 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/00_Umbra Bra Top Gloss Shell_Cup.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 582f868c238b498408f77a551c9bb8a8' -> (Import Result ID: 'b7d19324e14ef32bdd50ede00a574ff5') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=80e28a9ed010b0a70b20797d55115561 DependenciesID=1aa0179377f360760ceeafbd6f09701d StaticDependenciesID=08a5639df614a3a6ebfe6b30a277df50 
+Importing 'GUID: a8c7163cf46a6d24db2c6c5af1d31fc2 - Path: Assets/TestData/LaraCandidate/SecondOutfit/SleeveL_G8F_2373/RuntimeMaterials/00_SleeveL_G8F_2373_Sleeve.mat' with importer (NativeFormatImporter)
+Imported 'GUID: a8c7163cf46a6d24db2c6c5af1d31fc2' -> (Import Result ID: '44d3be7db5697b64de0af63ef82f1571') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=19cf6103c29230eb402c3937c5455af2 DependenciesID=f8f0b8271afc6f8e2e49513d21caaf14 StaticDependenciesID=82035b04bbe086ec19cd9ff36b5bb0d5 
+Importing 'GUID: 096a5c7d61ab81849ac1e779bd38d8e5 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Stocking L G8F_6421/RuntimeMaterials/00_Stocking L G8F_6421_Stocking.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 096a5c7d61ab81849ac1e779bd38d8e5' -> (Import Result ID: 'e20d04e03063fee6d0aa205e5d0f252d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=5e22f15c68df1405ba2e2034ef018585 DependenciesID=9489d33c81ff5ed321432d0ebaee410c StaticDependenciesID=e5f0a2b574e0df6626403392885a8a3b 
+Importing 'GUID: 49855e8f70c1f5140879bbded124e55e - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Sleeve R Gloiss Shell/RuntimeMaterials/00_Umbra Sleeve R Gloiss Shell_Sleeve.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 49855e8f70c1f5140879bbded124e55e' -> (Import Result ID: '3f55aa911d95dc911d60b2beba5d9dfd') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c5a57026eb6c1e1abc18461808701fc0 DependenciesID=0a63ee9db499ff9ec49cd85c2d5e378e StaticDependenciesID=62b3bd858d665592bab3e82d77a9a7b1 
+Importing 'GUID: 9bf544bced6b06043a98389f4d9e460b - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Stocking L Gloss Shell/RuntimeMaterials/01_Umbra Stocking L Gloss Shell_Band.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 9bf544bced6b06043a98389f4d9e460b' -> (Import Result ID: '254edd1b686db482923cc4fd642cb771') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=abc5bea2567b636b4b12c84dcb088a08 DependenciesID=f67e98bffb00e7cc757c3d3ce0d542e1 StaticDependenciesID=7fc88e3a448fc91d0b088925638eaee2 
+Importing 'GUID: 0ca3c62ca4622604097ec0e24c3173ed - Path: Assets/TestData/LaraCandidate/SecondOutfit/Garter_G8F_7018/RuntimeMaterials/02_Garter_G8F_7018_Loops.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 0ca3c62ca4622604097ec0e24c3173ed' -> (Import Result ID: '29b76c9998c4d3ecba006b850a20168a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6a28bdb9677cbde8fe9548d30b8fa81a DependenciesID=6d38e73f01b2b04c2488ea60cb936582 StaticDependenciesID=95ce70f80c7a911a2a1ae3d5b974bb4d 
+Importing 'GUID: 4c2a48ce7ea5d7c43b7409ea00322ea8 - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/06_BraTop_G8F_7446_Cup Trim.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 4c2a48ce7ea5d7c43b7409ea00322ea8' -> (Import Result ID: '2e5978d090e65cd9e0d9f7e3f84d4c16') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c1f93d511db613ebf2ef9390b86c211d DependenciesID=08ecf7e2cdc15059ef1e51a43c9a5dfc StaticDependenciesID=6f53017e1fc7136b8dfb379c6a1c69e3 
+Importing 'GUID: 7cf1b863406eb5847899580bc8ec2a7a - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/05_BraTop_G8F_7446_Choker.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 7cf1b863406eb5847899580bc8ec2a7a' -> (Import Result ID: 'b14ef697a0da381dcc62fc1c200dd16a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=e7cfc2fe8b1465b98bca5714b7ee15a8 DependenciesID=0ec9115d0256a47baf5b1840dd77a0af StaticDependenciesID=4123011ff42d48bf1f70fc24b924d14e 
+Importing 'GUID: de402c86b3ecd344f8ce24caa78fe25f - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/07_BraTop_G8F_7446_Choker Straps.mat' with importer (NativeFormatImporter)
+Imported 'GUID: de402c86b3ecd344f8ce24caa78fe25f' -> (Import Result ID: '4820aaf6bc948504653ed23343dae4a3') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bc26b9eff55c8457ec8e800e57642240 DependenciesID=746ce0f56d9f24e3abc7bcbedf9f8dcd StaticDependenciesID=4e28a478bd6bca02621864769864ce64 
+Importing 'GUID: de3145c180177fd47a56694ede1db050 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Garter_G8F_7018/RuntimeMaterials/04_Garter_G8F_7018_Area 2.mat' with importer (NativeFormatImporter)
+Imported 'GUID: de3145c180177fd47a56694ede1db050' -> (Import Result ID: 'e076eda010837b62fa21d6d8958f513f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4b78e919cd1c47f33f594693d7be00b8 DependenciesID=03a3fd62aaa6e2ac87e684b2fda1e8af StaticDependenciesID=8e28d63dd9e5a36bc9936084e07ce201 
+Importing 'GUID: ee45c38771620ae48a8b2675c76c8ebb - Path: Assets/TestData/LaraCandidate/SecondOutfit/Stocking R G8F_6421/RuntimeMaterials/00_Stocking R G8F_6421_Stocking.mat' with importer (NativeFormatImporter)
+Imported 'GUID: ee45c38771620ae48a8b2675c76c8ebb' -> (Import Result ID: 'f2bfeeb94897e3436a9df2310693d5ce') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b04d60abfc21caa527f3af68d27732d3 DependenciesID=8577cb99bccea6a5a5eb2b418905afeb StaticDependenciesID=a1d46987383e4fd5b9b1e27a6e3828db 
+Importing 'GUID: 0fedc1aa5ed74794c8dae8ed8f430177 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/06_Umbra Bra Top Gloss Shell_Cup Trim.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 0fedc1aa5ed74794c8dae8ed8f430177' -> (Import Result ID: '05e98b9f542e05a93e577d2dccaefcfe') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a73680f581ce90a9bcedfc3066891be0 DependenciesID=1363d5f96da8d051b923c5f3e1701e9c StaticDependenciesID=e3419a17c219351ecd2770c68bd31ab4 
+Importing 'GUID: 1fd00b708f33e8f4d9d32f6f152b0857 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Garter_G8F_7018/RuntimeMaterials/00_Garter_G8F_7018_Trim.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 1fd00b708f33e8f4d9d32f6f152b0857' -> (Import Result ID: '6b2af7cfef09c39287e2b643f488e27c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=cb438a53e1bf76783fd4fe6dc2529a76 DependenciesID=7084d55283e2c5faa08e48151fa0b81c StaticDependenciesID=745bb8cf5131e5fba488992a51d35ee9 
+Importing 'GUID: 3fb376eddb208264783cc469eab24c80 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Umbra Bra Top Gloss Shell/RuntimeMaterials/02_Umbra Bra Top Gloss Shell_Shape Support.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 3fb376eddb208264783cc469eab24c80' -> (Import Result ID: '187cc3ab2745e8de9d58d17a13d42cbe') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4b76105aa41d7613d2e478013cb8d69f DependenciesID=49efc526a761c8f384f77787baa41b9b StaticDependenciesID=477f030477fe5c173142d57a252006d8 
+Importing 'GUID: 3fbc0d991016e1944979a231d1f02a45 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Garter_G8F_7018/RuntimeMaterials/01_Garter_G8F_7018_Area 1.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 3fbc0d991016e1944979a231d1f02a45' -> (Import Result ID: 'e60fd4bb7c1310aea6c70a65e08942dd') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bceeeaf7b7534ed472246e59c35e957a DependenciesID=f24241f886a90b1c78a2b86af4ce7458 StaticDependenciesID=a6530eda67b049389db19eea72ba0357 
+Importing 'GUID: 51ebf4fdc8bb0334f8bf41efa3f868f5 - Path: Assets/TestData/LaraCandidate/SecondOutfit/SurfaceBindings.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 51ebf4fdc8bb0334f8bf41efa3f868f5' -> (Import Result ID: '17188fe6dc136eac3cd5a62b086acf98') in 0.004 seconds [static dependencies only]. Details - ImportResultOutputID=0df00f8a4e1d4ce0b7f4aa39e0f4ba90 DependenciesID=977f83947b722a52e1f5cf5c6613b4de StaticDependenciesID=4475c9a2db3a3cbc2f770a7df3a7362f 
+Importing 'GUID: 6dd7c636d90ae42438e8233b4b4f4c66 - Path: Assets/TestData/LaraCandidate/SecondOutfit/Meshes/shoe_6146.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 6dd7c636d90ae42438e8233b4b4f4c66' -> (Import Result ID: '593a7958ba23c8c24392aa76a91a5ebe') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=0e19a689b378fd7b176e1b5cf73d072b DependenciesID=f9355e3f055f30f05ed23c1d7e846d19 StaticDependenciesID=8fca3b18be6979186475d624d24b5ddc 
+Asset Pipeline Refresh (id=dff8aa2a4881bed41954c9680f580ea9): Total: 0.225 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: 233053b9de26d95428850d8150d31ea9 - Path: Assets/TestData/LaraCandidate/SecondOutfit/BD Shoes Footwear.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 233053b9de26d95428850d8150d31ea9' -> (Import Result ID: 'ab448d4ffad7ebb316ab9b5102805a6f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=5d720c98d57c2eda2a0ca1786c078d17 DependenciesID=aa335c11a9f699013dd733ce79a6dbfe StaticDependenciesID=b62e6b9f3340b497472a1bfc99a0bbcf 
+Importing 'GUID: 5c0d16d13fb11044db1f18f4702a3b70 - Path: Assets/TestData/LaraCandidate/SecondOutfit/DissolveProfile.asset' with importer (NativeFormatImporter)
+Main Object Name 'DissolveProfile(Clone)(Clone)(Clone)' does not match filename 'DissolveProfile'
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:94)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:40)
+
+[Assets/DazPose/Editor/LaraSecondOutfitRepair.cs line 94]
+
+Imported 'GUID: 5c0d16d13fb11044db1f18f4702a3b70' -> (Import Result ID: '288b100909efc88d86a887969de170a1') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=e40fd8f163fbacbb1554acea2a2e7b29 DependenciesID=5d4e139cd955ddfca555dbebc4ed0918 StaticDependenciesID=7330878709963032846c630d708c0913 
+Asset Pipeline Refresh (id=d002a2aa84529cd438b6e3a0efcf6860): Total: 0.145 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+LARA_SECOND_REPAIRED: transparent lace/fishnet, body-only foot fit=0.05, support height=0.04959188, ground=0.009076234
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairLoaded () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:95)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:40)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitRepair.cs Line: 95)
+
+Importing 'GUID: d7b0bd5a23f36634e8cf1626d7e593a0 - Path: Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity' with importer (DefaultImporter)
+Imported 'GUID: d7b0bd5a23f36634e8cf1626d7e593a0' -> (Import Result ID: 'e5c98f28aa586afa67d7772340f47d14') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=ce3f5220a1a4640d1ff7a54cb614a3d9 DependenciesID=4beb629957f90ba1a9f2617bb87816cc StaticDependenciesID=a67e530993de848a3a95e5e46c9e297e 
+Asset Pipeline Refresh (id=aa90e5bb006a81d43b23fb9d6b7744f6): Total: 0.143 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Opening scene 'Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity'
+Unloading 23 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity'
+	Deserialize:            25.009 ms
+	Integration:            268.717 ms
+	Integration of assets:  0.005 ms
+	Thread Wait Time:       0.002 ms
+	Total Operation Time:   293.733 ms
+Unloading 251 unused Assets / (420.6 KB). Loaded Objects now: 11056.
+Memory consumption went from 1.14 GB to 1.13 GB.
+Total: 17.524100 ms (FindLiveObjects: 0.641500 ms CreateObjectMapping: 1.062600 ms MarkObjects: 15.319800 ms  DeleteObjects: 0.499400 ms)
+
+LARA_OPACITY_AUDIT: BraTop_G8F_7446 format=DXT5 alpha min=0.003921569 max=1 mean=0.987033
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitValidation:Run () (at Assets/DazPose/Editor/LaraSecondOutfitValidation.cs:40)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:42)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitValidation.cs Line: 40)
+
+LARA_OPACITY_AUDIT: Stocking L G8F_6421 format=DXT5 alpha min=0 max=1 mean=0.3682696
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitValidation:Run () (at Assets/DazPose/Editor/LaraSecondOutfitValidation.cs:40)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:42)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitValidation.cs Line: 40)
+
+LARA_SECOND_OUTFIT_RENDER_VALIDATED
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+DazPose.UnityValidation.LaraSecondOutfitValidation:Run () (at Assets/DazPose/Editor/LaraSecondOutfitValidation.cs:83)
+DazPose.UnityValidation.LaraSecondOutfitRepair:RepairAndRender () (at Assets/DazPose/Editor/LaraSecondOutfitRepair.cs:42)
+
+(Filename: Assets/DazPose/Editor/LaraSecondOutfitValidation.cs Line: 83)
+
+Batchmode quit successfully invoked - shutting down!
+Importing 'GUID: 357a87bb38a23b544b0388ec721d2f1d - Path: Assets/TestData/LaraCandidate/SecondOutfit/BraTop_G8F_7446/RuntimeMaterials/00_BraTop_G8F_7446_Cup.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 357a87bb38a23b544b0388ec721d2f1d' -> (Import Result ID: 'cbe519f27db5ce0c94aefc6e56f727db') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=a1c0da78410427eda3719d3b3dcf169e DependenciesID=f15ef774738fe51b147bcdff0963136d StaticDependenciesID=47649de69c66a910f3fdebf41df113ec 
+Asset Pipeline Refresh (id=4d588b99f676cb24b874ed2539e0bcb4): Total: 0.094 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-artwh-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-artwh channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+Exiting batchmode successfully now!
+Exiting without the bug reporter. Application will terminate with return code 0

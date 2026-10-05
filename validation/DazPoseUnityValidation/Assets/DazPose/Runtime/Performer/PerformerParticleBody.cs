@@ -93,11 +93,26 @@ namespace DazPose.Performer
 
         public bool IsActive => _effect != null && _surfaceBuffer != null;
         public int BindingCount => surfaceBindings != null ? surfaceBindings.BindingCount : 0;
+        internal SkinnedMeshRenderer TargetRenderer => targetRenderer;
         public VisualEffectAsset VisualEffectAsset => visualEffectAsset;
         public PerformerSurfaceBindingAsset SurfaceBindings => surfaceBindings;
         public string Status { get; private set; } = "Particle body is stopped.";
 
         internal void ConfigureDebugVisibilityOwner(SuccubusPerformer owner) => debugVisibilityOwner = owner;
+
+        internal void ConfigureWardrobeRuntime(PerformerDissolveProfile profile)
+        {
+            if (!Application.isPlaying) throw new InvalidOperationException("Particle body wardrobe bindings are runtime instance state.");
+            if (profile == null || targetRenderer == null || profile.SurfaceBindings == null)
+                throw new InvalidOperationException("Wardrobe particle binding/profile/renderer is missing.");
+            if (_transition != Transition.None || (_phase != BodyPhase.Follow && _phase != BodyPhase.Hidden))
+                throw new InvalidOperationException("Cannot rebind wardrobe surface buffers while a dissolve owns the particle body.");
+            if (!profile.SurfaceBindings.IsValidFor(targetRenderer, out string reason)) throw new InvalidOperationException(reason);
+            if (profile.ParticleBodyVfxAsset == null) throw new InvalidOperationException("Wardrobe dissolve graph is missing.");
+            Dispose();
+            surfaceBindings = profile.SurfaceBindings;
+            visualEffectAsset = profile.ParticleBodyVfxAsset;
+        }
 
         public bool ValidateConfiguration(out string reason)
         {
@@ -336,7 +351,7 @@ namespace DazPose.Performer
             SetFloat(MaterializeProgressId, Mathf.Clamp01(progress));
         }
 
-        internal void FinishDissolve()
+        internal void FinishDissolve(bool hidden)
         {
             if (IsActive)
             {
@@ -345,6 +360,8 @@ namespace DazPose.Performer
                 SetFloat(MaterializeProgressId, 0f);
                 SetFloat(TransitProgressId, 0f);
             }
+            _transition = Transition.None;
+            _phase = hidden ? BodyPhase.Hidden : BodyPhase.Follow;
             Dispose();
         }
 

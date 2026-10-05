@@ -40,13 +40,15 @@ float PerformerDissolveField(float3 localPosition, float3 boundsMin, float3 boun
 void PerformerDissolveEvaluate_float(
     float3 LocalPosition,float3 BoundsMin,float3 BoundsSize,float4 FieldParams,
     float DissolveEnabled,float DissolveProgress,float EdgeWidth,float4 EdgeColor,
-    float EdgeEmission,float SourceAlpha,float3 SourceEmission,
+    float EdgeEmission,float SourceAlpha,float3 SourceEmission,float2 Coverage,float CoverageEnabled,float DressCoverageEnabled,
     out float ResultAlpha,out float3 ResultEmission,out float Keep)
 {
     float enabled=saturate(DissolveEnabled);
     float progress=saturate(DissolveProgress);
     float field=PerformerDissolveField(LocalPosition,BoundsMin,BoundsSize,FieldParams);
     Keep=lerp(1.0,step(progress,field),enabled);
+    float covered=max(step(0.5,Coverage.x)*step(0.5,CoverageEnabled),step(0.5,Coverage.y)*step(0.5,DressCoverageEnabled));
+    Keep*=1.0-covered;
     // Alpha zero survives HDRP's clip(alpha - 0). A negative masked alpha is rejected
     // even when the original threshold is zero, while kept pixels retain SourceAlpha.
     // Both project-owned graphs enable alpha testing, including transparent Wet, so

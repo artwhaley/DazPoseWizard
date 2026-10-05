@@ -33,6 +33,28 @@ namespace DazPose.Performer
         public PerformerParticleBody ParticleBody => particleBody;
         internal SkinnedMeshRenderer TargetRenderer => targetRenderer;
 
+        internal bool CanConfigureWardrobe(PerformerDissolveProfile profile, out string reason)
+        {
+            if (_prepared) { reason = "The dissolve rig is owned by an active effect."; return false; }
+            if (!IsShaderReady(profile, out reason)) return false;
+            if (particleBody == null) { reason = "Particle body component is missing."; return false; }
+            if (particleBody.TargetRenderer != targetRenderer)
+            { reason = "Dissolve rig and particle body must reference the same performer renderer."; return false; }
+            if (profile.SurfaceBindings == null || !profile.SurfaceBindings.IsValidFor(targetRenderer, out reason)) return false;
+            if (profile.ParticleBodyVfxAsset != particleBody.VisualEffectAsset)
+            { reason = "Wardrobe profile and particle body use different VFX graphs."; return false; }
+            reason = null;
+            return true;
+        }
+
+        internal void ConfigureWardrobeRuntime(PerformerDissolveProfile profile)
+        {
+            if (!Application.isPlaying) throw new InvalidOperationException("Dissolve wardrobe bindings are runtime instance state.");
+            if (!CanConfigureWardrobe(profile, out string reason)) throw new InvalidOperationException(reason);
+            particleBody.ConfigureWardrobeRuntime(profile);
+            if (!particleBody.ValidateConfiguration(profile, out reason)) throw new InvalidOperationException(reason);
+        }
+
         private void OnDisable()
         {
             // Component cleanup releases effect resources but preserves the renderer's
@@ -63,7 +85,7 @@ namespace DazPose.Performer
             Material[] profileMaterials = profile.LaraRuntimeMaterials;
             if (rendererMaterials.Length != profileMaterials.Length)
             {
-                reason = "Lara's renderer material slots do not match the 16 project-owned dissolve materials in the profile.";
+                reason = "Lara's renderer material slots do not match the project-owned dissolve materials in the profile.";
                 return false;
             }
             for (int i = 0; i < rendererMaterials.Length; i++)
@@ -281,7 +303,7 @@ namespace DazPose.Performer
             }
             try
             {
-                if (particleBody != null) particleBody.FinishDissolve();
+                if (particleBody != null) particleBody.FinishDissolve(hidden);
             }
             finally
             {
@@ -312,7 +334,7 @@ namespace DazPose.Performer
             {
                 try
                 {
-                    if (particleBody != null) particleBody.FinishDissolve();
+                    if (particleBody != null) particleBody.FinishDissolve(hidden);
                 }
                 finally
                 {
