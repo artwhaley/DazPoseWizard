@@ -1,0 +1,343 @@
+{
+    "sourceHashes": [
+        {
+            "path": "Assets/TestCharacter/playererect.fbx",
+            "sha256": "ba2bcca1dadb350a59e86e118a1b9b0195fef6033c00c472cc1523bf9c3481f1"
+        },
+        {
+            "path": "Assets/TestCharacter/playerflacid.fbx",
+            "sha256": "7a8e9188ca04e205870f0ef7619cc0f10ab59af81dab2cff4ff3590ed6a0cda4"
+        }
+    ],
+    "canonicalBody": "Assets/TestCharacter/playererect.fbx",
+    "canonicalSkeleton": "Assets/TestCharacter/playererect.fbx",
+    "canonicalShell": "Assets/TestCharacter/playererect.fbx (Dicktator Shell; unskinned)",
+    "body": {
+        "shapeName": "ErectionToFlaccid",
+        "endpointMeasurement": "SkinnedMeshRenderer.BakeMesh output compared in root-relative world space with canonical erect skeleton retained at its imported base pose.",
+        "vertexCount": 20355,
+        "submeshCount": 23,
+        "blendShapeCount": 1,
+        "maximumErectMm": 0.0,
+        "rmsErectMm": 0.0,
+        "maximumFlaccidMm": 0.00006144612416392192,
+        "rmsFlaccidMm": 0.000004273607373761479,
+        "unityMaximumInfluences": 10,
+        "unityVerticesAboveOneWeight": 13232,
+        "unityVerticesAboveFourWeights": 1237,
+        "unityMaximumWeightSum": 1.0000001192092896,
+        "unityMinimumPositiveWeightSum": 0.9999998807907105,
+        "unityVerticesWithWeights": 20355,
+        "unityWeightSumsOutsideTolerance": 0,
+        "allBoneWeightRecords": 45184,
+        "topologyEqual": true,
+        "uvEqual": true
+    },
+    "shell": {
+        "shapeName": "ShellErectionToFlaccid",
+        "endpointMeasurement": "",
+        "vertexCount": 2389,
+        "submeshCount": 7,
+        "blendShapeCount": 1,
+        "maximumErectMm": 0.0,
+        "rmsErectMm": 0.0,
+        "maximumFlaccidMm": 0.000014930236829968635,
+        "rmsFlaccidMm": 3.7766270111205815e-7,
+        "unityMaximumInfluences": 0,
+        "unityVerticesAboveOneWeight": 0,
+        "unityVerticesAboveFourWeights": 0,
+        "unityMaximumWeightSum": 0.0,
+        "unityMinimumPositiveWeightSum": 0.0,
+        "unityVerticesWithWeights": 0,
+        "unityWeightSumsOutsideTolerance": 0,
+        "allBoneWeightRecords": 0,
+        "topologyEqual": true,
+        "uvEqual": true
+    },
+    "importer": {
+        "erectWeights": "Custom",
+        "flaccidWeights": "Custom",
+        "erectMaxBonesPerVertex": 10,
+        "flaccidMaxBonesPerVertex": 10,
+        "erectMinBoneWeight": 0.0010000000474974514,
+        "flaccidMinBoneWeight": 0.0010000000474974514,
+        "erectOptimizeGameObjects": false,
+        "constraintsImported": false,
+        "runtimeQualityCap": "Unlimited"
+    },
+    "geometryCenterline": {
+        "method": "33 stations by equal arc distance on the endpoint's own shaft1..shaft7 skeleton guide plus a glans support-plane tip; at each station, center is the midpoint of the bounding box of actual Shaft-slot surface vertices within a narrow perpendicular slice. Bone positions guide local station/tangent only; no cross-endpoint bone interpolation is used.",
+        "erectLengthCm": 23.14495849609375,
+        "flaccidLengthCm": 19.456151962280275,
+        "erectRadiusCm": 2.324591875076294,
+        "flaccidRadiusCm": 2.0611393451690676,
+        "erectSectionPointCounts": [
+            0,
+            0,
+            0,
+            21,
+            35,
+            36,
+            32,
+            20,
+            15,
+            15,
+            18,
+            14,
+            22,
+            22,
+            13,
+            8,
+            16,
+            22,
+            13,
+            17,
+            19,
+            24,
+            37,
+            46,
+            55,
+            72,
+            73,
+            73,
+            61,
+            50,
+            26,
+            7,
+            0
+        ],
+        "flaccidSectionPointCounts": [
+            0,
+            0,
+            0,
+            14,
+            19,
+            38,
+            29,
+            24,
+            22,
+            25,
+            22,
+            18,
+            37,
+            8,
+            17,
+            13,
+            17,
+            16,
+            18,
+            24,
+            26,
+            32,
+            49,
+            60,
+            68,
+            71,
+            73,
+            71,
+            60,
+            37,
+            22,
+            9,
+            0
+        ],
+        "pivotMismatch": [
+            {
+                "erection01": 0.0,
+                "bone": "shaft1",
+                "distanceMm": 0.6105801463127136
+            },
+            {
+                "erection01": 0.0,
+                "bone": "shaft2",
+                "distanceMm": 26.72039222717285
+            },
+            {
+                "erection01": 0.0,
+                "bone": "shaft3",
+                "distanceMm": 48.63966751098633
+            },
+            {
+                "erection01": 0.0,
+                "bone": "shaft4",
+                "distanceMm": 70.39781188964844
+            },
+            {
+                "erection01": 0.0,
+                "bone": "shaft5",
+                "distanceMm": 94.0549545288086
+            },
+            {
+                "erection01": 0.0,
+                "bone": "shaft6",
+                "distanceMm": 121.69557189941406
+            },
+            {
+                "erection01": 0.0,
+                "bone": "shaft7",
+                "distanceMm": 150.22947692871095
+            },
+            {
+                "erection01": 0.25,
+                "bone": "shaft1",
+                "distanceMm": 0.457933247089386
+            },
+            {
+                "erection01": 0.25,
+                "bone": "shaft2",
+                "distanceMm": 20.386438369750978
+            },
+            {
+                "erection01": 0.25,
+                "bone": "shaft3",
+                "distanceMm": 38.71703338623047
+            },
+            {
+                "erection01": 0.25,
+                "bone": "shaft4",
+                "distanceMm": 58.385894775390628
+            },
+            {
+                "erection01": 0.25,
+                "bone": "shaft5",
+                "distanceMm": 80.42414855957031
+            },
+            {
+                "erection01": 0.25,
+                "bone": "shaft6",
+                "distanceMm": 106.82444763183594
+            },
+            {
+                "erection01": 0.25,
+                "bone": "shaft7",
+                "distanceMm": 134.5370635986328
+            },
+            {
+                "erection01": 0.5,
+                "bone": "shaft1",
+                "distanceMm": 0.30528637766838076
+            },
+            {
+                "erection01": 0.5,
+                "bone": "shaft2",
+                "distanceMm": 9.953483581542969
+            },
+            {
+                "erection01": 0.5,
+                "bone": "shaft3",
+                "distanceMm": 20.384492874145509
+            },
+            {
+                "erection01": 0.5,
+                "bone": "shaft4",
+                "distanceMm": 33.97677230834961
+            },
+            {
+                "erection01": 0.5,
+                "bone": "shaft5",
+                "distanceMm": 49.977169036865237
+            },
+            {
+                "erection01": 0.5,
+                "bone": "shaft6",
+                "distanceMm": 69.56752014160156
+            },
+            {
+                "erection01": 0.5,
+                "bone": "shaft7",
+                "distanceMm": 92.28809356689453
+            },
+            {
+                "erection01": 0.75,
+                "bone": "shaft1",
+                "distanceMm": 0.15264689922332765
+            },
+            {
+                "erection01": 0.75,
+                "bone": "shaft2",
+                "distanceMm": 0.43093737959861758
+            },
+            {
+                "erection01": 0.75,
+                "bone": "shaft3",
+                "distanceMm": 5.755256652832031
+            },
+            {
+                "erection01": 0.75,
+                "bone": "shaft4",
+                "distanceMm": 6.789817810058594
+            },
+            {
+                "erection01": 0.75,
+                "bone": "shaft5",
+                "distanceMm": 14.590564727783204
+            },
+            {
+                "erection01": 0.75,
+                "bone": "shaft6",
+                "distanceMm": 24.14157485961914
+            },
+            {
+                "erection01": 0.75,
+                "bone": "shaft7",
+                "distanceMm": 36.43852996826172
+            },
+            {
+                "erection01": 1.0,
+                "bone": "shaft1",
+                "distanceMm": 0.0
+            },
+            {
+                "erection01": 1.0,
+                "bone": "shaft2",
+                "distanceMm": 1.8459986448287964
+            },
+            {
+                "erection01": 1.0,
+                "bone": "shaft3",
+                "distanceMm": 1.2542510032653809
+            },
+            {
+                "erection01": 1.0,
+                "bone": "shaft4",
+                "distanceMm": 5.43353271484375
+            },
+            {
+                "erection01": 1.0,
+                "bone": "shaft5",
+                "distanceMm": 4.9622626304626469
+            },
+            {
+                "erection01": 1.0,
+                "bone": "shaft6",
+                "distanceMm": 4.498228549957275
+            },
+            {
+                "erection01": 1.0,
+                "bone": "shaft7",
+                "distanceMm": 2.303168773651123
+            }
+        ],
+        "states01": [
+            0.0,
+            0.25,
+            0.5,
+            0.75,
+            1.0
+        ],
+        "linearInterpolatedCenterlinePointCount": 33,
+        "noZeroSegments": true,
+        "minimumContinuousSegmentCm": 0.029495934024453164,
+        "sampleLengthsCm": [
+            19.456151962280275,
+            15.428821563720704,
+            14.752753257751465,
+            17.6704044342041,
+            23.14495849609375
+        ]
+    },
+    "endpointsNumericallyVerified": true,
+    "visualAcceptance": "PENDING USER REVIEW; numeric endpoint checks do not accept intermediate appearance or compliance",
+    "donorPelvis": "Importer constraints are disabled per the source-specific FBX settings; the scene controller owns one explicit donor-to-main pelvis follow using the measured initial relative transform.",
+    "sourceFilesUnmodified": true
+}
