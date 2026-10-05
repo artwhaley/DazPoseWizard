@@ -96,13 +96,12 @@ namespace DazPose.UnityValidation.Editor.Partner
                 RendererBundle flaccid = FindBundle(flaccidPrefab.transform);
                 ValidatePair(erectPrefab.transform, flaccidPrefab.transform, erect, flaccid);
                 Mesh bodyGenerated = SaveGeneratedMesh(MakeSkinnedBodyShapeMesh(erect.body, flaccid.body, BodyShape), Generated + "/G8M_ErectBody.asset");
-                Mesh shellGenerated = SaveGeneratedMesh(MakeShapeMesh(erect.shellMesh, erect.shellTransform, erectPrefab.transform, flaccid.shellMesh, flaccid.shellTransform, flaccidPrefab.transform, ShellShape), Generated + "/G8M_ErectShell.asset");
-                Material bodyProofMaterial = SaveProofMaterial("PartnerProof_Body", new Color(.72f, .43f, .33f, 1f));
-                Material shellProofMaterial = SaveProofMaterial("PartnerProof_Shell", new Color(.28f, .58f, .76f, 1f));
+                Mesh shellGenerated = SaveGeneratedMesh(PartnerCharacterPreparation.CreateSkinnedShell(erect.body, erect.shellMesh, erect.shellTransform, flaccid.shellMesh, flaccid.shellTransform), Generated + "/G8M_ErectShell.asset");
+                Material[] characterMaterials = PartnerCharacterPreparation.BuildMaterials();
 
                 LineData erectLine = DeriveGeometryLine(erectPrefab.transform, erect.body, BodySlots, 16, 17, 33);
                 LineData flaccidLine = DeriveGeometryLine(flaccidPrefab.transform, flaccid.body, BodySlots, 16, 17, 33);
-                BuildScene(erectAsset, bodyGenerated, shellGenerated, bodyProofMaterial, shellProofMaterial, erectLine, flaccidLine);
+                BuildScene(erectAsset, bodyGenerated, shellGenerated, characterMaterials, erectLine, flaccidLine);
                 WriteProof(evidenceRoot, actualErectHash, actualFlaccidHash, erectImporter, flaccidImporter, erect, flaccid, bodyGenerated, shellGenerated, erectPrefab.transform, flaccidPrefab.transform, erectLine, flaccidLine);
                 Debug.Log("PARTNER_RIG_ACCEPTANCE_BUILT: " + ScenePath + " ; evidence=" + evidenceRoot);
             }
@@ -372,23 +371,6 @@ namespace DazPose.UnityValidation.Editor.Partner
             }
         }
 
-        private static Material SaveProofMaterial(string name, Color color)
-        {
-            string path = Generated + "/" + name + ".mat";
-            Material existing = AssetDatabase.LoadAssetAtPath<Material>(path);
-            Shader shader = Shader.Find("HDRP/Lit") ?? Shader.Find("Standard");
-            Require(shader != null, "No HDRP/Lit or Standard shader is available for the temporary proof material.");
-            Material result = existing != null ? existing : new Material(shader);
-            result.shader = shader;
-            result.name = name;
-            if (result.HasProperty("_BaseColor")) result.SetColor("_BaseColor", color);
-            if (result.HasProperty("_Color")) result.SetColor("_Color", color);
-            if (result.HasProperty("_Smoothness")) result.SetFloat("_Smoothness", .28f);
-            if (existing == null) AssetDatabase.CreateAsset(result, path);
-            else EditorUtility.SetDirty(result);
-            return result;
-        }
-
         private static string[] FindAnatomyTransforms(Transform root)
         {
             var result = new string[7];
@@ -479,7 +461,7 @@ namespace DazPose.UnityValidation.Editor.Partner
 
         private static bool IsFinite(Vector3 p) => !(float.IsNaN(p.x) || float.IsNaN(p.y) || float.IsNaN(p.z) || float.IsInfinity(p.x) || float.IsInfinity(p.y) || float.IsInfinity(p.z));
 
-        private static void BuildScene(GameObject erectAsset, Mesh bodyMesh, Mesh shellMesh, Material bodyMaterial, Material shellMaterial, LineData erectLine, LineData flaccidLine)
+        private static void BuildScene(GameObject erectAsset, Mesh bodyMesh, Mesh shellMesh, Material[] materials, LineData erectLine, LineData flaccidLine)
         {
             var current = SceneManager.GetSceneByPath(ScenePath);
             if (current.IsValid()) throw new InvalidOperationException("PartnerRigAcceptance scene is already open; builder will not replace an open scene.");
@@ -500,7 +482,6 @@ namespace DazPose.UnityValidation.Editor.Partner
             bundle.body.sharedMesh = bodyMesh;
             bundle.body.updateWhenOffscreen = true;
             bundle.body.quality = SkinQuality.Auto;
-            bundle.body.sharedMaterials = Enumerable.Repeat(bodyMaterial, bodyMesh.subMeshCount).ToArray();
             Transform shell = bundle.shellTransform;
             var oldRenderer = shell.GetComponent<MeshRenderer>();
             if (oldRenderer != null) UnityEngine.Object.DestroyImmediate(oldRenderer);
@@ -508,10 +489,8 @@ namespace DazPose.UnityValidation.Editor.Partner
             if (oldFilter != null) UnityEngine.Object.DestroyImmediate(oldFilter);
             var shellSkin = shell.gameObject.AddComponent<SkinnedMeshRenderer>();
             shellSkin.sharedMesh = shellMesh;
-            shellSkin.sharedMaterials = Enumerable.Repeat(shellMaterial, shellMesh.subMeshCount).ToArray();
-            shellSkin.rootBone = null;
-            shellSkin.bones = Array.Empty<Transform>();
-            shellSkin.updateWhenOffscreen = true;
+            PartnerCharacterPreparation.ConfigureSkin(shellSkin, bundle.body, shellMesh);
+            PartnerCharacterPreparation.ApplyMaterials(root, materials, PartnerCharacterPreparation.ReadManifest());
 
             var controller = root.AddComponent<PartnerAnatomyTestController>();
             var serialized = new SerializedObject(controller);
@@ -540,6 +519,10 @@ namespace DazPose.UnityValidation.Editor.Partner
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(.12f, .13f, .16f, 1f);
             cameraObject.AddComponent<AudioListener>();
+            var smokePanel = cameraObject.AddComponent<DazPose.Performer.PerformerPoseSmokeHarness>();
+            var smokeState = new SerializedObject(smokePanel);
+            smokeState.FindProperty("partnerAnatomyAcceptance").objectReferenceValue = controller;
+            smokeState.ApplyModifiedPropertiesWithoutUndo();
             serialized.FindProperty("viewCamera").objectReferenceValue = camera;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             var lightObject = new GameObject("Acceptance Key Light");
@@ -619,6 +602,11 @@ namespace DazPose.UnityValidation.Editor.Partner
             body.rmsFlaccidMm = bodyEndpointError.rmsFlaccidMm;
             body.endpointMeasurement = "SkinnedMeshRenderer.BakeMesh output compared in root-relative world space with canonical erect skeleton retained at its imported base pose.";
             MeshResult shell = Measure(erect.shellMesh, flaccid.shellMesh, shellGenerated, erect.shellTransform, erectRoot, flaccid.shellTransform, flaccidRoot, ShellShape);
+            shell.maximumErectMm = PartnerCharacterPreparation.LastAudit.maximumErectErrorMm;
+            shell.maximumFlaccidMm = PartnerCharacterPreparation.LastAudit.maximumFlaccidErrorMm;
+            shell.rmsErectMm = PartnerCharacterPreparation.LastAudit.rmsErectErrorMm;
+            shell.rmsFlaccidMm = PartnerCharacterPreparation.LastAudit.rmsFlaccidErrorMm;
+            shell.endpointMeasurement = "Skinned shell BakeMesh output compared with the original authored static endpoints; copied body weights and compatible bind poses.";
             var nodes = new List<BoneMismatch>();
             Transform[] shaftErect = FindAnatomyTransforms(erectRoot).Select(p => FindPath(erectRoot, p)).ToArray();
             for (int state = 0; state <= 4; state++)
@@ -632,7 +620,7 @@ namespace DazPose.UnityValidation.Editor.Partner
                 sourceHashes = new[] { new SourceHash { path = ErectPath, sha256 = erectHash }, new SourceHash { path = FlaccidPath, sha256 = flaccidHash } },
                 canonicalBody = ErectPath,
                 canonicalSkeleton = ErectPath,
-                canonicalShell = ErectPath + " (Dicktator Shell; unskinned)",
+                canonicalShell = ErectPath + " (Dicktator Shell; generated skinning transferred through verified anatomy vertex correspondence)",
                 body = body,
                 shell = shell,
                 importer = new ImportProof { erectWeights = erectImporter.skinWeights.ToString(), flaccidWeights = flaccidImporter.skinWeights.ToString(), erectMaxBonesPerVertex = erectImporter.maxBonesPerVertex, flaccidMaxBonesPerVertex = flaccidImporter.maxBonesPerVertex, erectMinBoneWeight = erectImporter.minBoneWeight, flaccidMinBoneWeight = flaccidImporter.minBoneWeight, erectOptimizeGameObjects = erectImporter.optimizeGameObjects, constraintsImported = erectImporter.importConstraints, runtimeQualityCap = QualitySettings.skinWeights.ToString() },
@@ -697,8 +685,8 @@ namespace DazPose.UnityValidation.Editor.Partner
             }
             int maxInfluences = 0, above1 = 0, above4 = 0, offset = 0, active = 0, outsideTolerance = 0;
             float maxWeightSum = 0f, minPositiveWeightSum = float.PositiveInfinity;
-            using (var counts = erectMesh.GetBonesPerVertex())
-            using (var weights = erectMesh.GetAllBoneWeights())
+            using (var counts = generated.GetBonesPerVertex())
+            using (var weights = generated.GetAllBoneWeights())
             {
                 for (int i = 0; i < counts.Length; i++)
                 {

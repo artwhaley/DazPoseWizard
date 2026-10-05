@@ -63,6 +63,10 @@ namespace DazPose.UnityValidation.Partner
         }
 
         public Vector3 ContactTargetRoot => contactTargetRoot;
+        public SkinnedMeshRenderer StructuralBody => structuralBody;
+        public SkinnedMeshRenderer ShellRenderer => shellRenderer;
+        public bool ShellFollowsBones => shellRenderer != null && shellRenderer.sharedMesh != null
+            && shellRenderer.bones.Length > 0 && shellRenderer.sharedMesh.bindposes.Length == shellRenderer.bones.Length;
         public float ContactRadius => Mathf.Lerp(flaccidRadius, erectRadius, Erection01);
         public float Position01
         {
@@ -143,7 +147,7 @@ namespace DazPose.UnityValidation.Partner
         private void ApplyCompliance()
         {
             float[] distribution = { 0.15f, 0.30f, 0.40f, 0.15f };
-            bool complianceEnabled = Mathf.Approximately(Erection01, 1f) && !ShellVisible;
+            bool complianceEnabled = Mathf.Approximately(Erection01, 1f) && (!ShellVisible || ShellFollowsBones);
             for (int i = 0; i < shaftBones.Length; i++)
             {
                 Transform bone = shaftBones[i];
@@ -223,10 +227,10 @@ namespace DazPose.UnityValidation.Partner
             GUILayout.BeginHorizontal();
             foreach (float value in new[] { 0f, .25f, .5f, .75f, 1f }) if (GUILayout.Button(value.ToString("0.##"))) Erection01 = value;
             GUILayout.EndHorizontal();
-            ShellVisible = GUILayout.Toggle(ShellVisible, "Shell visible (turn off for bone compliance)");
+            ShellVisible = GUILayout.Toggle(ShellVisible, "Shell visible");
             GUILayout.Space(6);
             GUILayout.Label("Erect-state compliance (degrees)");
-            GUILayout.Label("Active only at Erection01 = 1 with shell hidden.");
+            GUILayout.Label(ShellFollowsBones ? "Active at Erection01 = 1; skinned shell follows." : "Active at Erection01 = 1 with unskinned shell hidden.");
             DrawAngleControl("shaft1 X", shaft1X, SetShaft1X);
             DrawAngleControl("shaft4 X", shaft4X, SetShaft4X);
             DrawAngleControl("distributed bend", distributedBend, SetDistributedBend);

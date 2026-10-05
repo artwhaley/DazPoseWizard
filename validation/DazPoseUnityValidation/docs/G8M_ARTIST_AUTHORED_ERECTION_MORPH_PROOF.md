@@ -1,16 +1,16 @@
 # G8M artist-authored erection morph proof
 
-**Status:** the generated endpoints pass numeric checks. Intermediate appearance, shell registration and compliance remain pending the user's visual review.
+**Status:** the user confirmed the erection control works. Generated endpoints and the subsequent weighted-shell checks pass numeric validation. The new bridge materials await visual review. Current character preparation and the hand-agent entry point are in [PARTNER_CHARACTER_HANDOFF.md](PARTNER_CHARACTER_HANDOFF.md).
 
 ## Open the acceptance scene
 
-Open `Assets/Scenes/PartnerRigAcceptance.unity` in the Unity validation project and press Play. The left panel drives `Erection01`; use the 0, .25, .5, .75 and 1 buttons or the slider. The camera buttons cover front, side, 3/4, root and glans views. The body and shell use temporary proof materials so their registration is easy to distinguish.
+Open `Assets/Scenes/PartnerRigAcceptance.unity` in the Unity validation project and press Play. The existing smoke panel drives `Erection01`; use the 0, .25, .5, .75 and 1 buttons or the slider. The camera buttons cover front, side, 3/4, root and glans views. Body, graft, shell and eyelashes now use DUF-derived bridge materials with Lara's accepted skin glossiness correction.
 
-For compliance, set `Erection01` to 1 and turn the shell off. The shaft1 and shaft4 controls provide ±3° and ±5° checks; the distributed bend is a separate experiment. The controls stay neutral unless erection is 1 and the shell is hidden. Restore returns to the erect base. The pelvis slider tests the explicit donor-pelvis follow.
+For compliance, set `Erection01` to 1; the skinned shell can stay visible. The shaft1 and shaft4 controls provide ±3° and ±5° checks; the distributed bend is a separate experiment. The controls stay neutral outside the erect state. Restore returns to the erect base. The pelvis slider is a diagnostic that moves the main body/legs; leave it at zero for hand integration.
 
 ## Representation and numeric checks
 
-`playererect.fbx` is the canonical body and skeleton; its shell is the canonical shell. Their source hashes still match the endpoint comparison. The generated body keeps the erect mesh, topology, UVs, material slots and weights. `ErectionToFlaccid` solves the full-weight target through the canonical skin matrices so the evaluated, skinned surface reaches the flaccid endpoint while the erect skeleton stays canonical. `ShellErectionToFlaccid` uses corresponding unskinned endpoint geometry. Both channels use `Erection01 = 1 - blendShapeWeight / 100`.
+`playererect.fbx` is the canonical body and skeleton; its shell is the canonical shell. Their source hashes still match the endpoint comparison. The generated body keeps the erect mesh, topology, UVs, material slots and weights. `ErectionToFlaccid` solves the full-weight target through the canonical skin matrices so the evaluated, skinned surface reaches the flaccid endpoint while the erect skeleton stays canonical. The shell source is unskinned, but the generated shell now copies corresponding anatomy weights and solves both authored endpoint surfaces through that skinning. Both channels use `Erection01 = 1 - blendShapeWeight / 100`.
 
 Unity `SkinnedMeshRenderer.BakeMesh` comparisons against the endpoint FBXs report:
 
@@ -18,8 +18,8 @@ Unity `SkinnedMeshRenderer.BakeMesh` comparisons against the endpoint FBXs repor
 | --- | --- | ---: | ---: |
 | Body | Erect, Erection01 = 1 | 0 mm | 0 mm |
 | Body | Flaccid, Erection01 = 0 | 0.0000615 mm | 0.00000427 mm |
-| Shell | Erect, Erection01 = 1 | 0 mm | 0 mm |
-| Shell | Flaccid, Erection01 = 0 | 0.0000149 mm | 0.000000378 mm |
+| Shell, after weight transfer | Erect, Erection01 = 1 | 0.00006665 mm | 0.00001321 mm |
+| Shell, after weight transfer | Flaccid, Erection01 = 0 | 0.00006145 mm | 0.00001288 mm |
 
 All checks are below the 0.01 mm tolerance. Body and shell topology, UV channels and material-slot mapping match between endpoints. Unity retains up to 10 influences per body vertex; 1,237 vertices have more than four. All 20,355 weighted vertices have normalized weight sums within 0.001 of 1. The importers use Custom weights, max 10, minimum 0.001, and constraints disabled. Runtime skin weights are Unlimited; the project-wide setting was not changed by this proof.
 
@@ -33,12 +33,13 @@ The sampled contact-line lengths at Erection01 0, .25, .5, .75 and 1 are 19.46, 
 
 The canonical erect shaft pivots are closest to the erect geometry line (maximum error 5.43 mm). With the flaccid endpoint guide, mismatch reaches 150.23 mm at shaft7; this is the known fixed-erect-skeleton versus broad-morph mismatch. The report retains all seven bone distances at each sampled state in `TestOutput/G8MArtistErectionProof/UnityAcceptanceProof.json`.
 
-The source shell remains unskinned and is not part of the compliance review. The controller disables shaft offsets outside the erect state and while the shell is visible. It captures local rotations once and applies offsets from that base every frame, so they do not accumulate.
+The source shell remains unskinned; its generated copy is fully weighted and participates in erect-state compliance. Five sampled morph states preserve its authored transition, and visible-shell shaft1/shaft4 bend checks preserve a maximum surface gap of 0.208 mm. The controller disables shaft offsets outside the erect state. It captures local rotations once and applies offsets from that base every frame, so they do not accumulate.
 
 ## Evidence
 
 - `TestOutput/G8MArtistErectionProof/UnityAcceptanceProof.json` — endpoint, influence, centerline, pivot and source-integrity results.
 - `TestOutput/G8MArtistErectionProof/GeometryCenterlines.csv` — endpoint samples and nominal radii.
 - `TestOutput/G8MArtistErectionProof/WeightThresholdImpact.json` — source threshold-impact analysis.
+- `TestOutput/PartnerCharacter/Preparation.json` — current shell skin transfer, rendered endpoint/bend checks, DUF map validation and saved prefab references. This supersedes the original proof report's unskinned-shell status.
 
 Source FBX hashes were checked before and after generation and remained unchanged. Numeric endpoint acceptance is separate from the pending human review of the intermediate morph, shell clearance and compliance appearance.
