@@ -12,7 +12,8 @@ namespace DazPose.Performer
         Standing,
         Superseded,
         PerformerDisabled,
-        Failed
+        Failed,
+        Cancelled
     }
 
     public enum PerformerSeatingState
@@ -73,6 +74,7 @@ namespace DazPose.Performer
         private Vector3 _lastContactError;
         private bool _disposed;
         private bool _holdsApproachPose;
+        private Action _cancelApproach;
         private bool _standingReturnPending;
 
         public PerformerSeatingState State => _state;
@@ -293,6 +295,42 @@ namespace DazPose.Performer
             _layer.SetOwnership(false, 0f, true);
         }
 
+        public void Cancel()
+        {
+            if (_disposed) return;
+            SitRequest request = _sitRequest;
+            _sitRequest = null;
+            ReleaseApproachPose();
+            _cancelApproach?.Invoke();
+            _cancelApproach = null;
+            var standWaiters = _standWaiters.ToArray();
+            _standWaiters.Clear();
+            _currentSeat = null;
+            _currentProfile = null;
+            _motion = null;
+            _exitAfterUncross = _basicIdleCandidateActive = false;
+            _lastContactError = Vector3.zero;
+            _currentStyle = PerformerSeatedStyle.Basic;
+            _state = PerformerSeatingState.Standing;
+            _layer.SetOwnership(false, 0f, true);
+            CompleteSitRequest(request, SeatingCompletion.Cancelled);
+            foreach (var waiter in standWaiters) waiter.TrySetResult(SeatingCompletion.Cancelled);
+        }
+
+        internal Action CaptureCancellation()
+        {
+            SitRequest capturedRequest = _sitRequest;
+            var capturedStand = _standWaiters.ToArray();
+            Action capturedApproach = _cancelApproach;
+            return () =>
+            {
+                if (capturedRequest != null && ReferenceEquals(_sitRequest, capturedRequest)
+                    || capturedRequest == null && Array.Exists(capturedStand, waiter => _standWaiters.Contains(waiter))
+                    || capturedRequest == null && capturedApproach != null && ReferenceEquals(_cancelApproach, capturedApproach))
+                    Cancel();
+            };
+        }
+
         private Vector3 _approachPosition;
         private Quaternion _approachRotation;
         private Vector3 _seatPosition;
@@ -338,8 +376,10 @@ namespace DazPose.Performer
         {
             try
             {
-                LocomotionCompletion result = await _locomotion.WalkToAsync(
+                Awaitable<LocomotionCompletion> move = _locomotion.WalkToAsync(
                     request.ApproachPosition, request.ApproachRotation * Vector3.forward);
+                _cancelApproach = _locomotion.CaptureCancellation();
+                LocomotionCompletion result = await move;
                 if (_disposed || !ReferenceEquals(request, _sitRequest)) return;
                 if (result != LocomotionCompletion.Arrived)
                 {

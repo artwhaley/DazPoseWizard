@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using DazPose.Performer;
 
 namespace DazPose.UnityValidation
 {
@@ -138,17 +139,26 @@ namespace DazPose.UnityValidation
                 catalog != null && !catalog.IsReleased && catalog.Validate(out _)));
             checks.Add(Check("catalogDoesNotResolveBeforeRelease", "NotReleased", "NotReleased",
                 !catalog.TryResolve("maid", out _, out string error) && error == "NotReleased"));
-            bool stable = true;
+            bool partsAgree = true, masksAgree = true, bindingsValid = true;
+            var savedConfiguration = AssetDatabase.LoadAssetAtPath<WardrobeConfiguration>(ClothingSetupBuilder.ConfigurationPath);
             foreach (string id in new[] { "first-outfit", "second-outfit", "third-outfit" })
             {
                 var preset = AssetDatabase.LoadAssetAtPath<DazPose.Performer.WardrobePreset>("Assets/Wardrobe/Presets/" + id + ".asset");
-                if (preset == null || !preset.Validate(out _) || preset.FitStates.Length != 2) { stable = false; continue; }
-                stable &= preset.FitStates.Any(f => f.VisibleMask == 0 && f.BodyMesh == AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset") && f.SurfaceBindings.SourceMesh == f.BodyMesh);
-                stable &= preset.FitStates.Any(f => f.VisibleMask == 1 && f.Status == DazPose.Performer.WardrobeFitStatus.Validated && f.SurfaceBindings.SourceMesh == f.BodyMesh);
+                if (preset == null || !preset.Validate(out _)) { partsAgree = masksAgree = bindingsValid = false; continue; }
+                var resolved = WardrobeCandidateSnapshot.Resolve(preset, savedConfiguration);
+                partsAgree &= preset.Parts.All(part => resolved.Parts.Single(p => p.sourcePieceId == part.sourcePieceId).layer == part.layer);
+                var reachable = resolved.ReachableMasks;
+                masksAgree &= preset.FitStates.Select(f => f.VisibleMask).OrderBy(x => x).SequenceEqual(reachable.OrderBy(x => x));
+                bindingsValid &= preset.FitStates.Any(f => f.VisibleMask == 0 && f.BodyMesh == AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset") && f.SurfaceBindings.SourceMesh == f.BodyMesh);
+                bindingsValid &= preset.FitStates.All(f => f.Status == DazPose.Performer.WardrobeFitStatus.Validated && f.SurfaceBindings.SourceMesh == f.BodyMesh &&
+                    f.SurfaceBindings.BindingCount == PerformerSurfaceBindingAsset.RequiredBindingCount && f.DissolveProfile.SurfaceBindings == f.SurfaceBindings);
             }
+            checks.Add(Check("savedPartsMatchAuthoringConfiguration", "preset parts equal resolved saved assignments", partsAgree.ToString(), partsAgree));
+            checks.Add(Check("fitMasksMatchResolvedReachableMasks", "every resolved reachable mask compiled exactly once", masksAgree.ToString(), masksAgree));
+            checks.Add(Check("canonicalFitBindingsValidated", "validated body, canonical naked state and prepared surface/profile identity", bindingsValid.ToString(), bindingsValid));
             var firstGuid = AssetDatabase.AssetPathToGUID(summary.catalogPath);
             var second = WardrobeCatalogBuilder.BuildKnownPackages();
-            stable &= second.idempotent && AssetDatabase.AssetPathToGUID(second.catalogPath) == firstGuid;
+            bool stable = second.idempotent && AssetDatabase.AssetPathToGUID(second.catalogPath) == firstGuid;
             summary.idempotent = second.idempotent;
             checks.Add(Check("stableSecondGeneration", "same catalog GUID", firstGuid, stable));
             checks.Add(Check("canonicalMorphCount", ">=124",

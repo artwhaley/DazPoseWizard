@@ -2,7 +2,11 @@
 
 Updated 2026-10-04. Procedure: [LaraWardrobeImportPlaybook.md](LaraWardrobeImportPlaybook.md).
 
-## Current handoff
+## Current consolidation handoff
+
+Day 5 technical implementation now includes runtime layer switching, rebuilt Clothing Setup, explicit draft compilation and immutable publication. Both saved scene/player checks passed. Actual reimport checks passed for all three outfits; source assets and GUIDs remain protected. See repository `docs/production-consolidation/DAY_5_REPORT.md` and shared progress. Human Day 5 workflow/appearance review and independent recipe-only clean-context import acceptance remain separate and pending. The following October 4 import handoff is historical; its statements about runtime switching being absent no longer describe current source.
+
+## Historical import handoff
 
 User reviewed the second outfit repairs and explicitly approved opacity and
 walking: "opacity fixed, walk fixed." No further Daz export is needed for the

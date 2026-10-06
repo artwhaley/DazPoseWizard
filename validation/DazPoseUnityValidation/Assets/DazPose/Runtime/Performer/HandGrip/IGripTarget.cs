@@ -5,4 +5,15 @@ namespace DazPose.Performer.HandGrip
     {
         GripFrame Evaluate(float position01);
     }
+
+    /// <summary>
+    /// Optional exact geometric certificate. A true result guarantees that, for every
+    /// position in [0,1], Evaluate returns a frame whose center interpolates linearly between
+    /// the returned endpoints and whose tangent, normal, binormal, and world-space radius are
+    /// constant. Consumers may then certify the entire contact span from its endpoints.
+    /// </summary>
+    public interface IGripTargetStraightSpan : IGripTarget
+    {
+        bool TryGetStraightSpan(out GripFrame start, out GripFrame end);
+    }
 }

@@ -31,7 +31,27 @@ namespace DazPose.Performer
             chestLower = namedAnchors[0];
 
             var skeletalTransforms = new HashSet<Transform> { chestLower };
-            SkinnedMeshRenderer[] renderers = animator.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            SkinnedMeshRenderer[] renderers;
+            PerformerWardrobe wardrobe = animator.GetComponentInParent<PerformerWardrobe>();
+            if (wardrobe != null)
+            {
+                // The body's mesh defines the durable skeletal contract. Wardrobe hair
+                // and clothing renderers may add weighted descendants after this mask
+                // was generated, so they must not change the required Gesture paths.
+                SkinnedMeshRenderer body = wardrobe.Body;
+                if (body == null || (body.transform != animator.transform
+                    && !body.transform.IsChildOf(animator.transform)))
+                {
+                    reason = "The performer wardrobe must expose its primary body renderer beneath the Animator to validate the Gesture skeleton.";
+                    return false;
+                }
+                renderers = new[] { body };
+            }
+            else
+            {
+                // Keep the utility useful for isolated rigs without a wardrobe owner.
+                renderers = animator.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            }
             foreach (SkinnedMeshRenderer renderer in renderers)
             {
                 if (renderer == null || renderer.bones == null) continue;

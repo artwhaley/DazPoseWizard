@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f3042a6004844e4884886fe7d56c197, type: 3}
+  m_Name: PreparedContact
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.UnityValidation.Partner.PartnerContactProfile
+  bodyMesh: {fileID: 4300000, guid: 1bb4a378ed618ae439f7d753160ae060, type: 2}
+  shellMesh: {fileID: 4300000, guid: dc068a99e3e6dbf40b245e79787b2169, type: 2}
+  centersRoot:
+  - {x: 0.0003046695, y: 0.9270512, z: 0.15824187}
+  - {x: 0.00047580182, y: 0.9282569, z: 0.16466564}
+  - {x: 0.00064892246, y: 0.9298581, z: 0.17093423}
+  - {x: 0.00080723676, y: 0.93168604, z: 0.17711417}
+  - {x: 0.0009485736, y: 0.93368495, z: 0.18322754}
+  - {x: 0.0010657576, y: 0.93585026, z: 0.18927617}
+  - {x: 0.001222494, y: 0.9381596, z: 0.19526732}
+  - {x: 0.001370413, y: 0.9407129, z: 0.20116295}
+  - {x: 0.001506934, y: 0.9434414, z: 0.20699015}
+  - {x: 0.001649499, y: 0.9462545, z: 0.21278399}
+  - {x: 0.0018086558, y: 0.9492376, z: 0.21851072}
+  - {x: 0.0019819932, y: 0.9523351, z: 0.2241922}
+  - {x: 0.0021656286, y: 0.955495, z: 0.22984895}
+  - {x: 0.0023840151, y: 0.9587554, z: 0.2354654}
+  - {x: 0.0026925972, y: 0.96202326, z: 0.24107666}
+  - {x: 0.0031648881, y: 0.9653333, z: 0.24666722}
+  - {x: 0.0036958787, y: 0.968145, z: 0.2524518}
+  radii:
+  - 0.021762237
+  - 0.021568103
+  - 0.02154319
+  - 0.021657938
+  - 0.02189142
+  - 0.022186704
+  - 0.022447325
+  - 0.02276475
+  - 0.023008045
+  - 0.023207545
+  - 0.023390561
+  - 0.023546267
+  - 0.023587149
+  - 0.023528203
+  - 0.023287214
+  - 0.022821423
+  - 0.021939568
+  supportedArcSpan: {x: 0.2, y: 0.75}
+  measuredMaximumRadialDeviation: 0.0032978635
+  measurementIdentity: evaluated-prepared-endpoint; triangle-plane sections; rigid/unit;
+    2026-10-05T17:58:21.0982850Z
+  sectionTangentRoot: {x: 0.023471514, y: 0.36514017, z: 0.9306566}
+  contactSurface: {fileID: 11400000, guid: 8dc86e91f144fd44a95c3f8b76b96897, type: 2}

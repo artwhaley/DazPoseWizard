@@ -1,0 +1,260 @@
+Yes. I would deliberately freeze new vocabulary for roughly a week and use this as the consolidation point.
+The thing I care about now is no longer whether we have a DissolveTo, a Say, a grip solver, an outfit remover, etc. We have enough pieces. The question is whether those verbs are truthful production capabilities or whether some of them only appear complete because the validation scenes are quietly supplying half of the machinery.
+The architectural standard I want us to impose is:
+A validator may prove that a production capability works. It may not be the thing that makes that capability work.
+
+And the two-minute authored scene should become the ultimate test of that.
+The authoring surface I think we're aiming for
+Your example is exactly the right shape, regardless of the eventual method names.
+An author should mostly deal with narrative nouns:
+- Lara / Succubus
+- WelcomeClip
+- BedsideLocation
+- Penis
+- perhaps an authored motion pattern
+They should not be thinking about solver components, contact cylinders, blend-shape names, wardrobe layer integers, current test targets, animation drivers, component lookup, manager instances, or which MonoBehaviour happened to be put on a validation object.
+That suggests a thin Succubus façade backed by real production capabilities rather than a giant class that implements everything itself.
+Conceptually:
+Succubus
+    Speech
+    Movement / Transition
+    Pose
+    Gaze
+    Expression
+    Wardrobe
+    Hand Contact
+    Visibility
+    ...
+
+But the author doesn't necessarily have to write through those subobjects. The façade can expose the common verbs directly.
+There is another issue I'd lock down now: time semantics.
+We now have lots of verbs that take time:
+Say
+DissolveIn
+DissolveTo
+Walk
+SitAt
+RemoveClothing
+GripFollowMotion...
+
+Simplicity isn't just having three parameters instead of eight. It also means an author shouldn't have to discover that one call blocks, another starts something asynchronously, a third needs a magic delay afterward, and a fourth keeps running until manually cancelled.
+Whatever mechanism we settle on—awaitables, command handles, a scene runner—the vocabulary needs a consistent temporal contract. This is one of the biggest ways a nice-looking API becomes miserable during actual scene authoring.
+Where I would be suspicious right now
+I wouldn't yet accuse every one of these of being broken without finishing a line-by-line audit, but these are the seams I would treat as guilty until demonstrated in a completely clean scene.
+Area	Architectural question we need answered
+Dissolve/visibility	Does Lara herself own everything necessary, or is the validation scene supplying material/renderer setup or transition state?
+Pose/expression/life layers	Can a freshly instantiated production performer use them, or are importer/test helpers still part of runtime expectations?
+Speech/lipsync	Does Say() completely own audio + SALSA behavior, including queuing, or does the demo scene wire pieces together?
+Locomotion/SitAt	Are the semantic targets sufficient, or is the test scene relying on extra handcrafted state that ordinary authored scenes won't know they need?
+Hand contact	Can it bind arbitrary real production targets, or does the existing column fixture effectively define the feature?
+Motion drivers	Can grip-follow-motion be constructed through production vocabulary, or does the test harness select/configure the driver?
+Wardrobe	Is there one canonical persistent outfit model, or are editor assignment, serialized data and runtime clothing state three subtly different things?
+Failure behavior	If the scene says “grip this” and that actor lacks the required capability, do we get a useful startup/error message or a mysterious no-op halfway through playback?
+
+
+That last one matters more than it sounds.
+I would like Lara to resolve/bind all of her actual capabilities once, early. Then we can say:
+Lara supports speech, gaze, wardrobe, right/left contact, transitions, etc.
+
+rather than discovering at minute 1:37 that Grip() technically exists but the particular Lara instance doesn't have whatever the validation scene happened to have attached.
+A scene-authoring system should fail early and specifically.
+Hand contact → actual male member
+I think this bridge can be quite clean.
+I would not make the hand system understand “penis.”
+That's the beginning of a horrible special-case branch:
+if penis...
+if breast...
+if prop...
+if arm...
+
+We have already done useful work by teaching a hand how to interact with a generic column-like contact target. Keep that abstraction.
+The male member should become a real production implementation of the geometry that the existing contact solver knows how to grip.
+Conceptually it needs to expose things such as:
+base/origin
+tip
+center axis
+effective radius / possibly radius profile
+local orientation/frame
+surface/closest-point projection
+
+The actual names should follow whatever abstractions we've already built; I'm not proposing another parallel API.
+Then:
+Grip(member)
+
+really means:
+hand contact system
+    ↓
+generic contact-target contract
+    ↓
+member adapter
+    ↓
+actual male avatar rig
+
+The synthetic cylinder remains valuable for isolated tests. It just ceases to be the only thing that makes the feature real.
+I would split contact geometry from compliance
+This is important.
+The question:
+“Where should my fingers be?”
+
+is not the same problem as:
+“How should this object yield when I push it?”
+
+So I would keep two concepts internally even if the author never sees them:
+Contact target
+    describes shape/contact geometry
+
+Compliance receiver
+    describes how that target can yield
+
+The first member milestone should therefore be extremely boring:
+Grip the real member rigidly.
+Get precisely the behavior we already trust with the fake column, except the target is now attached to the actual avatar.
+Only then add compliance.
+For compliance, I'd allow a small controlled displacement/rotation of the appropriate rig pivot/bone/proxy based on the difference between ideal hand motion and the member's current state. Think spring/damping behavior with firm clamps.
+The important ownership rule is:
+The hand solver asks for contact. The member decides how much the member is allowed to move.
+
+Don't have the hand solver directly puppeteer penis bones.
+That becomes important later when we want other interactions with the same body part.
+Squeeze is the third layer, not a blocker
+If the rig gives us a suitable morph/bone/deformation control, then contact compression can drive something like:
+normalizedCompression → deformationAmount
+
+Great.
+But I absolutely would not make successful gripping depend on us solving realistic soft-body deformation next week.
+Our graduation ladder should be:
+real target → grip → bounded compliance → optional squeeze
+That gives us usable scene vocabulary after step two even if squeeze turns out annoying.
+Motion-driver following
+Likewise, I would resist inventing a HandjobSystem.
+What you already have naturally composes:
+Grip
++
+Follow authored motion
++
+Target compliance
+=
+handjob
+
+That's architecturally much healthier because those same pieces can later produce a lot of other interactions.
+The motion driver should establish the desired movement; grip maintains contact; compliance absorbs the little disagreement between them.
+That's exactly the sort of emergent composition we want from the vocabulary.
+Wardrobe: I would not assume this is merely UI yet
+The UI can absolutely be trash and the guts can be good.
+But this specific symptom worries me:
+“Assigning items to layers doesn't seem to take effect even after a save.”
+
+Before touching layout, I want one deliberately boring test:
+assign garment
+→ assign layer/group
+→ save
+→ completely reload
+→ interrogate canonical outfit data
+→ calculate removal order
+
+If the answer differs after reload, that's not a UX problem.
+A particularly nasty failure mode would be:
+Wardrobe editor edits model A
+↓
+Save correctly writes model A
+
+Runtime wardrobe constructs model B
+from hierarchy / names / another asset
+↓
+Model A is perfectly saved and perfectly irrelevant
+
+From the user's perspective that looks exactly like “the fucking Save button doesn't work.”
+So I want one canonical outfit model shared by editor and runtime before we polish the interface.
+I also don't particularly like an author having to reason about abstract numbered “layers” unless they're genuinely useful.
+Internally we may very well want priorities/groups/order. But the outfit-authoring workflow should answer human questions:
+Here are the garments Lara is wearing.
+
+What removal group/stage does each belong to?
+
+Given those assignments, THIS is the removal sequence.
+
+What would TryRemoveNext() remove right now?
+
+I can imagine one much cleaner Outfit Authoring window:
+DETECTED GARMENTS          REMOVAL GROUP        RESULTING ORDER
+
+Bra                      → Underwear         3
+Panties                  → Underwear         3
+Dress                    → Main clothing     2
+Coat                     → Outerwear         1
+Shoes                    → Footwear          ...
+
+And beside it, effectively:
+Removal preview
+
+1. Coat
+2. Dress
+3. Bra + panties
+...
+
+[Simulate Remove Next]
+
+Changing an assignment should immediately change that preview. Saving should mean persistence, not “please now make my change take effect.”
+The tool should also yell visibly about:
+Unassigned garment
+Missing reference
+Duplicate identity
+Garment saved but absent from current character
+Removal group with contradictory configuration
+
+rather than letting us discover it during the scene.
+And at the authoring API level, I very much agree with the spirit of:
+succubus.TryRemoveClothingLayer()
+
+The wardrobe should determine what is currently sensible to remove. The scene writer shouldn't have to know:
+remove garment id 39472 from numeric layer 6
+
+It can return a richer result internally so the scene can branch when necessary—nothing removable, removed dress, blocked, whatever—without making the common case ugly.
+The test-hardware rule I would impose
+This is the cleanup rule that will catch the stuff you're worried about:
+For every author-facing vocabulary verb, identify the production component that owns the behavior.
+If our answer is:
+“Well, the test scene has this HandContactTester that constructs…”
+
+that's a failure.
+If it's:
+“The test object creates a fake implementation of the production contact target and hands it to the real hand-contact system…”
+
+that's fine.
+Likewise:
+“The wardrobe test inspector modifies the same production outfit definition that the runtime consumes.”
+
+Fine.
+Versus:
+“The wardrobe test inspector maintains its own list and then copies some things onto Lara.”
+
+Danger.
+Validation components should be clients of the architecture, not hidden members of it.
+I'd also hunt particularly aggressively for convenient runtime tricks such as object-name lookups, FindObject..., scene-global selected targets, hardcoded hierarchy paths, Resources lookups, or test MonoBehaviours that assign required references in Start(). Those aren't automatically bad in every case, but they're prime suspects for “worked beautifully in our test scene.”
+Next week's cleanup/refactor sprint
+I would make this a five-day sprint with an explicit prohibition against adding fun new vocabulary unless the audit exposes something required for productionizing an existing verb.
+1. Day 1 — Vocabulary truth audit. Inventory every capability we believe we finished during the sprint. Trace each public command all the way to its real runtime owner. Mark it production-independent, requires undocumented scene configuration, or validation-supported/test-only. Establish consistent command timing/cancellation semantics and add early capability validation so missing pieces fail loudly.
+2. Day 2 — Kill disguised fixtures. Anything essential currently supplied by test/demo machinery gets moved behind a genuine Runtime-owned capability, adapter, profile or prefab responsibility. Keep the test tools—but rewrite them as clients of the production path. Do not spend this day redesigning features.
+3. Day 3 — Member/contact integration. Give the actual male avatar member the generic contact-target adapter. Prove the existing hand can grip it without the synthetic column. Then add modest bounded member compliance. Hook the existing follow-motion machinery through the same grip. If the rig makes squeeze straightforward, add its deformation receiver; otherwise leave that as an optional capability rather than holding the sprint hostage.
+4. Day 4 — Wardrobe truth + authoring workflow. First prove assign/save/reload/runtime parity. Fix that seam before changing cosmetics. Then replace the current interface with a garment-centric workflow showing detected garments, semantic grouping, the immediately computed removal order, persistence state and validation errors. Add a “remove next” simulation so we can verify an outfit before writing a scene around it.
+5. Day 5 — The hostile two-minute scene. Build our first real scene only through the intended public authoring surface. No grabbing random components because it's convenient. No reaching into wardrobe internals. No configuring a solver from the scene script. No calling test controllers. Every time we feel compelled to do that, we've discovered the exact missing production seam this review is intended to find. Fix it, then continue authoring.
+That fifth day is much more important than another conventional architecture review.
+We've accumulated enough vocabulary that trying to write real prose with it will reveal problems we won't see staring at classes.
+My definition of “ready for the authoring sprint”
+At the end of this cleanup week, I want us able to make a blank production scene and perform something approximately like:
+appear
+speak
+move/reposition
+look/pose/expression
+remove clothing intelligently
+engage real male body target
+drive continued hand contact through authored motion
+release
+continue scene
+disappear
+
+without the scene script knowing how any of those systems are built.
+The male target can still have modest rather than beautiful deformation. The wardrobe UI doesn't have to be fancy. The two-minute scene doesn't have to be sexy or polished.
+But there should be no lie in the vocabulary.
+If the API says Lara can grip something, Lara—not HandContactValidationSceneController plus a cylinder plus three inspector checkboxes—needs to be able to grip it.
+And once that is true across the existing sprint, I think we should stop architecture work and go directly into the real two-minute authoring experiment. At that point the friction encountered by actually writing the scene becomes our next backlog, which is much more valuable than guessing what the authoring API still lacks.

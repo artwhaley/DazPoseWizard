@@ -21,16 +21,23 @@ namespace DazPose.UnityValidation
         private int _hairIndex;
         private string _newVariantId = "outfit-variant";
         private Vector2 _scroll;
+        private bool _showOpacity;
+        private bool _showFootwear = true;
+        private bool _showInspection;
+        private string _draftRevision;
+        private string _compiledRevision;
+        private string _compileError;
+        private bool _isCompiling;
 
         [MenuItem("Tools/DAZ Pose/Wardrobe Setup/Configuration Window")]
         public static void Open() => GetWindow<ClothingSetupWindow>("Wardrobe Setup");
 
-        private void OnEnable() { minSize = new Vector2(430, 520); RefreshBinding(); }
+        private void OnEnable() { minSize = new Vector2(780, 600); RefreshBinding(); }
         private void OnFocus() => RefreshBinding();
         private void OnGUI()
         {
             EditorGUILayout.LabelField("Clothing Setup", EditorStyles.largeLabel);
-            EditorGUILayout.HelpBox("Artist choices are held in this edit session until Save. Hair stays independent of clothing layers; shoe meshes remain part of their outfit.", MessageType.Info);
+            EditorGUILayout.HelpBox("Choose an outfit, edit each garment's layer, and inspect the next runtime change. Drafts save independently from releases; compile explicitly to update the production preview.", MessageType.Info);
             using (new EditorGUILayout.HorizontalScope())
             {
                 if (GUILayout.Button("Open / create setup scene"))
@@ -46,42 +53,48 @@ namespace DazPose.UnityValidation
             var presets = _catalog.Presets;
             if (presets.Length == 0) { EditorGUILayout.HelpBox("Catalog has no outfits.", MessageType.Warning); return; }
             _presetIndex = Mathf.Clamp(_presetIndex, 0, presets.Length - 1);
-            _presetIndex = EditorGUILayout.Popup("Outfit", _presetIndex, presets.Select(x => x.DisplayName + "  [" + x.PresetId + "]").ToArray());
             var preset = presets[_presetIndex];
-            EditorGUILayout.LabelField("Candidate catalog", _catalog.IsReleased ? "Released" : "Candidate preview");
-            EditorGUILayout.LabelField("Configuration revision", _configuration.Revision.ToString());
+            DrawPersistentState(preset);
+            DrawPreviewControls(preset);
+            DrawRuntimeState(presets);
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
-            EditorGUILayout.Space(6);
-            EditorGUILayout.LabelField("Mesh pieces and undress layers", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("Base", "Always the first layer removed. Choose either 1 or 2 for each mesh; shoes are ordinary outfit pieces.");
-            foreach (var part in preset.Parts)
+            using (new EditorGUILayout.HorizontalScope())
             {
-                var piece = preset.Package.pieces.First(x => x.id == part.sourcePieceId);
-                var row = _session.Assignments.First(x => x.presetId == preset.PresetId && x.sourcePieceId == part.sourcePieceId);
-                using (new EditorGUILayout.HorizontalScope())
+                using (new EditorGUILayout.VerticalScope(GUILayout.Width(210)))
                 {
-                    EditorGUILayout.LabelField(piece.sourceNode + "  (" + piece.role + ")", GUILayout.MinWidth(190));
-                    bool layer1 = GUILayout.Toggle(row.layer == 1, "Layer 1", "Button", GUILayout.Width(64));
-                    bool layer2 = GUILayout.Toggle(row.layer == 2, "Layer 2", "Button", GUILayout.Width(64));
-                    if (layer1 != (row.layer == 1)) _session.TrySetLayer(preset.PresetId, part.sourcePieceId, layer1 ? 1 : 0, out _);
-                    else if (layer2 != (row.layer == 2)) _session.TrySetLayer(preset.PresetId, part.sourcePieceId, layer2 ? 2 : 0, out _);
+                    EditorGUILayout.LabelField("Outfits", EditorStyles.boldLabel);
+                    for (int i = 0; i < presets.Length; i++)
+                        if (GUILayout.Toggle(i == _presetIndex, presets[i].DisplayName, "Button")) _presetIndex = i;
+                }
+                using (new EditorGUILayout.VerticalScope())
+                {
+                    preset = presets[_presetIndex];
+                    EditorGUILayout.LabelField("Garment layers", EditorStyles.boldLabel);
+                    EditorGUILayout.HelpBox("Removal order: Layer 2 → Layer 1 → Base, skipping empty layers. Add restores the lowest hidden populated layer.", MessageType.Info);
+                    DrawCompleteSequence(preset);
+                    DrawGarmentRows(preset);
+                    DrawOpacity(preset);
+                    DrawFootwear(preset);
+                    DrawFitStatus(preset);
+                    DrawInspection();
                 }
             }
-            DrawOpacity(preset);
-            DrawFootwear(preset);
-            DrawFitStatus(preset);
-            DrawRuntimePreview(presets);
-            DrawInspection();
             EditorGUILayout.EndScrollView();
 
             EditorGUILayout.Space(4);
             using (new EditorGUILayout.HorizontalScope())
             {
+                GUI.enabled = _session.CanUndo;
+                if (GUILayout.Button("Undo")) _session.Undo();
+                GUI.enabled = _session.CanRedo;
+                if (GUILayout.Button("Redo")) _session.Redo();
                 GUI.enabled = _session.IsDirty && !Application.isPlaying;
-                if (GUILayout.Button("Save configuration")) SaveConfiguration();
-                if (GUILayout.Button("Revert")) { _session.Reload(_catalog); _message = "Working edits reverted."; }
+                if (GUILayout.Button("Save Draft")) SaveConfiguration();
+                GUI.enabled = !Application.isPlaying;
+                if (GUILayout.Button("Revert")) { _session.Reload(_catalog); _draftRevision = WardrobeCandidateWorkflow.DraftHash(_configuration); _message = "Working edits reverted to saved draft."; }
                 GUI.enabled = true;
+                EditorGUILayout.LabelField(_session.IsDirty ? "● Unsaved edits" : "Saved draft", GUILayout.Width(110));
             }
             using (new EditorGUILayout.HorizontalScope())
             {
@@ -92,17 +105,190 @@ namespace DazPose.UnityValidation
             }
             using (new EditorGUILayout.HorizontalScope())
             {
-                GUI.enabled = !_session.IsDirty && !Application.isPlaying && !_catalog.IsReleased;
+                GUI.enabled = !_session.IsDirty && !Application.isPlaying;
                 if (GUILayout.Button("Publish validated generation")) PublishCandidate();
                 GUI.enabled = true;
             }
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUI.enabled = !Application.isPlaying && !_isCompiling;
+                if (GUILayout.Button(_isCompiling ? "Compiling…" : "Compile / validate preview")) CompileCandidate();
+                GUI.enabled = true;
+                if (!string.IsNullOrEmpty(_compileError)) EditorGUILayout.LabelField("Error: " + _compileError, EditorStyles.wordWrappedLabel);
+            }
             if (!string.IsNullOrEmpty(_message)) EditorGUILayout.HelpBox(_message, MessageType.None);
+        }
+
+        private void DrawPersistentState(WardrobePreset preset)
+        {
+            string draft = _configuration != null ? WardrobeCandidateWorkflow.DraftHash(_configuration) : "unavailable";
+            EditorGUILayout.LabelField("Selected outfit", preset.DisplayName + "  [" + preset.PresetId + "]");
+            bool stale = _session.IsDirty || !IsPreviewBound() ||
+                (!_catalog.IsReleased && !string.Equals(draft, _compiledRevision, StringComparison.Ordinal));
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.LabelField(_catalog.IsReleased ? "Released catalog" : "Candidate catalog", GUILayout.Width(145));
+                EditorGUILayout.LabelField("Draft rev " + _configuration.Revision + " · edit " + _session.EditGeneration + (_session.IsDirty ? " *" : string.Empty), GUILayout.Width(190));
+                EditorGUILayout.LabelField("Preview rev " + PreviewRevision(preset), GUILayout.Width(145));
+                if (stale) EditorGUILayout.LabelField("Preview stale", EditorStyles.boldLabel);
+            }
+            _draftRevision = draft;
+        }
+
+        private void DrawPreviewControls(WardrobePreset preset)
+        {
+            EditorGUILayout.Space(4);
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUI.enabled = CanPreviewBoundDraft();
+                if (GUILayout.Button("Dress / redress")) RunPreview(_performer != null ? _performer.OutfitAsync(preset) : null);
+                if (GUILayout.Button("Remove next: " + NextRemovalName(preset))) RunLayer(_performer != null ? _performer.TryRemoveLayerAsync() : null);
+                if (GUILayout.Button("Add next: " + NextAdditionName(preset))) RunLayer(_performer != null ? _performer.TryAddLayerAsync() : null);
+            }
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Preview naked (keep selection)")) PreviewNakedKeepingSelection();
+                if (GUILayout.Button("Select Unclothed")) RunPreview(_performer != null ? _performer.OutfitAsync("unclothed") : null);
+                GUI.enabled = true;
+            }
+        }
+
+        private void DrawCompleteSequence(WardrobePreset preset)
+        {
+            var remove = new[] { SequenceNames(preset, 2), SequenceNames(preset, 1), SequenceNames(preset, 0) }
+                .Where(x => x != null).ToArray();
+            EditorGUILayout.LabelField("Remove", string.Join("  →  ", remove));
+            EditorGUILayout.LabelField("Add", string.Join("  →  ", remove.Reverse()));
+        }
+
+        private string SequenceNames(WardrobePreset preset, int layer)
+        {
+            var names = LayerNames(preset, layer);
+            return names.Length == 0 ? null : (layer == 0 ? "Base" : "Layer " + layer) + ": " + string.Join(", ", names);
+        }
+
+        private void DrawGarmentRows(WardrobePreset preset)
+        {
+            var assignments = _session.Assignments.Where(x => x.presetId == preset.PresetId).ToDictionary(x => x.sourcePieceId, StringComparer.Ordinal);
+            var parts = preset.Parts.Select(part => new { Part = part, Piece = preset.Package.pieces.FirstOrDefault(x => x.id == part.sourcePieceId) })
+                .Where(x => x.Piece != null).OrderByDescending(x => assignments.TryGetValue(x.Part.sourcePieceId, out var row) ? row.layer : x.Part.layer)
+                .ThenBy(x => x.Piece.sourceNode, StringComparer.Ordinal).ToArray();
+            foreach (int layer in new[] { 2, 1, 0 })
+            {
+                var group = parts.Where(x => (assignments.TryGetValue(x.Part.sourcePieceId, out var row) ? row.layer : x.Part.layer) == layer).ToArray();
+                EditorGUILayout.LabelField(layer == 0 ? "Base" : "Layer " + layer, EditorStyles.boldLabel);
+                if (group.Length == 0) EditorGUILayout.LabelField("(empty)", EditorStyles.miniLabel);
+                foreach (var item in group)
+                {
+                    assignments.TryGetValue(item.Part.sourcePieceId, out var assignment);
+                    int current = assignment != null ? assignment.layer : item.Part.layer;
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.LabelField(item.Piece.sourceNode + "  (" + item.Piece.role + ")", GUILayout.MinWidth(230));
+                        int selected = EditorGUILayout.Popup(current, new[] { "Base", "Layer 1", "Layer 2" }, GUILayout.Width(105));
+                        if (selected != current && !_session.TrySetLayer(preset.PresetId, item.Part.sourcePieceId, selected, out string error)) _message = error;
+                    }
+                }
+            }
+        }
+
+        private string NextRemovalName(WardrobePreset preset)
+        {
+            var state = _wardrobe != null ? _wardrobe.CurrentWardrobe : null;
+            int mask = state != null && state.OutfitId == preset.PresetId ? state.VisibleMask : PopulatedMask(preset);
+            for (int layer = 2; layer >= 0; layer--)
+                if ((mask & (1 << layer)) != 0) return string.Join(", ", LayerNames(preset, layer));
+            return "none";
+        }
+
+        private string NextAdditionName(WardrobePreset preset)
+        {
+            var state = _wardrobe != null ? _wardrobe.CurrentWardrobe : null;
+            int populated = PopulatedMask(preset);
+            int visible = state != null && state.OutfitId == preset.PresetId ? state.VisibleMask : 0;
+            for (int layer = 0; layer < 3; layer++)
+                if ((populated & (1 << layer)) != 0 && (visible & (1 << layer)) == 0) return string.Join(", ", LayerNames(preset, layer));
+            return "none";
+        }
+
+        private string[] LayerNames(WardrobePreset preset, int layer) => preset.Parts
+            .Where(part => (_session.Assignments.FirstOrDefault(x => x.presetId == preset.PresetId && x.sourcePieceId == part.sourcePieceId)?.layer ?? part.layer) == layer)
+            .Select(part => preset.Package.pieces.FirstOrDefault(x => x.id == part.sourcePieceId)?.sourceNode ?? part.sourcePieceId).ToArray();
+
+        private int PopulatedMask(WardrobePreset preset)
+        {
+            int mask = 0;
+            foreach (var part in preset.Parts)
+                mask |= 1 << (_session.Assignments.FirstOrDefault(x => x.presetId == preset.PresetId && x.sourcePieceId == part.sourcePieceId)?.layer ?? part.layer);
+            return mask;
+        }
+
+        private bool IsPreviewBound() => _performer != null && _wardrobe != null &&
+            _wardrobe.Catalog == _catalog && _wardrobe.Configuration == _configuration &&
+            (_catalog.IsReleased || WardrobeCandidateWorkflow.IsCompiled(_catalog, _configuration));
+
+        private bool CanPreviewBoundDraft() => Application.isPlaying && !_session.IsDirty && IsPreviewBound();
+
+        private string PreviewRevision(WardrobePreset preset)
+        {
+            if (Application.isPlaying && _wardrobe != null && _wardrobe.CurrentWardrobe != null)
+                return "r" + _wardrobe.CurrentWardrobe.ConfigurationRevision;
+            var bound = _wardrobe != null && _wardrobe.Catalog != null
+                ? _wardrobe.Catalog.Presets.FirstOrDefault(x => x.PresetId == preset.PresetId) : null;
+            return bound != null ? "r" + bound.ConfigurationRevision : "stale";
+        }
+
+        private void DrawRuntimeState(WardrobePreset[] presets)
+        {
+            EditorGUILayout.Space(4);
+            EditorGUILayout.LabelField("Preview state", EditorStyles.boldLabel);
+            if (!Application.isPlaying) { EditorGUILayout.HelpBox("Enter Play Mode in Clothing Setup to inspect and change the saved, compiled draft.", MessageType.Info); return; }
+            var state = _wardrobe != null ? _wardrobe.CurrentWardrobe : null;
+            if (state == null) { EditorGUILayout.HelpBox("Preview wardrobe is unavailable.", MessageType.Warning); return; }
+            if (!CanPreviewBoundDraft())
+                EditorGUILayout.HelpBox(_wardrobe != null && !string.IsNullOrEmpty(_wardrobe.BindingDiagnostic)
+                    ? _wardrobe.BindingDiagnostic : "Compile this saved draft and enter Play Mode before previewing it.", MessageType.Warning);
+            EditorGUILayout.LabelField("Selected / current", presets[_presetIndex].PresetId + " / " + (state.OutfitId ?? "unclothed") + " · visible " + state.VisibleMask + " / populated " + state.PopulatedMask);
+            EditorGUILayout.LabelField("Effective hair / footwear", (state.EffectiveHairId ?? "none") + " / " + state.EffectiveFootwearId);
+            var hairChoices = _catalog.Presets.SelectMany(p => p.Package.pieces.Where(x => string.Equals(x.role, "hair", StringComparison.OrdinalIgnoreCase))
+                .Select(x => new { Label = p.DisplayName + " / " + x.sourceNode, Id = p.PresetId + "/" + x.id })).ToArray();
+            var options = new[] { "Keep current hair", "Clear hair" }.Concat(hairChoices.Select(x => x.Label)).ToArray();
+            _hairIndex = EditorGUILayout.Popup("Independent hair inspection", _hairIndex, options);
+            GUI.enabled = CanPreviewBoundDraft();
+            if (GUILayout.Button("Apply selected hair") && _performer != null && _hairIndex > 0)
+                RunPreview(_performer.SetHairAsync(_hairIndex == 1 ? "clear" : hairChoices[_hairIndex - 2].Id));
+            GUI.enabled = true;
+        }
+
+        private async void PreviewNakedKeepingSelection()
+        {
+            if (_performer == null || _wardrobe == null) { _message = "Runtime performer is unavailable."; return; }
+            if (!CanPreviewBoundDraft()) { _message = "Compile the saved draft and enter Play Mode before previewing it."; Repaint(); return; }
+            var state = _wardrobe.CurrentWardrobe;
+            var selected = _catalog.Presets[Mathf.Clamp(_presetIndex, 0, _catalog.Presets.Length - 1)];
+            if (state == null || state.OutfitId != selected.PresetId)
+            {
+                var dressed = await _performer.OutfitAsync(selected);
+                if (dressed.Status != WardrobeChangeStatus.Applied && dressed.Status != WardrobeChangeStatus.AlreadyEquipped)
+                { _message = "Could not select outfit for naked preview: " + dressed.Status + " / " + dressed.Message; Repaint(); return; }
+            }
+            for (int i = 0; i < 3 && _wardrobe.CurrentWardrobe != null && _wardrobe.CurrentWardrobe.CanRemoveLayer; i++)
+            {
+                var result = await _performer.TryRemoveLayerAsync();
+                if (result.Status != WardrobeChangeStatus.Applied && result.Status != WardrobeChangeStatus.NoChange)
+                { _message = "Naked preview stopped: " + result.Status + " / " + result.FailureCode + " " + result.Message; Repaint(); return; }
+            }
+            if (_wardrobe.CurrentWardrobe != null && !_wardrobe.CurrentWardrobe.IsNaked)
+            { _message = "Naked preview stopped before reaching a naked state."; Repaint(); return; }
+            _message = "Naked preview reached; outfit selection is retained for Add.";
+            Repaint();
         }
 
         private void DrawOpacity(WardrobePreset preset)
         {
             EditorGUILayout.Space(6);
-            EditorGUILayout.LabelField("Per-slot opacity overrides", EditorStyles.boldLabel);
+            _showOpacity = EditorGUILayout.Foldout(_showOpacity, "Advanced · material opacity", true);
+            if (!_showOpacity) return;
             foreach (var part in preset.Parts)
             {
                 var piece = preset.Package.pieces.First(x => x.id == part.sourcePieceId);
@@ -117,7 +303,9 @@ namespace DazPose.UnityValidation
                         bool use = EditorGUILayout.Toggle(value != null && value.opacityOverride, GUILayout.Width(18));
                         if (use)
                         {
-                            float opacity = EditorGUILayout.Slider(value != null && value.opacityOverride ? value.opacity : 1f, 0f, 1f);
+                            var sourceMaterial = value != null && value.material != null ? value.material : piece.materials[slot];
+                            float defaultOpacity = WardrobeMaterialOpacity.TryRead(sourceMaterial, out float sourceOpacity) ? sourceOpacity : 1f;
+                            float opacity = EditorGUILayout.Slider(value != null && value.opacityOverride ? value.opacity : defaultOpacity, 0f, 1f);
                             if (value == null || !value.opacityOverride || Mathf.Abs(value.opacity - opacity) > .001f)
                                 _session.SetOpacity(preset.PresetId, part.sourcePieceId, slotId, opacity);
                         }
@@ -125,7 +313,7 @@ namespace DazPose.UnityValidation
                     }
                 }
             }
-            EditorGUILayout.HelpBox("Opacity uses the material's Base Color alpha (or Color alpha). Alpha clipping/render-queue setup still depends on that shader.", MessageType.None);
+            EditorGUILayout.HelpBox("Opacity changes transparency strength. The material's rendering mode and cutout settings still apply.", MessageType.None);
         }
 
         private void DrawFitStatus(WardrobePreset preset)
@@ -137,14 +325,16 @@ namespace DazPose.UnityValidation
                     (fit.Footwear.BentFootPoseActive ? " · bent-foot pose" : " · bare-foot pose") +
                     (fit.Footwear.FootwearActive ? " · shoes/support active" : " · shoe support off") +
                     (fit.IssueCodes.Length > 0 ? " · " + string.Join(", ", fit.IssueCodes) : string.Empty));
-            if (_session.IsDirty) EditorGUILayout.HelpBox("Layer or opacity changes are unsaved and candidate fit states need recompilation. Save compiles every reachable mask before committing.", MessageType.Warning);
+            if (_session.IsDirty) EditorGUILayout.HelpBox("Draft edits are unsaved. Save Draft persists them even when fitting needs work; Compile / validate updates the runtime preview after the fit states pass.", MessageType.Warning);
+            if (_compiledRevision != null && !string.Equals(_compiledRevision, WardrobeCandidateWorkflow.DraftHash(_configuration), StringComparison.Ordinal))
+                EditorGUILayout.HelpBox("Compiled appearance is stale. The layer-order preview above reflects current edits immediately.", MessageType.Warning);
         }
 
         private void DrawFootwear(WardrobePreset preset)
         {
-            if (preset.Footwear == null) return;
+            _showFootwear = EditorGUILayout.Foldout(_showFootwear, "Advanced · footwear calibration", true);
+            if (!_showFootwear || preset.Footwear == null) return;
             EditorGUILayout.Space(6);
-            EditorGUILayout.LabelField("Footwear calibration (configuration override)", EditorStyles.boldLabel);
             var row = _session.GetFootwear(preset.PresetId, preset.Footwear);
             bool heightOverride = EditorGUILayout.ToggleLeft("Override standing lift", row.standingHeightOverride);
             float height = heightOverride
@@ -160,41 +350,11 @@ namespace DazPose.UnityValidation
             EditorGUILayout.HelpBox("These values compile into actor fit states; shared source footwear profiles are never edited by this window.", MessageType.None);
         }
 
-        private void DrawRuntimePreview(WardrobePreset[] presets)
-        {
-            EditorGUILayout.Space(6);
-            EditorGUILayout.LabelField("Production runtime preview", EditorStyles.boldLabel);
-            if (!Application.isPlaying)
-            { EditorGUILayout.HelpBox("Enter Play Mode in this scene to use the same queued wardrobe controller used by the game.", MessageType.Info); return; }
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Load outfit")) RunPreview(_performer != null ? _performer.OutfitAsync(presets[_presetIndex]) : null);
-                if (GUILayout.Button("Remove highest")) RunLayer(_performer != null ? _performer.TryRemoveLayerAsync() : null);
-                if (GUILayout.Button("Add lowest")) RunLayer(_performer != null ? _performer.TryAddLayerAsync() : null);
-                if (GUILayout.Button("Naked")) RunPreview(_performer != null ? _performer.OutfitAsync("unclothed") : null);
-            }
-            var state = _wardrobe != null ? _wardrobe.CurrentWardrobe : null;
-            if (state != null)
-            {
-                EditorGUILayout.LabelField("CurrentWardrobe", state.OutfitId + " / " + state.DisplayName + " / mask " + state.VisibleMask + " of " + state.PopulatedMask);
-                EditorGUILayout.LabelField("Feet / hair", state.EffectiveFootwearId + " / " + state.EffectiveHairId);
-            }
-            var hairChoices = _catalog.Presets.SelectMany(p => p.Package.pieces.Where(x => string.Equals(x.role, "hair", StringComparison.OrdinalIgnoreCase))
-                .Select(x => new { Label = p.DisplayName + " / " + x.sourceNode, Id = p.PresetId + "/" + x.id }))
-                .ToArray();
-            var options = new[] { "Keep current hair", "Clear hair" }.Concat(hairChoices.Select(x => x.Label)).ToArray();
-            _hairIndex = EditorGUILayout.Popup("Explicit hair test", _hairIndex, options);
-            if (GUILayout.Button("Apply selected hair") && _performer != null)
-            {
-                if (_hairIndex == 0) _message = "Keeping current hair.";
-                else RunPreview(_performer.SetHairAsync(_hairIndex == 1 ? "clear" : hairChoices[_hairIndex - 2].Id));
-            }
-        }
-
         private void DrawInspection()
         {
             EditorGUILayout.Space(6);
-            EditorGUILayout.LabelField("Body / movement inspection (session only)", EditorStyles.boldLabel);
+            _showInspection = EditorGUILayout.Foldout(_showInspection, "Inspection · body and movement", true);
+            if (!_showInspection) return;
             var body = _wardrobe != null ? _wardrobe.Body : null;
             var anatomy = _performer != null ? _performer.GetComponent<LaraAnatomyControls>() : null;
             if (Application.isPlaying && anatomy != null)
@@ -210,58 +370,72 @@ namespace DazPose.UnityValidation
 
         private void SaveConfiguration()
         {
-            if (_catalog == null || _configuration == null) return;
-            var body = _wardrobe != null ? _wardrobe.Body : FindSceneBody();
-            if (body == null) { _message = "Cannot save: setup scene has no canonical body renderer."; return; }
-            string generation = AssignmentHash(_session.Assignments, _session.MaterialOverrides, _session.FootwearOverrides);
-            if (_catalog.IsReleased) generation = HashText(_catalog.ReleasedGenerationId + "/" + generation);
-            WardrobeCatalog targetCatalog = _catalog;
-            WardrobeConfiguration targetConfig = _configuration;
-            WardrobePreset[] targetPresets = _catalog.Presets;
-            if (_catalog.IsReleased && !TryForkReleasedCatalog(generation, out targetCatalog, out targetConfig, out targetPresets, out string forkError))
-            { _message = "Save stopped: could not fork released catalog: " + forkError; return; }
+            if (!TrySaveConfiguration(out string error)) _message = error;
+        }
 
-            var compiled = new System.Collections.Generic.Dictionary<WardrobePreset, WardrobeFitState[]>();
-            var working = WorkingConfigurationCopy();
-            try
+        private bool TrySaveConfiguration(out string error)
+        {
+            error = null;
+            if (_catalog == null || _configuration == null || _session == null) { error = "Catalog or draft configuration is unavailable."; return false; }
+            if (Application.isPlaying) { error = "Stop Play Mode before saving a draft."; return false; }
+            var body = _wardrobe != null ? _wardrobe.Body : FindSceneBody();
+            if (!WardrobeCandidateWorkflow.TrySaveDraft(_catalog, _configuration, _session, body,
+                out var savedCatalog, out var savedConfiguration, out error)) return false;
+            _catalog = savedCatalog;
+            _configuration = savedConfiguration;
+            if (_performer != null)
             {
-                foreach (var preset in targetPresets)
-                {
-                    var result = WardrobeFitCompiler.Compile(preset, working, body,
-                        "Assets/TestData/WardrobeRuntime/SetupCandidates/" + generation, false);
-                    if (result.needsFitStates != 0)
-                    { _message = "Save stopped: " + preset.PresetId + " has Needs Fit states: " + string.Join(", ", result.issues); return; }
-                    compiled.Add(preset, result.fitStates);
-                }
-            }
-            catch (Exception exception) { _message = "Save stopped before configuration commit: " + exception.Message; return; }
-            finally { DestroyImmediate(working); }
-            if (!targetConfig.TrySetWorkingAssignments(_session.Assignments, out string error)) { _message = error; return; }
-            targetConfig.ConfigureGenerated(_session.Assignments, _session.MaterialOverrides, _session.FootwearOverrides);
-            targetConfig.CommitRevision(generation, new[] { generation });
-            foreach (var pair in compiled)
-            {
-                pair.Key.ConfigureGenerated(pair.Key.PresetId, pair.Key.DisplayName, pair.Key.CharacterSignature,
-                    targetConfig.Revision, pair.Key.Package, pair.Key.Parts, pair.Key.Aliases,
-                    pair.Key.HairAction, pair.Key.HairId, pair.Key.Footwear);
-                pair.Key.SetGeneratedFitStates(pair.Value);
-                EditorUtility.SetDirty(pair.Key);
-            }
-            EditorUtility.SetDirty(targetConfig);
-            if (targetCatalog != _catalog)
-            {
-                _catalog = targetCatalog;
-                _configuration = targetConfig;
-                _wardrobe.ConfigureBinding(_catalog, _configuration, body, _performer, true);
-                EditorUtility.SetDirty(_wardrobe);
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                var binding = _performer.GetComponent<ClothingSetupDraftBinding>();
+                if (binding == null) binding = Undo.AddComponent<ClothingSetupDraftBinding>(_performer.gameObject);
+                binding.Configure(_catalog, _configuration);
+                EditorUtility.SetDirty(binding);
             }
             AssetDatabase.SaveAssets();
-            _session.MarkCommitted();
-            _message = "Saved revision " + targetConfig.Revision + "; all outfit masks compiled and validated.";
+            _session = new WardrobeEditSession(_configuration, _catalog);
+            _compiledRevision = WardrobeCandidateWorkflow.IsCompiled(_catalog, _configuration)
+                ? WardrobeCandidateWorkflow.DraftHash(_configuration) : null;
+            _draftRevision = WardrobeCandidateWorkflow.DraftHash(_configuration);
+            _message = "Saved candidate draft revision " + _configuration.Revision + ". Compile it explicitly to update the production preview.";
             if (EditorSceneManager.GetActiveScene().path == ClothingSetupBuilder.ScenePath)
+            {
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
                 EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
-            RefreshBinding();
+            }
+            return true;
+        }
+
+        private void CompileCandidate()
+        {
+            if (_catalog == null || _configuration == null || _session == null) return;
+            if (_session.IsDirty) { _compileError = "Save Draft before compiling."; return; }
+            if (Application.isPlaying) { _compileError = "Stop Play Mode before compiling."; return; }
+            _isCompiling = true;
+            _compileError = null;
+            Repaint();
+            EditorUtility.DisplayProgressBar("Wardrobe candidate", "Resolving and compiling reachable outfit states…", .25f);
+            try
+            {
+                var body = _wardrobe != null ? _wardrobe.Body : FindSceneBody();
+                if (!WardrobeCandidateWorkflow.TryCompile(_catalog, _configuration, body, out string error))
+                { _compileError = error; _message = "Compile failed. The current production wardrobe binding remains active."; return; }
+                _compiledRevision = WardrobeCandidateWorkflow.DraftHash(_configuration);
+                if (_performer != null)
+                {
+                    if (_wardrobe == null) _wardrobe = _performer.GetComponent<PerformerWardrobe>();
+                    if (_wardrobe != null)
+                    {
+                        _wardrobe.ConfigureBinding(_catalog, _configuration, body, _performer, true);
+                        EditorUtility.SetDirty(_wardrobe);
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(_wardrobe);
+                    }
+                }
+                AssetDatabase.SaveAssets();
+                if (EditorSceneManager.GetActiveScene().path == ClothingSetupBuilder.ScenePath)
+                { EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene()); EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene()); }
+                _message = "Compiled and bound candidate revision " + _configuration.Revision + " to the setup preview.";
+                RefreshBinding();
+            }
+            finally { EditorUtility.ClearProgressBar(); _isCompiling = false; Repaint(); }
         }
 
         private WardrobeConfiguration WorkingConfigurationCopy()
@@ -275,6 +449,8 @@ namespace DazPose.UnityValidation
         {
             if (_catalog == null || _configuration == null || _session.IsDirty || Application.isPlaying)
             { _message = "Stop Play Mode and save or revert setup edits before publishing."; return; }
+            if (!WardrobeCandidateWorkflow.IsCompiled(_catalog, _configuration))
+            { _message = "Compile and validate this saved candidate before publishing."; return; }
             var result = WardrobeGenerationPublisher.PublishCandidate(_catalog, _configuration,
                 _wardrobe != null ? _wardrobe.Body : FindSceneBody());
             _message = result.published
@@ -295,12 +471,17 @@ namespace DazPose.UnityValidation
             if (_catalog.Presets.Any(p => p.PresetId == presetId)) { _message = "That preset ID already exists."; return; }
             if (_catalog.IsReleased)
             {
-                string generation = HashText(_catalog.ReleasedGenerationId + "/working-variant");
+                string generation = HashText(_catalog.ReleasedGenerationId + "/working-variant/" + Guid.NewGuid().ToString("N"));
                 if (!TryForkReleasedCatalog(generation, out var forkCatalog, out var forkConfig, out _, out string forkError))
                 { _message = "Could not create a working candidate from the release: " + forkError; return; }
                 _catalog = forkCatalog; _configuration = forkConfig;
-                _wardrobe.ConfigureBinding(_catalog, _configuration, _wardrobe.Body, _performer, true);
-                EditorUtility.SetDirty(_wardrobe);
+                if (_performer != null)
+                {
+                    var draftBinding = _performer.GetComponent<ClothingSetupDraftBinding>();
+                    if (draftBinding == null) draftBinding = Undo.AddComponent<ClothingSetupDraftBinding>(_performer.gameObject);
+                    draftBinding.Configure(_catalog, _configuration);
+                    EditorUtility.SetDirty(draftBinding);
+                }
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             }
             var clone = Instantiate(source);
@@ -331,7 +512,7 @@ namespace DazPose.UnityValidation
             try
             {
                 result = WardrobeFitCompiler.Compile(clone, working, _wardrobe.Body,
-                    "Assets/TestData/WardrobeRuntime/SetupVariants/" + HashText(presetId + "/" + AssignmentHash(assignments, overrides, shoeOverrides)), false);
+                    "Assets/TestData/WardrobeRuntime/SetupVariants/" + Guid.NewGuid().ToString("N"), false);
             }
             catch (Exception exception)
             { DestroyImmediate(working); DestroyImmediate(clone); _message = "Variant compile failed: " + exception.Message; return; }
@@ -346,6 +527,15 @@ namespace DazPose.UnityValidation
             _configuration.ConfigureGenerated(assignments, overrides, shoeOverrides);
             _configuration.CommitRevision(HashText(presetId + "/" + _configuration.Revision), _configuration.InputHashes);
             _catalog.ConfigureCandidate(_catalog.Presets.Concat(new[] { clone }).ToArray());
+            _catalog.SetAuthoringConfiguration(_configuration);
+            _catalog.SetCompiledConfigurationHash(string.Empty);
+            if (_performer != null)
+            {
+                var draftBinding = _performer.GetComponent<ClothingSetupDraftBinding>();
+                if (draftBinding == null) draftBinding = Undo.AddComponent<ClothingSetupDraftBinding>(_performer.gameObject);
+                draftBinding.Configure(_catalog, _configuration);
+                EditorUtility.SetDirty(draftBinding);
+            }
             EditorUtility.SetDirty(_configuration); EditorUtility.SetDirty(_catalog);
             AssetDatabase.SaveAssets();
             if (EditorSceneManager.GetActiveScene().path == ClothingSetupBuilder.ScenePath)
@@ -402,10 +592,23 @@ namespace DazPose.UnityValidation
         {
             _performer = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>();
             _wardrobe = _performer != null ? _performer.GetComponent<PerformerWardrobe>() : null;
-            _catalog = _wardrobe != null ? _wardrobe.Catalog : AssetDatabase.LoadAssetAtPath<WardrobeCatalog>(ClothingSetupBuilder.CatalogPath);
-            _configuration = _wardrobe != null ? _wardrobe.Configuration : AssetDatabase.LoadAssetAtPath<WardrobeConfiguration>(ClothingSetupBuilder.ConfigurationPath);
-            if (_catalog != null && _configuration != null && (_session == null || _session.IsDirty == false))
+            var draftBinding = _performer != null ? _performer.GetComponent<ClothingSetupDraftBinding>() : null;
+            var nextCatalog = draftBinding != null && draftBinding.Catalog != null ? draftBinding.Catalog :
+                (_wardrobe != null ? _wardrobe.Catalog : AssetDatabase.LoadAssetAtPath<WardrobeCatalog>(ClothingSetupBuilder.CatalogPath));
+            var nextConfiguration = draftBinding != null && draftBinding.Configuration != null ? draftBinding.Configuration :
+                (_wardrobe != null ? _wardrobe.Configuration : AssetDatabase.LoadAssetAtPath<WardrobeConfiguration>(ClothingSetupBuilder.ConfigurationPath));
+            if (_session != null && _session.IsDirty && (_catalog != nextCatalog || _configuration != nextConfiguration)) return;
+            bool changed = _catalog != nextCatalog || _configuration != nextConfiguration;
+            _catalog = nextCatalog;
+            _configuration = nextConfiguration;
+            if (_catalog != null && _configuration != null && (_session == null || changed))
+            {
                 _session = new WardrobeEditSession(_configuration, _catalog);
+                _compiledRevision = WardrobeCandidateWorkflow.IsCompiled(_catalog, _configuration)
+                    ? WardrobeCandidateWorkflow.DraftHash(_configuration) : null;
+                _draftRevision = WardrobeCandidateWorkflow.DraftHash(_configuration);
+                if (_presetIndex >= _catalog.Presets.Length) _presetIndex = 0;
+            }
         }
 
         private SkinnedMeshRenderer FindSceneBody() => UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Include)

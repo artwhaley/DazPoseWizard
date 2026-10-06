@@ -8,8 +8,8 @@ in isolation, using the same PerformerWardrobe controller as gameplay. Subsequen
 imports add catalog data, not scenes. Rebuilding data must preserve the existing
 setup scene and any saved scene authoring changes.
 
-Provide catalog selection, candidate/released status, layer rows with exclusive
-1/2 checkboxes (neither = Base), Remove/Add/Naked/Redress preview, live query state,
+Provide an outfit list, candidate/released status, grouped garment rows with
+explicit Base/1/2 selectors, Remove/Add/Naked/Redress preview, live query state,
 hair selection and body morph/walk inspection. Shoe meshes remain outfit parts.
 Expose material opacity and reviewed footwear calibration controls. Show fit-state
 validation results and Needs Fit details. Keep hair visible when hiding clothes.
@@ -18,7 +18,10 @@ Capture technical fixtures and ensure switching uses the production async path.
 Editing a layer assignment invalidates the compiled candidate. Compile/validate
 before allowing release. Preview temporary values on instance copies. Pose,
 camera, piece isolation and anatomy probes are session inspection state, not saved
-outfit defaults. Save/Revert/Create Variant are distinct explicit actions.
+outfit defaults. Save Draft/Revert/Create Variant are distinct explicit actions.
+The approved consolidation Day 5 replaces the old checkbox UI contract: show
+named layer sequences, top preview/revision state and Undo/Redo; separate draft
+persistence from expensive Compile/Validate, and retain selection in naked preview.
 Add a Setup entry to `WardrobeImportReviewWindow`; keep existing review diagnostics
 accessible. Do not silently replace an open dirty scene.
 

@@ -13,6 +13,11 @@ namespace DazPose.Performer.HandGrip
         public NativeArray<float> SolvedCurls;
         public NativeArray<HandGripStatus> DigitStatuses;
         public NativeArray<HandGripProbeDiagnostic> ProbeDiagnostics;
+        [ReadOnly] public NativeArray<GripContactSurfaceData.Triangle> SurfaceTriangles;
+        [ReadOnly] public NativeArray<GripContactSurfaceData.Node> SurfaceNodes;
+        public Vector3 SurfacePosition;
+        public Quaternion SurfaceRotation;
+        public bool UseContactSurface;
         public TransformStreamHandle HandHandle;
         public GripFrame Frame;
         public float GripWeight;
@@ -82,7 +87,8 @@ namespace DazPose.Performer.HandGrip
             }
             else HandGripSolver.Solve(Frame, handPosition, handRotation, GripWeight, GripStrength,
                 ContactClearance, NearContactDistance, BinarySearchIterations, Digits,
-                Joints, Probes, IncomingRotations, SolvedCurls, DigitStatuses, ProbeDiagnostics);
+                Joints, Probes, IncomingRotations, SolvedCurls, DigitStatuses, ProbeDiagnostics,
+                UseContactSurface, SurfacePosition, SurfaceRotation, SurfaceTriangles, SurfaceNodes);
 
             for (int digitIndex = 0; digitIndex < Digits.Length; digitIndex++)
             {

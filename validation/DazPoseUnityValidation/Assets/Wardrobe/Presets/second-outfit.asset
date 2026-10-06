@@ -17,7 +17,7 @@ MonoBehaviour:
   displayName: second-outfit
   aliases: []
   characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
-  configurationRevision: 2
+  configurationRevision: 4
   package: {fileID: 11400000, guid: 32e0584b1ecdf3647baab669e28be03a, type: 2}
   parts:
   - sourcePieceId: ChokerRing_G8F_312
@@ -39,16 +39,16 @@ MonoBehaviour:
     layer: 0
     requiredOwnerPieceIds: []
   - sourcePieceId: Stocking L G8F_6421
-    layer: 0
+    layer: 1
     requiredOwnerPieceIds: []
   - sourcePieceId: Umbra Stocking L Gloss Shell
-    layer: 0
+    layer: 1
     requiredOwnerPieceIds: []
   - sourcePieceId: Stocking R G8F_6421
-    layer: 0
+    layer: 1
     requiredOwnerPieceIds: []
   - sourcePieceId: Umbra Stocking R Gloss Shell
-    layer: 0
+    layer: 1
     requiredOwnerPieceIds: []
   - sourcePieceId: SleeveL_G8F_2373
     layer: 0
@@ -69,12 +69,13 @@ MonoBehaviour:
     layer: 0
     requiredOwnerPieceIds: []
   - sourcePieceId: shoe_6146
-    layer: 0
+    layer: 1
     requiredOwnerPieceIds: []
   hairAction: 0
   hairId: 
   hairPrefab: {fileID: 0}
   footwear: {fileID: 11400000, guid: ae765e074a5877442a30663f0e5c5fde, type: 2}
   fitStates:
-  - {fileID: 11400000, guid: 8e21d983b93fc464cb76dcbabced2396, type: 2}
-  - {fileID: 11400000, guid: 44baa5aa8b3d74e418ab63aac1e6571d, type: 2}
+  - {fileID: 11400000, guid: d7d795fef105bc94cb2cfce4b8e4449a, type: 2}
+  - {fileID: 11400000, guid: ad8139816f90ee24d8fd476ca30f3c13, type: 2}
+  - {fileID: 11400000, guid: d8d4ad9c62d71dc47a6260e1836151c1, type: 2}

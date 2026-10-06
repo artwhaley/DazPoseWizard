@@ -144,6 +144,26 @@ namespace DazPose.Performer
             disabledWaiter?.TrySetResult(GestureCompletion.PerformerDisabled);
         }
 
+        public void Cancel()
+        {
+            if (_disposed || _current == null) return;
+            ActionState cancelled = _current;
+            AwaitableCompletionSource<GestureCompletion> waiter = cancelled.Waiter;
+            _current = null;
+            ClearAction(_outgoing);
+            _outgoing = null;
+            ClearAction(cancelled);
+            _crossfadeElapsed = _crossfadeDuration = 0f;
+            UpdateLayerWeights();
+            waiter?.TrySetResult(GestureCompletion.Cancelled);
+        }
+
+        internal Action CaptureCancellation()
+        {
+            ActionState captured = _current;
+            return () => { if (captured != null && ReferenceEquals(_current, captured)) Cancel(); };
+        }
+
         private ActionState CreateAction(PerformerGesture gesture,
             AwaitableCompletionSource<GestureCompletion> waiter, int slot)
         {

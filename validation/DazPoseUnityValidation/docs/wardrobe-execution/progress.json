@@ -143,5 +143,28 @@
   ],
   "blockers": [],
   "visualReview": "pending",
-  "cleanContextImportGate": "unpassed-separate-task"
+  "cleanContextImportGate": "unpassed-separate-task",
+  "resumeAuthority": "docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md",
+  "currentBaseline": {
+    "utc": "2026-10-05",
+    "head": "fff898b5a89cd23971a58704e4fad9e78cd650ea",
+    "runner": "passed 3/3",
+    "contract": "passed 13/13",
+    "migration": "failed stableSecondGeneration: composite expects two fit states/mask1; current first-outfit has masks6,2,0; catalog GUID unchanged",
+    "dependentStages": "not_run",
+    "actualSavePublish": "observed in disposable current-source copy; see Day 1 baseline",
+    "evidence": "docs/production-consolidation/BASELINE.md",
+    "historicalFields": "completedGates/gates/lastEvidence describe earlier inputs; do not present them as current-source passes"
+  },
+  "productionConsolidation": {
+    "day": 5,
+    "status": "complete_accepted_by_user",
+    "report": "docs/production-consolidation/DAY_5_REPORT.md",
+    "contractAssertions": 13,
+    "migrationAssertions": 10,
+    "transactionAssertions": 11,
+    "wardrobeEditorAndPlayerAssertions": 39,
+    "setupEditorAndPlayerAssertions": 9,
+    "independentCleanContextImportAcceptance": "unchanged_separate_task"
+  }
 }

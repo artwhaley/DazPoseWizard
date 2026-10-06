@@ -5,6 +5,7 @@ namespace DazPose.Player
         Completed,
         Superseded,
         PlayerDisabled,
-        TargetLost
+        TargetLost,
+        Cancelled
     }
 }

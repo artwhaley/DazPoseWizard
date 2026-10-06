@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ce20f398a42d74995ed707ba8e4a00, type: 3}
+  m_Name: Preset
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobePreset
+  schemaVersion: 1
+  presetId: third-outfit
+  displayName: Maid
+  aliases:
+  - maid
+  characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
+  configurationRevision: 4
+  package: {fileID: 11400000, guid: 4b590d46c67f11b4f9671d3899cac65c, type: 2}
+  parts:
+  - sourcePieceId: shoe_12520
+    layer: 0
+    requiredOwnerPieceIds: []
+  - sourcePieceId: Stockings_5340
+    layer: 0
+    requiredOwnerPieceIds: []
+  - sourcePieceId: dress_7510
+    layer: 0
+    requiredOwnerPieceIds: []
+  - sourcePieceId: Apron_6708
+    layer: 0
+    requiredOwnerPieceIds: []
+  hairAction: 0
+  hairId: 
+  hairPrefab: {fileID: 0}
+  footwear: {fileID: 11400000, guid: ca047af783180e94ebcdd099c87eb0ab, type: 2}
+  fitStates:
+  - {fileID: 11400000, guid: 71726b8367577f24ab77c675674d31c1, type: 2}
+  - {fileID: 11400000, guid: 5f8ae442564fc9a4e97379e303e2a8cf, type: 2}

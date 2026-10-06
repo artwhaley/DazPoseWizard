@@ -4,6 +4,7 @@ namespace DazPose.Performer
     {
         Completed,
         TargetLost,
-        PerformerDisabled
+        PerformerDisabled,
+        Cancelled
     }
 }

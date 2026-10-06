@@ -1,11 +1,8 @@
 # Luna execution entry point: wardrobe runtime and setup
 
-Status: implementation is in progress. Runner, Contract, Migration, Setup and
-Persistence pass. Runtime and Layers assertions pass but their required stress,
-walk and culling evidence is incomplete; Integration is currently unimplemented.
-See [progress.json](progress.json) for the current hashes and exact remaining work.
-The ClothingSetup scene is validated in the isolated project and has not been
-published into the main project. Continue from the first incomplete gate.
+Current authority: root `AGENTS.md` and `docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md`. Day 5 technical checks now pass: Contract 13, Migration 10, transactions 11, saved wardrobe playback 39 and saved Clothing Setup playback 9 in editor and Windows players. Its rebuilt setup, resolved snapshots, draft/compile/release workflow and stable reimport are implemented. Human UI/appearance review remains pending. Day 4 human validation passed.
+
+Read repository `docs/production-consolidation/DAY_5_REPORT.md`, `DAY_5_MANUAL_CHECKS.md`, `HANDOFF.md` and shared progress for current state. Older stage gates and Day 1 baseline below are historical; they are not a claim that broader E3/E4/E7 integration, stress or independent clean-context import acceptance passed. Day 6 remains unstarted. Do not resume an older assignment ahead of the authoritative plan.
 
 ## Assignment
 

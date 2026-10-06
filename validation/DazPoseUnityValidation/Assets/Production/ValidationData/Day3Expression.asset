@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b8f3d6a1de44e6cb71ff621f5bd907e, type: 3}
+  m_Name: Day3Expression
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerExpression
+  clip: {fileID: 7400000, guid: c3d22df06e679dc4f898aa569b0c43e3, type: 2}
+  channels: []
+  boneChannels:
+  - transformPath: Genesis8Female/hip/abdomenLower/abdomenUpper/chestLower/chestUpper/neckLower/neckUpper/head/upperFaceRig/rBrowInner
+    dazBoneId: rBrowInner
+    properties: 1
+    targetLocalPosition: {x: 0.031846292, y: 0.09399896, z: 0.122332476}
+    targetLocalRotation: {x: 0, y: 0, z: 0, w: 0}

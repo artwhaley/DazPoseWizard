@@ -12,14 +12,16 @@ namespace DazPose.Performer
     {
         Settled,
         Superseded,
-        PerformerDisabled
+        PerformerDisabled,
+        Cancelled
     }
 
     public enum ExpressionCompletion
     {
         Settled,
         Superseded,
-        PerformerDisabled
+        PerformerDisabled,
+        Cancelled
     }
 
     [DisallowMultipleComponent]
@@ -247,6 +249,31 @@ namespace DazPose.Performer
         public float ExpressionTransitionProgress => _expression == null ? 0f : _expression.EvaluatedProgress;
         public float DefaultExpressionBlendTime { get => defaultExpressionBlendTime; set => defaultExpressionBlendTime = Mathf.Max(0f, value); }
         public AudioSource SpeechAudioSource => speechAudioSource;
+        public Animator ConfiguredAnimator => animator != null ? animator : GetComponent<Animator>();
+        public PerformerPose InitialPose => initialPose;
+        public PerformerExpression InitialExpression => initialExpression;
+        public float InitialExpressionIntensity { get => initialExpressionIntensity; set => initialExpressionIntensity = Mathf.Clamp01(value); }
+        public bool StartsHidden => startHidden;
+        public PerformerTeleportProfile TeleportProfile => teleportProfile;
+        public PerformerDissolveProfile DissolveProfile => dissolveProfile;
+        public PerformerDissolveRig DissolveRig => dissolveRig;
+        public PerformerMotionSet MotionSet => motionSet;
+        public AvatarMask RightArmMotionMask => rightArmMotionMask;
+        public float MotionOwnershipBlendSeconds { get => motionOwnershipBlendSeconds; set => motionOwnershipBlendSeconds = Mathf.Max(0f, value); }
+        public AvatarMask GestureUpperBodyMask => gestureUpperBodyMask;
+        public PoseTransition DefaultPoseTransition { get => defaultTransition; set { value.Validate(); defaultTransition = value; } }
+        /// <summary>Configure initial defaults before enabling. Use commands to change a running actor.</summary>
+        public void ConfigureInitialState(PerformerPose pose, PerformerExpression expression, float intensity = 1f, bool hidden = false)
+        {
+            if (IsRuntimeReady) throw new InvalidOperationException("Configure initial state before enabling the performer; use pose/expression/visibility commands during playback.");
+            initialPose = pose; initialExpression = expression; InitialExpressionIntensity = intensity; startHidden = hidden;
+        }
+        public void ConfigureMotionSource(MotionDriver source)
+        {
+            if (IsRuntimeReady && motionDriver != source)
+                throw new InvalidOperationException("Configure the actor's playback source before enabling it.");
+            motionDriver = source;
+        }
         public bool IsSpeaking => _speech != null && _speech.IsSpeaking;
         public AudioClip CurrentSpeechClip => _speech == null ? null : _speech.CurrentSpeechClip;
         public int PendingSpeechCount => _speech == null ? 0 : _speech.PendingSpeechCount;
@@ -893,12 +920,108 @@ namespace DazPose.Performer
         public Awaitable<SpeechCompletion> SayAsync(AudioClip clip)
         {
             if (clip == null) throw new ArgumentNullException(nameof(clip));
-            return RequireSpeechRuntime().SayAsync(clip);
+            var result = RequireSpeechRuntime().SayAsync(clip, out _lastSpeechRequestId);
+            return result;
         }
 
         public void StopSpeaking()
         {
             RequireSpeechRuntime().StopSpeaking();
+        }
+
+        private long _lastSpeechRequestId;
+        public void CancelMovement() => _locomotion?.Cancel();
+        public void CancelSeating() => _seating?.Cancel();
+        public void CancelAction() => _actionRuntime?.Cancel();
+        public void CancelGesture() => _gestureLayer?.Cancel();
+        public void CancelAppearance() { _dissolve?.Cancel(); _teleport?.Cancel(); }
+        public void CancelGrip() => _handGripController?.CancelGrip();
+
+        /// <summary>Capture immediately after submission. Handles cannot cancel replacement requests.</summary>
+        public Action CaptureCancellation(PerformanceCommand command)
+        {
+            switch (command)
+            {
+                case PerformanceCommand.Speech:
+                    long speech = _lastSpeechRequestId;
+                    return () => { if (this != null) _speech?.Cancel(speech); };
+                case PerformanceCommand.Movement: return _locomotion?.CaptureCancellation();
+                case PerformanceCommand.Seating: return _seating?.CaptureCancellation();
+                case PerformanceCommand.Action: return _actionRuntime?.CaptureCancellation();
+                case PerformanceCommand.Gesture: return _gestureLayer?.CaptureCancellation();
+                case PerformanceCommand.Visibility: return _dissolve?.CaptureCancellation();
+                case PerformanceCommand.Teleport: return _teleport?.CaptureCancellation();
+                case PerformanceCommand.Grip: return _handGripController?.CaptureCancellation();
+                case PerformanceCommand.Gaze: return _gaze?.CaptureCancellation();
+                case PerformanceCommand.Spell: return _magicRuntime?.CaptureCancellation();
+                case PerformanceCommand.Wardrobe: return GetComponent<PerformerWardrobe>()?.CaptureCancellation();
+                case PerformanceCommand.Pose:
+                    var pose = _activePoseRequest;
+                    return () => { if (pose != null && ReferenceEquals(pose, _activePoseRequest)) {
+                        _activePoseRequest = null;
+                        if (IsRuntimeReady) RequestPose(initialPose, PoseTransition.Snap, null);
+                        CompleteRequest(pose, PoseCompletion.Cancelled);
+                    } };
+                case PerformanceCommand.Expression:
+                    var expression = _activeExpressionRequest;
+                    return () => { if (expression != null && ReferenceEquals(expression, _activeExpressionRequest)) {
+                        _activeExpressionRequest = null;
+                        if (IsRuntimeReady) RequestExpression(initialExpression, initialExpressionIntensity, 0f, null);
+                        CompleteExpressionRequest(expression, ExpressionCompletion.Cancelled);
+                    } };
+                default: throw new ArgumentOutOfRangeException(nameof(command));
+            }
+        }
+
+        private void PrepareRootMovement(string command, bool strict = false)
+        {
+            if (_handGripController == null || _handGripController.State == GripInteractionState.Idle ||
+                _handGripController.State == GripInteractionState.Failed) return;
+            if (strict) throw new PerformanceBusyException(name + "/" + command + ": contact owns the arm/root staging.");
+            _handGripController.CancelGrip();
+        }
+        public Awaitable<LocomotionCompletion> WalkToAsync(Transform target, bool strictOwnership)
+        { PrepareRootMovement("WalkTo", strictOwnership); return WalkToAsync(target); }
+        public Awaitable<LocomotionCompletion> WalkToAsync(Transform target, LocomotionArrivalBehavior arrival)
+        {
+            var runtime = RequireLocomotionRuntime();
+            runtime.SetHoldArrivalPose(arrival == LocomotionArrivalBehavior.Hold);
+            _seating?.PrepareForWalkRequest();
+            return runtime.WalkToAsync(target);
+        }
+        internal void RestoreWardrobeVisibility(object owner)
+        {
+            if (ReferenceEquals(_wardrobeEffectTransitionOwner, owner) && !IsDissolving && !IsTeleporting)
+            {
+                if (_dissolve != null) _dissolve.SetStableVisibility(false);
+                else { SetStableHidden(false); ApplyStableVisibility(false); }
+            }
+        }
+
+        /// <summary>Place while hidden, optionally set pose, then reveal through the existing visibility owner.</summary>
+        public Awaitable<VisibilityCompletion> DissolveInAtAsync(Transform target, float durationSeconds, PerformerPose pose = null)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            PerformerDissolve.ValidateDuration(durationSeconds);
+            RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false);
+            if (!IsHidden || IsDissolving || IsTeleporting || IsLocomoting || IsPerforming)
+                throw new PerformanceBusyException(name + "/DissolveInAt requires a stable hidden, stationary actor.");
+            PrepareRootMovement("DissolveInAt");
+            transform.SetPositionAndRotation(target.position, target.rotation);
+            if (pose != null) Pose(pose, PoseTransition.Snap);
+            return DissolveInAsync(durationSeconds);
+        }
+
+        public void ResetPerformance(Vector3 position, Quaternion rotation)
+        {
+            if (!IsRuntimeReady) throw new InvalidOperationException(name + " runtime is unavailable for reset.");
+            CancelGrip(); CancelMovement(); CancelSeating(); CancelAction(); CancelGesture(); CancelAppearance();
+            StopSpeaking(); ClearGaze(); _magicRuntime?.Reset();
+            transform.SetPositionAndRotation(position, rotation);
+            Pose(initialPose, PoseTransition.Snap);
+            Expression(initialExpression, initialExpressionIntensity, 0f);
+            if (_dissolve != null) _dissolve.SetStableVisibility(startHidden);
+            else { SetStableHidden(startHidden); ApplyStableVisibility(startHidden); }
         }
 
         /// <summary>Temporarily performs a full-body Action, then returns to its captured world anchor.</summary>
@@ -978,11 +1101,30 @@ namespace DazPose.Performer
             if (_handGripController == null) throw new InvalidOperationException("No grip runtime configured.");
             return _handGripController.GripAsync(target);
         }
-        public void Grip(IGripTarget target) { GripAsync(target); }
+        public void Grip(IGripTarget target) { ObserveGrip(GripAsync(target)); }
+        private async void ObserveGrip(Awaitable<GripCompletion> operation)
+        {
+            try { if (await operation == GripCompletion.Failed && this != null)
+                Debug.LogWarning(name + "/Grip failed: " + GripFailureReason, this); }
+            catch (Exception ex) { if (this != null) Debug.LogException(ex, this); }
+        }
         public void ReleaseGrip() => _handGripController?.ReleaseGrip();
+        /// <summary>Holds a normalized contact position without changing the shared playback clock.</summary>
+        public void HoldGrip(float position01 = .5f)
+        {
+            if (!IsRuntimeReady || _handGripController == null) throw new InvalidOperationException("Grip runtime is unavailable.");
+            _handGripController.Hold(position01);
+        }
+        /// <summary>Consumes the bound motion clock; does not start, seek or restart it.</summary>
+        public void FollowGripMotion()
+        {
+            if (!IsRuntimeReady || _handGripController == null) throw new InvalidOperationException("Grip runtime is unavailable.");
+            _handGripController.FollowMotion();
+        }
+        public bool GripFollowsMotion => _handGripController != null && _handGripController.FollowsMotion;
         internal Awaitable<LocomotionCompletion> WalkToGripAsync(Vector3 position, Vector3 facing)
         {
-            PerformerLocomotion runtime = RequireLocomotionRuntime();
+            PerformerLocomotion runtime = RequireLocomotionRuntime(gripStaging: true);
             _seating?.PrepareForWalkRequest();
             return runtime.WalkToAsync(position, facing);
         }
@@ -1444,6 +1586,7 @@ namespace DazPose.Performer
 
         private PerformerActionRuntime RequirePerformRuntime(PerformerAction action)
         {
+            PrepareRootMovement("Perform");
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("SuccubusPerformer can receive Perform commands only while enabled in Play Mode.");
             if (_actionRuntime == null)
@@ -1474,8 +1617,9 @@ namespace DazPose.Performer
                 throw new InvalidOperationException(command + " is unavailable while Perform owns Lara, including the return-home recovery phase.");
         }
 
-        private PerformerLocomotion RequireLocomotionRuntime()
+        private PerformerLocomotion RequireLocomotionRuntime(bool gripStaging = false)
         {
+            if (!gripStaging) PrepareRootMovement("WalkTo");
             RejectWhilePerforming("WalkTo");
             RequireVisibleForWorldCommands("WalkTo");
             if (IsTeleporting)
@@ -1494,6 +1638,7 @@ namespace DazPose.Performer
 
         private PerformerLocomotion RequireTurnRuntime()
         {
+            PrepareRootMovement("TurnTo");
             RejectWhilePerforming("TurnTo");
             RequireVisibleForWorldCommands("TurnTo");
             if (!IsRuntimeReady || _locomotion == null)
@@ -1513,6 +1658,8 @@ namespace DazPose.Performer
 
         private PerformerSeating RequireSeatingRuntime()
         {
+            PrepareRootMovement("SitAt");
+            _locomotion?.SetHoldArrivalPose(false);
             RejectWhilePerforming("SitAt/StandUp");
             RequireVisibleForWorldCommands("SitAt/StandUp");
             if (IsTeleporting)
@@ -1526,6 +1673,7 @@ namespace DazPose.Performer
 
         private PerformerTeleport RequireTeleportRuntime()
         {
+            PrepareRootMovement("TeleportTo");
             RejectWhilePerforming("TeleportTo");
             RequireVisibleForWorldCommands("TeleportTo");
             if (!IsRuntimeReady)
@@ -1546,6 +1694,7 @@ namespace DazPose.Performer
         private PerformerDissolve RequireDissolveRuntime(string command,
             PerformerVisibilityState requiredState, bool requireStanding, object transitionOwner = null)
         {
+            if (command == "DissolveTo") PrepareRootMovement(command);
             if (_wardrobeEffectTransitionOwner != null && !ReferenceEquals(_wardrobeEffectTransitionOwner, transitionOwner))
                 throw new InvalidOperationException(command + " is unavailable while a wardrobe scene transition owns the effect lifecycle.");
             RejectWhilePerforming(command);

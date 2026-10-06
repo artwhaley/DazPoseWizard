@@ -21,6 +21,10 @@ namespace DazPose.Performer.HandGrip
         private NativeArray<float> _solvedCurls;
         private NativeArray<HandGripStatus> _digitStatuses;
         private NativeArray<HandGripProbeDiagnostic> _probeDiagnostics;
+        private NativeArray<GripContactSurfaceData.Triangle> _surfaceTriangles;
+        private NativeArray<GripContactSurfaceData.Node> _surfaceNodes;
+        private GripContactSurfaceData _surfaceData;
+        private int _surfaceRevision = -1;
         private bool _disposed;
         private HandGripStatus _immediateStatus = HandGripStatus.InvalidTarget;
 
@@ -52,6 +56,8 @@ namespace DazPose.Performer.HandGrip
                     SolvedCurls = _solvedCurls,
                     DigitStatuses = _digitStatuses,
                     ProbeDiagnostics = _probeDiagnostics,
+                    SurfaceTriangles = _surfaceTriangles,
+                    SurfaceNodes = _surfaceNodes,
                     HandHandle = _animator.BindStreamTransform(_hand),
                     ArmEvaluationMarker = UnityEngine.Animations.Rigging.FloatProperty.BindCustom(_animator, "Grip.IK.Evaluated"),
                     ContactClearance = _profile.ContactClearance,
@@ -104,6 +110,74 @@ namespace DazPose.Performer.HandGrip
             if (enabled) { job.Enabled = true; job.GripWeight = 1f; }
             _playable.SetJobData(job);
             if (enabled) _immediateStatus = HandGripStatus.Clear;
+        }
+
+        public void SetContactSurface(GripContactSurfaceSnapshot snapshot)
+        {
+            if (_disposed || !_playable.IsValid()) return;
+            if (!snapshot.IsValid)
+            {
+                ClearContactSurface();
+                return;
+            }
+
+            GripContactSurfaceData data = snapshot.Data;
+            if (data != _surfaceData || data.Revision != _surfaceRevision
+                || !_surfaceTriangles.IsCreated || !_surfaceNodes.IsCreated)
+            {
+                GripContactSurfaceData.Triangle[] sourceTriangles = data.Triangles;
+                GripContactSurfaceData.Node[] sourceNodes = data.Nodes;
+                NativeArray<GripContactSurfaceData.Triangle> nextTriangles = default;
+                NativeArray<GripContactSurfaceData.Node> nextNodes = default;
+                try
+                {
+                    nextTriangles = new NativeArray<GripContactSurfaceData.Triangle>(sourceTriangles,
+                        Allocator.Persistent);
+                    nextNodes = new NativeArray<GripContactSurfaceData.Node>(sourceNodes,
+                        Allocator.Persistent);
+                    HandGripAnimationJob job = _playable.GetJobData<HandGripAnimationJob>();
+                    job.SurfaceTriangles = nextTriangles;
+                    job.SurfaceNodes = nextNodes;
+                    job.UseContactSurface = true;
+                    job.SurfacePosition = snapshot.Position;
+                    job.SurfaceRotation = snapshot.Rotation;
+                    _playable.SetJobData(job);
+                }
+                catch
+                {
+                    if (nextTriangles.IsCreated) nextTriangles.Dispose();
+                    if (nextNodes.IsCreated) nextNodes.Dispose();
+                    throw;
+                }
+                DisposeIfCreated(ref _surfaceTriangles);
+                DisposeIfCreated(ref _surfaceNodes);
+                _surfaceTriangles = nextTriangles;
+                _surfaceNodes = nextNodes;
+                _surfaceData = data;
+                _surfaceRevision = data.Revision;
+                return;
+            }
+
+            HandGripAnimationJob current = _playable.GetJobData<HandGripAnimationJob>();
+            current.UseContactSurface = true;
+            current.SurfacePosition = snapshot.Position;
+            current.SurfaceRotation = snapshot.Rotation;
+            _playable.SetJobData(current);
+        }
+
+        public void ClearContactSurface()
+        {
+            if (_disposed || !_playable.IsValid()) return;
+            if (!_surfaceTriangles.IsCreated && !_surfaceNodes.IsCreated && _surfaceData == null) return;
+            HandGripAnimationJob job = _playable.GetJobData<HandGripAnimationJob>();
+            job.UseContactSurface = false;
+            job.SurfaceTriangles = default;
+            job.SurfaceNodes = default;
+            _playable.SetJobData(job);
+            DisposeIfCreated(ref _surfaceTriangles);
+            DisposeIfCreated(ref _surfaceNodes);
+            _surfaceData = null;
+            _surfaceRevision = -1;
         }
 
         public HandGripSolveResult GetSolveResult()
@@ -178,6 +252,8 @@ namespace DazPose.Performer.HandGrip
             DisposeIfCreated(ref _solvedCurls);
             DisposeIfCreated(ref _incomingRotations);
             DisposeIfCreated(ref _probeDiagnostics);
+            DisposeIfCreated(ref _surfaceTriangles);
+            DisposeIfCreated(ref _surfaceNodes);
             DisposeIfCreated(ref _probes);
             DisposeIfCreated(ref _joints);
             DisposeIfCreated(ref _digits);
@@ -206,6 +282,8 @@ namespace DazPose.Performer.HandGrip
             _solvedCurls = new NativeArray<float>(5, Allocator.Persistent);
             _digitStatuses = new NativeArray<HandGripStatus>(5, Allocator.Persistent);
             _probeDiagnostics = new NativeArray<HandGripProbeDiagnostic>(probeCount, Allocator.Persistent);
+            _surfaceTriangles = default;
+            _surfaceNodes = default;
 
             int nextJoint = 0;
             int nextProbe = 0;

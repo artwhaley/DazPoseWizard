@@ -435,6 +435,11 @@ namespace DazPose.Performer
             if (_gazePlayable.IsValid()) _gazePlayable.Destroy();
             _gazePlayable = default;
         }
+        internal Action CaptureCancellation()
+        {
+            var intention = _intention;
+            return () => { if (intention != null && ReferenceEquals(_intention, intention)) ClearGaze(); };
+        }
 
         private void SetIntention(GazeIntention next, AwaitableCompletionSource<GazeCompletion> completion)
         {

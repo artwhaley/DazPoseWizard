@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobeCatalog
   schemaVersion: 1
   releasedGenerationId: 
+  compiledConfigurationHash: c9f9ff9920c3c02bcbfd629e7f69940c150695c07ec7b8252476d3050b7112e0
+  authoringConfiguration: {fileID: 11400000, guid: fc8b22915d8757e41981ff953cc3a047, type: 2}
+  needsCompile: 0
   presets:
   - {fileID: 11400000, guid: 65dd139056d225a4e94e15db5df6b88b, type: 2}
   - {fileID: 11400000, guid: 0006c9e6957abed4bb64672c1d3a244f, type: 2}

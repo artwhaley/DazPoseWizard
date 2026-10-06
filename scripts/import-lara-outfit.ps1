@@ -40,8 +40,8 @@ try {
     if($taskActive){throw 'Another Unity process owns the isolated project. Wait for it to finish.'}
     if($Action -ne 'Publish'){
         # Sync code/graphs, not the user's scene or generated wardrobe assets.
-        $taskCodeRoot=Join-Path $taskMain 'Assets\DazPose'
-        Get-ChildItem -LiteralPath $taskCodeRoot -Recurse -File | Where-Object { $_.Extension -eq '.cs' -or $_.Name -like '*.cs.meta' -or $_.FullName.Contains('\Effects\Dissolve\Shaders\') } | ForEach-Object {
+        $taskCodeRoots=@('Assets\DazPose','Assets\Player','Assets\FirstPerformanceVoid') | ForEach-Object {Join-Path $taskMain $_}
+        Get-ChildItem -LiteralPath $taskCodeRoots -Recurse -File | Where-Object { $_.Extension -eq '.cs' -or $_.Name -like '*.cs.meta' -or $_.FullName.Contains('\Effects\Dissolve\Shaders\') } | ForEach-Object {
             Copy-Changed $_.FullName (Join-Path $taskProject $_.FullName.Substring($taskMain.Length+1))
         }
         foreach($taskAsset in @($taskConfig.fbx,$taskConfig.referenceFbx)){

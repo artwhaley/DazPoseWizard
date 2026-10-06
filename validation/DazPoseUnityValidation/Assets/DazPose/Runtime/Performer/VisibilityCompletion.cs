@@ -4,6 +4,7 @@ namespace DazPose.Performer
     {
         Visible,
         Hidden,
-        PerformerDisabled
+        PerformerDisabled,
+        Cancelled
     }
 }

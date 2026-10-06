@@ -47,8 +47,8 @@ namespace DazPose.Performer.HandGrip
     /// <summary>No root animation, navigation, clocks, or allocations. Target samples are cached per plan.</summary>
     public sealed class GripReachPlanner
     {
-        // General targets are sampled, not mathematically certified. A straight constant-frame rod
-        // is additionally certified using maximum endpoint distance and minimum segment distance.
+        // General targets are sampled, not mathematically certified. Targets may opt into exact
+        // whole-span reach certification through IGripTargetStraightSpan.
         public const int SampleCount = 17;
         private readonly Vector3[] _wrists = new Vector3[SampleCount];
         public Vector3 GetSampleWrist(int index) => _wrists[index];
@@ -58,17 +58,21 @@ namespace DazPose.Performer.HandGrip
             Quaternion calibration, float clearance, float twistDegrees = 0f, bool searchStaging = true)
         {
             GripFrame mid;
+            bool certifySegment = false;
             try
             {
                 mid = target.Evaluate(0.5f);
                 for (int index = 0; index < SampleCount; index++)
                     _wrists[index] = GripPalmTarget.Evaluate(target.Evaluate(index / (float)(SampleCount - 1)),
                         anchorPosition, anchorRotation, calibration, clearance, twistDegrees).Wrist.position;
+                if (target is IGripTargetStraightSpan straightSpan
+                    && straightSpan.TryGetStraightSpan(out GripFrame startFrame, out GripFrame endFrame))
+                    certifySegment = MatchesCertifiedSpan(startFrame, endFrame, anchorPosition,
+                        anchorRotation, calibration, clearance, twistDegrees);
             }
             catch (Exception)
             { return Failed(root, GripPlanFailure.InvalidTarget); }
 
-            bool certifySegment = target is GripContactRod;
             Vector3 shoulder = root.position + root.rotation * shoulderLocal;
             if (Check(shoulder, envelope, certifySegment, out float margin, out _))
                 return new GripReachPlan(true, false, root, margin, GripPlanFailure.None);
@@ -111,6 +115,37 @@ namespace DazPose.Performer.HandGrip
             return float.IsNegativeInfinity(bestScore)
                 ? Failed(root, GripPlanFailure.NoReachableStagingPose)
                 : new GripReachPlan(true, true, best, bestMargin, GripPlanFailure.None);
+        }
+
+        private bool MatchesCertifiedSpan(GripFrame start, GripFrame end, Vector3 anchorPosition,
+            Quaternion anchorRotation, Quaternion calibration, float clearance, float twistDegrees)
+        {
+            if (!start.IsValid || !end.IsValid
+                || (end.Center - start.Center).sqrMagnitude <= 1e-12f
+                || (start.Tangent - end.Tangent).sqrMagnitude > 1e-6f
+                || (start.Normal - end.Normal).sqrMagnitude > 1e-6f
+                || (start.Binormal - end.Binormal).sqrMagnitude > 1e-6f
+                || Mathf.Abs(start.Radius - end.Radius) > 0.00001f)
+                return false;
+
+            Vector3 startWrist = GripPalmTarget.Evaluate(start, anchorPosition, anchorRotation,
+                calibration, clearance, twistDegrees).Wrist.position;
+            Vector3 endWrist = GripPalmTarget.Evaluate(end, anchorPosition, anchorRotation,
+                calibration, clearance, twistDegrees).Wrist.position;
+            const float pathToleranceMeters = 0.0001f;
+            if (Vector3.Distance(_wrists[0], startWrist) > pathToleranceMeters
+                || Vector3.Distance(_wrists[SampleCount - 1], endWrist) > pathToleranceMeters)
+                return false;
+
+            // Sanity-check the provider's claimed certificate against every planning sample.
+            // The capability contract, not finite sampling, remains the whole-span guarantee.
+            for (int index = 1; index < SampleCount - 1; index++)
+            {
+                Vector3 expected = Vector3.Lerp(startWrist, endWrist,
+                    index / (float)(SampleCount - 1));
+                if (Vector3.Distance(_wrists[index], expected) > pathToleranceMeters) return false;
+            }
+            return true;
         }
 
         private bool Check(Vector3 shoulder, GripReachEnvelope envelope, bool certifySegment,

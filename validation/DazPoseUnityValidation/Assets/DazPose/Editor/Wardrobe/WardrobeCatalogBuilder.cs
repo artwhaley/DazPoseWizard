@@ -104,6 +104,7 @@ namespace DazPose.UnityValidation
                 .Select(x => new { preset = p.id, piece = x.id })).ToArray();
             config.ConfigureGenerated(assignments.Select(a => new WardrobeConfiguration.PieceAssignment
             { presetId = a.preset, sourcePieceId = a.piece, layer = 0 }).ToArray());
+            catalog.SetAuthoringConfiguration(config);
             EditorUtility.SetDirty(config);
             foreach (var preset in presets) preset.SetGeneratedFitStates(
                 new[] { AssetDatabase.LoadAssetAtPath<WardrobeFitState>(StateRoot + "/" + preset.PresetId + "/Naked.asset"),

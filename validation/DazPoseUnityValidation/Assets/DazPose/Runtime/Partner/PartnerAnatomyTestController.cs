@@ -22,20 +22,21 @@ namespace DazPose.UnityValidation.Partner
         [SerializeField] private float position01 = 0.5f;
         [SerializeField] private bool shellVisible = true;
 
-        private Quaternion[] erectBaseRotations;
         private Quaternion mainPelvisBaseRotation;
         private Vector3 mainPelvisBasePosition;
-        private Vector3 donorMainLocalPosition;
-        private Quaternion donorMainLocalRotation;
         private CameraView cameraView = CameraView.ThreeQuarter;
         private float shaft1X;
         private float shaft4X;
         private float distributedBend;
         private float pelvisTest;
+        private bool diagnosticPelvisActive;
         private bool showBones = true;
         private bool showSkeletalLine;
         private bool showGeometryLine = true;
         private bool showRadii = true;
+        private PartnerBody runtimeBody;
+
+        public PartnerBody RuntimeBody => runtimeBody != null ? runtimeBody : GetComponent<PartnerBody>();
 
         public float Erection01
         {
@@ -43,13 +44,14 @@ namespace DazPose.UnityValidation.Partner
             set
             {
                 erection01 = Mathf.Clamp01(value);
-                ApplyErection();
-                ApplyCompliance();
+                PartnerBody body = RuntimeBody;
+                if (body != null) body.Erection01 = erection01;
+                UpdateContactTarget();
             }
         }
 
-        public static float BlendShapeWeightForErection(float value) => 100f * (1f - Mathf.Clamp01(value));
-        public static Quaternion ApplyComplianceOffset(Quaternion erectBase, Vector3 degrees) => erectBase * Quaternion.Euler(degrees);
+        public static float BlendShapeWeightForErection(float value) => PartnerBody.BlendShapeWeightForErection(value);
+        public static Quaternion ApplyComplianceOffset(Quaternion erectBase, Vector3 degrees) => PartnerBody.ApplyComplianceOffset(erectBase, degrees);
 
         public bool ShellVisible
         {
@@ -57,122 +59,85 @@ namespace DazPose.UnityValidation.Partner
             set
             {
                 shellVisible = value;
-                if (shellRenderer != null) shellRenderer.enabled = value;
-                ApplyCompliance();
+                PartnerBody body = RuntimeBody;
+                if (body != null) body.ShellVisible = value;
+                else if (shellRenderer != null) shellRenderer.enabled = value;
             }
         }
 
-        public Vector3 ContactTargetRoot => contactTargetRoot;
+        public Vector3 ContactTargetRoot => RuntimeBody != null ? RuntimeBody.ContactTargetRoot : contactTargetRoot;
         public SkinnedMeshRenderer StructuralBody => structuralBody;
         public SkinnedMeshRenderer ShellRenderer => shellRenderer;
         public bool ShellFollowsBones => shellRenderer != null && shellRenderer.sharedMesh != null
             && shellRenderer.bones.Length > 0 && shellRenderer.sharedMesh.bindposes.Length == shellRenderer.bones.Length;
-        public float ContactRadius => Mathf.Lerp(flaccidRadius, erectRadius, Erection01);
+        public float ContactRadius => RuntimeBody != null ? RuntimeBody.ContactRadius : Mathf.Lerp(flaccidRadius, erectRadius, Erection01);
         public float Position01
         {
-            get => position01;
-            set { position01 = Mathf.Clamp01(value); UpdateContactTarget(); }
+            get => RuntimeBody != null ? RuntimeBody.Position01 : position01;
+            set { position01 = Mathf.Clamp01(value); if (RuntimeBody != null) RuntimeBody.Position01 = position01; UpdateContactTarget(); }
         }
 
         private enum CameraView { Front, Side, ThreeQuarter, Root, Glans }
 
         private void Awake()
         {
-            CaptureErectBase();
+            ConfigureRuntimeBody(out string error);
+            if (!string.IsNullOrEmpty(error)) Debug.LogError(error, this);
             if (mainPelvis != null)
             {
                 mainPelvisBaseRotation = mainPelvis.localRotation;
                 mainPelvisBasePosition = mainPelvis.localPosition;
             }
-            CaptureDonorOffset();
-            ApplyErection();
-            ApplyCompliance();
-            ShellVisible = shellVisible;
+            // This component is the legacy diagnostic client; production uses PartnerBody alone.
             UpdateCamera();
+        }
+
+        /// <summary>Copies legacy serialized fixture bindings into the runtime owner.</summary>
+        public bool ConfigureRuntimeBody(out string error)
+        {
+            runtimeBody = GetComponent<PartnerBody>();
+            if (runtimeBody == null) runtimeBody = gameObject.AddComponent<PartnerBody>();
+            if (runtimeBody.IsReady) { error = null; return true; }
+            bool configured = runtimeBody.Configure(structuralBody, shellRenderer, shaftBones, mainPelvis,
+                donorPelvis, distributedBones, flaccidCenterlineRoot, erectCenterlineRoot,
+                flaccidRadius, erectRadius, erection01, shellVisible, out error, position01);
+            if (configured) contactTargetRoot = runtimeBody.ContactTargetRoot;
+            return configured;
         }
 
         private void LateUpdate()
         {
-            if (mainPelvis != null)
+            if (mainPelvis != null && diagnosticPelvisActive)
             {
                 mainPelvis.localRotation = mainPelvisBaseRotation * Quaternion.Euler(0f, 0f, pelvisTest * 10f);
                 mainPelvis.localPosition = mainPelvisBasePosition + new Vector3(0f, 0f, pelvisTest * 0.02f);
             }
-            ApplyDonorFollow();
-            ApplyCompliance();
-            UpdateCamera();
         }
 
         public void Restore()
         {
             pelvisTest = shaft1X = shaft4X = distributedBend = 0f;
+            diagnosticPelvisActive = false;
             if (mainPelvis != null)
             {
                 mainPelvis.localRotation = mainPelvisBaseRotation;
                 mainPelvis.localPosition = mainPelvisBasePosition;
             }
+            PartnerBody body = RuntimeBody;
+            if (body != null) body.RestoreCanonicalState();
             Erection01 = 1f;
             ShellVisible = true;
-            ApplyCompliance();
-            ApplyDonorFollow();
         }
 
         public void SetShaft1X(float degrees) { shaft1X = Mathf.Clamp(degrees, -5f, 5f); ApplyCompliance(); }
         public void SetShaft4X(float degrees) { shaft4X = Mathf.Clamp(degrees, -5f, 5f); ApplyCompliance(); }
         public void SetDistributedBend(float degrees) { distributedBend = Mathf.Clamp(degrees, -5f, 5f); ApplyCompliance(); }
-        public void SetPelvisTest(float value) { pelvisTest = Mathf.Clamp01(value); }
-
-        private void CaptureErectBase()
-        {
-            erectBaseRotations = new Quaternion[shaftBones.Length];
-            for (int i = 0; i < shaftBones.Length; i++)
-                erectBaseRotations[i] = shaftBones[i] != null ? shaftBones[i].localRotation : Quaternion.identity;
-        }
-
-        private void ApplyErection()
-        {
-            if (structuralBody != null && structuralBody.sharedMesh != null)
-            {
-                int index = structuralBody.sharedMesh.GetBlendShapeIndex("ErectionToFlaccid");
-                if (index >= 0) structuralBody.SetBlendShapeWeight(index, BlendShapeWeightForErection(erection01));
-            }
-            if (shellRenderer != null && shellRenderer.sharedMesh != null)
-            {
-                int index = shellRenderer.sharedMesh.GetBlendShapeIndex("ShellErectionToFlaccid");
-                if (index >= 0) shellRenderer.SetBlendShapeWeight(index, BlendShapeWeightForErection(erection01));
-            }
-            UpdateContactTarget();
-        }
+        public void SetPelvisTest(float value) { pelvisTest = Mathf.Clamp01(value); diagnosticPelvisActive = true; }
 
         private void ApplyCompliance()
         {
-            float[] distribution = { 0.15f, 0.30f, 0.40f, 0.15f };
-            bool complianceEnabled = Mathf.Approximately(Erection01, 1f) && (!ShellVisible || ShellFollowsBones);
-            for (int i = 0; i < shaftBones.Length; i++)
-            {
-                Transform bone = shaftBones[i];
-                if (bone == null) continue;
-                float x = complianceEnabled ? (i == 0 ? shaft1X : i == 3 ? shaft4X : 0f) : 0f;
-                int distributedIndex = Array.IndexOf(distributedBones, bone);
-                if (complianceEnabled && distributedIndex >= 0) x += distributedBend * distribution[distributedIndex];
-                bone.localRotation = ApplyComplianceOffset(erectBaseRotations[i], new Vector3(x, 0f, 0f));
-            }
-        }
-
-        private void CaptureDonorOffset()
-        {
-            if (mainPelvis == null || donorPelvis == null) return;
-            donorMainLocalPosition = mainPelvis.InverseTransformPoint(donorPelvis.position);
-            donorMainLocalRotation = Quaternion.Inverse(mainPelvis.rotation) * donorPelvis.rotation;
-        }
-
-        private void ApplyDonorFollow()
-        {
-            if (mainPelvis == null || donorPelvis == null) return;
-            Vector3 worldPosition = mainPelvis.TransformPoint(donorMainLocalPosition);
-            Quaternion worldRotation = mainPelvis.rotation * donorMainLocalRotation;
-            donorPelvis.position = worldPosition;
-            donorPelvis.rotation = worldRotation;
+            PartnerBody body = RuntimeBody;
+            if (body != null) body.SetCompliance(shaft1X, shaft4X, distributedBend);
         }
 
         private void UpdateContactTarget()
@@ -183,6 +148,8 @@ namespace DazPose.UnityValidation.Partner
 
         public void GetContactFrame(float position, out Vector3 centerRoot, out Vector3 tangentRoot, out float radius)
         {
+            PartnerBody body = RuntimeBody;
+            if (body != null && body.TryGetContactFrameRoot(position, out centerRoot, out tangentRoot, out radius)) return;
             int count = Mathf.Min(flaccidCenterlineRoot.Length, erectCenterlineRoot.Length);
             if (count < 2) { centerRoot = Vector3.zero; tangentRoot = Vector3.forward; radius = ContactRadius; return; }
             float scaled = Mathf.Clamp01(position) * (count - 1);
@@ -259,13 +226,13 @@ namespace DazPose.UnityValidation.Partner
             showGeometryLine = GUILayout.Toggle(showGeometryLine, "Geometry-derived contact line");
             showRadii = GUILayout.Toggle(showRadii, "Radius preview");
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Front")) cameraView = CameraView.Front;
-            if (GUILayout.Button("Side")) cameraView = CameraView.Side;
-            if (GUILayout.Button("3/4")) cameraView = CameraView.ThreeQuarter;
+            if (GUILayout.Button("Front")) { cameraView = CameraView.Front; UpdateCamera(); }
+            if (GUILayout.Button("Side")) { cameraView = CameraView.Side; UpdateCamera(); }
+            if (GUILayout.Button("3/4")) { cameraView = CameraView.ThreeQuarter; UpdateCamera(); }
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Root close-up")) cameraView = CameraView.Root;
-            if (GUILayout.Button("Glans close-up")) cameraView = CameraView.Glans;
+            if (GUILayout.Button("Root close-up")) { cameraView = CameraView.Root; UpdateCamera(); }
+            if (GUILayout.Button("Glans close-up")) { cameraView = CameraView.Glans; UpdateCamera(); }
             GUILayout.EndHorizontal();
             GUILayout.Space(6);
             GUILayout.Label("Donor pelvis follow diagnostic");

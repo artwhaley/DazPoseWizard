@@ -32,7 +32,8 @@ namespace DazPose.Performer.HandGrip
         private float _weight;
         private float _elapsed;
         private float _releaseStart;
-        private float _position;
+        private float _position = .5f;
+        private bool _followMotion = true;
         private int _generation;
         private float _motionSuppression;
         public float MotionSuppression => _motionSuppression;
@@ -56,6 +57,18 @@ namespace DazPose.Performer.HandGrip
         public bool DiagnosticsVisible { get => drawDiagnostics; set => drawDiagnostics = value; }
         public float GripWeight => _weight;
         public float Position01 => _position;
+        public bool FollowsMotion => _followMotion;
+        public void Hold(float position01)
+        {
+            if (!GripFrame.IsFinite(position01) || position01 < 0f || position01 > 1f)
+                throw new ArgumentOutOfRangeException(nameof(position01));
+            _position = position01; _followMotion = false;
+        }
+        public void FollowMotion()
+        {
+            if (_driver == null) throw new InvalidOperationException("Grip requires an explicitly bound MotionDriver to follow playback.");
+            _followMotion = true;
+        }
         public float WristTwistDegrees { get => wristTwistDegrees; set => wristTwistDegrees = value; }
         public float GripStrength01 { get => gripStrength01; set => gripStrength01 = Mathf.Clamp01(value); }
         public float ReachFraction => _arm == null ? 0f : Vector3.Distance(_arm.Upper.position, _desired.Wrist.position) / _envelope.ArmLength;
@@ -97,17 +110,34 @@ namespace DazPose.Performer.HandGrip
         public Awaitable<GripCompletion> GripAsync(IGripTarget target)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
-            _generation++; Complete(GripCompletion.Superseded);
-            var source = new AwaitableCompletionSource<GripCompletion>(); _completion = source;
+            int generation = ++_generation;
+            var previous = _completion;
+            _completion = null;
+            CancelOwnedStagingWalk();
+            var source = new AwaitableCompletionSource<GripCompletion>();
+            if (generation != _generation)
+            {
+                previous?.TrySetResult(GripCompletion.Superseded);
+                source.TrySetResult(GripCompletion.Superseded);
+                return source.Awaitable;
+            }
+            _completion = source;
             _target = target; targetSource = target as MonoBehaviour;
             _replans = 0; _failAfterRelease = false; RequiredLocomotion = false; FailureReason = GripFailureReason.None;
             _reposition = true;
             if (!IsAvailable) Fail(GripFailureReason.InvalidProfile);
             else if (_weight > 0f) BeginRelease(true);
             else { State = GripInteractionState.Planning; _elapsed = 0f; }
+            previous?.TrySetResult(GripCompletion.Superseded);
             return source.Awaitable;
         }
-        public void Grip(IGripTarget target) { GripAsync(target); }
+        public void Grip(IGripTarget target) { ObserveGrip(GripAsync(target)); }
+        private async void ObserveGrip(Awaitable<GripCompletion> operation)
+        {
+            try { if (await operation == GripCompletion.Failed && this != null)
+                Debug.LogWarning(name + "/Grip failed: " + FailureReason, this); }
+            catch (Exception ex) { if (this != null) Debug.LogException(ex, this); }
+        }
         public void Grip(float strength01 = 1f)
         {
             GripStrength01 = strength01;
@@ -122,16 +152,33 @@ namespace DazPose.Performer.HandGrip
         }
         public void ReleaseGrip()
         {
-            bool wasWalking = State == GripInteractionState.Walking;
-            _generation++; _failAfterRelease = false; Complete(GripCompletion.Released);
-            if (wasWalking && _performer != null)
-            {
-                // Supersede only our walking request through the existing locomotion
-                // alignment path; never move the root from the grip controller.
-                _performer.WalkToGripAsync(transform.position, transform.forward);
-            }
+            _generation++; _failAfterRelease = false;
+            CancelOwnedStagingWalk();
             if (IsAvailable) BeginRelease(false);
             else State = GripInteractionState.Idle;
+            Complete(GripCompletion.Released);
+        }
+        private Action _walkingCancellation;
+        private void CancelOwnedStagingWalk()
+        {
+            Action cancellation = _walkingCancellation;
+            _walkingCancellation = null;
+            try { cancellation?.Invoke(); }
+            catch (Exception exception) { Debug.LogException(exception, this); }
+        }
+        public Action CaptureCancellation()
+        {
+            int generation = _generation;
+            return () => { if (this != null && generation == _generation) CancelGrip(); };
+        }
+        /// <summary>Immediate teardown for stop/reset/root ownership transfer, including while gameplay is paused.</summary>
+        public void CancelGrip()
+        {
+            _generation++; _failAfterRelease = false; _reposition = false;
+            CancelOwnedStagingWalk();
+            State = GripInteractionState.Idle; _motionSuppression = 0f;
+            if (IsAvailable) SetInactive();
+            Complete(GripCompletion.Released);
         }
         private void BeginRelease(bool reposition)
         { _reposition = reposition; _releaseStart = _weight; _elapsed = 0f; State = GripInteractionState.Releasing; }
@@ -167,6 +214,13 @@ namespace DazPose.Performer.HandGrip
                 }
                 State = GripInteractionState.Acquiring; _elapsed = 0f;
             }
+            if (State == GripInteractionState.Walking)
+            {
+                float position = _followMotion && _driver != null
+                    ? _driver.CurrentSample.Position01 : _position;
+                if (!TryEvaluateTargetFrame(position, out _))
+                { Fail(GripFailureReason.InvalidTarget); return; }
+            }
             if (State == GripInteractionState.Walking || State == GripInteractionState.Idle || State == GripInteractionState.Failed)
             { SetInactive(); return; }
             if (State == GripInteractionState.Releasing)
@@ -175,11 +229,19 @@ namespace DazPose.Performer.HandGrip
                 _weight = _releaseStart * (1f - Smooth(t));
                 SetArmWeight(_weight);
                 _layer.SetState(_frame.IsValid, _frame, _weight * Mathf.Clamp01(1f - t * 2f), gripStrength01, HandGripStatus.Clear);
-                if (t >= 1f) { State = _failAfterRelease ? GripInteractionState.Failed
-                    : _reposition ? GripInteractionState.Planning : GripInteractionState.Idle; _elapsed = 0f; }
+                if (t >= 1f)
+                {
+                    SetInactive();
+                    _motionSuppression = 0f;
+                    State = _failAfterRelease ? GripInteractionState.Failed
+                        : _reposition ? GripInteractionState.Planning : GripInteractionState.Idle;
+                    _elapsed = 0f;
+                    if (_failAfterRelease) Complete(GripCompletion.Failed);
+                }
                 return;
             }
             ReachPlan = Plan(false);
+            if (_followMotion && _driver == null) { Fail(GripFailureReason.InvalidTarget); return; }
             if (!ReachPlan.Valid || ReachPlan.RequiresWalking)
             {
                 if (++_replans > 3) { Fail(GripFailureReason.TargetMovedBeyondPlan); return; }
@@ -187,9 +249,12 @@ namespace DazPose.Performer.HandGrip
             }
             try
             {
-                _position = _driver != null ? _driver.CurrentSample.Position01 : 0f;
-                _frame = _target.Evaluate(_position); _desired = profile.EvaluatePalm(_frame, wristTwistDegrees);
-                if (targetSource is GripContactRod rod) rod.CurrentPosition01 = _position;
+                if (_followMotion && _driver != null) _position = _driver.CurrentSample.Position01;
+                if (!TryEvaluateTargetFrame(_position, out _frame))
+                { Fail(GripFailureReason.InvalidTarget); return; }
+                if (!UpdateContactSurface())
+                { Fail(GripFailureReason.InvalidTarget); return; }
+                _desired = profile.EvaluatePalm(_frame, wristTwistDegrees);
             }
             catch (Exception error) { Debug.LogWarning(error.Message, this); Fail(GripFailureReason.InvalidTarget); return; }
             _weight = State == GripInteractionState.Active ? 1f
@@ -211,7 +276,10 @@ namespace DazPose.Performer.HandGrip
         {
             try
             {
-                LocomotionCompletion result = await _performer.WalkToGripAsync(root.position, root.rotation * Vector3.forward);
+                var operation = _performer.WalkToGripAsync(root.position, root.rotation * Vector3.forward);
+                _walkingCancellation = _performer.CaptureCancellation(PerformanceCommand.Movement);
+                LocomotionCompletion result = await operation;
+                if (generation == _generation) _walkingCancellation = null;
                 if (generation != _generation || State != GripInteractionState.Walking) return;
                 if (result != LocomotionCompletion.Arrived)
                 { Fail(result == LocomotionCompletion.Superseded ? GripFailureReason.LocomotionSuperseded : GripFailureReason.PerformerDisabled); return; }
@@ -227,20 +295,58 @@ namespace DazPose.Performer.HandGrip
             _arm.SetTarget(_frame.IsValid ? _desired.Wrist : new Pose(_arm.Hand.position, _arm.Hand.rotation), hint, weight);
         }
         private void SetInactive() { _weight = 0f; SetArmWeight(0f); _layer.SetState(false, default, 0f, gripStrength01, HandGripStatus.Clear); }
+        private bool TryEvaluateTargetFrame(float position, out GripFrame frame)
+        {
+            frame = default;
+            // IGripTarget is an interface reference, so its null check alone does not use
+            // UnityEngine.Object's destroyed-object semantics.
+            if (_target == null || (_target is UnityEngine.Object unityTarget && unityTarget == null))
+                return false;
+            try
+            {
+                frame = _target.Evaluate(position);
+                return frame.IsValid;
+            }
+            catch { return false; }
+        }
+        private bool UpdateContactSurface()
+        {
+            if (_target is IGripTargetContactSurface surfaceTarget)
+            {
+                try
+                {
+                    if (!surfaceTarget.TryGetContactSurface(out GripContactSurfaceSnapshot snapshot)
+                        || !snapshot.IsValid)
+                    {
+                        _layer.ClearContactSurface();
+                        return false;
+                    }
+                    _layer.SetContactSurface(snapshot);
+                    return true;
+                }
+                catch { _layer.ClearContactSurface(); return false; }
+            }
+            _layer.ClearContactSurface();
+            return true;
+        }
         private void Fail(GripFailureReason reason)
         {
+            _generation++;
+            CancelOwnedStagingWalk();
             FailureReason = reason;
             if (IsAvailable && _weight > 0f)
-            { BeginRelease(false); _failAfterRelease = true; }
+            { BeginRelease(false); _failAfterRelease = true; return; }
             else { State = GripInteractionState.Failed; _reposition = false; if (IsAvailable) SetInactive(); }
             Complete(GripCompletion.Failed);
         }
         private void Complete(GripCompletion result) { var source = _completion; _completion = null; source?.TrySetResult(result); }
         internal void Detach()
         {
-            _generation++; Complete(GripCompletion.PerformerDisabled);
+            _generation++;
+            CancelOwnedStagingWalk();
             _layer?.Dispose(); _layer = null; _arm?.Dispose(); _arm = null;
-            _weight = 0f; State = GripInteractionState.Idle;
+            _weight = 0f; _motionSuppression = 0f; State = GripInteractionState.Idle;
+            Complete(GripCompletion.PerformerDisabled);
         }
         public HandGripStatus GetDigitStatus(HandGripDigit digit) => _layer != null ? _layer.GetDigitStatus((int)digit) : HandGripStatus.InvalidProfile;
         public bool TryGetProbe(int index, out Vector3 worldPosition, out float radius, out HandGripProbeState state)

@@ -17,20 +17,20 @@ MonoBehaviour:
   displayName: first-outfit
   aliases: []
   characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
-  configurationRevision: 2
+  configurationRevision: 4
   package: {fileID: 11400000, guid: 3a4f6c38fd50bed40b8217a707997ecd, type: 2}
   parts:
   - sourcePieceId: CharlenesCloset_Panty_1981
-    layer: 0
+    layer: 1
     requiredOwnerPieceIds: []
   - sourcePieceId: PeekaBoo_16572
-    layer: 0
+    layer: 2
     requiredOwnerPieceIds: []
   hairAction: 1
   hairId: EmikoHair_59875
   hairPrefab: {fileID: 0}
   footwear: {fileID: 0}
   fitStates:
-  - {fileID: 11400000, guid: 34cebecf2ffe19e4aaa57c300a90f0fe, type: 2}
-  - {fileID: 11400000, guid: ea58e0929e0aef847ac480459ed46841, type: 2}
-  - {fileID: 11400000, guid: 95833867ed725ff41a729a6ad317e7d7, type: 2}
+  - {fileID: 11400000, guid: 36ac5916222090c4d9189bd468642ad0, type: 2}
+  - {fileID: 11400000, guid: 749b8ea0ec301a54a840acabe831da3d, type: 2}
+  - {fileID: 11400000, guid: a785c28e9ff5ad84f91ed1f4690753ba, type: 2}

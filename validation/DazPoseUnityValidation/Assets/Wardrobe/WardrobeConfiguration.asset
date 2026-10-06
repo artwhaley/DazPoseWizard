@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: WardrobeConfiguration
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobeConfiguration
   schemaVersion: 1
-  revision: 2
-  generationHash: 685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854
+  revision: 4
+  generationHash: 1b3d5d62234fc4c76b5f54ef0e128fa94c7ca005b84f203fccbfec727ff2d9e9
   assignments:
   - presetId: first-outfit
     sourcePieceId: CharlenesCloset_Panty_1981
-    layer: 2
+    layer: 1
   - presetId: first-outfit
     sourcePieceId: PeekaBoo_16572
-    layer: 1
+    layer: 2
   - presetId: second-outfit
     sourcePieceId: ArmStrapL_G8F_1050
     layer: 0
@@ -51,10 +51,10 @@ MonoBehaviour:
     layer: 0
   - presetId: second-outfit
     sourcePieceId: Stocking L G8F_6421
-    layer: 0
+    layer: 1
   - presetId: second-outfit
     sourcePieceId: Stocking R G8F_6421
-    layer: 0
+    layer: 1
   - presetId: second-outfit
     sourcePieceId: Umbra Bra Top Gloss Shell
     layer: 0
@@ -66,13 +66,13 @@ MonoBehaviour:
     layer: 0
   - presetId: second-outfit
     sourcePieceId: Umbra Stocking L Gloss Shell
-    layer: 0
+    layer: 1
   - presetId: second-outfit
     sourcePieceId: Umbra Stocking R Gloss Shell
-    layer: 0
+    layer: 1
   - presetId: second-outfit
     sourcePieceId: shoe_6146
-    layer: 0
+    layer: 1
   - presetId: third-outfit
     sourcePieceId: Apron_6708
     layer: 0
@@ -89,3 +89,6 @@ MonoBehaviour:
   footwearOverrides: []
   inputHashes:
   - 685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854
+  - import:first-outfit:a5d182173112577cfb976041745b0ed8
+  - import:second-outfit:dfec6b95c6e2d322551eaeca9073e254
+  - import:third-outfit:ad1f366d9ed859d9223f490ec98ee51d

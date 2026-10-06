@@ -6,7 +6,7 @@ namespace DazPose.Performer.HandGrip
     [ExecuteAlways]
     [DisallowMultipleComponent]
     [AddComponentMenu("Performer/Hand Grip/Grip Contact Rod")]
-    public sealed class GripContactRod : MonoBehaviour, IGripTarget
+    public sealed class GripContactRod : MonoBehaviour, IGripTarget, IGripTargetStraightSpan
     {
         [SerializeField] private Transform startPoint;
         [SerializeField] private Transform endPoint;
@@ -64,6 +64,21 @@ namespace DazPose.Performer.HandGrip
                 return false;
             }
             reason = null;
+            return true;
+        }
+
+        /// <summary>Certifies the rod's exact linear center path and constant world frame.</summary>
+        public bool TryGetStraightSpan(out GripFrame start, out GripFrame end)
+        {
+            if (!TryEvaluate(0f, out start, out _) || !TryEvaluate(1f, out end, out _))
+            {
+                start = default;
+                end = default;
+                return false;
+            }
+            // Evaluate is based on one fixed endpoint delta, reference direction and radius,
+            // so the frames are constant along the line and all intermediate centers are exact
+            // linear interpolation in world space.
             return true;
         }
 

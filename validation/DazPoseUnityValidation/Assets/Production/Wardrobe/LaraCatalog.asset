@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95f2483e4b1527541b7d582e9f03bf28, type: 3}
+  m_Name: LaraCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobeCatalog
+  schemaVersion: 1
+  releasedGenerationId: 70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb
+  presets:
+  - {fileID: 11400000, guid: 56627e5470935b44b9cf6adc6907b062, type: 2}
+  - {fileID: 11400000, guid: acc9432836b68ad429bcb7b6d00a12cd, type: 2}
+  - {fileID: 11400000, guid: fc04cb1baa50a2c42b8f8056d79f94a6, type: 2}

@@ -22,6 +22,9 @@ namespace DazPose.Performer
             public object transitionOwner;
             public Action<WardrobeChangeResult> complete;
             public bool completed;
+            public bool cancelled;
+            public int generation;
+            public Action cancelVisibility;
             public void Complete(WardrobeChangeResult result)
             {
                 if (completed) return;
@@ -60,6 +63,10 @@ namespace DazPose.Performer
         private bool _initialized;
         private bool _isDisabling;
         private int _lastConfigurationRevision;
+        private int _requestGeneration;
+        private Request _lastAcceptedRequest;
+        private string _bindingError;
+        private readonly Dictionary<string, WardrobeCandidateSnapshot> _resolved = new Dictionary<string, WardrobeCandidateSnapshot>(StringComparer.Ordinal);
 
         public event Action<WardrobeState> WardrobeChanged;
         public WardrobeState CurrentWardrobe => BuildState(_activeRequest != null || _queue.Count > 0);
@@ -68,6 +75,20 @@ namespace DazPose.Performer
         public WardrobeConfiguration Configuration => configuration;
         public SkinnedMeshRenderer Body => body;
         public bool AllowsCandidatePreview => allowCandidatePreview;
+        public string BindingDiagnostic => _bindingError;
+
+        public static bool TryValidateConfigurationBinding(WardrobeCatalog sourceCatalog, WardrobeConfiguration sourceConfiguration, out string error)
+        {
+            error = null;
+            if (sourceCatalog == null) { error = "Wardrobe catalog is missing."; return false; }
+            if (sourceCatalog.IsReleased && sourceConfiguration != null &&
+                sourceConfiguration.GenerationHash != sourceCatalog.ReleasedGenerationId)
+            {
+                error = "Configuration generation does not match the released catalog. Rebind its matching configuration or omit it to use the self-contained release.";
+                return false;
+            }
+            return true;
+        }
 
         public void ConfigureBinding(WardrobeCatalog sourceCatalog, WardrobeConfiguration sourceConfiguration,
             SkinnedMeshRenderer sourceBody, SuccubusPerformer owner, bool candidatePreview = false)
@@ -76,6 +97,7 @@ namespace DazPose.Performer
                 throw new InvalidOperationException("A running performer wardrobe cannot replace its catalog binding.");
             catalog = sourceCatalog; configuration = sourceConfiguration; body = sourceBody; performer = owner;
             allowCandidatePreview = candidatePreview;
+            _bindingError = null;
             rendererBinder = owner != null ? owner.GetComponent<LaraWardrobe>() : null;
         }
 
@@ -96,6 +118,12 @@ namespace DazPose.Performer
         private void OnDisable()
         {
             _isDisabling = true;
+            if (_activeRequest != null)
+            {
+                var cancelVisibility = _activeRequest.cancelVisibility;
+                _activeRequest.cancelVisibility = null;
+                cancelVisibility?.Invoke();
+            }
             var disabled = new WardrobeChangeResult(WardrobeChangeStatus.PerformerDisabled,
                 BuildState(false), BuildState(false), message: "Performer wardrobe was disabled before this request ran.");
             _activeRequest?.Complete(disabled);
@@ -121,6 +149,9 @@ namespace DazPose.Performer
             if (_initialized || !Application.isPlaying) return;
             if (catalog == null)
             { Debug.LogError("Performer wardrobe catalog is missing.", this); return; }
+            if (!TryValidateConfigurationBinding(catalog, configuration, out _bindingError)) return;
+            if (!catalog.IsReleased && catalog.NeedsCompile)
+            { _bindingError = "Saved wardrobe draft needs Compile / validate before preview."; return; }
             if (!catalog.Validate(out string catalogError))
             { Debug.LogError("Performer wardrobe catalog is invalid: " + catalogError, this); return; }
             if (body == null) body = FindBody();
@@ -129,6 +160,17 @@ namespace DazPose.Performer
             if (performer == null) performer = GetComponent<SuccubusPerformer>();
             try
             {
+                _resolved.Clear();
+                foreach (var preset in catalog.Presets)
+                {
+                    _resolved.Add(preset.PresetId, WardrobeCandidateSnapshot.Resolve(preset, catalog.IsReleased ? null : configuration));
+                    if (!catalog.IsReleased && (preset.Parts.Any(p => _resolved[preset.PresetId].Parts.Any(r => r.sourcePieceId == p.sourcePieceId && r.layer != p.layer)) ||
+                        (!string.IsNullOrEmpty(catalog.CompiledConfigurationHash) && configuration != null && preset.ConfigurationRevision != configuration.Revision)))
+                    {
+                        _bindingError = "Saved wardrobe draft needs Compile / validate before preview. The preset and configuration revisions or layers differ: " + preset.PresetId;
+                        return;
+                    }
+                }
                 BuildPieceInventory();
                 rendererBinder ??= gameObject.AddComponent<LaraWardrobe>();
                 rendererBinder.Configure(body, _inventory.Select(p => p.inventory).ToArray());
@@ -136,7 +178,7 @@ namespace DazPose.Performer
                 _selectedPreset = null;
                 _layerCeiling = -1;
                 _currentFit = catalog.Presets.SelectMany(p => p.FitStates).FirstOrDefault(s => s.VisibleMask == 0);
-                _lastConfigurationRevision = configuration != null ? configuration.Revision : 0;
+                _lastConfigurationRevision = 0;
                 ApplyRendererVisibility(0, null, _currentHairKey);
                 _initialized = true;
             }
@@ -200,8 +242,7 @@ namespace DazPose.Performer
                 var materials = (Material[])definition.materials.Clone();
                 var materialOpacities = Enumerable.Repeat(-1f, materials.Length).ToArray();
                 if (ConfigurationApplies())
-                foreach (var materialOverride in configuration.MaterialOverrides.Where(m => m != null &&
-                    m.presetId == preset.PresetId && m.sourcePieceId == definition.id))
+                foreach (var materialOverride in _resolved[preset.PresetId].MaterialOverrides.Where(m => m.sourcePieceId == definition.id))
                 {
                     if (!int.TryParse(materialOverride.materialSlotId, out int slot) || slot < 0 || slot >= materials.Length)
                         throw new InvalidOperationException("Material override must name a valid material slot index: " + key + "/" + materialOverride.materialSlotId);
@@ -236,18 +277,14 @@ namespace DazPose.Performer
 
         private int ResolveLayer(WardrobePreset preset, string pieceId)
         {
-            if (ConfigurationApplies())
-            {
-                foreach (var row in configuration.Assignments)
-                    if (row.presetId == preset.PresetId && row.sourcePieceId == pieceId) return row.layer;
-            }
+            if (_resolved.TryGetValue(preset.PresetId, out var snapshot))
+                foreach (var part in snapshot.Parts) if (part.sourcePieceId == pieceId) return part.layer;
             foreach (var part in preset.Parts) if (part.sourcePieceId == pieceId) return part.layer;
             // Hair lives outside the clothing layers.
             return 0;
         }
 
-        private bool ConfigurationApplies() => configuration != null &&
-            (!catalog.IsReleased || allowCandidatePreview || configuration.GenerationHash == catalog.ReleasedGenerationId);
+        private bool ConfigurationApplies() => configuration != null && !catalog.IsReleased;
 
         private readonly struct Selection
         {
@@ -449,7 +486,8 @@ namespace DazPose.Performer
                 _selectedPreset = target.Preset; _layerCeiling = target.Ceiling; _currentHairKey = target.HairKey;
                 _currentFit = targetFit;
                 ApplyRendererVisibility(target.Visible, target.Preset, target.HairKey);
-                _lastConfigurationRevision = configuration != null ? configuration.Revision : 0;
+                _lastConfigurationRevision = target.Preset == null ? 0 : catalog.IsReleased ? target.Preset.ConfigurationRevision :
+                    (_resolved.TryGetValue(target.Preset.PresetId, out var snapshot) ? snapshot.ConfigurationRevision : target.Preset.ConfigurationRevision);
                 var after = BuildState(false);
                 WardrobeChanged?.Invoke(after);
                 return new WardrobeChangeResult(WardrobeChangeStatus.Applied, before, after);
@@ -544,15 +582,60 @@ namespace DazPose.Performer
         {
             if (!isActiveAndEnabled || !Application.isPlaying || _isDisabling)
             { request.Complete(new WardrobeChangeResult(WardrobeChangeStatus.PerformerDisabled, BuildState(false), BuildState(false))); return false; }
+            if (!TryValidateConfigurationBinding(catalog, configuration, out _bindingError))
+            { request.Complete(Failure(BuildState(false), WardrobeFailureCode.InvalidBindings, _bindingError)); return false; }
             EnsureInitialized();
             if (!_initialized)
-            { request.Complete(Failure(BuildState(false), WardrobeFailureCode.MissingAsset, "Wardrobe runtime is not initialized.")); return false; }
+            { request.Complete(Failure(BuildState(false), _bindingError != null ? WardrobeFailureCode.InvalidBindings : WardrobeFailureCode.MissingAsset,
+                _bindingError ?? "Wardrobe runtime is not initialized.")); return false; }
             if (_queue.Count >= 32)
             { request.Complete(Failure(BuildState(false), WardrobeFailureCode.QueueFull, "Wardrobe request queue is full.")); return false; }
+            request.generation = ++_requestGeneration;
+            _lastAcceptedRequest = request;
             _queue.Enqueue(request);
             if (!_processing) ProcessQueue();
             return true;
         }
+
+        /// <summary>Returns a cancellation action bound to the most recently accepted request.</summary>
+        public Action CaptureCancellation()
+        {
+            var request = _lastAcceptedRequest;
+            if (request == null || request.completed) return () => { };
+            int generation = request.generation;
+            return () => CancelRequest(request, generation);
+        }
+
+        private void CancelRequest(Request request, int generation)
+        {
+            if (request == null || request.generation != generation || request.completed || request.cancelled) return;
+            request.cancelled = true;
+            if (ReferenceEquals(_activeRequest, request))
+            {
+                var cancelVisibility = request.cancelVisibility;
+                request.cancelVisibility = null;
+                cancelVisibility?.Invoke();
+                performer?.RestoreWardrobeVisibility(this);
+                return;
+            }
+
+            bool found = false;
+            var retained = new Queue<Request>();
+            while (_queue.Count > 0)
+            {
+                var queued = _queue.Dequeue();
+                if (ReferenceEquals(queued, request)) found = true;
+                else retained.Enqueue(queued);
+            }
+            while (retained.Count > 0) _queue.Enqueue(retained.Dequeue());
+            if (found) request.Complete(Cancelled(BuildState(false)));
+        }
+
+        private WardrobeChangeResult Cancelled(WardrobeState state) =>
+            new WardrobeChangeResult(WardrobeChangeStatus.Cancelled, state, state,
+                message: "Wardrobe request was cancelled before completion.");
+
+        private static bool IsCancelled(Request request) => request.cancelled;
 
         private async void ProcessQueue()
         {
@@ -563,17 +646,19 @@ namespace DazPose.Performer
                 while (_queue.Count > 0 && !_isDisabling)
                 {
                     _activeRequest = _queue.Dequeue();
+                    var activeRequest = _activeRequest;
                     WardrobeChangeResult result;
-                    try { result = await ApplyRequestAsync(_activeRequest); }
+                    try { result = IsCancelled(activeRequest) ? Cancelled(BuildState(false)) : await ApplyRequestAsync(activeRequest); }
                     catch (Exception exception) { result = Failure(BuildState(false), WardrobeFailureCode.EffectRebindFailed, exception.Message); }
-                    _activeRequest.Complete(result);
-                    _activeRequest = null;
+                    activeRequest.cancelVisibility = null;
+                    activeRequest.Complete(result);
+                    if (ReferenceEquals(_activeRequest, activeRequest)) _activeRequest = null;
                     await Awaitable.NextFrameAsync();
                 }
             }
             finally
             {
-                _activeRequest = null;
+                if (_activeRequest != null && _activeRequest.completed) _activeRequest = null;
                 _processing = false;
                 if (_queue.Count > 0 && !_isDisabling && isActiveAndEnabled) ProcessQueue();
             }
@@ -581,6 +666,7 @@ namespace DazPose.Performer
 
         private async Awaitable<WardrobeChangeResult> ApplyRequestAsync(Request request)
         {
+            if (IsCancelled(request)) return Cancelled(BuildState(false));
             if (request.transition.kind != WardrobeTransitionKind.Dissolve)
                 return ApplyRequest(request);
             var before = BuildState(false);
@@ -592,21 +678,38 @@ namespace DazPose.Performer
             try
             {
                 if (performer.VisibilityState == PerformerVisibilityState.Hidden)
-                    return ApplyRequest(request);
+                    return IsCancelled(request) ? Cancelled(BuildState(false)) : ApplyRequest(request);
                 if (performer.VisibilityState != PerformerVisibilityState.Visible)
                     return Failure(before, WardrobeFailureCode.EffectRebindFailed,
                         "Dissolve outfit changes require stable Visible or Hidden state.");
-                var hidden = await performer.DissolveOutForWardrobeAsync(this, Mathf.Max(.001f, request.transition.outSeconds));
-                if (request.completed || _isDisabling || !isActiveAndEnabled)
+                var hiddenOperation = performer.DissolveOutForWardrobeAsync(this, Mathf.Max(.001f, request.transition.outSeconds));
+                request.cancelVisibility = performer.CaptureCancellation(PerformanceCommand.Visibility);
+                var hidden = await hiddenOperation;
+                request.cancelVisibility = null;
+                if (IsCancelled(request))
+                {
+                    EnsureStableVisibleAfterCancellation(request);
+                    return Cancelled(BuildState(false));
+                }
+                if (_isDisabling || !isActiveAndEnabled)
                     return new WardrobeChangeResult(WardrobeChangeStatus.PerformerDisabled, before, BuildState(false));
                 if (hidden != VisibilityCompletion.Hidden || performer.VisibilityState != PerformerVisibilityState.Hidden)
                     return Failure(before, WardrobeFailureCode.EffectRebindFailed,
                         "Dissolve-out did not reach stable Hidden state: " + hidden + "/" + performer.VisibilityState);
 
                 WardrobeChangeResult result = ApplyRequest(request);
-                if (request.completed || _isDisabling || !isActiveAndEnabled)
+                if (IsCancelled(request))
+                {
+                    EnsureStableVisibleAfterCancellation(request);
+                    return Cancelled(BuildState(false));
+                }
+                if (_isDisabling || !isActiveAndEnabled)
                     return new WardrobeChangeResult(WardrobeChangeStatus.PerformerDisabled, before, BuildState(false));
-                var visible = await performer.DissolveInForWardrobeAsync(this, Mathf.Max(.001f, request.transition.inSeconds));
+                var visibleOperation = performer.DissolveInForWardrobeAsync(this, Mathf.Max(.001f, request.transition.inSeconds));
+                request.cancelVisibility = performer.CaptureCancellation(PerformanceCommand.Visibility);
+                var visible = await visibleOperation;
+                request.cancelVisibility = null;
+                if (IsCancelled(request)) return Cancelled(BuildState(false));
                 if (visible != VisibilityCompletion.Visible || performer.VisibilityState != PerformerVisibilityState.Visible)
                     return Failure(BuildState(false), WardrobeFailureCode.EffectRebindFailed,
                         "Dissolve-in did not reach stable Visible state: " + visible + "/" + performer.VisibilityState);
@@ -614,12 +717,28 @@ namespace DazPose.Performer
             }
             catch (Exception exception)
             {
+                if (IsCancelled(request))
+                {
+                    EnsureStableVisibleAfterCancellation(request);
+                    return Cancelled(BuildState(false));
+                }
                 if (performer != null && performer.VisibilityState == PerformerVisibilityState.Hidden &&
                     performer.isActiveAndEnabled && !_isDisabling && isActiveAndEnabled)
                 {
-                    try { await performer.DissolveInForWardrobeAsync(this, Mathf.Max(.001f, request.transition.inSeconds)); }
+                    try
+                    {
+                        var recoveryOperation = performer.DissolveInForWardrobeAsync(this, Mathf.Max(.001f, request.transition.inSeconds));
+                        request.cancelVisibility = performer.CaptureCancellation(PerformanceCommand.Visibility);
+                        await recoveryOperation;
+                        request.cancelVisibility = null;
+                    }
                     catch (Exception recoveryError)
                     { Debug.LogException(recoveryError, this); }
+                }
+                if (IsCancelled(request))
+                {
+                    EnsureStableVisibleAfterCancellation(request);
+                    return Cancelled(BuildState(false));
                 }
                 return Failure(before, WardrobeFailureCode.EffectRebindFailed, exception.Message);
             }
@@ -628,6 +747,14 @@ namespace DazPose.Performer
                 performer.ReleaseWardrobeEffectTransition(this);
                 request.transitionOwner = null;
             }
+        }
+
+        private void EnsureStableVisibleAfterCancellation(Request request)
+        {
+            if (request == null || performer == null || performer.VisibilityState == PerformerVisibilityState.Visible) return;
+            var cancelVisibility = request.cancelVisibility;
+            request.cancelVisibility = null;
+            cancelVisibility?.Invoke();
         }
 
         internal bool TryPrepareSceneSnapshot(SceneWardrobeSnapshot snapshot, out string error)

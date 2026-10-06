@@ -20,6 +20,7 @@ namespace DazPose.UnityValidation
             public string catalogPath;
             public string[] issues = Array.Empty<string>();
             public int presetCount, fitStateCount, snapshottedMeshCount, snapshottedMaterialCount;
+            public string temporaryArtifactRoot;
         }
 
         private sealed class SnapshotContext
@@ -41,25 +42,31 @@ namespace DazPose.UnityValidation
             if (candidate.IsReleased) return Fail("A released catalog is immutable. Fork it into a candidate before publishing a new generation.");
             if (!candidate.Validate(out string catalogError)) return Fail("Candidate catalog is invalid: " + catalogError);
 
-            string generation = ComputeGeneration(candidate, configuration);
+            string generation;
+            try { generation = ComputeGeneration(candidate, configuration); }
+            catch (Exception exception) { return Fail("Candidate resolution failed: " + exception.Message); }
             string root = "Assets/TestData/WardrobeRuntime/Generations/" + generation;
             string presetRoot = "Assets/Wardrobe/Releases/" + generation;
-            var context = new SnapshotContext { root = root, presetRoot = presetRoot, generation = generation };
+            // Never reuse a writable directory that may be referenced by an existing release.
+            if (AssetDatabase.IsValidFolder(presetRoot) || AssetDatabase.IsValidFolder(root))
+                return Fail("This immutable generation already exists. Use its released catalog; publication will not overwrite it.", generation);
+            string attemptRoot = "Assets/TestData/WardrobeRuntime/ReleaseCandidates/" + Guid.NewGuid().ToString("N");
+            var context = new SnapshotContext { root = attemptRoot + "/SnapshotData", presetRoot = attemptRoot + "/SnapshotPresets", generation = generation };
             var compiledByPreset = new Dictionary<WardrobePreset, WardrobeFitState[]>();
             var issues = new List<string>();
             try
             {
-                EnsureFolder("Assets/Wardrobe/Releases"); EnsureFolder(presetRoot); EnsureFolder(root);
                 foreach (var preset in candidate.Presets)
                 {
                     var compiled = WardrobeFitCompiler.Compile(preset, configuration, canonicalRenderer,
-                        "Assets/TestData/WardrobeRuntime/ReleaseCandidates/" + generation, false);
+                        attemptRoot, false);
                     if (compiled.needsFitStates != 0)
                         issues.AddRange(compiled.issues.Select(x => preset.PresetId + ":" + x));
                     else compiledByPreset.Add(preset, compiled.fitStates);
                 }
-                if (issues.Count > 0) return new Result { published = false, generationId = generation, issues = issues.ToArray() };
+                if (issues.Count > 0) return new Result { published = false, generationId = generation, issues = issues.ToArray(), temporaryArtifactRoot = attemptRoot };
 
+                EnsureFolder(context.root); EnsureFolder(context.presetRoot);
                 var snapshots = new List<WardrobePreset>();
                 int fitCount = 0;
                 foreach (var sourcePreset in candidate.Presets)
@@ -73,7 +80,13 @@ namespace DazPose.UnityValidation
                 validationCatalog.ConfigureCandidate(snapshots.ToArray());
                 bool snapshotsValid = validationCatalog.Validate(out string snapshotError);
                 UnityEngine.Object.DestroyImmediate(validationCatalog);
-                if (!snapshotsValid) return Fail("Generated release snapshot is invalid: " + snapshotError, generation);
+                if (!snapshotsValid) return Fail("Generated release snapshot is invalid: " + snapshotError, generation, attemptRoot);
+
+                EnsureFolder("Assets/Wardrobe/Releases"); EnsureFolder("Assets/TestData/WardrobeRuntime/Generations");
+                string moveError = AssetDatabase.MoveAsset(context.root, root);
+                if (!string.IsNullOrEmpty(moveError)) throw new InvalidDataException(moveError);
+                moveError = AssetDatabase.MoveAsset(context.presetRoot, presetRoot);
+                if (!string.IsNullOrEmpty(moveError)) throw new InvalidDataException(moveError);
 
                 string inputHash = ComputeInputHash(candidate, configuration);
                 var releaseMaterials = configuration.MaterialOverrides;
@@ -82,32 +95,46 @@ namespace DazPose.UnityValidation
                         context.materials.TryGetValue(materialOverride.material, out var snapshotMaterial))
                         materialOverride.material = snapshotMaterial;
                 // This is the only mutation of the catalog/config references and occurs after all compilation and snapshot checks.
-                configuration.ConfigureGenerated(configuration.Assignments, releaseMaterials, configuration.FootwearOverrides);
-                candidate.ConfigureCandidate(snapshots.ToArray());
-                candidate.SetReleasedGeneration(generation);
-                configuration.CommitRevision(generation, new[] { inputHash });
-                foreach (var preset in snapshots)
+                string priorConfiguration = EditorJsonUtility.ToJson(configuration);
+                string priorCatalog = EditorJsonUtility.ToJson(candidate);
+                try
                 {
-                    preset.ConfigureGenerated(preset.PresetId, preset.DisplayName, preset.CharacterSignature,
-                        configuration.Revision, preset.Package, preset.Parts, preset.Aliases,
-                        preset.HairAction, preset.HairId, preset.Footwear);
-                    EditorUtility.SetDirty(preset);
+                    configuration.ConfigureGenerated(configuration.Assignments, releaseMaterials, configuration.FootwearOverrides);
+                    candidate.ConfigureCandidate(snapshots.ToArray());
+                    candidate.SetReleasedGeneration(generation);
+                    configuration.CommitRevision(generation, new[] { inputHash });
+                    foreach (var preset in snapshots)
+                    {
+                        preset.ConfigureGenerated(preset.PresetId, preset.DisplayName, preset.CharacterSignature,
+                            configuration.Revision, preset.Package, preset.Parts, preset.Aliases,
+                            preset.HairAction, preset.HairId, preset.Footwear);
+                        EditorUtility.SetDirty(preset);
+                    }
+                    EditorUtility.SetDirty(configuration); EditorUtility.SetDirty(candidate);
+                    AssetDatabase.SaveAssets();
                 }
-                EditorUtility.SetDirty(configuration); EditorUtility.SetDirty(candidate);
-                AssetDatabase.SaveAssets();
+                catch
+                {
+                    EditorJsonUtility.FromJsonOverwrite(priorConfiguration, configuration);
+                    EditorJsonUtility.FromJsonOverwrite(priorCatalog, candidate);
+                    EditorUtility.SetDirty(configuration); EditorUtility.SetDirty(candidate); AssetDatabase.SaveAssets();
+                    throw;
+                }
                 result.published = true; result.generationId = generation;
                 result.catalogPath = AssetDatabase.GetAssetPath(candidate);
                 result.presetCount = snapshots.Count; result.fitStateCount = fitCount;
                 result.snapshottedMeshCount = context.meshes.Count; result.snapshottedMaterialCount = context.materials.Count;
                 result.issues = Array.Empty<string>();
+                result.temporaryArtifactRoot = attemptRoot;
                 return result;
             }
-            catch (Exception exception) { return Fail("Publication stopped before catalog advance: " + exception.Message, generation); }
+            catch (Exception exception) { return Fail("Publication stopped before catalog advance: " + exception.Message, generation, attemptRoot); }
         }
 
         public static string ComputeGeneration(WardrobeCatalog catalog, WardrobeConfiguration configuration)
         {
-            var text = new StringBuilder("wardrobe-release-v1|");
+            var text = new StringBuilder("wardrobe-release-v2|");
+            text.Append(WardrobeCandidateWorkflow.DraftHash(configuration)).Append('|');
             text.Append(configuration != null ? configuration.GenerationHash : string.Empty).Append('|');
             foreach (var preset in catalog.Presets.OrderBy(x => x.PresetId, StringComparer.Ordinal))
             {
@@ -115,6 +142,10 @@ namespace DazPose.UnityValidation
                 var package = preset.Package;
                 text.Append(package != null ? package.recipeHash : string.Empty).Append('|');
                 text.Append(package != null ? DependencyHash(package) : string.Empty).Append('|');
+                foreach (var part in WardrobeCandidateSnapshot.Resolve(preset, configuration).Parts)
+                    text.Append(part.sourcePieceId).Append(':').Append(part.layer).Append(':').Append(string.Join(",", part.requiredOwnerPieceIds)).Append('|');
+                text.Append(preset.HairAction).Append(':').Append(preset.HairId).Append('|');
+                text.Append(preset.Footwear != null ? DependencyHash(preset.Footwear) : "barefoot").Append('|');
             }
             return Hash(text.ToString());
         }
@@ -124,12 +155,12 @@ namespace DazPose.UnityValidation
         {
             string folder = context.presetRoot + "/Presets/" + source.PresetId;
             EnsureFolder(folder);
-            var package = SnapshotPackage(source.Package, source.PresetId, configuration, context);
+            var resolved = WardrobeCandidateSnapshot.Resolve(source, configuration);
+            var package = SnapshotPackage(source.Package, source.PresetId, resolved, context);
             var shoe = SnapshotFootwear(source, configuration, context);
-            var parts = source.Parts;
-            var assignmentMap = configuration.Assignments.Where(x => x.presetId == source.PresetId)
-                .ToDictionary(x => x.sourcePieceId, x => x.layer, StringComparer.Ordinal);
-            foreach (var part in parts) if (assignmentMap.TryGetValue(part.sourcePieceId, out int layer)) part.layer = layer;
+            var parts = resolved.Parts;
+            if (!compiledFitStates.Select(f => f.VisibleMask).OrderBy(x => x).SequenceEqual(resolved.ReachableMasks.OrderBy(x => x)))
+                throw new InvalidDataException("Release fit masks do not match resolved parts: " + source.PresetId);
             var preset = LoadOrCreate<WardrobePreset>(folder + "/Preset.asset", () =>
             {
                 var created = ScriptableObject.CreateInstance<WardrobePreset>();
@@ -147,7 +178,7 @@ namespace DazPose.UnityValidation
         }
 
         private static WardrobeOutfitDefinition SnapshotPackage(WardrobeOutfitDefinition source, string presetId,
-            WardrobeConfiguration configuration, SnapshotContext context)
+            WardrobeCandidateSnapshot resolved, SnapshotContext context)
         {
             if (source == null) throw new InvalidDataException("Preset source package is missing: " + presetId);
             string path = context.root + "/Packages/" + presetId + "/Outfit.asset";
@@ -163,12 +194,24 @@ namespace DazPose.UnityValidation
             {
                 var materials = piece.materials.Select((material, slot) => SnapshotMaterial(material,
                     "piece-" + piece.id + "-slot-" + slot, context)).ToArray();
-                foreach (var materialOverride in configuration.MaterialOverrides.Where(x => x.presetId == presetId &&
+                foreach (var materialOverride in resolved.MaterialOverrides.Where(x =>
                     x.sourcePieceId == piece.id && x.material != null && int.TryParse(x.materialSlotId, out _)))
                 {
                     int slot = int.Parse(materialOverride.materialSlotId);
                     if (slot >= 0 && slot < materials.Length) materials[slot] = SnapshotMaterial(materialOverride.material,
                         "override-" + piece.id + "-slot-" + slot, context);
+                }
+                // Opacity must be in the immutable package, not supplied by a mutable runtime configuration.
+                foreach (var row in resolved.MaterialOverrides.Where(x =>
+                    x.sourcePieceId == piece.id && x.opacityOverride))
+                {
+                    if (!int.TryParse(row.materialSlotId, out int slot) || slot < 0 || slot >= materials.Length)
+                        throw new InvalidDataException("Invalid opacity material slot: " + piece.id + "/" + row.materialSlotId);
+                    var material = UnityEngine.Object.Instantiate(materials[slot]);
+                    if (!WardrobeMaterialOpacity.Apply(material, row.opacity))
+                    { UnityEngine.Object.DestroyImmediate(material); throw new InvalidDataException("Opacity shader has no supported transparency control: " + piece.id); }
+                    string materialPath = context.root + "/Materials/Opacity-" + Safe(presetId) + "-" + Safe(piece.id) + "-" + slot + ".mat";
+                    AssetDatabase.CreateAsset(material, materialPath); materials[slot] = material;
                 }
                 return new WardrobeOutfitDefinition.Piece
                 {
@@ -188,9 +231,8 @@ namespace DazPose.UnityValidation
             WardrobeConfiguration configuration, SnapshotContext context)
         {
             var profile = SnapshotFootwearProfile(source.Footwear, source.PresetId, context);
-            if (profile != null && configuration.TryGetFootwearTuning(source.PresetId, source.Footwear,
-                out float height, out float shrink))
-            { profile.standingHeight = height; profile.footShrink = shrink; }
+            var resolved = WardrobeCandidateSnapshot.Resolve(source, configuration);
+            if (profile != null) { profile.standingHeight = resolved.StandingLift; profile.footShrink = resolved.FootShrink; }
             return profile;
         }
 
@@ -326,8 +368,8 @@ namespace DazPose.UnityValidation
         private static string Hash(string value)
         { using (var sha = SHA256.Create()) return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(value))).Replace("-", "").ToLowerInvariant(); }
 
-        private static Result Fail(string message, string generation = null) => new Result
-        { published = false, generationId = generation, issues = new[] { message } };
+        private static Result Fail(string message, string generation = null, string artifactRoot = null) => new Result
+        { published = false, generationId = generation, issues = new[] { message }, temporaryArtifactRoot = artifactRoot };
 
         private static void EnsureFolder(string path)
         {

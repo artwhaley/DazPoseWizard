@@ -1,0 +1,507 @@
+{
+  "schemaVersion": 1,
+  "plan": "docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md",
+  "approvedDate": "2026-10-05",
+  "status": "in_progress",
+  "currentDay": 6,
+  "activePacket": "docs/production-consolidation/PRE_AUTHORING_REMEDIATION_PLAN.md",
+  "days": {
+    "1": "complete",
+    "2": "complete_with_accepted_runner_omission",
+    "3": "complete_with_accepted_camera_framing_issue",
+    "4": "complete",
+    "5": "complete",
+    "6": "planned_pre_authoring_remediation",
+    "7": "not_started"
+  },
+  "day1Tasks": {
+    "baselineIdentity": "complete",
+    "verbAndSettingsInventory": "complete",
+    "commandAndOwnershipContract": "complete",
+    "isolatedValidationBaseline": "complete",
+    "wardrobeRoundTripReproduction": "complete",
+    "dependencyAndPlayerProbe": "complete",
+    "evidenceAndHandoff": "complete"
+  },
+  "baseline": {
+    "head": "fff898b5a89cd23971a58704e4fad9e78cd650ea",
+    "branch": "main",
+    "utc": "2026-10-05T05:15:48.7363279Z",
+    "unity": "6000.5.9f1",
+    "mainProject": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation",
+    "sourceInputManifest": ".dazposewizard/day1-evidence/input-manifest.json",
+    "manifestSha256": "2266934118c0ec17e7996a4b214c01cf61d0f6836aea360be5a5a84130db8578",
+    "fileCount": 3791,
+    "userOverride": "2026-10-05: user closed editor and permits main-project sandbox batch runs; prohibits computer control."
+  },
+  "evidence": [
+    {
+      "check": "dotnet",
+      "result": "passed",
+      "assertions": 69,
+      "path": ".dazposewizard/day1-evidence/dotnet/day1-core.trx"
+    },
+    {
+      "check": "wardrobeRunner",
+      "result": "passed",
+      "assertions": 3,
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/runner/report.json"
+    },
+    {
+      "check": "wardrobeContract",
+      "result": "passed",
+      "assertions": 13,
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/contract/report.json"
+    },
+    {
+      "check": "wardrobeMigration",
+      "result": "failed",
+      "assertions": 7,
+      "failedAssertion": "stableSecondGeneration",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/wardrobe-execution/migration/report.json"
+    },
+    {
+      "check": "savedGripProfile",
+      "result": "passed",
+      "assertions": 60,
+      "scope": "geometry plus saved-profile spatial proof; no recalibration",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/day1/grip-probe.json"
+    },
+    {
+      "check": "wardrobeActualHandlersAndRuntime",
+      "result": "observed",
+      "scope": "all six Task E cases; mixed successful and intentionally rejected outcomes",
+      "path": "docs/production-consolidation/BASELINE.md"
+    },
+    {
+      "check": "standaloneWindowsBuild",
+      "result": "passed",
+      "errors": 0,
+      "warnings": 12,
+      "backend": "Mono2x",
+      "path": ".dazposewizard/p0c-native-generation/TestOutput/day1/build-probe.json"
+    },
+    {
+      "check": "standaloneWindowsRuntime",
+      "result": "passed",
+      "scope": "Direct3D12; one actor ready; Pose Settled; Speech Finished; appearance inconclusive",
+      "path": ".dazposewizard/day1-evidence/player-r3-result.json"
+    },
+    {
+      "check": "graphicalAppearance",
+      "result": "passed",
+      "reason": "User confirms appeared, audible, lip sync working; manual report visibleRendererCount=1",
+      "path": ".dazposewizard/day1-evidence/manual-completion.json"
+    },
+    {
+      "check": "sourcePreservation",
+      "result": "passed",
+      "files": 3791,
+      "differences": 0,
+      "path": ".dazposewizard/day1-evidence/source-preservation.json"
+    },
+    {
+      "result": "passed",
+      "assertions": 40,
+      "path": ".dazposewizard/day2-evidence/validation-final.json",
+      "check": "day2EditorValidation"
+    },
+    {
+      "result": "passed",
+      "assertions": 7,
+      "path": ".dazposewizard/day2-evidence/preflight-final.json",
+      "check": "day2Preflight"
+    },
+    {
+      "warnings": 9,
+      "check": "day2WindowsBuild",
+      "path": ".dazposewizard/day2-evidence/build-final.json",
+      "backend": "Mono2x",
+      "result": "passed",
+      "errors": 0
+    },
+    {
+      "check": "day2WindowsRuntime",
+      "path": ".dazposewizard/day2-evidence/player-final.json",
+      "exitCode": 0,
+      "result": "passed",
+      "graphics": "Direct3D12",
+      "assertions": 16
+    },
+    {
+      "result": "passed",
+      "files": 3341,
+      "path": ".dazposewizard/day2-evidence/accepted-input-preservation.json",
+      "check": "day2AcceptedInputs",
+      "differences": 0
+    },
+    {
+      "result": "passed",
+      "differences": 0,
+      "path": ".dazposewizard/day2-evidence/dependency-export-check.json",
+      "assetDependencies": 408,
+      "check": "day2ExportClosure"
+    },
+    {
+      "result": "passed_functional_validation_generic_lighting_rejected",
+      "path": ".dazposewizard/day2-evidence/manual-completion.json",
+      "check": "day2HumanObservations"
+    },
+    {
+      "check": "day2AuthoredEnvironmentPreservation",
+      "result": "passed",
+      "assertions": 7,
+      "environmentRecords": 99,
+      "path": ".dazposewizard/day2-evidence/environment-correction.json"
+    },
+    {
+      "check": "day2AuthoredEnvironmentEditorRegression",
+      "result": "passed",
+      "assertions": 40,
+      "path": ".dazposewizard/day2-evidence/environment-validation.json"
+    },
+    {
+      "check": "day2AuthoredEnvironmentBuild",
+      "result": "passed",
+      "errors": 0,
+      "warnings": 9,
+      "path": ".dazposewizard/day2-evidence/environment-build.json"
+    },
+    {
+      "check": "day2AuthoredEnvironmentPlayer",
+      "result": "passed",
+      "assertions": 16,
+      "exitCode": 0,
+      "path": ".dazposewizard/day2-evidence/environment-player.json"
+    },
+    {
+      "check": "day2AuthoredEnvironmentDependencies",
+      "result": "passed",
+      "assets": 436,
+      "differences": 0,
+      "path": ".dazposewizard/day2-evidence/environment-export-check.json"
+    },
+    {
+      "check": "day3SavedSceneEditor",
+      "result": "passed",
+      "assertions": 23,
+      "path": ".dazposewizard/day3-evidence/editor-runtime.json"
+    },
+    {
+      "check": "day3ExactSceneWindowsBuild",
+      "result": "passed",
+      "errors": 0,
+      "warnings": 13,
+      "backend": "Mono2x",
+      "path": ".dazposewizard/day3-evidence/build-final.json"
+    },
+    {
+      "check": "day3ExactSceneWindowsPlayer",
+      "result": "passed",
+      "assertions": 23,
+      "exitCode": 0,
+      "graphics": "Direct3D12",
+      "path": ".dazposewizard/day3-evidence/player-final.json"
+    },
+    {
+      "check": "day3OriginalAssets",
+      "result": "passed",
+      "files": 2790,
+      "differences": 0,
+      "path": ".dazposewizard/day3-evidence/accepted-input-preservation.json"
+    },
+    {
+      "check": "day3ExportClosure",
+      "result": "passed",
+      "dependencies": 487,
+      "files": 920,
+      "differences": 0,
+      "path": ".dazposewizard/day3-evidence/export-check.json"
+    },
+    {
+      "check": "day3SourceSnapshot",
+      "result": "passed",
+      "files": 160,
+      "differences": 0,
+      "comparison": "canonical CRLF/LF only",
+      "path": ".dazposewizard/day3-evidence/source-manifest.json"
+    },
+    {
+      "check": "day3AuthoredEnvironment",
+      "result": "passed",
+      "originalRecords": 169,
+      "unchangedContentRecords": 168,
+      "changedRecord": "scene root list only",
+      "path": ".dazposewizard/day3-evidence/environment-preservation.json"
+    },
+    {
+      "check": "day4ExactSavedSceneEditor",
+      "result": "passed",
+      "assertions": 96,
+      "path": ".dazposewizard/day4-evidence/editor-runtime.json"
+    },
+    {
+      "check": "day4ExactSavedScenePlayer",
+      "result": "passed",
+      "assertions": 96,
+      "graphics": "Direct3D12",
+      "exitCode": 0,
+      "path": ".dazposewizard/day4-evidence/player-runtime.json"
+    },
+    {
+      "check": "day4LegacyGrip",
+      "result": "passed",
+      "assertions": 60,
+      "path": ".dazposewizard/day4-evidence/legacy-grip.json"
+    },
+    {
+      "check": "day4EvaluatedSurface",
+      "result": "passed",
+      "snapshots": 20,
+      "probesEach": 20,
+      "intersections": 0,
+      "path": ".dazposewizard/day4-evidence/player-runtime.json"
+    },
+    {
+      "check": "day4SourceAndGuidPreservation",
+      "result": "passed",
+      "files": 243,
+      "path": ".dazposewizard/day4-evidence/source-manifest.json"
+    },
+    {
+      "check": "day4ExportClosure",
+      "result": "passed",
+      "dependencies": 514,
+      "files": 1028,
+      "path": ".dazposewizard/day4-evidence/export-check.json"
+    },
+    {
+      "check": "day5Transactions",
+      "result": "passed",
+      "assertions": 11,
+      "path": ".dazposewizard/day5-evidence/transactions-final.json"
+    },
+    {
+      "check": "day5Contract",
+      "result": "passed",
+      "assertions": 13,
+      "path": ".dazposewizard/day5-evidence/contract-final.json"
+    },
+    {
+      "check": "day5Migration",
+      "result": "passed",
+      "assertions": 10,
+      "path": ".dazposewizard/day5-evidence/migration-final.json"
+    },
+    {
+      "check": "day5SavedWardrobeEditor",
+      "result": "passed",
+      "assertions": 39,
+      "path": ".dazposewizard/day5-evidence/editor-wardrobe.json"
+    },
+    {
+      "check": "day5SavedSetupEditor",
+      "result": "passed",
+      "assertions": 9,
+      "path": ".dazposewizard/day5-evidence/editor-setup.json"
+    },
+    {
+      "check": "day5SavedWardrobeWindowsPlayer",
+      "result": "passed",
+      "assertions": 39,
+      "path": ".dazposewizard/day5-evidence/player-wardrobe.json",
+      "exitCode": 0,
+      "graphics": "Direct3D12"
+    },
+    {
+      "check": "day5SavedSetupWindowsPlayer",
+      "result": "passed",
+      "assertions": 9,
+      "path": ".dazposewizard/day5-evidence/player-setup.json",
+      "exitCode": 0,
+      "graphics": "Direct3D12"
+    },
+    {
+      "check": "day5ExportClosure",
+      "result": "passed",
+      "path": ".dazposewizard/day5-evidence/export-check.json"
+    },
+    {
+      "check": "day5SourceParity",
+      "result": "passed",
+      "path": ".dazposewizard/day5-evidence/source-manifest.json"
+    },
+    {
+      "check": "day5AuthoredEnvironment",
+      "result": "passed",
+      "path": ".dazposewizard/day5-evidence/environment-preservation.json"
+    },
+    {
+      "check": "day5WindowsBuild_wardrobe",
+      "result": "passed",
+      "errors": 0,
+      "path": ".dazposewizard/day5-evidence/build-wardrobe.json"
+    },
+    {
+      "check": "day5WindowsBuild_setup",
+      "result": "passed",
+      "errors": 0,
+      "path": ".dazposewizard/day5-evidence/build-setup.json"
+    },
+    {
+      "check": "day4HumanVisualApproval",
+      "result": "passed_user_report",
+      "path": ".dazposewizard/day4-evidence/manual-completion.json"
+    }
+  ],
+  "changedFiles": [
+    "AGENTS.md",
+    "docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md",
+    "docs/production-consolidation/",
+    "validation/DazPoseUnityValidation/docs/wardrobe-execution/START.md",
+    "validation/DazPoseUnityValidation/docs/wardrobe-execution/progress.json",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Performer/",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+    "validation/DazPoseUnityValidation/Assets/Player/",
+    "validation/DazPoseUnityValidation/Assets/Production/",
+    "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/"
+  ],
+  "findings": [
+    "Migration composite assertion has obsolete two-state/mask1 assumptions; observed GUID unchanged. Assigned Day 5.",
+    "Candidate Save config/fit and preset inspector layers disagree until Publish; runtime preset-asset preview works. Assigned Day 5.",
+    "Generation mismatch uses published layers but query revision reports supplied ignored config. Assigned Day 5.",
+    "Naked button clears selection; remove-all retains outfit/add-back. UI distinction assigned Day 5.",
+    "Production partner IGripTarget adapter absent despite saved rod/profile proofs. Assigned Day 4.",
+    "No complete harness-free actor composition or first-party assembly boundary. Assigned Days 2/6."
+  ],
+  "blockers": [],
+  "nextAction": "Execute pre-authoring remediation packet A: preserve current user wardrobe edits, reproduce and measure second-outfit toe residuals before choosing repair. Complete A–F before the composed authored scene.",
+  "visualApproval": "passed_fixture_visibility_audio_lipsync",
+  "independentImportAcceptance": "unchanged_separate_task",
+  "buildInputManifestSha256": "dfeaf6241d9325b6c95baaccb1ce4188d9d5057627a6df04a7efe2937b6ddbb9",
+  "evidenceLedgerSha256": "214b8a2da7bc8813511ebe9d02900438ef11a3eb85f46fa088a495e45b803ae6",
+  "day1CompletedUtc": "2026-10-05T09:16:32.0548672Z",
+  "manualCompletionSha256": "f916afc56336dfde19c3d14ff6fb9307957146e9fa458e4da29c91c20747e75e",
+  "day2Tasks": {
+    "identityAndPacket": "complete",
+    "productionComposition": "complete",
+    "bindingAndPreflight": "complete",
+    "inspectorAndDefaults": "complete",
+    "validation": "complete_runner_omission_accepted_by_user",
+    "handoff": "complete"
+  },
+  "day2Report": "docs/production-consolidation/DAY_2_REPORT.md",
+  "day2ManualChecks": {
+    "appearance_audio_lipsync": "passed_user_reports_validation",
+    "inspector_usability": "passed_user_reports_validation"
+  },
+  "day2TechnicalCompletedUtc": "2026-10-05T10:22:12.8027229Z",
+  "day2EvidenceLedgerSha256": "04721de6dd82c623275f8ed60ed68e834df2eaadec22e29a51b5d9094b666cf2",
+  "day2CompletedUtc": "2026-10-05T15:44:20.2698169Z",
+  "day2Environment": {
+    "authority": "validation/DazPoseUnityValidation/Assets/Scenes/FirstPerformanceVoid.unity",
+    "originalPreserved": true,
+    "genericLighting": "rejected",
+    "authoredSettings": "retained",
+    "correctedVisualObservation": "not_observed",
+    "characterLights": "owned_by_prefab_exact_authored_settings",
+    "ledger": ".dazposewizard/day2-evidence/environment-evidence-ledger.json"
+  },
+  "testRunnerPolicy": "User accepts current Day 2 missing-runner explanation. Future test runner must live in the delivered test scene; pressing Play must start it without editor injection or disposable-only components.",
+  "day3Tasks": {
+    "appearanceAtLocation": "complete",
+    "finiteCancellation": "complete",
+    "executionScope": "complete",
+    "physicalHardware": "optional_unobserved",
+    "savedRunnerAndExactSceneBuild": "complete",
+    "explicitPlaybackAndPause": "complete",
+    "manualVisualAudioReview": "accepted_enough_by_user_camera_framing_deferred_to_day4",
+    "automatedValidation": "complete",
+    "ownership": "complete",
+    "firstContactReplay": "complete"
+  },
+  "day3Report": "docs/production-consolidation/DAY_3_REPORT.md",
+  "day3ManualInstructions": "docs/production-consolidation/DAY_3_MANUAL_CHECKS.md",
+  "day3TechnicalCompletedUtc": "2026-10-05T16:56:18.0875128Z",
+  "day3EvidenceLedgerSha256": "5BADC9C84D5A2DE9C40787702834A26911B4ABC5852A3168E9521BBDB4C5583B",
+  "day3AcceptedUtc": "2026-10-05T17:03:16.4484866Z",
+  "day4CameraRequirement": "User reports initial Day 3 camera cannot see either actor. Fix initial position/orientation and field of view in Day 4 test scene so actors are visible immediately; preserve authored Void environment and lighting. Provide useful close-up contact framing.",
+  "day4PartnerPose": "Supine, approximately 1 metre above floor, high bed/table height.",
+  "day4Tasks": {
+    "runtimePartner": "complete",
+    "genericTargetAndSurface": "complete",
+    "facadeHoldFollowRelease": "complete",
+    "savedSupineFixtureAndCameras": "complete",
+    "editorAndPlayer": "complete",
+    "legacyRegression": "complete",
+    "exportAndPreservation": "complete",
+    "humanVisualApproval": "passed_user_reports_manual_validation"
+  },
+  "day4Report": "docs/production-consolidation/DAY_4_REPORT.md",
+  "day4ManualInstructions": "docs/production-consolidation/DAY_4_MANUAL_CHECKS.md",
+  "day4TechnicalCompletedUtc": "2026-10-05T21:25:34.0342318Z",
+  "day4EvidenceLedgerSha256": "85F8D628EA15410B511ED62D6E729F79419E8E0F8FA6D789900F30017F210057",
+  "day5Tasks": {
+    "resolvedCandidate": "complete",
+    "draftCompileRelease": "complete",
+    "humanWorkflowApproval": "accepted_by_user",
+    "transactionalValidation": "complete",
+    "setupWorkflow": "complete",
+    "reimport": "complete",
+    "exportAndPreservation": "complete",
+    "evidenceAndHandoff": "complete"
+  },
+  "day4AcceptedUtc": "2026-10-05T21:11:40.2695-05:00",
+  "day4ManualApproval": {
+    "result": "passed",
+    "userReport": "I did manual validation on day 4 and it seems to be working",
+    "recordedUtc": "2026-10-05T21:11:40.2695-05:00"
+  },
+  "day5TechnicalCompletedUtc": "2026-10-05T21:12:50.587911-05:00",
+  "day5Report": "docs/production-consolidation/DAY_5_REPORT.md",
+  "day5ManualInstructions": "docs/production-consolidation/DAY_5_MANUAL_CHECKS.md",
+  "day5HumanApproval": "accepted_by_user",
+  "day5IndependentCleanContextImportAcceptance": "unchanged_separate_task",
+  "day5EvidenceLedgerSha256": "b9e63de5590a66031a4e27b463232e411c83ea8fd56b513c8b48184ba8d00120",
+  "day5AcceptedUtc": "2026-10-06T02:27:30.4536333Z",
+  "architecturalReviewReassessment": {
+    "recordedUtc": "2026-10-06T02:37:58.9900788Z",
+    "path": "docs/production-consolidation/ARCHITECTURAL_REVIEW_REASSESSMENT.md",
+    "scope": "All six original reviews against current source and Days 1–5 evidence; documentation only; Day 6 not executed"
+  },
+  "preAuthoringRemediation": {
+    "approvedIssues": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ],
+    "excludedIssue": 4,
+    "userConstraint": "No other-character adaptation; leave working Lara rig conventions alone",
+    "tasks": {
+      "contentFolderIndependence": "planned",
+      "requiredGatesAndHandoff": "planned",
+      "productionValidationBoundary": "planned",
+      "toeInvestigationAndRepair": "planned",
+      "scopedAuthorCalls": "planned",
+      "preflightAndDiagnostics": "planned"
+    },
+    "toeFinding": {
+      "userReport": "Second-outfit shoes and stockings on Layer 1 remove and height drops, but toe contortion remains until rest of outfit removed",
+      "cause": "not_reproduced_not_proven",
+      "suspectedPaths": [
+        "LaraHeelReview restores rotation but not written toe local positions",
+        "Nonzero fit mesh/bindposes versus canonical naked body",
+        "Late foot/morph application"
+      ],
+      "savedMask1Flags": "footwearActive=0; bentFootPoseActive=0; standingLift=0; footShrink=0"
+    },
+    "plan": "docs/production-consolidation/PRE_AUTHORING_REMEDIATION_PLAN.md",
+    "status": "planned_not_implemented",
+    "recordedUtc": "2026-10-06T02:52:54.3682081Z"
+  }
+}

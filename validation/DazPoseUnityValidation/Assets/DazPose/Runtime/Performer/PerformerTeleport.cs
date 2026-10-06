@@ -30,6 +30,7 @@ namespace DazPose.Performer
         private Vector3 _destination;
         private Quaternion? _arrivalRotation;
         private PerformerPose _arrivalPose;
+        private object _operationIdentity;
 
         public bool IsTeleporting => _active;
 
@@ -71,6 +72,7 @@ namespace DazPose.Performer
             if (waiter != null) _waiters.Add(waiter);
             _elapsed = 0f;
             _active = true;
+            _operationIdentity = new object();
             _relocated = _revealed = false;
             try
             {
@@ -121,6 +123,26 @@ namespace DazPose.Performer
             foreach (GameObject audioObject in _audioObjects)
                 if (audioObject != null) UnityEngine.Object.Destroy(audioObject);
             _audioObjects.Clear();
+        }
+
+        public void Cancel()
+        {
+            if (_disposed || !_active) return;
+            RestoreVisibility();
+            _revealed = true;
+            _active = false;
+            foreach (GameObject effect in _effects)
+                if (effect != null) UnityEngine.Object.Destroy(effect);
+            _effects.Clear();
+            foreach (var audio in _audioObjects) if (audio != null) UnityEngine.Object.Destroy(audio);
+            _audioObjects.Clear();
+            Complete(TeleportCompletion.Cancelled);
+        }
+
+        internal Action CaptureCancellation()
+        {
+            object captured = _operationIdentity;
+            return () => { if (captured != null && ReferenceEquals(_operationIdentity, captured) && _active) Cancel(); };
         }
 
         private void RelocateWhileHidden()
@@ -192,6 +214,7 @@ namespace DazPose.Performer
         private void Complete(TeleportCompletion result)
         {
             _active = false;
+            _operationIdentity = null;
             AwaitableCompletionSource<TeleportCompletion>[] pending = _waiters.ToArray();
             _waiters.Clear();
             foreach (AwaitableCompletionSource<TeleportCompletion> waiter in pending)

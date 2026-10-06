@@ -76,8 +76,11 @@ namespace DazPose.Performer
         {
             revision++;
             generationHash = stableGenerationHash ?? string.Empty;
-            inputHashes = sourceInputHashes ?? Array.Empty<string>();
+            inputHashes = sourceInputHashes != null ? (string[])sourceInputHashes.Clone() : Array.Empty<string>();
         }
+
+        public void SetInputHashesWithoutRevision(string[] values)
+        { inputHashes = values != null ? (string[])values.Clone() : Array.Empty<string>(); }
 
         public void SetMaterialOpacity(string presetId, string pieceId, string slotId, float opacity)
         {

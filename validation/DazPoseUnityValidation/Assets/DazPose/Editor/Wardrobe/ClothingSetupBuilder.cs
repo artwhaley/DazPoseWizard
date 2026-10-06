@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using DazPose.Performer;
+using DazPose.Validation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace DazPose.UnityValidation
     {
         public const string ScenePath = "Assets/Scenes/ClothingSetup.unity";
         public const string CandidateScenePath = "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity";
+        public const string EnvironmentScenePath = "Assets/Production/Scenes/Day2ActorValidation.unity";
         public const string CatalogPath = "Assets/Wardrobe/WardrobeCatalog.asset";
         public const string ConfigurationPath = "Assets/Wardrobe/WardrobeConfiguration.asset";
 
@@ -74,19 +76,29 @@ namespace DazPose.UnityValidation
             var configuration = AssetDatabase.LoadAssetAtPath<WardrobeConfiguration>(ConfigurationPath);
             if (catalog == null || configuration == null)
             { error = "Wardrobe catalog/configuration assets are missing. Run the wardrobe migration first."; return false; }
-            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(CandidateScenePath) == null)
-            { error = "Canonical Lara candidate scene is missing: " + CandidateScenePath; return false; }
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(EnvironmentScenePath) == null)
+            { error = "Authored production actor environment is missing: " + EnvironmentScenePath; return false; }
 
             try
             {
-                scene = EditorSceneManager.OpenScene(CandidateScenePath, OpenSceneMode.Single);
-                var performer = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>();
-                var body = UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Include)
-                    .FirstOrDefault(r => r.sharedMesh != null && r.sharedMesh.GetBlendShapeIndex("CapturedOpening") >= 0);
+                scene = EditorSceneManager.OpenScene(EnvironmentScenePath, OpenSceneMode.Single);
+                var performers = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<SuccubusPerformer>(true)).OrderBy(p => p.name).ToArray();
+                var performer = performers.FirstOrDefault();
+                var body = performer != null ? performer.GetComponent<PerformerWardrobe>()?.Body : null;
                 if (performer == null || body == null)
                 { error = "The candidate scene does not contain the expected Lara performer and canonical body."; return false; }
                 var wardrobe = performer.GetComponent<PerformerWardrobe>() ?? Undo.AddComponent<PerformerWardrobe>(performer.gameObject);
                 wardrobe.ConfigureBinding(catalog, configuration, body, performer, true);
+                EditorUtility.SetDirty(wardrobe);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(wardrobe);
+                foreach (var other in performers.Skip(1)) UnityEngine.Object.DestroyImmediate(other.gameObject);
+                performer.transform.SetPositionAndRotation(new Vector3(0, 0, -.8f), Quaternion.identity);
+                var draft = performer.GetComponent<ClothingSetupDraftBinding>() ?? performer.gameObject.AddComponent<ClothingSetupDraftBinding>();
+                draft.Configure(catalog, configuration);
+                performer.gameObject.AddComponent<ClothingSetupPreviewRunner>().Configure(performer);
+                var camera = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Camera>(true)).Single(c => c.CompareTag("MainCamera"));
+                camera.fieldOfView = 45f; camera.transform.position = new Vector3(2.5f, 1.5f, 3.2f);
+                camera.transform.rotation = Quaternion.LookRotation(new Vector3(0, .95f, -.8f) - camera.transform.position, Vector3.up);
                 EnsureFolder("Assets/Scenes");
                 if (!EditorSceneManager.SaveScene(scene, ScenePath))
                 { error = "Unity could not save the new Clothing Setup scene."; return false; }

@@ -1,0 +1,194 @@
+DazPoseWizard — architecture review before the authoring sprint
+The headline
+You asked me to find the places where succubus.dosomethingcool will fail because the ability is built on test kludges. The awkward part is that most of the runtime is genuinely good. SuccubusPerformer already exposes DissolveTo, Say, TryRemoveLayer, Grip, Pose, WalkTo, SitAtAsync, Cast — almost exactly the verb set you sketched, with paired Async variants and proper Superseded/PerformerDisabled completion semantics. That layer is not the problem.
+
+The problem is narrower and worse than "missing features": the seams between verbs are named after rig/QA vocabulary instead of body/scene vocabulary. So an authoring script has to know the word "IGripTarget" and hand-assemble a GripContactRod. Every verb is real; the nouns are wrong, and the nouns are the thing you're about to make users type.
+
+1. Test hardware masquerading as production
+I ranked these by how badly they'll bite the authoring sprint.
+
+1.1 The grip target is a test fixture — and it's the only one
+GripContactRod is the only IGripTarget implementation in the entire codebase, and it says so in its own doc comment:
+
+csharp
+Copy
+/// <summary>Stable analytic cylinder fixture used by the hand-grip acceptance scene.</summary>
+public sealed class GripContactRod : MonoBehaviour, IGripTarget
+GripContactRod.cs
+
+Everything downstream is real — GripReachPlanner, PerformerArmIKLayer, PerformerHandGripLayer, 32 bracket steps + 10 binary iterations of collision solve, 20 finger probes. The reach/walk/acquire/active/release state machine in PerformerHandGripController.cs is production-grade. It has never been pointed at an actual body. It has only ever been pointed at a 0.12 m analytic cylinder whose endpoints and normal are hand-placed transforms.
+
+Consequence: grip(penis) doesn't exist, and can't exist without new code. Not "kludgy" — absent.
+
+1.2 The male member is a proof scene, not a character
+PartnerAnatomyTestController is the entire state of the member, and it is three separate problems in one 300-line file:
+
+Wrong namespace. It's DazPose.UnityValidation.Partner, sitting under Assets/DazPose/Runtime/. Validation code in the runtime folder, shipped to the player.
+Contact data is frozen in root-local space. GetContactFrame returns centerRoot / tangentRoot — pre-baked Vector3[] arrays captured at build time by PartnerRigAcceptanceBuilder.DeriveGeometryLine(...) from two static FBX endpoints, then interpolated by erection01. They're in the character's local frame, so if the member bends, the contact line does not follow the bend. It's a decal, not geometry.
+It doesn't implement IGripTarget, and returns Vector3s where the grip system needs a GripFrame (center + tangent + normal + radius).
+And compliance — the "squeeze" — is three IMGUI sliders:
+
+csharp
+Copy
+public void SetShaft1X(float degrees) { shaft1X = Mathf.Clamp(degrees, -5f, 5f); ApplyCompliance(); }
+public void SetShaft4X(float degrees) { shaft4X = Mathf.Clamp(degrees, -5f, 5f); ApplyCompliance(); }
+public void SetDistributedBend(float degrees) { distributedBend = Mathf.Clamp(degrees, -5f, 5f); ApplyCompliance(); }
+PartnerAnatomyTestController.cs
+
+ApplyCompliance writes bone.localRotation directly from LateUpdate. Two consequences worth naming:
+
+There is no input path from the hand. Grip → squeeze does not exist as a signal, at any layer. The user would have to physically drag a slider in the inspector while the grip is active. So: handjob with member movement and squeeze is not "incomplete," it's unwired.
+Compliance is gated on Mathf.Approximately(Erection01, 1f) and on (!ShellVisible || ShellFollowsBones). Flaccid members get zero compliance. That's a hard-coded artistic assumption buried in a test controller, and it's the kind of thing that will silently stop working when you swap the mesh.
+Also note ApplyCompliance writes bones in LateUpdate while the performer runs an Animation Rigging job graph. The handoff doc already flagged that you specifically avoided "direct LateUpdate skeleton write" for the performer — the member does exactly that. If you ever put the member under the same animator these will fight.
+
+1.3 No assembly boundaries at all
+I checked for .asmdef files. There are none except a vendored SimpleJSON. So:
+
+13 harness/selftest/acceptance/fixture classes live in Runtime/ in production namespaces: PerformerPoseAcceptanceHarness, PerformerPoseSmokeHarness, HandGripAcceptanceHarness, HandGripRuntimeSelfTests, WardrobeRuntimeExecutionHarness, WardrobePlayerExecutionFixture, plus six *RuntimeSelfTests and ToyStackAcceptanceSelfTests.
+There is no test project. Every "test" is a MonoBehaviour with IMGUI sliders that a human drags, or an editor menu item.
+This is why the pattern keeps happening: there's nowhere for test code to go except Runtime/. Fixing the assembly layout is the single highest-leverage cleanup on this list — it's what makes the other kludges stop being able to leak in.
+
+1.4 Production assets point at TestData/
+WardrobeCatalog.asset → first-outfit.asset → fit states that live under Assets/TestData/WardrobeRuntime/SetupCandidates/<hash>/. Every outfit mesh, body variant, dissolve profile and surface binding the character wears at runtime is stored in a folder named TestData. Nothing is wrong with it functionally — I verified the GUIDs resolve and the fit states are status: 1 (Validated) with masks 6/2/0 matching the configured layers — but it's a naming lie that will confuse every future agent, including you.
+
+1.5 The toys stack is wired, but by nothing
+ToyControlService is a MonoBehaviour that owns ToyMotionFollower instances and takes a serialized _motionDriver. So the chain exists. But there's no verb, no scene wiring, and no ToyMotionBinding authoring path — ToyMotionFollower.cs is internal and constructed only from inside ToyControlService. Your gripfollowmotiondriver() instinct is right; today it's a serialized field you have to remember to fill in by hand, and if it's null the whole toy stack is silently inert.
+
+2. Bridging hand ↔ member
+The shape of the fix, at a high level:
+
+Split the member into three responsibilities, and give each one a production type.
+
+Geometry provider. Replace the baked Vector3[] centerline with something that evaluates the actual shaft bones at query time. The bones already exist and already chain correctly — shaft1..shaft7, verified by PartnerRigAcceptanceBuilder. Evaluate tangent from consecutive bone positions, derive the normal from the bone frame, interpolate radius along the chain. That single change kills the "frozen line" problem and makes the contact frame live under bending for free.
+Contact surface. Make that provider implement IGripTarget directly, returning a real GripFrame. At that point Grip(partnerMember) works against the real body with zero changes to the planner or the solver — the interface was already designed for it. GripContactRod stays as the null-object for tests and calibration; it just stops being the only citizen.
+Compliance. Turn shaft1X / shaft4X / distributedBend from sliders into a driven signal with a sane default. The math already exists and is already validated (ValidateParameterAndComplianceMath() runs in the builder). What's missing is a source: grip pressure / stroke speed / a per-verb authored amount. Give it an input like Squeeze01 on a small runtime component and let the grip controller write it.
+Two things to be deliberate about. First, don't put the member's bones under the performer's animator graph — the performer already owns a two-bone IK job plus20 finger writes, and a second writer on the same skeleton is how you get silent one-frame fighting. Keep the member as its own rig with its own small update, as it is now, but get it out of LateUpdate-sliders and behind a real component. Second, the erection morph is currently driven by a Erection01 slider with no arousal source. For a 2-minute authored scene that's arguably fine (the script can set it), but you should decide deliberately whether erection is an authored verb or an emergent product of the toy driver, because it changes what Say() lines get selected.
+
+The naming fix is the actual authoring win. Don't expose IGripTarget to script authors. Expose something like penis / member as a scene-level named anchor, resolved at load. Same for GripContactRod — no author should ever type that word.
+
+3. Wardrobe: your gut is right, and there's a real bug underneath the UI problem
+You said assigning items to layers doesn't take effect after a save. I found the bug, and it is not a UI problem. It's a split-brain between two sources of truth, and it's already visible in your committed assets.
+
+The bug
+Layers live in two places:
+
+WardrobePreset.Part.layer — baked into the preset asset
+WardrobeConfiguration.PieceAssignment.layer — an override table keyed by (presetId, pieceId)
+At runtime, PerformerWardrobe.cs prefers the configuration table, but only if ConfigurationApplies():
+
+csharp
+Copy
+private bool ConfigurationApplies() => configuration != null &&
+    (!catalog.IsReleased || allowCandidatePreview || configuration.GenerationHash == catalog.ReleasedGenerationId);
+Now look at what SaveConfiguration does:
+
+csharp
+Copy
+pair.Key.ConfigureGenerated(pair.Key.PresetId, ..., pair.Key.Parts, ...);   // Parts passed through UNCHANGED
+...
+targetConfig.CommitRevision(generation, new[] { generation });
+ClothingSetupWindow.cs
+
+Two failures compound:
+
+Save never bakes your layer choices into the preset. It hands pair.Key.Parts straight back to ConfigureGenerated. The artist's layer assignment only ever lands in WardrobeConfiguration.
+In the released-catalog path, Save writes a hash that can never match. generation becomes HashText(_catalog.ReleasedGenerationId + "/" + assignmentHash) — a hash of the released ID — and commits that as configuration.GenerationHash. ConfigurationApplies() compares it for equality against catalog.ReleasedGenerationId. It can never be equal.
+So the moment you save layer edits against a released catalog, ConfigurationApplies() goes false, ResolveLayer falls back to preset.Parts[].layer, and the preset still says layer: 0 for everything. The save reports success — "Saved revision N; all outfit masks compiled and validated." — and changes nothing at runtime. Exactly your symptom.
+
+It's already bitten you: WardrobeConfiguration.asset (revision 2) says first-outfit → Panty = layer 2, PeekaBoo = layer 1. first-outfit.asset says layer 0 and layer 0. The fit states were compiled for masks 6/2/0 (correct, config-driven) while the preset lies about being all-base. Right now the unreleased catalog saves you by short-circuiting !catalog.IsReleased to true — so this is a landmine with a countdown, not a live outage.
+
+The publisher does it correctly, incidentally — WardrobeGenerationPublisher.SnapshotPreset bakes part.layer from the assignment map. So the right model already exists in the codebase; the daily Save path just doesn't use it.
+
+Fix: one source of truth. Bake layer assignments into preset.Parts in SaveConfiguration exactly as the publisher does, then treat WardrobeConfiguration as an authoring input rather than a runtime overlay. Delete the generation-hash equality gate — or if you want a drift guard, make it a warning that names the mismatch, never a silent fallback.
+
+The UI, which genuinely is bad
+You're right that you can't tell what the controls do. Concretely:
+
+The layer control has three states presented as two. "Layer 1" / "Layer 2" toggles where Base is implied. There is no way to see or set Base directly, and no indication of what Base means for the piece you're looking at. The help text says "Base is always the first layer removed" — which doesn't explain ordering.
+Layers are per-piece with no grouping. A real outfit is "underwear / clothing / outerwear." The window shows a flat list of meshes with (role) in parentheses, and role comes from the DAZ source node — an import artifact, not an authoring concept.
+Ordering is invisible and nondeterministic. The list order is preset.Parts order, which is DAZ import order. Nothing tells the artist which piece comes off first.
+The unsaved state is easy to lose. _session.IsDirty gates the Save button, and OnFocus calls RefreshBinding, which rebuilds the session only when not dirty — so a focused-but-not-dirty window will silently reload and discard. Losing work to a window focus event is the kind of thing that makes people stop trusting a tool.
+Opacity is a per-material-slot matrix that has nothing to do with layers, sharing equal visual weight with the layer list. It's authoring materials, not wardrobe.
+Save, Revert, Create Variant, and Publish are four buttons in three rows with different enable rules, and the only explanation of why a button is greyed out is a warning box at the bottom.
+The fit-state panel is the real feedback loop and it's buried below the fold, after opacity and footwear. It already knows the answer ("Mask 6 · Validated · bent-foot pose"); it should be the primary display.
+Workflow I'd rebuild toward: one screen, three columns — what's on the body (stack, top to bottom, drag to reorder, the removal order is literally the visual order), what's available (the catalog), what it compiles to (fit states, live). Show dirty state as a persistent header bar with an explicit "unsaved" count, not as button greying. And make the preview the primary surface — you're already forced into Play Mode to see anything, which is right; the authoring pass should happen there, not in the inspector.
+
+4. Two more things you'll hit in the authoring sprint
+There's no line vocabulary. Say(AudioClip) takes a raw clip and PerformerSpeech is an internal queue. Your say(WelcomeClip) example implies content authors pick lines, which means you need a named-line registry mapping ID → clip + lipsync data, and a selection policy. PerformerSalsaLipSync and PerformerLipSyncMorphCatalog exist underneath, but nothing joins a line to its viseme track.
+
+The two-minute scene has no clock. Every verb is fire-and-forget or Awaitable. You need a sequencer with a timeline, cancel-on-supersede, and — critically — a policy for what happens when two verbs want the same body region. Today that arbitration is scattered: grip owns the arm and suppresses motion via MotionSuppression, the expression layer rejects non-head channels on a grip-enabled animator, wardrobe refuses during a dissolve. Those are three bespoke mutexes that don't know about each other.
+
+Next week: cleanup and refactor plan
+Day 1 — Assembly boundaries. Add DazPose.Runtime, DazPose.Editor, DazPose.Tests asmdefs. Move the 13 harnesses/selftests out of Runtime/ into DazPose.Tests. This is the foundation for everything below — it's what stops new kludges from arriving. Expect churn; do it first and alone.
+
+Day 2 — Wardrobe correctness. Fix the layer source-of-truth bug. Bake part.layer in SaveConfiguration; neutralize the ConfigurationApplies() equality gate. Then write a regression test: assign a piece to layer 2, save, reload scene, assert ResolveLayer returns 2 and that the reachable mask matches a compiled fit state. This is the highest-severity bug I found and it should be closed before anything else touches wardrobe.
+
+Day 3 — Member as a runtime citizen. Extract a PartnerMember component out of PartnerAnatomyTestController: live bone-evaluated IGripTarget, Squeeze01 input with the existing compliance math behind it, Erection01 as a settable property. Delete the baked Vector3[] arrays and the IMGUI sliders from the runtime path; keep the sliders only in the proof scene. Leave GripContactRod alone — it's a good null object.
+
+Day 4 — Naming seams for authoring. Introduce the vocabulary layer: a scene-level anchor registry so penis, bedside, startlocation resolve by name. Leave the existing IGripTarget/Vector3 signatures underneath — the adapter is thin. Add the toy follow binding as a first-class serializable field rather than a thing you remember.
+
+Day 5 — Wardrobe UI pass. Rebuild the window around the three-column model, with the stack view and live preview as the primary surface. Explicit unsaved-state header.
+
+Day 6–7 — Authoring session, deliberately. Build the 2-minute scene end to end with today's verb set and write down every place you had to leave the script and go poke the inspector. That list is the real sprint backlog, and it's more trustworthy than anything I can infer from the code — because the whole point of this sprint is that the script should stop needing you.
+
+Explicitly deferred: line registry + lipsync binding, and cross-verb body-region arbitration. Both are needed before the authoring system, neither blocks the cleanup, and both are worth designing with the sequencer in mind rather than bolting on.
+
+One caveat on my confidence: I read the code and the asset YAML but did not run Unity, so the wardrobe finding is a static trace of the save path rather than an observed reproduction. The logic is unambiguous, but I'd confirm it in the editor before you build on it — and I'd want Day 2 to end with a test that fails before the fix and passes after, which is also the first real test in a project that currently has none.
+
+Let me verify the deliverable's factual claims — especially the line-number citations, since wrong links are a real defect in a review.
+
+Two citations are wrong. Let me get exact line numbers for all of them.
+
+Now verifying I made no changes to the repo, using the safe.directory workaround the handoff doc documents.
+
+Git confirms I wrote nothing. But two Partner files are modified in the working tree — the exact files I critiqued. Let me check whether in-flight work changes my headline claim.
+
+Verification complete. Here's the final accounting.
+
+No changes made — confirmed
+git status shows the tree is clean of my work. Every command I ran was read-only (ls, grep, cat, sed -n, find, wc). The working tree does have modifications, but none are mine:
+
+text
+Copy
+ M .../Editor/Partner/PartnerRigAcceptanceBuilder.cs
+ M .../Runtime/Partner/PartnerAnatomyTestController.cs
+?? scripts/prepare-partner-character.py
+?? .../Editor/Partner/PartnerCharacterPreparation.cs
+?? .../docs/PARTNER_CHARACTER_HANDOFF.md
+That's your in-flight partner-character work. I left it alone. Worth noting: two of those are files I critiqued, so my review reflects the current working-tree version (I read from disk, not HEAD), not the last commit.
+
+Corrections to the review —2 of 4 citations were wrong
+I verified every line reference. Two pointed at the wrong code:
+
+Claim	I cited	Actually at
+GripContactRod doc comment	GripContactRod.cs#L5-L9	✅ correct
+Compliance sliders	PartnerAnatomyTestController.cs#L124-L127	❌ was CaptureErectBase() — actually #L120-L122
+ResolveLayer / ConfigurationApplies	PerformerWardrobe.cs#L224-L233	❌ was inside BuildPieceInventory — actually #L237-L246 and #L249-L250
+Save never bakes layers	ClothingSetupWindow.cs#L237-L248	⚠️ range contained it; precise: #L244-L246, commit at #L241, hash derivation at #L216-L217
+Corrected anchors:
+
+GripContactRod.cs:5-9
+PartnerAnatomyTestController.cs:120-122 — also ApplyCompliance at #L147, GetContactFrame at #L184, baked centerline at #L17
+PerformerWardrobe.cs:237-246 and PerformerWardrobe.cs:249-250
+ClothingSetupWindow.cs:216-217 and ClothingSetupWindow.cs:241-246
+One finding refined — in your favour, but not as far as the handoff suggests
+Your untracked PARTNER_CHARACTER_HANDOFF.md is substantial and genuinely good work: the shell is now skinned via a verified 2,205-point bijection with body influences transferred. That means ShellFollowsBones should now be true, so the (!ShellVisible || ShellFollowsBones) compliance gate will actually pass rather than being silently bypassed. My critique of that specific gate is therefore less pressing than I implied.
+
+Two things sharpen rather than soften the headline:
+
+The doc states outright: "Skinning transfers bone motion. It does not automatically transfer a future body squeeze morph." Independent confirmation that squeeze is still unwired.
+Assets/PartnerProof/PartnerCharacter.prefab does not exist — PartnerProof/ contains only Generated/. The doc's stated entry point isn't on disk yet. So the prepared character isn't placed anywhere.
+GripContactRod appears in exactly one scene, HandGripAcceptance.unity. No prefab or scene gives the member an IGripTarget. The grip system has still never touched a real body.
+Net: shell deformation is ahead of where I read it; the three gaps that block grip(penis) — no IGripTarget, frozen root-local centerline, IMGUI-only squeeze input — are unchanged.
+
+Checks run- git status --porcelain (with safe.directory override per the handoff note) — exit 0, confirms no changes by me.
+All cited line ranges re-read and confirmed against source.
+Asset YAML re-checked: WardrobeConfiguration.asset layers 2/1 vs first-outfit.asset layers 0/0; fit states resolve to real assets at masks 6/2/0, status: 1 (Validated).
+find -name '*.asmdef' — only vendored SimpleJSON; no project assemblies.
+Limitations
+I could not run Unity, so nothing here is a runtime observation. Specifically:
+
+The wardrobe bug is a static trace. The logic is unambiguous — SaveConfiguration writes HashText(ReleasedGenerationId + "/" + hash) into generationHash, and ConfigurationApplies() compares it for equality against ReleasedGenerationId — but I haven't watched it fail. Confirm in the editor before building on it, and make Day 2's test fail-before/pass-after.
+I didn't build or run any tests. There are none to run: no test assembly exists, and the 13 "tests" are IMGUI harnesses. That absence is itself finding #1.3.
+PerformerHandGripSolver's behaviour against non-rod geometry is inferred from GripReachPlanner's sampling rules (continuous certification only for a straight rod, sampled for general targets), not measured.
+The review's substance stands. Corrected click-through anchors above; everything else is as delivered.

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using DazPose.Performer;
 using DazPose.Player;
 using DazPose.Toys;
@@ -7,7 +6,7 @@ using UnityEngine;
 
 namespace DazPose.FirstPerformanceVoid
 {
-    /// <summary>The single authored First Contact scene. One run per Play Mode session.</summary>
+    /// <summary>Authored First Contact with per-run ownership and explicit reset/replay.</summary>
     [DisallowMultipleComponent]
     public sealed class FirstContactPerformance : MonoBehaviour
     {
@@ -21,311 +20,151 @@ namespace DazPose.FirstPerformanceVoid
         [SerializeField] private Transform viewMarkFinal;
         [SerializeField] private AudioClip speechClipA;
         [SerializeField] private AudioClip speechClipB;
-
-        private sealed class PendingAction
-        {
-            public string Name;
-            public bool Done;
-            public string Failure;
-        }
-
-        private readonly List<PendingAction> actions = new List<PendingAction>();
-        private bool hasRun;
-        private bool running;
-        private bool ownsTracking;
-        private int runId;
-        private uint positionRevision;
-        private uint orientationRevision;
-        private float startedAt;
-        private float stoppedElapsed;
-        private string status = "Idle";
-
+        [SerializeField] private bool runOnStart;
+        PerformanceExecutionScope scope;
+        bool running, resetting, capturedInitial;
+        int generation;
+        float startedAt, stoppedElapsed;
+        string status = "Idle";
+        Vector3 actorPosition, playerPosition;
+        Quaternion actorRotation, viewRotation;
+        SceneWardrobeSnapshot initialWardrobe;
+        Action resetCancellation;
         public bool IsRunning => running;
-        public bool CanRun => Application.isPlaying && isActiveAndEnabled && !hasRun;
+        public bool CanRun => Application.isPlaying && isActiveAndEnabled && !running && !resetting;
         public string Status => status;
         public float Elapsed => running ? Time.time - startedAt : stoppedElapsed;
-
+        public SuccubusPerformer Performer => performer;
+        void Start() { CaptureInitial(); if (runOnStart) Run(); }
         public void Configure(SuccubusPerformer actor, PlayerController viewer, PerformerSeat seat,
             Transform face, Transform closeMark, Transform laraView, Transform loungeView,
             Transform finalView, AudioClip lineA, AudioClip lineB)
         {
-            performer = actor;
-            player = viewer;
-            loungeSeat = seat;
-            laraFaceViewTarget = face;
-            laraCloseMark = closeMark;
-            viewMarkLara = laraView;
-            viewMarkLounge = loungeView;
-            viewMarkFinal = finalView;
-            speechClipA = lineA;
-            speechClipB = lineB;
+            performer = actor; player = viewer; loungeSeat = seat; laraFaceViewTarget = face;
+            laraCloseMark = closeMark; viewMarkLara = laraView; viewMarkLounge = loungeView;
+            viewMarkFinal = finalView; speechClipA = lineA; speechClipB = lineB;
         }
-
+        void CaptureInitial()
+        {
+            if (capturedInitial || performer == null || player == null || player.View == null) return;
+            actorPosition = performer.transform.position; actorRotation = performer.transform.rotation;
+            playerPosition = player.View.PlayerPosition; viewRotation = player.View.ViewRotation;
+            var wardrobe = performer.GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) { var state = wardrobe.CurrentWardrobe;
+                initialWardrobe = new SceneWardrobeSnapshot { presetId = state.OutfitId, layerCeiling = state.LayerCeiling,
+                    hairAction = state.EffectiveHairId == "none" ? WardrobeHairAction.Clear : WardrobeHairAction.Set,
+                    resolvedHairId = state.EffectiveHairId, variantId = "default" }; }
+            capturedInitial = true;
+        }
         public void Run()
         {
             if (!CanRun) return;
-            hasRun = true;
-            stoppedElapsed = 0f;
-            try
-            {
-                ValidateStart();
-                actions.Clear();
-                startedAt = Time.time;
-                running = true;
-                ownsTracking = false;
-                positionRevision = player.View.PositionCommandRevision;
-                orientationRevision = player.View.OrientationCommandRevision;
-                RunSequence(++runId);
-            }
-            catch (Exception exception)
-            {
-                status = "ABORTED — " + exception.Message;
-                Debug.LogWarning("First Contact aborted: " + exception.Message, this);
-            }
+            CaptureInitial();
+            running = true; startedAt = Time.time; stoppedElapsed = 0f;
+            var id = ++generation;
+            RunSequence(id);
         }
-
-        private async void RunSequence(int id)
+        async void RunSequence(int id)
         {
+            PerformanceExecutionScope current = null;
             try
             {
-                SetBeat("Establishing");
-                performer.ClearGaze();
-                await Delay(2.25f, id);
-
+                await ResetInitialAsync();
+                if (id != generation || !running) return;
+                ValidateStart();
+                current = scope = new PerformanceExecutionScope(name + "/First Contact", () =>
+                    performer != null && performer.IsRuntimeReady && player != null && player.isActiveAndEnabled &&
+                    player.View != null && player.View.isActiveAndEnabled && laraFaceViewTarget != null);
+                SetBeat("Establishing"); performer.ClearGaze(); await current.Delay(2.25f);
                 SetBeat("Noticing Lara");
-                PendingAction turn = ObserveAction(player.LookAtAsync(laraFaceViewTarget, 1.2f),
-                    PlayerViewCompletion.Completed, "Player noticing turn");
-                orientationRevision = player.View.OrientationCommandRevision;
-                await Delay(0.45f, id);
-                performer.LookAt(player.HeadTransform);
-                await WaitFor(id, turn);
-                SetBeat("Eye contact");
-                await Delay(0.7f, id);
-
-                SetBeat("Speech A");
-                await WaitFor(id, ObserveAction(performer.SayAsync(speechClipA), SpeechCompletion.Finished, "Speech A"));
-                await Delay(0.5f, id);
-
-                player.Track(laraFaceViewTarget, new ViewTrackingSettings
-                {
-                    Acquire = ViewTransition.EaseInOut(0.75f),
-                    FollowResponseSeconds = 0.20f
-                });
-                orientationRevision = player.View.OrientationCommandRevision;
-                ownsTracking = true;
-                performer.SetHoldLocomotionArrivalPose(true);
+                var turnAwaitable = player.LookAtAsync(laraFaceViewTarget, 1.2f);
+                var turn = current.Observe(turnAwaitable, PlayerViewCompletion.Completed, "Player noticing turn", player.View.CaptureOrientationCancellation());
+                await current.Delay(.45f); performer.LookAt(player.HeadTransform);
+                current.Own("Lara gaze", performer.CaptureCancellation(PerformanceCommand.Gaze));
+                await current.Wait(turn);
+                SetBeat("Eye contact"); await current.Delay(.7f);
+                SetBeat("Speech A"); await current.Wait(current.Observe(performer, PerformanceCommand.Speech,
+                    () => performer.SayAsync(speechClipA), SpeechCompletion.Finished, "Speech A"));
+                await current.Delay(.5f);
+                player.Track(laraFaceViewTarget, new ViewTrackingSettings { Acquire = ViewTransition.EaseInOut(.75f), FollowResponseSeconds = .20f });
+                var cancelTracking = player.View.CaptureOrientationCancellation(); current.Own("Player tracking", cancelTracking);
                 SetBeat("Approaching");
-                PendingAction approach = ObserveAction(performer.WalkToAsync(laraCloseMark),
-                    LocomotionCompletion.Arrived, "Lara approach");
-                await Delay(0.3f, id);
-                PendingAction closeMove = Move(viewMarkLara, 3.5f, "Player approach");
-                await WaitFor(id, approach, closeMove);
-                SetBeat("Proximity hold");
-                await Delay(0.9f, id);
-
+                var approach = current.Observe(performer, PerformanceCommand.Movement,
+                    () => performer.WalkToAsync(laraCloseMark, LocomotionArrivalBehavior.Hold), LocomotionCompletion.Arrived, "Lara approach", persistent: true);
+                await current.Delay(.3f); var closeMove = Move(current, viewMarkLara, 3.5f, "Player approach");
+                await current.Wait(approach, closeMove); SetBeat("Proximity hold"); await current.Delay(.9f);
                 SetBeat("Going to lounge");
-                PendingAction sit = ObserveAction(performer.SitAtAsync(loungeSeat, PerformerSeatedStyle.CrossLegs),
-                    SeatingCompletion.Seated, "Lounge SitAt CrossLegs");
-                await Delay(0.6f, id);
-                PendingAction loungeMove = Move(viewMarkLounge, 4.5f, "Player lounge move");
-                await WaitFor(id, sit, loungeMove);
-                performer.SetHoldLocomotionArrivalPose(false);
-                SetBeat("Seated");
-                await Delay(0.8f, id);
-
-                SetBeat("Final push");
-                PendingAction finalMove = Move(viewMarkFinal, 4f, "Player final push");
-                await Delay(0.5f, id);
-                SetBeat("Speech B");
-                PendingAction lineB = ObserveAction(performer.SayAsync(speechClipB), SpeechCompletion.Finished, "Speech B");
-                await WaitFor(id, finalMove, lineB);
-
-                await RunToyVibrationBeat(id);
-
-                SetBeat("Final hold");
-                await Delay(1f, id);
-                player.StopTracking();
-                orientationRevision = player.View.OrientationCommandRevision;
-                ownsTracking = false;
-                await Delay(2f, id);
-                stoppedElapsed = Time.time - startedAt;
-                running = false;
-                status = "Complete — re-enter Play Mode to replay";
-                Debug.Log("First Contact complete in " + stoppedElapsed.ToString("F2")
-                    + " gameplay seconds. Speech A: " + speechClipA.name + " (" + speechClipA.length.ToString("F2")
-                    + "s); Speech B: " + speechClipB.name + " (" + speechClipB.length.ToString("F2") + "s).", this);
+                var sit = current.Observe(performer, PerformanceCommand.Seating,
+                    () => performer.SitAtAsync(loungeSeat, PerformerSeatedStyle.CrossLegs), SeatingCompletion.Seated, "Lounge SitAt CrossLegs");
+                await current.Delay(.6f); var loungeMove = Move(current, viewMarkLounge, 4.5f, "Player lounge move");
+                await current.Wait(sit, loungeMove); SetBeat("Seated"); await current.Delay(.8f);
+                SetBeat("Final push"); var finalMove = Move(current, viewMarkFinal, 4f, "Player final push");
+                await current.Delay(.5f); SetBeat("Speech B");
+                var lineB = current.Observe(performer, PerformanceCommand.Speech,
+                    () => performer.SayAsync(speechClipB), SpeechCompletion.Finished, "Speech B");
+                await current.Wait(finalMove, lineB);
+                var toys = player.BoundToyService;
+                if (toys != null && toys.CanVibrate)
+                {
+                    SetBeat("Vibration response"); toys.Vibrate(.5f);
+                    var stopOutput = toys.CaptureOutputCancellation(ToyOutputCapability.Vibrate);
+                    current.Own("Owned vibration", stopOutput);
+                    await current.Delay(1.5f);
+                    var ramp = toys.RampVibrationAsync(0f, .5f);
+                    current.Own("Owned vibration ramp", toys.CaptureOutputCancellation(ToyOutputCapability.Vibrate));
+                    await ramp;
+                    current.Check();
+                }
+                else { SetBeat("Toy alternate — continue without vibration"); await current.Delay(2f); }
+                SetBeat("Final hold"); await current.Delay(1f); cancelTracking(); await current.Delay(2f);
+                current.Check(); stoppedElapsed = Time.time - startedAt; running = false; status = "Complete — ready to replay";
             }
             catch (OperationCanceledException) { }
-            catch (Exception exception)
-            {
-                if (this != null && running && id == runId) Abort(exception.Message);
-            }
+            catch (Exception ex) { if (id == generation) { status = "ABORTED — " + ex.Message; Debug.LogWarning(status, this); running = false; } }
+            finally { current?.Dispose(); if (id == generation) { running = false; scope = null; } }
         }
-
-        private PendingAction Move(Transform mark, float duration, string name)
+        PerformanceExecutionScope.Operation Move(PerformanceExecutionScope current, Transform mark, float seconds, string label)
+        { var command = player.MoveToAsync(mark, seconds); return current.Observe(command, PlayerViewCompletion.Completed, label, player.View.CaptureMovementCancellation()); }
+        public void Stop()
         {
-            PendingAction action = ObserveAction(player.MoveToAsync(mark, duration), PlayerViewCompletion.Completed, name);
-            positionRevision = player.View.PositionCommandRevision;
-            return action;
+            ++generation; stoppedElapsed = running ? Time.time - startedAt : stoppedElapsed; running = false;
+            scope?.Cancel(); scope = null; status = "Stopped — ready to reset/replay";
+            resetCancellation?.Invoke(); resetCancellation = null;
         }
-
-        private async Awaitable RunToyVibrationBeat(int id)
+        public async Awaitable ResetAsync()
+        { Stop(); await ResetInitialAsync(); status = "Reset — ready to run"; }
+        async Awaitable ResetInitialAsync()
         {
-            ToyControlService toys = null;
-            try { toys = player.Toys; }
-            catch (InvalidOperationException) { }
-
-            if (toys == null || !toys.CanVibrate)
-            {
-                SetBeat("Toy alternate — continue without vibration");
-                await Delay(2f, id);
-                return;
-            }
-
-            SetBeat("Vibration response");
-            toys.Vibrate(0.5f);
-            await Delay(1.5f, id);
-            await toys.RampVibrationAsync(0f, 0.5f);
-        }
-
-        // Consume every Unity Awaitable exactly once, immediately after starting it.
-        // Concurrent results are observed independently, so either failure aborts promptly.
-        private PendingAction ObserveAction<T>(Awaitable<T> operation, T expected, string name)
-        {
-            var action = new PendingAction { Name = name };
-            actions.Add(action);
-            Observe(operation, expected, action);
-            return action;
-        }
-
-        private async void Observe<T>(Awaitable<T> operation, T expected, PendingAction action)
-        {
+            if (resetting) throw new InvalidOperationException("First Contact reset is already active.");
+            resetting = true;
             try
             {
-                T result = await operation;
-                if (!EqualityComparer<T>.Default.Equals(result, expected))
-                    action.Failure = action.Name + " returned " + result + " (expected " + expected + ").";
-                else if (this != null && running)
-                    Debug.Log("First Contact: " + action.Name + " → " + result, this);
+                CaptureInitial();
+                if (!capturedInitial || performer == null || !performer.IsRuntimeReady || player == null)
+                    throw new InvalidOperationException("First Contact actor/view must be bound and ready for reset.");
+                performer.ResetPerformance(actorPosition, actorRotation);
+                player.View.ResetPerformanceView(playerPosition, viewRotation);
+                var wardrobe = performer.GetComponent<PerformerWardrobe>();
+                if (initialWardrobe != null && wardrobe != null) {
+                    var recall = wardrobe.RecallSnapshotAsync(initialWardrobe);
+                    resetCancellation = wardrobe.CaptureCancellation();
+                    var result = await recall;
+                    resetCancellation = null;
+                    if (result.Status != WardrobeChangeStatus.Applied && result.Status != WardrobeChangeStatus.NoChange)
+                        throw new InvalidOperationException("Initial wardrobe reset failed: " + result.Status); }
             }
-            catch (Exception exception) { action.Failure = action.Name + ": " + exception.Message; }
-            action.Done = true;
+            finally { resetting = false; }
         }
-
-        private async Awaitable WaitFor(int id, params PendingAction[] required)
+        void ValidateStart()
         {
-            while (true)
-            {
-                CheckRun(id);
-                bool complete = true;
-                foreach (PendingAction action in required) complete &= action.Done;
-                if (complete) return;
-                await Awaitable.NextFrameAsync();
-            }
-        }
-
-        // Authored pauses use scaled gameplay time; a paused game pauses the performance.
-        private async Awaitable Delay(float seconds, int id)
-        {
-            float elapsed = 0f;
-            while (elapsed < seconds)
-            {
-                CheckRun(id);
-                await Awaitable.NextFrameAsync();
-                CheckRun(id);
-                elapsed += Time.deltaTime;
-            }
-        }
-
-        private void CheckRun(int id)
-        {
-            if (this == null || !running || id != runId) throw new OperationCanceledException();
-            foreach (PendingAction action in actions)
-                if (action.Done && action.Failure != null) throw new InvalidOperationException(action.Failure);
-            if (performer == null || !performer.IsRuntimeReady)
-                throw new InvalidOperationException("Lara became unavailable.");
-            if (player == null || !player.isActiveAndEnabled || player.View == null || !player.View.isActiveAndEnabled)
-                throw new InvalidOperationException("Player became unavailable.");
-            if (laraFaceViewTarget == null) throw new InvalidOperationException("Lara FaceViewTarget was lost.");
-            if (player.View.PositionCommandRevision != positionRevision)
-                throw new InvalidOperationException("Player movement was superseded by another command.");
-            if (player.View.OrientationCommandRevision != orientationRevision)
-                throw new InvalidOperationException("Player orientation was superseded by another command.");
-            if (ownsTracking && ((!player.View.IsTracking && !player.View.IsAcquiringTrack)
-                || player.View.CurrentTrackTarget != laraFaceViewTarget))
-                throw new InvalidOperationException("Player tracking of Lara stopped.");
-        }
-
-        private void ValidateStart()
-        {
-            if (performer == null || player == null || loungeSeat == null || laraFaceViewTarget == null
-                || laraCloseMark == null || viewMarkLara == null || viewMarkLounge == null || viewMarkFinal == null
-                || speechClipA == null || speechClipB == null)
-                throw new InvalidOperationException("Missing references. Run Install First Contact Performance in Edit Mode.");
+            if (performer == null || player == null || loungeSeat == null || laraFaceViewTarget == null || laraCloseMark == null ||
+                viewMarkLara == null || viewMarkLounge == null || viewMarkFinal == null || speechClipA == null || speechClipB == null)
+                throw new InvalidOperationException("First Contact is missing an actor, view, seat, named target or speech clip. Assign the scene references.");
             if (!performer.IsRuntimeReady || !performer.LocomotionAvailable || !performer.SeatingAvailable)
-                throw new InvalidOperationException("Lara's performer, locomotion and seating runtimes must be ready.");
-            if (performer.IsLocomoting || performer.IsSpeaking || performer.PendingSpeechCount != 0
-                || performer.SeatingState != PerformerSeatingState.Standing)
-                throw new InvalidOperationException("Begin with Lara standing, not walking or speaking.");
-            if (!player.isActiveAndEnabled || player.View == null || !player.View.isActiveAndEnabled
-                || player.HeadTransform == null || player.MainCamera == null)
-                throw new InvalidOperationException("Player View must be active and configured.");
-            if (player.View.IsMoving || player.View.IsLooking || player.View.IsTracking || player.View.IsAcquiringTrack)
-                throw new InvalidOperationException("Begin with Player View idle.");
-            if (loungeSeat.ApproachAnchor == null || loungeSeat.SeatAnchor == null || loungeSeat.SeatingProfile == null)
-                throw new InvalidOperationException("The lounge seat is not configured.");
-            if (!loungeSeat.SeatingProfile.IsReady(out string reason)) throw new InvalidOperationException(reason);
+                throw new InvalidOperationException("First Contact actor locomotion/seating runtimes are unavailable.");
+            if (!loungeSeat.SeatingProfile.IsReady(out var reason)) throw new InvalidOperationException(reason);
         }
-
-        private void SetBeat(string beat)
-        {
-            status = beat;
-            Debug.Log("First Contact: " + beat + " at " + Elapsed.ToString("F2") + "s", this);
-        }
-
-        private void Abort(string reason)
-        {
-            stoppedElapsed = Time.time - startedAt;
-            running = false;
-            ++runId;
-            status = "ABORTED — " + reason;
-            if (performer != null && performer.IsRuntimeReady && performer.LocomotionAvailable)
-                performer.SetHoldLocomotionArrivalPose(false);
-            // Release only view commands still owned by this run. Never override the user's replacement.
-            try
-            {
-                if (player != null && player.isActiveAndEnabled && player.View != null && player.View.isActiveAndEnabled)
-                {
-                    if (ownsTracking && player.View.OrientationCommandRevision == orientationRevision)
-                        player.StopTracking();
-                    if (player.View.IsMoving && player.View.PositionCommandRevision == positionRevision)
-                        player.MoveTo(player.View.PlayerPosition, ViewTransition.Snap);
-                }
-            }
-            catch (Exception exception) { Debug.LogWarning("First Contact view cleanup: " + exception.Message, this); }
-            ownsTracking = false;
-            Debug.LogWarning("First Contact aborted: " + reason, this);
-        }
-
-        private void OnDisable()
-        {
-            if (running) Abort("Performance component was disabled.");
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            if (laraCloseMark != null)
-            {
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawWireSphere(laraCloseMark.position, 0.12f);
-                Gizmos.DrawLine(laraCloseMark.position, laraCloseMark.position + laraCloseMark.forward * 0.6f);
-            }
-            if (viewMarkFinal != null)
-            {
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawWireSphere(viewMarkFinal.position, 0.12f);
-                if (viewMarkLounge != null) Gizmos.DrawLine(viewMarkLounge.position, viewMarkFinal.position);
-            }
-        }
+        void SetBeat(string beat) { status = beat; Debug.Log(name + "/First Contact: " + beat, this); }
+        void OnDisable() { Stop(); }
     }
 }

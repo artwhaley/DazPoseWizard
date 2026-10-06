@@ -83,13 +83,10 @@ namespace DazPose.Performer
                 }
                 var material = materials[slot];
                 if (material == null) continue;
-                string property = material.HasProperty("_BaseColor") ? "_BaseColor" :
-                    material.HasProperty("_Color") ? "_Color" : null;
-                if (property == null) continue;
                 opacityBlock ??= new MaterialPropertyBlock();
-                renderer.GetPropertyBlock(opacityBlock, slot);
-                var color = material.GetColor(property); color.a = Mathf.Clamp01(opacity);
-                opacityBlock.SetColor(property, color);
+                // Keep the body/effect block when installing a per-material opacity override.
+                renderer.GetPropertyBlock(opacityBlock);
+                if (!WardrobeMaterialOpacity.Apply(opacityBlock, material, opacity)) continue;
                 renderer.SetPropertyBlock(opacityBlock, slot);
             }
         }

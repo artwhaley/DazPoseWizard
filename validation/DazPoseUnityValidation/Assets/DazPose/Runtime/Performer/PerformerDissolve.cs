@@ -104,6 +104,7 @@ namespace DazPose.Performer
         private Vector3 _transitStart;
         private PerformerPose _arrivalPose;
         private PerformerVisibilityState _visibilityState;
+        private object _operationIdentity;
 
         public bool IsDissolving => _active;
         public PerformerVisibilityState VisibilityState => _visibilityState;
@@ -253,6 +254,42 @@ namespace DazPose.Performer
             DestroyAudioObjects();
         }
 
+        public void Cancel()
+        {
+            if (_disposed || !_active) return;
+            try { _presentation.Finish(hidden: false); }
+            catch (Exception exception) { Debug.LogException(exception, _actor); }
+            finally
+            {
+                _isStableHidden = false;
+                _visibilityState = PerformerVisibilityState.Visible;
+                _stableVisibilityChanged?.Invoke(false);
+                _active = false;
+                _operationIdentity = null;
+                _operation = Operation.None;
+                _phase = Phase.Complete;
+                DestroyAudioObjects();
+                var dissolveWaiters = _dissolveWaiters.ToArray(); _dissolveWaiters.Clear();
+                var visibilityWaiters = _visibilityWaiters.ToArray(); _visibilityWaiters.Clear();
+                foreach (var waiter in dissolveWaiters) waiter.TrySetResult(DissolveCompletion.Cancelled);
+                foreach (var waiter in visibilityWaiters) waiter.TrySetResult(VisibilityCompletion.Cancelled);
+            }
+        }
+
+        internal Action CaptureCancellation()
+        {
+            object captured = _operationIdentity;
+            return () => { if (captured != null && ReferenceEquals(_operationIdentity, captured) && _active) Cancel(); };
+        }
+        public void SetStableVisibility(bool hidden)
+        {
+            if (_disposed || _active) throw new InvalidOperationException("Stop the active visibility operation before restoring initial visibility.");
+            _presentation.Finish(hidden);
+            _isStableHidden = hidden;
+            _visibilityState = hidden ? PerformerVisibilityState.Hidden : PerformerVisibilityState.Visible;
+            _stableVisibilityChanged?.Invoke(hidden);
+        }
+
         private void BeginRelocation(Vector3 destination, Quaternion? rotation, float durationSeconds,
             PerformerPose arrivalPose, AwaitableCompletionSource<DissolveCompletion> waiter)
         {
@@ -276,6 +313,7 @@ namespace DazPose.Performer
             _operation = Operation.Relocate;
             _stableHiddenAtBegin = false;
             _active = true;
+            _operationIdentity = new object();
 
             try
             {
@@ -307,6 +345,7 @@ namespace DazPose.Performer
             _elapsed = 0f;
             _progress = 0f;
             _active = true;
+            _operationIdentity = new object();
             _visibilityState = operation == Operation.VisibilityOut
                 ? PerformerVisibilityState.DissolvingOut : PerformerVisibilityState.DissolvingIn;
 
@@ -385,6 +424,7 @@ namespace DazPose.Performer
             _visibilityState = PerformerVisibilityState.Visible;
             _stableVisibilityChanged?.Invoke(false);
             _active = false;
+            _operationIdentity = null;
             _operation = Operation.None;
             _phase = Phase.Complete;
             CompleteDissolveWaiters(DissolveCompletion.Arrived);
@@ -397,6 +437,7 @@ namespace DazPose.Performer
             _visibilityState = hidden ? PerformerVisibilityState.Hidden : PerformerVisibilityState.Visible;
             _stableVisibilityChanged?.Invoke(hidden);
             _active = false;
+            _operationIdentity = null;
             _operation = Operation.None;
             _phase = Phase.Complete;
             CompleteVisibilityWaiters(hidden ? VisibilityCompletion.Hidden : VisibilityCompletion.Visible);
@@ -413,6 +454,7 @@ namespace DazPose.Performer
                 _visibilityState = stableHidden ? PerformerVisibilityState.Hidden : PerformerVisibilityState.Visible;
                 _stableVisibilityChanged?.Invoke(stableHidden);
                 _active = false;
+                _operationIdentity = null;
                 _operation = Operation.None;
                 _phase = Phase.Complete;
                 CompleteDissolveWaiters(DissolveCompletion.PerformerDisabled);

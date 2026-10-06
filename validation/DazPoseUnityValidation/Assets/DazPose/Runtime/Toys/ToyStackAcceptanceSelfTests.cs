@@ -172,7 +172,9 @@ namespace DazPose.Toys
             var backend = new FakeBackend(devices);
             var host = new GameObject("ToyStackAcceptanceSelfTests");
             MotionDriver driver = null;
+            MotionDriver ownedDriver = null;
             ToyControlService service = null;
+            float originalTimeScale = Time.timeScale;
             try
             {
                 service = host.AddComponent<ToyControlService>();
@@ -185,6 +187,7 @@ namespace DazPose.Toys
 
                 var vibrate0 = new ToyOutputBinding(1, 0, ToyOutputCapability.Vibrate);
                 var vibrate1 = new ToyOutputBinding(1, 2, ToyOutputCapability.Vibrate);
+                var healthyVibration = new ToyOutputBinding(2, 0, ToyOutputCapability.Vibrate);
                 var oscillate = new ToyOutputBinding(1, 4, ToyOutputCapability.Oscillate);
                 service.Vibrate(1.5f);
                 await WaitForCommands(backend, 4);
@@ -202,6 +205,22 @@ namespace DazPose.Toys
                 await WaitForCommands(backend, 7);
                 Check(backend.Last(oscillate).Item2 == 0.7f,
                     "oscillation has independent automatic output routing", failures);
+
+                var vibrationOnDevice3 = new ToyOutputBinding(3, 0, ToyOutputCapability.Vibrate);
+                service.Vibrate(0.52f);
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2 - 0.52f) < 0.001f
+                    && Mathf.Abs(backend.Last(vibrate1).Item2 - 0.52f) < 0.001f
+                    && Mathf.Abs(backend.Last(healthyVibration).Item2 - 0.52f) < 0.001f
+                    && Mathf.Abs(backend.Last(vibrationOnDevice3).Item2 - 0.52f) < 0.001f);
+                Action cancelVibration = service.CaptureOutputCancellation(ToyOutputCapability.Vibrate);
+                service.Vibrate(0.73f, 1);
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate1).Item2 - 0.73f) < 0.001f);
+                cancelVibration();
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2) < 0.001f
+                    && Mathf.Abs(backend.Last(healthyVibration).Item2) < 0.001f
+                    && Mathf.Abs(backend.Last(vibrationOnDevice3).Item2) < 0.001f);
+                Check(Mathf.Abs(backend.Last(vibrate1).Item2 - 0.73f) < 0.001f,
+                    "captured output cancellation zeros only routes whose owner still matches", failures);
 
                 GameObject controlObject = new GameObject("ToyBindingAcceptanceControl");
                 controlObject.transform.SetParent(host.transform, false);
@@ -238,7 +257,6 @@ namespace DazPose.Toys
 
                 var missingFailure = new ToyOutputBinding(3, 0, ToyOutputCapability.Vibrate);
                 backend.Failures.Add(missingFailure);
-                var healthyVibration = new ToyOutputBinding(2, 0, ToyOutputCapability.Vibrate);
                 int healthyBeforeFailure = backend.Count(healthyVibration);
                 service.Vibrate(0.2f);
                 await Task.Delay(50);
@@ -286,14 +304,27 @@ namespace DazPose.Toys
                     driver.Seek(12.280d);
                     service.Follow(driver);
                     driver.StartMotion();
+                    long externalRevision = driver.SourceRevision;
+                    bool unconfiguredPlayRejected = false;
+                    try { service.Play(program); }
+                    catch (InvalidOperationException) { unconfiguredPlayRejected = true; }
+                    Check(unconfiguredPlayRejected && driver.SourceRevision == externalRevision && driver.IsRunning,
+                        "Play without an owned driver leaves followed external playback untouched", failures);
+                    Action detachExternal = service.CapturePlaybackCancellation();
+                    driver.Seek(12.4d);
+                    detachExternal();
+                    Check(!service.IsFollowingMotion && driver.IsRunning,
+                        "follow cancellation detaches after source revision changes without stopping the external clock", failures);
+                    driver.Seek(12.280d);
+                    service.Follow(driver);
                     await Task.Delay(120);
                     var durationBinding = new ToyOutputBinding(4, 0, ToyOutputCapability.HwPositionWithDuration);
-                    var positionBinding = new ToyOutputBinding(4, 1, ToyOutputCapability.Position);
+                    var followedPositionBinding = new ToyOutputBinding(4, 1, ToyOutputCapability.Position);
                     Tuple<ToyOutputBinding, float, uint> firstDuration = backend.Last(durationBinding);
                     Check(firstDuration != null && Mathf.Abs(firstDuration.Item2 - 0.3f) < 0.0001f
                         && firstDuration.Item3 > 0,
                         "a timed-position feature receives the current authored Funscript target", failures);
-                    Check(backend.Last(positionBinding) != null,
+                    Check(backend.Last(followedPositionBinding) != null,
                         "direct Position features follow the same MotionDriver sample", failures);
 
                     int timedBeforeSampledAdvance = backend.Count(durationBinding);
@@ -330,9 +361,68 @@ namespace DazPose.Toys
                     driver.StopMotion();
                 }
 
+                if (program != null)
+                {
+                    ownedDriver = driver;
+                    service.ConfigurePlayback(ownedDriver);
+                    service.Play(program);
+                    Check(service.FollowedMotionDriver == ownedDriver && ownedDriver.IsRunning,
+                        "direct Play starts the explicitly configured owned driver", failures);
+                    Action staleOwnedCancel = service.CapturePlaybackCancellation();
+                    ownedDriver.Seek(0.1d);
+                    staleOwnedCancel();
+                    Check(ownedDriver.IsRunning,
+                        "owned playback cancellation does not stop a driver after its source revision changes", failures);
+                    service.Play(program);
+                    Action ownedCancel = service.CapturePlaybackCancellation();
+                    ownedCancel();
+                    Check(!ownedDriver.IsRunning,
+                        "owned playback cancellation stops the captured source revision", failures);
+                }
+
                 await service.RampVibrationAsync(0.35f, 0f);
                 Check(backend.Last(vibrate0) != null && backend.Last(vibrate0).Item2 == 0.35f,
                     "zero-duration authored ramp completes at the requested target", failures);
+
+                // Cancelling an in-flight ramp must take ownership from the ramp, even while
+                // gameplay time is paused, and must not allow a late nonzero ramp write.
+                Awaitable longRamp = service.RampVibrationAsync(0.85f, 2f);
+                Action cancelRamp = service.CaptureOutputCancellation(ToyOutputCapability.Vibrate);
+                Time.timeScale = 0f;
+                cancelRamp();
+                await longRamp;
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2) < 0.001f
+                    && Mathf.Abs(backend.Last(vibrate1).Item2) < 0.001f
+                    && Mathf.Abs(backend.Last(healthyVibration).Item2) < 0.001f
+                    && Mathf.Abs(backend.Last(vibrationOnDevice3).Item2) < 0.001f);
+                int afterRampCancel = backend.TotalCount;
+                await Task.Delay(60);
+                Check(backend.TotalCount == afterRampCancel
+                    && Mathf.Abs(backend.Last(vibrate0).Item2) < 0.001f,
+                    "paused cancellation settles the ramp at neutral with no late nonzero write", failures);
+                Time.timeScale = originalTimeScale;
+
+                service.SetStrokeLimits(0.2f, 0.8f);
+                service.PauseNeutralPosition = 0.5f;
+                service.Vibrate(0.6f);
+                await service.MoveToAsync(0.25f, 0f);
+                var positionBinding = new ToyOutputBinding(4, 1, ToyOutputCapability.Position);
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2 - 0.6f) < 0.001f
+                    && Mathf.Abs(backend.Last(positionBinding).Item2 - 0.35f) < 0.001f);
+                Time.timeScale = 0f;
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2) < 0.001f
+                    && Mathf.Abs(backend.Last(positionBinding).Item2 - 0.5f) < 0.001f);
+                int pausedCommandCount = backend.TotalCount;
+                service.Vibrate(0.63f);
+                await service.MoveToAsync(0.75f, 0f);
+                await Task.Delay(60);
+                Check(backend.TotalCount == pausedCommandCount,
+                    "paused intensity and position commands retain intent without dispatch", failures);
+                Time.timeScale = originalTimeScale;
+                await WaitUntil(() => Mathf.Abs(backend.Last(vibrate0).Item2 - 0.63f) < 0.001f
+                    && Mathf.Abs(backend.Last(positionBinding).Item2 - 0.65f) < 0.001f);
+                Check(Mathf.Abs(backend.Last(positionBinding).Item2 - 0.65f) < 0.001f,
+                    "resume restores latest owned intensity and mapped position targets", failures);
 
                 int stopCountBefore = backend.StopAllCount;
                 backend.PauseBeforeSubmit(vibrate0);
@@ -378,7 +468,11 @@ namespace DazPose.Toys
                 failures.Add("Unexpected toy acceptance exception: " + exception);
                 return failures.ToArray();
             }
-            finally { UnityEngine.Object.DestroyImmediate(host); }
+            finally
+            {
+                Time.timeScale = originalTimeScale;
+                UnityEngine.Object.DestroyImmediate(host);
+            }
         }
 
         private static async Task WaitForCommands(FakeBackend backend, int expected)

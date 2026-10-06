@@ -1,3 +1,54 @@
+# Current authoritative work plan
+
+The user approved `docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md` on
+2026-10-05. It is the authoritative TODO list and game plan until its required
+completion gates are satisfied or the user explicitly changes the plan.
+Start planned development there. Execute its days in dependency order; a calendar
+day ending does not complete a gate. Do not substitute older sprint proposals,
+wrap-up reviews, codemaps or stale handoff claims for this plan.
+
+The user revised the remaining work after accepting Days 1–5. Before the composed
+API-authored scene, follow
+`docs/production-consolidation/PRE_AUTHORING_REMEDIATION_PLAN.md`: investigate the
+second-outfit toe regression and remediate reassessment issues 1, 2, 3, 5 and 6.
+Other-character portability (issue 4) is explicitly excluded. Preserve working
+Lara rig conventions; do not build a generalized character controller. This
+changes remaining work order, not the required execution or preservation gates.
+
+Detailed execution packets live under `docs/production-consolidation/`.
+Day 1 starts at `docs/production-consolidation/DAY_1.md`; shared progress is
+`docs/production-consolidation/progress.json`. Read the active packet and progress
+before starting, and update progress plus evidence/handoff before yielding.
+Packets make the approved plan executable; they may not silently expand its scope
+or weaken its acceptance gates. Do not mark a day complete from source inspection
+when its gate requires execution evidence. Record technical passes, human visual
+approval and independent clean-context import acceptance separately.
+
+Existing subsystem contracts, accepted artistic decisions, source/GUID protection
+and launch procedures below still apply. The approved plan governs work priority
+and its explicitly requested changes, including the Clothing Setup UI rebuild.
+If a genuine unresolved product decision conflicts with the plan, preserve the
+specific conflict for the user; proceed with independent work that does not depend
+on that decision. No commit, push or publication to an external service is implied.
+
+# Authored performance test environment
+
+Future delivered test scenes must contain their saved test runner. Pressing Play
+must start the intended test without an editor helper injecting the runner or
+using a separate disposable-only scene. Validate the exact delivered scene and
+build that scene when claiming its playback works. The user accepted Day 2's
+known missing-runner omission after investigation; this does not waive the
+requirement for future tests.
+
+The user's authored `validation/DazPoseUnityValidation/Assets/Scenes/FirstPerformanceVoid.unity`
+is the environment authority for future performance tests: retain its glowing
+floor, smoke, lighting, camera and volume settings. Reuse its saved scene data;
+do not replace it with a generic stage or regenerate/retune it from builder defaults.
+Keep the original scene untouched when making test compositions. Lara's
+`Character Visibility Lights` belong to the reusable Lara prefab, with their
+authored settings and Lara rendering-layer restriction preserved. Functional
+validation passing does not mean the user approved replacement lighting.
+
 # Running DazPoseTool for manual testing
 
 For Lara character/wardrobe import work, first read

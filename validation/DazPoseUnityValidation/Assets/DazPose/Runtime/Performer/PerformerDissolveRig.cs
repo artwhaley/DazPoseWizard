@@ -105,7 +105,7 @@ namespace DazPose.Performer
             if (!profile.IsReady(out reason)) return false;
             if (particleBody == null)
             {
-                reason = "Assign the generated PerformerParticleBody component to the dissolve rig. Run the Particle Body Acceptance Harness installer.";
+                reason = "Assign this actor's configured PerformerParticleBody component to particleBody on the dissolve rig.";
                 return false;
             }
             if (!particleBody.ValidateConfiguration(profile, out reason)) return false;

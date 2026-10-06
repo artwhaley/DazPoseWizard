@@ -18,7 +18,7 @@ MonoBehaviour:
   aliases:
   - maid
   characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
-  configurationRevision: 2
+  configurationRevision: 4
   package: {fileID: 11400000, guid: e0d96eb9d3f4bf74684f573ddab8d550, type: 2}
   parts:
   - sourcePieceId: shoe_12520
@@ -38,5 +38,5 @@ MonoBehaviour:
   hairPrefab: {fileID: 0}
   footwear: {fileID: 11400000, guid: 18bf4df49ab3bb84b8690e567d8031bc, type: 2}
   fitStates:
-  - {fileID: 11400000, guid: 540bba1b8ed27054789136f02057728b, type: 2}
-  - {fileID: 11400000, guid: 3d631cde34a3d914fa4dcb4833db9496, type: 2}
+  - {fileID: 11400000, guid: 4fd9a80fdd98eca47a7363e4cd3a6cf2, type: 2}
+  - {fileID: 11400000, guid: 3bde6e1b5c5cabb4eb93544bfc30b9ed, type: 2}

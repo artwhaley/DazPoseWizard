@@ -1,0 +1,241 @@
+The short version: the vocabulary is ahead of the fixtures. SuccubusPerformer already looks like the authoring API you want. A real 2-minute scene still has to drag the Void’s test OS with it, because several “production” verbs are still talking to acceptance hardware.
+You can write First Contact today. You cannot yet write:
+C#await succubus.DissolveInAsync(startMark);
+await succubus.SayAsync(welcome);
+await succubus.DissolveToAsync(bedside);
+await succubus.SayAsync(getComfortable);
+await succubus.TryRemoveLayerAsync();
+await succubus.GripAsync(player.Shaft);
+succubus.Stroke(motion);
+The last two fail at the type system. The first one fails at the visibility contract. Outfit works only on a different scene than the lounge.
+
+What’s actually real
+SuccubusPerformer is the right facade. Keep it. These verbs are production-shaped and already used (or usable) from a scene script:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VerbHonest statusSay / SayAsyncBest verb on the object. First Contact uses it.LookAt / TurnTo / WalkTo / SitAtReal. Need marks and a baked seat/locomotion profile.Pose / ExpressionReal ScriptableObject state. First Contact never calls them.TeleportTo / DissolveToReal, but Require* throws “Install X Acceptance Harness”.Gesture / Perform / Cast / AuraReal APIs, generated acceptance assets.Outfit / TryRemoveLayer / TryAddLayerReal facade. Not on the lounge performer. Save bug underneath.Grip / GripAsyncReal IK + fingers. Target is a test cylinder.player.Toys.Play / Vibrate / FollowReal hardware path. Scene-global MotionDriver.
+First Contact is still the only authored beat, and it uses none of dissolve, outfit, grip, or stroke. It is Walk + Look + Say + Sit + camera, plus SetHoldLocomotionArrivalPose so the idle pose doesn’t flash. That hold is a public authoring footgun, not a test-only method.
+There is no director. FirstContactPerformance.RunSequence is a one-shot async void with a homemade waiter table. That pattern is fine for next week’s 2-minute scene. Do not invent a beat graph yet.
+
+Test hardware masquerading as production
+This is the part you asked for. These are the places where succubus.DoSomethingCool() currently means “the Void panel already spawned a fixture.”
+1. The lounge is still the test bench.
+FirstPerformanceVoid was cloned from PoseValidation, including the smoke harness. The builder requires the source performer to already have it. Two OnGUI operating systems live on the “production” scene: FirstPerformanceVoidControls and PerformerPoseSmokeHarness. Every later installer writes into that same scene. HandGrip duplicates the whole Void rather than extracting a performer prefab.
+2. GripContactRod is the production IGripTarget.
+The class comment says “acceptance scene fixture.” It is also on the Add Component menu, and both the planner and the controller special-case is GripContactRod. The rod is 12 cm, 35 mm, Start/End children, gizmos. Live proofs (~0.001 mm palm error) are Lara stroking that cylinder. A penis is a compile error.
+3. The male is a different scene.
+PartnerAnatomyTestController lives under Runtime, but it is an acceptance harness: erection slider, shell toggle, ±5° shaft sliders, camera buttons, gizmos. PlayerController is a camera + toys. There is no partner actor in the lounge. GetContactFrame almost matches IGripTarget.Evaluate and then stops: root-local, no Normal, not an interface, baked 33-station lerp that does not include compliance bends.
+4. Stroke has no performer verb.
+Vocab promised Stroke(motionPlayback) / StopStroke(). Those methods do not exist. What exists is MotionDriver.StartMotion() plus a consumer that auto-listens. player.Toys.Play(program) FindAnyObjectByType<MotionDriver>() and restarts it, so a Handy script also moves Lara’s arm if she is bound to the same driver. Sine is still a first-class panel source.
+5. Dissolve internals leaked onto the facade.
+SetDissolveShaderAcceptanceState is public. Particle-body Show/Hide/Detach/Transit/Reform are public test-phase verbs gated on a debug owner the Void panel wires. Production path is DissolveTo. A second scene calling particleBody.Detach() is operating the harness.
+6. Error messages name installers.
+Missing speech AudioSource, gesture mask, teleport profile, dissolve rig: “run Tools > DAZ Pose > … Acceptance Harness.” That is how you know the capability was proven by cloning fixtures into the Void, not by making a performer self-sufficient.
+7. Wardrobe still wears Lara’s name.
+PerformerWardrobe adds LaraWardrobe, finds the body by blendshape CapturedOpening, and drives LaraHeelReview. LaraFirstOutfit is a second, non-layered visibility owner. Clothing Setup is a candidate preview scene. FirstPerformanceVoid has no PerformerWardrobe at all, so succubus.Outfit("first-outfit") in the lounge logs an error and returns.
+8. Scene singletons.
+FindAnyObjectByType for toys, motion, control surfaces, grip harness. Two performers, two drivers: last-one-wins. The Void panel even spawns a Cube+Cylinder “vibration lever” at Play if none exists. Lara cannot reach it.
+9. Generated-path assets treated as content.
+Gesture clips must live under Generated/Gestures/. Actions under Generated/Actions/. BasicStroke is installed by an acceptance menu. Wave / Jump for Joy / magic catalog are serialized onto the Void panel, not a performer prefab.
+If you open a second scene and call the public API, the honest failures are: invisible Lara (startHidden = true), “Install Dissolve Acceptance Harness”, no wardrobe component, no IGripTarget on the male, no Stroke(), and a walk that can still flash idle pose unless you know the hold flag.
+
+Bridging the hand to the member
+The grip stack is a column follower. The male is not yet a column.
+Contract the fingers actually understand:
+C#IGripTarget.Evaluate(position01) → GripFrame { Center, Tangent, Normal, Radius }
+world meters, analytic cylinder. MotionDriver already supplies Position01. Once Grip is Active, the controller samples that clock every frame. There is no GripFollowMotionDriver() to write. Following is automatic. The missing work is making the shaft speak that contract.
+What the male has today:
+
+Frozen erect skeleton + ErectionToFlaccid blendshape (Plan C). Endpoints are numerically dead-on. Intermediates are not visually accepted.
+At flaccid, bones lie. Shaft7 is ~150 mm off the geometry line. You cannot drive contact from bones unless Erection01 ≈ 1.
+Baked 33-station centerlines in root space, one lerped radius (2.06 → 2.33 cm). Line length shortens through the midpoint (19 → 15 → 14 → 18 → 23 cm). That polyline is a review gizmo, not a certified column.
+Unskinned shell. Compliance is gated: erect and shell hidden. Manual ±5° on shaft1/shaft4 plus a distributed bend. No coupling from the hand.
+Donor pelvis follow exists only as LateUpdate on the proof controller.
+No colliders. Fingers never see the mesh. Solver is an infinite cylinder (RadialDistance ignores axial bounds), so a real glans/tip will false-contact past the end.
+
+Recommended T0 for the 2-minute scene — do not overbuild:
+
+New production type PartnerShaftGripTarget : MonoBehaviour, IGripTarget on the male. Not the test controller. Evaluate in world space: live shaft1–7 + glans-plane tip at Erection01 = 1, reference Normal from the partner’s forward, per-station radius from the already-derived cross-sections (erect ~23 mm, not the rod’s 35 mm).
+Lock the first job to erect. Flaccid bone contact is a later morph-or-rebake problem. Document that. Don’t lerp the two polylines for stroke.
+Stop special-casing GripContactRod in the planner. Give IGripTarget a cheap IsLinear / sample-span hint, or certify a polyline. A bending shaft as a “general target” will trip TargetMovedBeyondPlan after three replans.
+Donor pelvis follow becomes a tiny production component, always on, not a proof slider.
+Put Caine in the lounge (or a combined authoring scene) posed inside Lara’s 0.20–0.95 arm envelope, or accept one walk-to-grip. Right now the actors have never been in the same Play Mode.
+Compliance, one-way, tiny. Drive shaft1 / mid-chain from grip strength + a lag/spring, ±3–5°, restore to captured erect base every frame (the proof controller already does non-accumulating offsets). After the offset, re-sample the live world frame so the hand rides the bent column. Do not iterate contact→mesh→contact.
+Squeeze: cheat first, morph later. Shrink GripFrame.Radius a millimetre or two with gripStrength01 so fingers close in. Real radial morphs (Shaft Inflate negative, glans flatten) are not in the Unity mesh. Testicle squeeze morphs are the wrong organ. Don’t export a 252-modifier inventory for this week.
+Shell stays on and ignored for contact until it is skinned or morph-synced. Hiding it to “see bones” is a proof UI, not a scene look.
+
+What you will still not have: left hand, shoulder shrug, finite capsule vs infinite cylinder, length-stable Position01 across erection, squeeze that deforms the mesh, flaccid contact.
+Authoring shape after that:
+C#player.Shaft.Erection = 1f;
+await succubus.GripAsync(player.Shaft);   // completes on Acquired, not on orgasm
+motion.Start();                           // or succubus.Stroke(motion) once that wrapper exists
+player.Toys.Follow(motion);               // same clock
+Do not also run the clip-based PerformerMotionLayer stroke. Grip already spatially suppresses it. Two right-arm owners is how you get a fight.
+
+Wardrobe: guts good, save wrong, UI lying
+You are right that this is mostly workflow. You are slightly wrong that it is only UI. Save does not bake the thing the runtime treats as source of truth.
+The model is good. Base / 1 / 2, ceiling, VisibleMask, skip empty layers, hair off the undress stack, shoes as ordinary pieces, fit states per reachable mask, queued Outfit / TryRemoveLayer / TryAddLayer. Facade on SuccubusPerformer matches the 10-04 spec.
+Why layer assignment “doesn’t take” after Save:
+Two stores. Configuration.Assignments got the new layers. WardrobePreset.Parts[].layer stayed at import default (Base). Fit states were recompiled for the new masks.
+ClothingSetupWindow.SaveConfiguration writes session layers onto the configuration, then calls preset.ConfigureGenerated(..., pair.Key.Parts, ...) — the old parts. The test fixture builder and the publisher both copy assignment layers onto parts. The artist Save path forgot that merge.
+Then PerformerWardrobe.ResolveLayer uses configuration only when ConfigurationApplies() (candidate preview, or generation hash matches a release). Otherwise it reads preset.Parts. Lounge / released / hash mismatch → populated mask is Base-only → either everything comes off at once, or FitNotAvailable because the compiled masks don’t match.
+Living evidence: first-outfit config has dress=1, panties=2; the preset asset still has both on layer 0.
+Other ways it feels broken:
+
+Layer 1 / Layer 2 are toggles. Clicking the active one silently sets Base. There is no Base control and no “this is layer X” badge.
+Help text says Base is “always the first layer removed.” Runtime removes highest first. Artists who believe the help text will put the coat on Base and think Remove is broken.
+Save is disabled in Play. Clothes only appear after Play → Load outfit. Edit-mode assignment has zero visual.
+Naked button is Outfit("unclothed"), which forgets the outfit. Spec wanted naked preview (ceiling −1). Add after Naked is NoOutfitSelected.
+Outfit("first-outfit") string resolve refuses an unreleased catalog. Clothing Setup cheats with the typed preset overload + allowCandidatePreview.
+Compile-all-presets on Save: one Needs Fit anywhere aborts the whole configuration.
+FirstPerformanceVoid has no wardrobe component. The lounge cannot change clothes no matter how correct Clothing Setup is.
+Inventory is built once at Play Awake. Even a correct Save does nothing until you re-enter Play.
+
+UI rebuild, matching the guts, not a new controller:
+One Clothing Setup window. Kill “Lara Outfit Review” as the authoring entry (keep it as import diagnostic).
+
+Catalog rail — outfit cards, candidate vs released, Needs Fit on the card.
+Layer board — three columns Base / 1 / 2. Radio or drag per piece. Badge the effective layer. Print the undress order in English: 2 → 1 → Base → skin. Group shells under owners; keep shoe pairs together.
+Dressing bar that only calls production verbs — Fully dress = Outfit(current); Remove / Add; Naked preview = loop Remove until IsNaked (do not Outfit("unclothed")); Unclothed as a separate, labeled “forget this outfit” action. Readout: garment names, not mask 6 of 7.
+Save bar — dirty list Peekaboo: Base → 1. Save / Revert / Variant / Publish. Close prompt. After Save, either rebuild inventory or refuse Play until restart.
+Hair policy on the preset (Keep / Set / Clear), not only a Play-mode probe.
+Fit column as “fully dressed / no apron / underwear / naked”, and block Save on Needs Fit for the edited outfit, not the whole catalog.
+
+Required guts fix before the new UI: merge session layers into preset.Parts on Save, the same way WardrobeRuntimeFixtureBuilder and WardrobeGenerationPublisher.SnapshotPreset already do. Until that ships, the window should show “runtime still all Base” when parts disagree with the session. Otherwise a prettier UI will reproduce the same bug.
+Then bind PerformerWardrobe on lounge Lara and put Outfit / Remove / Add on a thin performance strip — not the 900 px Void panel. Do not wait for E7’s 100-cycle cache proof or player-build validation to do that. Those are integration gates, not authoring blockers. Dissolve clothing transitions can wait a week; Cut is enough for the 2-minute scene.
+
+Authoring API hygiene (do this before writing the 2-minute beat)
+Small semantic verbs, machinery behind the seam. The facade is close. The contract is not.
+Add
+
+DissolveIn(Transform|Vector3 start, float duration, Pose arrival = null) — relocate while hidden, then appear. Today DissolveIn is visibility-only, and both TeleportTo and DissolveTo reject Hidden. Your sample scene is otherwise inexpressible.
+Stroke(MotionDriver|Funscript) / StopStroke() as thin wrappers over the existing driver. Grip already follows. Toys already Follow. Authors should not touch MotionDriver or FindAnyObjectByType.
+await GripAsync is the real call. Grip(target) currently discards the Awaitable; failures are silent Failed.
+
+Do not add yet
+
+Emphasize() — Gesture covers it.
+A director / timeline / YAML.
+succubus.SetOpening(). LaraAnatomyControls can stay inspector-only for this scene.
+
+Make busy-state throw less author-hostile
+Speech queues. Almost nothing else does.
+C#succubus.DissolveIn(2);
+succubus.DissolveTo(bed); // throws if In hasn't finished
+For next week: document “await finite verbs” and keep First Contact’s waiter. A real queue is a later sprint. Do fix the dissolve-while-hidden hole; that is a missing verb, not a sequencing preference.
+Demote test API
+
+SetDissolveShaderAcceptanceState → internal.
+Particle-body phase verbs stay off the performer.
+Require* messages should say “missing dissolve profile on this performer,” not “run the harness.”
+startHidden is fine; the new DissolveIn(mark) makes it authorable.
+
+Extract a performer prefab
+This is the architectural cleanup that unlocks everything else. Right now a second scene means cloning the Void, the smoke harness, and a pile of installers. A prefab with Animator, SuccubusPerformer, speech source, dissolve rig, grip controller, wardrobe, locomotion/seating profiles, and no OnGUI is the production actor. Marks, seats, and the male stay scene content.
+
+Next week — cleanup to authoring, not a third vocabulary sprint
+Goal by Friday: one 2-minute authored beat on the real verbs, in one scene, with both bodies, clothes that actually undress, a hand on a shaft, and a toy on the same clock. No new magic, no director language, no G9.
+Mon–Tue — Make the actor shippable
+
+Extract Lara prefab without smoke harness / Void panel. Keep the panel as a debug overlay you can disable.
+Add DissolveIn(startMark) (hidden relocate + appear). Arrival pose through existing Pose(Snap).
+Bind PerformerWardrobe on that prefab; point it at the candidate catalog with preview allowed, or Publish one generation so string IDs resolve.
+Replace harness-named exceptions with missing-asset errors.
+Add Stroke / StopStroke wrappers. One MotionDriver owned by the scene (or player), not FindAnyObjectByType from toys.
+
+Tue–Wed — Wardrobe workflow that tells the truth
+
+Save bug: bake session layers onto preset.Parts. One function, already written twice elsewhere.
+Rebuild Clothing Setup as the layer board above. Fix the inverted Base help. Naked preview ≠ unclothed.
+Assign first-outfit for real: outer on 2 or 1, underwear on Base, shoes with the layer that owns them. Confirm Remove in Play peels in that order on lounge Lara.
+Leave E3 100-cycle, E4 walk-rigidity, E7 dissolve-recall, and player-build gates in the backlog. They are not the 2-minute scene.
+
+Wed–Thu — Column + compliance
+
+Promote PartnerShaftGripTarget. Erect-only live centerline. World GripFrame. Real radius.
+Donor-pelvis follow as a production component.
+Drop Caine into the authoring scene, posed for a right-hand job. Delete the rod from that scene’s beat (keep the rod scene for calibration).
+Stop is GripContactRod in the planner.
+One-way ±3–5° compliance from grip strength; re-sample the live frame. Radius squeeze only. Shell stays visible and is not the contact surface.
+Visual check: fingers on skin, no 35 mm air gap, no punch-through at the glans. Thumb still needs the visual pass the grip handoff already flagged.
+
+Thu–Fri — Write the 2-minute scene
+
+New FirstJobPerformance (or extend First Contact). Hardcoded async sequence is correct. Do not build a director.
+
+Sketch, using current names:
+C#await lara.DissolveInAsync(startMark, 2f);
+lara.LookAt(player.Head);
+await lara.SayAsync(welcome);
+await lara.DissolveToAsync(bedside, 3f);
+await lara.SayAsync(getComfortable);
+await lara.TryRemoveLayerAsync();          // Cut is fine
+player.Shaft.Erection = 1f;
+await lara.GripAsync(player.Shaft);
+lara.Stroke(handjob);                      // same MotionDriver
+player.Toys.Follow(handjob);
+await Wait(handjob);                       // or Say over it
+lara.StopStroke();
+lara.ReleaseGrip();
+
+Hide both OnGUI harnesses while it runs.
+Known-limits card in the scene docs: right hand only, erect only, no mesh squeeze, Cut wardrobe, no cancel API, one run per Play, shell cosmetic.
+
+Explicitly out of scope this week
+
+Left hand / two-handed
+Flaccid contact, length/girth dials, shell skinning
+Exporting squeeze morphs from DAZ
+Wardrobe dissolve transitions, scene recall, two-performer isolation
+Finite-capsule finger solver
+Emphasize, moods, personality, content browser
+Retargeting, lean meshes, embedded Unity preview (all still deferred in DazPoseWizard_Deferred_Work.md)
+
+
+What I would bet on
+If you only get three things done, make them:
+
+Save writes layers onto preset parts, and lounge Lara has PerformerWardrobe.
+PartnerShaftGripTarget in the same scene as Lara, erect-only, no rod in the beat.
+DissolveIn(mark) + Stroke wrappers + a prefab without the test OS.
+
+Do those and the 2-minute authoring session is a scene script, not a scavenger hunt through installers. Skip them and you will sit down to write succubus.grip(penis) and spend the day discovering she is stroking HandGripFixture while Caine poses in another scene and the dress is still on Base.

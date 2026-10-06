@@ -31,7 +31,21 @@ namespace DazPose.Performer.HandGrip
             int binarySearchIterations, NativeArray<HandGripJobDigit> digits,
             NativeArray<HandGripJobJoint> joints, NativeArray<HandGripJobProbe> probes,
             NativeArray<Quaternion> incomingRotations, NativeArray<float> solvedCurls,
-            NativeArray<HandGripStatus> digitStatuses, NativeArray<HandGripProbeDiagnostic> diagnostics)
+            NativeArray<HandGripStatus> digitStatuses, NativeArray<HandGripProbeDiagnostic> diagnostics) =>
+            Solve(frame, handPosition, handRotation, gripWeight, gripStrength, clearance,
+                nearContactDistance, binarySearchIterations, digits, joints, probes,
+                incomingRotations, solvedCurls, digitStatuses, diagnostics, false, default,
+                Quaternion.identity, default, default);
+
+        public static void Solve(in GripFrame frame, Vector3 handPosition, Quaternion handRotation,
+            float gripWeight, float gripStrength, float clearance, float nearContactDistance,
+            int binarySearchIterations, NativeArray<HandGripJobDigit> digits,
+            NativeArray<HandGripJobJoint> joints, NativeArray<HandGripJobProbe> probes,
+            NativeArray<Quaternion> incomingRotations, NativeArray<float> solvedCurls,
+            NativeArray<HandGripStatus> digitStatuses, NativeArray<HandGripProbeDiagnostic> diagnostics,
+            bool useSurface, Vector3 surfacePosition, Quaternion surfaceRotation,
+            NativeArray<GripContactSurfaceData.Triangle> surfaceTriangles,
+            NativeArray<GripContactSurfaceData.Node> surfaceNodes)
         {
             float weight = Mathf.Clamp01(gripWeight);
             float strength = Mathf.Clamp01(gripStrength);
@@ -42,13 +56,15 @@ namespace DazPose.Performer.HandGrip
                 float desiredCurl = Mathf.Clamp01(strength + digit.CurlBias);
                 bool openPenetrates = PosePenetrates(frame, handPosition, handRotation,
                     weight, 0f, clearance, nearContactDistance, digit, joints, probes,
-                    incomingRotations, default, false, out _);
+                    incomingRotations, default, false, useSurface, surfacePosition, surfaceRotation,
+                    surfaceTriangles, surfaceNodes, out _);
                 if (openPenetrates)
                 {
                     solvedCurls[digitIndex] = 0f;
                     digitStatuses[digitIndex] = HandGripStatus.BasePenetration;
                     WriteDiagnostics(frame, handPosition, handRotation, weight, 0f, clearance,
-                        nearContactDistance, digitIndex, digit, joints, probes, incomingRotations, diagnostics);
+                        nearContactDistance, digitIndex, digit, joints, probes, incomingRotations, diagnostics,
+                        useSurface, surfacePosition, surfaceRotation, surfaceTriangles, surfaceNodes);
                     continue;
                 }
 
@@ -63,7 +79,8 @@ namespace DazPose.Performer.HandGrip
                 {
                     float candidate = desiredCurl * step / bracketSteps;
                     if (PosePenetrates(frame, handPosition, handRotation, weight, candidate,
-                        clearance, nearContactDistance, digit, joints, probes, incomingRotations, default, false, out _))
+                        clearance, nearContactDistance, digit, joints, probes, incomingRotations, default, false,
+                        useSurface, surfacePosition, surfaceRotation, surfaceTriangles, surfaceNodes, out _))
                     { high = candidate; requestedPenetrates = true; break; }
                     low = candidate;
                 }
@@ -74,7 +91,8 @@ namespace DazPose.Performer.HandGrip
                         float candidate = (low + high) * 0.5f;
                         if (PosePenetrates(frame, handPosition, handRotation, weight, candidate,
                                 clearance, nearContactDistance, digit, joints, probes,
-                                incomingRotations, default, false, out _))
+                                incomingRotations, default, false, useSurface, surfacePosition, surfaceRotation,
+                                surfaceTriangles, surfaceNodes, out _))
                             high = candidate;
                         else
                             low = candidate;
@@ -85,7 +103,8 @@ namespace DazPose.Performer.HandGrip
                 solvedCurls[digitIndex] = solved;
                 bool nearContact = WriteDiagnostics(frame, handPosition, handRotation, weight,
                     solved, clearance, nearContactDistance, digitIndex, digit, joints,
-                    probes, incomingRotations, diagnostics);
+                    probes, incomingRotations, diagnostics, useSurface, surfacePosition,
+                    surfaceRotation, surfaceTriangles, surfaceNodes);
                 digitStatuses[digitIndex] = requestedPenetrates || nearContact
                     ? HandGripStatus.Contact : HandGripStatus.Clear;
             }
@@ -97,6 +116,9 @@ namespace DazPose.Performer.HandGrip
             NativeArray<HandGripJobJoint> joints, NativeArray<HandGripJobProbe> probes,
             NativeArray<Quaternion> incomingRotations,
             NativeArray<HandGripProbeDiagnostic> diagnostics, bool writeDiagnostics,
+            bool useSurface, Vector3 surfacePosition, Quaternion surfaceRotation,
+            NativeArray<GripContactSurfaceData.Triangle> surfaceTriangles,
+            NativeArray<GripContactSurfaceData.Node> surfaceNodes,
             out bool nearContact)
         {
             nearContact = false;
@@ -107,14 +129,20 @@ namespace DazPose.Performer.HandGrip
                 Vector3 point = GetProbeWorldPosition(handPosition, handRotation, gripWeight,
                     curl, probe, digit, joints, incomingRotations);
                 float radialDistance = RadialDistance(frame, point);
-                float allowed = frame.Radius + probe.Radius + clearance;
+                float distance = useSurface
+                    ? GripContactSurfaceQuery.SignedDistance(point, surfacePosition, surfaceRotation,
+                        surfaceTriangles, surfaceNodes)
+                    : radialDistance - frame.Radius;
+                float allowed = (useSurface ? 0f : frame.Radius) + probe.Radius + clearance;
+                // A failed BVH/query must fail closed; +Infinity would otherwise look clear.
+                if (!GripFrame.IsFinite(distance)) distance = float.NegativeInfinity;
                 HandGripProbeState state;
-                if (radialDistance < allowed - ContactEpsilon)
+                if (distance < allowed - ContactEpsilon)
                 {
                     state = HandGripProbeState.Penetrating;
                     penetrates = true;
                 }
-                else if (radialDistance <= allowed + Mathf.Max(0f, nearContactDistance))
+                else if (distance <= allowed + Mathf.Max(0f, nearContactDistance))
                 {
                     state = HandGripProbeState.NearContact;
                     nearContact = true;
@@ -138,11 +166,15 @@ namespace DazPose.Performer.HandGrip
             float nearContactDistance, int digitIndex, HandGripJobDigit digit,
             NativeArray<HandGripJobJoint> joints, NativeArray<HandGripJobProbe> probes,
             NativeArray<Quaternion> incomingRotations,
-            NativeArray<HandGripProbeDiagnostic> diagnostics)
+            NativeArray<HandGripProbeDiagnostic> diagnostics, bool useSurface,
+            Vector3 surfacePosition, Quaternion surfaceRotation,
+            NativeArray<GripContactSurfaceData.Triangle> surfaceTriangles,
+            NativeArray<GripContactSurfaceData.Node> surfaceNodes)
         {
             PosePenetrates(frame, handPosition, handRotation, gripWeight, curl, clearance,
                 nearContactDistance, digit, joints, probes, incomingRotations, diagnostics,
-                true, out bool nearContact);
+                true, useSurface, surfacePosition, surfaceRotation, surfaceTriangles,
+                surfaceNodes, out bool nearContact);
             return nearContact;
         }
 

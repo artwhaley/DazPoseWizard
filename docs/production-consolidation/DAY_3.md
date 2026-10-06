@@ -1,0 +1,11 @@
+# Day 3 execution packet
+
+Authority: approved seven-day plan, COMMAND_CONTRACT.md and root AGENTS.md. Day 2's missing scene runner was understood and accepted by the user; future tests must ship their runner in the scene.
+
+Implement a small reusable C# execution scope, owned waits/cancellation and precise failure context. Preserve facade vocabulary and queues. Add explicit cancellation for finite operations without disposing the actor graph. Cancellation must not affect another run's replacement command. Root movement releases contact first; strict ownership returns a specific conflict. Grip's internal staging walk is exempt from external movement arbitration. Add appearance-at-location coordination. Bind shared playback explicitly; consumers never restart an external clock. Migrate First Contact to stop/reset/replay without leaving Play Mode and hide arrival-pose hold bookkeeping. Gameplay pause freezes authored time/audio and neutralizes owned device output; backend cleanup continues.
+
+Use isolated `.dazposewizard/production-consolidation`, sequential Unity batch runs, no computer control. Preserve accepted scenes/assets/settings and original Void scene. Save the runner in the delivered validation scene BEFORE testing. Build that exact scene. Distinguish automated runtime checks, visual observations and physical hardware checks.
+
+Exit gate: run/stop/run First Contact; stop during speech, movement, appearance and grip acquisition; destroy an actor during a wait. All accepted waits terminate once; no stale continuation, stuck arm ownership or hidden actor persists. Compatible speech/gaze overlap works. Toy detach does not change external clock state. Record source identities, checks, limitations and precise manual steps in DAY_3_REPORT.md and progress.json.
+
+Execution outcome: implementation and automated validation complete (23 editor + 23 final Windows player checks). See DAY_3_REPORT.md and DAY_3_MANUAL_CHECKS.md. Visual/audio review pending; physical hardware unobserved. Day 4 is not started.

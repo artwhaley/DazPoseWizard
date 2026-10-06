@@ -10,16 +10,24 @@ namespace DazPose.Performer
     {
         [SerializeField] private int schemaVersion = 1;
         [SerializeField] private string releasedGenerationId;
+        [SerializeField] private string compiledConfigurationHash;
+        [SerializeField] private WardrobeConfiguration authoringConfiguration;
+        [SerializeField] private bool needsCompile;
         [SerializeField] private WardrobePreset[] presets = Array.Empty<WardrobePreset>();
         public int SchemaVersion => schemaVersion;
         public string ReleasedGenerationId => releasedGenerationId;
         public WardrobePreset[] Presets => (WardrobePreset[])presets.Clone();
         public bool IsReleased => !string.IsNullOrWhiteSpace(releasedGenerationId);
+        public string CompiledConfigurationHash => compiledConfigurationHash;
+        public WardrobeConfiguration AuthoringConfiguration => authoringConfiguration;
+        public bool NeedsCompile => needsCompile;
 
 #if UNITY_EDITOR
         public void ConfigureCandidate(WardrobePreset[] values)
-        { releasedGenerationId = string.Empty; presets = values ?? Array.Empty<WardrobePreset>(); }
-        public void SetReleasedGeneration(string generationId) { releasedGenerationId = generationId; }
+        { releasedGenerationId = string.Empty; compiledConfigurationHash = string.Empty; presets = values != null ? (WardrobePreset[])values.Clone() : Array.Empty<WardrobePreset>(); }
+        public void SetReleasedGeneration(string generationId) { releasedGenerationId = generationId; authoringConfiguration = null; needsCompile = false; }
+        public void SetCompiledConfigurationHash(string value) { compiledConfigurationHash = value; needsCompile = string.IsNullOrEmpty(value); }
+        public void SetAuthoringConfiguration(WardrobeConfiguration value) { authoringConfiguration = value; }
 #endif
 
         public bool TryResolve(string idOrAlias, out WardrobePreset preset, out string error)

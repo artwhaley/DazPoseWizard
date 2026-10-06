@@ -20,6 +20,16 @@ namespace DazPose.Toys
         private const uint UnknownDurationMilliseconds = 50;
 
         [SerializeField] private string serverAddress = DefaultServerAddress;
+        [SerializeField] private MotionDriver playbackDriver;
+        [SerializeField, Range(0f, 1f)] private float pauseNeutralPosition = 0.5f;
+        public MotionDriver PlaybackDriver => playbackDriver;
+        public void ConfigurePlayback(MotionDriver driver) => playbackDriver = driver;
+        /// <summary>Normalized stroke position held while gameplay time is paused.</summary>
+        public float PauseNeutralPosition
+        {
+            get => pauseNeutralPosition;
+            set { ValidateUnit(value, nameof(value)); pauseNeutralPosition = Mathf.Clamp01(value); }
+        }
 
         private sealed class PendingOutput
         {
@@ -65,6 +75,8 @@ namespace DazPose.Toys
         private readonly ConcurrentQueue<Action> _mainThreadEvents = new ConcurrentQueue<Action>();
         private readonly ConcurrentDictionary<ToyOutputBinding, OutputState> _outputStates =
             new ConcurrentDictionary<ToyOutputBinding, OutputState>();
+        private readonly ConcurrentDictionary<ToyOutputBinding, byte> _activeOutputOwners =
+            new ConcurrentDictionary<ToyOutputBinding, byte>();
         private readonly ConcurrentDictionary<ToyOutputBinding, string> _followerDiagnostics =
             new ConcurrentDictionary<ToyOutputBinding, string>();
         private readonly ConcurrentDictionary<ToyOutputBinding, string> _outputErrors =
@@ -89,6 +101,11 @@ namespace DazPose.Toys
         private float _nextReconnectAt;
         private float _retryDelaySeconds = 1f;
         private int _lifecycleGeneration;
+        private bool _gameplayPaused;
+        private int _motionBindingGeneration;
+        private MotionDriver _ownedPlaybackDriver;
+        private long _ownedPlaybackSourceRevision = -1;
+        private int _ownedPlaybackBindingGeneration = -1;
         private long _nextOwner;
         private float _vibrationLevel;
         private float _oscillationLevel;
@@ -156,6 +173,14 @@ namespace DazPose.Toys
 
             if (_scanRequested && IsConnected && !IsScanning && !_scanInFlight && !_scanStartedOnConnection)
                 _ = StartScanAttemptAsync();
+
+            bool paused = Time.timeScale <= 0f;
+            if (paused != _gameplayPaused)
+            {
+                _gameplayPaused = paused;
+                if (paused) ApplyPauseNeutral();
+                else ResumeOwnedOutputs();
+            }
 
             ReconcileOutputRoutes();
             ReconcileMotionFollowers();
@@ -326,19 +351,106 @@ namespace DazPose.Toys
         public void Play(FunscriptMotionProgram program, bool loop = false)
         {
             if (program == null) throw new ArgumentNullException(nameof(program));
-            MotionDriver driver = _motionDriver != null ? _motionDriver : FindAnyObjectByType<MotionDriver>();
-            if (driver == null) throw new InvalidOperationException("No scene MotionDriver is available.");
+            // Follow is a consumer binding. It never grants the toy service authority to
+            // replace or restart that driver's playback. Direct Play is available only for
+            // the scene driver explicitly configured as this service's playback owner.
+            MotionDriver driver = playbackDriver;
+            if (driver == null) throw new InvalidOperationException("Toy playback is not owned by this service. Assign playbackDriver before calling Play, or use Follow to consume an existing playback.");
             driver.FunscriptProgram = program;
             driver.Loop = loop;
             driver.SourceMode = MotionSourceMode.Funscript;
             Follow(driver);
             driver.RestartMotion();
+            _ownedPlaybackDriver = driver;
+            _ownedPlaybackSourceRevision = driver.SourceRevision;
+            _ownedPlaybackBindingGeneration = _motionBindingGeneration;
+        }
+
+        /// <summary>
+        /// Captures cancellation for the current toy playback binding. Owned playback is
+        /// stopped only while its source revision still matches; a followed clock is detached
+        /// only while the same driver binding generation remains current.
+        /// </summary>
+        public Action CapturePlaybackCancellation()
+        {
+            MotionDriver followed = _motionDriver;
+            int generation = _motionBindingGeneration;
+            MotionDriver owned = _ownedPlaybackDriver;
+            long sourceRevision = _ownedPlaybackSourceRevision;
+            int ownedGeneration = _ownedPlaybackBindingGeneration;
+            if (owned != null && followed == owned && ownedGeneration == generation)
+            {
+                return () =>
+                {
+                    if (owned != null && _motionDriver == owned
+                        && _motionBindingGeneration == ownedGeneration
+                        && owned.SourceRevision == sourceRevision)
+                        owned.StopMotion();
+                };
+            }
+
+            return () =>
+            {
+                if (followed != null && _motionDriver == followed
+                    && _motionBindingGeneration == generation)
+                    StopFollowing(stopHardware: false);
+            };
+        }
+
+        /// <summary>
+        /// Captures the current owners of the selected intensity outputs. Cancellation sends
+        /// zero only to routes that still have those same owners, preserving later commands.
+        /// </summary>
+        public Action CaptureOutputCancellation(ToyOutputCapability capability, int? channel = null)
+        {
+            if (capability != ToyOutputCapability.Vibrate && capability != ToyOutputCapability.Oscillate)
+                throw new ArgumentOutOfRangeException(nameof(capability), "Output cancellation supports intensity capabilities only.");
+            if (channel.HasValue && channel.Value < 0) throw new ArgumentOutOfRangeException(nameof(channel));
+
+            var captured = new List<Tuple<ToyOutputBinding, long, long>>();
+            foreach (ToyOutputBinding binding in GetTargets(capability, channel))
+            {
+                if (!_outputStates.TryGetValue(binding, out OutputState state)) continue;
+                lock (state.Gate)
+                    captured.Add(Tuple.Create(binding, state.Revision, state.Owner));
+            }
+
+            int invoked = 0;
+            return () =>
+            {
+                if (Interlocked.Exchange(ref invoked, 1) != 0) return;
+                foreach (Tuple<ToyOutputBinding, long, long> owner in captured)
+                {
+                    if (!_outputStates.TryGetValue(owner.Item1, out OutputState state)) continue;
+                    long revision;
+                    long dispatchVersion;
+                    lock (state.Gate)
+                    {
+                        if (state.Revision != owner.Item2 || state.Owner != owner.Item3) continue;
+                        // Take ownership so an in-flight ramp cannot overwrite cancellation.
+                        revision = ++state.Revision;
+                        state.Owner = NextOwner();
+                        state.DesiredValue = 0f;
+                        state.HasDesiredValue = true;
+                        dispatchVersion = ++state.DispatchVersion;
+                        state.Pending = null;
+                    }
+                    if (_gameplayPaused)
+                        _ = SendPauseNeutralAsync(owner.Item1, state, revision, dispatchVersion, 0f);
+                    else
+                        QueueOwned(owner.Item1, revision, 0f, 0);
+                }
+            };
         }
 
         public void Follow(MotionDriver driver)
         {
             if (_motionDriver == driver) return;
             StopFollowing(stopHardware: false);
+            _motionBindingGeneration++;
+            _ownedPlaybackDriver = null;
+            _ownedPlaybackSourceRevision = -1;
+            _ownedPlaybackBindingGeneration = -1;
             InvalidateMotionOwners(GetMotionTargets());
             _motionDriver = driver;
             ReconcileMotionFollowers();
@@ -563,6 +675,7 @@ namespace DazPose.Toys
         private long BeginOwner(ToyOutputBinding binding, long owner, float initialValue)
         {
             OutputState state = _outputStates.GetOrAdd(binding, _ => new OutputState());
+            _activeOutputOwners[binding] = 0;
             lock (state.Gate)
             {
                 state.Revision++;
@@ -602,6 +715,9 @@ namespace DazPose.Toys
                 if (state.Revision != revision) return;
                 state.DesiredValue = value;
                 state.HasDesiredValue = true;
+                // Keep latest intent while paused, but do not dispatch gameplay output.
+                // Pause neutral commands use DispatchPauseOutputAsync directly.
+                if (_gameplayPaused) return;
                 long dispatchVersion = ++state.DispatchVersion;
                 state.Pending = new PendingOutput
                 {
@@ -619,6 +735,63 @@ namespace DazPose.Toys
                 }
             }
             if (startWorker) _ = DrainOutputAsync(binding, state);
+        }
+
+        private void ApplyPauseNeutral()
+        {
+            foreach (ToyOutputBinding binding in _activeOutputOwners.Keys.ToArray())
+            {
+                if (!FeatureSupports(binding)) continue;
+                if (!_outputStates.TryGetValue(binding, out OutputState state)) continue;
+                long revision;
+                long dispatchVersion;
+                float neutral = binding.Capability == ToyOutputCapability.Position
+                    || binding.Capability == ToyOutputCapability.HwPositionWithDuration
+                    ? MapStroke(pauseNeutralPosition) : 0f;
+                lock (state.Gate)
+                {
+                    if (!state.HasDesiredValue) continue;
+                    revision = state.Revision;
+                    dispatchVersion = ++state.DispatchVersion;
+                    state.Pending = null;
+                }
+                _ = SendPauseNeutralAsync(binding, state, revision, dispatchVersion, neutral);
+            }
+        }
+
+        private async Task SendPauseNeutralAsync(ToyOutputBinding binding, OutputState state,
+            long revision, long dispatchVersion, float neutral)
+        {
+            try
+            {
+                await DispatchOutputAsync(binding, neutral, 0, OutputCommandGeneration,
+                    state, revision, dispatchVersion).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                _lastOutputError = "pause neutral: " + exception.Message;
+                _outputErrors[binding] = exception.Message;
+            }
+        }
+
+        private void ResumeOwnedOutputs()
+        {
+            foreach (KeyValuePair<ToyOutputBinding, OutputState> pair in _outputStates)
+            {
+                if (!_activeOutputOwners.ContainsKey(pair.Key)) continue;
+                OutputState state = pair.Value;
+                long revision;
+                float value;
+                lock (state.Gate)
+                {
+                    if (!state.HasDesiredValue || !FeatureSupports(pair.Key)) continue;
+                    revision = state.Revision;
+                    value = state.DesiredValue;
+                }
+                QueueOwned(pair.Key, revision, value, 0);
+            }
+            foreach (ToyMotionFollower follower in _followers.Values) follower.Resynchronize();
+            ReconcileControlBindings();
         }
 
         private async Task DrainOutputAsync(ToyOutputBinding binding, OutputState state)
@@ -707,6 +880,7 @@ namespace DazPose.Toys
                 state.Owner = NextOwner();
                 state.DispatchVersion++;
                 state.Pending = null;
+                _activeOutputOwners.TryRemove(binding, out _);
             }
         }
 
@@ -720,6 +894,7 @@ namespace DazPose.Toys
                 if (state.Revision != revision) return false;
                 state.DesiredValue = normalized;
                 state.HasDesiredValue = true;
+                if (_gameplayPaused) return false;
                 dispatchVersion = ++state.DispatchVersion;
             }
             return await DispatchOutputAsync(binding, normalized, durationMilliseconds,
@@ -807,6 +982,11 @@ namespace DazPose.Toys
             var features = new HashSet<Tuple<uint, uint>>();
             foreach (ToyOutputBinding route in routes)
                 features.Add(Tuple.Create(route.DeviceIndex, route.FeatureIndex));
+            foreach (ToyOutputBinding binding in _activeOutputOwners.Keys.Where(binding =>
+                (binding.Capability == ToyOutputCapability.Position
+                    || binding.Capability == ToyOutputCapability.HwPositionWithDuration)
+                && features.Contains(Tuple.Create(binding.DeviceIndex, binding.FeatureIndex))).ToArray())
+                _activeOutputOwners.TryRemove(binding, out _);
             foreach (Tuple<uint, uint> feature in features)
             foreach (ToyOutputCapability capability in new[]
                 { ToyOutputCapability.Position, ToyOutputCapability.HwPositionWithDuration })
@@ -1026,6 +1206,7 @@ namespace DazPose.Toys
         private void InvalidatePendingOutputs()
         {
             Interlocked.Increment(ref _lifecycleGeneration);
+            _activeOutputOwners.Clear();
             foreach (OutputState state in _outputStates.Values)
                 lock (state.Gate)
                 {

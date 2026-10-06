@@ -32,9 +32,12 @@ namespace DazPose.UnityValidation
             if (!preset.Validate(out string presetError)) throw new InvalidDataException(presetError);
             var package = preset.Package;
             var fullBindings = AssetDatabase.LoadAssetAtPath<PerformerSurfaceBindingAsset>(
-                "Assets/TestData/Wardrobe/" + preset.PresetId + "/SurfaceBindings.asset");
+                "Assets/TestData/Wardrobe/" + package.id + "/SurfaceBindings.asset");
             var fullProfile = AssetDatabase.LoadAssetAtPath<PerformerDissolveProfile>(
-                "Assets/TestData/Wardrobe/" + preset.PresetId + "/DissolveProfile.asset");
+                "Assets/TestData/Wardrobe/" + package.id + "/DissolveProfile.asset");
+            var priorFull = preset.FitStates.FirstOrDefault(f => f != null && f.BodyMesh == package.reviewBody);
+            if (priorFull != null && priorFull.SurfaceBindings != null && priorFull.SurfaceBindings.SourceMesh == package.reviewBody)
+            { fullBindings = priorFull.SurfaceBindings; fullProfile = priorFull.DissolveProfile; }
             var canonicalBindings = AssetDatabase.LoadAssetAtPath<PerformerSurfaceBindingAsset>(
                 "Assets/TestData/LaraCandidate/LaraSurfaceBindings.asset");
             var canonicalProfile = AssetDatabase.LoadAssetAtPath<PerformerDissolveProfile>(
@@ -43,12 +46,18 @@ namespace DazPose.UnityValidation
             if (fullBindings == null || fullProfile == null || canonicalBindings == null || canonicalProfile == null || canonicalMesh == null)
                 throw new FileNotFoundException("The accepted source/canonical body, dissolve profiles, and surface bindings must exist.");
 
-            var parts = ApplyConfiguration(preset, configuration);
-            float standingLift = preset.Footwear != null ? preset.Footwear.standingHeight : 0f;
-            float footShrink = preset.Footwear != null ? preset.Footwear.footShrink : 0f;
-            configuration?.TryGetFootwearTuning(preset.PresetId, preset.Footwear, out standingLift, out footShrink);
-            int populated = parts.Aggregate(0, (mask, part) => mask | (1 << part.layer));
-            var masks = ReachableMasks(populated);
+            var resolved = WardrobeCandidateSnapshot.Resolve(preset, configuration);
+            var parts = resolved.Parts;
+            foreach (var row in resolved.MaterialOverrides.Where(r => r.opacityOverride))
+            {
+                var piece = package.pieces.Single(p => p.id == row.sourcePieceId);
+                var material = row.material != null ? row.material : piece.materials[int.Parse(row.materialSlotId)];
+                if (!WardrobeMaterialOpacity.TryRead(material, out _)) throw new InvalidDataException("Unsupported opacity control: " + preset.PresetId + "/" + row.sourcePieceId + "/" + row.materialSlotId);
+            }
+            float standingLift = resolved.StandingLift;
+            float footShrink = resolved.FootShrink;
+            int populated = resolved.PopulatedMask;
+            var masks = resolved.ReachableMasks.ToList();
             var states = new List<WardrobeFitState>(masks.Count);
             var issues = new List<string>();
             EnsureFolder(outputRoot);
@@ -133,8 +142,11 @@ namespace DazPose.UnityValidation
                 issues.AddRange(stateIssues.Select(code => preset.PresetId + "/mask-" + mask + ":" + code));
             }
 
-            if (bindToPreset)
+            if (bindToPreset && states.All(s => s.Status == WardrobeFitStatus.Validated))
             {
+                preset.ConfigureGenerated(preset.PresetId, preset.DisplayName, preset.CharacterSignature,
+                    resolved.ConfigurationRevision, preset.Package, resolved.Parts, preset.Aliases,
+                    preset.HairAction, preset.HairId, preset.Footwear);
                 preset.SetGeneratedFitStates(states.ToArray());
                 EditorUtility.SetDirty(preset);
             }
@@ -199,16 +211,6 @@ namespace DazPose.UnityValidation
                 ceiling = next;
             }
             return result;
-        }
-
-        private static WardrobePreset.Part[] ApplyConfiguration(WardrobePreset preset, WardrobeConfiguration configuration)
-        {
-            var parts = preset.Parts;
-            if (configuration == null) return parts;
-            var rows = configuration.Assignments.Where(a => a != null && a.presetId == preset.PresetId)
-                .ToDictionary(a => a.sourcePieceId, a => a.layer, StringComparer.Ordinal);
-            foreach (var part in parts) if (rows.TryGetValue(part.sourcePieceId, out int layer)) part.layer = layer;
-            return parts;
         }
 
         private static bool Role(WardrobeOutfitDefinition.Piece piece, string role) =>

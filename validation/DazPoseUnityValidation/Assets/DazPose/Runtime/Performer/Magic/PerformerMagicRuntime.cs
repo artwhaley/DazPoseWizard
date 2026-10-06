@@ -17,6 +17,17 @@ namespace DazPose.Performer
         private PerformerAura _auraAsset;
         private Transform _auraTarget;
         private bool _disposed;
+        private Action _lastCastCancellation;
+        public Action CaptureCancellation() => _lastCastCancellation;
+        public void Reset()
+        {
+            var spells = _spells.ToArray();
+            _spells.Clear();
+            foreach (var instance in spells) instance?.Dispose();
+            _aura?.Dispose(); _aura = null; _auraAsset = null; _auraTarget = null;
+            foreach (var instance in _retiringAuras.ToArray()) instance?.Dispose();
+            _retiringAuras.Clear();
+        }
 
         public int ActiveSpellCount => _spells.Count;
         public PerformerAura CurrentAura => _auraAsset;
@@ -41,9 +52,11 @@ namespace DazPose.Performer
             if (_validateAssets && !spell.IsReady(out string reason)) throw new InvalidOperationException(reason);
             if (!_validateAssets && spell.Style == null) throw new InvalidOperationException("Spell has no Magic Style.");
 
+            bool cancelled = false;
             IPerformerMagicEffectInstance instance = _createInstance(spell.Style, target,
-                MagicEffectMode.Spell, result => completion?.Invoke(result));
+                MagicEffectMode.Spell, result => completion?.Invoke(cancelled ? SpellCompletion.Cancelled : result));
             _spells.Add(instance);
+            _lastCastCancellation = () => { if (_spells.Remove(instance)) { cancelled = true; instance.Dispose(); } };
         }
 
         public void SetAura(PerformerAura aura, Transform target)
@@ -88,16 +101,15 @@ namespace DazPose.Performer
                 _auraTargetLost?.Invoke(lostAura, lostTarget);
             }
 
-            for (int i = _spells.Count - 1; i >= 0; i--)
+            foreach (var instance in _spells.ToArray())
             {
-                IPerformerMagicEffectInstance instance = _spells[i];
                 if (instance == null || instance.IsDisposed)
                 {
-                    _spells.RemoveAt(i);
+                    _spells.Remove(instance);
                     continue;
                 }
                 instance.Advance(deltaTime);
-                if (instance.IsDisposed) _spells.RemoveAt(i);
+                if (instance.IsDisposed) _spells.Remove(instance);
             }
 
             AdvanceAura(_aura, deltaTime);
@@ -113,8 +125,9 @@ namespace DazPose.Performer
         {
             if (_disposed) return;
             _disposed = true;
-            for (int i = _spells.Count - 1; i >= 0; i--) _spells[i]?.Dispose();
+            var spells = _spells.ToArray();
             _spells.Clear();
+            foreach (var instance in spells) instance?.Dispose();
             _aura?.Dispose();
             _aura = null;
             foreach (IPerformerMagicEffectInstance instance in _retiringAuras) instance?.Dispose();

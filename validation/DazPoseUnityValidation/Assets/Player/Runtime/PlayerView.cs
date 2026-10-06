@@ -59,9 +59,34 @@ namespace DazPose.Player
             && activeOrientation.Mode != OrientationMode.FiniteLook ? activeOrientation.Target : null;
         public Vector3 CurrentMoveDestination => activeMove == null ? transform.position : activeMove.Destination;
         public Vector3 PlayerPosition => transform.position;
+        public Quaternion ViewRotation => RequireViewRig().rotation;
+        public Action CaptureMovementCancellation()
+        {
+            var captured = activeMove;
+            return () => { if (captured != null && ReferenceEquals(activeMove, captured)) {
+                activeMove = null; ++PositionCommandRevision;
+                Complete(captured.Waiter, PlayerViewCompletion.Cancelled);
+            } };
+        }
+        public Action CaptureOrientationCancellation()
+        {
+            var captured = activeOrientation;
+            return () => { if (captured != null && ReferenceEquals(activeOrientation, captured)) {
+                activeOrientation = null; ++OrientationCommandRevision;
+                Complete(captured.Waiter, PlayerViewCompletion.Cancelled);
+            } };
+        }
+        public void ResetPerformanceView(Vector3 position, Quaternion rotation)
+        {
+            CaptureMovementCancellation()(); CaptureOrientationCancellation()();
+            transform.position = position; RequireViewRig().rotation = rotation;
+        }
         public Vector3 CurrentForwardDirection => viewRig != null ? viewRig.forward : transform.forward;
         public Transform HeadTransform => headPose;
         public Camera MainCamera => mainCamera;
+        public float DefaultMoveDuration { get => defaultMoveDuration; set => defaultMoveDuration = Mathf.Max(0f, value); }
+        public float DefaultLookDuration { get => defaultLookDuration; set => defaultLookDuration = Mathf.Max(0f, value); }
+        public ViewTrackingSettings DefaultTrackingSettings { get => defaultTrackingSettings; set { value.Validate(); defaultTrackingSettings = value; } }
 
         private void Awake() => ResolveHierarchyReferences();
 

@@ -113,9 +113,14 @@ KeepHair for ordinary changes; capture explicit resolved hair in scene snapshots
 so recall is deterministic after unrelated prior scenes. No new director/language.
 
 One Assets/Scenes/ClothingSetup.unity. Same runtime controller in edit/play preview.
-Layer 1/2 checkboxes are mutually exclusive; neither checked means Base. Show
-runtime Outfit/Remove/Add/query state plus inspection, morph, walk, material and
-footwear controls. Save/Revert/Variant are explicit. Pose, anatomy, camera and
+Garment rows are grouped into Base/1/2 with explicit layer selectors and named
+removal/addition sequences. Remove order is 2 → 1 → Base, skipping empty groups.
+Show Outfit/Remove/Add/naked-preview state plus inspection, morph, walk, material
+and footwear controls. Naked preview retains selection; Unclothed clears it.
+Save Draft persists edits independently from Compile/Validate; failed fitting
+cannot erase a saved draft or advance the release. Compile updates the bound
+preview only after all reachable states pass. Save Draft/Revert/Variant/Publish,
+Undo/Redo, dirty state and edited/preview revision indicators are explicit. Pose, anatomy, camera and
 piece-isolation probes are not saved outfit defaults. Every load starts all layers.
 
 Body coverage, fit, toe/bind patches, lift/walk and particle binding follow the

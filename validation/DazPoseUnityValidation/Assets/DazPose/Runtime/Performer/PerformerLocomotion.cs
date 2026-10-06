@@ -223,6 +223,37 @@ namespace DazPose.Performer
             Complete(pending, LocomotionCompletion.PerformerDisabled);
         }
 
+        public void Cancel()
+        {
+            if (_disposed) return;
+            Request pending = _request;
+            _request = null;
+            _heldRequest = null;
+            _settlingTransformActive = false;
+            _holdArrivalPose = _holdSeatingApproachPose = false;
+            _motion = null;
+            _motionTime = 0f;
+            _state = PerformerLocomotionState.Idle;
+            _turnToActionActive = false;
+            _facingOnlyTurn = false;
+            _turnYawScale = 1f;
+            _reversalStopPending = _shortWalk = _stoppingForReversal = false;
+            _arrivalBlendStarted = false;
+            _arrivalBlendProgress = 0f;
+            EndpointCorrection = Vector3.zero;
+            UpdateArrivalHold();
+            _body.SetOwnership(false, true);
+            Complete(pending, LocomotionCompletion.Cancelled);
+        }
+
+        internal Action CaptureCancellation()
+        {
+            Request captured = _request;
+            return () => { if (captured != null && (ReferenceEquals(_request, captured) ||
+                _request == null && ReferenceEquals(_heldRequest, captured))) Cancel(); };
+        }
+        private Request _heldRequest;
+
         private void RequestTurnTo(Vector3 worldPosition,
             AwaitableCompletionSource<LocomotionCompletion> waiter)
         {
@@ -269,6 +300,7 @@ namespace DazPose.Performer
             if (waiter != null) request.Waiters.Add(waiter);
 
             _request = request;
+            _heldRequest = null;
             _reversalStopPending = false;
             _shortWalk = false;
             _stoppingForReversal = false;
@@ -428,6 +460,7 @@ namespace DazPose.Performer
             bool priorReversalStopPending = _reversalStopPending;
             bool priorShortWalk = _shortWalk;
             _request = next;
+            _heldRequest = null;
             bool finishingCurrentStop = _state == PerformerLocomotionState.Stopping;
             if (!finishingCurrentStop) _selectedStop = "none";
             if (superseded == null || _state != PerformerLocomotionState.Turning)
@@ -1133,6 +1166,7 @@ namespace DazPose.Performer
             if (_settlingTransformActive || (!_body.HoldArrivalPose && _body.LocomotionWeight > 0.001f)) return;
             Request arrived = _request;
             _request = null;
+            _heldRequest = _holdArrivalPose ? arrived : null;
             _state = PerformerLocomotionState.Idle;
             if (arrived != null && arrived.IsTurnTo)
             {

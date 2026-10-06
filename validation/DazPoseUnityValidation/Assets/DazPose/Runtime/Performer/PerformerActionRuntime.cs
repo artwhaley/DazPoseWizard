@@ -22,6 +22,8 @@ namespace DazPose.Performer
         private float _elapsed;
         private bool _recoveryRequested;
         private bool _hasAnchor;
+        private object _operationIdentity;
+        private Action _cancelRecovery;
         private bool _disposed;
 
         public bool IsPerforming => _state != PerformerActionState.Idle;
@@ -77,6 +79,7 @@ namespace DazPose.Performer
             _layer.SetFrame(0f, 0f);
             _current = action;
             _waiter = waiter;
+            _operationIdentity = new object();
             _state = PerformerActionState.Performing;
         }
 
@@ -104,11 +107,36 @@ namespace DazPose.Performer
             _disposed = true;
             AwaitableCompletionSource<ActionCompletion> disabledWaiter = IsPerforming ? _waiter : null;
             _waiter = null;
+            _operationIdentity = null;
             _current = null;
             _state = PerformerActionState.Idle;
             _recoveryRequested = false;
             _layer.Release();
+            _cancelRecovery?.Invoke();
+            _cancelRecovery = null;
             disabledWaiter?.TrySetResult(ActionCompletion.PerformerDisabled);
+        }
+
+        public void Cancel()
+        {
+            if (_disposed || !IsPerforming) return;
+            AwaitableCompletionSource<ActionCompletion> waiter = _waiter;
+            _waiter = null;
+            _current = null;
+            _state = PerformerActionState.Idle;
+            _recoveryRequested = false;
+            _elapsed = 0f;
+            _hasAnchor = false;
+            _layer.Release();
+            _cancelRecovery?.Invoke();
+            _cancelRecovery = null;
+            waiter?.TrySetResult(ActionCompletion.Cancelled);
+        }
+
+        internal Action CaptureCancellation()
+        {
+            object captured = _operationIdentity;
+            return () => { if (captured != null && ReferenceEquals(_operationIdentity, captured) && IsPerforming) Cancel(); };
         }
 
         private void ApplyTrajectory(float normalizedTime, bool finalSample)
@@ -145,6 +173,7 @@ namespace DazPose.Performer
             try
             {
                 _locomotion.WalkTo(_anchorPosition, _anchorForward);
+                _cancelRecovery = _locomotion.CaptureCancellation();
                 if (IsRecoverySettled()) Complete(ActionCompletion.Completed);
             }
             catch (Exception exception)
@@ -160,6 +189,8 @@ namespace DazPose.Performer
         {
             AwaitableCompletionSource<ActionCompletion> waiter = _waiter;
             _waiter = null;
+            _operationIdentity = null;
+            _cancelRecovery = null;
             _current = null;
             _state = PerformerActionState.Idle;
             _recoveryRequested = false;
@@ -171,6 +202,8 @@ namespace DazPose.Performer
         {
             AwaitableCompletionSource<ActionCompletion> waiter = _waiter;
             _waiter = null;
+            _operationIdentity = null;
+            _cancelRecovery = null;
             _current = null;
             _state = PerformerActionState.Idle;
             _recoveryRequested = false;

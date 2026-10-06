@@ -17,9 +17,9 @@ namespace DazPose.Player
         {
             get
             {
-                if (toyControlService == null) toyControlService = FindAnyObjectByType<ToyControlService>();
+                if (toyControlService == null) toyControlService = GetComponent<ToyControlService>();
                 if (toyControlService == null)
-                    throw new InvalidOperationException("No scene ToyControlService is available.");
+                    throw new InvalidOperationException("Player toy service is not bound. Assign toyControlService on this PlayerController.");
                 return toyControlService;
             }
         }
@@ -34,6 +34,8 @@ namespace DazPose.Player
         }
 
         public Transform HeadTransform => RequireView().HeadTransform;
+        public ToyControlService BoundToyService => toyControlService;
+        public void ConfigureToyService(ToyControlService service) => toyControlService = service;
         public Camera MainCamera => RequireView().MainCamera;
 
         public void Configure(Transform viewRig, Transform headPose, Camera mainCamera)
@@ -77,7 +79,7 @@ namespace DazPose.Player
         private void Awake()
         {
             if (view == null) view = GetComponent<PlayerView>();
-            if (toyControlService == null) toyControlService = FindAnyObjectByType<ToyControlService>();
+            if (toyControlService == null) toyControlService = GetComponent<ToyControlService>();
         }
 
         private void OnDisable() => view?.CancelActiveCommands();

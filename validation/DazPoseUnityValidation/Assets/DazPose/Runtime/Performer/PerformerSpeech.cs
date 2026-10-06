@@ -21,6 +21,7 @@ namespace DazPose.Performer
         private bool _hasObservedPlayback;
         private bool _reportedSourceInterference;
         private bool _disposed;
+        private bool _paused;
 
         public PerformerSpeech(AudioSource audioSource)
         {
@@ -47,11 +48,31 @@ namespace DazPose.Performer
         }
 
         public Awaitable<SpeechCompletion> SayAsync(AudioClip clip)
+            => SayAsync(clip, out _);
+
+        public Awaitable<SpeechCompletion> SayAsync(AudioClip clip, out long requestId)
         {
             if (clip == null) throw new ArgumentNullException(nameof(clip));
             var completion = new AwaitableCompletionSource<SpeechCompletion>();
-            Enqueue(clip, completion);
+            requestId = Enqueue(clip, completion);
             return completion.Awaitable;
+        }
+
+        public void Cancel(long requestId)
+        {
+            if (_current != null && _current.Id == requestId)
+            {
+                var request = _current; _current = null;
+                StopAndClearAudioSource(); _paused = false;
+                StartNextIfIdle(); Complete(request, SpeechCompletion.Cancelled);
+                return;
+            }
+            var pending = _pending.ToArray(); _pending.Clear();
+            SpeechRequest cancelled = null;
+            foreach (var request in pending)
+                if (request.Id == requestId) cancelled = request;
+                else _pending.Enqueue(request);
+            Complete(cancelled, SpeechCompletion.Cancelled);
         }
 
         public void StopSpeaking()
@@ -66,6 +87,13 @@ namespace DazPose.Performer
         public void Advance()
         {
             if (_disposed) return;
+            bool pause = Time.timeScale <= 0f;
+            if (pause != _paused)
+            {
+                _paused = pause;
+                if (_current != null) { if (pause) _audioSource.Pause(); else _audioSource.UnPause(); }
+            }
+            if (_paused) return;
             AdvancePlaybackState(_audioSource.isPlaying);
         }
 
@@ -85,7 +113,7 @@ namespace DazPose.Performer
             Complete(disabled, SpeechCompletion.PerformerDisabled);
         }
 
-        private void Enqueue(AudioClip clip, AwaitableCompletionSource<SpeechCompletion> completion)
+        private long Enqueue(AudioClip clip, AwaitableCompletionSource<SpeechCompletion> completion)
         {
             if (clip == null) throw new ArgumentNullException(nameof(clip));
             if (_disposed)
@@ -97,6 +125,7 @@ namespace DazPose.Performer
             if (completion != null) request.Waiters.Add(completion);
             _pending.Enqueue(request);
             StartNextIfIdle();
+            return request.Id;
         }
 
         private void AdvancePlaybackState(bool sourceIsPlaying)
@@ -138,6 +167,7 @@ namespace DazPose.Performer
             _audioSource.Play();
             _startedRequestCount++;
             if (_audioSource.isPlaying) _hasObservedPlayback = true;
+            if (Time.timeScale <= 0f) { _paused = true; _audioSource.Pause(); }
         }
 
         private void FinishCurrent()

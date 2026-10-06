@@ -4,6 +4,7 @@ namespace DazPose.Performer
     {
         Completed,
         Superseded,
-        PerformerDisabled
+        PerformerDisabled,
+        Cancelled
     }
 }

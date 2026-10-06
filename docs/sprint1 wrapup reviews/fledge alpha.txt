@@ -1,0 +1,40 @@
+Where test hardware is masquerading as production surface
+This is the most important finding: most of the "systems" are acceptance harnesses wearing a thin production costume. Calling any of these from the authoring script will produce exactly the "brittle kludge from the testing system" moment you're worried about.
+
+Erection/member (PartnerAnatomyTestController.cs) — lives only in PartnerRigAcceptance.unity. It's a slider + GUI panel + fixture line drawing. There is no runtime MaleMember/PlayerAnatomy component at all. The G8M morph endpoints pass numerically, but intermediate states, shell registration, and compliance are all "pending user visual review."
+Hand grip (HandGripAcceptanceHarness, HandGripSolver, PerformerHandGripController) — wired only in HandGripAcceptance.unity. Digit contact is finite-probe bracketing, an approximation, and visual finger/skin acceptance is still unverified. MotionDriver is explicitly never stopped or sough by the grip. If a script calls succubus.grip(penis) today, it grips analytic rods well, but not a real member.
+FirstContactPerformance / control panels — the only "scene" that exists is one hand-authored async C# method in FirstPerformanceVoid.unity. No director, no interpreter, no data-driven sequencing exists anywhere. Every "verb" is a C# method on SuccubusPerformer, not a scriptable command.
+Wardrobe runtime (PerformerWardrobe) — all the "passed" evidence lives in .dazposewizard/p0c-native-generation/..., an isolated private PoC project. Main-project progress.json has integration at FAILED, 0/1 assertions, and ClothingSetup.unity carries first-contact-era harness wiring. Runtime and layers are marked "running (incomplete)."
+Validation runners (scripts/run-wardrobe-execution.ps1, wardrobe-recipe.py, FunscriptRuntimeSelfTests, HandGripValidationRunner, etc.) all report against isolated project copies — good discipline, but it means none of it gates the real assets.
+Bridging hand contact → member (the gap)
+Your mental model needs three pieces to become production:
+
+Make the male avatar a real performance fixture. Today PartnerAnatomyTestController is a test menu. Move erection state, centerline guides, and compliance offsets into a runtime component on the Player (PlayerAnatomy / a G8MAnatomy profile), with the same ScriptableObject-profile pattern Performer uses (LaraRightHandGrip.asset-style). The compliance bone offsets should live there too.
+Make the member a IGripTarget. The grip stack already accepts IGripTarget.Evaluate(position01). Give the member an analytic contact surface (centerline + radius, mirroring GripContactRod) backed by the erection morph's actual endpoint, not a fixture cylinder. Then succubus.grip(penis) is just another target resolution.
+Compliance + motion finishing. "Finishes" for the member: (a) sample the erection morph's endpoints as the member follows subtle hand motion (root tracking with stiffness, not a rigid follow); (b) squeeze — drive a subtle width morph/bone scale from measured grip contact force or digit spread; (c) toy-style commandeered motion — let MotionDriver optionally push the member through a low-amplitude follow channel so the job animates even without full hand animation. Keep one authoritative playback clock (the rule already in your vocab doc).
+What to defer: full mesh-vs-skin contact, intermediate-state shell morph correctness, visual finger approval. Those are art-pipeline validation, not authoring blockers.
+Wardrobe: the system is wired against itself
+The guts are reasonable; the failure you describe is a real bug chain, not a UI problem alone:
+
+Two sources of layer truth. WardrobePreset.Parts returns a deep clone, so artist layer edits in ClothingSetupWindow land in WardrobeConfiguration.assignments but the preset assets keep stale Parts.
+Save forks and never writes back. Saving on a released catalog forks into Assets/Wardrobe/Candidates/working-<hash>/, rebinds the current scene, and the canonical WardrobeCatalog.asset never advances. Every other scene and the "default catalog" path stays stale.
+Released-catalog gate. ConfigurationApplies() requires configuration.GenerationHash == catalog.ReleasedGenerationId (or the default catalog is a candidate, in which case all outfit commands fail NotReleased). Result: your layer assignment is silently ignored and the old preset.Parts wins — exactly the symptom you described.
+UI reality: the Clothing Setup controls exist only in the Unity Editor window; there is zero wardrobe surface in the Avalonia app. Edit-mode toggles go to _session only and can't live-preview (Application.isPlaying gates), so you never see the divergent state until Play Mode.
+Suggested workflow, not just a UI pass: make WardrobeConfiguration the single source of truth for layer assignments (presets store only fittings), make WardrobeFitCompiler.Compile a pure function, make SaveConfiguration either mutate the canonical assets or require an explicit Publish step with visible state, and show the candidate/released/fork status prominently in the window. The "one persistent ClothingSetup scene" is right; the asset-state machine around it needs to be obvious.
+
+Gap to the target authoring surface
+succubus.dissolvein(startlocation) / say() / tryremoveclothinglayer() / grip(penis) / gripfollowmotiondriver() has no implementation today — no interpreter, no Say verb, no outfit verb in a runnable scene, and grip exists only against analytic rods. The seam is typed C# on SuccubusPerformer (+ ToyControlService under Player.Toys), which is the right shape to script against; what's missing is the thin dispatcher over it and the missing Say/outfit runtimes.
+
+Next week's cleanup/refactor plan
+Defect fixes (direct):
+
+Wardrobe single-source-of-truth: stop persisting stale Parts layers; make catalog publish explicit and visible; surface candidate/released state in ClothingSetupWindow.
+WardrobeFitCompiler and WardrobeGenerationPublisher.SnapshotPreset: remove hidden mutation/serialization writes.
+Promote PlayerAnatomy runtime component (erection state + compliance) out of the acceptance controller; deprecate PartnerAnatomyTestController to a debug menu over it.
+Make the G8M member implement IGripTarget; replace GripContactRod as the default penis target; keep analytic contact approximation, document it.
+Register FirstContactPerformance's hardcoded sequence as a data-driven ScenePerformance asset (the seed of the authoring interpreter), so the First Contact scene still runs but is now authored the same way users will author.
+Authoring-surface groundwork: 6. Introduce the command seam: a small PerformanceScript/ScenePerformance data format that maps the vocab (DissolveTo, Say, TryRemoveLayer, Grip, GripFollowMotion) to typed calls on SuccubusPerformer/PlayerController. Until this exists, "authoring session" is not testable. 7. Add the missing verbs at skeleton level: Say (clip + SALSA), Outfit/TryRemoveLayer/TryAddLayer wired to PerformerWardrobe through the new facade, Grip(penis) using the new member target. 8. Add minimal compliance: member root-follow tracking and a squeeze morph channel driven by grip; one playback clock.
+
+Process: 9. Freeze p0c-native-generation as the wardrobe validator and make run-wardrobe-execution.ps1 report against main-project assets, so "passed" means something at the main branch. 10. Don't build new toy/hardware/editor menus until the skeleton script can compose First Contact and the member target. Sprint goal for the 2-minute authoring session: ScenePerformance runs dissolve → say → dissolve → say → tryRemoveLayer → grip(penis) → follow motion driver, driven from an editable asset, in the main project.
+
+Nothing above was applied to the repo — this is analysis only.
