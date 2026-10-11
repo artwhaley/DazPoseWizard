@@ -23,6 +23,8 @@ namespace DazPose.Motion
 
         public bool IsRunning { get; private set; }
         public long SourceRevision => _sourceRevision;
+        /// <summary>Advances for explicit start/stop/reset/source replacement commands.</summary>
+        public long CommandGeneration { get; private set; }
 
         public MotionSourceMode SourceMode
         {
@@ -35,6 +37,7 @@ namespace DazPose.Motion
 
                 sourceMode = value;
                 _sourceRevision++;
+                CommandGeneration++;
                 RefreshActiveSource();
                 if (_activeSource == null)
                 {
@@ -71,6 +74,7 @@ namespace DazPose.Motion
                 if (funscriptProgram == value) return;
                 funscriptProgram = value;
                 _sourceRevision++;
+                CommandGeneration++;
                 CreateFunscriptPlayback();
                 RefreshActiveSource();
                 if (sourceMode != MotionSourceMode.Funscript) return;
@@ -175,6 +179,7 @@ namespace DazPose.Motion
                 return;
             }
             if (_activeSource.IsComplete) return;
+            CommandGeneration++;
             IsRunning = true;
             PublishRunningChanged(true);
         }
@@ -183,6 +188,7 @@ namespace DazPose.Motion
         public void StopMotion()
         {
             if (!IsRunning) return;
+            CommandGeneration++;
             IsRunning = false;
             PublishRunningChanged(false);
         }
@@ -197,6 +203,7 @@ namespace DazPose.Motion
                 return;
             }
             _sourceRevision++;
+            CommandGeneration++;
             _activeSource.Reset();
             if (IsRunning)
             {
@@ -211,6 +218,7 @@ namespace DazPose.Motion
         /// <summary>Stops and resets the selected source to its authored initial position.</summary>
         public void ResetMotion()
         {
+            CommandGeneration++;
             StopMotion();
             RefreshActiveSource();
             if (_activeSource == null)

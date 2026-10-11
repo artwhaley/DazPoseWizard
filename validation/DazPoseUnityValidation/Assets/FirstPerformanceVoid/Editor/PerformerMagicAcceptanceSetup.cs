@@ -40,7 +40,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             public float Pulse;
         }
 
-        [MenuItem("Tools/DAZ Pose/Magic/Generate Starter Magic Assets")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Magic/Generate Starter Magic Assets")]
+#endif
         public static void GenerateStarterMagicAssets()
         {
             try

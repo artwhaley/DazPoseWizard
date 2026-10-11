@@ -39,7 +39,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             "Assets/Daz3D/larabridge/Genesis8Female/Toenails.mat"
         };
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Install Dissolve Acceptance Harness")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Install Dissolve Acceptance Harness")]
+#endif
         public static void Install()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -121,7 +123,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             Debug.Log("NATIVE_DISSOLVE_SHADER_ACCEPTANCE_INSTALLED: permanently assigned 16 project-owned Lara materials (14 uDTU SSS, 2 Wet); runtime control uses one MaterialPropertyBlock. Previous dissolve assets remain in place until final visual acceptance. No camera, lighting, smoke, environment, or vendor source material was changed.", controls);
         }
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Validate Native Dissolve Shader Setup")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Validate Native Dissolve Shader Setup")]
+#endif
         public static void ValidateInstalledSetup()
         {
             PerformerDissolveProfile profile = AssetDatabase.LoadAssetAtPath<PerformerDissolveProfile>(ProfilePath);
@@ -146,7 +150,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             Debug.Log("NATIVE_DISSOLVE_SHADER_SETUP_VALID: 16 materials, 14 uDTU SSS, 2 Wet; required properties and exact assignments are valid; profile and rig reject incompatible material assignments; source DAZ materials remain separate.", performer);
         }
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Run Dissolve Material Stability Check")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Run Dissolve Material Stability Check")]
+#endif
         public static void RunMaterialStabilityCheck()
         {
             if (!EditorApplication.isPlaying)

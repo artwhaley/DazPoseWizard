@@ -46,11 +46,24 @@ namespace DazPose.Performer
                 reason = "A PerformerAction requires a project-owned baked Generic body clip.";
                 return false;
             }
-            if (!IsFinite(durationSeconds) || durationSeconds <= 0f
-                || !IsFinite(bodyClip.length) || bodyClip.length <= 0f
-                || Mathf.Abs(bodyClip.length - durationSeconds) > 0.02f)
+            if (!IsFinite(durationSeconds) || durationSeconds <= 0f)
             {
-                reason = "PerformerAction '" + name + "' needs a positive duration matching its body clip.";
+                reason = "PerformerAction '" + name + "' needs a positive duration.";
+                return false;
+            }
+            if (bodyClip.empty)
+            {
+                reason = "PerformerAction '" + name + "' body clip must contain finite, nonempty animation curves.";
+                return false;
+            }
+            if (!IsFinite(bodyClip.length) || bodyClip.length <= 0f)
+            {
+                reason = "PerformerAction '" + name + "' body clip must have positive duration.";
+                return false;
+            }
+            if (Mathf.Abs(bodyClip.length - durationSeconds) > 0.02f)
+            {
+                reason = "PerformerAction '" + name + "' needs a duration matching its body clip.";
                 return false;
             }
             if (!IsFinite(bodyClip.frameRate) || bodyClip.frameRate <= 0f || bodyClip.empty
@@ -100,10 +113,15 @@ namespace DazPose.Performer
 #if UNITY_EDITOR
             string assetPath = AssetDatabase.GetAssetPath(bodyClip);
             if (string.IsNullOrEmpty(assetPath) || AssetDatabase.IsSubAsset(bodyClip)
-                || !assetPath.StartsWith("Assets/DazPose/Generated/Actions/", StringComparison.OrdinalIgnoreCase)
                 || !assetPath.EndsWith(".anim", StringComparison.OrdinalIgnoreCase))
             {
-                reason = "PerformerAction '" + name + "' body clip must be a project-owned .anim under Assets/DazPose/Generated/Actions/.";
+                reason = "PerformerAction '" + name + "' body clip must be a standalone project-owned .anim asset.";
+                return false;
+            }
+            if (!IsFinite(bodyClip.length) || bodyClip.length <= 0f                || !IsFinite(bodyClip.frameRate)
+                || bodyClip.frameRate <= 0f)
+            {
+                reason = "PerformerAction '" + name + "' body clip must have positive duration and frame rate.";
                 return false;
             }
             EditorCurveBinding[] bindings = AnimationUtility.GetCurveBindings(bodyClip);

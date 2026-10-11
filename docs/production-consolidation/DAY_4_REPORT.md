@@ -1,6 +1,6 @@
 # Day 4 report
 
-Status: complete. Automated editor/player verification passed; the user subsequently reported manual validation working. Human approval is recorded separately in shared progress. Day 5 is now active.
+Status: complete. Automated editor/player verification passed; the user subsequently reported manual validation working. Human approval is recorded separately in shared progress. Day 5 is accepted, and remediation R01–R13 is technically complete. The second-outfit toe appearance review remains pending; Day 7 has not started.
 
 ## Delivered shape
 

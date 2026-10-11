@@ -1,0 +1,64 @@
+The authoring readiness build plan has a strong direction: it makes saved-scene Play the real acceptance path, removes competing gameplay owners, and clearly protects the authored environment and existing assets.
+
+I would keep its architecture and scope. Before implementation, I would tighten five contracts.
+
+1. B02 has a forward dependency on B03
+B02 requires an application-lifetime tuning cache and persistence for the next application launch. The application and settings services that would own those responsibilities are introduced in B03.
+
+That conflicts with the instruction to complete packets in dependency order.
+
+Recommendation: Explicitly split the responsibility: B02 implements persistent tuning semantics and identifies the settings owners; B03 supplies application-lifetime caching and disk persistence. Move the corresponding scene-reload acceptance into B03. This preserves the ordering without introducing a temporary second settings system.
+
+2. Tuning persistence needs an explicit precedence rule
+The plan distinguishes current in-memory tuning, serialized inspector values, explicitly saved runtime tuning and replacement instances after scene reload. However, it does not say exactly which values win when these sources overlap.
+
+It also leaves unclear when live changes—including Play Mode inspector changes—enter the application cache.
+
+Recommendation: Define a small precedence contract covering:
+
+First launch: serialized scene values versus explicitly saved tuning.
+Scene reload: current cached values versus newly instantiated defaults.
+Partial saved settings: what happens to fields not saved.
+Cache capture: how the most recent changes are retained before destruction.
+Save Current Tuning: the exact actor/session scope and persistence destination.
+This is the most important remaining product-contract detail. Otherwise, “tuning stays as set” could pass Stop/Start while still fail on navigation.
+
+3. Initialization promises playability but permits unresolved bindings
+The fixed decisions say Initialize Game Session makes a saved scene playable. B05 correctly refuses to choose arbitrarily among multiple actors, but then permits leaving an assignment field unresolved. The same question arises with ambiguous camera/player or motion-driver bindings.
+
+The built-in WelcomePerformance also needs a reliably assigned pose asset; “an assigned existing pose asset” does not establish how that assignment is guaranteed.
+
+Recommendation: Define two explicit initializer outcomes:
+
+Ready to Play: required references are saved and the default sequence has usable content.
+Needs author assignment: identify the unresolved fields without pretending initialization delivered a playable scene.
+Specify how the default welcome pose is selected. These are bounded editor diagnostics, not the generalized capability/preflight framework the plan correctly rejects.
+
+4. Cancellation should explicitly revoke the old run’s authority
+B01’s generations, checks after awaits and reverse-order cleanup are good. One subtle case deserves a direct requirement: an old continuation can resume after Stop and call a fire-and-forget method again.
+
+Service generations alone are insufficient if an old facade can acquire a fresh generation.
+
+Recommendation: State that a stopped/disposed run’s scoped facades are permanently inert and cannot obtain new output ownership. Only a new run or a new explicit application-level settings action can acquire it.
+
+Also specify that cleanup from an old run cannot stop a newer run’s follower or playback binding. The plan already gestures toward identity checks; making this an explicit acceptance case would remove ambiguity.
+
+5. Acceptance needs a few sharper, observable outcomes
+B08 appropriately avoids a new validation campaign, but some checks are still broad. “Scene behavior is identical” and “no surviving prior-run work” need concrete evidence, particularly for silent toy failures.
+
+Recommendation: Add a small acceptance checklist—not a framework—covering:
+
+Missing service/backend and rejected output do not change authored beat order or introduce acknowledgement-dependent waits.
+Stop during a ramp, wait or follower produces no subsequent local dispatch from that run.
+An old continuation cannot revive output after a new Start.
+Failed non-toy operations clean up partially acquired work.
+Natural completion remains Completed; explicit cancellation becomes Stopped.
+Tuning survives Stop/Start, reload and an explicitly saved next-launch round trip.
+Keep compilation, delivered-scene playback, player playback and user visual approval recorded separately, as the plan already requires.
+
+What I would preserve
+The strongest parts are the single host/sequence contract, application-owned Intiface lifetime, reuse of the saved Void environment, and the separation between silent output failures and genuine actor execution failures. The explicit prohibition on lifecycle tuning restoration is also unusually clear and valuable.
+
+Bottom line: This is a credible implementation plan, not an architectural rewrite in disguise. Its main weakness is a handful of underspecified boundaries—especially tuning persistence and initialization—not its overall design.
+
+This review used only the root build plan. No files were changed, and no builds, tests or application launches were run.

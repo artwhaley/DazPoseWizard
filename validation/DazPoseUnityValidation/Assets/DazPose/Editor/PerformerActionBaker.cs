@@ -39,7 +39,7 @@ namespace DazPose.Editor
             public float Duration => Source.length;
         }
 
-        [MenuItem("Tools/DAZ Pose/Action/Bake Selected Clip as Performer Action")]
+        [MenuItem("DazPose/Content/Bake Selected Clip as Action")]
         public static void BakeSelectedClip()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -50,7 +50,9 @@ namespace DazPose.Editor
             Bake(source, GeneratedFolder, Sanitize(source.name), "Selected source clip.", null);
         }
 
-        [MenuItem("Tools/DAZ Pose/Action/Generate Jump for Joy Acceptance Assets")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Action/Generate Jump for Joy Acceptance Assets")]
+#endif
         public static void GenerateJumpForJoyAcceptance()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

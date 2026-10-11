@@ -76,6 +76,6 @@ MonoBehaviour:
   hairPrefab: {fileID: 0}
   footwear: {fileID: 11400000, guid: ae765e074a5877442a30663f0e5c5fde, type: 2}
   fitStates:
-  - {fileID: 11400000, guid: d7d795fef105bc94cb2cfce4b8e4449a, type: 2}
-  - {fileID: 11400000, guid: ad8139816f90ee24d8fd476ca30f3c13, type: 2}
-  - {fileID: 11400000, guid: d8d4ad9c62d71dc47a6260e1836151c1, type: 2}
+  - {fileID: 11400000, guid: 732d17cac9c2ba9428b00e1d8cd8bb7b, type: 2}
+  - {fileID: 11400000, guid: 8484cbf2ff74af14898220e7ea63b513, type: 2}
+  - {fileID: 11400000, guid: b48535c232f165543abfddf001eee079, type: 2}

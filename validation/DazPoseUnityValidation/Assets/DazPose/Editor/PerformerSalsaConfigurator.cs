@@ -14,8 +14,8 @@ namespace DazPose.Editor.Importing
 {
     internal static class PerformerSalsaConfigurator
     {
-        private const string SetupMenu = "Tools/DAZ Pose/Development/Setup or Refresh Performer SALSA Lip Sync";
-        private const string AuditMenu = "Tools/DAZ Pose/Development/Audit Performer SALSA Lip Sync";
+        private const string SetupMenu = "DazPose/Development/Legacy/Setup or Refresh Performer SALSA Lip Sync";
+        private const string AuditMenu = "DazPose/Development/Legacy/Audit Performer SALSA Lip Sync";
 
         private sealed class SetupPlan
         {
@@ -30,7 +30,9 @@ namespace DazPose.Editor.Importing
             public string SpeechAudioPath;
         }
 
-        [MenuItem(SetupMenu)]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Setup or Refresh Performer SALSA Lip Sync")]
+#endif
         private static void SetupOrRefreshFromMenu()
         {
             if (!TryGetTargetPerformer(out var performer, out var targetFailure))
@@ -71,7 +73,9 @@ namespace DazPose.Editor.Importing
             }
         }
 
-        [MenuItem(AuditMenu)]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Audit Performer SALSA Lip Sync")]
+#endif
         private static void AuditFromMenu()
         {
             if (!TryGetTargetPerformer(out var performer, out var failure))

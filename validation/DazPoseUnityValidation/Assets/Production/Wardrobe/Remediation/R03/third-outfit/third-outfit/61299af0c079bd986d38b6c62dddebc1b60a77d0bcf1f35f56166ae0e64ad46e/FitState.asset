@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c1c914b1f27e0458cbbbdb65bef6b2, type: 3}
+  m_Name: FitState
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobeFitState
+  visibleMask: 1
+  characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
+  status: 1
+  issueCodes: []
+  bodyMesh: {fileID: 4300000, guid: 6de2a74de068dda45b0ca4246436d76b, type: 2}
+  attachmentMeshes:
+  - {fileID: 4300000, guid: 21435610f1af7e146bea3bc58c9082a1, type: 2}
+  - {fileID: 4300000, guid: 4e66beea2d270054f8cbff5eb702998c, type: 2}
+  - {fileID: 4300000, guid: e78ee08b39fb6ee4fab4c6de82a53303, type: 2}
+  surfaceBindings: {fileID: 11400000, guid: 459524fbd2ab6904399608abcab25d22, type: 2}
+  dissolveProfile: {fileID: 11400000, guid: c76ca34684a3a6d40b673dfe8136a082, type: 2}
+  coverage:
+    visiblePieceIds: []
+  footwear:
+    footwearActive: 0
+    bentFootPoseActive: 1
+    standingLift: 0.11570963
+    footShrink: 0.05
+    supportProfileId: shoe_12520

@@ -1,0 +1,406 @@
+{
+  "scope": "Document structure, dependency order, existing source anchors, recovery identity and progress. Not Unity execution or remediation acceptance.",
+  "passed": true,
+  "checks": [
+    {
+      "check": "13 ordered individual tickets",
+      "passed": true
+    },
+    {
+      "check": "R01_STAGE_AND_RUNNER.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R01_STAGE_AND_RUNNER.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R01_STAGE_AND_RUNNER.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R02_TOE_REPRODUCTION.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R02_TOE_REPRODUCTION.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R02_TOE_REPRODUCTION.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R03_TOE_REPAIR.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R03_TOE_REPAIR.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R03_TOE_REPAIR.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R04_CONTACT_WARDROBE_PREFLIGHT.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R04_CONTACT_WARDROBE_PREFLIGHT.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R04_CONTACT_WARDROBE_PREFLIGHT.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R05_CONTENT_PREFLIGHT_AND_ERRORS.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R05_CONTENT_PREFLIGHT_AND_ERRORS.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R05_CONTENT_PREFLIGHT_AND_ERRORS.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R06_SCOPED_FINITE_COMMANDS.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R06_SCOPED_FINITE_COMMANDS.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R06_SCOPED_FINITE_COMMANDS.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R07_PERSISTENT_VIEW_PLAYBACK_TOYS.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R07_PERSISTENT_VIEW_PLAYBACK_TOYS.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R07_PERSISTENT_VIEW_PLAYBACK_TOYS.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R08_FACADE_COVERAGE_FIRST_CONTACT.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R08_FACADE_COVERAGE_FIRST_CONTACT.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R08_FACADE_COVERAGE_FIRST_CONTACT.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R09_CONTENT_LOCATION.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R09_CONTENT_LOCATION.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R09_CONTENT_LOCATION.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R10_SOURCE_MOVE_MANIFEST.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R10_SOURCE_MOVE_MANIFEST.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R10_SOURCE_MOVE_MANIFEST.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R11_ASSEMBLY_BOUNDARIES.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R11_ASSEMBLY_BOUNDARIES.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R11_ASSEMBLY_BOUNDARIES.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R12_BUILD_AND_REGRESSION_GATES.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R12_BUILD_AND_REGRESSION_GATES.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R12_BUILD_AND_REGRESSION_GATES.md not executed",
+      "passed": true
+    },
+    {
+      "check": "R13_DELIVERY_AND_HANDOFF.md implementation steps / gate",
+      "passed": true
+    },
+    {
+      "check": "R13_DELIVERY_AND_HANDOFF.md dependency",
+      "passed": true
+    },
+    {
+      "check": "R13_DELIVERY_AND_HANDOFF.md not executed",
+      "passed": true
+    },
+    {
+      "check": "all JSON parses",
+      "passed": true
+    },
+    {
+      "check": "index link R01_STAGE_AND_RUNNER.md",
+      "passed": true
+    },
+    {
+      "check": "index link R02_TOE_REPRODUCTION.md",
+      "passed": true
+    },
+    {
+      "check": "index link R03_TOE_REPAIR.md",
+      "passed": true
+    },
+    {
+      "check": "index link R04_CONTACT_WARDROBE_PREFLIGHT.md",
+      "passed": true
+    },
+    {
+      "check": "index link R05_CONTENT_PREFLIGHT_AND_ERRORS.md",
+      "passed": true
+    },
+    {
+      "check": "index link R06_SCOPED_FINITE_COMMANDS.md",
+      "passed": true
+    },
+    {
+      "check": "index link R07_PERSISTENT_VIEW_PLAYBACK_TOYS.md",
+      "passed": true
+    },
+    {
+      "check": "index link R08_FACADE_COVERAGE_FIRST_CONTACT.md",
+      "passed": true
+    },
+    {
+      "check": "index link R09_CONTENT_LOCATION.md",
+      "passed": true
+    },
+    {
+      "check": "index link R10_SOURCE_MOVE_MANIFEST.md",
+      "passed": true
+    },
+    {
+      "check": "index link R11_ASSEMBLY_BOUNDARIES.md",
+      "passed": true
+    },
+    {
+      "check": "index link R12_BUILD_AND_REGRESSION_GATES.md",
+      "passed": true
+    },
+    {
+      "check": "index link R13_DELIVERY_AND_HANDOFF.md",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceExecutionScope.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraHeelReview.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/FootwearPoseDriver.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeFitCompiler.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Editor/WardrobeImporter.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/PerformerWardrobe.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobePreset.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Partner/PartnerContactTarget.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Partner/PartnerBody.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/HandGrip/IGripTarget.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerGesture.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerAction.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Magic/PerformerSpell.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Magic/PerformerAura.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Magic/PerformerMagicRuntime.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyCommandReport.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/FirstContactPerformance.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Editor/Performer/PerformerDefaultsEditor.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+      "passed": true
+    },
+    {
+      "check": "source anchor validation/DazPoseUnityValidation/Assets/DazPose/Editor/DazPoseRestPoseService.cs",
+      "passed": true
+    },
+    {
+      "check": "recovery archive exists and size matches",
+      "passed": true
+    },
+    {
+      "check": "recovery manifest passed",
+      "passed": true
+    },
+    {
+      "check": "baseline remains HEAD",
+      "passed": true
+    },
+    {
+      "check": "active packet selects stack",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder CONTRACT.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R01_STAGE_AND_RUNNER.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R02_TOE_REPRODUCTION.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R03_TOE_REPAIR.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R04_CONTACT_WARDROBE_PREFLIGHT.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R05_CONTENT_PREFLIGHT_AND_ERRORS.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R06_SCOPED_FINITE_COMMANDS.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R07_PERSISTENT_VIEW_PLAYBACK_TOYS.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R08_FACADE_COVERAGE_FIRST_CONTACT.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R09_CONTENT_LOCATION.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R10_SOURCE_MOVE_MANIFEST.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R11_ASSEMBLY_BOUNDARIES.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R12_BUILD_AND_REGRESSION_GATES.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder R13_DELIVERY_AND_HANDOFF.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder SOURCE_INDEX.md",
+      "passed": true
+    },
+    {
+      "check": "no unresolved placeholder START.md",
+      "passed": true
+    }
+  ]
+}

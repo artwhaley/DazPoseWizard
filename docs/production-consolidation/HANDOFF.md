@@ -1,15 +1,61 @@
-# Current handoff — pre-authoring remediation
+# Current handoff — authoring implementation
 
-Days 1–5 remain accepted. The user reported a second-outfit toe defect after moving stockings/shoes to Layer 1 and ordered remediation before the all-up authored scene. Read `PRE_AUTHORING_REMEDIATION_PLAN.md` and shared progress. Issues 1, 2, 3, 5 and 6 are in scope; issue 4 and other-character controller adaptation are excluded. Preserve working Lara rig conventions.
+## October 11 — automatic behavior-settings persistence
 
-Planning and source inspection are complete; implementation and new playback reproduction have not begun. Current saved mask-1 footwear/pose/lift/shrink are already disabled, so investigate actual toe transforms and fitted geometry. Preserve the user's current layer edits when staging; older Day 5 evidence is not authority to overwrite them.
+Behavior settings now save automatically during Play. The host observes Inspector/script edits while running, paused, stopped or completed; lifecycle capture also preserves last-frame changes. Settings snapshots are detached from mutable curve references and written atomically only when values change. The extra Save Current Tuning production menu command was removed; its service method remains a compatibility forwarding call. Normal Edit Mode scene/content saving remains unchanged.
 
-Proceed in packet order A–F. Existing required integration/player gates remain. No GUI automation, commit/push or new framework is authorized by this remediation packet. The composed authoring scene follows the repairs.
+Final-source saved Welcome Play passed paused/completed and stopped persistence through fresh settings services, unchanged-file write avoidance and in-place curve edit persistence. Evidence: .dazposewizard/authoring-evidence/20261011-automatic-tuning-final-build.log and isolated TestOutput/Authoring/AutomaticTuning.txt. The check restores its temporary disk/test settings. The production player rebuild succeeded with zero errors and was copied to validation/DazPoseUnityValidation/Builds/Authoring with every copied file hash-verified. Delivery record: .dazposewizard/authoring-evidence/20261011-automatic-tuning-delivery.json. No new built-player interaction or artistic approval is inferred.
+
+## October 11, 2026 — player functional checks accepted; authoring walkthrough delivered
+
+The user confirmed all remaining proposed player checks: Settings persistence across quit/relaunch, Stop/Start, Restart, scene switching and Main Menu navigation. These are accepted user observations; no new execution was performed to record them. This supersedes the functional-player pending wording in older dated entries below. Artistic composition approval and the historical second-outfit toe appearance remain separate.
+
+Next: author a fresh coherent scene using [CONTENT_AUTHORING_WALKTHROUGH.md](../../CONTENT_AUTHORING_WALKTHROUGH.md) and the root API reference. The walkthrough was checked against production editor source, host/bindings and saved sequence examples. It records four concrete authoring seams: manual sequence attach/assignment, manual semantic-mark creation, manual partner staging and scattered prepared-asset discovery. No runtime/editor code changed. Discuss these with the user and close focused workflow gaps as the authoring exercise exposes them.
+
+## Settings/player repair — user retest passed
+
+The user reported invisible Settings and a lockup after selecting a scene. Settings had serialized zero local scale as a nested canvas. The original direct-callback test activated an invisible panel and did not establish usable UI. The first pointer probe also accepted degenerate geometry at (0,0); that result is invalid as a visibility check.
+
+Settings now uses unit scale, stretches to its parent canvas, and has no nested CanvasScaler. Saved prefab/scene geometry was repaired with GUIDs preserved. The strengthened check requires visible area, an on-screen center and the intended handler as the top raycast hit. Full menu/in-scene navigation now uses raycast-resolved pointer events with a rendered frame between separate interactions; it passed Settings open/close, Showcase, paused Stop/Start, Restart, menu, Companion and menu. Evidence: B08-pointer-fixed.log and B08-navigation-pointer-fixed-2.log in .dazposewizard/authoring-evidence.
+
+The rebuilt production menu and separate startup diagnostic build both succeeded with zero errors. The diagnostic build entered the exact saved AuthoringShowcase scene, without an injected runner or a custom runtime control API. Its Direct3D12 player reached Completed and was responding during checks; it was then closed. Evidence: B08-direct-scene-player.log. No independent scene-lockup cause was established.
+
+The corrected menu player is open in the user's interactive session (process 11848; handle 3016140). Its log recorded scene load started, saved Showcase host started, and scene load completed. The user retested: “Yup, all good, settings opened and closed, then scene started.” This confirms actual Settings open/close and menu-driven Invitation startup. It does not imply all player replay/persistence observations or scene appearance approval. Evidence: B08-settings-fixed-visible-player.json/log; builds at Builds/Authoring and Builds/AuthoringStartup. Source diagnostics log only local scene/host lifecycle, with no toy acknowledgement/error reaction.
+
+October 8, 2026. B01–B08 implementation is delivered. B08's actual player interaction and user visual approval remain pending; do not mark those from source, callback checks or a visible window. Use the root [build plan](../../AUTHORING_READINESS_BUILD_PLAN.md), [API guide](../../CONTENT_AUTHORING_API.md) and shared progress.
+
+B01–B04 passed bounded Unity checks in the existing isolated harness. Final B01 (10 assertions) and B03 (7 assertions) reruns passed against final functional source. B02/B04 remain their recorded successful contract checks. Reports are under authoring-reports/B01.md through B04.md. These supersede specific historical runner assertions; they are not a full R01–R13 rerun. B01 covers silent/no-wait toys, complete local cancellation, paused Stop, retired output ownership and partial failure. B02 covers persistent tuning, configured smooth defaults and interpolation cancellation. B03 covers app identity, live/disk precedence, explicit save, absent fields and scope separation. B04 covers terminal host states, replacement and retained tuning.
+
+B05a's saved AuthoringWelcome completed in actual editor Play with its saved host. Initialize twice preserved objects, IDs and tuning. B05b accounts for all 67 baseline menu attributes: 18 normal production commands after adding 11 new commands, plus 60 gated legacy attributes. Final scene initialization also installs per-instance actor identity and shared clock binding, preserves authored Intiface endpoint/pause settings or reports a conflict, and hides legacy requirement/manifests from the production bindings inspector.
+
+B06's saved MainMenu, SettingsPanel and PerformanceControls are installed. Graphics Editor Play passed the saved button callbacks: MainMenu → Settings open/close → Showcase → paused Stop/Start → Restart → menu → Companion → menu. One app/service survived scene unload/reload. Live actor and clock tuning survived Restart; the other scene kept its own scope. Evidence: .dazposewizard/authoring-evidence/B08-navigation.log. This verifies saved callbacks, not built-player mouse interaction.
+
+B07's exact saved AuthoringShowcase and AuthoringCompanion both reached Completed in graphics-enabled Editor Play through their saved hosts, without runner injection. Evidence: B08-showcase-support-reconciled.log and B08-companion-graphics.log in .dazposewizard/authoring-evidence. The roughly 100-second showcase covers speech, expression/gesture/pose, camera, wardrobe/hair, contact, shared funscript/toy output and dissolve. Companion covers locomotion, seating, action and magic. The copies preserve the authoritative environment; Welcome's copied obsolete stage particle component was also removed.
+
+Actual trial repairs: copied standalone clips use .anim with GUIDs preserved; hair uses its full released inventory ID; scoped GripAsync holds a chosen position before explicit FollowGripMotion. The 49.6 mm contact failure was measured inside and after the animation stream. IK reached the exact wrist target; footwear floor support then moved the rig. The arm now reconciles its already blended wrist after support, without changing footwear, calibration, acquisition tolerance or tuning. Earlier genuine failures and the unsuitable nographics VFX attempt remain in evidence.
+
+The fresh Windows production build succeeded at 2026-10-08T16:17:42Z with zero errors:
+C:/Users/artwh/OneDrive/Documents/DazPoseWizard/validation/DazPoseUnityValidation/Builds/Authoring/DazPoseGame.exe
+Its .build.json lists MainMenu first, AuthoringWelcome, AuthoringShowcase and AuthoringCompanion. No validation/development defines or fixture scenes were included; its Managed directory has no DazPose.Validation assembly. The player was launched visibly using Direct3D12/windowed 1280×800. B08-visible-player.json records DESKTOP-MQUSNML\artwh, matching launcher/player session 1, nonzero handle 335250, title DazPoseUnityValidation and Responding=true. It remains open for the requested human observations; close only this test player when finished.
+
+Remaining acceptance: follow [B08_MANUAL_CHECKS.md](authoring-reports/B08_MANUAL_CHECKS.md). The session has no native desktop-control tool required by the installed computer-use skill, and native CUA is disabled. No substitute input injection/custom player protocol was added. Actual player Settings persistence, scene switching and user appearance approval are not claimed. The historical second-outfit toe observation remains pending and separate.
+
+Preservation: all three pre-implementation hashes (original FirstPerformanceVoid, Lara prefab, Partner prefab) still match. All 4,181 scanned asset metas had zero duplicate GUIDs. Evidence: .dazposewizard/authoring-evidence/B08-guid-assembly-check.json. Source-before copies and baseline recovery archive/commit remain intact. Immutable wardrobe releases and artist layer assignments were not changed. No commit, push, hardware certification or independent import acceptance is implied.
 
 ---
-# Current handoff — Day 5
 
-Day 4 is complete: the user reports manual validation working. Day 5 technical implementation, transaction checks, saved-scene editor/player playback and Windows builds passed. The user has accepted Day 5; shared progress records completion. Day 6 remains unstarted and awaits execution authorization.
+# Historical handoff — remediation technical work complete
+
+Days 1–5 remain accepted. The user ordered remediation before the all-up authored scene, with review issues 1, 2, 3, 5 and 6 in scope and issue 4/other-character adaptation excluded. Preserve Lara's working rig conventions, user-edited wardrobe layers, baseline commit `18b268afe4df1ce11046a760b757002571a104c6`, and its ignored-input recovery archive.
+
+R01–R13 are technically complete. R12 passed 35 assertions and built/ran both validation and production smoke players on Direct3D12. The exact saved R03 toe scene passed 43/43 in Editor Play Mode and 43/43 in the Direct3D12 Windows player. R13 exported 742 unique scene/candidate dependencies and 1,503 asset/meta/folder-meta entries with no GUID collisions or final hash mismatches. R03 reduced the measured residual from `0.06201129034161568 m` to `0.00000005625064858350015 m`; see `remediation/COMPLETION_REPORT.md`, `remediation/reports/R03.md`, `remediation/reports/R12.md`, `remediation/reports/R13.md` and the R13 evidence ledger.
+
+The only remaining remediation gate is the user's visual check of second-outfit Layer 1 removal in `Assets/Scenes/ClothingSetup.unity`; follow `remediation/MANUAL_CHECKS.md`. The independent clean-context import and physical toy hardware checks remain separate and unchanged. Day 7's all-up authored playable sequence has not started. No GUI automation, commit or push was used.
+
+---
+# Historical handoff — Day 5
+
+At that handoff, Day 4 had completed and the user reported manual validation working. Day 5 technical implementation, transaction checks, saved-scene editor/player playback and Windows builds passed; the user later accepted Day 5. The current remediation and Day 7 status are recorded above.
 
 Read `DAY_5_REPORT.md`, `DAY_5_MANUAL_CHECKS.md` and shared `progress.json`. Evidence is `.dazposewizard/day5-evidence/`. Delivered scenes are `validation/DazPoseUnityValidation/Assets/Production/Scenes/Day5WardrobeValidation.unity` and `Assets/Scenes/ClothingSetup.unity`. Both contain their saved runner. No GUI injection is required.
 

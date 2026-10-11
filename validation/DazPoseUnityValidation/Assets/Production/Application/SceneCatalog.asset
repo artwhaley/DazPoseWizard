@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac76dca5cee4689bb08031548c8b528, type: 3}
+  m_Name: SceneCatalog
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Game.SceneCatalog
+  mainMenuPath: Assets/Production/Scenes/MainMenu.unity
+  entries:
+  - id: 1e5ee9571de64a7aa86fd7c8eb2fec15
+    title: "Welcome \xB7 pose"
+    description: A minimal saved sequence.
+    scenePath: Assets/Production/Scenes/AuthoringWelcome.unity
+    enabled: 1
+  - id: 5f94662b742f4163b564418d107940be
+    title: "Invitation \xB7 authoring showcase"
+    description: Speech, wardrobe, camera and shared contact motion.
+    scenePath: Assets/Production/Scenes/AuthoringShowcase.unity
+    enabled: 1
+  - id: 49acd30d25ed414fa502aa829057f1b5
+    title: "Encore \xB7 movement and magic"
+    description: Walking, seating, full-body action and effects.
+    scenePath: Assets/Production/Scenes/AuthoringCompanion.unity
+    enabled: 1

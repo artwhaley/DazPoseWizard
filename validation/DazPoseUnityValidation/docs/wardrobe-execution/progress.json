@@ -1,6 +1,15 @@
 {
   "schemaVersion": 1,
   "assignment": "wardrobe-runtime-and-setup",
+  "historicalSnapshotNote": "The legacy implementationStatus/gates/remaining/lastEvidence fields below preserve the earlier Day 1 wardrobe snapshot. Their incomplete E3/E4/E7 entries are historical, superseded as current TODOs by the approved seven-day plan and completed R01-R13 remediation stack; they are not claims of current clean-context import or hardware acceptance.",
+  "currentAuthority": {
+    "day5": "complete_accepted_by_user",
+    "remediation": "R01-R13_technical_complete",
+    "toeAppearance": "pending_user_manual_check; follow docs/production-consolidation/remediation/MANUAL_CHECKS.md",
+    "physicalToyHardware": "not_certified_separate_task",
+    "independentCleanContextImport": "unpassed_separate_task",
+    "day7AuthoringSequence": "not_started"
+  },
   "implementationStatus": "incomplete",
   "currentStage": "E3",
   "completedGates": [

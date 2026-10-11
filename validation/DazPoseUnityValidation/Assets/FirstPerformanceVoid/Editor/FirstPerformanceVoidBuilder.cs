@@ -25,7 +25,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
         private const string RingPath = Root + "/Meshes/StageGlowRing.asset";
         private static readonly Color Neon = new Color(1f, 0.015f, 1f);
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Build or Open Lounge")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Build or Open Lounge")]
+#endif
         public static void BuildOrOpen()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -48,7 +50,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             Build(path);
         }
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Refresh Generated Materials and Volume Defaults")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Refresh Generated Materials and Volume Defaults")]
+#endif
         public static void RefreshLookDefaults()
         {
             // Explicitly requested refresh resets only these owned assets, never scene placement.

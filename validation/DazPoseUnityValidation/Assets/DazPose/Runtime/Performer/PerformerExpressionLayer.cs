@@ -216,6 +216,18 @@ namespace DazPose.Performer
             Begin(new Dictionary<string, List<Contribution>>(StringComparer.Ordinal), blendTime);
         }
 
+        public void CancelTransition()
+        {
+            if (_disposed || !IsTransitioning) return;
+            var evaluated = Collapse();
+            _source = Clone(evaluated);
+            _target = Clone(evaluated);
+            _duration = 0f;
+            _elapsed = 0f;
+            BuildBindings();
+            UpdateJob();
+        }
+
         public void Advance(float deltaTime)
         {
             if (_disposed) return;

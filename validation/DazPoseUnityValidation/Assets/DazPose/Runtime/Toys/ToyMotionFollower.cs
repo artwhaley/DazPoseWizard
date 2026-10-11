@@ -265,7 +265,7 @@ namespace DazPose.Toys
                 try
                 {
                     bool sent = await _service.DispatchFollowerOutputAsync(next.Binding, next.OutputRevision,
-                        next.Value, duration, next.ServiceGeneration).ConfigureAwait(false);
+                        next.Value, duration, next.ServiceGeneration);
                     if (!sent) continue;
                     _lastMapped = next.Value;
                     _lastSentDuration = duration / 1000d;
@@ -305,7 +305,7 @@ namespace DazPose.Toys
                 if (_activeOutput.Capability == ToyOutputCapability.Position)
                 {
                     bool held = await _service.DispatchFollowerOutputAsync(_positionHoldBinding,
-                        revision, _binding.Map(_driver.CurrentSample.Position01), 0, commandGeneration).ConfigureAwait(false);
+                        revision, _binding.Map(_driver.CurrentSample.Position01), 0, commandGeneration);
                     if (!held) return;
                     _lastError = string.Empty;
                     SetDiagnostic();
@@ -320,7 +320,7 @@ namespace DazPose.Toys
 
         private async Task StopAndReleaseAsync(int commandGeneration, long revision)
         {
-            await StopHardwareAsync(commandGeneration, revision).ConfigureAwait(false);
+            await StopHardwareAsync(commandGeneration, revision);
             _service.ReleaseFollowerOwnership(_activeOutput, revision);
         }
 

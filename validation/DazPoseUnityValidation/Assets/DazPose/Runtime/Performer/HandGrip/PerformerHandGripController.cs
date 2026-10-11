@@ -10,7 +10,7 @@ namespace DazPose.Performer.HandGrip
         VerticalReachImpossible, LocomotionUnavailable, LocomotionSuperseded, TargetMovedBeyondPlan,
         PerformerDisabled, AcquisitionTimeout, BasePenetration }
 
-    [DisallowMultipleComponent]
+    [DefaultExecutionOrder(9500), DisallowMultipleComponent]
     [AddComponentMenu("Performer/Hand Grip/Performer Hand Grip Controller")]
     public sealed class PerformerHandGripController : MonoBehaviour
     {
@@ -41,11 +41,16 @@ namespace DazPose.Performer.HandGrip
         private bool _reposition;
         private bool _failAfterRelease;
         private AwaitableCompletionSource<GripCompletion> _completion;
+        private AwaitableCompletionSource<GripCompletion> _releaseCompletion;
+        private int _releaseGeneration;
         public bool CalibrationMode { get; set; }
         public Vector4 CalibrationCurls { get; set; }
         public float CalibrationLittleCurl { get; set; }
         public GripInteractionState State { get; private set; }
         public GripFailureReason FailureReason { get; private set; }
+        public HandGripAlignmentDiagnostics FailureAlignment { get; private set; }
+        public HandGripStatus FailureSolveStatus { get; private set; }
+        public string FailureDetails { get; private set; }
         public GripReachPlan ReachPlan { get; private set; }
         public bool RequiredLocomotion { get; private set; }
         public IGripTarget Target => _target;
@@ -111,6 +116,8 @@ namespace DazPose.Performer.HandGrip
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
             int generation = ++_generation;
+            _releaseCompletion?.TrySetResult(GripCompletion.Superseded);
+            _releaseCompletion = null;
             var previous = _completion;
             _completion = null;
             CancelOwnedStagingWalk();
@@ -153,10 +160,32 @@ namespace DazPose.Performer.HandGrip
         public void ReleaseGrip()
         {
             _generation++; _failAfterRelease = false;
+            _releaseCompletion?.TrySetResult(GripCompletion.Released);
+            _releaseCompletion = null;
             CancelOwnedStagingWalk();
             if (IsAvailable) BeginRelease(false);
             else State = GripInteractionState.Idle;
             Complete(GripCompletion.Released);
+        }
+
+        public Awaitable<GripCompletion> ReleaseGripAsync()
+        {
+            var source = new AwaitableCompletionSource<GripCompletion>();
+            if (State == GripInteractionState.Idle || State == GripInteractionState.Failed || !IsAvailable)
+            {
+                source.TrySetResult(GripCompletion.Released);
+                return source.Awaitable;
+            }
+
+            _generation++;
+            _releaseGeneration = _generation;
+            _releaseCompletion?.TrySetResult(GripCompletion.Superseded);
+            _releaseCompletion = source;
+            _failAfterRelease = false;
+            CancelOwnedStagingWalk();
+            BeginRelease(false);
+            Complete(GripCompletion.Released);
+            return source.Awaitable;
         }
         private Action _walkingCancellation;
         private void CancelOwnedStagingWalk()
@@ -178,6 +207,8 @@ namespace DazPose.Performer.HandGrip
             CancelOwnedStagingWalk();
             State = GripInteractionState.Idle; _motionSuppression = 0f;
             if (IsAvailable) SetInactive();
+            _releaseCompletion?.TrySetResult(GripCompletion.Released);
+            _releaseCompletion = null;
             Complete(GripCompletion.Released);
         }
         private void BeginRelease(bool reposition)
@@ -190,6 +221,8 @@ namespace DazPose.Performer.HandGrip
             return _planner.Plan(root, shoulder, _envelope, _target, profile.PalmAnchorLocalPosition,
                 profile.PalmAnchorLocalRotation, profile.GripFrameCalibration, profile.PalmClearance, wristTwistDegrees, search);
         }
+        private void LateUpdate() { if (OwnsArm && !CalibrationMode) _arm?.ReconcileAfterSupport(); }
+
         internal void Advance(float delta)
         {
             if (!IsAvailable) return;
@@ -237,6 +270,11 @@ namespace DazPose.Performer.HandGrip
                         : _reposition ? GripInteractionState.Planning : GripInteractionState.Idle;
                     _elapsed = 0f;
                     if (_failAfterRelease) Complete(GripCompletion.Failed);
+                    if (_releaseCompletion != null && _releaseGeneration == _generation)
+                    {
+                        _releaseCompletion.TrySetResult(GripCompletion.Released);
+                        _releaseCompletion = null;
+                    }
                 }
                 return;
             }
@@ -334,6 +372,12 @@ namespace DazPose.Performer.HandGrip
             _generation++;
             CancelOwnedStagingWalk();
             FailureReason = reason;
+            FailureAlignment=AlignmentDiagnostics;
+            FailureSolveStatus=SolveResult.Status;
+            FailureDetails=_arm==null ? "no arm" : "reach="+ReachFraction+
+                "; cached lengths="+_arm.UpperLength+"/"+_arm.LowerLength+
+                "; live lengths="+Vector3.Distance(_arm.Upper.position,_arm.Lower.position)+"/"+Vector3.Distance(_arm.Lower.position,_arm.Hand.position)+
+                "; "+_arm.EvaluationDetails+"; desired wrist="+_desired.Wrist.position+"; desired="+FailureAlignment.DesiredGripCenter+"; actual="+FailureAlignment.ActualGripCenter;
             if (IsAvailable && _weight > 0f)
             { BeginRelease(false); _failAfterRelease = true; return; }
             else { State = GripInteractionState.Failed; _reposition = false; if (IsAvailable) SetInactive(); }
@@ -346,6 +390,8 @@ namespace DazPose.Performer.HandGrip
             CancelOwnedStagingWalk();
             _layer?.Dispose(); _layer = null; _arm?.Dispose(); _arm = null;
             _weight = 0f; _motionSuppression = 0f; State = GripInteractionState.Idle;
+            _releaseCompletion?.TrySetResult(GripCompletion.PerformerDisabled);
+            _releaseCompletion = null;
             Complete(GripCompletion.PerformerDisabled);
         }
         public HandGripStatus GetDigitStatus(HandGripDigit digit) => _layer != null ? _layer.GetDigitStatus((int)digit) : HandGripStatus.InvalidProfile;

@@ -31,7 +31,7 @@ namespace DazPose.Performer
             }
             if (clip.legacy)
             {
-                reason = "Gesture clip '" + clip.name + "' is Legacy. Performer Gestures require a project-owned Generic .anim clip.";
+                reason = "Gesture clip '" + clip.name + "' is Legacy. Performer Gestures require a compatible non-Legacy Generic .anim clip.";
                 return false;
             }
             if (clip.isLooping)
@@ -43,10 +43,9 @@ namespace DazPose.Performer
             string assetPath = UnityEditor.AssetDatabase.GetAssetPath(clip);
             if (string.IsNullOrEmpty(assetPath)
                 || UnityEditor.AssetDatabase.IsSubAsset(clip)
-                || !assetPath.StartsWith("Assets/DazPose/Generated/Gestures/", System.StringComparison.OrdinalIgnoreCase)
                 || !assetPath.EndsWith(".anim", System.StringComparison.OrdinalIgnoreCase))
             {
-                reason = "Gesture clip '" + clip.name + "' must be a project-owned .anim asset under Assets/DazPose/Generated/Gestures/. Bake the compatible Generic source clip first.";
+                reason = "Gesture clip '" + clip.name + "' must be a standalone project-owned .anim asset. Bake the compatible Generic source clip first.";
                 return false;
             }
             EditorCurveBinding[] bindings = AnimationUtility.GetCurveBindings(clip);
@@ -65,7 +64,8 @@ namespace DazPose.Performer
             }
             foreach (EditorCurveBinding binding in bindings)
             {
-                if (binding.type != typeof(Transform) || !IsSkeletalTransformProperty(binding.propertyName))
+                if (binding.type != typeof(Transform) || string.IsNullOrEmpty(binding.path)
+                    || !IsSkeletalTransformProperty(binding.propertyName))
                 {
                     reason = "Gesture clip '" + clip.name + "' contains a non-skeletal curve binding: "
                         + binding.path + " / " + binding.propertyName + ".";
@@ -80,7 +80,7 @@ namespace DazPose.Performer
                 foreach (Keyframe key in curve.keys)
                 {
                     if (!IsFinite(key.time) || !IsFinite(key.value)
-                        || float.IsNaN(key.inTangent) || float.IsNaN(key.outTangent))
+                        || !IsFinite(key.inTangent) || !IsFinite(key.outTangent))
                     {
                         reason = "Gesture clip '" + clip.name + "' contains a non-finite animation key.";
                         return false;

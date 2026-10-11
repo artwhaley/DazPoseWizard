@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c1c914b1f27e0458cbbbdb65bef6b2, type: 3}
+  m_Name: FitState
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobeFitState
+  visibleMask: 0
+  characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
+  status: 1
+  issueCodes: []
+  bodyMesh: {fileID: 4300000, guid: be53f68630be58c45998ab94b9eb6f2a, type: 2}
+  attachmentMeshes: []
+  surfaceBindings: {fileID: 11400000, guid: 1a0d6489fc1fc464e9566e1a1e473477, type: 2}
+  dissolveProfile: {fileID: 11400000, guid: 2f67e4bd6afbed745822f91775d46762, type: 2}
+  coverage:
+    visiblePieceIds: []
+  footwear:
+    footwearActive: 0
+    bentFootPoseActive: 0
+    standingLift: 0
+    footShrink: 0
+    supportProfileId: barefoot

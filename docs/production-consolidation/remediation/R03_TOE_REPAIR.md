@@ -1,0 +1,19 @@
+# R03 — reversible footwear state and corrected fit where proved
+
+Depends R02. Allowed seams: LaraHeelReview, FootwearPoseDriver, WardrobeFitCompiler/fit data generation, PerformerWardrobe rollback only where footwear ownership requires it; R02 runner. No artist calibration/source import changes.
+
+Fixed decision: shoe constraints own only the transforms/morph/height channels they actually write. Removing all visible footwear/hosiery requirements releases those channels even if other garments remain. Hosiery requiring exported bent feet retains pose but not shoe support.
+
+1. Read R02 report. For retained positions, add previous-base/previous-applied local-position arrays beside rotation arrays. Capture each written toe position before applying its constraint. Restore a channel only when its current value matches that writer's previous-applied value (position tolerance 0.000001 m, existing rotation tolerance 0.001 degrees); preserve a newer animation/owner value. Apply the same bookkeeping on ResetBindings, state transitions and disable. Do not restore unrelated bones or set rotations to identity.
+2. Do not apply additional foot/toe pitches when bent-foot pose is inactive. Release previous applied pitch first. Resetting/disabling footwear must clear its own reference-pose/foot-fit morph contributions and height without erasing independent anatomy/expression morphs.
+3. If R02 proves fitted-data mismatch after channel restoration, generate a barefoot-compatible foot region for nonzero footwear-inactive fits: use the R02 canonical vertex index list; copy canonical positions/normals/tangents and matching morph deltas only for those foot vertices, plus canonical bindposes for the identified foot/toe bones. Preserve all other vertices, skin weights, triangles, UVs, active garment coverage and nonfoot morph deltas. Require identical vertex count/order and compatible morph names before copying; a mismatch fails preparation rather than resampling at runtime. Rebind attachment data affected by the foot convention through existing preparation tools. Do not swap the whole torso to canonical or rewrite source meshes. If R02 shows no fitted-data contribution, leave compilation geometry unchanged and record that branch.
+4. Update fit content identity for changed transform/foot-geometry semantics so old generated bodies cannot be silently reused. Save new attempt assets; immutable releases never change. Recompile only affected candidate fits; test a newly published copy and fresh actor as well as candidate preview.
+5. Extend rollback to restore prior footwear channels/mesh/morphs coherently after failed commit. A disabled/destroyed footwear writer must not retain its last override. Preserve user layer assignments.
+
+Checks: 3→1 leaves Base garments and barefoot toes; 1→3 restores reviewed shoes; 1→0→1 stays barefoot; 10 complete cycles show no accumulation; failed rebind restores previous appearance; disabling/re-enabling restores valid state; a second actor is unaffected. Existing hosiery-only third-outfit case still keeps bent feet without support.
+
+Use canonical naked evaluation under the same pose as the barefoot witness. Toe-region displacement must be <=0.1 mm after root normalization; owned toe-local positions agree within 0.001 mm. Any larger measured difference fails and is investigated; do not loosen thresholds to pass. Fully dressed quality/calibration remains unchanged from baseline. Editor and graphics Windows player must execute the saved fixture. Human foot appearance is pending until user confirms.
+
+Run `-Ticket R03`; save root-cause explanation and failed-before/passed-after measurements. No runtime pass from flag checks alone.
+
+Gate: all stated transform/geometry thresholds, cycle/rollback/isolation/hosiery assertions and exact saved-fixture editor/player executions pass. Human toe appearance remains a separate pending observation.

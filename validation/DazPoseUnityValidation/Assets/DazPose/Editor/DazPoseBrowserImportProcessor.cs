@@ -57,7 +57,7 @@ namespace DazPose.Editor.Importing
             EditorApplication.delayCall += ReconcileAtStartup;
         }
 
-        [MenuItem("Tools/DAZ Pose/Reconcile Pending Pose Imports")]
+        [MenuItem("DazPose/Content/Reconcile Pending Pose Imports")]
         private static void ProcessPendingBrowserImports()
         {
             Reconcile(true, true);

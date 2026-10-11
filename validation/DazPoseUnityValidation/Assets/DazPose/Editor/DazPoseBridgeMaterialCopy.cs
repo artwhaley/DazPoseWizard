@@ -16,9 +16,11 @@ namespace DazPose.UnityValidation
     {
         private const string BridgePrefabPath = "Assets/Daz3D/larabridge/Prefabs/larabridge_Prefab.prefab";
         private const string BridgeRendererName = "Genesis8Female.Shape";
-        private const string MenuPath = "Tools/DAZ Pose/Copy Bridge Materials to Selected Lara";
+        private const string MenuPath = "DazPose/Development/Legacy/Copy Bridge Materials to Selected Lara";
 
-        [MenuItem(MenuPath, false, 20)]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Copy Bridge Materials to Selected Lara", false, 20)]
+#endif
         private static void CopyBridgeMaterialsToSelectedLara()
         {
             var selected = Selection.activeGameObject;
@@ -83,7 +85,9 @@ namespace DazPose.UnityValidation
                       "This is an undoable scene override; Lara's FBX importer was not changed.", target);
         }
 
-        [MenuItem(MenuPath, true)]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Copy Bridge Materials to Selected Lara", true)]
+#endif
         private static bool ValidateCopyBridgeMaterialsToSelectedLara()
         {
             var selected = Selection.activeGameObject;

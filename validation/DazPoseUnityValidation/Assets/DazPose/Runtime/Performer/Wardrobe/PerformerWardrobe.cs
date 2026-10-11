@@ -76,6 +76,7 @@ namespace DazPose.Performer
         public SkinnedMeshRenderer Body => body;
         public bool AllowsCandidatePreview => allowCandidatePreview;
         public string BindingDiagnostic => _bindingError;
+        public bool IsRuntimeInitialized => _initialized;
 
         public static bool TryValidateConfigurationBinding(WardrobeCatalog sourceCatalog, WardrobeConfiguration sourceConfiguration, out string error)
         {
@@ -86,6 +87,61 @@ namespace DazPose.Performer
             {
                 error = "Configuration generation does not match the released catalog. Rebind its matching configuration or omit it to use the self-contained release.";
                 return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Side-effect-free readiness for a declared wardrobe subset. It validates the same
+        /// catalog/configuration and fit ownership used by command preparation without opening
+        /// the queue, changing the selected outfit or rebuilding renderer bindings.
+        /// </summary>
+        public bool TryValidateReadiness(bool runtime, WardrobePreset[] declaredPresets, out string reason) =>
+            TryValidateReadiness(this, catalog, configuration, runtime, declaredPresets, out reason);
+
+        public static bool TryValidateReadiness(PerformerWardrobe owner, WardrobeCatalog sourceCatalog,
+            WardrobeConfiguration sourceConfiguration, bool runtime, WardrobePreset[] declaredPresets,
+            out string reason)
+        {
+            reason = null;
+            if (owner == null) { reason = "Wardrobe readiness requires its owning performer component."; return false; }
+            if (sourceCatalog == null) { reason = "Wardrobe catalog is missing."; return false; }
+            if (!TryValidateConfigurationBinding(sourceCatalog, sourceConfiguration, out reason)) return false;
+            if (runtime && !sourceCatalog.IsReleased)
+            { reason = "Production playback requires a released wardrobe catalog."; return false; }
+            if (!runtime && !sourceCatalog.IsReleased && !owner.AllowsCandidatePreview)
+            { reason = "Candidate wardrobe preview must be explicitly enabled on the setup actor."; return false; }
+            if (sourceCatalog.NeedsCompile)
+            { reason = "Wardrobe catalog has an uncompiled candidate configuration."; return false; }
+            if (!sourceCatalog.Validate(out reason)) return false;
+            if (owner.Body == null || owner.Body.sharedMesh == null || !owner.Body.transform.IsChildOf(owner.transform))
+            { reason = "Wardrobe body renderer must be bound under its owning performer."; return false; }
+            if (runtime && (!owner.IsRuntimeInitialized || !string.IsNullOrEmpty(owner.BindingDiagnostic)))
+            { reason = owner.BindingDiagnostic ?? "Wardrobe runtime did not initialize its declared binding."; return false; }
+
+            foreach (var preset in declaredPresets ?? Array.Empty<WardrobePreset>())
+            {
+                if (preset == null) { reason = "A declared wardrobe preset is missing."; return false; }
+                if (!preset.Validate(out reason)) return false;
+                var snapshot = WardrobeCandidateSnapshot.Resolve(preset, sourceCatalog.IsReleased ? null : sourceConfiguration);
+                if (!MorphsCompatible(preset.Package.characterReference, owner.Body.sharedMesh))
+                { reason = "Declared wardrobe preset character signature does not match the performer body: " + preset.PresetId; return false; }
+                foreach (int mask in snapshot.ReachableMasks)
+                {
+                    var fit = preset.FitStates.FirstOrDefault(item => item != null && item.VisibleMask == mask);
+                    if (fit == null) { reason = "Declared wardrobe preset is missing a reachable fit state: " + preset.PresetId + "/mask-" + mask; return false; }
+                    if (fit.Status != WardrobeFitStatus.Validated)
+                    { reason = "Declared wardrobe fit is not validated: " + preset.PresetId + "/mask-" + mask; return false; }
+                    if (fit.BodyMesh == null || fit.SurfaceBindings == null || fit.DissolveProfile == null ||
+                        fit.SurfaceBindings.SourceMesh != fit.BodyMesh ||
+                        fit.SurfaceBindings.BindingCount != PerformerSurfaceBindingAsset.RequiredBindingCount ||
+                        fit.DissolveProfile.SurfaceBindings != fit.SurfaceBindings)
+                    { reason = "Declared wardrobe fit has incomplete body/effect ownership: " + preset.PresetId + "/mask-" + mask; return false; }
+                    if (!MorphsCompatible(preset.Package.characterReference, fit.BodyMesh))
+                    { reason = "Declared wardrobe fit topology/morphs do not match its package: " + preset.PresetId + "/mask-" + mask; return false; }
+                }
+                if (!sourceCatalog.Presets.Contains(preset))
+                { reason = "Declared wardrobe preset is not owned by the bound catalog: " + preset.PresetId; return false; }
             }
             return true;
         }

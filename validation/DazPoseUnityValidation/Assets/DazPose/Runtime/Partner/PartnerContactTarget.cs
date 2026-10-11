@@ -5,7 +5,7 @@ namespace DazPose.UnityValidation.Partner
 {
     [DefaultExecutionOrder(-80)]
     [DisallowMultipleComponent]
-    public sealed class PartnerContactTarget : MonoBehaviour, IGripTarget, IGripTargetContactSurface
+    public sealed class PartnerContactTarget : MonoBehaviour, IGripTarget, IGripTargetReadiness, IGripTargetContactSurface
     {
         [SerializeField] private PartnerBody body;
         [SerializeField] private PartnerContactProfile profile;
@@ -21,6 +21,32 @@ namespace DazPose.UnityValidation.Partner
         public string ValidationError {get;private set;}
         public void Configure(PartnerBody source,PartnerContactProfile data){body=source;profile=data;Bind();}
         private void OnEnable(){Bind();}
+
+        /// <summary>
+        /// Validates the serialized contact contract without binding caches, changing transforms,
+        /// initializing gameplay or writing ValidationError. Runtime callers add live calibration
+        /// and active-object checks; editor callers still receive endpoint/compliance/scale and
+        /// renderer/profile identity failures.
+        /// </summary>
+        public bool IsReadyForContact(bool runtime, out string reason)
+        {
+            reason = null;
+            if (body == null) { reason = "Partner contact target requires a PartnerBody reference."; return false; }
+            if (profile == null) { reason = "Partner contact target requires a measured contact profile."; return false; }
+            if (!body.TryValidateContactConfiguration(out reason)) return false;
+            if (!profile.IsReady(out reason)) return false;
+            if (body.StructuralBody == null || body.StructuralBody.sharedMesh != profile.BodyMesh)
+            { reason = "Contact profile body mesh does not match the declared PartnerBody renderer."; return false; }
+            if (body.ShellRenderer == null || body.ShellRenderer.sharedMesh != profile.ShellMesh)
+            { reason = "Contact profile shell mesh does not match the declared PartnerBody shell renderer."; return false; }
+            if (runtime)
+            {
+                if (!isActiveAndEnabled || !body.isActiveAndEnabled || !body.IsReady)
+                { reason = "Partner contact requires an active ready PartnerBody and target component."; return false; }
+                if (!body.HasValidLiveCalibrationBindings(out reason)) return false;
+            }
+            return true;
+        }
         private bool Bind()
         {
             centersPelvis=null;boundPelvis=null;
@@ -51,12 +77,7 @@ namespace DazPose.UnityValidation.Partner
         public bool TryEvaluate(float position01,out GripFrame frame,out string reason)
         {
             frame=default;reason=null;
-            if(!isActiveAndEnabled||body==null||!body.isActiveAndEnabled||!body.IsReady||!body.IsContactSupported||body.MainPelvis==null)
-                reason="Partner contact requires a ready active body at its supported rigid endpoint and unit scale.";
-            else if(profile==null||!profile.IsReady(out reason))reason=reason??"Contact profile unavailable.";
-            else if(body.StructuralBody==null||!body.StructuralBody.enabled||!body.StructuralBody.gameObject.activeInHierarchy||body.ShellRenderer==null||!body.ShellRenderer.enabled||!body.ShellRenderer.gameObject.activeInHierarchy
-                ||body.StructuralBody.sharedMesh!=profile.BodyMesh||body.ShellRenderer.sharedMesh!=profile.ShellMesh)
-                reason="Visible evaluated body/shell bindings do not match the measured profile.";
+            if(!IsReadyForContact(true,out reason)) { }
             else if(!GripFrame.IsFinite(position01)||position01<0f||position01>1f)reason="Contact position must be normalized.";
             if(reason!=null){ValidationError=reason;return false;}
             if(centersPelvis==null||boundPelvis!=body.MainPelvis){if(!Bind()){reason=ValidationError;return false;}}

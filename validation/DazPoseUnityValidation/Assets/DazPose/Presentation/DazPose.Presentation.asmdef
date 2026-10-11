@@ -1,0 +1,8 @@
+{
+  "name": "DazPose.Presentation",
+  "references": [
+    "DazPose.Runtime",
+    "Unity.ugui"
+  ],
+  "autoReferenced": true
+}

@@ -22,7 +22,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
         private const string VariantPath = AcceptanceFolder + "/BasicStroke.asset";
         private const string SetPath = AcceptanceFolder + "/BasicStrokeSet.asset";
 
-        [MenuItem("Tools/DAZ Pose/Motion/Generate BasicStroke and Install Acceptance Harness")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Motion/Generate BasicStroke and Install Acceptance Harness")]
+#endif
         public static void Install()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

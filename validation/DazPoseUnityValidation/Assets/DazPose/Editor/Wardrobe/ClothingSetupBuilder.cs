@@ -18,7 +18,7 @@ namespace DazPose.UnityValidation
         public const string CatalogPath = "Assets/Wardrobe/WardrobeCatalog.asset";
         public const string ConfigurationPath = "Assets/Wardrobe/WardrobeConfiguration.asset";
 
-        [MenuItem("Tools/DAZ Pose/Wardrobe Setup/Open Clothing Setup")]
+        [MenuItem("DazPose/Wardrobe/Open Clothing Setup")]
         public static void OpenFromMenu()
         {
             if (!TryOpenOrCreate(out _, out string error))
@@ -26,7 +26,9 @@ namespace DazPose.UnityValidation
             else ClothingSetupWindow.Open();
         }
 
-        [MenuItem("Tools/DAZ Pose/Wardrobe Setup/Prepare and Open Clothing Setup")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Wardrobe Setup/Prepare and Open Clothing Setup")]
+#endif
         public static void PrepareAndOpenFromMenu()
         {
             if (!TryPrepareAndOpen(out _, out string error))

@@ -35,7 +35,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             EditorPrefs.SetBool(key, true);
         }
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Copy Current Smoke Front to Other Edges")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Copy Current Smoke Front to Other Edges")]
+#endif
         public static void CopyLoadedFront()
         {
             Scene scene = SceneManager.GetSceneByPath(FirstPerformanceVoidBuilder.ScenePath);

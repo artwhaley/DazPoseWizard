@@ -19,7 +19,9 @@ namespace DazPose.Editor.Performer
         const string SourceScene = "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity";
         const string Root = "Assets/Production/Wardrobe";
 
-        [MenuItem("DazPose/Production/Create Lara performer assets (new paths only)")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Production/Create Lara performer assets (new paths only)")]
+#endif
         public static void Create()
         {
             if (Application.isPlaying) throw new InvalidOperationException("Exit Play Mode before creating assets.");

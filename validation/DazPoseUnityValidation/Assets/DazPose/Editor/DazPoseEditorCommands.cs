@@ -26,7 +26,9 @@ namespace DazPose.UnityValidation
             "rThighBend", "rThighTwist", "rShin", "rFoot", "head"
         };
 
-        [MenuItem("Tools/DAZ Pose/Development/Setup or Refresh Validation Scene")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Setup or Refresh Validation Scene")]
+#endif
         public static void SetupValidationScene()
         {
             AssetDatabase.Refresh();
@@ -77,7 +79,9 @@ namespace DazPose.UnityValidation
             Debug.Log("DAZ Pose validation scene ready. Lara uses Generic import; Optimize Game Objects is off. Selected Lara and saved " + scenePath + ".");
         }
 
-        [MenuItem("Tools/DAZ Pose/Development/Open Pose Validation Scene")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Open Pose Validation Scene")]
+#endif
         public static void OpenValidationScene()
         {
             EditorSceneManager.OpenScene("Assets/Scenes/PoseValidation.unity", OpenSceneMode.Single);
@@ -88,7 +92,9 @@ namespace DazPose.UnityValidation
             Debug.Log("Opened PoseValidation.unity and selected Lara. Use the development diagnostics or performer acceptance harness as needed.");
         }
 
-        [MenuItem("Tools/DAZ Pose/Development/Diagnostics/Inspect Selected Character")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Diagnostics/Inspect Selected Character")]
+#endif
         public static void InspectSelectedCharacter()
         {
             var root = RequireSelectedRoot();
@@ -163,7 +169,9 @@ namespace DazPose.UnityValidation
             else Debug.LogError(summary + " | MISSING/AMBIGUOUS: " + string.Join(", ", missing) + " | report: " + output);
         }
 
-        [MenuItem("Tools/DAZ Pose/Development/Setup or Refresh Performer Pose Acceptance Harness")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Setup or Refresh Performer Pose Acceptance Harness")]
+#endif
         public static void SetupPerformerPoseAcceptanceHarness()
         {
             var characterRoot = RequireSelectedRoot();
@@ -644,7 +652,9 @@ namespace DazPose.UnityValidation
             };
         }
 
-        [MenuItem("Tools/DAZ Pose/Development/Diagnostics/Inspect Pose Bone Mapping")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Diagnostics/Inspect Pose Bone Mapping")]
+#endif
         public static void InspectPoseBoneMapping()
         {
             var root = RequireSelectedRoot();

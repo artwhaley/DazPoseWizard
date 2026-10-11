@@ -1,0 +1,21 @@
+{
+  "name": "DazPose.Validation",
+  "references": [
+    "GUID:457756d89b35d2941b3e7b37b4ece6f1",
+    "GUID:700d5ce39949420093b3b48027c9e252",
+    "GUID:df380645f10b7bc4b97d4f5eb6303d95",
+    "GUID:e0cd26848372d4e5c891c569017e11f1",
+    "GUID:f49e99254b924e90b979a734d998d99d"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "UNITY_EDITOR || DAZPOSE_VALIDATION"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

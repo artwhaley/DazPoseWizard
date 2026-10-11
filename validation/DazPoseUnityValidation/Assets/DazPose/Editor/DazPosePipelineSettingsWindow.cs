@@ -65,7 +65,7 @@ namespace DazPose.Editor.Importing
     {
         private GameObject _referenceModel;
 
-        [MenuItem("Tools/DAZ Pose/Pipeline Settings")]
+        [MenuItem("DazPose/Settings/Pipeline Settings")]
         public static void Open()
         {
             var window = GetWindow<DazPosePipelineSettingsWindow>();

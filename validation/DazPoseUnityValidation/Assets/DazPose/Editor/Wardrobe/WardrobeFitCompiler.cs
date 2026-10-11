@@ -14,6 +14,11 @@ namespace DazPose.UnityValidation
     /// <summary>Compiles the reachable visibility masks for one wardrobe candidate.</summary>
     public static class WardrobeFitCompiler
     {
+        // Changing this value intentionally invalidates candidate fit identities. It prevents
+        // an older fitted body, generated before the R03 barefoot-region repair, from being
+        // silently reused under the same outfit/mask key.
+        public const string BarefootFootRegionRepairVersion = "r03-canonical-foot-region-v1";
+
         [Serializable] public sealed class Result
         {
             public string presetId;
@@ -85,9 +90,11 @@ namespace DazPose.UnityValidation
                 else
                 {
                     bodyMesh = BuildCoverageMesh(package.reviewBody, package.pieces, visible, stateIssues);
+                    if (stateIssues.Count == 0 && !footPoseActive)
+                        ApplyCanonicalBarefootFootRegion(bodyMesh, canonicalMesh, canonicalRenderer, stateIssues);
                     if (stateIssues.Count == 0)
                     {
-                        string content = StableStateHash(preset, mask, parts, bodyMesh);
+                        string content = StableStateHash(preset, mask, parts, bodyMesh, true);
                         string folder = outputRoot.TrimEnd('/') + "/" + preset.PresetId + "/" + content;
                         EnsureFolder(folder);
                         bodyMesh.name = preset.PresetId + " Body Fit " + mask;
@@ -125,7 +132,7 @@ namespace DazPose.UnityValidation
                 }
 
                 string stateKey = mask == 0 ? "naked" : StableStateHash(preset, mask, parts,
-                    bodyMesh != null ? bodyMesh : package.reviewBody);
+                    bodyMesh != null ? bodyMesh : package.reviewBody, mask != 0 && !footPoseActive);
                 string statePath = outputRoot.TrimEnd('/') + "/" + preset.PresetId + "/" + stateKey + "/FitState.asset";
                 EnsureFolder(Path.GetDirectoryName(statePath).Replace('\\', '/'));
                 var state = AssetDatabase.LoadAssetAtPath<WardrobeFitState>(statePath);
@@ -216,10 +223,171 @@ namespace DazPose.UnityValidation
         private static bool Role(WardrobeOutfitDefinition.Piece piece, string role) =>
             string.Equals(piece.role, role, StringComparison.OrdinalIgnoreCase);
 
+        private static void ApplyCanonicalBarefootFootRegion(Mesh fitted, Mesh canonical,
+            SkinnedMeshRenderer canonicalRenderer, List<string> issues)
+        {
+            if (fitted == null || canonical == null || canonicalRenderer == null)
+            {
+                issues.Add("footRegion.canonicalInputsMissing");
+                return;
+            }
+            if (fitted.vertexCount != canonical.vertexCount || !fitted.triangles.SequenceEqual(canonical.triangles))
+            {
+                issues.Add("footRegion.topologyOrVertexOrderMismatch");
+                return;
+            }
+            if (fitted.bindposes.Length != canonical.bindposes.Length ||
+                canonicalRenderer.bones == null || canonicalRenderer.bones.Length != canonical.bindposes.Length)
+            {
+                issues.Add("footRegion.bindposeOrRendererOrderMismatch");
+                return;
+            }
+            var weights = fitted.boneWeights;
+            if (weights == null || weights.Length != fitted.vertexCount)
+            {
+                issues.Add("footRegion.skinWeightsMissing");
+                return;
+            }
+            string[] boneNames = canonicalRenderer.bones.Select(b => b != null ? b.name : string.Empty).ToArray();
+            var footBoneIndices = new HashSet<int>(Enumerable.Range(0, boneNames.Length)
+                .Where(i => IsFootBone(boneNames[i])));
+            if (footBoneIndices.Count == 0)
+            {
+                issues.Add("footRegion.noCanonicalFootBones");
+                return;
+            }
+            var region = new List<int>();
+            for (int i = 0; i < weights.Length; ++i)
+            {
+                var weight = weights[i];
+                float footInfluence = 0f;
+                if (footBoneIndices.Contains(weight.boneIndex0)) footInfluence += weight.weight0;
+                if (footBoneIndices.Contains(weight.boneIndex1)) footInfluence += weight.weight1;
+                if (footBoneIndices.Contains(weight.boneIndex2)) footInfluence += weight.weight2;
+                if (footBoneIndices.Contains(weight.boneIndex3)) footInfluence += weight.weight3;
+                if (footInfluence >= .5f) region.Add(i);
+            }
+            if (region.Count == 0)
+            {
+                issues.Add("footRegion.noCanonicalRegionVertices");
+                return;
+            }
+
+            var positions = fitted.vertices;
+            var canonicalPositions = canonical.vertices;
+            for (int i = 0; i < region.Count; ++i) positions[region[i]] = canonicalPositions[region[i]];
+            fitted.vertices = positions;
+            CopyRegionVectors(fitted, canonical, region, fitted.normals, canonical.normals,
+                "normals", (mesh, values) => mesh.normals = values, issues);
+            CopyRegionTangents(fitted, canonical, region, fitted.tangents, canonical.tangents,
+                "tangents", (mesh, values) => mesh.tangents = values, issues);
+            if (issues.Count > 0) return;
+
+            var bindposes = fitted.bindposes;
+            var canonicalBindposes = canonical.bindposes;
+            for (int i = 0; i < boneNames.Length; ++i)
+                if (IsFootBone(boneNames[i])) bindposes[i] = canonicalBindposes[i];
+            fitted.bindposes = bindposes;
+
+            // Preserve the fitted mesh's shape list and every non-foot delta. For matching
+            // canonical shapes, replace only the region deltas; no runtime resampling occurs.
+            var shapeData = new List<(string name, float weight, Vector3[] vertices, Vector3[] normals, Vector3[] tangents)>();
+            for (int shape = 0; shape < fitted.blendShapeCount; ++shape)
+            {
+                string shapeName = fitted.GetBlendShapeName(shape);
+                int canonicalShape = canonical.GetBlendShapeIndex(shapeName);
+                int frames = fitted.GetBlendShapeFrameCount(shape);
+                if (canonicalShape >= 0 && frames != canonical.GetBlendShapeFrameCount(canonicalShape))
+                {
+                    issues.Add("footRegion.morphFrameMismatch:" + shapeName);
+                    continue;
+                }
+                for (int frame = 0; frame < frames; ++frame)
+                {
+                    float frameWeight = fitted.GetBlendShapeFrameWeight(shape, frame);
+                    if (canonicalShape >= 0 && Mathf.Abs(frameWeight -
+                        canonical.GetBlendShapeFrameWeight(canonicalShape, frame)) > .0001f)
+                    {
+                        issues.Add("footRegion.morphWeightMismatch:" + shapeName);
+                        break;
+                    }
+                    var delta = new Vector3[fitted.vertexCount];
+                    var deltaNormals = new Vector3[fitted.vertexCount];
+                    var deltaTangents = new Vector3[fitted.vertexCount];
+                    fitted.GetBlendShapeFrameVertices(shape, frame, delta, deltaNormals, deltaTangents);
+                    if (canonicalShape >= 0)
+                    {
+                        var canonicalDelta = new Vector3[canonical.vertexCount];
+                        var canonicalDeltaNormals = new Vector3[canonical.vertexCount];
+                        var canonicalDeltaTangents = new Vector3[canonical.vertexCount];
+                        canonical.GetBlendShapeFrameVertices(canonicalShape, frame, canonicalDelta,
+                            canonicalDeltaNormals, canonicalDeltaTangents);
+                        foreach (int vertex in region)
+                        {
+                            delta[vertex] = canonicalDelta[vertex];
+                            deltaNormals[vertex] = canonicalDeltaNormals[vertex];
+                            deltaTangents[vertex] = canonicalDeltaTangents[vertex];
+                        }
+                    }
+                    shapeData.Add((shapeName, frameWeight, delta, deltaNormals, deltaTangents));
+                }
+            }
+            if (issues.Count > 0) return;
+            fitted.ClearBlendShapes();
+            int shapeCursor = 0;
+            while (shapeCursor < shapeData.Count)
+            {
+                string name = shapeData[shapeCursor].name;
+                while (shapeCursor < shapeData.Count && shapeData[shapeCursor].name == name)
+                {
+                    var frame = shapeData[shapeCursor++];
+                    fitted.AddBlendShapeFrame(frame.name, frame.weight, frame.vertices, frame.normals, frame.tangents);
+                }
+            }
+        }
+
+        private static void CopyRegionVectors(Mesh fitted, Mesh canonical, List<int> region,
+            Vector3[] fittedValues, Vector3[] canonicalValues, string label,
+            Action<Mesh, Vector3[]> assign, List<string> issues)
+        {
+            bool fittedPresent = fittedValues != null && fittedValues.Length == fitted.vertexCount;
+            bool canonicalPresent = canonicalValues != null && canonicalValues.Length == canonical.vertexCount;
+            if (fittedPresent != canonicalPresent)
+            {
+                issues.Add("footRegion." + label + "ArrayMismatch");
+                return;
+            }
+            if (!fittedPresent) return;
+            foreach (int vertex in region) fittedValues[vertex] = canonicalValues[vertex];
+            assign(fitted, fittedValues);
+        }
+
+        private static void CopyRegionTangents(Mesh fitted, Mesh canonical, List<int> region,
+            Vector4[] fittedValues, Vector4[] canonicalValues, string label,
+            Action<Mesh, Vector4[]> assign, List<string> issues)
+        {
+            bool fittedPresent = fittedValues != null && fittedValues.Length == fitted.vertexCount;
+            bool canonicalPresent = canonicalValues != null && canonicalValues.Length == canonical.vertexCount;
+            if (fittedPresent != canonicalPresent)
+            {
+                issues.Add("footRegion." + label + "ArrayMismatch");
+                return;
+            }
+            if (!fittedPresent) return;
+            foreach (int vertex in region) fittedValues[vertex] = canonicalValues[vertex];
+            assign(fitted, fittedValues);
+        }
+
+        private static bool IsFootBone(string name) => !string.IsNullOrEmpty(name) &&
+            (name.IndexOf("Foot", StringComparison.OrdinalIgnoreCase) >= 0 ||
+             name.IndexOf("Toe", StringComparison.OrdinalIgnoreCase) >= 0 ||
+             name.IndexOf("Metatarsals", StringComparison.OrdinalIgnoreCase) >= 0);
+
         private static string StableStateHash(WardrobePreset preset, int mask,
-            WardrobePreset.Part[] parts, Mesh mesh)
+            WardrobePreset.Part[] parts, Mesh mesh, bool barefootFootRepair)
         {
             var text = new StringBuilder().Append(preset.PresetId).Append('|').Append(mask).Append('|');
+            if (barefootFootRepair) text.Append(BarefootFootRegionRepairVersion).Append('|');
             foreach (var p in parts.OrderBy(p => p.sourcePieceId, StringComparer.Ordinal))
                 text.Append(p.sourcePieceId).Append(':').Append(p.layer).Append('|');
             var uv = new List<Vector4>(); mesh.GetUVs(3, uv);

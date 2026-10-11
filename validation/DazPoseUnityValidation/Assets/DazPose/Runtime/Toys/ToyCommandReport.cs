@@ -11,7 +11,7 @@ namespace DazPose.Toys
         public string Operation { get; }
         public int SuccessfulBindings { get; }
         public IReadOnlyList<string> Errors => _errors;
-        public bool Succeeded => _errors.Count == 0;
+        public bool Succeeded => SuccessfulBindings > 0 && _errors.Count == 0;
 
         public ToyCommandReport(string operation, int successfulBindings, IEnumerable<string> errors)
         {

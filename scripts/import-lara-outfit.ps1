@@ -17,6 +17,7 @@ if($taskConfig.destination -notmatch '^Assets/TestData/Wardrobe/[a-zA-Z0-9_-]+$'
 if(!(Test-Path -LiteralPath (Join-Path $taskProject 'ProjectSettings\ProjectVersion.txt'))){throw 'Isolated validation project is missing; stage the validation project under .dazposewizard/p0c-native-generation first.'}
 $taskOutput=Join-Path $taskProject ('TestOutput\wardrobe-import\'+$taskConfig.id)
 New-Item -ItemType Directory -Force -Path $taskOutput | Out-Null
+. (Join-Path $PSScriptRoot 'RemediationSourceMoveSync.ps1')
 # One importer owns this staging project at a time. Never kill another Unity process.
 $taskLockPath=Join-Path $taskProject 'wardrobe-import.lock'
 $taskLock=[IO.File]::Open($taskLockPath,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
@@ -41,9 +42,32 @@ try {
     if($Action -ne 'Publish'){
         # Sync code/graphs, not the user's scene or generated wardrobe assets.
         $taskCodeRoots=@('Assets\DazPose','Assets\Player','Assets\FirstPerformanceVoid') | ForEach-Object {Join-Path $taskMain $_}
-        Get-ChildItem -LiteralPath $taskCodeRoots -Recurse -File | Where-Object { $_.Extension -eq '.cs' -or $_.Name -like '*.cs.meta' -or $_.FullName.Contains('\Effects\Dissolve\Shaders\') } | ForEach-Object {
-            Copy-Changed $_.FullName (Join-Path $taskProject $_.FullName.Substring($taskMain.Length+1))
+        Remove-StaleRemediationSourceCopies -RepositoryRoot $taskRoot -StagingProjectRoot $taskProject | Out-Null
+        $taskCodeFiles = @(
+            Get-ChildItem -LiteralPath $taskCodeRoots -Recurse -File | Where-Object {
+                $_.Extension -eq '.cs' -or $_.Name -like '*.cs.meta' -or
+                $_.Extension -in @('.asmdef','.asmref') -or $_.Name -like '*.asmdef.meta' -or $_.Name -like '*.asmref.meta' -or
+                $_.FullName.Contains('\Effects\Dissolve\Shaders\')
+            }
+        )
+        $taskFolderMetas = foreach($taskRoot in $taskCodeRoots){
+            $taskFolders=@((Get-Item -LiteralPath $taskRoot))+@(Get-ChildItem -LiteralPath $taskRoot -Directory -Recurse -Force)
+            foreach($taskFolder in $taskFolders){$taskFolderMeta=$taskFolder.FullName+'.meta';if(Test-Path -LiteralPath $taskFolderMeta -PathType Leaf){Get-Item -LiteralPath $taskFolderMeta}}
         }
+        $taskCodeFiles += @($taskFolderMetas)
+        foreach($taskAdapterFile in @('Assets\Daz3D\Scripts\Editor\DazPoseDtuConversionAdapter.cs','Assets\Daz3D\Scripts\Editor\DazPoseDtuConversionAdapter.cs.meta')){
+            $taskAdapterPath=Join-Path $taskMain $taskAdapterFile
+            if(Test-Path -LiteralPath $taskAdapterPath){$taskCodeFiles+=Get-Item -LiteralPath $taskAdapterPath}
+        }
+        foreach($taskCodeFile in $taskCodeFiles){Copy-Changed $taskCodeFile.FullName (Join-Path $taskProject $taskCodeFile.FullName.Substring($taskMain.Length+1))}
+        $taskSourceRows=@($taskCodeFiles | Sort-Object FullName | ForEach-Object {
+            [pscustomobject]@{path=$_.FullName.Substring($taskMain.Length+1).Replace('\','/').ToLowerInvariant();sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
+        })
+        $taskSourceCanonical=@($taskSourceRows | ForEach-Object {$_.path+':'+$_.sha256}) -join "`n"
+        $taskSourceBytes=[Text.Encoding]::UTF8.GetBytes($taskSourceCanonical)
+        $taskSourceHasher=[Security.Cryptography.SHA256]::Create()
+        try{$taskSourceHash=[BitConverter]::ToString($taskSourceHasher.ComputeHash($taskSourceBytes)).Replace('-','').ToLowerInvariant()}finally{$taskSourceHasher.Dispose()}
+        [pscustomobject]@{sourceHash=$taskSourceHash;files=$taskSourceRows.Count;filesManifest=$taskSourceRows;includesAssemblies=$true;manifestRoots=@('Assets/DazPose','Assets/Player','Assets/FirstPerformanceVoid','Assets/Daz3D/Scripts/Editor/DazPoseDtuConversionAdapter.cs')} | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $taskOutput 'source-input-hashes.json') -Encoding utf8NoBOM
         foreach($taskAsset in @($taskConfig.fbx,$taskConfig.referenceFbx)){
             if($taskAsset -notmatch '^Assets/TestCharacter/[^/\\]+\.fbx$'){throw 'FBX inputs must be under Assets/TestCharacter.'}
             if($Action -eq 'Preflight'){continue}

@@ -6,6 +6,12 @@ namespace DazPose.Performer.HandGrip
         GripFrame Evaluate(float position01);
     }
 
+    /// <summary>Optional side-effect-free readiness contract for authored contact declarations.</summary>
+    public interface IGripTargetReadiness
+    {
+        bool IsReadyForContact(bool runtime, out string reason);
+    }
+
     /// <summary>
     /// Optional exact geometric certificate. A true result guarantees that, for every
     /// position in [0,1], Evaluate returns a frame whose center interpolates linearly between

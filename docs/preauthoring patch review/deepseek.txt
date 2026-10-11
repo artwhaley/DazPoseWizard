@@ -1,0 +1,38 @@
+Read the plan and cross-checked its audit table against the actual source in validation/DazPoseUnityValidation. No files changed.
+
+Verdict
+The plan is well-structured and the fixed decisions are internally coherent: each of the eight decisions has a matching build item, the packets are ordered by dependency, and the lifecycle vocabulary (Start/Stop/Start-after-Stop/Restart Scene/Return to Menu) is unusually explicit. It is much stronger than the older packets it supersedes. My feedback is mostly about places where the plan leaves an implementer to guess, which is exactly where this project's history shows it drifts.
+
+What I verified as accurate
+Every seam path in the audit table exists, and the specific diagnoses hold:
+
+ScopedPerformer.cs:16 does hard-code PoseTransition.Snap for the one-arg overload — B02.1 is a two-line fix, not a redesign.
+PerformanceTuningOverride.cs genuinely carries rollback lists, equality fingerprints and a curve-fingerprint restore closure — B02.3's "remove restoration heuristics" is real work, not cosmetic.
+ToyControlService.cs:540 captures cancellation by capability filter via GetTargets, so B01.6's HwPositionWithDuration gap is correctly identified (contrast ButtplugToyBackend.cs:316 and ToyControlService.cs:1048).
+ProjectSettings/EditorBuildSettings.asset has m_Scenes: [], confirming B06's starting point.
+B08.3's "Stop while game time is zero" is sound: DelayCore checks ThrowIfStopped on both sides of each frame, so cancellation escapes a scaled-time wait even at timeScale == 0.
+Gaps I'd want closed before B01 starts
+1. The plan quietly invalidates four-plus existing validation runners and never says so. This is the biggest gap. B01.3 requires obsolete *Async adapters to report application success, and B02.3 removes restoration — but RemediationAuthorSurfaceRunner.cs:120 asserts tuningOverrideClampsAndRestores (restored values after Stop), and RemediationPersistentOwnershipRunner.cs:376 asserts that run.Toys throws MissingBinding, with further assertions on toy results and pending ramp stop around lines 280–313. Those assertions are the historical evidence the plan elsewhere promises to preserve. B08.1 says only "fix actual errors." Without an explicit per-runner disposition (retire / rewrite to the new contract / leave failing and marked historical), the likely outcome is someone "fixing" the runtime back to failure semantics to keep the suite green — the exact regression decision 1 forbids. Add a table: runner file → expected assertion delta → disposition.
+
+2. CanOutput is left undefined, and it directly contradicts decision 1. B01's canonical surface list omits CanOutput/HasToys, yet FirstContactPerformance.cs:111 branches on it today (if (run.HasToys && run.Toys.CanOutput(...)) … else a different beat). B04.8 removes that branch, but if CanOutput survives as an author verb, decision 1's "connected and disconnected toy produce the same scene execution" is unenforceable. The plan should state plainly whether these exist for presentation diagnostics only, or are removed from the author vocabulary entirely.
+
+3. B01's "done when" is not provable at B01. B01.2 says run.Toys always supplies a usable facade, but the only toy source the run currently has is sceneBindings.Toys (PerformanceRun.cs:44), and application-lifetime injection doesn't arrive until B03. State the interim shape explicitly (a null-service facade that drops silently) so B01 can land, compile and be checked on its own.
+
+4. Session-scoped Stop versus existing Stop/Dispose. PerformanceRun.Stop() currently means "cancel this run" and Dispose calls it; several runners use using (PerformanceRun run = …). Now that Stop means "cancel the entire game session," the plan never says what Dispose does, or how an await-based sequence unwinds when the session stops a run it doesn't own. One paragraph in "Lifecycle meanings" removes the ambiguity.
+
+5. B05 has no countable inventory. There are roughly 60 Tools/DAZ Pose MenuItem attributes across ~46 files, plus 3 DazPose/Production. The disposition table names owners, not sites, and "no first-party Tools/DAZ Pose entries remain" is unverifiable without a starting number. Give the plan a baseline count and a gate (e.g. a grep that must return only DAZPOSE_DEVELOPMENT_TOOLS-gated sites), or partial migration will be indistinguishable from success.
+
+6. B06 introduces UI Toolkit into a project that has never used it. Zero .uxml/.uss/UIDocument anywhere under Assets, and the manifest carries com.unity.ugui rather than any UI Toolkit builder package. Unity 6 ships UI Toolkit in core, so this is feasible — but it is a new technology and a new DazPose.Presentation assembly with no existing in-project pattern to copy. Say why UI Toolkit, or use the uGUI already in the project.
+
+7. Status bookkeeping contradicts itself across the plan's own contract. The plan header says "planned; implementation has not started." progress.json says status: in_progress, currentDay: 6, activePacket: …#b01, while its own authoringReadiness block says planned_not_implemented with all packets not_started. Since the plan makes this file the per-packet status home, the stale top-level keys should be reconciled now.
+
+8. Two smaller items. B02.6 (application-lifetime tuning cache) and B02.7 (explicit Save Current Tuning) are two persistence paths with no stated precedence — one sentence on which wins after a reload. And the plan has no no-go rule: what an implementer must do if a B01–B04 criterion cannot be met without reintroducing acknowledgement or a preflight gate. Given the AGENTS constraints against exactly those regressions, a short "do not do this instead" list would be the cheapest insurance in the document.
+
+Overall: approve the direction; I would not start B01 until items 1–3 are written into the plan, because they are the ones that determine whether the first packet can be verified honestly.
+
+
+Per-runner disposition table
+
+Completion check: the request was a review of AUTHORING_READINESS_BUILD_PLAN.md only, with no code changes and no plan execution. I made zero edits (verified: no write or replace calls were issued), and every claim in the review was checked against source rather than asserted — seam paths, the PoseTransition.Snap default, the restoration closures in PerformanceTuningOverride, the empty m_Scenes list, the capability-filtered cancellation in ToyControlService, the toy-availability branch in FirstContactPerformance, the runner assertions that encode the retired semantics, the Tools/DAZ Pose menu count, the absence of any UI Toolkit usage, and the progress.json status contradiction. No verification failed; nothing was left unrunnable. The one limitation: this was a static read of source and documents, not a run of any harness or build, so the review speaks to the plan's accuracy against current source, not to runtime behavior.
+
+Two more items worth proposing, both of which touch the plan's own success criteria rather than the code.

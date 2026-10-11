@@ -148,6 +148,7 @@ namespace DazPose.Performer
         private float _lastBreathPhase;
         private PoseRequest _activePoseRequest;
         private long _nextPoseRequestId;
+        private long _poseIntentGeneration;
         private bool _hasPoseCommand;
         private bool _isTearingDown;
         private PerformerExpression _lastDesiredExpression;
@@ -155,6 +156,8 @@ namespace DazPose.Performer
         private float _lastDesiredExpressionIntensity;
         private float _lastSettledExpressionIntensity;
         private ExpressionRequest _activeExpressionRequest;
+        private long _expressionIntentGeneration;
+        private bool _expressionCommandCancelled;
         private bool _hasExpressionCommand;
         private bool _hasSavedApplyRootMotion;
         private bool _savedApplyRootMotion;
@@ -770,7 +773,7 @@ namespace DazPose.Performer
             DissolveToAsync(target, null);
 
         /// <summary>Sets the shader-only acceptance state without invoking the P0.G DissolveTo sequence.</summary>
-        public void SetDissolveShaderAcceptanceState(bool enabled, float progress)
+        internal void SetDissolveShaderAcceptanceState(bool enabled, float progress)
         {
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("Dissolve shader acceptance is available only while the performer is enabled in Play Mode.");
@@ -959,19 +962,61 @@ namespace DazPose.Performer
                     var pose = _activePoseRequest;
                     return () => { if (pose != null && ReferenceEquals(pose, _activePoseRequest)) {
                         _activePoseRequest = null;
-                        if (IsRuntimeReady) RequestPose(initialPose, PoseTransition.Snap, null);
+                        if (IsRuntimeReady) _bodyPose.CancelTransition();
                         CompleteRequest(pose, PoseCompletion.Cancelled);
                     } };
                 case PerformanceCommand.Expression:
                     var expression = _activeExpressionRequest;
                     return () => { if (expression != null && ReferenceEquals(expression, _activeExpressionRequest)) {
                         _activeExpressionRequest = null;
-                        if (IsRuntimeReady) RequestExpression(initialExpression, initialExpressionIntensity, 0f, null);
+                        if (IsRuntimeReady) { _expression.CancelTransition(); _expressionCommandCancelled = true; }
                         CompleteExpressionRequest(expression, ExpressionCompletion.Cancelled);
                     } };
                 default: throw new ArgumentOutOfRangeException(nameof(command));
             }
         }
+
+        /// <summary>Captures persistent intent ownership after a finite command has settled.</summary>
+        internal Action CapturePersistentCancellation(PerformanceCommand command)
+        {
+            switch (command)
+            {
+                case PerformanceCommand.Pose:
+                {
+                    long generation = _poseIntentGeneration;
+                    PerformerPose captured = _lastDesiredPose;
+                    return () =>
+                    {
+                        if (generation != _poseIntentGeneration || !ReferenceEquals(captured, _lastDesiredPose)) return;
+                        // A settled pose remains current; there is no initial-state restoration.
+                    };
+                }
+                case PerformanceCommand.Expression:
+                {
+                    long generation = _expressionIntentGeneration;
+                    PerformerExpression captured = _lastDesiredExpression;
+                    float intensity = _lastDesiredExpressionIntensity;
+                    return () =>
+                    {
+                        if (generation != _expressionIntentGeneration
+                            || !ReferenceEquals(captured, _lastDesiredExpression)
+                            || Mathf.Abs(intensity - _lastDesiredExpressionIntensity) > 0.00001f) return;
+                        // A settled expression remains current.
+                    };
+                }
+                case PerformanceCommand.Gaze:
+                    return _gaze?.CaptureCancellation();
+                case PerformanceCommand.Movement:
+                    return _locomotion?.CaptureCancellation();
+                case PerformanceCommand.Grip:
+                    return _handGripController?.CaptureCancellation();
+                default:
+                    return CaptureCancellation(command);
+            }
+        }
+
+        internal Action CaptureAuraCancellation() => _magicRuntime?.CaptureAuraCancellation(
+            () => { _desiredAura = null; _desiredAuraTarget = null; });
 
         private void PrepareRootMovement(string command, bool strict = false)
         {
@@ -1109,6 +1154,11 @@ namespace DazPose.Performer
             catch (Exception ex) { if (this != null) Debug.LogException(ex, this); }
         }
         public void ReleaseGrip() => _handGripController?.ReleaseGrip();
+        public Awaitable<GripCompletion> ReleaseGripAsync()
+        {
+            if (_handGripController == null) throw new InvalidOperationException("No grip runtime configured.");
+            return _handGripController.ReleaseGripAsync();
+        }
         /// <summary>Holds a normalized contact position without changing the shared playback clock.</summary>
         public void HoldGrip(float position01 = .5f)
         {
@@ -1222,6 +1272,7 @@ namespace DazPose.Performer
             if (_bodyPose == null || _isTearingDown || !isActiveAndEnabled)
                 throw new InvalidOperationException("SuccubusPerformer can receive pose commands only while enabled in Play Mode.");
             if (pose == null) throw new ArgumentNullException(nameof(pose));
+            _poseIntentGeneration++;
 
             var previousDesired = _bodyPose.DesiredPose;
             if (pose == previousDesired)
@@ -1284,9 +1335,10 @@ namespace DazPose.Performer
                 throw new ArgumentOutOfRangeException(nameof(blendTime), "Expression blend time must be finite.");
             if (expression != null && !IsFinite(intensity))
                 throw new ArgumentOutOfRangeException(nameof(intensity), "Expression intensity must be finite.");
+            _expressionIntentGeneration++;
             intensity = Mathf.Clamp01(intensity);
             blendTime = Mathf.Max(0f, blendTime);
-            var sameDesired = expression == _lastDesiredExpression && Mathf.Abs(intensity - _lastDesiredExpressionIntensity) <= 0.00001f;
+            var sameDesired = !_expressionCommandCancelled && expression == _lastDesiredExpression && Mathf.Abs(intensity - _lastDesiredExpressionIntensity) <= 0.00001f;
             if (sameDesired)
             {
                 if (_expression.IsTransitioning)
@@ -1297,6 +1349,7 @@ namespace DazPose.Performer
                 return;
             }
 
+            _expressionCommandCancelled = false;
             var previous = _activeExpressionRequest;
             if (expression == null) _expression.Clear(blendTime);
             else _expression.SetExpression(expression, intensity, blendTime);
@@ -1518,7 +1571,7 @@ namespace DazPose.Performer
             }
 
             if (speechAudioSource == null)
-                throw new InvalidOperationException("No dedicated speech AudioSource is assigned or present beneath the performer's head. In Edit Mode, select the Lara root, run Tools > DAZ Pose > Development > Setup or Refresh Performer Pose Acceptance Harness, then save PoseValidation.unity.");
+                throw new InvalidOperationException("actor/speechAudioSource: Assign the actor's existing production speech AudioSource reference beneath the performer's head.");
             if (speechAudioSource.transform == transform || !speechAudioSource.transform.IsChildOf(transform))
                 throw new InvalidOperationException("The dedicated speech AudioSource must be a child of SuccubusPerformer so it follows the performer.");
 
@@ -1577,7 +1630,7 @@ namespace DazPose.Performer
             if (gesture == null) throw new ArgumentNullException(nameof(gesture));
             if (!gesture.IsReady(out string reason)) throw new InvalidOperationException(reason);
             if (_gestureLayer == null)
-                throw new InvalidOperationException("Gesture is unavailable because its generated PerformerUpperBodyGesture mask is missing or invalid. Run Tools > DAZ Pose > Gesture > Generate Gesture Acceptance Assets, or bake a Generic upper-body clip as a Performer Gesture.");
+                throw new InvalidOperationException("actor/gestureUpperBodyMask: Assign the actor's existing production Gesture mask, or repair the actor's configured Animator and body skeleton.");
             if (VisibilityState != PerformerVisibilityState.Visible)
                 throw new InvalidOperationException("A new Gesture can start only while Lara is stably Visible. Current visibility state is "
                     + VisibilityState + ". Existing gestures continue through dissolve transitions.");
@@ -1681,7 +1734,7 @@ namespace DazPose.Performer
             if (IsDissolving)
                 throw new InvalidOperationException("TeleportTo is unavailable while a dissolve is in progress.");
             if (_teleport == null)
-                throw new InvalidOperationException("Teleport is unavailable. In Edit Mode, run Tools > DAZ Pose > First Performance Void > Install Teleport Acceptance Harness.");
+                throw new InvalidOperationException("actor/teleportProfile: Assign the actor's existing production PerformerTeleportProfile reference.");
             if (IsLocomoting)
                 throw new InvalidOperationException("Teleport requires Lara to finish locomoting first.");
             if (SeatingState != PerformerSeatingState.Standing)
@@ -1701,7 +1754,8 @@ namespace DazPose.Performer
             if (!IsRuntimeReady)
                 throw new InvalidOperationException("SuccubusPerformer can dissolve only while its runtime is ready in Play Mode.");
             if (_dissolve == null)
-                throw new InvalidOperationException(command + " is unavailable. In Edit Mode, run Tools > DAZ Pose > First Performance Void > Install Dissolve Acceptance Harness.");
+                throw new InvalidOperationException(command + " is unavailable. Assign the actor's existing production "
+                    + (dissolveProfile == null ? "PerformerDissolveProfile reference to actor/dissolveProfile." : "PerformerDissolveRig reference to actor/dissolveRig."));
             if (VisibilityState != requiredState)
                 throw new InvalidOperationException(command + " requires Lara to be in stable " + requiredState
                     + " visibility state; current state is " + VisibilityState + ".");

@@ -1,0 +1,15 @@
+{
+  "name": "DazPose.Examples",
+  "references": [
+    "GUID:f49e99254b924e90b979a734d998d99d"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

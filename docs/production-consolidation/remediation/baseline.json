@@ -1,0 +1,13 @@
+{
+  "commit": "18b268afe4df1ce11046a760b757002571a104c6",
+  "subject": "Checkpoint accepted consolidation days 1-5 before remediation",
+  "archive": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\recovery\\18b268afe4df1ce11046a760b757002571a104c6\\unity-inputs.zip",
+  "manifest": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\recovery\\18b268afe4df1ce11046a760b757002571a104c6\\manifest.json",
+  "archiveSha256": "eb3f7b480bd7a6e6fccce7b8927ec00ed8d54806a82b9fdbb1125e937a2575b7",
+  "fileCount": 7979,
+  "inputBytes": 9167355984,
+  "archiveBytes": 3583189719,
+  "crcValidation": "passed",
+  "sourceStabilityValidation": "passed",
+  "pushed": false
+}

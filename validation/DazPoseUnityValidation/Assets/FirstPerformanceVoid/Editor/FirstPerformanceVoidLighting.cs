@@ -52,7 +52,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             catch (Exception exception) { Debug.LogException(exception); }
         }
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Apply Lara Lighting and Fog Corrections")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Apply Lara Lighting and Fog Corrections")]
+#endif
         public static void Apply()
         {
             Scene scene = SceneManager.GetSceneByPath(FirstPerformanceVoidBuilder.ScenePath);

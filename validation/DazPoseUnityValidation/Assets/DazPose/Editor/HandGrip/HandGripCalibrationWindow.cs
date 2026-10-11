@@ -25,7 +25,9 @@ namespace DazPose.Editor.HandGrip
         private bool _previewActive;
         private Vector2 _scroll;
 
-        [MenuItem("Tools/DAZ Pose/Handjob/Open Calibration Window")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Handjob/Open Calibration Window")]
+#endif
         public static void Open()
         {
             HandGripCalibrationWindow window = GetWindow<HandGripCalibrationWindow>("Hand Grip Calibration");
@@ -34,7 +36,9 @@ namespace DazPose.Editor.HandGrip
             window.Show();
         }
 
-        [MenuItem("Tools/DAZ Pose/Handjob/Capture Lara Right Hand Profile From Selection")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Handjob/Capture Lara Right Hand Profile From Selection")]
+#endif
         public static void CaptureProfileFromSelection()
         {
             Animator animator = Selection.activeGameObject != null

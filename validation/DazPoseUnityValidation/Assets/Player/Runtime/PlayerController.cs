@@ -12,17 +12,8 @@ namespace DazPose.Player
         [SerializeField] private PlayerView view;
         [SerializeField] private ToyControlService toyControlService;
 
-        /// <summary>Semantic hardware API. The scene-level ToyControlService owns its independent backend.</summary>
-        public ToyControlService Toys
-        {
-            get
-            {
-                if (toyControlService == null) toyControlService = GetComponent<ToyControlService>();
-                if (toyControlService == null)
-                    throw new InvalidOperationException("Player toy service is not bound. Assign toyControlService on this PlayerController.");
-                return toyControlService;
-            }
-        }
+        [Obsolete("Use run.Toys for content and application Settings for connection.")]
+        public ToyControlService Toys => DazPose.Game.GameApplication.EnsureStarted().Toys;
 
         public PlayerView View
         {
@@ -79,7 +70,7 @@ namespace DazPose.Player
         private void Awake()
         {
             if (view == null) view = GetComponent<PlayerView>();
-            if (toyControlService == null) toyControlService = GetComponent<ToyControlService>();
+
         }
 
         private void OnDisable() => view?.CancelActiveCommands();

@@ -23,13 +23,17 @@ namespace DazPose.FirstPerformanceVoid.Editor
         private const string BindingAssetPath = ParticleBodyFolder + "/PerformerSurfaceBindings.asset";
         private const string GraphAssetPath = ParticleBodyFolder + "/PerformerParticleBody.vfx";
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Install Particle Body Acceptance Harness")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Install Particle Body Acceptance Harness")]
+#endif
         public static void Install()
         {
             InstallInternal(false);
         }
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Rebuild Particle Body VFX Graph")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Rebuild Particle Body VFX Graph")]
+#endif
         public static void RebuildGraph()
         {
             if (!EditorUtility.DisplayDialog("Rebuild Particle Body VFX Graph",
@@ -40,7 +44,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
             InstallInternal(true);
         }
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Validate Particle Body Acceptance Harness")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Validate Particle Body Acceptance Harness")]
+#endif
         public static void ValidateInstalledSetup()
         {
             Scene scene = GetLoadedScene();

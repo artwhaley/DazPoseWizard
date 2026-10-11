@@ -45,7 +45,9 @@ namespace DazPose.UnityValidation
             public string RendererPath;
         }
 
-        [MenuItem("Tools/DAZ Pose/Validate Always-Export Morphs")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Validate Always-Export Morphs")]
+#endif
         private static void ValidateConfiguredAlwaysExportMorphs()
         {
             var projectRoot = Directory.GetParent(Application.dataPath).FullName;

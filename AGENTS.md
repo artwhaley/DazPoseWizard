@@ -1,35 +1,40 @@
 # Current authoritative work plan
 
-The user approved `docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md` on
-2026-10-05. It is the authoritative TODO list and game plan until its required
-completion gates are satisfied or the user explicitly changes the plan.
-Start planned development there. Execute its days in dependency order; a calendar
-day ending does not complete a gate. Do not substitute older sprint proposals,
-wrap-up reviews, codemaps or stale handoff claims for this plan.
+The user's October 7, 2026 authoring-readiness revision is authoritative.
+Start at [AUTHORING_READINESS_BUILD_PLAN.md](AUTHORING_READINESS_BUILD_PLAN.md)
+and execute B01–B08 in dependency order when implementation is requested.
+[CONTENT_AUTHORING_API.md](CONTENT_AUTHORING_API.md) is the author-facing guide;
+it explicitly distinguishes current source from planned APIs. The October 8 review reconciliation is recorded in docs/production-consolidation/AUTHORING_PLAN_REVIEW_RESOLUTION.md; use the reviewed dependency order and runner dispositions. B05a and B05b are separately recorded parts of B05.
 
-The user revised the remaining work after accepting Days 1–5. Before the composed
-API-authored scene, follow
-`docs/production-consolidation/PRE_AUTHORING_REMEDIATION_PLAN.md`: investigate the
-second-outfit toe regression and remediate reassessment issues 1, 2, 3, 5 and 6.
-Other-character portability (issue 4) is explicitly excluded. Preserve working
-Lara rig conventions; do not build a generalized character controller. This
-changes remaining work order, not the required execution or preservation gates.
+The user authorized implementation on October 8, 2026. Execute the reviewed
+plan in order, including its bounded checks and delivered-scene/player playback.
 
-Detailed execution packets live under `docs/production-consolidation/`.
-Day 1 starts at `docs/production-consolidation/DAY_1.md`; shared progress is
-`docs/production-consolidation/progress.json`. Read the active packet and progress
-before starting, and update progress plus evidence/handoff before yielding.
-Packets make the approved plan executable; they may not silently expand its scope
-or weaken its acceptance gates. Do not mark a day complete from source inspection
-when its gate requires execution evidence. Record technical passes, human visual
-approval and independent clean-context import acceptance separately.
+Fixed user decisions: toy output is fire and forget and all toy errors are silent
+successful no-ops to the app; explicit session Stop cancels all local work and toy
+output; Intiface connection/settings belong to the application; production editor
+commands belong under top-level DazPose; pose commands use configured smooth
+defaults; tuning is never restored/reset by lifecycle cleanup; every actor uses
+Lara; actual saved-scene Play is the authoring acceptance path. Do not reintroduce
+toy acknowledgement failures, temporary tuning restoration or generalized
+capability/preflight gates from older packets.
 
-Existing subsystem contracts, accepted artistic decisions, source/GUID protection
-and launch procedures below still apply. The approved plan governs work priority
-and its explicitly requested changes, including the Clothing Setup UI rebuild.
-If a genuine unresolved product decision conflicts with the plan, preserve the
-specific conflict for the user; proceed with independent work that does not depend
-on that decision. No commit, push or publication to an external service is implied.
+Days 1–5 of docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md remain accepted.
+The completed R01–R13 remediation stack and its evidence are historical context,
+not the next implementation queue. The second-outfit toe appearance observation
+remains unapproved until the user observes it. Do not turn that observation into a
+new generalized validation or import campaign. Preserve historical import evidence
+without claiming independent clean-context acceptance.
+
+Read and update docs/production-consolidation/progress.json and HANDOFF.md for
+implementation status. Record technical results, actual delivered-scene/player
+playback and user visual approval separately. Do not mark execution complete from
+source inspection. The new plan governs wherever an older packet conflicts.
+
+Preserve Lara rig conventions, artistic settings, source/metas/GUIDs, user-edited
+wardrobe layers and immutable releases. Preserve the authorized recovery baseline
+commit 18b268afe4df1ce11046a760b757002571a104c6 and its ignored-input snapshot
+recorded in docs/production-consolidation/remediation/baseline.json. No push or
+external publication is implied.
 
 # Authored performance test environment
 

@@ -11,6 +11,7 @@ $taskRoot = Split-Path $PSScriptRoot -Parent
 $mainProject = Join-Path $taskRoot 'validation\DazPoseUnityValidation'
 $isolatedProject = Join-Path $taskRoot '.dazposewizard\p0c-native-generation'
 $unityProjectFile = Join-Path $isolatedProject 'ProjectSettings\ProjectVersion.txt'
+. (Join-Path $PSScriptRoot 'RemediationSourceMoveSync.ps1')
 if (!(Test-Path -LiteralPath $unityProjectFile)) {
     throw "Isolated Unity project is missing: $isolatedProject"
 }
@@ -103,11 +104,28 @@ try {
         (Join-Path $mainProject 'Assets\Player'),
         (Join-Path $mainProject 'Assets\FirstPerformanceVoid')
     )
+    Remove-StaleRemediationSourceCopies -RepositoryRoot $taskRoot -StagingProjectRoot $isolatedProject | Out-Null
     $sourceAssetFiles = foreach ($sourceRoot in $sourceRoots) {
         Get-ChildItem -LiteralPath $sourceRoot -Recurse -File | Where-Object {
-            $_.Extension -eq '.cs' -or $_.Name -like '*.cs.meta' -or $_.FullName.Contains('\Effects\Dissolve\Shaders\')
+            $_.Extension -eq '.cs' -or $_.Name -like '*.cs.meta' -or
+            $_.Extension -in @('.asmdef','.asmref') -or $_.Name -like '*.asmdef.meta' -or $_.Name -like '*.asmref.meta' -or
+            $_.FullName.Contains('\Effects\Dissolve\Shaders\')
         }
     }
+    $sourceFolderMetas = foreach ($sourceRoot in $sourceRoots) {
+        $folders = @((Get-Item -LiteralPath $sourceRoot)) + @(Get-ChildItem -LiteralPath $sourceRoot -Directory -Recurse -Force)
+        foreach ($folder in $folders) {
+            $folderMeta = $folder.FullName + '.meta'
+            if (Test-Path -LiteralPath $folderMeta -PathType Leaf) { Get-Item -LiteralPath $folderMeta }
+        }
+    }
+    $sourceAssetFiles = @($sourceAssetFiles) + @($sourceFolderMetas)
+    $adapterRoot = Join-Path $mainProject 'Assets\Daz3D\Scripts\Editor'
+    $adapterFiles = @('DazPoseDtuConversionAdapter.cs','DazPoseDtuConversionAdapter.cs.meta') | ForEach-Object {
+        $path = Join-Path $adapterRoot $_
+        if (Test-Path -LiteralPath $path) { Get-Item -LiteralPath $path }
+    }
+    $sourceAssetFiles = @($sourceAssetFiles) + @($adapterFiles)
     # The isolated validation project must compile against the same pinned package graph as the main project.
     $sourcePackageFiles = @('manifest.json', 'packages-lock.json') | ForEach-Object {
         $path = Join-Path $mainProject ('Packages\' + $_)
@@ -115,6 +133,7 @@ try {
     }
     $sourceFiles = @($sourceAssetFiles) + @($sourcePackageFiles)
     foreach ($file in $sourceFiles) { Copy-Changed $file.FullName (Join-Path $isolatedProject $file.FullName.Substring($mainProject.Length + 1)) }
+    Remove-MisclassifiedPreflightRunnerCopy -RepositoryRoot $taskRoot -StagingProjectRoot $isolatedProject | Out-Null
 
     $sourceManifest = [Collections.Generic.List[string]]::new()
     foreach ($sourceFile in $sourceFiles | Sort-Object FullName) {

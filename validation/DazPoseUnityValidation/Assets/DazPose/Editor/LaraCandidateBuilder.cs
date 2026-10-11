@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using Daz3D;
+using DazPose.Daz3DConversion;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -51,7 +51,9 @@ namespace DazPose.UnityValidation
             return manifest;
         }
 
-        [MenuItem("Tools/DAZ Pose/Development/Open Lara Candidate Preview")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Open Lara Candidate Preview")]
+#endif
         public static void OpenPreview()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -204,96 +206,87 @@ namespace DazPose.UnityValidation
             Directory.CreateDirectory(destination + "/SourceMaterials");
             Directory.CreateDirectory(destination + "/RuntimeMaterials");
             AssetDatabase.Refresh();
-            var converter = new DTU { DTUPath = Folder + "/manifest.json" };
-            bool legacy = Daz3DDTUImporter.UseLegacyShaders;
             var results = new Material[manifest.materials.Length];
-            try
+            foreach (Surface surface in manifest.materials)
             {
-                Daz3DDTUImporter.UseLegacyShaders = false;
-                foreach (Surface surface in manifest.materials)
+                var properties = new List<DtuConversionProperty>();
+                foreach (Property input in surface.properties)
                 {
-                    var properties = new List<DTUMaterialProperty>();
-                    foreach (Property input in surface.properties)
+                    string texture = input.texture;
+                    if (!string.IsNullOrEmpty(texture))
                     {
-                        var value = new DTUValue(input.number);
-                        if (input.kind == "color") { value.Type = DTUValue.DataType.Color; value.AsColor = input.color; }
-                        if (input.kind == "string") { value.Type = DTUValue.DataType.String; value.AsString = input.text; }
-                        string texture = input.texture;
-                        if (!string.IsNullOrEmpty(texture))
-                        {
-                            if (!File.Exists(texture)) throw new IOException("Missing texture " + texture);
-                            string role = input.name == "Normal Map" ? "normal" : input.kind == "color" ? "color" : "data";
-                            string staged = destination + "/TextureSources/" + role + "_" + Hash(texture).Substring(0,16) + Path.GetExtension(texture);
-                            if (!File.Exists(staged)) File.Copy(texture, staged);
-                            texture = Path.GetFullPath(staged);
-                        }
-                        properties.Add(new DTUMaterialProperty { Name = input.name, Value = value, Texture = texture ?? "", Exists = true });
+                        if (!File.Exists(texture)) throw new IOException("Missing texture " + texture);
+                        string role = input.name == "Normal Map" ? "normal" : input.kind == "color" ? "color" : "data";
+                        string staged = destination + "/TextureSources/" + role + "_" + Hash(texture).Substring(0,16) + Path.GetExtension(texture);
+                        if (!File.Exists(staged)) File.Copy(texture, staged);
+                        texture = Path.GetFullPath(staged);
                     }
-                    var inputMaterial = new DTUMaterial { AssetName = surface.node, MaterialName = surface.surface,
-                        MaterialType = surface.iray ? "Iray Uber" : "Daz Studio Default", Value = surface.assetType ?? "Actor/Character",
-                        Properties = properties, ProductName = "Lara", ProductComponentName = surface.node };
-                    Material converted = surface.iray ? converter.ConvertToUnityIrayUber(inputMaterial, destination + "/Textures")
-                        : converter.ConvertToUnityDazStudioDefault(inputMaterial, destination + "/Textures");
-                    if (converted == null) throw new IOException("Bridge could not convert " + surface.node + "/" + surface.surface);
-                    string family = converted.shader.name;
-                    string owned = family == "Daz3D/Wet" ? "Wet Dissolve.shadergraph"
-                        : family == "Daz3D/uDTU HDRP.SSS" ? "uDTU HDRP SSS Dissolve.shadergraph"
-                        : family == "Daz3D/uDTU HDRP.Specular" ? "uDTU HDRP Specular Dissolve.shadergraph"
-                        : family == "Daz3D/uDTU HDRP.Metallic" ? "uDTU HDRP Metallic Dissolve.shadergraph"
-                        : family == "Daz3D/uDTU HDRP.Hair" ? "uDTU HDRP Hair Dissolve.shadergraph" : null;
-                    if (owned == null) throw new IOException("No owned dissolve variant for " + family);
-                    if(!applySkinResponse && converted.HasProperty("_SurfaceType") && converted.GetFloat("_SurfaceType")>.5f
-                        && (family=="Daz3D/uDTU HDRP.Metallic" || family=="Daz3D/uDTU HDRP.Specular"))
-                        owned=owned.Replace(" Dissolve"," Transparent Dissolve");
-                    RepairOpacityTexture(converted);
-                    converted.name = (stableSurfaceNames ? "M" : surface.slot.ToString("D2")) + "_" + surface.node + "_" + surface.surface;
-                    string materialName=converted.name;
-                    string materialFile=stableSurfaceNames?WardrobeImporter.Safe(converted.name):converted.name;
-                    string sourcePath=destination+"/SourceMaterials/"+materialFile+".mat";
-                    var previousSource=stableSurfaceNames?AssetDatabase.LoadAssetAtPath<Material>(sourcePath):null;
-                    var baseline=previousSource!=null?UnityEngine.Object.Instantiate(previousSource):null;
-                    converted = Save(converted, sourcePath);
-                    converted.name=materialName;
-                    EditorUtility.SetDirty(converted);
-                    string runtimePath = destination + "/RuntimeMaterials/" + materialFile + ".mat";
-                    Material runtime = AssetDatabase.LoadAssetAtPath<Material>(runtimePath);
-                    // Source regeneration is separate; existing runtime assets preserve artistic edits.
-                    if (runtime == null)
-                    {
-                        runtime = UnityEngine.Object.Instantiate(converted);
-                        runtime.shader = AssetDatabase.LoadAssetAtPath<Shader>(ShaderFolder + owned);
-                        if (runtime.shader == null) throw new IOException("Missing owned shader " + owned);
-                        runtime.SetFloat("_DissolveEnabled", 0);
-                        runtime.SetFloat("_DissolveProgress", 0);
-                        if (runtime.HasProperty("_AlphaCutoffEnable")) runtime.SetFloat("_AlphaCutoffEnable", 1);
-                        runtime.EnableKeyword("_ALPHATEST_ON");
-                        if(owned.Contains("Transparent"))UnityEditor.Rendering.HighDefinition.HDShaderUtils.ResetMaterialKeywords(runtime);
-                        if (applySkinResponse) ApplyAcceptedSkinSettings(runtime,surface.slot);
-                        runtime = Save(runtime, runtimePath);
-                    }
-                    if(stableSurfaceNames && runtime.name!=materialName){runtime.name=materialName;EditorUtility.SetDirty(runtime);}
-                    if(baseline!=null)
-                    {
-                        MergeUneditedMaterialProperties(baseline,converted,runtime);
-                        UnityEngine.Object.DestroyImmediate(baseline);
-                    }
-                    if(stableSurfaceNames)
-                    {
-                        string graph=owned;
-                        if(runtime.HasProperty("_SurfaceType") && runtime.GetFloat("_SurfaceType")<.5f)graph=graph.Replace(" Transparent Dissolve"," Dissolve");
-                        if(runtime.HasProperty("_SurfaceType") && runtime.GetFloat("_SurfaceType")>.5f && !graph.Contains("Transparent") && (graph.Contains("Metallic")||graph.Contains("Specular")))graph=graph.Replace(" Dissolve"," Transparent Dissolve");
-                        runtime.shader=AssetDatabase.LoadAssetAtPath<Shader>(ShaderFolder+graph);
-                        UnityEditor.Rendering.HighDefinition.HDShaderUtils.ResetMaterialKeywords(runtime);
-                        EditorUtility.SetDirty(runtime);
-                    }
-                    foreach (string property in new[] { "_DissolveEnabled", "_DissolveProgress", "_DissolveBoundsMin", "_DissolveBoundsSize",
-                        "_DissolveFieldParams", "_DissolveEdgeWidth", "_DissolveEdgeColor", "_DissolveEdgeEmission" })
-                        if (!runtime.HasProperty(property)) throw new IOException("Dissolve contract missing: " + converted.name + "/" + property);
-                    if (ShaderUtil.ShaderHasError(runtime.shader)) throw new IOException("Shader compile error: " + runtime.shader.name);
-                    results[surface.slot] = runtime;
+                    properties.Add(new DtuConversionProperty(input.name, input.kind, input.number, input.color, input.text, texture));
                 }
+                var request = new DtuConversionRequest(Folder + "/manifest.json", destination + "/Textures",
+                    surface.node, surface.surface, surface.iray ? "Iray Uber" : "Daz Studio Default",
+                    surface.assetType ?? "Actor/Character", "Lara", surface.node,
+                    surface.iray ? DtuMaterialConversionKind.IrayUber : DtuMaterialConversionKind.DazStudioDefault,
+                    properties.ToArray());
+                Material converted = DazPoseDtuConversionBridge.Convert(request);
+                if (converted == null) throw new IOException("Bridge could not convert " + surface.node + "/" + surface.surface);
+                string family = converted.shader.name;
+                string owned = family == "Daz3D/Wet" ? "Wet Dissolve.shadergraph"
+                    : family == "Daz3D/uDTU HDRP.SSS" ? "uDTU HDRP SSS Dissolve.shadergraph"
+                    : family == "Daz3D/uDTU HDRP.Specular" ? "uDTU HDRP Specular Dissolve.shadergraph"
+                    : family == "Daz3D/uDTU HDRP.Metallic" ? "uDTU HDRP Metallic Dissolve.shadergraph"
+                    : family == "Daz3D/uDTU HDRP.Hair" ? "uDTU HDRP Hair Dissolve.shadergraph" : null;
+                if (owned == null) throw new IOException("No owned dissolve variant for " + family);
+                if(!applySkinResponse && converted.HasProperty("_SurfaceType") && converted.GetFloat("_SurfaceType")>.5f
+                    && (family=="Daz3D/uDTU HDRP.Metallic" || family=="Daz3D/uDTU HDRP.Specular"))
+                    owned=owned.Replace(" Dissolve"," Transparent Dissolve");
+                RepairOpacityTexture(converted);
+                converted.name = (stableSurfaceNames ? "M" : surface.slot.ToString("D2")) + "_" + surface.node + "_" + surface.surface;
+                string materialName=converted.name;
+                string materialFile=stableSurfaceNames?WardrobeImporter.Safe(converted.name):converted.name;
+                string sourcePath=destination+"/SourceMaterials/"+materialFile+".mat";
+                var previousSource=stableSurfaceNames?AssetDatabase.LoadAssetAtPath<Material>(sourcePath):null;
+                var baseline=previousSource!=null?UnityEngine.Object.Instantiate(previousSource):null;
+                converted = Save(converted, sourcePath);
+                converted.name=materialName;
+                EditorUtility.SetDirty(converted);
+                string runtimePath = destination + "/RuntimeMaterials/" + materialFile + ".mat";
+                Material runtime = AssetDatabase.LoadAssetAtPath<Material>(runtimePath);
+                // Source regeneration is separate; existing runtime assets preserve artistic edits.
+                if (runtime == null)
+                {
+                    runtime = UnityEngine.Object.Instantiate(converted);
+                    runtime.shader = AssetDatabase.LoadAssetAtPath<Shader>(ShaderFolder + owned);
+                    if (runtime.shader == null) throw new IOException("Missing owned shader " + owned);
+                    runtime.SetFloat("_DissolveEnabled", 0);
+                    runtime.SetFloat("_DissolveProgress", 0);
+                    if (runtime.HasProperty("_AlphaCutoffEnable")) runtime.SetFloat("_AlphaCutoffEnable", 1);
+                    runtime.EnableKeyword("_ALPHATEST_ON");
+                    if(owned.Contains("Transparent"))UnityEditor.Rendering.HighDefinition.HDShaderUtils.ResetMaterialKeywords(runtime);
+                    if (applySkinResponse) ApplyAcceptedSkinSettings(runtime,surface.slot);
+                    runtime = Save(runtime, runtimePath);
+                }
+                if(stableSurfaceNames && runtime.name!=materialName){runtime.name=materialName;EditorUtility.SetDirty(runtime);}
+                if(baseline!=null)
+                {
+                    MergeUneditedMaterialProperties(baseline,converted,runtime);
+                    UnityEngine.Object.DestroyImmediate(baseline);
+                }
+                if(stableSurfaceNames)
+                {
+                    string graph=owned;
+                    if(runtime.HasProperty("_SurfaceType") && runtime.GetFloat("_SurfaceType")<.5f)graph=graph.Replace(" Transparent Dissolve"," Dissolve");
+                    if(runtime.HasProperty("_SurfaceType") && runtime.GetFloat("_SurfaceType")>.5f && !graph.Contains("Transparent") && (graph.Contains("Metallic")||graph.Contains("Specular")))graph=graph.Replace(" Dissolve"," Transparent Dissolve");
+                    runtime.shader=AssetDatabase.LoadAssetAtPath<Shader>(ShaderFolder+graph);
+                    UnityEditor.Rendering.HighDefinition.HDShaderUtils.ResetMaterialKeywords(runtime);
+                    EditorUtility.SetDirty(runtime);
+                }
+                foreach (string property in new[] { "_DissolveEnabled", "_DissolveProgress", "_DissolveBoundsMin", "_DissolveBoundsSize",
+                    "_DissolveFieldParams", "_DissolveEdgeWidth", "_DissolveEdgeColor", "_DissolveEdgeEmission" })
+                    if (!runtime.HasProperty(property)) throw new IOException("Dissolve contract missing: " + converted.name + "/" + property);
+                if (ShaderUtil.ShaderHasError(runtime.shader)) throw new IOException("Shader compile error: " + runtime.shader.name);
+                results[surface.slot] = runtime;
             }
-            finally { Daz3DDTUImporter.UseLegacyShaders = legacy; }
             return results;
         }
         // Source changes flow through only where the artist has retained the old source value.
@@ -352,7 +345,9 @@ namespace DazPose.UnityValidation
                 if (runtime.HasProperty(property) && accepted.HasProperty(property)) runtime.SetFloat(property,accepted.GetFloat(property));
             EditorUtility.SetDirty(runtime);
         }
-        [MenuItem("Tools/DAZ Pose/Development/Copy Accepted Lara Skin Response")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Copy Accepted Lara Skin Response")]
+#endif
         public static void CopyAcceptedSkinResponse()
         {
             foreach (var surface in ReadManifest().materials)
@@ -419,7 +414,9 @@ namespace DazPose.UnityValidation
             window.breasts = window.breastsBakedValue;
             window.Show();
         }
-        [MenuItem("Tools/DAZ Pose/Development/Lara Candidate Controls")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Lara Candidate Controls")]
+#endif
         public static void Connect()
         {
             var renderer = Selection.activeGameObject == null ? null : Selection.activeGameObject.GetComponent<SkinnedMeshRenderer>();

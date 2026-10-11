@@ -1,3 +1,5 @@
+> **Current plan revision — October 7, 2026:** [AUTHORING_READINESS_BUILD_PLAN.md](../AUTHORING_READINESS_BUILD_PLAN.md) replaces the remaining execution order and conflicting contracts below. B01–B08 are the next build packets. The root [CONTENT_AUTHORING_API.md](../CONTENT_AUTHORING_API.md) is the author guide. Toy errors are silent, cancellation is complete locally, tuning persists, pose defaults stay smooth, toys/settings are app-owned, and acceptance uses the actual saved scenes. This older plan retains historical scope/evidence; it must not reintroduce temporary tuning restoration, toy-failure stops or mandatory generalized preflight.
+
 # Seven-day production consolidation plan
 
 Prepared October 4, 2026. Approved by the user October 5, 2026 as the authoritative TODO list until complete. This approval establishes the work plan; it does not claim implementation or acceptance results.

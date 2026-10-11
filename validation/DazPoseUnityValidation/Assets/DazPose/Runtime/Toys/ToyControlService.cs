@@ -39,6 +39,7 @@ namespace DazPose.Toys
             public long Owner;
             public long DispatchVersion;
             public int LifecycleGeneration;
+            public TaskCompletionSource<bool> Completion;
         }
 
         private sealed class OutputState
@@ -107,6 +108,15 @@ namespace DazPose.Toys
         private long _ownedPlaybackSourceRevision = -1;
         private int _ownedPlaybackBindingGeneration = -1;
         private long _nextOwner;
+        private long _outputLease;
+        internal long AcquireOutputLease()
+        {
+            StopFollowing(stopHardware: false);
+            InvalidatePendingOutputs();
+            return Interlocked.Increment(ref _outputLease);
+        }
+        internal bool IsOutputLeaseCurrent(long lease) => lease == Interlocked.Read(ref _outputLease);
+
         private float _vibrationLevel;
         private float _oscillationLevel;
         private float _strokeMinimum;
@@ -163,16 +173,8 @@ namespace DazPose.Toys
             while (_mainThreadEvents.TryDequeue(out Action callback))
             {
                 try { callback(); }
-                catch (Exception exception) { Debug.LogException(exception, this); }
+                catch (Exception exception) {  }
             }
-
-            if (_connectRequested && !_connectInFlight && !IsConnected
-                && Time.realtimeSinceStartup >= _nextReconnectAt
-                && (ConnectionState == ToyConnectionState.Disconnected || ConnectionState == ToyConnectionState.Faulted))
-                _ = BeginConnectAttemptAsync();
-
-            if (_scanRequested && IsConnected && !IsScanning && !_scanInFlight && !_scanStartedOnConnection)
-                _ = StartScanAttemptAsync();
 
             bool paused = Time.timeScale <= 0f;
             if (paused != _gameplayPaused)
@@ -215,7 +217,7 @@ namespace DazPose.Toys
             StartShutdown(disposeBackend: true);
         }
 
-        /// <summary>Connects once, then retries transient server loss with bounded backoff.</summary>
+        /// <summary>Submits one explicit connection attempt; connection errors are silent.</summary>
         public Task ConnectAsync()
         {
             if (IsConnected || _connectInFlight) return Task.CompletedTask;
@@ -291,6 +293,141 @@ namespace DazPose.Toys
             RampIntensityAsync(ToyOutputCapability.Oscillate, target, seconds, null);
         public Awaitable RampOscillationAsync(float target, float seconds, int channel) =>
             RampIntensityAsync(ToyOutputCapability.Oscillate, target, seconds, channel);
+
+        internal bool CanOutput(ToyOutputCapability capability, int? channel = null)
+        {
+            if (!IsConnected) return false;
+            return GetTargets(capability, channel).Count > 0;
+        }
+
+        internal Awaitable<ToyCommandReport> VibrateTrackedAsync(float level, int? channel = null) =>
+            TrackIntensityAsync(ToyOutputCapability.Vibrate, level, 0f, channel, "Vibrate");
+
+        internal Awaitable<ToyCommandReport> OscillateTrackedAsync(float level, int? channel = null) =>
+            TrackIntensityAsync(ToyOutputCapability.Oscillate, level, 0f, channel, "Oscillate");
+
+        internal Awaitable<ToyCommandReport> RampVibrationTrackedAsync(float target, float seconds,
+            int? channel = null) => TrackIntensityAsync(ToyOutputCapability.Vibrate, target, seconds,
+                channel, "RampVibration");
+
+        internal Awaitable<ToyCommandReport> RampOscillationTrackedAsync(float target, float seconds,
+            int? channel = null) => TrackIntensityAsync(ToyOutputCapability.Oscillate, target, seconds,
+                channel, "RampOscillation");
+
+        internal Awaitable<ToyCommandReport> MoveToTrackedAsync(float position, float seconds) =>
+            TrackPositionAsync(position, seconds);
+
+        private async Awaitable<ToyCommandReport> TrackIntensityAsync(ToyOutputCapability capability,
+            float target, float seconds, int? channel, string operation)
+        {
+            ValidateUnit(target, nameof(target));
+            ValidateDuration(seconds, nameof(seconds));
+            if (channel.HasValue && channel.Value < 0) throw new ArgumentOutOfRangeException(nameof(channel));
+
+            List<ToyOutputBinding> targets = GetTargets(capability, channel);
+            if (!IsConnected || targets.Count == 0)
+                return new ToyCommandReport(operation, 0, new[] { operation + ": no connected output routes." });
+
+            target = Mathf.Clamp01(target);
+            if (capability == ToyOutputCapability.Vibrate) _vibrationLevel = target;
+            else _oscillationLevel = target;
+            SuppressControlOutputs(targets);
+
+            var transitions = new List<OutputTransition>();
+            foreach (ToyOutputBinding binding in targets)
+            {
+                long owner = NextOwner();
+                float start = GetDesired(binding, 0f);
+                long revision = BeginOwner(binding, owner, start);
+                transitions.Add(new OutputTransition(binding, revision, start, target));
+            }
+
+            float elapsed = 0f;
+            while (elapsed < seconds && AnyTransitionStillOwned(transitions))
+            {
+                await Awaitable.NextFrameAsync();
+                elapsed = Mathf.Min(seconds, elapsed + Mathf.Max(0f, Time.deltaTime));
+                float progress = Mathf.Clamp01(elapsed / seconds);
+                foreach (OutputTransition transition in transitions)
+                    if (IsOwner(transition.Binding, transition.Revision))
+                        QueueOwned(transition.Binding, transition.Revision,
+                            Mathf.LerpUnclamped(transition.Start, transition.Target, progress), 0);
+                if (Time.deltaTime <= 0f) await Awaitable.NextFrameAsync();
+            }
+
+            var acknowledgements = new List<Task<bool>>(transitions.Count);
+            foreach (OutputTransition transition in transitions)
+            {
+                if (!IsOwner(transition.Binding, transition.Revision))
+                {
+                    acknowledgements.Add(Task.FromResult(false));
+                    continue;
+                }
+                acknowledgements.Add(QueueOwnedTracked(transition.Binding, transition.Revision,
+                    transition.Target, 0));
+            }
+
+            bool[] completed = await Task.WhenAll(acknowledgements);
+            var errors = new List<string>();
+            int successful = 0;
+            for (int i = 0; i < completed.Length; i++)
+            {
+                if (completed[i]) { successful++; continue; }
+                errors.Add(transitions[i].Binding + ": final output was not acknowledged (" +
+                    GetOutputError(transitions[i].Binding) + ").");
+            }
+            return new ToyCommandReport(operation, successful, errors);
+        }
+
+        private async Awaitable<ToyCommandReport> TrackPositionAsync(float position, float seconds)
+        {
+            ValidateUnit(position, nameof(position));
+            ValidateDuration(seconds, nameof(seconds));
+            List<ToyOutputBinding> targets = GetMotionTargets();
+            if (!IsConnected || targets.Count == 0)
+                return new ToyCommandReport("MoveTo", 0, new[] { "MoveTo: no connected position output routes." });
+
+            StopFollowing(stopHardware: false);
+            InvalidateMotionOwners(targets);
+            SuppressControlOutputs(targets);
+            float sourcePosition = _motionDriver != null ? _motionDriver.CurrentSample.Position01 : 0f;
+            float mapped = MapStroke(position);
+            var transitions = new List<OutputTransition>();
+            foreach (ToyOutputBinding binding in targets)
+            {
+                long owner = NextOwner();
+                long revision = BeginOwner(binding, owner, GetDesired(binding, MapStroke(sourcePosition)));
+                transitions.Add(new OutputTransition(binding, revision,
+                    GetDesired(binding, MapStroke(sourcePosition)), mapped));
+            }
+            float elapsed = 0f;
+            while (elapsed < seconds && AnyTransitionStillOwned(transitions))
+            {
+                await Awaitable.NextFrameAsync();
+                elapsed = Mathf.Min(seconds, elapsed + Mathf.Max(0f, Time.deltaTime));
+                float progress = Mathf.Clamp01(elapsed / seconds);
+                foreach (OutputTransition transition in transitions)
+                    if (IsOwner(transition.Binding, transition.Revision))
+                        QueueOwned(transition.Binding, transition.Revision,
+                            Mathf.LerpUnclamped(transition.Start, transition.Target, progress), 0);
+                if (Time.deltaTime <= 0f) await Awaitable.NextFrameAsync();
+            }
+            var acknowledgements = new List<Task<bool>>(transitions.Count);
+            foreach (OutputTransition transition in transitions)
+                acknowledgements.Add(IsOwner(transition.Binding, transition.Revision)
+                    ? QueueOwnedTracked(transition.Binding, transition.Revision, transition.Target, 0)
+                    : Task.FromResult(false));
+            bool[] completed = await Task.WhenAll(acknowledgements);
+            var errors = new List<string>();
+            int successful = 0;
+            for (int i = 0; i < completed.Length; i++)
+            {
+                if (completed[i]) { successful++; continue; }
+                errors.Add(transitions[i].Binding + ": final output was not acknowledged (" +
+                    GetOutputError(transitions[i].Binding) + ").");
+            }
+            return new ToyCommandReport("MoveTo", successful, errors);
+        }
 
         /// <summary>Maps a normalized scene position to the current stroke range and inversion.</summary>
         public void SetStrokeLimits(float minimum, float maximum)
@@ -403,12 +540,10 @@ namespace DazPose.Toys
         /// </summary>
         public Action CaptureOutputCancellation(ToyOutputCapability capability, int? channel = null)
         {
-            if (capability != ToyOutputCapability.Vibrate && capability != ToyOutputCapability.Oscillate)
-                throw new ArgumentOutOfRangeException(nameof(capability), "Output cancellation supports intensity capabilities only.");
             if (channel.HasValue && channel.Value < 0) throw new ArgumentOutOfRangeException(nameof(channel));
 
             var captured = new List<Tuple<ToyOutputBinding, long, long>>();
-            foreach (ToyOutputBinding binding in GetTargets(capability, channel))
+            foreach (ToyOutputBinding binding in capability == ToyOutputCapability.Position ? GetMotionTargets() : GetTargets(capability, channel))
             {
                 if (!_outputStates.TryGetValue(binding, out OutputState state)) continue;
                 lock (state.Gate)
@@ -433,7 +568,7 @@ namespace DazPose.Toys
                         state.DesiredValue = 0f;
                         state.HasDesiredValue = true;
                         dispatchVersion = ++state.DispatchVersion;
-                        state.Pending = null;
+                        ClearPending(state);
                     }
                     if (_gameplayPaused)
                         _ = SendPauseNeutralAsync(owner.Item1, state, revision, dispatchVersion, 0f);
@@ -445,7 +580,6 @@ namespace DazPose.Toys
 
         public void Follow(MotionDriver driver)
         {
-            if (_motionDriver == driver) return;
             StopFollowing(stopHardware: false);
             _motionBindingGeneration++;
             _ownedPlaybackDriver = null;
@@ -474,7 +608,8 @@ namespace DazPose.Toys
         }
 
         /// <summary>Invalidates every active effect and attempts the backend's broad stop.</summary>
-        public void Stop() => ObserveTask(StopAsync(), "stop all");
+        public void Stop() => StopAllOutput();
+        public void StopAllOutput() => ObserveTask(StopAsync(), "stop all");
 
         public async Task StopAsync()
         {
@@ -502,6 +637,10 @@ namespace DazPose.Toys
                     + (_outputErrors.TryGetValue(binding, out string error) ? error : "ready");
         }
 
+        private string GetOutputError(ToyOutputBinding binding) =>
+            _outputErrors.TryGetValue(binding, out string error) && !string.IsNullOrEmpty(error)
+                ? error : "superseded, disconnected or paused";
+
         private async Task BeginConnectAttemptAsync()
         {
             if (_backend == null || _connectInFlight || !_connectRequested) return;
@@ -516,14 +655,14 @@ namespace DazPose.Toys
                     _nextReconnectAt = 0f;
                     if (_scanRequested) await StartScanAttemptAsync();
                 }
-                else if (_connectRequested && IsRetryableConnectionError()) ScheduleReconnect();
+
             }
             catch (Exception exception)
             {
                 _lastOutputError = exception.Message;
-                if (_connectRequested && IsRetryableConnectionError()) ScheduleReconnect();
+
             }
-            finally { _connectInFlight = false; }
+            finally { _connectInFlight = false; _connectRequested = false; }
         }
 
         private bool IsRetryableConnectionError()
@@ -588,8 +727,8 @@ namespace DazPose.Toys
 
         private async Awaitable AnimateTransitionsAsync(List<OutputTransition> transitions, float seconds)
         {
-            if (transitions.Count == 0 && seconds <= 0f) return;
-            bool waitWithoutOutputs = transitions.Count == 0;
+            if (transitions.Count == 0) return;
+            bool waitWithoutOutputs = false;
             if (seconds <= 0f)
             {
                 foreach (OutputTransition transition in transitions)
@@ -616,8 +755,8 @@ namespace DazPose.Toys
         private async Awaitable AnimateMoveAsync(List<OutputTransition> transitions,
             List<OutputOwner> owners, float seconds)
         {
-            if (owners.Count == 0 && seconds <= 0f) return;
-            bool waitWithoutOutputs = owners.Count == 0;
+            if (owners.Count == 0) return;
+            bool waitWithoutOutputs = false;
             if (seconds <= 0f)
             {
                 foreach (OutputTransition transition in transitions)
@@ -683,7 +822,7 @@ namespace DazPose.Toys
                 state.DispatchVersion++;
                 state.DesiredValue = initialValue;
                 state.HasDesiredValue = true;
-                state.Pending = null;
+                ClearPending(state);
                 return state.Revision;
             }
         }
@@ -706,6 +845,12 @@ namespace DazPose.Toys
                 return state.Revision == revision && state.DispatchVersion == dispatchVersion;
         }
 
+        private static void ClearPending(OutputState state)
+        {
+            state.Pending?.Completion?.TrySetResult(false);
+            state.Pending = null;
+        }
+
         private void QueueOwned(ToyOutputBinding binding, long revision, float value, uint durationMilliseconds)
         {
             OutputState state = _outputStates.GetOrAdd(binding, _ => new OutputState());
@@ -713,6 +858,7 @@ namespace DazPose.Toys
             lock (state.Gate)
             {
                 if (state.Revision != revision) return;
+                state.Pending?.Completion?.TrySetResult(false);
                 state.DesiredValue = value;
                 state.HasDesiredValue = true;
                 // Keep latest intent while paused, but do not dispatch gameplay output.
@@ -737,6 +883,48 @@ namespace DazPose.Toys
             if (startWorker) _ = DrainOutputAsync(binding, state);
         }
 
+        private Task<bool> QueueOwnedTracked(ToyOutputBinding binding, long revision,
+            float value, uint durationMilliseconds)
+        {
+            var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            OutputState state = _outputStates.GetOrAdd(binding, _ => new OutputState());
+            bool startWorker = false;
+            lock (state.Gate)
+            {
+                if (state.Revision != revision)
+                {
+                    completion.TrySetResult(false);
+                    return completion.Task;
+                }
+                state.Pending?.Completion?.TrySetResult(false);
+                state.DesiredValue = value;
+                state.HasDesiredValue = true;
+                if (_gameplayPaused)
+                {
+                    completion.TrySetResult(false);
+                    return completion.Task;
+                }
+                long dispatchVersion = ++state.DispatchVersion;
+                state.Pending = new PendingOutput
+                {
+                    Value = value,
+                    DurationMilliseconds = durationMilliseconds,
+                    Revision = revision,
+                    Owner = state.Owner,
+                    DispatchVersion = dispatchVersion,
+                    LifecycleGeneration = OutputCommandGeneration,
+                    Completion = completion
+                };
+                if (!state.WorkerActive)
+                {
+                    state.WorkerActive = true;
+                    startWorker = true;
+                }
+            }
+            if (startWorker) _ = DrainOutputAsync(binding, state);
+            return completion.Task;
+        }
+
         private void ApplyPauseNeutral()
         {
             foreach (ToyOutputBinding binding in _activeOutputOwners.Keys.ToArray())
@@ -753,7 +941,7 @@ namespace DazPose.Toys
                     if (!state.HasDesiredValue) continue;
                     revision = state.Revision;
                     dispatchVersion = ++state.DispatchVersion;
-                    state.Pending = null;
+                    ClearPending(state);
                 }
                 _ = SendPauseNeutralAsync(binding, state, revision, dispatchVersion, neutral);
             }
@@ -810,7 +998,11 @@ namespace DazPose.Toys
                     state.Pending = null;
                 }
 
-                if (!IsPendingCurrent(state, pending)) continue;
+                if (!IsPendingCurrent(state, pending))
+                {
+                    pending.Completion?.TrySetResult(false);
+                    continue;
+                }
                 try
                 {
                     bool sent = await DispatchOutputAsync(binding, pending.Value,
@@ -821,11 +1013,13 @@ namespace DazPose.Toys
                         Interlocked.Increment(ref _outputsSent);
                         _outputErrors.TryRemove(binding, out _);
                     }
+                    pending.Completion?.TrySetResult(sent);
                 }
                 catch (Exception exception)
                 {
                     _lastOutputError = binding + ": " + exception.Message;
                     _outputErrors[binding] = exception.Message;
+                    pending.Completion?.TrySetResult(false);
                 }
             }
         }
@@ -862,7 +1056,7 @@ namespace DazPose.Toys
             }
             Func<bool> stillCurrent = () => commandGeneration == OutputCommandGeneration
                 && (state == null || IsDispatchCurrent(state, revision, dispatchVersion));
-            await _backend.SendOutputAsync(binding, Mathf.Clamp01(normalized), durationMilliseconds, stillCurrent);
+            await _backend.SendOutputAsync(binding, Mathf.Clamp01(MapConfiguredRoute(binding,normalized)), durationMilliseconds, stillCurrent);
             return commandGeneration == OutputCommandGeneration
                 && (state == null || IsDispatchCurrent(state, revision, dispatchVersion));
         }
@@ -879,7 +1073,7 @@ namespace DazPose.Toys
                 state.Revision++;
                 state.Owner = NextOwner();
                 state.DispatchVersion++;
-                state.Pending = null;
+                ClearPending(state);
                 _activeOutputOwners.TryRemove(binding, out _);
             }
         }
@@ -998,9 +1192,52 @@ namespace DazPose.Toys
                     state.Revision++;
                     state.Owner = NextOwner();
                     state.DispatchVersion++;
-                    state.Pending = null;
+                    ClearPending(state);
                 }
             }
+        }
+
+
+        DazPose.Game.ToyRouteSettings[] configuredRoutes;
+        public static string DeviceSignature(ToyDevice device) =>
+            string.Join("|",device.Features.Select(f => f.FeatureIndex+":"+f.Description+":"+string.Join(",",f.Outputs.Select(o=>o.Capability.ToString()))));
+        public void ConfigureRoutes(DazPose.Game.ToyRouteSettings[] routes) {
+            StopAllOutput();
+            configuredRoutes = (routes ?? Array.Empty<DazPose.Game.ToyRouteSettings>())
+                .Select(r => new DazPose.Game.ToyRouteSettings {
+                    deviceName=r.deviceName, signature=r.signature, featureIndex=r.featureIndex,
+                    capability=r.capability, enabled=r.enabled, channel=r.channel,
+                    minimum=Mathf.Clamp01(r.minimum), maximum=Mathf.Clamp01(r.maximum), inverted=r.inverted, sessionDeviceIndex=r.sessionDeviceIndex
+                }).ToArray();
+        }
+        DazPose.Game.ToyRouteSettings RouteFor(ToyOutputBinding binding) {
+            var device=ConnectedDevices.FirstOrDefault(d=>d.DeviceIndex==binding.DeviceIndex);
+            if(device==null) return null;
+            string signature=DeviceSignature(device);
+            var explicitRoute=configuredRoutes?.FirstOrDefault(r=>r.enabled && r.sessionDeviceIndex==binding.DeviceIndex
+                && r.deviceName==device.Name && r.signature==signature && r.featureIndex==binding.FeatureIndex && r.capability==binding.Capability);
+            if(explicitRoute!=null) return explicitRoute;
+            if(ConnectedDevices.Count(d=>d.Name==device.Name && DeviceSignature(d)==signature)!=1) return null;
+            return configuredRoutes?.FirstOrDefault(r=>r.enabled && !r.sessionDeviceIndex.HasValue && r.deviceName==device.Name
+                && r.signature==signature && r.featureIndex==binding.FeatureIndex && r.capability==binding.Capability);
+        }
+        public void TestConfiguredRoute(DazPose.Game.ToyRouteSettings route,float value) {
+            try {
+                AcquireOutputLease();
+                var candidates=ConnectedDevices.Where(d=>d.Name==route.deviceName && DeviceSignature(d)==route.signature).ToArray();
+                ToyDevice device=route.sessionDeviceIndex.HasValue ? candidates.FirstOrDefault(d=>d.DeviceIndex==route.sessionDeviceIndex.Value) : candidates.Length==1 ? candidates[0] : null;
+                if(device==null) return;
+                var binding=new ToyOutputBinding(device.DeviceIndex,route.featureIndex,route.capability);
+                if(!RouteEnabled(binding)) return;
+                QueueManual(binding,Mathf.Clamp01(value),route.capability==ToyOutputCapability.HwPositionWithDuration ? 250u : 0u);
+            } catch {}
+        }
+        bool RouteEnabled(ToyOutputBinding binding) => configuredRoutes==null || RouteFor(binding)!=null;
+        float MapConfiguredRoute(ToyOutputBinding binding,float value) {
+            var route=RouteFor(binding);
+            if(route==null) return value;
+            return Mathf.Lerp(Mathf.Min(route.minimum,route.maximum),Mathf.Max(route.minimum,route.maximum),
+                route.inverted ? 1-Mathf.Clamp01(value) : Mathf.Clamp01(value));
         }
 
         private List<ToyOutputBinding> GetTargets(ToyOutputCapability capability, int? channel)
@@ -1011,7 +1248,7 @@ namespace DazPose.Toys
                 List<ToyFeature> features = device.Features
                     .Where(feature => feature.Supports(capability))
                     .OrderBy(feature => feature.FeatureIndex).ToList();
-                if (channel.HasValue)
+                if (channel.HasValue && configuredRoutes==null)
                 {
                     if (channel.Value < features.Count)
                         targets.Add(new ToyOutputBinding(device.DeviceIndex, features[channel.Value].FeatureIndex, capability));
@@ -1022,7 +1259,7 @@ namespace DazPose.Toys
                         targets.Add(new ToyOutputBinding(device.DeviceIndex, feature.FeatureIndex, capability));
                 }
             }
-            return targets;
+            return targets.Where(t=>RouteEnabled(t) && (!channel.HasValue || configuredRoutes==null || RouteFor(t).channel==channel.Value)).ToList();
         }
 
         private List<ToyOutputBinding> GetMotionTargets()
@@ -1036,7 +1273,7 @@ namespace DazPose.Toys
                 else if (feature.Supports(ToyOutputCapability.Position))
                     targets.Add(new ToyOutputBinding(device.DeviceIndex, feature.FeatureIndex, ToyOutputCapability.Position));
             }
-            return targets;
+            return targets.Where(RouteEnabled).ToList();
         }
 
         private List<ToyFeature> GetMotionFeatures()
@@ -1060,7 +1297,7 @@ namespace DazPose.Toys
             {
                 if (device.DeviceIndex != binding.DeviceIndex) continue;
                 foreach (ToyFeature feature in device.Features)
-                    if (feature.FeatureIndex == binding.FeatureIndex) return feature.Supports(binding.Capability);
+                    if (feature.FeatureIndex == binding.FeatureIndex) return feature.Supports(binding.Capability) && RouteEnabled(binding);
                 return false;
             }
             return false;
@@ -1215,7 +1452,7 @@ namespace DazPose.Toys
                     state.DispatchVersion++;
                     state.DesiredValue = 0f;
                     state.HasDesiredValue = true;
-                    state.Pending = null;
+                    ClearPending(state);
                 }
         }
 
@@ -1288,11 +1525,11 @@ namespace DazPose.Toys
                 if (await Task.WhenAny(disconnect, timeout) != disconnect)
                 {
                     ObserveAbandonedTask(disconnect);
-                    Debug.LogWarning("Toy shutdown timed out after " + ShutdownTimeoutMilliseconds + " ms.");
+
                 }
                 else await disconnect;
             }
-            catch (Exception exception) { Debug.LogWarning("Toy shutdown failed: " + exception.Message); }
+            catch (Exception exception) {  }
             finally { if (disposeBackend) backend.Dispose(); }
         }
 
@@ -1332,7 +1569,7 @@ namespace DazPose.Toys
             if (handlers == null) return;
             foreach (Delegate callback in handlers.GetInvocationList())
                 try { ((Action<ToyConnectionState, string>)callback)(state, message); }
-                catch (Exception exception) { Debug.LogException(exception, this); }
+                catch (Exception exception) {  }
         }
 
         private void RaiseDeviceAdded(ToyDevice device)
@@ -1341,7 +1578,7 @@ namespace DazPose.Toys
             if (handlers == null) return;
             foreach (Delegate callback in handlers.GetInvocationList())
                 try { ((Action<ToyDevice>)callback)(device); }
-                catch (Exception exception) { Debug.LogException(exception, this); }
+                catch (Exception exception) {  }
         }
 
         private void RaiseDeviceRemoved(uint index)
@@ -1350,7 +1587,7 @@ namespace DazPose.Toys
             if (handlers == null) return;
             foreach (Delegate callback in handlers.GetInvocationList())
                 try { ((Action<uint>)callback)(index); }
-                catch (Exception exception) { Debug.LogException(exception, this); }
+                catch (Exception exception) {  }
         }
 
         private void RaiseScanningChanged(bool scanning)
@@ -1359,7 +1596,7 @@ namespace DazPose.Toys
             if (handlers == null) return;
             foreach (Delegate callback in handlers.GetInvocationList())
                 try { ((Action<bool>)callback)(scanning); }
-                catch (Exception exception) { Debug.LogException(exception, this); }
+                catch (Exception exception) {  }
         }
 
         private static uint ToMilliseconds(float seconds)

@@ -6,13 +6,14 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    public enum PerformanceCommand { Pose, Expression, Speech, Movement, Seating, Action, Gesture, Visibility, Teleport, Grip, Wardrobe, Gaze, Spell }
+    public enum PerformanceCommand { Pose, Expression, Speech, Movement, Seating, Action, Gesture, Visibility, Teleport, Grip, Wardrobe, Gaze, Spell, Aura }
     public enum LocomotionArrivalBehavior { RestorePose, Hold }
     public sealed class PerformanceBusyException : InvalidOperationException
     { public PerformanceBusyException(string message) : base(message) { } }
 
     /// <summary>A single run's waits and cancellation handles. Consumes each Awaitable once.</summary>
-    public sealed class PerformanceExecutionScope : IDisposable
+    [Obsolete("Legacy controller adapter. Production scripts use PerformanceRun through PerformanceHost.")]
+    internal sealed class PerformanceExecutionScope : IDisposable
     {
         public sealed class Operation
         {

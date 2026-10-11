@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c1c914b1f27e0458cbbbdb65bef6b2, type: 3}
+  m_Name: FitState
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobeFitState
+  visibleMask: 3
+  characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
+  status: 1
+  issueCodes: []
+  bodyMesh: {fileID: 4300000, guid: 9a3daafa942edd74989d2aaf721d47e5, type: 2}
+  attachmentMeshes:
+  - {fileID: 4300000, guid: 40894431a95423041a146903b9b2e890, type: 2}
+  - {fileID: 4300000, guid: a10ed4af1117d044983b66b5f48a4d19, type: 2}
+  - {fileID: 4300000, guid: 9f1c044adeb36914b835c295cb35a924, type: 2}
+  - {fileID: 4300000, guid: e8fd6a9de71d54045ab11260d05af463, type: 2}
+  - {fileID: 4300000, guid: 4f8c21443c1a1494fb518652630305f6, type: 2}
+  - {fileID: 4300000, guid: fa46614526c575c42adf0976256e4047, type: 2}
+  - {fileID: 4300000, guid: c80a55db1eff39b49872a27ea42bf506, type: 2}
+  - {fileID: 4300000, guid: afbebf6577734f14b86d80f880a199a2, type: 2}
+  - {fileID: 4300000, guid: 37df6dc28f98af549961083beefda89e, type: 2}
+  - {fileID: 4300000, guid: 8fe7a9544a22ad648908d5a8dba3f72e, type: 2}
+  - {fileID: 4300000, guid: 9bb4cc1d7f4128249b667e803e51dca8, type: 2}
+  - {fileID: 4300000, guid: aadd8a09b8ed9c841b08c190657681ee, type: 2}
+  - {fileID: 4300000, guid: 49942dd36dc84394086cafe02a0fc67d, type: 2}
+  - {fileID: 4300000, guid: 1b38e15572fa9554cb4c86ae03777fa8, type: 2}
+  - {fileID: 4300000, guid: 677756ae3f2991942ae896bcf72595d3, type: 2}
+  - {fileID: 4300000, guid: 5cdf803a7a1523c449d42e8d6f4d075f, type: 2}
+  - {fileID: 4300000, guid: b56d8c0de80f2a3469258c9d62d66b80, type: 2}
+  surfaceBindings: {fileID: 11400000, guid: f718c7a6356b2f84ab7d83b0a9c85b60, type: 2}
+  dissolveProfile: {fileID: 11400000, guid: 47c115fe912832446aade8b5b5bf673a, type: 2}
+  coverage:
+    visiblePieceIds: []
+  footwear:
+    footwearActive: 1
+    bentFootPoseActive: 1
+    standingLift: 0.0495919
+    footShrink: 0.05
+    supportProfileId: shoe_6146

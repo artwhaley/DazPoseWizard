@@ -13,7 +13,8 @@ namespace DazPose.Performer
     {
         None = 0, Pose = 1, Expression = 2, Speech = 4, Movement = 8,
         Seating = 16, Visibility = 32, Wardrobe = 64, Contact = 128,
-        Playback = 256, Gesture = 512, LipSync = 1024, Teleport = 2048
+        Playback = 256, Gesture = 512, LipSync = 1024, Teleport = 2048,
+        Action = 4096, Magic = 8192
     }
 
     public sealed class BindingIssue
@@ -26,24 +27,33 @@ namespace DazPose.Performer
         public override string ToString() => (Owner != null ? Owner.name : "Missing owner") + "/" + PropertyPath + ": " + Message;
     }
 
-    /// <summary>Explicit references and requirements for one performance. Does not discover objects or control playback.</summary>
+    /// <summary>Explicit service and target references for one performance; legacy diagnostics are optional. Does not discover objects or control playback.</summary>
     [DisallowMultipleComponent, AddComponentMenu("Performer/Performance Scene Bindings")]
     public sealed class PerformanceSceneBindings : MonoBehaviour
     {
         [Serializable] public struct Target { public string id; public Transform transform; }
+        [SerializeField] private string sceneId, actorId;
+        public string SceneId => sceneId;
+        public string ActorId => actorId;
+        public void ConfigureIdentity(string scene, string actor) { sceneId=scene; actorId=actor; }
         [SerializeField] private SuccubusPerformer performer;
         [SerializeField] private PlayerController player;
         [SerializeField] private MotionDriver playback;
-        [SerializeField] private ToyControlService toys;
+        [SerializeField, HideInInspector] private ToyControlService toys;
         [SerializeField] private MonoBehaviour contactTarget;
-        [SerializeField] private PerformerCapability requiredCapabilities = PerformerCapability.Pose | PerformerCapability.Speech;
-        [SerializeField] private bool requirePlayer;
-        [SerializeField] private bool requireToys;
+        [SerializeField, HideInInspector] private PerformerCapability requiredCapabilities = PerformerCapability.Pose | PerformerCapability.Speech;
+        [SerializeField, HideInInspector] private bool requirePlayer;
+        [SerializeField, HideInInspector] private bool requireToys;
         [SerializeField] private Target[] targets = Array.Empty<Target>();
-        [SerializeField] private PerformerPose[] poses = Array.Empty<PerformerPose>();
-        [SerializeField] private PerformerExpression[] expressions = Array.Empty<PerformerExpression>();
-        [SerializeField] private AudioClip[] speechClips = Array.Empty<AudioClip>();
-        [SerializeField] private PerformerSeat[] seats = Array.Empty<PerformerSeat>();
+        [SerializeField, HideInInspector] private PerformerPose[] poses = Array.Empty<PerformerPose>();
+        [SerializeField, HideInInspector] private PerformerExpression[] expressions = Array.Empty<PerformerExpression>();
+        [SerializeField, HideInInspector] private AudioClip[] speechClips = Array.Empty<AudioClip>();
+        [SerializeField, HideInInspector] private PerformerSeat[] seats = Array.Empty<PerformerSeat>();
+        [SerializeField, HideInInspector] private WardrobePreset[] wardrobePresets = Array.Empty<WardrobePreset>();
+        [SerializeField, HideInInspector] private PerformerGesture[] gestures = Array.Empty<PerformerGesture>();
+        [SerializeField, HideInInspector] private PerformerAction[] actions = Array.Empty<PerformerAction>();
+        [SerializeField, HideInInspector] private PerformerSpell[] spells = Array.Empty<PerformerSpell>();
+        [SerializeField, HideInInspector] private PerformerAura[] auras = Array.Empty<PerformerAura>();
 
         public SuccubusPerformer Performer => performer;
         public PlayerController Player => player;
@@ -51,6 +61,11 @@ namespace DazPose.Performer
         public ToyControlService Toys => toys;
         public IGripTarget ContactTarget => contactTarget != null ? contactTarget as IGripTarget : null;
         public PerformerCapability RequiredCapabilities => requiredCapabilities;
+        public WardrobePreset[] DeclaredWardrobePresets => (WardrobePreset[])(wardrobePresets ?? Array.Empty<WardrobePreset>()).Clone();
+        public PerformerGesture[] DeclaredGestures => (PerformerGesture[])(gestures ?? Array.Empty<PerformerGesture>()).Clone();
+        public PerformerAction[] DeclaredActions => (PerformerAction[])(actions ?? Array.Empty<PerformerAction>()).Clone();
+        public PerformerSpell[] DeclaredSpells => (PerformerSpell[])(spells ?? Array.Empty<PerformerSpell>()).Clone();
+        public PerformerAura[] DeclaredAuras => (PerformerAura[])(auras ?? Array.Empty<PerformerAura>()).Clone();
         public bool RequiresPlayer { get => requirePlayer; set => requirePlayer = value; }
         public bool RequiresToys { get => requireToys; set => requireToys = value; }
         public void ConfigureContactTarget(MonoBehaviour target)
@@ -61,6 +76,18 @@ namespace DazPose.Performer
         public void DeclareAssets(PerformerPose[] sequencePoses, PerformerExpression[] sequenceExpressions, AudioClip[] clips)
         { poses = sequencePoses ?? Array.Empty<PerformerPose>(); expressions = sequenceExpressions ?? Array.Empty<PerformerExpression>(); speechClips = clips ?? Array.Empty<AudioClip>(); }
         public void DeclareSeats(PerformerSeat[] sequenceSeats) => seats = sequenceSeats ?? Array.Empty<PerformerSeat>();
+        public void DeclareWardrobePresets(WardrobePreset[] presets) => wardrobePresets = presets ?? Array.Empty<WardrobePreset>();
+        public void DeclareContent(PerformerGesture[] sequenceGestures, PerformerAction[] sequenceActions,
+            PerformerSpell[] sequenceSpells, PerformerAura[] sequenceAuras)
+        {
+            gestures = sequenceGestures ?? Array.Empty<PerformerGesture>();
+            actions = sequenceActions ?? Array.Empty<PerformerAction>();
+            spells = sequenceSpells ?? Array.Empty<PerformerSpell>();
+            auras = sequenceAuras ?? Array.Empty<PerformerAura>();
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
+        }
         public void Configure(SuccubusPerformer actor, PlayerController view, MotionDriver clock, ToyControlService devices,
             PerformerCapability capabilities, Target[] sceneTargets = null)
         {
@@ -97,8 +124,8 @@ namespace DazPose.Performer
                 if (runtime && !performer.IsRuntimeReady) Add(performer, "animator", "Actor runtime did not initialize or is disabled.");
                 if (Needs(PerformerCapability.Pose) && (performer.InitialPose == null || performer.InitialPose.Clip == null) && (poses?.Length ?? 0) == 0)
                     Add(performer, "initialPose", "Assign an initial pose/clip or declare a sequence pose asset.");
-                if (Needs(PerformerCapability.Speech) && performer.SpeechAudioSource == null) Add(performer, "speechAudioSource", "Assign the actor's dedicated speech source.");
-                else if (Needs(PerformerCapability.Speech) && !performer.SpeechAudioSource.transform.IsChildOf(performer.transform)) Add(performer, "speechAudioSource", "Speech source belongs to a different actor.");
+                if (Needs(PerformerCapability.Speech) && performer.SpeechAudioSource == null) Add(performer, "actor/speechAudioSource", "Assign the actor's existing production speech AudioSource reference to actor/speechAudioSource.");
+                else if (Needs(PerformerCapability.Speech) && !performer.SpeechAudioSource.transform.IsChildOf(performer.transform)) Add(performer, "actor/speechAudioSource", "The existing production speech AudioSource must be a child of this actor.");
                 if (Needs(PerformerCapability.Expression) && !HasExpression(performer.InitialExpression) && !Array.Exists(expressions ?? Array.Empty<PerformerExpression>(), HasExpression))
                     Add(this, "expressions", "Declare an expression with a clip or channels, or assign the actor's initial expression.");
                 if (Needs(PerformerCapability.LipSync))
@@ -114,26 +141,24 @@ namespace DazPose.Performer
                 }
                 if (Needs(PerformerCapability.Teleport))
                 {
-                    if (performer.TeleportProfile == null) Add(performer, "teleportProfile", "Assign a teleport profile.");
-                    else if (!performer.TeleportProfile.IsReady(out var error)) Add(performer, "teleportProfile", error);
+                    if (performer.TeleportProfile == null) Add(performer, "actor/teleportProfile", "Assign the actor's existing production PerformerTeleportProfile reference to actor/teleportProfile.");
+                    else if (!performer.TeleportProfile.IsReady(out var error)) Add(performer, "actor/teleportProfile", error);
                 }
                 if (Needs(PerformerCapability.Visibility))
                 {
-                    if (performer.DissolveProfile == null) Add(performer, "dissolveProfile", "Assign a visibility profile.");
-                    else if (!performer.DissolveProfile.IsReady(out var error)) Add(performer, "dissolveProfile", error);
-                    if (performer.DissolveRig == null) Add(performer, "dissolveRig", "Assign the actor's effect rig.");
-                    else if (performer.DissolveProfile != null && !performer.DissolveRig.IsReady(performer.DissolveProfile, out var error)) Add(performer, "dissolveRig", error);
-                    if (performer.DissolveRig != null && performer.DissolveRig.GetComponent<SuccubusPerformer>() != performer) Add(performer, "dissolveRig", "Effect rig belongs to a different actor.");
+                    if (performer.DissolveProfile == null) Add(performer, "actor/dissolveProfile", "Assign the actor's existing production PerformerDissolveProfile reference to actor/dissolveProfile.");
+                    else if (!performer.DissolveProfile.IsReady(out var error)) Add(performer, "actor/dissolveProfile", error);
+                    if (performer.DissolveRig == null) Add(performer, "actor/dissolveRig", "Assign the actor's existing production PerformerDissolveRig reference to actor/dissolveRig.");
+                    else if (performer.DissolveProfile != null && !performer.DissolveRig.IsReady(performer.DissolveProfile, out var error)) Add(performer, "actor/dissolveRig", error);
+                    if (performer.DissolveRig != null && performer.DissolveRig.GetComponent<SuccubusPerformer>() != performer) Add(performer, "actor/dissolveRig", "The existing production dissolve rig must belong to this actor.");
                     var particles = performer.DissolveRig != null ? performer.DissolveRig.ParticleBody : null;
-                    if (particles != null && (particles.TargetRenderer == null || !particles.TargetRenderer.transform.IsChildOf(performer.transform))) Add(performer.DissolveRig, "particleBody", "Particle body targets a different actor's renderer.");
+                    if (particles != null && (particles.TargetRenderer == null || !particles.TargetRenderer.transform.IsChildOf(performer.transform))) Add(performer.DissolveRig, "actor/dissolveRig/particleBody", "The existing production particle body must target this actor's renderer.");
                 }
-                if (Needs(PerformerCapability.Wardrobe))
+                if (Needs(PerformerCapability.Wardrobe) || (wardrobePresets?.Length ?? 0) > 0)
                 {
                     var wardrobe = performer.GetComponent<PerformerWardrobe>();
                     if (wardrobe == null) Add(performer, "", "Add and bind this actor's wardrobe component.");
-                    else if (wardrobe.Catalog == null || !wardrobe.Catalog.IsReleased) Add(wardrobe, "catalog", "Bind a released wardrobe catalog for content playback.");
-                    else if (!wardrobe.Catalog.Validate(out var error)) Add(wardrobe, "catalog", error);
-                    if (wardrobe != null && (wardrobe.Body == null || !wardrobe.Body.transform.IsChildOf(performer.transform))) Add(wardrobe, "body", "Bind this actor's body renderer.");
+                    else if (!wardrobe.TryValidateReadiness(runtime, wardrobePresets, out var error)) Add(wardrobe, "catalog", error);
                 }
                 if (Needs(PerformerCapability.Contact))
                 {
@@ -142,6 +167,8 @@ namespace DazPose.Performer
                     else if (grip.Profile == null) Add(grip, "profile", "Assign the calibrated hand profile.");
                     else if (!grip.Profile.IsReady(animator, out var error)) Add(grip, "profile", error);
                     if (ContactTarget == null) Add(this, "contactTarget", "Assign a supported IGripTarget; prepared anatomy alone is not a contact adapter.");
+                    else if (ContactTarget is IGripTargetReadiness readiness && !readiness.IsReadyForContact(runtime, out var readinessError))
+                        Add(contactTarget, "contactTarget", readinessError ?? "Declared contact target is not ready.");
                 }
                 if (Needs(PerformerCapability.Playback))
                 {
@@ -149,7 +176,24 @@ namespace DazPose.Performer
                     else if (performer.MotionSource != playback) Add(performer, "motionDriver", "Actor source differs from the declared playback; wire it before enabling the actor.");
                     if (performer.MotionSet == null || !performer.MotionSet.IsReady(out _)) Add(performer, "motionSet", "Assign a validated visual motion set.");
                 }
-                if (Needs(PerformerCapability.Gesture) && performer.GestureUpperBodyMask == null) Add(performer, "gestureUpperBodyMask", "Assign the gesture mask.");
+                if (Needs(PerformerCapability.Gesture))
+                {
+                    if (performer.GestureUpperBodyMask == null) Add(performer, "gestureUpperBodyMask", "Assign the actor's generated Gesture mask.");
+                    else if (!PerformerGestureMaskUtility.IsValidMask(animator, performer.GestureUpperBodyMask, out var maskError))
+                        Add(performer, "gestureUpperBodyMask", maskError);
+                    if ((gestures?.Length ?? 0) == 0) Add(this, "gestures", "Declare at least one PerformerGesture asset for the required Gesture capability.");
+                    ValidateDeclaredGestures(issues, gestures);
+                }
+                else if ((gestures?.Length ?? 0) > 0)
+                    ValidateDeclaredGestures(issues, gestures);
+                if (Needs(PerformerCapability.Action) && (actions?.Length ?? 0) == 0)
+                    Add(this, "actions", "Declare at least one PerformerAction asset for the required Action capability.");
+                if (Needs(PerformerCapability.Action) || (actions?.Length ?? 0) > 0)
+                    ValidateDeclaredActions(issues, actions, animator);
+                if (Needs(PerformerCapability.Magic) && (spells?.Length ?? 0) == 0 && (auras?.Length ?? 0) == 0)
+                    Add(this, "magic", "Declare at least one PerformerSpell or PerformerAura asset for the required Magic capability.");
+                if (Needs(PerformerCapability.Magic) || (spells?.Length ?? 0) > 0 || (auras?.Length ?? 0) > 0)
+                    ValidateDeclaredMagic(issues, spells, auras);
             }
             if (requirePlayer && (player == null || player.View == null || player.MainCamera == null)) Add(this, "player", "Assign a player with its view rig and camera.");
             if (requireToys && toys == null) Add(this, "toys", "This sequence declares required toys; assign its device service.");
@@ -177,6 +221,51 @@ namespace DazPose.Performer
                 else if (seat.gameObject.scene != gameObject.scene) Add(this, "seats.Array.data[" + i + "]", "Seat belongs to a different scene.");
             }
             return issues.ToArray();
+        }
+
+        private void ValidateDeclaredGestures(List<BindingIssue> issues, PerformerGesture[] declared)
+        {
+            for (int i = 0; i < (declared?.Length ?? 0); i++)
+            {
+                PerformerGesture gesture = declared[i];
+                if (gesture == null) { issues.Add(new BindingIssue(this, "gestures.Array.data[" + i + "]", "Declare a PerformerGesture asset.")); continue; }
+                if (!gesture.IsReady(out string reason))
+                    issues.Add(new BindingIssue(gesture, "gestures.Array.data[" + i + "]", reason));
+            }
+        }
+
+        private void ValidateDeclaredActions(List<BindingIssue> issues, PerformerAction[] declared, Animator animator)
+        {
+            if (animator == null)
+            {
+                issues.Add(new BindingIssue(performer != null ? performer : this, "animator", "Assign the actor Animator before declaring Action assets."));
+                return;
+            }
+            for (int i = 0; i < (declared?.Length ?? 0); i++)
+            {
+                PerformerAction action = declared[i];
+                if (action == null) { issues.Add(new BindingIssue(this, "actions.Array.data[" + i + "]", "Declare a PerformerAction asset.")); continue; }
+                if (!action.IsReady(out string reason))
+                    issues.Add(new BindingIssue(action, "actions.Array.data[" + i + "]", reason));
+                else if (action.BodyClip == null || action.BodyClip.empty || action.BodyClip.legacy || action.BodyClip.isHumanMotion)
+                    issues.Add(new BindingIssue(action, "actions.Array.data[" + i + "]", "Action body clip must be a nonempty Generic clip compatible with the actor Animator."));
+            }
+        }
+
+        private void ValidateDeclaredMagic(List<BindingIssue> issues, PerformerSpell[] declaredSpells, PerformerAura[] declaredAuras)
+        {
+            for (int i = 0; i < (declaredSpells?.Length ?? 0); i++)
+            {
+                PerformerSpell spell = declaredSpells[i];
+                if (spell == null) { issues.Add(new BindingIssue(this, "spells.Array.data[" + i + "]", "Declare a PerformerSpell asset.")); continue; }
+                if (!spell.IsReady(out string reason)) issues.Add(new BindingIssue(spell, "spells.Array.data[" + i + "]", reason));
+            }
+            for (int i = 0; i < (declaredAuras?.Length ?? 0); i++)
+            {
+                PerformerAura aura = declaredAuras[i];
+                if (aura == null) { issues.Add(new BindingIssue(this, "auras.Array.data[" + i + "]", "Declare a PerformerAura asset.")); continue; }
+                if (!aura.IsReady(out string reason)) issues.Add(new BindingIssue(aura, "auras.Array.data[" + i + "]", reason));
+            }
         }
         static bool HasExpression(PerformerExpression expression) => expression != null && expression.Clip != null &&
             ((expression.Channels?.Length ?? 0) != 0 || expression.BoneChannels.Length != 0);

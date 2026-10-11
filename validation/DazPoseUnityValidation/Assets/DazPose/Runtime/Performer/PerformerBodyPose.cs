@@ -47,6 +47,7 @@ namespace DazPose.Performer
         private PoseTransition _activeTransition;
         private float _elapsedSeconds;
         private bool _isTransitioning;
+        private bool _transitionCancelled;
         private bool _disposed;
 
         public Playable OutputPlayable => _baseCapturePlayable;
@@ -91,7 +92,8 @@ namespace DazPose.Performer
             if (pose == null) throw new ArgumentNullException(nameof(pose));
             if (pose.Clip == null) throw new ArgumentException("The PerformerPose has no AnimationClip assigned.", nameof(pose));
             transition.Validate();
-            if (pose == DesiredPose) return;
+            if (pose == DesiredPose && !_transitionCancelled) return;
+            _transitionCancelled = false;
 
             var currentState = CaptureEvaluatedBaseState();
             var targetState = SamplePose(pose.Clip, currentState);
@@ -117,6 +119,20 @@ namespace DazPose.Performer
 
             CopyStateToNative(currentState, _sourceTransforms, _sourceBlendShapes);
             CopyStateToNative(targetState, _targetTransforms, _targetBlendShapes);
+            SetMixerWeights(0f);
+            SetTrajectoryProgress(0f);
+            _graph.Evaluate(0f);
+        }
+
+        public void CancelTransition()
+        {
+            if (_disposed || !_isTransitioning) return;
+            var evaluated = CaptureEvaluatedBaseState();
+            CopyStateToNative(evaluated, _sourceTransforms, _sourceBlendShapes);
+            CopyStateToNative(evaluated, _targetTransforms, _targetBlendShapes);
+            _isTransitioning = false;
+            _transitionCancelled = true;
+            _activeTransition = default;
             SetMixerWeights(0f);
             SetTrajectoryProgress(0f);
             _graph.Evaluate(0f);

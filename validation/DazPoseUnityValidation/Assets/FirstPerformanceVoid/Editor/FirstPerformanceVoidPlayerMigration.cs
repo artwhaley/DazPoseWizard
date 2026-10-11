@@ -12,7 +12,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
     /// <summary>One-time, pose-preserving Player setup for the currently loaded lounge scene.</summary>
     public static class FirstPerformanceVoidPlayerMigration
     {
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Migrate to Directable Player View")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Migrate to Directable Player View")]
+#endif
         public static void MigrateLoadedScene()
         {
             Scene scene = SceneManager.GetSceneByPath(FirstPerformanceVoidBuilder.ScenePath);

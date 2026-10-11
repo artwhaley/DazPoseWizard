@@ -14,7 +14,9 @@ namespace DazPose.Editor.Performer
     public static class ProductionTestEnvironmentBuilder
     {
         public const string AuthoredScene = "Assets/Scenes/FirstPerformanceVoid.unity";
-        [MenuItem("DazPose/Production/Rebuild actor validation in authored void")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Production/Rebuild actor validation in authored void")]
+#endif
         public static void Rebuild()
         {
             if (Application.isPlaying) throw new InvalidOperationException("Exit Play Mode first.");

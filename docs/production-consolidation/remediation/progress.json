@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "authority": "../PRE_AUTHORING_REMEDIATION_PLAN.md",
+  "entry": "START.md",
+  "status": "technical_complete_pending_human_toe_appearance",
+  "createdUtc": "2026-10-05T22:07:52.3176-05:00",
+  "completedUtc": "2026-10-06T15:02:42Z",
+  "evidenceRun": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/",
+  "evidenceLedgerSha256": "5f8a890dfa12b3320f2e8d555b4331bd61b76e809b38a8876503c06bbd347c16",
+  "exportManifestSha256": "9485ef5e7a812b5064f42f1496033ab2263d8077c306cb817071123963499083",
+  "baseline": "baseline.json",
+  "nextTicket": null,
+  "excludedScope": [
+    "Other-character portability / reassessment issue 4",
+    "All-up authored scene",
+    "New DSL/timeline/controller",
+    "Artistic recalibration"
+  ],
+  "tickets": {
+    "R01": {
+      "packet": "R01_STAGE_AND_RUNNER.md",
+      "dependsOn": "baseline",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R01/20261006-033027-416/report.json",
+      "report": "reports/R01.md"
+    },
+    "R02": {
+      "packet": "R02_TOE_REPRODUCTION.md",
+      "dependsOn": "R01",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R02/20261006-034428-016/report.json",
+      "report": "reports/R02.md"
+    },
+    "R03": {
+      "packet": "R03_TOE_REPAIR.md",
+      "dependsOn": "R02",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R03/20261006-124927-261/report.json",
+      "deliveryEditorEvidence": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/toe-editor-report-final.json",
+      "deliveryPlayerEvidence": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/toe-player-report-final.json",
+      "deliveryAssertions": 43,
+      "sourceHash": "570fd9cfb2c46509cde550c529ffcb3e1520e32161145ad9598c98183788e4ac",
+      "inputHash": "813ab32d9b53a1b331615902b81749beff19f66bb97cb24c740e4dbc9ebb18a5",
+      "report": "reports/R03.md"
+    },
+    "R04": {
+      "packet": "R04_CONTACT_WARDROBE_PREFLIGHT.md",
+      "dependsOn": "R03",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R04/20261006-040739-375/report.json",
+      "report": "reports/R04.md"
+    },
+    "R05": {
+      "packet": "R05_CONTENT_PREFLIGHT_AND_ERRORS.md",
+      "dependsOn": "R04",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R05/20261006-041352-002/report.json",
+      "report": "reports/R05.md"
+    },
+    "R06": {
+      "packet": "R06_SCOPED_FINITE_COMMANDS.md",
+      "dependsOn": "R05",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R06/20261006-042522-520/report.json",
+      "report": "reports/R06.md"
+    },
+    "R07": {
+      "packet": "R07_PERSISTENT_VIEW_PLAYBACK_TOYS.md",
+      "dependsOn": "R06",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R07/20261006-044445-212/report.json",
+      "report": "reports/R07.md"
+    },
+    "R08": {
+      "packet": "R08_FACADE_COVERAGE_FIRST_CONTACT.md",
+      "dependsOn": "R07",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R08/20261006-051010-521/report.json",
+      "report": "reports/R08.md"
+    },
+    "R09": {
+      "packet": "R09_CONTENT_LOCATION.md",
+      "dependsOn": "R08",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R09/20261006-075614-154/report.json",
+      "sourceHash": "ee6fea7c80cc441ebfd6f6bd4855a7927cd8786640b373b7c71f8e73573fc865",
+      "assertions": 39,
+      "report": "reports/R09.md"
+    },
+    "R10": {
+      "packet": "R10_SOURCE_MOVE_MANIFEST.md",
+      "dependsOn": "R09",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R10/20261006-090401-210/report.json",
+      "report": "reports/R10.md",
+      "sourceHash": "ee6fea7c80cc441ebfd6f6bd4855a7927cd8786640b373b7c71f8e73573fc865",
+      "manifestSourceTreeSha256": "fb11370e313f1fe6bc8f153d17f163bcfba77008b1c8a7fa1d908dc6750e25f8",
+      "assertions": 19,
+      "reflectionDependency": "WardrobeFitCompiler assembly-qualified lookup reclassified from Assembly-CSharp-Editor to DazPose.Editor"
+    },
+    "R11": {
+      "packet": "R11_ASSEMBLY_BOUNDARIES.md",
+      "dependsOn": "R10",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R11/20261006-101016-032/report.json",
+      "report": "reports/R11.md",
+      "sourceHash": "ccb815aa515d6c1af99c2b9c6ab3931f96e25092ead907f063e89457c0a82200",
+      "inputHash": "0bc11ad8a0e914d8dbee5f4fc8c828b34f35126d79c8a295ea6eea44d207e7a1",
+      "assertions": 16
+    },
+    "R12": {
+      "packet": "R12_BUILD_AND_REGRESSION_GATES.md",
+      "dependsOn": "R11",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R12/20261006-131620-150/report.json",
+      "sourceHash": "2780961077415f76aaf0033905e03ebeda595c787ed06465e2ba8bc19ef6e387",
+      "inputHash": "301fae657e59b6809547905529772ac2fd6232578176395f596bf8a7f6b11dc7",
+      "assertions": 35,
+      "report": "reports/R12.md"
+    },
+    "R13": {
+      "packet": "R13_DELIVERY_AND_HANDOFF.md",
+      "dependsOn": "R12",
+      "status": "passed",
+      "technicalEvidence": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/toe-player-report-final.json",
+      "evidenceLedger": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/evidence-ledger.json",
+      "exportManifest": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/export-manifest.json",
+      "sourceHash": "570fd9cfb2c46509cde550c529ffcb3e1520e32161145ad9598c98183788e4ac",
+      "inputHash": "813ab32d9b53a1b331615902b81749beff19f66bb97cb24c740e4dbc9ebb18a5",
+      "playerAssertions": 43,
+      "editorAssertions": 43,
+      "report": "reports/R13.md"
+    }
+  },
+  "humanToeAppearance": "pending_user_manual_check",
+  "physicalToyHardware": "not_certified_separate",
+  "independentCleanContextImport": "unchanged_separate_task",
+  "blockers": []
+}

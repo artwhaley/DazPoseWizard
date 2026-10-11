@@ -1,4 +1,11 @@
+> **Historical remediation rationale:** the current remaining-work plan is [AUTHORING_READINESS_BUILD_PLAN.md](../../AUTHORING_READINESS_BUILD_PLAN.md). Its October 7 user decisions supersede conflicting behavior and execution order in this earlier proposal. Preserve completed remediation evidence.
+
 # Remediation before the composed authoring scene
+
+Execution instructions are now the ordered individual tickets in
+[remediation/START.md](remediation/START.md), with fixed decisions in CONTRACT.md.
+Read that stack and progress before implementation. Baseline commit and local
+ignored-input recovery archive are complete; no remediation has executed yet.
 
 ## Authority and outcome
 

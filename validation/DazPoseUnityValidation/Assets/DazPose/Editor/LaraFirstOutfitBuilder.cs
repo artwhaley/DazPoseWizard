@@ -38,7 +38,9 @@ namespace DazPose.UnityValidation
             public string node; public int vertices,canonicalBones,localBones,channels,materials;
             public float maximumRestError,maximumBreastTransfer;
         }
-        [MenuItem("Tools/DAZ Pose/Development/Open Lara First Outfit")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Open Lara First Outfit")]
+#endif
         public static void Open()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

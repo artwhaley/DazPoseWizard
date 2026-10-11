@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "plan": "docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md",
-  "approvedDate": "2026-10-05",
+  "plan": "AUTHORING_READINESS_BUILD_PLAN.md",
+  "approvedDate": "2026-10-08",
   "status": "in_progress",
-  "currentDay": 6,
-  "activePacket": "docs/production-consolidation/PRE_AUTHORING_REMEDIATION_PLAN.md",
+  "currentDay": null,
+  "activePacket": "AUTHORING_READINESS_BUILD_PLAN.md#b08--acceptance-and-delivery",
   "days": {
     "1": "complete",
     "2": "complete_with_accepted_runner_omission",
     "3": "complete_with_accepted_camera_framing_issue",
     "4": "complete",
     "5": "complete",
-    "6": "planned_pre_authoring_remediation",
+    "6": "technical_remediation_complete_pending_human_toe_appearance",
     "7": "not_started"
   },
   "day1Tasks": {
@@ -352,6 +352,14 @@
       "check": "day4HumanVisualApproval",
       "result": "passed_user_report",
       "path": ".dazposewizard/day4-evidence/manual-completion.json"
+    },
+    {
+      "check": "R10SourceAssemblyManifest",
+      "result": "passed",
+      "assertions": 19,
+      "sourceTreeSha256": "fb11370e313f1fe6bc8f153d17f163bcfba77008b1c8a7fa1d908dc6750e25f8",
+      "reflectionAssemblyReference": "DazPose.UnityValidation.WardrobeFitCompiler: Assembly-CSharp-Editor -> DazPose.Editor",
+      "path": ".dazposewizard/remediation-evidence/R10/20261006-090401-210/report.json"
     }
   ],
   "changedFiles": [
@@ -378,7 +386,7 @@
     "No complete harness-free actor composition or first-party assembly boundary. Assigned Days 2/6."
   ],
   "blockers": [],
-  "nextAction": "Execute pre-authoring remediation packet A: preserve current user wardrobe edits, reproduce and measure second-outfit toe residuals before choosing repair. Complete A–F before the composed authored scene.",
+  "nextAction": "Author a fresh scene using CONTENT_AUTHORING_WALKTHROUGH.md; discuss and close concrete authoring friction as encountered. Remaining player functional checks accepted by user on 2026-10-11.",
   "visualApproval": "passed_fixture_visibility_audio_lipsync",
   "independentImportAcceptance": "unchanged_separate_task",
   "buildInputManifestSha256": "dfeaf6241d9325b6c95baaccb1ce4188d9d5057627a6df04a7efe2937b6ddbb9",
@@ -470,7 +478,7 @@
   "architecturalReviewReassessment": {
     "recordedUtc": "2026-10-06T02:37:58.9900788Z",
     "path": "docs/production-consolidation/ARCHITECTURAL_REVIEW_REASSESSMENT.md",
-    "scope": "All six original reviews against current source and Days 1–5 evidence; documentation only; Day 6 not executed"
+    "scope": "All six original reviews against current source and Days 1\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u20ac\u01535 evidence; documentation only; Day 6 not executed"
   },
   "preAuthoringRemediation": {
     "approvedIssues": [
@@ -483,25 +491,187 @@
     "excludedIssue": 4,
     "userConstraint": "No other-character adaptation; leave working Lara rig conventions alone",
     "tasks": {
-      "contentFolderIndependence": "planned",
-      "requiredGatesAndHandoff": "planned",
-      "productionValidationBoundary": "planned",
-      "toeInvestigationAndRepair": "planned",
-      "scopedAuthorCalls": "planned",
-      "preflightAndDiagnostics": "planned"
+      "contentFolderIndependence": "complete_R09_39_assertions_passed",
+      "requiredGatesAndHandoff": "complete_R13",
+      "productionValidationBoundary": "complete_R11",
+      "toeInvestigationAndRepair": "complete_technical_pending_human_appearance",
+      "scopedAuthorCalls": "complete_R09_39_assertions_passed",
+      "preflightAndDiagnostics": "complete_R09_39_assertions_passed"
     },
     "toeFinding": {
       "userReport": "Second-outfit shoes and stockings on Layer 1 remove and height drops, but toe contortion remains until rest of outfit removed",
-      "cause": "not_reproduced_not_proven",
-      "suspectedPaths": [
-        "LaraHeelReview restores rotation but not written toe local positions",
-        "Nonzero fit mesh/bindposes versus canonical naked body",
-        "Late foot/morph application"
-      ],
+      "cause": "R02 measured stale owned toe local positions as the dominant contributor; fitted body toe region also differed from canonical barefoot. R03 restored owned toe positions and regenerated footwear-inactive candidate fits with the canonical barefoot region.",
+      "measuredBeforeResidualMeters": 0.0620112903,
+      "measuredAfterResidualMeters": 5.62506486e-08,
+      "technicalRepair": "passed_R03",
+      "humanAppearanceApproval": "pending_user_manual_check",
       "savedMask1Flags": "footwearActive=0; bentFootPoseActive=0; standingLift=0; footShrink=0"
     },
     "plan": "docs/production-consolidation/PRE_AUTHORING_REMEDIATION_PLAN.md",
-    "status": "planned_not_implemented",
-    "recordedUtc": "2026-10-06T02:52:54.3682081Z"
-  }
+    "status": "technical_complete_pending_human_toe_appearance",
+    "recordedUtc": "2026-10-06T15:02:42Z",
+    "ticketStack": "docs/production-consolidation/remediation/START.md",
+    "baselineCommit": "18b268afe4df1ce11046a760b757002571a104c6",
+    "recoveryRecord": "docs/production-consolidation/remediation/baseline.json",
+    "R01Evidence": ".dazposewizard/remediation-evidence/R01/20261006-033027-416/report.json",
+    "R02Evidence": ".dazposewizard/remediation-evidence/R02/20261006-034428-016/report.json",
+    "R02MeasuredCause": "Mask-1 fitted body/mesh creates ~0.0620113 m toe-region residual; canonical mesh substitution reduces it to 1.72855e-7 m. Transform restoration alone does not remove it. Footwear flags/lift/shrink are inactive at mask 1.",
+    "R03Evidence": ".dazposewizard/remediation-evidence/R03/20261006-035837-774/report.json",
+    "R04Evidence": ".dazposewizard/remediation-evidence/R04/20261006-040739-375/report.json",
+    "R05Evidence": ".dazposewizard/remediation-evidence/R05/20261006-041352-002/report.json",
+    "R05MeasuredOutcome": "Declared Gesture/Action/Spell/Aura preflight, actor-scoped production diagnostics and optional speech-only bindings passed 14 assertions.",
+    "R06Evidence": ".dazposewizard/remediation-evidence/R06/20261006-042522-520/report.json",
+    "R06MeasuredOutcome": "Scoped finite-command kernel passed serial success, concurrent speech/gaze, synchronous validation failure, typed supersession, explicit Stop during request and paused Delay, first-failure sibling cancellation, and invalid Begin checks.",
+    "R07Evidence": ".dazposewizard/remediation-evidence/R07/20261006-044445-212/report.json",
+    "R07MeasuredOutcome": "Persistent pose/expression/gaze, player move/track ownership, shared playback generations, aura replacement, acknowledged fake toy delivery, no-device failure, deliberate toy Stop, acquired grip cleanup and animated release passed 25 assertions.",
+    "R08Evidence": ".dazposewizard/remediation-evidence/R08/20261006-051010-521/report.json",
+    "R09Evidence": ".dazposewizard/remediation-evidence/R09/20261006-075614-154/report.json",
+    "R09MeasuredOutcome": "39 assertions passed: ordinary-folder prepared Gesture/Action copied and executed through scoped calls; malformed clips remained rejected; scene-open stale asset-handle fixture cause fixed by reacquiring owner assets after scene load.",
+    "nextAction": "Historical remediation technical work is complete. Toe appearance still needs user observation; current implementation order is the root authoring plan B01\u00e2\u20ac\u201cB08.",
+    "R10Evidence": ".dazposewizard/remediation-evidence/R10/20261006-084756-019/report.json",
+    "R10MeasuredOutcome": "18 read-only assertions passed: 267 source/meta pairs, exact GUIDs/destinations, five asmdef and three asmref payloads, package IDs, first-party graph with zero Runtime leaks, 77 editor entrypoints, two source-path references, type-placement evidence and registered narrow DAZ adapter repair.",
+    "R12Evidence": ".dazposewizard/remediation-evidence/R12/20261006-131620-150/report.json",
+    "R12MeasuredOutcome": "35 assertions passed; validation and production smoke Windows players built and ran on Direct3D12.",
+    "R13Evidence": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/toe-player-report-final.json",
+    "R13EditorEvidence": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/toe-editor-report-final.json",
+    "R13ExportManifest": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/export-manifest.json",
+    "R13EvidenceLedger": ".dazposewizard/remediation-evidence/R13/20261006-140941-780/evidence-ledger.json",
+    "R13EvidenceLedgerSha256": "5f8a890dfa12b3320f2e8d555b4331bd61b76e809b38a8876503c06bbd347c16",
+    "R13ExportManifestSha256": "9485ef5e7a812b5064f42f1496033ab2263d8077c306cb817071123963499083",
+    "R13MeasuredOutcome": "Exact saved toe scene passed 43 assertions in Editor and 43 in Direct3D12 Windows player; 742 unique scene/candidate dependencies exported with zero GUID collisions or final hash mismatches."
+  },
+  "previousPlan": "docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md",
+  "authoringReadiness": {
+    "revisionDate": "2026-10-08",
+    "status": "technical_complete_player_functional_acceptance_confirmed_authoring_exercise_next",
+    "plan": "AUTHORING_READINESS_BUILD_PLAN.md",
+    "apiGuide": "CONTENT_AUTHORING_API.md",
+    "documentation": "reviewed_and_delivered",
+    "executionDuringDocumentationRevision": "none",
+    "userDecisions": [
+      "Toy errors are silent successful no-ops; fire-and-forget output with no scene/UI reaction.",
+      "Explicit session Stop cancels all local work and queued output.",
+      "Application owns Intiface connection and settings.",
+      "Top-level DazPose production commands include saved-scene session initialization.",
+      "Pose uses configured smooth default unless explicitly overridden.",
+      "No lifecycle tuning restore; current tuning persists.",
+      "All actors use Lara; acceptance is actual saved-scene Play.",
+      "One typed authoring path with presentation separated from execution."
+    ],
+    "packets": {
+      "B01": "complete",
+      "B02": "complete",
+      "B03": "complete",
+      "B04": "complete",
+      "B05": "complete",
+      "B06": "complete_user_accepted_player_settings_and_navigation",
+      "B07": "technical_complete_saved_scene_play_passed_pending_user_visual_approval",
+      "B08": "technical_and_player_functional_checks_accepted_artistic_observations_separate"
+    },
+    "visualApproval": "not_claimed",
+    "playerAcceptance": "User confirmed all proposed player checks on 2026-10-11: Settings persistence across quit/relaunch, Stop/Start, Restart, scene switching and menu navigation.",
+    "reviewResolution": "docs/production-consolidation/AUTHORING_PLAN_REVIEW_RESOLUTION.md",
+    "menuInventory": "docs/production-consolidation/AUTHORING_MENU_INVENTORY.md",
+    "reviewInputs": [
+      "docs/preauthoring patch review/deepseek.txt",
+      "docs/preauthoring patch review/mimo flash.txt",
+      "docs/preauthoring patch review/sol61.txt"
+    ],
+    "packetParts": {
+      "B05a": "complete",
+      "B05b": "complete"
+    },
+    "implementationAuthorizedDate": "2026-10-08",
+    "B01Evidence": ".dazposewizard/remediation-evidence/R07/20261008-161229-447/report.json",
+    "currentPacket": "B08",
+    "B02Evidence": ".dazposewizard/remediation-evidence/R08/20261008-074129-019/report.json",
+    "B03Evidence": ".dazposewizard/remediation-evidence/R08/20261008-161523-558/report.json",
+    "B04Evidence": ".dazposewizard/remediation-evidence/R08/20261008-075814-551/report.json",
+    "B05aEvidence": "validation/DazPoseUnityValidation/TestOutput/Authoring/B05a.txt",
+    "B05bEvidence": ".dazposewizard/authoring-evidence/B05b-menu-source.json",
+    "B05bCompileEvidence": ".dazposewizard/authoring-evidence/B05b-compile.log",
+    "B06Evidence": ".dazposewizard/authoring-evidence/B06-shell.log",
+    "B07CompositionEvidence": ".dazposewizard/authoring-evidence/B07-content.log",
+    "B07SavedSceneEvidence": {
+      "showcase": ".dazposewizard/authoring-evidence/B08-showcase-support-reconciled.log",
+      "companion": ".dazposewizard/authoring-evidence/B08-companion-graphics.log"
+    },
+    "B08NavigationEvidence": ".dazposewizard/authoring-evidence/B08-navigation.log",
+    "B08AssetEvidence": ".dazposewizard/authoring-evidence/B08-delivery-assets-2.log",
+    "B08PreservationEvidence": ".dazposewizard/authoring-evidence/B08-guid-assembly-check.json",
+    "actualDeliveredScenePlay": "showcase_and_companion_completed_in_graphics_enabled_editor_through_saved_hosts",
+    "navigationAcceptance": "saved_UI_callbacks_passed_in_editor_including_paused_Stop_Start_reload_and_scene_switching",
+    "latestTechnicalRepair": "Reconcile the blended grip wrist after Lara footwear floor support moves the rig; preserve footwear/calibration/tuning/tolerances.",
+    "buildEvidence": "validation/DazPoseUnityValidation/Builds/Authoring/DazPoseGame.exe.build.json",
+    "buildLog": ".dazposewizard/authoring-evidence/B08-settings-repair-build.log",
+    "buildResult": "corrected_production_build_succeeded_zero_errors",
+    "visiblePlayerEvidence": ".dazposewizard/authoring-evidence/B08-settings-fixed-visible-player.json",
+    "manualChecks": "docs/production-consolidation/authoring-reports/B08_MANUAL_CHECKS.md",
+    "desktopAutomationLimitation": "Required node_repl + @oai/sky native tool is not exposed; native CUA APIs disabled. No custom input/control protocol used.",
+    "sourceInspectionIsExecutionAcceptance": false,
+    "B08FinalEditorCompileEvidence": ".dazposewizard/authoring-evidence/B08-final-editor-compile.log",
+    "B08Report": "docs/production-consolidation/authoring-reports/B08.md",
+    "userFeedback": {
+      "date": "2026-10-08",
+      "settings": "Settings button did not visibly open Settings.",
+      "lockup": "Player locked up after trying Settings then choosing a scene; exact scene unknown.",
+      "settingsCause": "Nested Settings canvas serialized localScale=(0,0,0); direct callback test missed invisible geometry.",
+      "settingsRepairEvidence": ".dazposewizard/authoring-evidence/B08-pointer-fixed.log",
+      "lockupCause": "No independent cause established; direct saved-scene player completed and user menu-start retest passed after Settings repair/rebuild.",
+      "settingsRetest": "User: \"Yup, all good, settings opened and closed, then scene started.\""
+    },
+    "settingsRepairEvidence": ".dazposewizard/authoring-evidence/B08-pointer-fixed.log",
+    "pointerNavigationEvidence": ".dazposewizard/authoring-evidence/B08-navigation-pointer-fixed-2.log",
+    "directSavedScenePlayerEvidence": ".dazposewizard/authoring-evidence/B08-direct-scene-player.log",
+    "remainingObservations": "New scene authoring ease, pacing and composition; artistic approval and historical second-outfit toe appearance remain separate.",
+    "playerFunctionalAcceptance": {
+      "date": "2026-10-11",
+      "source": "User: \"I've confirmed all. You can mark these tests accepted.\" In response to the proposed remaining player checks.",
+      "accepted": [
+        "Settings persistence across quit/relaunch",
+        "Stop",
+        "Start",
+        "Restart",
+        "Invitation/Encore scene switching",
+        "Main Menu navigation"
+      ],
+      "scope": "Functional player checks; not a separate artistic or historical toe-appearance approval."
+    },
+    "authoringWalkthrough": "CONTENT_AUTHORING_WALKTHROUGH.md",
+    "authoringFriction": [
+      "New Sequence Script does not attach or assign the new component.",
+      "Authoring Marks is an empty root with manual Transform placement.",
+      "Add Partner binds contact but leaves composition placement manual.",
+      "Prepared asset discovery is scattered."
+    ],
+    "automaticBehaviorSettings": {
+      "authorizedDate": "2026-10-11",
+      "status": "implemented_saved_scene_checks_passed_player_rebuilt_delivered",
+      "scope": "Supported actor/grip/view/clock behavior settings; per scene/actor; live Play Inspector and script changes including paused/stopped/completed states.",
+      "savePolicy": "Atomic write only when snapshot values change; no manual menu command; no lifecycle reset.",
+      "evidence": ".dazposewizard/authoring-evidence/20261011-automatic-tuning-final-build.log",
+      "checks": [
+        "Exact saved Welcome completed through its saved host.",
+        "Paused post-completion edit persisted without explicit save.",
+        "Stopped edit persisted without explicit save.",
+        "Fresh settings service loaded latest value.",
+        "Unchanged capture did not rewrite file.",
+        "In-place breathing curve edit persisted."
+      ],
+      "playerVisualApproval": "not_claimed_for_this_revision",
+      "buildDeliveryEvidence": ".dazposewizard/authoring-evidence/20261011-automatic-tuning-delivery.json",
+      "buildResult": "Succeeded_zero_errors",
+      "playerRetest": "not_performed_for_this_revision"
+    }
+  },
+  "historicalBookkeepingBeforeAuthoringReview": {
+    "previousPlan": "docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md",
+    "approvedDate": "2026-10-05",
+    "status": "in_progress",
+    "currentDay": 6,
+    "note": "Historical consolidation metadata; day records and evidence below remain historical. Not the authoring-readiness packet status."
+  },
+  "userDirectionDate": "2026-10-07",
+  "planRevisionDate": "2026-10-08",
+  "currentPacket": "B08"
 }

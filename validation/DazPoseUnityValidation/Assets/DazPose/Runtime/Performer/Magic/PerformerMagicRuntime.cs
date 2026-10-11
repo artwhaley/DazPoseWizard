@@ -16,11 +16,13 @@ namespace DazPose.Performer
         private IPerformerMagicEffectInstance _aura;
         private PerformerAura _auraAsset;
         private Transform _auraTarget;
+        private long _auraGeneration;
         private bool _disposed;
         private Action _lastCastCancellation;
         public Action CaptureCancellation() => _lastCastCancellation;
         public void Reset()
         {
+            _auraGeneration++;
             var spells = _spells.ToArray();
             _spells.Clear();
             foreach (var instance in spells) instance?.Dispose();
@@ -69,6 +71,8 @@ namespace DazPose.Performer
             if (ReferenceEquals(_auraAsset, aura) && ReferenceEquals(_auraTarget, target)
                 && _aura != null && !_aura.IsDisposed) return;
 
+            _auraGeneration++;
+
             IPerformerMagicEffectInstance replacement = _createInstance(aura.Style, target,
                 MagicEffectMode.Aura, null);
             float previousFade = _aura != null ? _aura.Style.AuraFadeOutSeconds : 0f;
@@ -81,6 +85,7 @@ namespace DazPose.Performer
         public void ClearAura()
         {
             if (_disposed) return;
+            _auraGeneration++;
             float fade = _aura != null ? _aura.Style.AuraFadeOutSeconds : 0f;
             RetireCurrentAura(fade);
             _auraAsset = null;
@@ -124,6 +129,7 @@ namespace DazPose.Performer
         public void Dispose()
         {
             if (_disposed) return;
+            _auraGeneration++;
             _disposed = true;
             var spells = _spells.ToArray();
             _spells.Clear();
@@ -134,6 +140,25 @@ namespace DazPose.Performer
             _retiringAuras.Clear();
             _auraAsset = null;
             _auraTarget = null;
+        }
+
+        internal Action CaptureAuraCancellation(Action clearDesiredAura)
+        {
+            IPerformerMagicEffectInstance capturedInstance = _aura;
+            PerformerAura capturedAsset = _auraAsset;
+            Transform capturedTarget = _auraTarget;
+            long capturedGeneration = _auraGeneration;
+            return () =>
+            {
+                if (_disposed || capturedInstance == null || capturedGeneration != _auraGeneration
+                    || !ReferenceEquals(capturedInstance, _aura)
+                    || !ReferenceEquals(capturedAsset, _auraAsset)
+                    || !ReferenceEquals(capturedTarget, _auraTarget)) return;
+                RetireCurrentAura(0f);
+                _auraAsset = null;
+                _auraTarget = null;
+                clearDesiredAura?.Invoke();
+            };
         }
 
         private void RetireCurrentAura(float fade)

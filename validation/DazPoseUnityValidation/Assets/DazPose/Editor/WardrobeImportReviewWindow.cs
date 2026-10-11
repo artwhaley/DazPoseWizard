@@ -9,7 +9,7 @@ namespace DazPose.UnityValidation
     public sealed class WardrobeImportReviewWindow : EditorWindow
     {
         [System.Serializable] private sealed class Published {public string publishedReviewScene;}
-        [MenuItem("Tools/DAZ Pose/Wardrobe/Imported Outfits")]
+        [MenuItem("DazPose/Wardrobe/Imported Outfits")]
         public static void Open()=>GetWindow<WardrobeImportReviewWindow>("Imported Outfits").Show();
         private Vector2 scroll;
         private void OnGUI()

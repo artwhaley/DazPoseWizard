@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using Daz3D;
+using DazPose.Daz3DConversion;
 using DazPose.UnityValidation.Partner;
 using Unity.Collections;
 using UnityEditor;
@@ -65,7 +65,9 @@ namespace DazPose.UnityValidation.Editor.Partner
             return manifest;
         }
 
-        [MenuItem("Tools/DAZ Pose/Partner Proof/Prepare Skinned Character and Materials")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Partner Proof/Prepare Skinned Character and Materials")]
+#endif
         public static void Prepare()
         {
             Require(!EditorApplication.isPlayingOrWillChangePlaymode, "Prepare partner assets outside Play mode.");
@@ -245,61 +247,51 @@ namespace DazPose.UnityValidation.Editor.Partner
             foreach (string directory in new[] { "TextureSources", "Textures", "SourceMaterials", "RuntimeMaterials" })
                 Directory.CreateDirectory(Folder + "/" + directory);
             AssetDatabase.Refresh();
-            var converter = new DTU { DTUPath = Folder + "/manifest.json" };
             var materials = new Material[bridge.materials.Length];
-            bool legacy = Daz3DDTUImporter.UseLegacyShaders;
-            try
+            foreach (LaraCandidateBuilder.Surface surface in bridge.materials)
             {
-                Daz3DDTUImporter.UseLegacyShaders = false;
-                foreach (LaraCandidateBuilder.Surface surface in bridge.materials)
+                var properties = new List<DtuConversionProperty>();
+                foreach (LaraCandidateBuilder.Property input in surface.properties)
                 {
-                    var properties = new List<DTUMaterialProperty>();
-                    foreach (LaraCandidateBuilder.Property input in surface.properties)
+                    string texture = input.texture;
+                    if (!string.IsNullOrEmpty(texture))
                     {
-                        var value = new DTUValue(input.number);
-                        if (input.kind == "color") { value.Type = DTUValue.DataType.Color; value.AsColor = input.color; }
-                        if (input.kind == "string") { value.Type = DTUValue.DataType.String; value.AsString = input.text; }
-                        string texture = input.texture;
-                        if (!string.IsNullOrEmpty(texture))
-                        {
-                            Require(File.Exists(texture), "Missing partner texture: " + texture);
-                            string role = input.name == "Normal Map" ? "normal" : input.kind == "color" ? "color" : "data";
-                            string staged = Folder + "/TextureSources/" + role + "_" + Hash(texture).Substring(0, 16) + Path.GetExtension(texture);
-                            if (!File.Exists(staged)) File.Copy(texture, staged);
-                            texture = Path.GetFullPath(staged);
-                        }
-                        properties.Add(new DTUMaterialProperty { Name = input.name, Value = value, Texture = texture ?? "", Exists = true });
+                        Require(File.Exists(texture), "Missing partner texture: " + texture);
+                        string role = input.name == "Normal Map" ? "normal" : input.kind == "color" ? "color" : "data";
+                        string staged = Folder + "/TextureSources/" + role + "_" + Hash(texture).Substring(0, 16) + Path.GetExtension(texture);
+                        if (!File.Exists(staged)) File.Copy(texture, staged);
+                        texture = Path.GetFullPath(staged);
                     }
-                    var inputMaterial = new DTUMaterial { AssetName = surface.node, MaterialName = surface.surface,
-                        MaterialType = "Iray Uber", Value = "Actor/Character", Properties = properties,
-                        ProductName = "Partner", ProductComponentName = surface.node };
-                    Material converted = converter.ConvertToUnityIrayUber(inputMaterial, Folder + "/Textures");
-                    Require(converted != null, "Bridge could not convert " + surface.node + "/" + surface.surface);
-                    converted.name = "M_" + surface.node + "_" + surface.surface;
-                    string filename = WardrobeImporter.Safe(converted.name);
-                    string sourcePath = Folder + "/SourceMaterials/" + filename + ".mat";
-                    Material oldSource = AssetDatabase.LoadAssetAtPath<Material>(sourcePath);
-                    Material baseline = oldSource == null ? null : UnityEngine.Object.Instantiate(oldSource);
-                    converted = SaveMaterial(converted, sourcePath);
-                    string runtimePath = Folder + "/RuntimeMaterials/" + filename + ".mat";
-                    Material runtime = AssetDatabase.LoadAssetAtPath<Material>(runtimePath);
-                    if (runtime == null) runtime = SaveMaterial(UnityEngine.Object.Instantiate(converted), runtimePath);
-                    else
-                    {
-                        // Direct bridge shaders are sufficient here; partner dissolve
-                        // behavior is a separate slice, not a prerequisite for contact.
-                        runtime.shader = converted.shader;
-                        if (baseline != null) LaraCandidateBuilder.MergeUneditedMaterialProperties(baseline, converted, runtime);
-                        else runtime.CopyPropertiesFromMaterial(converted);
-                    }
-                    if (baseline != null) UnityEngine.Object.DestroyImmediate(baseline);
-                    LaraCandidateBuilder.RepairOpacityTexture(runtime);
-                    Require(!ShaderUtil.ShaderHasError(runtime.shader), "Partner bridge shader has compile errors: " + runtime.shader.name);
-                    materials[surface.slot] = runtime;
-                    EditorUtility.SetDirty(runtime);
+                    properties.Add(new DtuConversionProperty(input.name, input.kind, input.number, input.color, input.text, texture));
                 }
+                var request = new DtuConversionRequest(Folder + "/manifest.json", Folder + "/Textures",
+                    surface.node, surface.surface, "Iray Uber", "Actor/Character", "Partner", surface.node,
+                    DtuMaterialConversionKind.IrayUber, properties.ToArray());
+                Material converted = DazPoseDtuConversionBridge.Convert(request);
+                Require(converted != null, "Bridge could not convert " + surface.node + "/" + surface.surface);
+                converted.name = "M_" + surface.node + "_" + surface.surface;
+                string filename = WardrobeImporter.Safe(converted.name);
+                string sourcePath = Folder + "/SourceMaterials/" + filename + ".mat";
+                Material oldSource = AssetDatabase.LoadAssetAtPath<Material>(sourcePath);
+                Material baseline = oldSource == null ? null : UnityEngine.Object.Instantiate(oldSource);
+                converted = SaveMaterial(converted, sourcePath);
+                string runtimePath = Folder + "/RuntimeMaterials/" + filename + ".mat";
+                Material runtime = AssetDatabase.LoadAssetAtPath<Material>(runtimePath);
+                if (runtime == null) runtime = SaveMaterial(UnityEngine.Object.Instantiate(converted), runtimePath);
+                else
+                {
+                    // Direct bridge shaders are sufficient here; partner dissolve
+                    // behavior is a separate slice, not a prerequisite for contact.
+                    runtime.shader = converted.shader;
+                    if (baseline != null) LaraCandidateBuilder.MergeUneditedMaterialProperties(baseline, converted, runtime);
+                    else runtime.CopyPropertiesFromMaterial(converted);
+                }
+                if (baseline != null) UnityEngine.Object.DestroyImmediate(baseline);
+                LaraCandidateBuilder.RepairOpacityTexture(runtime);
+                Require(!ShaderUtil.ShaderHasError(runtime.shader), "Partner bridge shader has compile errors: " + runtime.shader.name);
+                materials[surface.slot] = runtime;
+                EditorUtility.SetDirty(runtime);
             }
-            finally { Daz3DDTUImporter.UseLegacyShaders = legacy; }
             string[] response = { "_Roughness", "_SpecularLobe1Roughness", "_SpecularLobe2Roughness", "_GlossyLayeredWeight",
                 "_DualLobeSpecularWeight", "_DualLobeSpecularRatio", "_TopCoatWeight", "_TopCoatRoughness" };
             foreach (Binding binding in source.bindings)

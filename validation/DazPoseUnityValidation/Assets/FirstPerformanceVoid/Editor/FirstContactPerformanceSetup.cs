@@ -13,7 +13,9 @@ namespace DazPose.FirstPerformanceVoid.Editor
     {
         private const string ScenePath = "Assets/Scenes/FirstPerformanceVoid.unity";
 
-        [MenuItem("Tools/DAZ Pose/First Performance Void/Install First Contact Performance")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/First Performance Void/Install First Contact Performance")]
+#endif
         public static void Install()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -88,6 +90,11 @@ namespace DazPose.FirstPerformanceVoid.Editor
                 performance.Configure(performer, player, seat, face, close, laraView, loungeView, final, clipA, clipB);
                 Undo.RecordObject(controls, "Wire First Contact panel");
                 controls.ConfigureFirstContact(performance);
+                var bindings=performance.GetComponent<PerformanceSceneBindings>() ?? Undo.AddComponent<PerformanceSceneBindings>(performance.gameObject);
+                bindings.Configure(performer,player,performer.MotionSource,null,PerformerCapability.None);
+                var host=performance.GetComponent<PerformanceHost>() ?? Undo.AddComponent<PerformanceHost>(performance.gameObject);
+                host.PlayOnStart=false; host.Configure(bindings,performance);
+                EditorUtility.SetDirty(bindings); EditorUtility.SetDirty(host);
                 EditorUtility.SetDirty(performance);
                 EditorUtility.SetDirty(controls);
                 EditorSceneManager.MarkSceneDirty(scene);

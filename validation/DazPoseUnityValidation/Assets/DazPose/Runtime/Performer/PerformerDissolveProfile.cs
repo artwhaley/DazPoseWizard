@@ -161,7 +161,7 @@ namespace DazPose.Performer
             if (!IsShaderReady(out reason)) return false;
             if (particleBodyVfxAsset == null)
             {
-                reason = "Assign the project-owned PerformerParticleBody VFX Graph in PerformerDissolveProfile. Run the Particle Body Acceptance Harness installer.";
+                reason = "Assign the existing production PerformerParticleBody VFX Graph reference in PerformerDissolveProfile.";
                 return false;
             }
             if (surfaceBindings == null || surfaceBindings.BindingCount != PerformerSurfaceBindingAsset.RequiredBindingCount)

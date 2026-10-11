@@ -21,6 +21,8 @@ namespace DazPose.Performer
         [SerializeField, Range(-30,30)] private float additionalFootPitch, additionalToePitch;
         private Transform[] bones;
         private Quaternion[] previousBase, previousApplied;
+        private Vector3[] previousBasePositions, previousAppliedPositions;
+        private bool[] positionOwned;
         private Vector3[] referencePositions;
         private Quaternion[] referenceRotations;
         private Transform[] upperLeg,knee;
@@ -57,8 +59,17 @@ namespace DazPose.Performer
         private void UndoPrevious()
         {
             if(!applied || bones==null)return;
-            for(int i=0;i<bones.Length;i++)if(bones[i]!=null && Quaternion.Angle(bones[i].localRotation,previousApplied[i])<.001f)
-                bones[i].localRotation=previousBase[i];
+            for(int i=0;i<bones.Length;i++)
+            {
+                if(bones[i]==null)continue;
+                // Restore only a toe position written by this instance, and only if no newer
+                // animation/owner has changed it since the last application.
+                if(positionOwned!=null && positionOwned[i] &&
+                    Vector3.Distance(bones[i].localPosition,previousAppliedPositions[i])<=.000001f)
+                    bones[i].localPosition=previousBasePositions[i];
+                if(Quaternion.Angle(bones[i].localRotation,previousApplied[i])<.001f)
+                    bones[i].localRotation=previousBase[i];
+            }
             applied=false;
         }
         public void Apply()
@@ -76,20 +87,31 @@ namespace DazPose.Performer
             for(int i=0;i<bones.Length;i++)
             {
                 previousBase[i]=bones[i].localRotation;
+                previousBasePositions[i]=bones[i].localPosition;
+                positionOwned[i]=false;
                 if(footwear!=null && footwear.constrainToes && IsToe(bones[i].name))
-                {bones[i].localPosition=referencePositions[i];bones[i].localRotation=referenceRotations[i];}
+                {
+                    bones[i].localPosition=referencePositions[i];
+                    bones[i].localRotation=referenceRotations[i];
+                    positionOwned[i]=true;
+                }
             }
-            leftToe.localRotation*=Quaternion.Euler(additionalToePitch,0,0);rightToe.localRotation*=Quaternion.Euler(additionalToePitch,0,0);
+            if(bentFootPoseActive)
+            {
+                leftToe.localRotation*=Quaternion.Euler(additionalToePitch,0,0);
+                rightToe.localRotation*=Quaternion.Euler(additionalToePitch,0,0);
+            }
             ground=(rigRoot.parent!=null?rigRoot.parent.position.y:0)+(footwear!=null?footwear.groundOffset:baseRigY);
             float reachDrop=0;
+            Quaternion extraFootPitch=bentFootPoseActive?Quaternion.Euler(additionalFootPitch,0,0):Quaternion.identity;
             for(int side=0;side<2;side++)
             {
-                var foot=feet[side];var original=foot.rotation*Quaternion.Euler(additionalFootPitch,0,0);
+                var foot=feet[side];var original=foot.rotation*extraFootPitch;
                 rotations[side]=original;targets[side]=foot.position;stance[side]=0;
                 if(footwear==null || !shoeSupportActive || !floorSupport || standingWeight<=0)continue;
                 var heel=side==0?footwear.leftHeel:footwear.rightHeel;
                 var toe=side==0?footwear.leftToe:footwear.rightToe;
-                var level=rigRoot.rotation*Quaternion.Euler(additionalFootPitch,0,0);
+                var level=rigRoot.rotation*extraFootPitch;
                 float clearance=foot.position.y+Mathf.Min((level*heel).y,(level*toe).y)-ground;
                 float blend=1-Mathf.SmoothStep(0,1,Mathf.Clamp01((clearance-.015f)/Mathf.Max(.01f,footwear.swingBlendHeight)));
                 stance[side]=blend*standingWeight;
@@ -107,7 +129,11 @@ namespace DazPose.Performer
                 if(stance[side]>0)SolveLeg(upperLeg[side],knee[side],feet[side],targets[side],rigRoot.forward);
                 feet[side].rotation=rotations[side];
             }
-            for(int i=0;i<bones.Length;i++)previousApplied[i]=bones[i].localRotation;
+            for(int i=0;i<bones.Length;i++)
+            {
+                previousApplied[i]=bones[i].localRotation;
+                previousAppliedPositions[i]=bones[i].localPosition;
+            }
             applied=true;
         }
         private static bool IsToe(string name)=>name.Contains("Toe") || name.Contains("Metatarsals");
@@ -118,6 +144,8 @@ namespace DazPose.Performer
             upperLeg=new[]{lookup["lThighBend"],lookup["rThighBend"]};knee=new[]{lookup["lShin"],lookup["rShin"]};
             bones=upperLeg.Concat(knee).Concat(new[]{leftFoot,rightFoot}).Concat(body.bones.Where(b=>IsToe(b.name))).Distinct().ToArray();
             previousBase=new Quaternion[bones.Length];previousApplied=new Quaternion[bones.Length];
+            previousBasePositions=new Vector3[bones.Length];previousAppliedPositions=new Vector3[bones.Length];
+            positionOwned=new bool[bones.Length];
             referencePositions=new Vector3[bones.Length];referenceRotations=new Quaternion[bones.Length];
             var indices=body.bones.Select((b,i)=>(b,i)).ToDictionary(x=>x.b,x=>x.i);var bind=body.sharedMesh.bindposes;
             for(int i=0;i<bones.Length;i++)

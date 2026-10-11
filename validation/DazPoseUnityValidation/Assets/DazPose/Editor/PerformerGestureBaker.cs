@@ -28,7 +28,7 @@ namespace DazPose.Editor
             "m_LocalScale.x", "m_LocalScale.y", "m_LocalScale.z"
         };
 
-        [MenuItem("Tools/DAZ Pose/Gesture/Bake Selected Clip as Performer Gesture")]
+        [MenuItem("DazPose/Content/Bake Selected Clip as Gesture")]
         public static void BakeSelectedClip()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -67,7 +67,9 @@ namespace DazPose.Editor
                 + ". The selected source asset was read-only and was not edited.", gesture);
         }
 
-        [MenuItem("Tools/DAZ Pose/Gesture/Generate Gesture Acceptance Assets")]
+        #if DAZPOSE_DEVELOPMENT_TOOLS
+[MenuItem("DazPose/Development/Legacy/Gesture/Generate Gesture Acceptance Assets")]
+#endif
         public static void GenerateAcceptanceWave()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

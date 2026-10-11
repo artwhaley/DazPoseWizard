@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using DazPose.Performer.HandGrip;
 
@@ -109,6 +110,62 @@ namespace DazPose.UnityValidation.Partner
             && Mathf.Approximately(distributedBend, 0f) && HasSupportedScale();
         public bool IsRigidZeroCompliance => Mathf.Approximately(shaft1X, 0f)
             && Mathf.Approximately(shaft4X, 0f) && Mathf.Approximately(distributedBend, 0f);
+
+        /// <summary>
+        /// Side-effect-free serialized readiness for a contact declaration. This deliberately
+        /// does not depend on Awake-captured calibration; runtime callers add live-calibration
+        /// checks in the contact adapter.
+        /// </summary>
+        public bool TryValidateContactConfiguration(out string reason)
+        {
+            reason = null;
+            if (structuralBody == null || structuralBody.sharedMesh == null)
+                reason = "PartnerBody requires its prepared structural body renderer and mesh.";
+            else if (!structuralBody.transform.IsChildOf(transform))
+                reason = "PartnerBody structural renderer must belong to its runtime hierarchy.";
+            else if (!HasRequiredBlendShape(structuralBody, "ErectionToFlaccid"))
+                reason = "The structural body mesh must retain the authored ErectionToFlaccid blend shape.";
+            else if (shellRenderer != null && shellRenderer.sharedMesh != null &&
+                !HasRequiredBlendShape(shellRenderer, "ShellErectionToFlaccid"))
+                reason = "The shell mesh must retain the authored ShellErectionToFlaccid blend shape.";
+            else if (shellRenderer != null && !shellRenderer.transform.IsChildOf(transform))
+                reason = "PartnerBody shell renderer must belong to its runtime hierarchy.";
+            else if (shaftBones == null || shaftBones.Length < 2)
+                reason = "PartnerBody requires the authored shaft bone chain.";
+            else if (Array.Exists(shaftBones, bone => bone == null))
+                reason = "PartnerBody's shaft bone chain contains an unbound bone.";
+            else if (Array.Exists(shaftBones, bone => !bone.IsChildOf(transform)))
+                reason = "PartnerBody shaft bones must belong to its runtime hierarchy.";
+            else if (flaccidCenterlineRoot == null || erectCenterlineRoot == null ||
+                flaccidCenterlineRoot.Length < 2 || flaccidCenterlineRoot.Length != erectCenterlineRoot.Length)
+                reason = "PartnerBody requires matching flaccid and erect centerlines with at least two samples.";
+            else if (!FinitePoints(flaccidCenterlineRoot) || !FinitePoints(erectCenterlineRoot))
+                reason = "PartnerBody centerline samples must contain only finite root-space coordinates.";
+            else if (!GripFrame.IsFinite(flaccidRadius) || !GripFrame.IsFinite(erectRadius) ||
+                flaccidRadius <= 0f || erectRadius <= 0f)
+                reason = "PartnerBody contact radii must be finite and positive meters.";
+            else if ((mainPelvis == null) != (donorPelvis == null))
+                reason = "PartnerBody donor following requires both pelvis transforms or neither.";
+            else if (mainPelvis == donorPelvis)
+                reason = "PartnerBody main and donor pelvis references must be distinct.";
+            else if (mainPelvis != null && (!mainPelvis.IsChildOf(transform) || !donorPelvis.IsChildOf(transform)))
+                reason = "PartnerBody pelvis bindings must belong to its runtime hierarchy.";
+            else if (distributedBones != null && Array.Exists(distributedBones, bone => bone == null))
+                reason = "PartnerBody distributed compliance bone list contains an unbound transform.";
+            else if (distributedBones != null && distributedBones.Any(bone => Array.IndexOf(shaftBones, bone) < 0))
+                reason = "Every distributed compliance bone must belong to the configured shaft chain.";
+            else if (!HasSupportedScale())
+                reason = "Partner contact requires positive unit scale on the actor root and all bound contact transforms.";
+            else if (!Mathf.Approximately(Erection01, 1f))
+                reason = "Partner contact is certified only at the authored erect endpoint (Erection01 = 1).";
+            else if (!IsRigidZeroCompliance)
+                reason = "Partner contact is certified only with procedural compliance set to zero.";
+            else if (structuralBody != null && (!structuralBody.enabled || !structuralBody.gameObject.activeInHierarchy))
+                reason = "Partner contact requires an enabled active structural body renderer.";
+            else if (shellRenderer != null && (!shellRenderer.enabled || !shellRenderer.gameObject.activeInHierarchy))
+                reason = "Partner contact requires an enabled active shell renderer when a shell is declared.";
+            return reason == null;
+        }
 
         private void Awake()
         {
@@ -417,51 +474,7 @@ namespace DazPose.UnityValidation.Partner
 
         private void ValidateConfiguration()
         {
-            validationError = null;
-            if (structuralBody == null || structuralBody.sharedMesh == null)
-                validationError = "PartnerBody requires its prepared structural body renderer and mesh.";
-            else if (!structuralBody.transform.IsChildOf(transform))
-                validationError = "PartnerBody structural renderer must belong to its runtime hierarchy.";
-            else if (!HasRequiredBlendShape(structuralBody, "ErectionToFlaccid"))
-                validationError = "The structural body mesh must retain the authored ErectionToFlaccid blend shape.";
-            else if (shellRenderer != null && shellRenderer.sharedMesh != null
-                && !HasRequiredBlendShape(shellRenderer, "ShellErectionToFlaccid"))
-                validationError = "The shell mesh must retain the authored ShellErectionToFlaccid blend shape.";
-            else if (shellRenderer != null && !shellRenderer.transform.IsChildOf(transform))
-                validationError = "PartnerBody shell renderer must belong to its runtime hierarchy.";
-            else if (shaftBones == null || shaftBones.Length < 2)
-                validationError = "PartnerBody requires the authored shaft bone chain.";
-            else if (Array.Exists(shaftBones, bone => bone == null))
-                validationError = "PartnerBody's shaft bone chain contains an unbound bone.";
-            else if (Array.Exists(shaftBones, bone => !bone.IsChildOf(transform)))
-                validationError = "PartnerBody shaft bones must belong to its runtime hierarchy.";
-            else if (flaccidCenterlineRoot == null || erectCenterlineRoot == null
-                || flaccidCenterlineRoot.Length < 2 || flaccidCenterlineRoot.Length != erectCenterlineRoot.Length)
-                validationError = "PartnerBody requires matching flaccid and erect centerlines with at least two samples.";
-            else if (!FinitePoints(flaccidCenterlineRoot) || !FinitePoints(erectCenterlineRoot))
-                validationError = "PartnerBody centerline samples must contain only finite root-space coordinates.";
-            else if (!GripFrame.IsFinite(flaccidRadius) || !GripFrame.IsFinite(erectRadius)
-                || flaccidRadius <= 0f || erectRadius <= 0f)
-                validationError = "PartnerBody contact radii must be finite and positive meters.";
-            else if ((mainPelvis == null) != (donorPelvis == null))
-                validationError = "PartnerBody donor following requires both pelvis transforms or neither.";
-            else if (mainPelvis == donorPelvis)
-                validationError = "PartnerBody main and donor pelvis references must be distinct.";
-            else if (mainPelvis != null && (!mainPelvis.IsChildOf(transform) || !donorPelvis.IsChildOf(transform)))
-                validationError = "PartnerBody pelvis bindings must belong to its runtime hierarchy.";
-            else if (distributedBones != null && Array.Exists(distributedBones, bone => bone == null))
-                validationError = "PartnerBody distributed compliance bone list contains an unbound transform.";
-            else if (distributedBones != null)
-            {
-                foreach (Transform bone in distributedBones)
-                {
-                    if (Array.IndexOf(shaftBones, bone) < 0)
-                    {
-                        validationError = "Every distributed compliance bone must belong to the configured shaft chain.";
-                        break;
-                    }
-                }
-            }
+            TryValidateContactConfiguration(out validationError);
         }
 
         private void ApplyErectionBlendShapes()

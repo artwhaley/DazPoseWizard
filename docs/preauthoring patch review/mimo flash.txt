@@ -1,0 +1,23 @@
+Reviewed AUTHORING_READINESS_BUILD_PLAN.md only — no code touched, nothing executed. Overall the plan is strong the eight fixed decisions are consistently threaded through every packet, the lifecycle definitions remove the old StopStartResume ambiguities, ownership table is clear, and B08 correctly separates compilesource findings from Play evidence and user visual approval. The issues below are the ones worth fixing before implementation.
+
+Sequencing  ordering flaws
+
+B03's Done-when can't be met at B03. It requires scene A → menu → scene B, but the main menu and scene navigation don't exist until B06. Either soften B03's gate to something achievable in-order (direct Play of scene A, editor scene switch back to scene B, one persistent service), or move that exact check to B06B08 and let B03's gate prove only service persistence.
+WelcomePerformance is never assigned to a packet. B05 Initialize step 5 attaches a saved built-in WelcomePerformance sequence, but no packet addsauthor it (B04 adds the base classes, B07 adds the showcase). Same question for the production Partner prefab in the Add Partner menu item — the plan should state whether Lara.prefabPartner.prefab already exist or who creates them.
+B05 ← B06 interleave is acknowledged but under-specified. Initialize adds the B06 controls prefab when available, which means every scene initialized during B05 needs a second Initialize run after B06. The idempotency requirement covers it, but say explicitly that re-running Initialize on pre-B06 scenes is the expected migration path.
+Verification weaknesses
+
+B01 — the highest-risk packet — has the softest gate. Prove local cancellation with a focused deterministic check… if needed is vague enough to be skippable. Given cancellation correctness is the packet's entire purpose, define the concrete check after Stop, assert zero dispatch submissions (including with timeScale == 0, and a ramp cancelled mid-wait), plus the B08.3 manual run. If needed invites inspection-based claims the plan elsewhere forbids.
+Obsolete Async adapters return immediate success, which will silently mask unmigrated callers. No Done-when requires an inventory proving production call sites moved to the void surface. Add a criterion zero non-adapter production call sites remain (or a short explicitly accepted list).
+B02.7 assumes an existing supported Play Mode persistence mechanism in PerformerDefaultsEditor. The audit was static and didn't verify one exists. If it doesn't, B02's scope grows mid-packet. Worth a one-line early verification step, or a stated fallback.
+Scope  clarity gaps
+
+Threading isn't stated for the void rampfollower workers. B01.5 says workers check the generation again after each await, implying internal async tasks behind a synchronous surface. Specify which parts must stay on the Unity main thread (backend dispatch, scene state) and that internal workers are the observed tasks from item 3 — otherwise silent no-op and no unobserved exceptions can drift apart.
+Third-party logging is out of scope but will violate decision 1 in practice. The Buttplug backendlibrary may emit its own console messages on disconnect or rejection. No toy command reports failure to the Unity console isn't achievable purely from first-party code; either scope in suppressing backend logging or state it as a known accepted exception.
+B05 is disproportionately large — an 8-step initializer algorithm plus menu migration across ~10 distinct editor areas, gating everything downstream (B07). Consider splitting Initialize Game Session + scene commands from gaterelocate legacy menu entries so the authoring trial isn't blocked on the full menu audit completing.
+B08.5 cites the repository's launch procedure, but the documented launch procedure covers the Avalonia tool and the Unity editor, not a built Unity player. The player launch needs its own visible-session verification steps, or the plan should say the procedure will be extended.
+Minor observations (no change needed unless you disagree)
+
+Decision 1's total silence is internally consistent, but it means the Settings Test button can fail invisibly and authoring-time toy debugging lives entirely on the Intiface side — a real authoring-cost the plan accepts but never states.
+The audit table's path scoping (Assets-relative vs project-relative) is handled correctly; I found no path inconsistencies.
+The plan is implementable as written once items 1, 2, and 4 are resolved; the rest are hardening.

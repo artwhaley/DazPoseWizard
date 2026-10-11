@@ -1,6 +1,6 @@
 # Day 3 report — command lifetime, ownership and replay
 
-Implementation and automated runtime checks passed. Human visual/audio review and physical device checks remain unobserved. The seven-day plan remains authoritative; Day 4 has not started.
+Implementation and automated runtime checks passed. The user accepted Day 3 with its camera framing issue assigned to Day 4; Day 4 validation was later reported working, and Day 5 is accepted. Remediation R01–R13 is technically complete; the second-outfit toe appearance check remains pending. Physical toy hardware remains unobserved. The seven-day plan remains authoritative, and Day 7 has not started.
 
 ## Delivered behavior
 
