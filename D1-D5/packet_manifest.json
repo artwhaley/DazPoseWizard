@@ -1,0 +1,34 @@
+{
+  "packet": "DazPoseWizard D1-D5 Story Runtime Execution Packet",
+  "created": "2026-10-16",
+  "repo": "artwhaley/DazPoseWizard",
+  "scope": [
+    "D1 canonical serialized scene program",
+    "D2 story runtime/events",
+    "D3 player body presence",
+    "D4 memory/state/tag model",
+    "D5 settings/session negotiation"
+  ],
+  "excluded": [
+    "D6 cards",
+    "D7 director",
+    "D8 full First Contact",
+    "Blocks Engine/editor",
+    "automated Play Mode"
+  ],
+  "ticket_order": [
+    "T01",
+    "T02",
+    "T03",
+    "T04",
+    "T05",
+    "T06",
+    "T07",
+    "T08",
+    "T09",
+    "T10",
+    "T11",
+    "T12"
+  ],
+  "required_final_status": "SOURCE COMPLETE \u2014 AWAITING USER PLAYBACK"
+}

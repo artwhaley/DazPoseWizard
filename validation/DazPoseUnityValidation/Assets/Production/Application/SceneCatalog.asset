@@ -29,3 +29,8 @@ MonoBehaviour:
     description: Walking, seating, full-body action and effects.
     scenePath: Assets/Production/Scenes/AuthoringCompanion.unity
     enabled: 1
+  - id: c3bbf40d9a2949ffac3e068b552ed71c
+    title: "First Contact \xB7 session setup"
+    description: Meet Lara and agree on interests, equipment, and clothing.
+    scenePath: Assets/Production/Scenes/FirstContactD1D5.unity
+    enabled: 1

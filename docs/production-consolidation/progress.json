@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "plan": "AUTHORING_READINESS_BUILD_PLAN.md",
   "approvedDate": "2026-10-08",
-  "status": "in_progress",
+  "status": "source_complete_awaiting_user_retest",
   "currentDay": null,
-  "activePacket": "AUTHORING_READINESS_BUILD_PLAN.md#b08--acceptance-and-delivery",
+  "activePacket": "D1-D5/README_FIRST.md",
   "days": {
     "1": "complete",
     "2": "complete_with_accepted_runner_omission",
@@ -478,7 +478,7 @@
   "architecturalReviewReassessment": {
     "recordedUtc": "2026-10-06T02:37:58.9900788Z",
     "path": "docs/production-consolidation/ARCHITECTURAL_REVIEW_REASSESSMENT.md",
-    "scope": "All six original reviews against current source and Days 1\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u20ac\u01535 evidence; documentation only; Day 6 not executed"
+    "scope": "All six original reviews against current source and Days 1Ã¢â‚¬â€œ5 evidence; documentation only; Day 6 not executed"
   },
   "preAuthoringRemediation": {
     "approvedIssues": [
@@ -502,7 +502,7 @@
       "userReport": "Second-outfit shoes and stockings on Layer 1 remove and height drops, but toe contortion remains until rest of outfit removed",
       "cause": "R02 measured stale owned toe local positions as the dominant contributor; fitted body toe region also differed from canonical barefoot. R03 restored owned toe positions and regenerated footwear-inactive candidate fits with the canonical barefoot region.",
       "measuredBeforeResidualMeters": 0.0620112903,
-      "measuredAfterResidualMeters": 5.62506486e-08,
+      "measuredAfterResidualMeters": 5.62506486E-08,
       "technicalRepair": "passed_R03",
       "humanAppearanceApproval": "pending_user_manual_check",
       "savedMask1Flags": "footwearActive=0; bentFootPoseActive=0; standingLift=0; footShrink=0"
@@ -527,7 +527,7 @@
     "R08Evidence": ".dazposewizard/remediation-evidence/R08/20261006-051010-521/report.json",
     "R09Evidence": ".dazposewizard/remediation-evidence/R09/20261006-075614-154/report.json",
     "R09MeasuredOutcome": "39 assertions passed: ordinary-folder prepared Gesture/Action copied and executed through scoped calls; malformed clips remained rejected; scene-open stale asset-handle fixture cause fixed by reacquiring owner assets after scene load.",
-    "nextAction": "Historical remediation technical work is complete. Toe appearance still needs user observation; current implementation order is the root authoring plan B01\u00e2\u20ac\u201cB08.",
+    "nextAction": "Historical remediation technical work is complete. Toe appearance still needs user observation; current implementation order is the root authoring plan B01â€“B08.",
     "R10Evidence": ".dazposewizard/remediation-evidence/R10/20261006-084756-019/report.json",
     "R10MeasuredOutcome": "18 read-only assertions passed: 267 source/meta pairs, exact GUIDs/destinations, five asmdef and three asmref payloads, package IDs, first-party graph with zero Runtime leaks, 77 editor entrypoints, two source-path references, type-placement evidence and registered narrow DAZ adapter repair.",
     "R12Evidence": ".dazposewizard/remediation-evidence/R12/20261006-131620-150/report.json",
@@ -673,5 +673,88 @@
   },
   "userDirectionDate": "2026-10-07",
   "planRevisionDate": "2026-10-08",
-  "currentPacket": "B08"
+  "currentPacket": "D1-D5",
+  "storyRuntime": {
+    "packet": "D1-D5/README_FIRST.md",
+    "status": "SOURCE COMPLETE — AWAITING USER RETEST",
+    "authorizationDate": "2026-10-16",
+    "updatedAtUtc": "2026-10-17T06:24:31.0637014Z",
+    "branch": "codex/d1-d5-story-runtime",
+    "startingCommit": "ca5acab4e6e161985c96710fb63c10a3cd9597fc",
+    "endingCommit": "See Git HEAD on codex/d1-d5-story-runtime; this status record is included in that commit.",
+    "schema": "dazpose.story",
+    "version": 1,
+    "roadmapDays": {
+      "D1": "source_complete",
+      "D2": "source_complete",
+      "D3": "source_complete",
+      "D4": "source_complete",
+      "D5": "source_complete"
+    },
+    "tickets": {
+      "T01": "source_complete",
+      "T02": "source_complete",
+      "T03": "source_complete",
+      "T04": "source_complete",
+      "T05": "source_complete",
+      "T06": "source_complete",
+      "T07": "source_complete",
+      "T08": "source_complete",
+      "T09": "source_complete",
+      "T10": "source_complete",
+      "T11": "source_complete",
+      "T12": "source_complete"
+    },
+    "technicalChecks": {
+      "unityVersion": "6000.5.9f1",
+      "unityEditorCompile": "passed; zero compiler errors",
+      "boundedDataAndSetupAssertions": 34,
+      "authoredSteps": 45,
+      "savedTargets": 6,
+      "savedAssets": 3,
+      "repeatedSavedSceneSetup": "passed",
+      "compiledDeliveredInputHashes": 203,
+      "guidCollisions": 0,
+      "newPackages": 0,
+      "originalVoidAndLaraAndPartnerHashes": "preserved, including original PreparedContact and PreparedSurface"
+    },
+    "manualTesting": "ready_for_production_shape_retest",
+    "scene": "validation/DazPoseUnityValidation/Assets/Production/Scenes/FirstContactD1D5.unity",
+    "inspectorSetupItems": [],
+    "deliveredScenePlayback": "User ran the previous revision and reported the SALSA issue, then rejected inherited test markers and the Lara player-body substitution. Revised production composition awaits user playback.",
+    "playerBuild": "NOT RUN",
+    "playerPlayback": "NOT RUN",
+    "userFunctionalApproval": "partial manual observation; full checklist not explicitly confirmed",
+    "userVisualApproval": "Earlier positive observation retained historically; revised clean composition and prepared male body await user approval.",
+    "historicalSecondOutfitToeApproval": "unchanged; pending user observation",
+    "knownSerializerLimit": "8 nested blocks; deeper input rejected before JsonUtility truncation; native recursive-type metadata warning documented",
+    "handoff": "docs/story-runtime/D1_D5_HANDOFF.md",
+    "manualChecklist": "docs/story-runtime/MANUAL_TEST_CHECKLIST.md",
+    "evidence": ".dazposewizard/d1-d5-evidence",
+    "commitOrPush": "User explicitly authorized commit and push on 2026-10-17 to origin https://github.com/artwhaley/DazPoseWizard.git, branch codex/d1-d5-story-runtime.",
+    "playerBodyLipSyncRepair": {
+      "date": "2026-10-17",
+      "cause": "Player visual body retained speech-only SALSA components after speaking performer removal",
+      "fix": "Remove bridge, Salsa and QueueProcessor on player body only; repair existing scene and future refresh",
+      "compile": "passed",
+      "editModeAssertions": 22,
+      "speakingLaraConfiguration": "validated; preserved",
+      "userRetest": "historical repair superseded by the prepared male player-body variant; revised composition awaits user retest",
+      "evidence": ".dazposewizard/d1-d5-evidence/20261017-player-body-lipsync"
+    },
+    "productionShapeCorrection": {
+      "date": "2026-10-17",
+      "evidence": ".dazposewizard/d1-d5-evidence/20261017-production-shape",
+      "editModeAssertions": 34,
+      "console": "English story actions, branches, waits, confirmations, committed state and lifecycle",
+      "userRetest": "pending",
+      "futureScenes": "saved clean VoidEnvironment template plus prepared male player body",
+      "playerBody": "prepared male Partner variant with original measured contact profile/surface",
+      "playMode": "NOT RUN",
+      "scene": "clean production composition; four used static marks plus live head targets",
+      "deliveredAssets": 87,
+      "compiledDeliveredInputs": 203,
+      "preservation": "5 original inputs hash-identical; 66 retained component records and 44 numeric local poses unchanged; 4286 unique asset GUIDs"
+    }
+  }
 }

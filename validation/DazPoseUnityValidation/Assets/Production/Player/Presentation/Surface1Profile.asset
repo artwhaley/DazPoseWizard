@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71e1055fe37468390d2fd71f83b826b, type: 3}
+  m_Name: Surface1Profile
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerDissolveProfile
+  dissolveOutDuration: 1
+  transitDuration: 0.6666667
+  materializeDuration: 0.33333334
+  transitArcHeight: 0.45
+  sssDissolveShader: {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  wetDissolveShader: {fileID: -6465566751694194690, guid: b684dcf5875d44c0a12a25f7bec2d87e, type: 3}
+  laraRuntimeMaterials:
+  - {fileID: 2100000, guid: 03cda178ebfedd2419298266c7b24617, type: 2}
+  - {fileID: 2100000, guid: 608750d4dde2f6546af7e2d57f4ab269, type: 2}
+  - {fileID: 2100000, guid: 74a63b2eeaf3f684ea45a149f670f35f, type: 2}
+  - {fileID: 2100000, guid: 2aec24f07724f974b9ea5f5aadfc068a, type: 2}
+  - {fileID: 2100000, guid: 72deed522bb48a747801730f855136a0, type: 2}
+  - {fileID: 2100000, guid: 3fd2fcf2975042b4db85b1183ecc9ebe, type: 2}
+  - {fileID: 2100000, guid: 39d3f200f8bf5824a96864c99f89ac8a, type: 2}
+  - {fileID: 2100000, guid: d5dbbb17f0d7ee648ba78443497e2d5d, type: 2}
+  - {fileID: 2100000, guid: 85b69e67de29bec49b4c704bb9a3fc4e, type: 2}
+  - {fileID: 2100000, guid: d82f347849350454ca2e94281ba6806c, type: 2}
+  - {fileID: 2100000, guid: 9c2ae5a432667f94aaa368dbe10083f2, type: 2}
+  - {fileID: 2100000, guid: f75096f1f2fc8e44fa5606be5ffeeb1e, type: 2}
+  - {fileID: 2100000, guid: 7c1612b7287c29844926ec86d994e59a, type: 2}
+  - {fileID: 2100000, guid: 70f9ab2cce5d4af41a2a369823b698b2, type: 2}
+  - {fileID: 2100000, guid: 28706062cddcdb247a8d7794e2360505, type: 2}
+  - {fileID: 2100000, guid: f029cabe9800d834e949fc89f3970564, type: 2}
+  - {fileID: 2100000, guid: 6f9077f89d619454586f4c69aed12ca4, type: 2}
+  - {fileID: 2100000, guid: 51db68b92153b2447bce93a3d1197954, type: 2}
+  - {fileID: 2100000, guid: 3c9b25ae1ca6f6446a4619cd1aa05a64, type: 2}
+  - {fileID: 2100000, guid: e67e658252fb1bc45a99b46760636d50, type: 2}
+  - {fileID: 2100000, guid: 72c177d6d53d6b84a87db7acda29d814, type: 2}
+  - {fileID: 2100000, guid: 38a647a3c59709b4d81ab32660b9aa61, type: 2}
+  - {fileID: 2100000, guid: ae88c2dc95ec18d498ff14c855a850b2, type: 2}
+  convertedSlotShaders:
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: c30e8bbd375892141847cd4d515d9437, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: c30e8bbd375892141847cd4d515d9437, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b684dcf5875d44c0a12a25f7bec2d87e, type: 3}
+  - {fileID: -6465566751694194690, guid: c30e8bbd375892141847cd4d515d9437, type: 3}
+  - {fileID: -6465566751694194690, guid: b684dcf5875d44c0a12a25f7bec2d87e, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: c30e8bbd375892141847cd4d515d9437, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  - {fileID: -6465566751694194690, guid: b1705d5aace844d1b8fe559898e407f1, type: 3}
+  dissolveFieldParams: {x: 3.5, y: 0.85, z: 17, w: 1.15}
+  dissolveEdgeWidth: 0.035
+  dissolveEdgeColor: {r: 3, g: 0.06, b: 4, a: 1}
+  dissolveEdgeEmission: 4
+  particleBodyVfxAsset: {fileID: 8926484042661614526, guid: 760708caf4abbb245b788448744f90f4, type: 3}
+  surfaceBindings: {fileID: 11400000, guid: 4b1af0f2f7aab3e479c78c697c03980e, type: 2}
+  coreColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  glowColor: {r: 2.8, g: 0.003250774, b: 2.8, a: 0.5}
+  coreSize: 0.003
+  glowSize: 0.009
+  cloudScale: 1.4
+  swirlTurns: 3
+  turbulenceStrength: 0.22
+  departureAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
+  arrivalAudio: {fileID: 8300000, guid: 86cb9f3bdf4a3f140999ae98271038fe, type: 3}
+  departurePitch: 0.92
+  arrivalPitch: 1.08
+  visibilityAudioStartOffsetSeconds: 0.85

@@ -1,0 +1,275 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &7412719288719467126
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.172133
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      propertyPath: m_Name
+      value: PlayerBody
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6455577703204296983}
+    - targetCorrespondingSourceObject: {fileID: 2866636419405590249, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6079347278193328102}
+    - targetCorrespondingSourceObject: {fileID: 2866636419405590249, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6609407838581854344}
+    - targetCorrespondingSourceObject: {fileID: 1135862870822952235, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 984175916710475719}
+    - targetCorrespondingSourceObject: {fileID: 1135862870822952235, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3566241476976258733}
+    - targetCorrespondingSourceObject: {fileID: 2193840177123178056, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6462845361708210580}
+    - targetCorrespondingSourceObject: {fileID: 2193840177123178056, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1717314196651800592}
+  m_SourcePrefab: {fileID: 100100000, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+--- !u!137 &876066985628928229 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7707680565185702547, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+  m_PrefabInstance: {fileID: 7412719288719467126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &932603376995119491 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7651054190228198389, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+  m_PrefabInstance: {fileID: 7412719288719467126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1033735825012727010 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+  m_PrefabInstance: {fileID: 7412719288719467126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6455577703204296983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033735825012727010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d90ec4e6aa8401b949d87cc4816a397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Player.PlayerBodyPresence
+  parts:
+  - rig: {fileID: 6609407838581854344}
+    profile: {fileID: 11400000, guid: 6c0dbb5f55e2d3741a83e2544f47130d, type: 2}
+    renderer: {fileID: 932603376995119491}
+    visibleMaterials:
+    - {fileID: 2100000, guid: ca9f1883dee209a409333b0c7883663d, type: 2}
+    - {fileID: 2100000, guid: dae1f5a5919152446a390d016ba90ca0, type: 2}
+    - {fileID: 2100000, guid: 317706f0b0702a445bf830af90f54f90, type: 2}
+    - {fileID: 2100000, guid: 355d5f01b8e85234ebf1a054752e85d5, type: 2}
+    - {fileID: 2100000, guid: aaf09dda546ae2144abd12841cf016d2, type: 2}
+    - {fileID: 2100000, guid: 7f0a5355a8bc3d1479bbe75573a137c2, type: 2}
+    - {fileID: 2100000, guid: 0791be4ccd651fb4cadc1635101416ea, type: 2}
+  - rig: {fileID: 3566241476976258733}
+    profile: {fileID: 11400000, guid: 5cfee62d954942546a220ab634ddd7c1, type: 2}
+    renderer: {fileID: 876066985628928229}
+    visibleMaterials:
+    - {fileID: 2100000, guid: 027e434dc701c214db9159c787ab1bba, type: 2}
+    - {fileID: 2100000, guid: 4e37b1af1dedb9446b459350ea9f6e6e, type: 2}
+    - {fileID: 2100000, guid: 5306bc6715f7aec46a91ce06a3cf8971, type: 2}
+    - {fileID: 2100000, guid: 20db401eb4d7b6d47bda419c6e15d28c, type: 2}
+    - {fileID: 2100000, guid: 6262afd3ed59d2941ba52c8c638829fc, type: 2}
+    - {fileID: 2100000, guid: 9ef7724cc2239cb409dbc847bb05905e, type: 2}
+    - {fileID: 2100000, guid: f457e27fc56d86f4bb9a1e2064e98ff0, type: 2}
+    - {fileID: 2100000, guid: 0f8e8697d4362924eb4624596e66e366, type: 2}
+    - {fileID: 2100000, guid: cfce3093506e53c47b1242e46a678e55, type: 2}
+    - {fileID: 2100000, guid: 6dd1d0df76da05049a6c7786e74f9467, type: 2}
+    - {fileID: 2100000, guid: 3cd47f792908eda4d9e03e93c8754165, type: 2}
+    - {fileID: 2100000, guid: cdeb55ba68b786e4ea7e92a3e3d4f6b7, type: 2}
+    - {fileID: 2100000, guid: c84f9668678317d4784fee342ac71586, type: 2}
+    - {fileID: 2100000, guid: 66f434cb91390584ba7f8c45c6dfeddb, type: 2}
+    - {fileID: 2100000, guid: 4fc1ada165c125b49ae6c6e4a95912f1, type: 2}
+    - {fileID: 2100000, guid: 99cd1e9bf11bd5240b62fea89119ae11, type: 2}
+    - {fileID: 2100000, guid: 993862d8cc8f3624a8288492f71f09d7, type: 2}
+    - {fileID: 2100000, guid: 058aaadbff2ef884ea19bebc618a8516, type: 2}
+    - {fileID: 2100000, guid: e004dfc2d60569e4d80940e9e731c9d2, type: 2}
+    - {fileID: 2100000, guid: 004b3846b8da78b4abe6b2397be3eb84, type: 2}
+    - {fileID: 2100000, guid: bdbd04766f16eb8439f84294c77edf0e, type: 2}
+    - {fileID: 2100000, guid: 0a3e8f7fa29f62845a98408baad83994, type: 2}
+    - {fileID: 2100000, guid: 35be51c6f3ef73548902b291f3ae0cd7, type: 2}
+  - rig: {fileID: 1717314196651800592}
+    profile: {fileID: 11400000, guid: ab29f9ea7ce57d5478e0cf23c2d3955e, type: 2}
+    renderer: {fileID: 1700192963458554101}
+    visibleMaterials:
+    - {fileID: 2100000, guid: f787379a9d5b033428eeb343190fa0c6, type: 2}
+    - {fileID: 2100000, guid: 20d64d32119b0454b8c57078a586b56c, type: 2}
+  startHidden: 1
+--- !u!137 &1700192963458554101 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8162502286537374339, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+  m_PrefabInstance: {fileID: 7412719288719467126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4690237644105403551 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2866636419405590249, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+  m_PrefabInstance: {fileID: 7412719288719467126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6079347278193328102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4690237644105403551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade4c6175ed14c838ca15853698903e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.PerformerParticleBody
+  targetRenderer: {fileID: 932603376995119491}
+  surfaceBindings: {fileID: 11400000, guid: 54a6de91e42c6a348b68c73bc797a525, type: 2}
+  visualEffectAsset: {fileID: 8926484042661614526, guid: 760708caf4abbb245b788448744f90f4, type: 3}
+  coreColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  glowColor: {r: 2.8, g: 0.003250774, b: 2.8, a: 0.5}
+  coreSize: 0.003
+  glowSize: 0.009
+  debugVisibilityOwner: {fileID: 0}
+--- !u!114 &6609407838581854344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4690237644105403551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c83d98216be249fb901b5c0c48a5a1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.PerformerDissolveRig
+  targetRenderer: {fileID: 932603376995119491}
+  particleBody: {fileID: 6079347278193328102}
+--- !u!1 &7573965680500440925 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1135862870822952235, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+  m_PrefabInstance: {fileID: 7412719288719467126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &984175916710475719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7573965680500440925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade4c6175ed14c838ca15853698903e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.PerformerParticleBody
+  targetRenderer: {fileID: 876066985628928229}
+  surfaceBindings: {fileID: 11400000, guid: 4b1af0f2f7aab3e479c78c697c03980e, type: 2}
+  visualEffectAsset: {fileID: 8926484042661614526, guid: 760708caf4abbb245b788448744f90f4, type: 3}
+  coreColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  glowColor: {r: 2.8, g: 0.003250774, b: 2.8, a: 0.5}
+  coreSize: 0.003
+  glowSize: 0.009
+  debugVisibilityOwner: {fileID: 0}
+--- !u!114 &3566241476976258733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7573965680500440925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c83d98216be249fb901b5c0c48a5a1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.PerformerDissolveRig
+  targetRenderer: {fileID: 876066985628928229}
+  particleBody: {fileID: 984175916710475719}
+--- !u!1 &8695697645003822142 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2193840177123178056, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+  m_PrefabInstance: {fileID: 7412719288719467126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6462845361708210580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8695697645003822142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade4c6175ed14c838ca15853698903e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.PerformerParticleBody
+  targetRenderer: {fileID: 1700192963458554101}
+  surfaceBindings: {fileID: 11400000, guid: eda6b98f5610875439b59329e09df9b5, type: 2}
+  visualEffectAsset: {fileID: 8926484042661614526, guid: 760708caf4abbb245b788448744f90f4, type: 3}
+  coreColor: {r: 3.2, g: 3.2, b: 3.2, a: 0.85}
+  glowColor: {r: 2.8, g: 0.003250774, b: 2.8, a: 0.5}
+  coreSize: 0.003
+  glowSize: 0.009
+  debugVisibilityOwner: {fileID: 0}
+--- !u!114 &1717314196651800592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8695697645003822142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c83d98216be249fb901b5c0c48a5a1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.PerformerDissolveRig
+  targetRenderer: {fileID: 1700192963458554101}
+  particleBody: {fileID: 6462845361708210580}

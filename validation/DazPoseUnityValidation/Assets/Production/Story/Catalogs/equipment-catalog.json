@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "butt-plug",
+      "displayName": "Butt plug",
+      "identityTags": [
+        "equipment:butt-plug",
+        "equipment:anal"
+      ],
+      "themeTags": [
+        "theme:buttstuff"
+      ],
+      "excludesTags": []
+    },
+    {
+      "id": "rope",
+      "displayName": "Rope",
+      "identityTags": [
+        "equipment:rope",
+        "equipment:restraint"
+      ],
+      "themeTags": [
+        "theme:restraint"
+      ],
+      "excludesTags": []
+    },
+    {
+      "id": "dildo-anal",
+      "displayName": "Dildo (anal)",
+      "identityTags": [
+        "equipment:dildo-anal",
+        "equipment:anal"
+      ],
+      "themeTags": [
+        "theme:buttstuff"
+      ],
+      "excludesTags": []
+    },
+    {
+      "id": "dildo-oral",
+      "displayName": "Dildo (oral)",
+      "identityTags": [
+        "equipment:dildo-oral",
+        "equipment:oral"
+      ],
+      "themeTags": [
+        "theme:oral"
+      ],
+      "excludesTags": []
+    },
+    {
+      "id": "ice",
+      "displayName": "Ice",
+      "identityTags": [
+        "equipment:ice"
+      ],
+      "themeTags": [
+        "theme:sensory"
+      ],
+      "excludesTags": []
+    }
+  ]
+}

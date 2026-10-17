@@ -1,3 +1,41 @@
+# October 17, 2026 — authorized Git delivery
+
+The user explicitly authorized committing the D1–D5 work and pushing branch `codex/d1-d5-story-runtime` to `origin` (`https://github.com/artwhaley/DazPoseWizard.git`). The ticket packet, implementation, saved production composition/assets and authoring documentation are included. Use Git history for the exact delivery revision. Unity compilation and 34 Edit Mode checks remain the technical result; the revised scene still awaits user manual playback and appearance acceptance. Older no-commit/no-push entries below record earlier handoffs.
+
+---
+# October 17, 2026 — production scene cleanup, correct player body and Console flow
+
+**SOURCE COMPLETE — AWAITING USER RETEST.** The latest user correction supersedes the old all-actors-Lara choice for player body and the raw validation-scene copy path. FirstContactD1D5 now contains only its used story marks; the old stage/PerformanceMarkers tree and empty ToyControl fixture root are removed. The prepared male model, shell/penis rig and measured contact profile are saved as a reusable PlayerBody prefab variant and bound to both player visibility and session contact.
+
+New Performance Scene now copies a saved clean production environment containing only authored environment, volumes and player view, then adds production session content and the prepared male player body. Original Void/Lara/Partner/contact inputs are preserved. Story Console messages describe all program-flow events in English, including branches, waits, prompts, committed values, completion and cancellation. Toy errors remain silent.
+
+Unity compilation and 34 bounded Edit Mode checks passed, including refreshed saved D1–D5 content and the actual new-scene creation path. No executor Play Mode or player build/playback. The revised composition, tracing and male dissolve appearance await the user's manual retest. Earlier positive visual feedback applies to the earlier revision, whose fixture/body choices the user then rejected.
+
+Details: [production composition guide](../story-runtime/PRODUCTION_SCENES.md), [D1–D5 handoff](../story-runtime/D1_D5_HANDOFF.md), [manual checklist](../story-runtime/MANUAL_TEST_CHECKLIST.md). Evidence: `.dazposewizard/d1-d5-evidence/20261017-production-shape/`. No commit or push.
+
+---
+# October 17, 2026 — user Play observation and player-body SALSA repair
+
+The user manually ran FirstContactD1D5 and reported: “Otherwise, it looked just fine,” alongside the `PerformerSalsaLipSync must sit beside SuccubusPerformer` error. Record this positive visual feedback for the observed run; it does not enumerate every clothing/persistence/Stop checklist case or approve the unrelated second-outfit toe observation.
+
+The scene builder removed the speaking performer from the Lara player-body copy but left its speech-only SALSA integration. The builder now removes that copy's PerformerSalsaLipSync, Salsa and QueueProcessor during creation and refresh. The delivered scene contains exactly those three additional removed-component overrides; speaking Lara, original prefab, environment and JSON program are unchanged.
+
+Unity compilation and 22 bounded Edit Mode checks passed, including no orphan speech components on the player body and valid SALSA configuration on speaking Lara. Executor Play Mode remains NOT RUN. The saved repair awaits user retest; reopen the scene from disk before testing again. Evidence: `.dazposewizard/d1-d5-evidence/20261017-player-body-lipsync/`.
+
+For reviewing the authored script, start at `Assets/Production/Story/Programs/FirstContactD1D5.story.json`; execution is in `Assets/DazPose/Runtime/Story/Runtime/StoryRunner.cs`. The detailed handoff and schema remain under `docs/story-runtime/`.
+
+---
+# October 16, 2026 — D1–D5 story runtime source handoff
+
+**SOURCE COMPLETE — AWAITING USER PLAYBACK.** T01–T12 are implemented on `codex/d1-d5-story-runtime`, starting at `ca5acab4e6e161985c96710fb63c10a3cd9597fc`. The new packet explicitly reserves all Play Mode acceptance for the user; no automatic Play Mode or player playback occurred.
+
+Delivered manual scene: `Assets/Production/Scenes/FirstContactD1D5.unity`. It saves its host, serialized sequence, strict symbolic bindings, prompts and player body. Production Settings shares its profile editors with scene negotiation. The program ends at the explicit first Director-window checkpoint. There are no outstanding Inspector assignments.
+
+Final Unity import/Editor compilation and 20 bounded Edit Mode data/setup assertions passed. Actual playback and visual/audio approval are pending separately. The original Void/Lara/Partner and package manifest hashes were preserved, with no duplicate asset GUIDs. Unity's recursive DTO metadata warning remains documented; a pre-deserialization depth guard prevents silent truncation beyond eight nested blocks.
+
+Detailed source results, exact files, evidence, limitations and manual procedure: [D1_D5_HANDOFF.md](../story-runtime/D1_D5_HANDOFF.md) and [manual checklist](../story-runtime/MANUAL_TEST_CHECKLIST.md). Historical B01–B08/remediation evidence and the pending second-outfit toe observation remain separate. No commit, push or publication.
+
+---
 # Current handoff — authoring implementation
 
 ## October 11 — automatic behavior-settings persistence

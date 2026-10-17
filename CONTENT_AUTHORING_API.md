@@ -8,8 +8,8 @@ Write a scene as a sequence of actions against `PerformanceRun`. The saved scene
 
 ## Create and launch a scene
 
-1. Choose **DazPose → Scene → New Performance Scene...** to copy the authored Void environment, or **Initialize Game Session** in an existing saved scene.
-2. The initializer saves one host, bindings, Lara, player view, shared clock, controls and an Authoring Marks root. Existing assignments and tuning take precedence. It reports **Ready to Play** or **Needs author assignment**, with exact missing references.
+1. Choose **DazPose → Scene → New Performance Scene...** to copy the clean saved production Void environment, or **Initialize Game Session** in an existing saved scene.
+2. The initializer saves one host, bindings, Lara, player view, shared clock, controls and an Authoring Marks root. New Performance Scene also saves the prepared male player body and its measured contact target. Existing assignments and tuning take precedence. It reports **Ready to Play** or **Needs author assignment**, with exact missing references.
 3. Choose **New Sequence Script...**, attach the script and assign it to the host. Assign its serialized content and Transform marks. Save.
 4. Press Play. The saved host runs the saved sequence; no testing window or helper is required.
 5. **Add Current Scene to Scene List** adds it to the main menu. **Open Main Menu** opens the game entry scene. **Build Windows Player...** builds that menu and enabled catalog scenes.
@@ -191,3 +191,15 @@ Use the existing Lara prefab, prepared poses, expressions, seats, action/gesture
 Save the scene with its host and sequence. Press Play in that exact scene, then run it from Main Menu. Review appearance, speech, pose transitions, framing, wardrobe, motion and effects. A compile pass does not approve the composition or the still-pending second-outfit toe appearance.
 
 The fresh Windows entry point is `validation/DazPoseUnityValidation/Builds/Authoring/DazPoseGame.exe`. Both example scenes completed saved-scene graphics Editor playback. The user accepted the remaining functional player checks on October 11, 2026. Artistic approval and the historical toe observation remain separate in [the acceptance record](docs/production-consolidation/authoring-reports/B08_MANUAL_CHECKS.md).
+
+## Serialized stories — D1–D5 source delivery, October 16, 2026
+
+A saved `StoryProgramSequence` can now serve as the host's sequence. It reads a `dazpose.story` v1 JSON TextAsset, validates saved symbolic bindings before the first step and uses the same scoped `PerformanceRun` verbs. Existing C# sequences remain supported. Application-owned `Profile` stores interests, equipment and persistent story memory separately from settings/tuning; fresh story invocations own contract/session/world/local state.
+
+Choose **DazPose → Story → Build or Refresh First Contact D1-D5** in Edit Mode to configure the saved integration scene. Open `Assets/Production/Scenes/FirstContactD1D5.unity` for manual Play. Settings and scene negotiation reuse the same profile editors. F8 displays the optional Story snapshot. The program deliberately ends before cards/Director behavior.
+
+Player body vocabulary is `await run.Player.DissolveBodyInAsync(seconds)` and `DissolveBodyOutAsync(seconds)`, using its saved prepared-male body binding and the existing finite dissolve engine. The player body retains the original male meshes and measured contact-column setup; it is not a Lara copy. The D1–D5 checkpoint does not include the later body-reveal beat.
+
+See [schema v1](docs/story-runtime/SCHEMA_V1.md), [source handoff](docs/story-runtime/D1_D5_HANDOFF.md) and [manual checklist](docs/story-runtime/MANUAL_TEST_CHECKLIST.md). The JSON supports eight nested step blocks; deeper content is rejected explicitly. Source/Editor checks passed; **user Play Mode acceptance is pending**.
+
+Production scene composition and clear-English Console tracing: [Production scenes](docs/story-runtime/PRODUCTION_SCENES.md).

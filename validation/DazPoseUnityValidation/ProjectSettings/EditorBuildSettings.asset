@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Production/Scenes/AuthoringCompanion.unity
     guid: 1a04ee160147fbd4cb8f5ca8f4da13e1
+  - enabled: 1
+    path: Assets/Production/Scenes/FirstContactD1D5.unity
+    guid: 4fd2d2bc3572c1744a590a23e4e117c9
   m_configObjects: {}

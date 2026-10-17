@@ -1,0 +1,77 @@
+{
+  "schema": "dazpose.story",
+  "version": 1,
+  "id": "first-contact-d1-d5",
+  "title": "First Contact \u2014 D1-D5 Integration",
+  "steps": [
+    {
+      "id": "fc-001",
+      "op": "lara.dissolveInAt",
+      "target": "lara_start",
+      "seconds": 1.5,
+      "note": "Lara appears using the established dissolve effect."
+    },
+    {
+      "id": "fc-002",
+      "op": "player.track",
+      "target": "lara_face",
+      "seconds": 0.75
+    },
+    {
+      "id": "fc-003",
+      "op": "lara.say",
+      "asset": "voice:first-contact-a",
+      "note": "Hi there. I was hoping you were brave enough to meet me."
+    },
+    {
+      "id": "fc-004",
+      "op": "lara.walkTo",
+      "target": "step_forward"
+    },
+    {
+      "id": "fc-005",
+      "op": "lara.pose",
+      "asset": "pose:sexy-vamp"
+    },
+    {
+      "id": "fc-010",
+      "op": "ui.showKinks",
+      "note": "Fullscreen interests negotiation."
+    },
+    {
+      "id": "fc-011",
+      "op": "session.calculateSubmissionScore"
+    },
+    {
+      "id": "fc-012",
+      "op": "ui.message",
+      "value": "Submission score updated.",
+      "note": "Presenter should include the calculated score."
+    },
+    {
+      "id": "fc-020",
+      "op": "ui.showEquipment",
+      "note": "Fullscreen equipment negotiation."
+    },
+    {
+      "id": "fc-021",
+      "op": "session.selectPreparedEquipment",
+      "number": 1
+    },
+    {
+      "id": "fc-022",
+      "op": "ui.message",
+      "value": "Show prepared equipment if one was selected."
+    },
+    {
+      "id": "fc-030",
+      "op": "ui.showClothing",
+      "note": "Shoes, socks, shirt, pants, bra, underwear."
+    },
+    {
+      "id": "fc-031",
+      "op": "story.checkpoint",
+      "note": "D1-D5 COMPLETE \u2014 First Director window begins here. Cards/Director are intentionally not implemented in this packet."
+    }
+  ]
+}

@@ -15,6 +15,7 @@ namespace DazPose.Game {
   public ToyControlService Toys => toys;
   public SceneCatalog Catalog => catalog;
   public GameSettingsService Settings { get; private set; }
+  public PlayerProfileService Profile { get; private set; }
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
   static void ResetStatics() => instance = null;
   public static GameApplication EnsureStarted() {
@@ -32,6 +33,7 @@ namespace DazPose.Game {
    instance=this; DontDestroyOnLoad(gameObject);
    if(toys == null) toys=GetComponent<ToyControlService>();
    Settings=new GameSettingsService(toys);
+   Profile=new PlayerProfileService();
   }
   public void RegisterSession(object owner, Action stop) {
    if(session != owner) StopSession();

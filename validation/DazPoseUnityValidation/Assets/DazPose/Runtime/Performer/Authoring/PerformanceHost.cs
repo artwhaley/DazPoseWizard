@@ -62,6 +62,7 @@ namespace DazPose.Performer {
    ++generation;
    if(State==PerformanceHostState.Running) State=PerformanceHostState.Stopped;
    var owned=run; run=null;
+   if(owned!=null) Debug.Log("DazPose session stopped: cancel active actions, waits and future local output in "+gameObject.scene.name+".",this);
    owned?.Stop(); owned?.Dispose();
    app?.ReleaseSession(this);
   }

@@ -147,22 +147,11 @@ namespace DazPose.Editor {
    }
   }
   public static PerformanceHost CopyEnvironment(string path) {
-   if(File.Exists(path)) throw new InvalidOperationException("Choose a new scene path; existing scene is preserved.");
-   Directory.CreateDirectory(Path.GetDirectoryName(path));
-   if(!AssetDatabase.CopyAsset(VoidPath,path)) throw new IOException("Could not copy authored Void scene.");
-   var scene=EditorSceneManager.OpenScene(path);
-   foreach(var c in InScene<MonoBehaviour>(scene))
-    if(c!=null && (c.GetType().Name=="FirstPerformanceVoidControls" || c.GetType().Name=="FirstContactPerformance" || c.GetType().Name.StartsWith("Remediation"))) UnityEngine.Object.DestroyImmediate(c);
-   var stage=scene.GetRootGameObjects().SingleOrDefault(r=>r.name=="FirstPerformanceVoid");
-   if(stage!=null) foreach(var component in stage.GetComponents<PerformerParticleBody>()) UnityEngine.Object.DestroyImmediate(component);
-   var container=stage!=null ? stage.transform.Find("Performer") : null;
-   if(container!=null) {
-    foreach(var c in container.GetComponents<MonoBehaviour>()) UnityEngine.Object.DestroyImmediate(c);
-    foreach(Transform child in container.Cast<Transform>().ToArray()) UnityEngine.Object.DestroyImmediate(child.gameObject);
-    var go=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(LaraPath),scene);
-    go.transform.SetParent(container,false);
-   }
-   return Initialize();
+   var scene=ProductionSceneEnvironment.Copy(path);
+   var host=Initialize(false);
+   ProductionPlayerBodyBuilder.AddToHost(host);
+   EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene);
+   return host;
   }
  }
 }

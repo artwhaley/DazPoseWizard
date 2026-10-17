@@ -10,6 +10,9 @@ namespace DazPose.Player
     public sealed class PlayerController : MonoBehaviour
     {
         [SerializeField] private PlayerView view;
+        [SerializeField] private PlayerBodyPresence bodyPresence;
+        public PlayerBodyPresence BodyPresence => bodyPresence;
+        public void ConfigureBodyPresence(PlayerBodyPresence body) => bodyPresence = body;
         [SerializeField] private ToyControlService toyControlService;
 
         [Obsolete("Use run.Toys for content and application Settings for connection.")]

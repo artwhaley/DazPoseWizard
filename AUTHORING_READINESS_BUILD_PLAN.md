@@ -6,6 +6,13 @@ This is the current plan for the authoring-readiness sprint. It incorporates the
 
 Companion: [Content authoring API](CONTENT_AUTHORING_API.md). Review decisions and source evidence: [review resolution](docs/production-consolidation/AUTHORING_PLAN_REVIEW_RESOLUTION.md).
 
+October 17 production-authoring correction: the player body uses the prepared male
+Partner model, original penis rig and measured contact-column setup. Lara remains
+the speaking performer. New production scenes copy the clean saved VoidEnvironment
+composition, containing authored art/view/volumes, and never inherit the old test
+stage or PerformanceMarkers. Clear-English Console story-flow logging is required.
+This supersedes the older player-body interpretation of decision 7 and the raw-scene
+copy instruction below. See [production composition](docs/story-runtime/PRODUCTION_SCENES.md).
 ## Fixed product decisions
 
 1. **Toy output is fire and forget.** All toy errors are silent successful no-ops from the application's perspective. No acknowledgement waits, failure exceptions, scene interruption, fallback scene branch, error log, toast or warning. Intiface owns device troubleshooting. A connected toy and a disconnected toy must produce the same scene execution.

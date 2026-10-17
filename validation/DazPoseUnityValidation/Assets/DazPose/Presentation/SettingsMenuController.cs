@@ -21,6 +21,7 @@ namespace DazPose.Presentation {
    master=volume; speech=voice; state=status; routes=list; routeTemplate=row;
   }
   void Awake() {
+   if(GetComponent<StorySettingsProfileController>()==null) gameObject.AddComponent<StorySettingsProfileController>();
    settings=GameApplication.EnsureStarted().Settings;
    endpoint.onEndEdit.AddListener(value=>{ settings.Values.endpoint=value; settings.SaveSettings(); });
    master.onValueChanged.AddListener(value=>{ settings.Values.masterVolume=value; settings.SaveSettings(); });

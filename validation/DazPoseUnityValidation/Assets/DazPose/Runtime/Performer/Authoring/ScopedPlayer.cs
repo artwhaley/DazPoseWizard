@@ -62,6 +62,19 @@ namespace DazPose.Performer
             run.RegisterPersistentCleanup(player.View.CaptureOrientationCancellation());
         }
 
+        private PlayerBodyPresence RequireBody() => player.BodyPresence != null ? player.BodyPresence
+            : throw new InvalidOperationException("Assign PlayerController.bodyPresence for player body commands.");
+        public PlayerBodyVisibilityState BodyVisibilityState => RequireBody().VisibilityState;
+        public async Awaitable DissolveBodyInAsync(float seconds = 3f) {
+            await run.Execute("Player.DissolveBodyIn", () => RequireBody().DissolveInAsync(seconds),
+                result => result == VisibilityCompletion.Visible, result => result.ToString(),
+                captureCancellation: () => RequireBody().CaptureCancellation());
+        }
+        public async Awaitable DissolveBodyOutAsync(float seconds = 3f) {
+            await run.Execute("Player.DissolveBodyOut", () => RequireBody().DissolveOutAsync(seconds),
+                result => result == VisibilityCompletion.Hidden, result => result.ToString(),
+                captureCancellation: () => RequireBody().CaptureCancellation());
+        }
         public void StopTracking()
         {
             run.ThrowIfActive();

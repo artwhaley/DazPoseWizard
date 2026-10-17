@@ -13,8 +13,9 @@ Fixed user decisions: toy output is fire and forget and all toy errors are silen
 successful no-ops to the app; explicit session Stop cancels all local work and toy
 output; Intiface connection/settings belong to the application; production editor
 commands belong under top-level DazPose; pose commands use configured smooth
-defaults; tuning is never restored/reset by lifecycle cleanup; every actor uses
-Lara; actual saved-scene Play is the authoring acceptance path. Do not reintroduce
+defaults; tuning is never restored/reset by lifecycle cleanup; Lara is the speaking
+performer; the player body uses the prepared male model and its measured contact-column
+setup; actual saved-scene Play is the authoring acceptance path. Do not reintroduce
 toy acknowledgement failures, temporary tuning restoration or generalized
 capability/preflight gates from older packets.
 
@@ -36,6 +37,17 @@ commit 18b268afe4df1ce11046a760b757002571a104c6 and its ignored-input snapshot
 recorded in docs/production-consolidation/remediation/baseline.json. No push or
 external publication is implied.
 
+# Production scene shape — October 17 correction
+
+Production scenes contain production content. New Performance Scene copies the saved
+`Assets/Production/Environments/VoidEnvironment.unity` art-only composition, never the
+old test scene and its marker/controller hierarchy. Preserve the original Void art.
+Keep only authored semantic marks actually used by the scene. Use the reusable
+`Assets/Production/Player/PlayerBody.prefab` variant of the prepared male Partner,
+including its original measured contact profile/surface and penis rig; do not use a
+Lara visual copy as player body. This supersedes the older all-actors-Lara wording
+for the player body. Story program flow must be visible in clear English in Console,
+without per-frame spam or toy error output. See docs/story-runtime/PRODUCTION_SCENES.md.
 # Authored performance test environment
 
 Future delivered test scenes must contain their saved test runner. Pressing Play

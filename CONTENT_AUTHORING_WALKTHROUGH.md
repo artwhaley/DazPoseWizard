@@ -22,7 +22,7 @@ Choose actual assets and positions before expanding the script. Add one new beat
 
 1. Open the Unity project `validation/DazPoseUnityValidation`.
 2. Choose **DazPose → Scene → New Performance Scene...**. Save as `Assets/Production/Scenes/MyFirstScene.unity`.
-3. This copies the authored `FirstPerformanceVoid` environment and initializes Lara, camera/view, shared motion clock, `Game Session`, controls and `Authoring Marks`. Keep the copied floor, smoke, lights, camera optics and volume settings. The original remains the environment source.
+3. This copies the clean saved production `VoidEnvironment` and initializes Lara, the prepared male player body/contact column, camera/view, shared motion clock, `Game Session`, controls and `Authoring Marks`. Keep the copied floor, smoke, lights, camera optics and volume settings. The original remains the artistic source; test controllers and PerformanceMarkers are excluded from production composition. See [Production scenes](docs/story-runtime/PRODUCTION_SCENES.md).
 4. Select **Game Session**. Inspect **Performance Host** and **Performance Scene Bindings**. Performer, Player and Playback should already reference the intended scene objects. The initial Sequence is `WelcomePerformance`.
 5. Press Play once to see the initialized scene; leave Play Mode before authoring saved positions or replacing its sequence.
 
@@ -126,8 +126,8 @@ Persistent commands such as LookAt, Expression, Aura and Track remain active unt
 
 ### Contact and shared motion
 
-1. In Edit Mode choose **DazPose → Scene → Add Partner**. With one session and an empty contact binding, this assigns the prepared partner contact component to **Performance Scene Bindings → Contact Target**.
-2. Place and orient the partner for your composition. Inspect the delivered AuthoringShowcase scene for a working relative placement; adding the prefab does not arrange the scene for you. Keep its prepared contact setup and Lara calibration.
+1. A new production scene already contains the prepared male **Player Body**, and **Performance Scene Bindings → Contact Target** points to its measured contact column. For an existing scene use **Add Prepared Player Body** after initialization. Use **Add Partner** only when the composition needs another partner, then explicitly choose which contact target the session uses.
+2. Place and orient the player body/contact target for your composition. The player body starts hidden; reveal it deliberately with `await run.Player.DissolveBodyInAsync(3f);` before a visible contact beat. Inspect the delivered AuthoringShowcase scene for a working relative placement; adding the prefab does not arrange the scene for you. Keep its prepared contact setup and Lara calibration.
 3. Add `[SerializeField] DazPose.Motion.FunscriptMotionProgram motion;` to your sequence. Assign the imported `Assets/motiondrive.funscript`, or import and assign your own project `.funscript`.
 4. Add this beat after Lara reaches the contact placement:
 

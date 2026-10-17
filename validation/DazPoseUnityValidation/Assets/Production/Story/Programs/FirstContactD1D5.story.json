@@ -1,0 +1,384 @@
+{
+  "schema": "dazpose.story",
+  "version": 1,
+  "id": "first-contact-d1-d5",
+  "title": "First Contact — D1–D5 Integration",
+  "steps": [
+    {
+      "id": "setup-phase",
+      "op": "state.set",
+      "key": "session.phase",
+      "value": "Introduction"
+    },
+    {
+      "id": "arrival",
+      "op": "lara.dissolveInAt",
+      "target": "lara_start",
+      "seconds": 1.5,
+      "note": "Lara appears using her existing authored dissolve."
+    },
+    {
+      "id": "track-lara",
+      "op": "player.track",
+      "target": "lara_face",
+      "seconds": 0.75
+    },
+    {
+      "id": "lara-gaze",
+      "op": "lara.lookAt",
+      "target": "player_head"
+    },
+    {
+      "id": "intro-line-a",
+      "op": "lara.say",
+      "asset": "voice:first-contact-a",
+      "note": "Hi there. I was hoping you were brave enough to meet me. (Existing First Contact clip A; full audio is authoritative.)"
+    },
+    {
+      "id": "approach",
+      "op": "lara.walkTo",
+      "target": "step_forward"
+    },
+    {
+      "id": "closer-view",
+      "op": "player.moveTo",
+      "target": "view_lara",
+      "seconds": 3.5
+    },
+    {
+      "id": "negotiation-phase",
+      "op": "state.set",
+      "key": "session.phase",
+      "value": "Negotiation"
+    },
+    {
+      "id": "negotiate-interests",
+      "op": "ui.showKinks"
+    },
+    {
+      "id": "score",
+      "op": "session.calculateSubmissionScore"
+    },
+    {
+      "id": "score-message",
+      "op": "ui.message",
+      "panel": "Interests",
+      "value": "Your submission score is {submissionScore} / 100. Frequency affects future selection; every enabled interest counts once."
+    },
+    {
+      "id": "negotiate-equipment",
+      "op": "ui.showEquipment"
+    },
+    {
+      "id": "prepare-one",
+      "op": "session.selectPreparedEquipment",
+      "number": 1,
+      "note": "Reports Needed for this session only when owned/willing equipment is selected."
+    },
+    {
+      "id": "negotiate-clothing",
+      "op": "ui.showClothing"
+    },
+    {
+      "id": "clothing-branch",
+      "op": "flow.if",
+      "condition": {
+        "scope": "world",
+        "key": "clothing.count",
+        "comparison": "eq",
+        "valueType": "number",
+        "numberValue": 0
+      },
+      "steps": [
+        {
+          "id": "unclothed-mood",
+          "op": "state.add",
+          "key": "session.mood",
+          "number": 5
+        },
+        {
+          "id": "unclothed-response",
+          "op": "ui.message",
+          "panel": "Lara",
+          "value": "You came prepared. Good. (+5 mood)",
+          "note": "Prototype caption; no authored audio is bound for this line."
+        }
+      ],
+      "elseSteps": [
+        {
+          "id": "clothing-more-than-two",
+          "op": "flow.if",
+          "condition": {
+            "scope": "world",
+            "key": "clothing.count",
+            "comparison": "gt",
+            "valueType": "number",
+            "numberValue": 2
+          },
+          "steps": [
+            {
+              "id": "clothed-disapproval",
+              "op": "ui.message",
+              "panel": "Lara",
+              "value": "You are wearing more than I expected. Let's remove one item first.",
+              "note": "Prototype caption; no authored audio is bound for this line."
+            },
+            {
+              "id": "remove-check-shoes",
+              "op": "flow.if",
+              "condition": {
+                "scope": "world",
+                "key": "clothing.shoes",
+                "comparison": "eq",
+                "valueType": "bool",
+                "boolValue": true
+              },
+              "steps": [
+                {
+                  "id": "remove-prompt-shoes",
+                  "op": "ui.message",
+                  "panel": "Clothing",
+                  "value": "Please remove your shoes. Confirm Ready when you have finished.",
+                  "args": [
+                    {
+                      "name": "confirm",
+                      "valueType": "string",
+                      "stringValue": "Ready"
+                    }
+                  ]
+                },
+                {
+                  "id": "remove-commit-shoes",
+                  "op": "state.set",
+                  "key": "world.clothing.shoes",
+                  "flag": false
+                }
+              ],
+              "elseSteps": [
+                {
+                  "id": "remove-check-socks",
+                  "op": "flow.if",
+                  "condition": {
+                    "scope": "world",
+                    "key": "clothing.socks",
+                    "comparison": "eq",
+                    "valueType": "bool",
+                    "boolValue": true
+                  },
+                  "steps": [
+                    {
+                      "id": "remove-prompt-socks",
+                      "op": "ui.message",
+                      "panel": "Clothing",
+                      "value": "Please remove your socks. Confirm Ready when you have finished.",
+                      "args": [
+                        {
+                          "name": "confirm",
+                          "valueType": "string",
+                          "stringValue": "Ready"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "remove-commit-socks",
+                      "op": "state.set",
+                      "key": "world.clothing.socks",
+                      "flag": false
+                    }
+                  ],
+                  "elseSteps": [
+                    {
+                      "id": "remove-check-shirt",
+                      "op": "flow.if",
+                      "condition": {
+                        "scope": "world",
+                        "key": "clothing.shirt",
+                        "comparison": "eq",
+                        "valueType": "bool",
+                        "boolValue": true
+                      },
+                      "steps": [
+                        {
+                          "id": "remove-prompt-shirt",
+                          "op": "ui.message",
+                          "panel": "Clothing",
+                          "value": "Please remove your shirt. Confirm Ready when you have finished.",
+                          "args": [
+                            {
+                              "name": "confirm",
+                              "valueType": "string",
+                              "stringValue": "Ready"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "remove-commit-shirt",
+                          "op": "state.set",
+                          "key": "world.clothing.shirt",
+                          "flag": false
+                        }
+                      ],
+                      "elseSteps": [
+                        {
+                          "id": "remove-check-pants",
+                          "op": "flow.if",
+                          "condition": {
+                            "scope": "world",
+                            "key": "clothing.pants",
+                            "comparison": "eq",
+                            "valueType": "bool",
+                            "boolValue": true
+                          },
+                          "steps": [
+                            {
+                              "id": "remove-prompt-pants",
+                              "op": "ui.message",
+                              "panel": "Clothing",
+                              "value": "Please remove your pants. Confirm Ready when you have finished.",
+                              "args": [
+                                {
+                                  "name": "confirm",
+                                  "valueType": "string",
+                                  "stringValue": "Ready"
+                                }
+                              ]
+                            },
+                            {
+                              "id": "remove-commit-pants",
+                              "op": "state.set",
+                              "key": "world.clothing.pants",
+                              "flag": false
+                            }
+                          ],
+                          "elseSteps": [
+                            {
+                              "id": "remove-check-bra",
+                              "op": "flow.if",
+                              "condition": {
+                                "scope": "world",
+                                "key": "clothing.bra",
+                                "comparison": "eq",
+                                "valueType": "bool",
+                                "boolValue": true
+                              },
+                              "steps": [
+                                {
+                                  "id": "remove-prompt-bra",
+                                  "op": "ui.message",
+                                  "panel": "Clothing",
+                                  "value": "Please remove your bra. Confirm Ready when you have finished.",
+                                  "args": [
+                                    {
+                                      "name": "confirm",
+                                      "valueType": "string",
+                                      "stringValue": "Ready"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "remove-commit-bra",
+                                  "op": "state.set",
+                                  "key": "world.clothing.bra",
+                                  "flag": false
+                                }
+                              ],
+                              "elseSteps": [
+                                {
+                                  "id": "remove-check-underwear",
+                                  "op": "flow.if",
+                                  "condition": {
+                                    "scope": "world",
+                                    "key": "clothing.underwear",
+                                    "comparison": "eq",
+                                    "valueType": "bool",
+                                    "boolValue": true
+                                  },
+                                  "steps": [
+                                    {
+                                      "id": "remove-prompt-underwear",
+                                      "op": "ui.message",
+                                      "panel": "Clothing",
+                                      "value": "Please remove your underwear. Confirm Ready when you have finished.",
+                                      "args": [
+                                        {
+                                          "name": "confirm",
+                                          "valueType": "string",
+                                          "stringValue": "Ready"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "id": "remove-commit-underwear",
+                                      "op": "state.set",
+                                      "key": "world.clothing.underwear",
+                                      "flag": false
+                                    }
+                                  ],
+                                  "elseSteps": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "elseSteps": [
+            {
+              "id": "clothing-neutral",
+              "op": "ui.message",
+              "panel": "Lara",
+              "value": "All right. We can start like that.",
+              "note": "Prototype caption; mood unchanged."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sit-lounge",
+      "op": "lara.sitAt",
+      "asset": "seat:lounge"
+    },
+    {
+      "id": "lounge-view",
+      "op": "player.moveTo",
+      "target": "view_lounge",
+      "seconds": 4.5
+    },
+    {
+      "id": "lounge-line-b",
+      "op": "lara.say",
+      "asset": "voice:first-contact-b",
+      "note": "Existing First Contact lounge dialogue (clip B). Transcript not supplied in the repository; audio retained unchanged."
+    },
+    {
+      "id": "warmup-intro",
+      "op": "ui.message",
+      "panel": "Warmup",
+      "value": "We have agreed on your interests, equipment and clothing. We are ready for the first warmup window.",
+      "note": "Caption for the D1–D5 boundary. No cards or Director behavior is implemented."
+    },
+    {
+      "id": "warmup-phase",
+      "op": "state.set",
+      "key": "session.phase",
+      "value": "Warmup"
+    },
+    {
+      "id": "warmup-progress",
+      "op": "state.set",
+      "key": "session.phaseCompletion",
+      "number": 0
+    },
+    {
+      "id": "d1-d5-boundary",
+      "op": "story.checkpoint",
+      "note": "D1-D5 COMPLETE — First Director window begins here. Cards/Director are intentionally not implemented in this packet."
+    }
+  ]
+}
