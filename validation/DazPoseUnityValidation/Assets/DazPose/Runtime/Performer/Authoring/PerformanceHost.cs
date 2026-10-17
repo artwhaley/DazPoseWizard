@@ -41,7 +41,7 @@ namespace DazPose.Performer {
    try {
     await sequence.ExecuteAsync(owned);
     if(id==generation) State=owned.Failure!=null ? PerformanceHostState.Failed : owned.IsStopped ? PerformanceHostState.Stopped : PerformanceHostState.Completed;
-   } catch(OperationCanceledException error) {
+   } catch(OperationCanceledException) {
     if(id==generation) { Failure=owned.Failure; State=Failure!=null ? PerformanceHostState.Failed : PerformanceHostState.Stopped; }
    } catch(Exception error) {
     if(id==generation) { Failure=owned.Failure ?? error; State=PerformanceHostState.Failed; }

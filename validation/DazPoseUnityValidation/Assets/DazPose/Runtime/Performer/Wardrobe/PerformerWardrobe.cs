@@ -722,6 +722,7 @@ namespace DazPose.Performer
 
         private async Awaitable<WardrobeChangeResult> ApplyRequestAsync(Request request)
         {
+            using var materialRefresh = performer?.GetComponent<PerformerMagicShaderPresentation>()?.BeginWardrobeRefresh();
             if (IsCancelled(request)) return Cancelled(BuildState(false));
             if (request.transition.kind != WardrobeTransitionKind.Dissolve)
                 return ApplyRequest(request);

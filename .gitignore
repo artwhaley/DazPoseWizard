@@ -37,3 +37,6 @@ validation/DazPoseUnityValidation/Assets/Generated/
 *.csproj
 *.sln
 *.slnx
+
+# Hand-authored managed story compiler/interpreter test project
+!tests/DazPose.Story.Tests/DazPose.Story.Tests.csproj

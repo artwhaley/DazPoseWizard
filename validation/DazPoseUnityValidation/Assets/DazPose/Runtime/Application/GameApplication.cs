@@ -20,7 +20,7 @@ namespace DazPose.Game {
   static void ResetStatics() => instance = null;
   public static GameApplication EnsureStarted() {
    if(instance != null) return instance;
-   var existing = FindObjectsByType<GameApplication>(FindObjectsSortMode.None);
+   var existing = FindObjectsByType<GameApplication>();
    if(existing.Length > 0) { existing[0].Initialize(); return instance; }
    var prefab = Resources.Load<GameObject>("DazPose/GameApplication");
    if(prefab == null) throw new InvalidOperationException("Install the DazPose application prefab using Initialize Game Session.");

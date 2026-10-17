@@ -53,7 +53,7 @@ namespace DazPose.Story {
    if(source==null || pending!=source) return;
    Close(source); source.TrySetException(new OperationCanceledException("Story prompt cancelled."));
   }
-  void OnDisable() { Cancel(pending); }
+  void OnDisable() { Cancel(pending);ClearActions(); }
   public Awaitable<StoryPromptResult> ShowMessageAsync(string title,string body,string confirmLabel="Continue",CancellationToken cancellation=default) =>
    Show(title,confirmLabel,parent=>StoryUi.Label(parent,body,22),null,cancellation);
   public void ShowCheckpoint(string message) {

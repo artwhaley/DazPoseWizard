@@ -1,0 +1,450 @@
+setup FirstContact
+{
+    Lara.StartHiddenAt(lara_start)
+    PlayerBody.StartHiddenAt(player_start)
+    Camera.StartAt(camera_start)
+    Lara.StartIdle()
+}
+
+
+card Intro
+{
+    await Lara.DissolveIn(lara_start)
+
+    Camera.Track(Lara)
+
+    await Lara.Say("Hi there. I was hoping you were brave enough to meet me.")
+
+    await Lara.LocomoteTo(stepforward)
+
+    await Lara.PersistentPose(SexyVamp)
+
+    await Lara.Say("I'm Lara. I'm a digital hallucination.")
+
+    await Lara.MagicShader(GlowyWireframe)
+
+    wait 500ms
+
+    await Lara.MagicShader(Regular)
+
+    await Lara.Say("Well, more than a hallucination. A bit of a... projection. An intrusion? (giggles) I like that one. Intrusion.")
+
+    await Lara.DissolveTo(Lounger)
+
+    await Lara.Say("I'm the most fun you've ever had. But I come with... conditions.")
+
+    await Lara.PersistentPose(LeaningForward)
+
+    await Lara.Say("I can only give you pleasure if I have the power to do so. The more you give up to me, the more I can do for you. Let's see what you're giving up, tonight.")
+}
+
+
+sequence FirstContact
+{
+    play Intro
+
+
+    await Popup.Show(Kinks)
+
+    await Lara.Say("Not bad for a start.")
+
+    SubmissionScore.Calculate()
+
+    await Lara.Say("This is your submission score. The more activities you consent to, the higher it goes, but... I don't want you bending past your real limits. Honesty is important. But...(giggles) so's letting me try new things. So next time we start a scene... look for things you're willing to try for me and let me know if you come up with any.")
+
+    Lara.PersistentPose(CrossedArmsAmused)
+
+    await Lara.Say("Now let's look at your equipment...(giggles) Not that equipment, yet.")
+
+    await Popup.Show(Equipment)
+
+    Session.SelectPreparedEquipment(1)
+
+    if Session.PreparedEquipment.Count > 0
+    {
+        await Popup.ShowNeededEquipment(Session.PreparedEquipment)
+    }
+
+    await Lara.Say("And finally, tell me what you're wearing....")
+
+    await Popup.Show(Clothing)
+
+
+    if World.Clothing.Count == 0
+    {
+        await Lara.Say("Now that's a go-getter. The less you wear to our sessions, the better.")
+
+        Session.Mood += 5
+    }
+    else if World.Clothing.Count <= 2
+    {
+        await Lara.Say("I like you naked, but I can wait to get you there...")
+    }
+    else
+    {
+        Lara.PlayOneShotGesture(Disapproval)
+
+        await Lara.Say("That's way too dressed. The fewer you wear the happier I am. In fact... take one off now.")
+
+        let item = World.Clothing.LeastRisqueWorn()
+
+        await Popup.RemoveClothingItem(item)
+
+        World.Clothing.MarkRemoved(item)
+    }
+
+
+    phase Warmup
+    {
+        await Lara.SitAt(Lounger)
+
+        await Lara.PersistentSitPose(Lounging)
+
+        await Lara.Say("Alright, let's get you warmed up.")
+
+        while Completion < 40%
+        {
+            await Director.DrawAndExecute(tags: [Warmup])
+        }
+
+        if World.Clothing.Count > 0
+        {
+            await Lara.Say("I think it's time to lose the rest of the clothes... do that and tell me when you're back.")
+
+            await Popup.Ready("Ready")
+
+            World.Clothing.Clear()
+        }
+
+        while Completion < 100%
+        {
+            await Director.DrawAndExecute(tags: [Warmup])
+        }
+    }
+
+
+    phase Main
+    {
+        await Lara.DissolveTo(MainPosition1)
+
+        await Lara.PersistentPose(Main1)
+
+        await Lara.Say("That was all the warmup I'm going to give you. Now let's get down to business.")
+
+        while Completion < 30%
+        {
+            await Director.DrawAndExecute(tags: [Main, Standing])
+        }
+
+        await Lara.DissolveTo(Lounger, seated: Lounging)
+
+        if Session.PreparedEquipment.Count > 0
+        {
+            await Director.DrawAndExecute(
+                equipment: Session.PreparedEquipment
+            )
+        }
+
+        Session.IntensityMultiplier = 1.2
+
+        while Completion < 60%
+        {
+            await Director.DrawAndExecute(tags: [Main, Sitting])
+        }
+
+        Session.IntensityMultiplier = 1.4
+
+        while Completion < 100%
+        {
+            await Director.DrawAndExecute(tags: [Main, Sitting])
+        }
+    }
+
+
+    phase Climax
+    {
+        await PlayerBody.DissolveIn()
+
+        await Lara.DissolveTo(Bedside)
+
+        await Lara.Say("I'm amused enough, I suppose. And since this is your first time, I'm not going to frustrate you... or even make you beg. I'm just going to make you cum.")
+
+        await Lara.Grip(Penis)
+
+        UI.ShowAction(ICame, "I came")
+
+        MotionDriver.PlayFunscript(Finisher1)
+
+        let climaxResult = await wait any
+        {
+            MotionDriver.Ended
+            UI.Pressed(ICame)
+        }
+
+        if climaxResult == MotionDriver.Ended
+        {
+            MotionDriver.PlayFunscript(FinishLoop, loop: true)
+
+            await UI.WaitFor(ICame)
+        }
+
+        MotionDriver.Stop()
+
+        UI.HideAction(ICame)
+    }
+
+
+    phase Resolution
+    {
+        await Lara.Say("*giggles* Well, you seem to understand the assignment. Some times you're going to have to work for it. Some times you may have to work and not even get it then. It all depends on my mood, and how much you decide to trust me.")
+
+        await Lara.DissolveTo(lara_start)
+
+        await Lara.PersistentPose(Sassy)
+
+        await Lara.Say("Now, how am I going to keep you thinking about me until our next session?")
+
+        await Director.DrawAndExecute(tags: [Resolution])
+
+        await Lara.Say("Alright, that's our session for tonight. Until next time... behave. Or don't. I get off either way. *giggles* Bye!")
+    }
+}
+
+// Engineering card library: temporary coverage, authored behavior and progress.
+// Fixed dialogue above remains authoritative. These beats intentionally add no placeholder voice.
+
+card WarmupBreathing
+tags [Warmup, Calm]
+progress 20
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Sitting
+{
+    let breaths = round(3 * Card.Intensity)
+    repeat breaths {
+        wait 500ms
+    }
+    Session.Mood += 1
+}
+
+card WarmupCounting
+tags [Warmup, Focus]
+progress 20
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Sitting
+{
+    let beats = random(3..5)
+    repeat beats {
+        wait 300ms
+    }
+    Session.Mood += 2
+}
+
+card WarmupCheckIn
+tags [Warmup, Recovery]
+progress 25
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Sitting
+{
+    await Popup.Ready("Engineering warmup: take a comfortable breath, then continue.")
+    wait 500ms
+}
+
+card WarmupStandingOnly
+tags [Warmup, Standing, Energetic]
+progress 20
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Standing
+requires World.Ankles == Free
+{
+    wait 1s
+}
+
+card MainStandingPoise
+tags [Main, Standing, Focus]
+progress 20
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Standing
+{
+    await Lara.PersistentPose(Main1)
+    wait 1s
+    Session.Mood += 1
+}
+
+card MainStandingVariation
+tags [Main, Standing, Calm]
+progress 15
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Standing
+{
+    await Lara.PersistentPose(SexyVamp)
+    let beats = round(2 * Card.Intensity)
+    repeat beats {
+        wait 500ms
+    }
+}
+
+card MainStandingCheckIn
+tags [Main, Standing, Recovery]
+progress 20
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Standing
+{
+    await Lara.PersistentPose(CrossedArmsAmused)
+    await Popup.Ready("Engineering standing beat: confirm that you are comfortable.")
+}
+
+card MainSeatedRhythm
+tags [Main, Sitting, Focus]
+progress 20
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Sitting
+{
+    await Lara.PersistentSitPose(Lounging)
+    let beats = round(3 * Card.Intensity)
+    repeat beats {
+        wait 400ms
+    }
+}
+
+card MainSeatedPause
+tags [Main, Sitting, Calm]
+progress 15
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Sitting
+{
+    let pause = random(1..2)
+    wait pause
+    Session.Mood += 2
+}
+
+card MainSeatedCheckIn
+tags [Main, Sitting, Recovery]
+progress 25
+weight 1
+repeat unlimited
+cooldown 1
+requires World.Posture == Sitting
+{
+    await Popup.Ready("Engineering seated beat: take a slow breath, then continue.")
+    wait 500ms
+}
+
+card ResolutionBreathing
+tags [Resolution, Calm]
+progress 0
+weight 1
+repeat once
+cooldown 0
+requires World.Posture == Standing
+{
+    await Popup.Ready("Engineering resolution: finish with three comfortable breaths.")
+    repeat 3 {
+        wait 500ms
+    }
+}
+
+card ResolutionReflection
+tags [Resolution, Focus]
+progress 0
+weight 1
+repeat once
+cooldown 0
+requires World.Posture == Standing
+{
+    await Lara.PersistentPose(Sassy)
+    await Popup.Ready("Engineering resolution: take a moment to reflect, then finish.")
+    Session.Mood += 1
+}
+
+card EquipmentButtPlug
+tags [Main, equipment:butt-plug]
+progress 10
+weight 1
+repeat once
+cooldown 0
+requires World.Posture == Sitting
+requires Equipment.IsPrepared("butt-plug")
+{
+    await Popup.Ready("Engineering equipment beat: confirm butt-plug is prepared and ready.")
+    Equipment.Activate("butt-plug")
+    World.Anal = Occupied
+    wait 1s
+}
+
+card EquipmentRope
+tags [Main, equipment:rope]
+progress 10
+weight 1
+repeat once
+cooldown 0
+requires World.Posture == Sitting
+requires Equipment.IsPrepared("rope")
+{
+    await Popup.Ready("Engineering equipment beat: confirm rope is prepared and ready.")
+    Equipment.Activate("rope")
+    World.Ankles = Restricted
+    wait 1s
+}
+
+card EquipmentDildoAnal
+tags [Main, equipment:dildo-anal]
+progress 10
+weight 1
+repeat once
+cooldown 0
+requires World.Posture == Sitting
+requires Equipment.IsPrepared("dildo-anal")
+{
+    await Popup.Ready("Engineering equipment beat: confirm dildo-anal is prepared and ready.")
+    Equipment.Activate("dildo-anal")
+    World.Anal = Occupied
+    wait 1s
+}
+
+card EquipmentDildoOral
+tags [Main, equipment:dildo-oral]
+progress 10
+weight 1
+repeat once
+cooldown 0
+requires World.Posture == Sitting
+requires Equipment.IsPrepared("dildo-oral")
+{
+    await Popup.Ready("Engineering equipment beat: confirm dildo-oral is prepared and ready.")
+    Equipment.Activate("dildo-oral")
+    World.Oral = Occupied
+    wait 1s
+}
+
+card EquipmentIce
+tags [Main, equipment:ice]
+progress 10
+weight 1
+repeat once
+cooldown 0
+requires World.Posture == Sitting
+requires Equipment.IsPrepared("ice")
+{
+    await Popup.Ready("Engineering equipment beat: confirm ice is prepared and ready.")
+    Equipment.Activate("ice")
+    Session.Mood += 1
+    wait 1s
+}

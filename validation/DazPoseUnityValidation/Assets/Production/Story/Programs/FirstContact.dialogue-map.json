@@ -1,0 +1,119 @@
+{
+  "purpose": "Frozen oracle transcript-to-supplied-placeholder mapping. Source dialogue remains authoritative; transcript edits require explicit audio rebinding.",
+  "clips": [
+    {
+      "id": "dialogue:eec70a38ba9e5e0539d420b21b86871ccda9083d63212e7df37796d6a4822480",
+      "transcript": "Hi there. I was hoping you were brave enough to meet me.",
+      "file": "D8_01_Intro_BraveEnough.wav",
+      "index": 1
+    },
+    {
+      "id": "dialogue:fa46c48a4c46fd184ce1a59a52ff0b8eced1f6f74e8068a34c5c581aa5fc4c67",
+      "transcript": "I'm Lara. I'm a digital hallucination.",
+      "file": "D8_02_Intro_DigitalHallucination.wav",
+      "index": 2
+    },
+    {
+      "id": "dialogue:8903bad7f2e7f454c60ec70764a890d8820e0b56b453e653f9105c2f2fd90507",
+      "transcript": "Well, more than a hallucination. A bit of a... projection. An intrusion? (giggles) I like that one. Intrusion.",
+      "file": "D8_03_Intro_Intrusion.wav",
+      "index": 3
+    },
+    {
+      "id": "dialogue:f8b55ddbaa527c7f4a06e5eccbcdbbbc8ae76bce5bb690d1ed0c00c33de86d84",
+      "transcript": "I'm the most fun you've ever had. But I come with... conditions.",
+      "file": "D8_04_Intro_Conditions.wav",
+      "index": 4
+    },
+    {
+      "id": "dialogue:3532947e8c4c89b969bb7098d0e4ea314affc33b584eb529c99c867c020104aa",
+      "transcript": "I can only give you pleasure if I have the power to do so. The more you give up to me, the more I can do for you. Let's see what you're giving up, tonight.",
+      "file": "D8_05_Intro_ControlBargain.wav",
+      "index": 5
+    },
+    {
+      "id": "dialogue:a31e67d1d242a517ea991955985c0bffc320ffb723e9993125ce4e222e8ed172",
+      "transcript": "Not bad for a start.",
+      "file": "D8_06_Setup_NotBad.wav",
+      "index": 6
+    },
+    {
+      "id": "dialogue:9a0767c9e5e6d57eaa147f30fb0fbb7c9b9e3d7ea696a8102b1ccb7ab47f4384",
+      "transcript": "This is your submission score. The more activities you consent to, the higher it goes, but... I don't want you bending past your real limits. Honesty is important. But...(giggles) so's letting me try new things. So next time we start a scene... look for things you're willing to try for me and let me know if you come up with any.",
+      "file": "D8_07_Setup_SubmissionScore.wav",
+      "index": 7
+    },
+    {
+      "id": "dialogue:ed13cc210d45dc15e01dc276ebe226fb63cf25e4c54c4a830fb159a8ef325df1",
+      "transcript": "Now let's look at your equipment...(giggles) Not that equipment, yet.",
+      "file": "D8_08_Setup_Equipment.wav",
+      "index": 8
+    },
+    {
+      "id": "dialogue:6b35307084bcc03453d78eca45994aa9b2ebd884af15e869a8f8965aef12ed48",
+      "transcript": "And finally, tell me what you're wearing....",
+      "file": "D8_09_Setup_Clothing.wav",
+      "index": 9
+    },
+    {
+      "id": "dialogue:a2da4644f43872c42ababc3faafb00bc5f59c460d8ad619a4d4fe72dd3287af9",
+      "transcript": "Now that's a go-getter. The less you wear to our sessions, the better.",
+      "file": "D8_10_Clothing_Naked.wav",
+      "index": 10
+    },
+    {
+      "id": "dialogue:2d353b980d4faaba8f3a6e8544277684b00611133f8e258ed6b3005cc3a11b1a",
+      "transcript": "I like you naked, but I can wait to get you there...",
+      "file": "D8_11_Clothing_OneOrTwo.wav",
+      "index": 11
+    },
+    {
+      "id": "dialogue:1eff8d34806c7afa1ed18afe7d74c157bdb8ffc9d03c9583497229bc98ec5cd0",
+      "transcript": "That's way too dressed. The fewer you wear the happier I am. In fact... take one off now.",
+      "file": "D8_12_Clothing_TooDressed.wav",
+      "index": 12
+    },
+    {
+      "id": "dialogue:5808e8bf8f569555b089c738f69a1ed115838a755273105006ad007b78614719",
+      "transcript": "Alright, let's get you warmed up.",
+      "file": "D8_13_Warmup_Start.wav",
+      "index": 13
+    },
+    {
+      "id": "dialogue:1b4f4776f18b9dc697d55dc3b03525fc48594bc079dd1b085f98d8289bbb00a2",
+      "transcript": "I think it's time to lose the rest of the clothes... do that and tell me when you're back.",
+      "file": "D8_14_Warmup_RemoveRest.wav",
+      "index": 14
+    },
+    {
+      "id": "dialogue:4813b6225ba5c47d9e29c552beeb572872df08a9958c17ad621093d71684ce72",
+      "transcript": "That was all the warmup I'm going to give you. Now let's get down to business.",
+      "file": "D8_15_Main_Start.wav",
+      "index": 15
+    },
+    {
+      "id": "dialogue:1dd1d72ffbadaa33a2ce75dfab76ce9004e379e5b48bac085c75cbda0687fa6d",
+      "transcript": "I'm amused enough, I suppose. And since this is your first time, I'm not going to frustrate you... or even make you beg. I'm just going to make you cum.",
+      "file": "D8_16_Climax_Start.wav",
+      "index": 16
+    },
+    {
+      "id": "dialogue:e743274fcdd56ce6aa95572b33e917f49fc42ad33a11b3d1e01866b557e2617b",
+      "transcript": "*giggles* Well, you seem to understand the assignment. Some times you're going to have to work for it. Some times you may have to work and not even get it then. It all depends on my mood, and how much you decide to trust me.",
+      "file": "D8_17_Resolution_Assignment.wav",
+      "index": 17
+    },
+    {
+      "id": "dialogue:7b5488f0b0337a9170591f660acad8fd145ee410eeeecfeeb12d9788627463d9",
+      "transcript": "Now, how am I going to keep you thinking about me until our next session?",
+      "file": "D8_18_Resolution_ThinkingAboutMe.wav",
+      "index": 18
+    },
+    {
+      "id": "dialogue:fd2d57a95269c819d7a391e54f7d9c333d8c7447e2d913f1440a87e5f99b9abf",
+      "transcript": "Alright, that's our session for tonight. Until next time... behave. Or don't. I get off either way. *giggles* Bye!",
+      "file": "D8_19_Resolution_Goodbye.wav",
+      "index": 19
+    }
+  ]
+}

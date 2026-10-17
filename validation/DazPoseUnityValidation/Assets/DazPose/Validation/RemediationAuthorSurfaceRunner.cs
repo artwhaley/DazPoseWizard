@@ -125,7 +125,7 @@ namespace DazPose.Validation
             { float deadline=Time.realtimeSinceStartup+3f; while(host.State==PerformanceHostState.Running && Time.realtimeSinceStartup<deadline) await Awaitable.NextFrameAsync(); }
             Record("nonToyFailureLatched",host.State==PerformanceHostState.Failed && host.Failure!=null,host.State.ToString());
             actor.BreathsPerMinute=original;
-            DestroyObject(holder);
+            DestroyFixtureObject(holder);
         }
 
         private async Awaitable CheckApplicationSettings()
@@ -155,7 +155,7 @@ namespace DazPose.Validation
             actor.BreathsPerMinute=17; fresh.ApplySceneTuning(b);
             Record("sceneIdentitySeparatesTuning", actor.BreathsPerMinute==17, "other scene");
             actor.BreathsPerMinute=original; // explicit isolated fixture cleanup
-            DestroyObject(holder);
+            DestroyFixtureObject(holder);
             await Awaitable.NextFrameAsync();
         }
 
@@ -194,7 +194,7 @@ namespace DazPose.Validation
                 run.Stop(); run.Dispose();
                 Record("tuningSurvivesStopAndDispose", Mathf.Approximately(actor.BreathsPerMinute, 18f)
                     && Mathf.Approximately(actor.DefaultPoseTransition.Duration, .4f), "rate=" + actor.BreathsPerMinute);
-                DestroyObject(holder);
+                DestroyFixtureObject(holder);
                 run = BeginRun(out holder);
                 Record("newRunDoesNotRestoreTuning", Mathf.Approximately(actor.BreathsPerMinute, 18f)
                     && Mathf.Approximately(actor.DefaultPoseTransition.Duration, .4f), "rate=" + actor.BreathsPerMinute);
@@ -212,7 +212,7 @@ namespace DazPose.Validation
             catch (Exception exception) { Record("persistentTuningAndSmoothPose", false, exception.ToString()); }
             finally
             {
-                run.Dispose(); DestroyObject(holder);
+                run.Dispose(); DestroyFixtureObject(holder);
                 // Explicit isolated-fixture cleanup, never a production lifecycle policy.
                 actor.BreathsPerMinute = originalRate; actor.DefaultPoseTransition = originalTransition;
             }
@@ -257,7 +257,7 @@ namespace DazPose.Validation
                     "clamped=" + clamped + "; restored=" + (actor.BreathingEnabled == originalBreathing));
 
                 playback.StopMotion();
-                DestroyObject(holder);
+                DestroyFixtureObject(holder);
                 await Awaitable.NextFrameAsync();
                 run = BeginRun(out holder);
                 run.StartPlayback(program);
@@ -270,8 +270,8 @@ namespace DazPose.Validation
                 run.Dispose();
                 playback.StopMotion();
                 playback.ResetMotion();
-                DestroyObject(target);
-                DestroyObject(holder);
+                DestroyFixtureObject(target);
+                DestroyFixtureObject(holder);
                 await Awaitable.NextFrameAsync();
             }
         }
@@ -330,7 +330,7 @@ namespace DazPose.Validation
             float deadline = Time.realtimeSinceStartup + 5f;
             while (missing.IsRunning && Time.realtimeSinceStartup < deadline) await Awaitable.NextFrameAsync();
             Record("missingTargetFailsAtCommand", host.State==PerformanceHostState.Failed && host.Failure is PerformanceCommandException, missing.Status);
-            DestroyObject(holder);
+            DestroyFixtureObject(holder);
         }
 
         private async Awaitable<bool> WaitForSequence(float maxSeconds)
@@ -377,7 +377,7 @@ namespace DazPose.Validation
 #endif
         }
 
-        private static void DestroyObject(UnityEngine.Object value)
+        private static void DestroyFixtureObject(UnityEngine.Object value)
         {
             if (value == null) return;
 #if UNITY_EDITOR

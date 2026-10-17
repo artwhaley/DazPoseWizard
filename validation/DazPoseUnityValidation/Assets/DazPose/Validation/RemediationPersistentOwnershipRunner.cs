@@ -146,9 +146,9 @@ namespace DazPose.Validation
             finally
             {
                 run.Dispose();
-                DestroyObject(gazeOwned);
-                DestroyObject(gazeReplacement);
-                DestroyObject(holder);
+                DestroyFixtureObject(gazeOwned);
+                DestroyFixtureObject(gazeReplacement);
+                DestroyFixtureObject(holder);
                 await Awaitable.NextFrameAsync();
             }
         }
@@ -180,10 +180,10 @@ namespace DazPose.Validation
             {
                 player.StopTracking();
                 run.Dispose();
-                DestroyObject(moveTarget);
-                DestroyObject(trackTarget);
-                DestroyObject(replacement);
-                DestroyObject(holder);
+                DestroyFixtureObject(moveTarget);
+                DestroyFixtureObject(trackTarget);
+                DestroyFixtureObject(replacement);
+                DestroyFixtureObject(holder);
                 await Awaitable.NextFrameAsync();
             }
         }
@@ -204,7 +204,7 @@ namespace DazPose.Validation
                     "generation=" + playback.CommandGeneration + "; before=" + before);
             }
             catch (Exception exception) { Record("scopedPlaybackStartStop", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
 
             playback.ResetMotion();
             playback.RestartMotion();
@@ -225,7 +225,7 @@ namespace DazPose.Validation
                 externalRun.Dispose();
                 playback.StopMotion();
                 playback.ResetMotion();
-                DestroyObject(externalHolder);
+                DestroyFixtureObject(externalHolder);
             }
 
             var replacementRun = BeginRun(out GameObject replacementHolder);
@@ -239,7 +239,7 @@ namespace DazPose.Validation
                     "command generation=" + playback.CommandGeneration);
                 long revision = playback.SourceRevision;
                 replacementRun = null;
-                DestroyObject(replacementHolder);
+                DestroyFixtureObject(replacementHolder);
                 var followRun = BeginRun(out GameObject followHolder);
                 try
                 {
@@ -249,7 +249,7 @@ namespace DazPose.Validation
                         "source revision=" + playback.SourceRevision);
                 }
                 catch (Exception exception) { Record("sharedClockFollowDoesNotSeek", false, exception.ToString()); }
-                finally { followRun.Dispose(); DestroyObject(followHolder); }
+                finally { followRun.Dispose(); DestroyFixtureObject(followHolder); }
             }
             catch (Exception exception) { Record("sameSourceReplacementSurvivesStaleStop", false, exception.ToString()); }
             finally
@@ -257,7 +257,7 @@ namespace DazPose.Validation
                 replacementRun?.Dispose();
                 playback.StopMotion();
                 playback.ResetMotion();
-                DestroyObject(replacementHolder);
+                DestroyFixtureObject(replacementHolder);
                 await Awaitable.NextFrameAsync();
             }
         }
@@ -274,7 +274,7 @@ namespace DazPose.Validation
                     actor.CurrentAura != null ? actor.CurrentAura.name : "none");
             }
             catch (Exception exception) { Record("auraGenerationCleanup", false, exception.ToString()); }
-            finally { run.Dispose(); actor.ClearAura(); DestroyObject(holder); await Awaitable.NextFrameAsync(); }
+            finally { run.Dispose(); actor.ClearAura(); DestroyFixtureObject(holder); await Awaitable.NextFrameAsync(); }
         }
 
         private async Awaitable WaitRealtime(float seconds)
@@ -307,7 +307,7 @@ namespace DazPose.Validation
                         string.Join(",", beats));
                 }
                 catch (Exception exception) { Record("silentToyBeatOrder_" + mode, false, exception.ToString()); }
-                finally { run.Stop(); run.Dispose(); DestroyObject(holder); await WaitRealtime(.55f); }
+                finally { run.Stop(); run.Dispose(); DestroyFixtureObject(holder); await WaitRealtime(.55f); }
             }
 
             foreach (bool paused in new[] { false, true })
@@ -334,7 +334,7 @@ namespace DazPose.Validation
                         "ordinaryBefore=" + stoppedCount + "; after=" + laterCount);
                 }
                 catch (Exception exception) { Record("stopRevokesRampFollowerAndTimedPosition_" + paused, false, exception.ToString()); }
-                finally { Time.timeScale = priorScale; run.Dispose(); DestroyObject(holder); }
+                finally { Time.timeScale = priorScale; run.Dispose(); DestroyFixtureObject(holder); }
             }
 
             backend.Reset();
@@ -362,7 +362,7 @@ namespace DazPose.Validation
                     "partial=" + partial + "; stopped=" + replacement.IsStopped);
             }
             catch (Exception exception) { Record("oldFacadeAndDisposeCannotStopReplacement", false, exception.ToString()); }
-            finally { old.Dispose(); replacement.Dispose(); DestroyObject(oldHolder); DestroyObject(replacementHolder); }
+            finally { old.Dispose(); replacement.Dispose(); DestroyFixtureObject(oldHolder); DestroyFixtureObject(replacementHolder); }
             backend.Reset();
         }
 
@@ -383,7 +383,7 @@ namespace DazPose.Validation
                 }
             }
             catch (Exception exception) { Record("scopedGripAcquires", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
 
             if (!acquired) return;
             var releaseRun = BeginRun(out GameObject releaseHolder);
@@ -400,7 +400,7 @@ namespace DazPose.Validation
                     released + "; state=" + actor.GripState);
             }
             catch (Exception exception) { Record("animatedGripReleaseCompletes", false, exception.ToString()); }
-            finally { releaseRun.Dispose(); actor.ReleaseGrip(); DestroyObject(releaseHolder); await Awaitable.NextFrameAsync(); }
+            finally { releaseRun.Dispose(); actor.ReleaseGrip(); DestroyFixtureObject(releaseHolder); await Awaitable.NextFrameAsync(); }
         }
 
         private void CheckMissingOptionalBindings()
@@ -424,7 +424,7 @@ namespace DazPose.Validation
                 finally { run.Dispose(); }
             }
             catch (Exception exception) { Record("missingOptionalPlayerAndToysFailClearly", false, exception.ToString()); }
-            finally { DestroyObject(holder); }
+            finally { DestroyFixtureObject(holder); }
         }
 
         private PerformanceRun BeginRun(out GameObject holder)
@@ -458,7 +458,7 @@ namespace DazPose.Validation
 #endif
         }
 
-        private static void DestroyObject(UnityEngine.Object value)
+        private static void DestroyFixtureObject(UnityEngine.Object value)
         {
             if (value == null) return;
 #if UNITY_EDITOR

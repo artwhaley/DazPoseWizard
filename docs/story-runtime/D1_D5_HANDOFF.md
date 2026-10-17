@@ -1,3 +1,5 @@
+> Historical D1–D5 handoff. The current D5.5–D8 source and checkpoint are documented in [D5_5_HANDOFF.md](D5_5_HANDOFF.md). First Contact now uses .dazstory; the former representative JSON/choreography is not its active source.
+
 # D1–D5 implementation handoff
 
 **SOURCE COMPLETE — AWAITING USER RETEST**

@@ -1,5 +1,7 @@
 {
-  "schemaVersion": 1,
-  "importRoot": "Assets/DazPoseImports",
-  "outputRoot": "Assets/Animations/DazPoses"
+  "schemaVersion": 2,
+  "poseImportRoot": "Assets/DazPoseImports",
+  "poseOutputRoot": "Assets/Animations/DazPoses",
+  "expressionImportRoot": "Assets/DazExpressionImports",
+  "expressionOutputRoot": "Assets/Animations/DazExpressions"
 }

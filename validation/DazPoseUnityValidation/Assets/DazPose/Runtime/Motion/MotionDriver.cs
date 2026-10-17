@@ -106,6 +106,9 @@ namespace DazPose.Motion
         public event Action<MotionSample> Sampled;
         public event Action<bool> RunningChanged;
         public event Action Sought;
+        /// <summary>Natural non-looping funscript completion for this command generation. Stop never emits it.</summary>
+        public event Action<long> Ended;
+        public long LastNaturalEndGeneration {get;private set;}=-1;
         public event Action<MotionTargetSegment> TargetSegmentChanged;
 
         public bool TryGetCurrentTargetSegment(out MotionTargetSegment segment)
@@ -163,9 +166,18 @@ namespace DazPose.Motion
                 return;
             }
 
+            long generation=CommandGeneration;var advancing=_activeSource;
             _activeSource.Advance(deltaSeconds);
             PublishSample(_activeSource.CurrentSample);
-            if (IsRunning && _activeSource.IsComplete) StopMotion();
+            if(IsRunning && ReferenceEquals(advancing,_activeSource) && CommandGeneration==generation && advancing.IsComplete) {
+                IsRunning=false;
+                bool natural=sourceMode==MotionSourceMode.Funscript && !loopFunscript;
+                if(natural)LastNaturalEndGeneration=generation;
+                PublishRunningChanged(false);
+                if(natural && Ended!=null)foreach(Action<long> callback in Ended.GetInvocationList()) {
+                    try {callback(generation);}catch(Exception error) {Debug.LogException(error,this);}
+                }
+            }
         }
 
         /// <summary>Resumes at the held source time without resetting it.</summary>
@@ -246,7 +258,7 @@ namespace DazPose.Motion
             if (sought != null)
                 foreach (Action callback in sought.GetInvocationList())
                     try { callback(); } catch (Exception exception) { Debug.LogException(exception, this); }
-            if (IsRunning && _activeSource.IsComplete) StopMotion();
+            if(IsRunning && _activeSource.IsComplete)StopMotion();
         }
 
         private void EnsureSineSource()

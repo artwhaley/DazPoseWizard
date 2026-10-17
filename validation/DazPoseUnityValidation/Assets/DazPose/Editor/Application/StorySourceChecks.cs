@@ -36,6 +36,7 @@ namespace DazPose.Editor {
   }
   static string Hash(string path) { using(var sha=SHA256.Create()) return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path))); }
   public static void Run() {
+   if(File.Exists(StoryFoundationBuilder.SourcePath)) {StoryFoundationChecks.Run();return;}
    if(Application.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Edit Mode only.");
    assertions=0; var report=new Report(); string before=Hash(GameSessionSceneSetup.VoidPath);
    StorySceneBuilder.BuildOrRefresh();
@@ -85,7 +86,7 @@ namespace DazPose.Editor {
    Require(bodyRoot.GetComponent<PerformerSalsaLipSync>()==null && bodyRoot.GetComponent<Salsa>()==null
     && bodyRoot.GetComponent<QueueProcessor>()==null,"Player visual body retained orphaned speech/lip-sync components.");
    var male=bodyRoot.GetComponent<PartnerBody>(); var contact=bodyRoot.GetComponent<PartnerContactTarget>();
-   Require(male!=null && contact!=null && host.Bindings.ContactTarget==contact,"Player body must use the prepared male and be the saved session contact target.");
+   Require(male!=null && contact!=null && (host.Bindings.ContactTarget as PartnerContactTarget)==contact,"Player body must use the prepared male and be the saved session contact target.");
    Require(contact.IsReadyForContact(false,out string contactReason),"Prepared player contact is invalid: "+contactReason);
    Require(contact.Profile==AssetDatabase.LoadAssetAtPath<PartnerContactProfile>("Assets/Production/Partners/PreparedContact.asset"),"Player body lost the original measured contact profile.");
    Require(sequence.Bindings.playerBody.StartsHidden && sequence.Bindings.playerBody.SurfaceCount==bodyRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true).Length,"Player visibility must cover every male body surface and start hidden.");

@@ -95,19 +95,19 @@ namespace DazPose.Validation
             var missingGesture = ScriptableObject.CreateInstance<PerformerGesture>();
             probe.DeclareContent(new[] { missingGesture }, Array.Empty<PerformerAction>(), Array.Empty<PerformerSpell>(), Array.Empty<PerformerAura>());
             ExpectFailure("invalidGestureClip", "gestures.Array.data[0]", probe.Validate(PerformerCapability.Gesture, false), "requires a baked Generic AnimationClip");
-            Destroy(missingGesture);
+            DestroyFixtureObject(missingGesture);
 
             PerformerAction invalidAction = Instantiate(validAction);
             invalidAction.name = "R05 invalid action trajectory";
             SetField(invalidAction, "rootY", new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(1f, 1f)));
             probe.DeclareContent(Array.Empty<PerformerGesture>(), new[] { invalidAction }, Array.Empty<PerformerSpell>(), Array.Empty<PerformerAura>());
             ExpectFailure("invalidActionTrajectory", "actions.Array.data[0]", probe.Validate(PerformerCapability.Action, false), "ends");
-            Destroy(invalidAction);
+            DestroyFixtureObject(invalidAction);
 
             PerformerSpell missingStyleSpell = ScriptableObject.CreateInstance<PerformerSpell>();
             probe.DeclareContent(Array.Empty<PerformerGesture>(), Array.Empty<PerformerAction>(), new[] { missingStyleSpell }, Array.Empty<PerformerAura>());
             ExpectFailure("missingMagicStyle", "spells.Array.data[0]", probe.Validate(PerformerCapability.Magic, false), "shared PerformerMagicStyle");
-            Destroy(missingStyleSpell);
+            DestroyFixtureObject(missingStyleSpell);
 
             PerformerMagicStyle missingPrefabStyle = Instantiate(validStyle);
             missingPrefabStyle.name = "R05 missing magic prefab style";
@@ -117,8 +117,8 @@ namespace DazPose.Validation
             SetField(missingPrefabSpell, "style", missingPrefabStyle);
             probe.DeclareContent(Array.Empty<PerformerGesture>(), Array.Empty<PerformerAction>(), new[] { missingPrefabSpell }, Array.Empty<PerformerAura>());
             ExpectFailure("missingMagicPrefab", "spells.Array.data[0]", probe.Validate(PerformerCapability.Magic, false), "VFX Graph");
-            Destroy(missingPrefabSpell);
-            Destroy(missingPrefabStyle);
+            DestroyFixtureObject(missingPrefabSpell);
+            DestroyFixtureObject(missingPrefabStyle);
 
             probe.Configure(actor, null, null, null, PerformerCapability.Magic,
                 new[] { new PerformanceSceneBindings.Target { id = "magicTarget", transform = null } });
@@ -141,7 +141,7 @@ namespace DazPose.Validation
             probe.DeclareContent(Array.Empty<PerformerGesture>(), Array.Empty<PerformerAction>(), Array.Empty<PerformerSpell>(), Array.Empty<PerformerAura>());
             BindingIssue[] speechOnly = probe.Validate(PerformerCapability.Speech, false);
             Record("speechOnlyLeavesActionAndMagicOptional", speechOnly.Length == 0, Describe(speechOnly));
-            Destroy(probe.gameObject);
+            DestroyFixtureObject(probe.gameObject);
         }
 
         private string CheckMissingActorField(PerformanceSceneBindings probe, string fieldName,
@@ -201,7 +201,7 @@ namespace DazPose.Validation
         private static void SetField(object owner, string name, object value) => owner.GetType().GetField(name,
             BindingFlags.Instance | BindingFlags.NonPublic).SetValue(owner, value);
 
-        private static void Destroy(UnityEngine.Object value)
+        private static void DestroyFixtureObject(UnityEngine.Object value)
         {
             if (value == null) return;
 #if UNITY_EDITOR

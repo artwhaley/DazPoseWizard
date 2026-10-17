@@ -17,7 +17,7 @@ namespace DazPose.Editor {
    BuildBatch();
    Build(Path.GetFullPath("Builds/AuthoringStartup/DazPoseGame.exe"),"Assets/Production/Scenes/AuthoringShowcase.unity");
   }
-  public static void Build(string path,string startupScene=null) {
+  public static void Build(string path,string startupScene=null,BuildOptions options=BuildOptions.None) {
    var catalog=AssetDatabase.LoadAssetAtPath<SceneCatalog>(ProductionApplicationSetup.CatalogPath);
    var scenes=new[]{catalog.mainMenuPath}.Concat(catalog.entries.Where(e=>e.enabled).Select(e=>e.scenePath)).Distinct().ToArray();
    if(startupScene!=null) scenes=new[]{startupScene}.Concat(scenes.Where(s=>s!=startupScene)).ToArray();
@@ -27,7 +27,7 @@ namespace DazPose.Editor {
    try {
     PlayerSettings.SetScriptingDefineSymbols(target,string.Join(";",normal));
     Directory.CreateDirectory(Path.GetDirectoryName(path));
-    var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes=scenes, locationPathName=path, target=BuildTarget.StandaloneWindows64 });
+    var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes=scenes, locationPathName=path, target=BuildTarget.StandaloneWindows64,options=options });
     File.WriteAllText(path+".build.json",JsonUtility.ToJson(new BuildEvidence { executable=path,utc=DateTime.UtcNow.ToString("O"),scenes=scenes,result=report.summary.result.ToString(),errors=report.summary.totalErrors },true));
     if(report.summary.result!=BuildResult.Succeeded) throw new InvalidOperationException("Production build failed: "+report.summary.result);
    } finally { PlayerSettings.SetScriptingDefineSymbols(target,previous); }

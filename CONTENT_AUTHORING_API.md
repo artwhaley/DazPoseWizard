@@ -1,5 +1,13 @@
 # Content authoring API
 
+Current story authoring is `.dazstory`, introduced by the revised D5.5–D8 stack.
+Start with [the readable source guide](docs/story-runtime/DAZSTORY_AUTHORING.md) and
+[the full-session handoff](docs/story-runtime/D6_D8_HANDOFF.md). The full authored
+FirstContact source and its content bindings are under Assets/Production/Story/Programs.
+The JSON section below is historical compatibility documentation; it is not the
+preferred human authoring surface. Existing typed C# performer/application APIs remain
+valid infrastructure. Six imported pose wrappers are assigned. D6-D8 implementation includes normal cards, the Director, seated presentation and phase-owned event races; full playback evidence is tracked in the handoff.
+
 Start with [Author your first scene](CONTENT_AUTHORING_WALKTHROUGH.md) for exact Unity setup, Inspector assignments, a complete starter script and expansion steps.
 
 Write a scene as a sequence of actions against `PerformanceRun`. The saved scene supplies Lara, the player view, a shared motion clock and semantic targets. The application owns settings and Intiface. Menus only launch, stop and configure.
@@ -192,11 +200,11 @@ Save the scene with its host and sequence. Press Play in that exact scene, then 
 
 The fresh Windows entry point is `validation/DazPoseUnityValidation/Builds/Authoring/DazPoseGame.exe`. Both example scenes completed saved-scene graphics Editor playback. The user accepted the remaining functional player checks on October 11, 2026. Artistic approval and the historical toe observation remain separate in [the acceptance record](docs/production-consolidation/authoring-reports/B08_MANUAL_CHECKS.md).
 
-## Serialized stories — D1–D5 source delivery, October 16, 2026
+## Legacy JSON story compatibility — historical D1–D5 delivery
 
 A saved `StoryProgramSequence` can now serve as the host's sequence. It reads a `dazpose.story` v1 JSON TextAsset, validates saved symbolic bindings before the first step and uses the same scoped `PerformanceRun` verbs. Existing C# sequences remain supported. Application-owned `Profile` stores interests, equipment and persistent story memory separately from settings/tuning; fresh story invocations own contract/session/world/local state.
 
-Choose **DazPose → Story → Build or Refresh First Contact D1-D5** in Edit Mode to configure the saved integration scene. Open `Assets/Production/Scenes/FirstContactD1D5.unity` for manual Play. Settings and scene negotiation reuse the same profile editors. F8 displays the optional Story snapshot. The program deliberately ends before cards/Director behavior.
+The former representative First Contact JSON scene has been migrated to the full `.dazstory` source. **DazPose → Story → Prepare First Contact Authoring** refreshes its saved production scene. Use **DazPose > Story > Prepare Full First Contact Session** for the full session. MainPosition1 and Bedside are movable scene transforms. The existing imported poses and engineering motions are bound; broader binding UX work is deferred. Settings and scene negotiation continue to share the same profile editors. See the current authoring guide above.
 
 Player body vocabulary is `await run.Player.DissolveBodyInAsync(seconds)` and `DissolveBodyOutAsync(seconds)`, using its saved prepared-male body binding and the existing finite dissolve engine. The player body retains the original male meshes and measured contact-column setup; it is not a Lara copy. The D1–D5 checkpoint does not include the later body-reveal beat.
 

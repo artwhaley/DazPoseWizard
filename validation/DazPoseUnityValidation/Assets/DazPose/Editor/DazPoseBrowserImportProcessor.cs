@@ -368,9 +368,10 @@ namespace DazPose.Editor.Importing
             var state = status == null ? string.Empty : status.state;
             if (string.Equals(state, "Converted", StringComparison.OrdinalIgnoreCase)
                 && string.Equals(storedHash, contentHash, StringComparison.OrdinalIgnoreCase) && outputIsUsable) return false;
+            // Missing output is expected after failure. Retry unchanged failures only on explicit reconciliation.
             if (string.Equals(state, "Failed", StringComparison.OrdinalIgnoreCase)
                 && string.Equals(storedHash, contentHash, StringComparison.OrdinalIgnoreCase)
-                && outputIsUsable && !retryFailed) return false;
+                && !retryFailed) return false;
 
             if (string.IsNullOrEmpty(storedHash) && outputIsUsable)
             {

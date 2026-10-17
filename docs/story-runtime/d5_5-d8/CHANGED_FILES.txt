@@ -1,0 +1,208 @@
+# D5.5-D8 delivery and diagnostics cleanup inventory
+.gitignore
+AGENTS.md
+AUTHORING_READINESS_BUILD_PLAN.md
+CONTENT_AUTHORING_API.md
+CONTENT_AUTHORING_WALKTHROUGH.md
+docs/production-consolidation/HANDOFF.md
+docs/production-consolidation/progress.json
+docs/story-runtime/D1_D5_HANDOFF.md
+docs/story-runtime/D5_5_HANDOFF.md
+docs/story-runtime/D6_D8_HANDOFF.md
+docs/story-runtime/DAZSTORY_AUTHORING.md
+docs/story-runtime/FIRST_CONTACT_D8_ORACLE.md
+docs/story-runtime/PRODUCTION_SCENES.md
+docs/story-runtime/SCHEMA_V1.md
+docs/story-runtime/d5_5-d8/CHANGED_FILES.txt
+docs/story-runtime/d5_5-d8/EXECUTION_LOG.md
+docs/story-runtime/d5_5-d8/REVISED_EXECUTION_STACK.md
+tests/DazPose.Story.Tests/DazPose.Story.Tests.csproj
+tests/DazPose.Story.Tests/LanguageTests.cs
+validation/DazPoseUnityValidation/Assets/DazExpressionImports.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Expressions - CDITJ8 GrumpyB.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Expressions - CDITJ8 GrumpyB.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Expressions - CDITJ8 Smile LipsOpen.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Expressions - CDITJ8 Smile LipsOpen.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Expressions - CDITJ8 Smile MouthOpen.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Expressions - CDITJ8 Smile MouthOpen.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Expressions - CDITJ8 Smile SideLeft.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Expressions - CDITJ8 Smile SideLeft.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Josephene 8 Expressions - CDI Josephene 8 Laugh.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Josephene 8 Expressions - CDI Josephene 8 Laugh.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Josephene 8 Expressions - CDI Josephene 8 Smile.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Josephene 8 Expressions - CDI Josephene 8 Smile.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Josephene 8 Expressions - CDI Josephene 8 SternA.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Josephene 8 Expressions - CDI Josephene 8 SternA.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Josephene 8 Expressions - CDI Josephene 8 SternB.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Josephene 8 Expressions - CDI Josephene 8 SternB.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Poses - CDITJ8 CrouchA.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Poses - CDITJ8 CrouchA.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Poses - CDITJ8 ReclineB.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Poses - CDITJ8 ReclineB.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Poses - CDITJ8 SitB.dazpose.json
+validation/DazPoseUnityValidation/Assets/DazExpressionImports/Poses - CDITJ8 SitB.dazpose.json.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/DazStoryImporter.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/DazStoryImporter.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/GamePlayerBuild.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryCheckpointPlaybackChecks.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryCheckpointPlaybackChecks.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryContentBindingsEditor.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryContentBindingsEditor.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryFoundationBuilder.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryFoundationBuilder.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryFoundationChecks.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryFoundationChecks.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryFullSessionChecks.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryFullSessionChecks.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryFullSessionSetup.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryFullSessionSetup.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryImportedPoseSetup.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StoryImportedPoseSetup.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StorySceneBuilder.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/Application/StorySourceChecks.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/DazPoseBrowserImportProcessor.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/DazPoseJsonLoader.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Editor/LaraCandidateRenderValidation.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Effects/MagicShader.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Effects/MagicShader/GlowingWireframe.shader
+validation/DazPoseUnityValidation/Assets/DazPose/Effects/MagicShader/GlowingWireframe.shader.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/GameApplication.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceHost.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceRun.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/ScopedPerformer.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/ScopedPlayer.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/ScopedToys.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerMagicShaderPresentation.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerMagicShaderPresentation.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerMagicShaderProfile.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerMagicShaderProfile.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeating.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeatingLayer.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.SeatedPresentation.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.SeatedPresentation.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.StoryPresentation.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.StoryPresentation.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/PerformerWardrobe.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/CompiledStoryProgram.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/CompiledStoryProgram.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/DazStoryCompiler.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/DazStoryCompiler.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryCards.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryCards.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryCommandDescription.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryCommandDescription.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryMachine.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryMachine.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryParser.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryParser.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryPlaybackWindow.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryPlaybackWindow.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StorySignalHub.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StorySignalHub.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/CompiledStoryAsset.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/CompiledStoryAsset.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/PerformanceStoryHost.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/PerformanceStoryHost.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StoryContentBindings.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StoryContentBindings.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StoryProgramSequence.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StoryRunner.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StoryRuntimeContext.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StoryRuntimeSnapshot.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StorySceneBindings.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/SessionContract.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/UI/StoryDebugPresenter.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/UI/StoryPromptService.Actions.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/UI/StoryPromptService.Actions.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/UI/StoryPromptService.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/Buttplug/ButtplugToyBackend.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/Day3RegressionRunner.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/Day4RegressionRunner.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/DazGraftPairProbe.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/RemediationValidation.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/RemediationBuild.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/RemediationAssemblyBuildSentinel.cs.meta
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/RemediationAuthorSurfaceRunner.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/RemediationContentPreflightRunner.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/RemediationPersistentOwnershipRunner.cs
+validation/DazPoseUnityValidation/Assets/DazPose/Validation/RemediationScopedCommandRunner.cs
+validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerBodyPresence.cs
+validation/DazPoseUnityValidation/Assets/Production/Application/SceneCatalog.asset
+validation/DazPoseUnityValidation/Assets/Production/Scenes/FirstContactD1D5.unity
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_01_Intro_BraveEnough.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_01_Intro_BraveEnough.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_02_Intro_DigitalHallucination.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_02_Intro_DigitalHallucination.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_03_Intro_Intrusion.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_03_Intro_Intrusion.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_04_Intro_Conditions.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_04_Intro_Conditions.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_05_Intro_ControlBargain.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_05_Intro_ControlBargain.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_06_Setup_NotBad.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_06_Setup_NotBad.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_07_Setup_SubmissionScore.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_07_Setup_SubmissionScore.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_08_Setup_Equipment.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_08_Setup_Equipment.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_09_Setup_Clothing.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_09_Setup_Clothing.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_10_Clothing_Naked.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_10_Clothing_Naked.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_11_Clothing_OneOrTwo.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_11_Clothing_OneOrTwo.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_12_Clothing_TooDressed.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_12_Clothing_TooDressed.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_13_Warmup_Start.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_13_Warmup_Start.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_14_Warmup_RemoveRest.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_14_Warmup_RemoveRest.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_15_Main_Start.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_15_Main_Start.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_16_Climax_Start.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_16_Climax_Start.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_17_Resolution_Assignment.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_17_Resolution_Assignment.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_18_Resolution_ThinkingAboutMe.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_18_Resolution_ThinkingAboutMe.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_19_Resolution_Goodbye.wav
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_19_Resolution_Goodbye.wav.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/README.json
+validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/README.json.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/FirstContactMarks.prefab
+validation/DazPoseUnityValidation/Assets/Production/Story/Gestures.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Gestures/Engineering.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Gestures/Engineering/Disapproval_Engineering.anim
+validation/DazPoseUnityValidation/Assets/Production/Story/Gestures/Engineering/Disapproval_Engineering.anim.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Gestures/Engineering/Disapproval_Engineering.asset
+validation/DazPoseUnityValidation/Assets/Production/Story/Gestures/Engineering/Disapproval_Engineering.asset.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Motion.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Motion/Engineering.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Motion/Engineering/FinishLoop_Engineering.funscript
+validation/DazPoseUnityValidation/Assets/Production/Story/Motion/Engineering/FinishLoop_Engineering.funscript.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Motion/Engineering/Finisher1_Engineering.funscript
+validation/DazPoseUnityValidation/Assets/Production/Story/Motion/Engineering/Finisher1_Engineering.funscript.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Motion/Engineering/README.txt
+validation/DazPoseUnityValidation/Assets/Production/Story/Motion/Engineering/README.txt.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.bindings.asset
+validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.bindings.asset.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory
+validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dialogue-map.json
+validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dialogue-map.json.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Visuals.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Visuals/GlowyWireframe.asset
+validation/DazPoseUnityValidation/Assets/Production/Story/Visuals/GlowyWireframe.asset.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Visuals/GlowyWireframe.mat
+validation/DazPoseUnityValidation/Assets/Production/Story/Visuals/GlowyWireframe.mat.meta
+validation/DazPoseUnityValidation/Assets/Production/Story/Visuals/Regular.asset
+validation/DazPoseUnityValidation/Assets/Production/Story/Visuals/Regular.asset.meta
+validation/DazPoseUnityValidation/DazPoseWizard.project.json

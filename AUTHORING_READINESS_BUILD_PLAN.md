@@ -1,5 +1,11 @@
 # Authoring readiness build plan
 
+Subsequent story-authoring work is governed by the user's revised D5.5–D8 stack in
+[REVISED_EXECUTION_STACK.md](docs/story-runtime/d5_5-d8/REVISED_EXECUTION_STACK.md).
+It explicitly supersedes this older plan's C#-only/representative-story limitations
+for First Contact. The current source is .dazstory; unchanged application, rig, art
+and tuning decisions below still apply. The user authorized complete D6-D8 execution on October 17, including movable MainPosition1 and Bedside transforms. See the [current full-session handoff](docs/story-runtime/D6_D8_HANDOFF.md).
+
 Status: implementation authorized October 8, 2026; B01–B05 complete; B06–B07 implementation and Editor acceptance passed; B08 build, direct saved-scene player and user menu-start retest passed; remaining persistence/replay and visual observations pending. Reconciled against three reviews October 8, 2026.
 
 This is the current plan for the authoring-readiness sprint. It incorporates the user's eight corrections to the architecture audit and supersedes conflicting requirements in the seven-day plan, remediation contract and previous audit proposal. Days 1–5 and recorded remediation evidence remain historical accomplishments; they do not prove this work is implemented. The user subsequently authorized implementation and execution. Current results are recorded in the implementation handoff below and the shared progress record.

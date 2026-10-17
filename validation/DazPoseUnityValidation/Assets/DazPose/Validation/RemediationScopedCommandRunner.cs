@@ -94,7 +94,7 @@ namespace DazPose.Validation
                     first + ", " + second);
             }
             catch (Exception exception) { Record("serialTypedSuccess", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckConcurrentSpeechAndGaze()
@@ -112,7 +112,7 @@ namespace DazPose.Validation
                     speechResult + ", " + gazeResult);
             }
             catch (Exception exception) { Record("concurrentSpeechAndGaze", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(target); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(target); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckSynchronousStartException()
@@ -127,7 +127,7 @@ namespace DazPose.Validation
             catch (PerformanceCommandException exception)
             { Record("synchronousValidationException", exception.OriginalStatus == "StartException", exception.ToString()); }
             catch (Exception exception) { Record("synchronousValidationException", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckUnexpectedTypedResultAndReplacement()
@@ -154,7 +154,7 @@ namespace DazPose.Validation
                 { Record("externalReplacementSurvivesStaleCancellation", false, replacementException.ToString()); }
             }
             catch (Exception exception) { Record("unexpectedTypedResult", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckStopBeforeStartAndIdempotence()
@@ -170,7 +170,7 @@ namespace DazPose.Validation
             catch (OperationCanceledException exception)
             { Record("stopBeforeStart", true, exception.Message); }
             catch (Exception exception) { Record("stopBeforeStart", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckStopDuringRequest()
@@ -186,7 +186,7 @@ namespace DazPose.Validation
             }
             catch (OperationCanceledException exception) { Record("stopDuringRequest", true, exception.Message); }
             catch (Exception exception) { Record("stopDuringRequest", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckStopDuringScaledDelay()
@@ -205,7 +205,7 @@ namespace DazPose.Validation
             }
             catch (OperationCanceledException exception) { Record("stopDuringPausedDelay", true, exception.Message); }
             catch (Exception exception) { Record("stopDuringPausedDelay", false, exception.ToString()); }
-            finally { Time.timeScale = originalScale; run.Dispose(); DestroyObject(holder); }
+            finally { Time.timeScale = originalScale; run.Dispose(); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckFirstFailureCancelsSibling()
@@ -222,7 +222,7 @@ namespace DazPose.Validation
                     siblingCancelled ? "pending sibling cancelled" : "pending sibling remained active");
             }
             catch (Exception exception) { Record("firstFailureCancelsPendingSibling", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckStopFinishRace()
@@ -236,7 +236,7 @@ namespace DazPose.Validation
                 Record("stopFinishRaceSettlesOnce", true, "completion settled once under Stop/finish race");
             }
             catch (Exception exception) { Record("stopFinishRaceSettlesOnce", false, exception.ToString()); }
-            finally { run.Dispose(); DestroyObject(holder); }
+            finally { run.Dispose(); DestroyFixtureObject(holder); }
         }
 
         private async Awaitable CheckInvalidBegin()
@@ -258,7 +258,7 @@ namespace DazPose.Validation
                 }
                 catch (PerformanceCommandException exception)
                 { Record("beginDoesNotCertifySpeech", false, exception.ToString()); }
-                finally { DestroyObject(holder); }
+                finally { DestroyFixtureObject(holder); }
             }
             catch (Exception exception) { Record("beginDoesNotCertifySpeech", false, exception.ToString()); }
             finally { SetField(actor, "speechAudioSource", original); await Awaitable.NextFrameAsync(); }
@@ -298,7 +298,7 @@ namespace DazPose.Validation
             BindingFlags.Instance | BindingFlags.NonPublic).GetValue(owner);
         private static void SetField(object owner, string name, object value) => owner.GetType().GetField(name,
             BindingFlags.Instance | BindingFlags.NonPublic).SetValue(owner, value);
-        private static void DestroyObject(UnityEngine.Object value)
+        private static void DestroyFixtureObject(UnityEngine.Object value)
         {
             if (value == null) return;
 #if UNITY_EDITOR

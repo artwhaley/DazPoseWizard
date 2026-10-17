@@ -1,0 +1,103 @@
+{
+  "purpose": "Disposable female-voiced placeholder dialogue for the complete deterministic D8 target scene.",
+  "voice": "eSpeak en-us+f3; engineering placeholder only.",
+  "scope_note": "Includes every fixed Lara.Say beat in the supplied D8 script. Does not invent dialogue for Director-drawn Warmup/Main/Resolution cards because those card bodies have not been authored yet.",
+  "clip_count": 19,
+  "clips": [
+    {
+      "index": 1,
+      "file": "D8_01_Intro_BraveEnough.wav",
+      "text": "Hi there. I was hoping you were brave enough to meet me."
+    },
+    {
+      "index": 2,
+      "file": "D8_02_Intro_DigitalHallucination.wav",
+      "text": "I'm Lara. I'm a digital hallucination."
+    },
+    {
+      "index": 3,
+      "file": "D8_03_Intro_Intrusion.wav",
+      "text": "Well, more than a hallucination. A bit of a... projection. An intrusion? I like that one. Intrusion."
+    },
+    {
+      "index": 4,
+      "file": "D8_04_Intro_Conditions.wav",
+      "text": "I'm the most fun you've ever had. But I come with... conditions."
+    },
+    {
+      "index": 5,
+      "file": "D8_05_Intro_ControlBargain.wav",
+      "text": "I can only give you pleasure if I have the power to do so. The more you give up to me, the more I can do for you. Let's see what you're giving up, tonight."
+    },
+    {
+      "index": 6,
+      "file": "D8_06_Setup_NotBad.wav",
+      "text": "Not bad for a start."
+    },
+    {
+      "index": 7,
+      "file": "D8_07_Setup_SubmissionScore.wav",
+      "text": "This is your submission score. The more activities you consent to, the higher it goes, but... I don't want you bending past your real limits. Honesty is important. But... so's letting me try new things. So next time we start a scene... look for things you're willing to try for me and let me know if you come up with any."
+    },
+    {
+      "index": 8,
+      "file": "D8_08_Setup_Equipment.wav",
+      "text": "Now let's look at your equipment... Not that equipment, yet."
+    },
+    {
+      "index": 9,
+      "file": "D8_09_Setup_Clothing.wav",
+      "text": "And finally, tell me what you're wearing...."
+    },
+    {
+      "index": 10,
+      "file": "D8_10_Clothing_Naked.wav",
+      "text": "Now that's a go-getter. The less you wear to our sessions, the better."
+    },
+    {
+      "index": 11,
+      "file": "D8_11_Clothing_OneOrTwo.wav",
+      "text": "I like you naked, but I can wait to get you there..."
+    },
+    {
+      "index": 12,
+      "file": "D8_12_Clothing_TooDressed.wav",
+      "text": "That's way too dressed. The fewer you wear the happier I am. In fact... take one off now."
+    },
+    {
+      "index": 13,
+      "file": "D8_13_Warmup_Start.wav",
+      "text": "Alright, let's get you warmed up."
+    },
+    {
+      "index": 14,
+      "file": "D8_14_Warmup_RemoveRest.wav",
+      "text": "I think it's time to lose the rest of the clothes... do that and tell me when you're back."
+    },
+    {
+      "index": 15,
+      "file": "D8_15_Main_Start.wav",
+      "text": "That was all the warmup I'm going to give you. Now let's get down to business."
+    },
+    {
+      "index": 16,
+      "file": "D8_16_Climax_Start.wav",
+      "text": "I'm amused enough, I suppose. And since this is your first time, I'm not going to frustrate you... or even make you beg. I'm just going to make you cum."
+    },
+    {
+      "index": 17,
+      "file": "D8_17_Resolution_Assignment.wav",
+      "text": "Well, you seem to understand the assignment. Some times you're going to have to work for it. Some times you may have to work and not even get it then. It all depends on my mood, and how much you decide to trust me."
+    },
+    {
+      "index": 18,
+      "file": "D8_18_Resolution_ThinkingAboutMe.wav",
+      "text": "Now, how am I going to keep you thinking about me until our next session?"
+    },
+    {
+      "index": 19,
+      "file": "D8_19_Resolution_Goodbye.wav",
+      "text": "Alright, that's our session for tonight. Until next time... behave. Or don't. I get off either way. Bye!"
+    }
+  ]
+}

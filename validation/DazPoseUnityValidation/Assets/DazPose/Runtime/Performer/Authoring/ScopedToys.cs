@@ -52,7 +52,7 @@ namespace DazPose.Performer
         public void MoveTo(float position, float seconds) =>
             Submit(() => service.MoveTo(position, seconds), ToyOutputCapability.Position);
 
-        public void Follow() => Follow(run.Playback);
+        public void Follow() => Follow(run.PlaybackDriver);
         public void Follow(MotionDriver driver)
         {
             if (!Active || driver == null) return;

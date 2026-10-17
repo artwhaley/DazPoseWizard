@@ -62,6 +62,12 @@ namespace DazPose.Performer
             run.RegisterPersistentCleanup(player.View.CaptureOrientationCancellation());
         }
 
+        public void StartAt(Transform location) {
+            run.ThrowIfActive();
+            if(location==null) throw new ArgumentNullException(nameof(location));
+            player.View.ResetPerformanceView(location.position,location.rotation);
+        }
+        public void StartBodyHiddenAt(Transform location) { run.ThrowIfActive(); RequireBody().StartHiddenAt(location); }
         private PlayerBodyPresence RequireBody() => player.BodyPresence != null ? player.BodyPresence
             : throw new InvalidOperationException("Assign PlayerController.bodyPresence for player body commands.");
         public PlayerBodyVisibilityState BodyVisibilityState => RequireBody().VisibilityState;

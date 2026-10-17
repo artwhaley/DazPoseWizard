@@ -177,7 +177,7 @@ namespace DazPose.Remediation
             string projectRoot = Directory.GetParent(Application.dataPath).FullName;
             string executablePath = Path.Combine(outputDirectory, role == "validation" ? "RemediationValidation.exe" : "ProductionRuntimeSmoke.exe");
             Directory.CreateDirectory(outputDirectory);
-            string symbolsBefore = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+            string symbolsBefore = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.Standalone);
             var options = new BuildPlayerOptions
             {
                 scenes = new[] { scenePath },
@@ -187,7 +187,7 @@ namespace DazPose.Remediation
                 extraScriptingDefines = defines
             };
             BuildReport report = BuildPipeline.BuildPlayer(options);
-            string symbolsAfter = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+            string symbolsAfter = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.Standalone);
             var managedHashes = new List<string>();
             if (report != null && report.GetFiles() != null)
             {
@@ -227,7 +227,7 @@ namespace DazPose.Remediation
 
         private static void EnsureMonoBackend()
         {
-            ScriptingImplementation backend = PlayerSettings.GetScriptingBackend(BuildTargetGroup.Standalone);
+            ScriptingImplementation backend = PlayerSettings.GetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone);
             if (backend != ScriptingImplementation.Mono2x)
                 throw new InvalidOperationException("R12 requires the existing Windows Standalone Mono2x backend; found " + backend
                     + ". Build configuration was not modified.");

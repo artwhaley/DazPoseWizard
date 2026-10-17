@@ -94,7 +94,7 @@ namespace DazPose.UnityValidation
                 anatomy.CapturedOpening = 0; anatomy.Nipples = 0; anatomy.Apply();
                 renderer.SetBlendShapeWeight(renderer.sharedMesh.GetBlendShapeIndex("Genesis8Female__eCTRLEyesClosedL"),0);
                 Capture(camera,target,output + "/lara-neutral.png");
-                foreach (var item in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None))
+                foreach (var item in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include))
                     Debug.Log("LARA_RENDERER_INVENTORY: " + item.name + " / " + item.GetType().Name + " / " + item.enabled
                         + " / " + string.Join(",",item.sharedMaterials.Select(m => m == null ? "null" : m.name)));
                 foreach (float weight in new[] { 100f, 300f, 600f })

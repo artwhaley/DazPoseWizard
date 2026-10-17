@@ -1,3 +1,5 @@
+// This historical regression runner intentionally exercises the obsolete compatibility adapter.
+#pragma warning disable CS0618
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -327,7 +329,7 @@ namespace DazPose.Validation
                 () => actor.GripAsync(contactRod), GripCompletion.Released, "grip acquisition");
             Action cancel = actor.CaptureCancellation(PerformanceCommand.Grip);
             bool strictMovementWasBusy = false;
-            try { actor.WalkToAsync(moveMark, true); }
+            try { _ = actor.WalkToAsync(moveMark, true); }
             catch (PerformanceBusyException) { strictMovementWasBusy = true; }
             Record("Strict movement reports Busy while contact owns the arm", strictMovementWasBusy,
                 "Grip state at strict movement request=" + actor.GripState);
@@ -559,3 +561,4 @@ namespace DazPose.Validation
         }
     }
 }
+#pragma warning restore CS0618

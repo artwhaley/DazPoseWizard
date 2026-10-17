@@ -53,6 +53,11 @@ namespace DazPose.Player {
   }
   void Awake() { EnsureDriver(); }
   void Update() { driver?.Advance(Time.deltaTime); }
+  public void StartHiddenAt(Transform location) {
+   if(location==null) throw new ArgumentNullException(nameof(location)); EnsureDriver();
+   if(driver.IsDissolving) throw new InvalidOperationException("Player-body setup cannot interrupt a transition.");
+   transform.SetPositionAndRotation(location.position,location.rotation); driver.SetStableVisibility(true);
+  }
   public Awaitable<VisibilityCompletion> DissolveInAsync(float seconds=3f) {
    EnsureDriver(); var source=new AwaitableCompletionSource<VisibilityCompletion>();
    driver.DissolveIn(seconds,source); return source.Awaitable;

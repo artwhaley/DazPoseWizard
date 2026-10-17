@@ -26,7 +26,7 @@ namespace DazPose.UnityValidation
             var unsupportedActiveChannel = (definition.poseChannels ?? Array.Empty<DazPoseChannel>())
                 .FirstOrDefault(channel => channel != null && !channel.supported
                     && !(ignoreUnsupportedSkeletalChannels && IsSkeletalTransformChannel(channel))
-                    && (channel.keys ?? Array.Empty<DazPoseKey>()).Any(key => key != null && Mathf.Abs(key.value) > 1e-7f));
+                    && HasNonNeutralKeys(channel));
             if (unsupportedActiveChannel != null)
                 throw new InvalidDataException("Canonical pose contains an unsupported non-neutral property '" + unsupportedActiveChannel.url + "'. It cannot be applied or converted to a clip without an explicit mapping.");
 
@@ -47,6 +47,15 @@ namespace DazPose.UnityValidation
                 + " | bones " + definition.bones.Length + " | channels "
                 + (definition.poseChannels == null ? 0 : definition.poseChannels.Length));
             return definition;
+        }
+
+        private static bool HasNonNeutralKeys(DazPoseChannel channel)
+        {
+            // DAZ scale channels are absolute multipliers; identity is 1, not 0.
+            var neutral = channel.property == "scale" ? 1f : 0f;
+            return (channel.keys ?? Array.Empty<DazPoseKey>()).Any(key => key != null
+                && (float.IsNaN(key.value) || float.IsInfinity(key.value)
+                    || Math.Abs(key.value - neutral) > 1e-7f));
         }
 
         private static bool IsSkeletalTransformChannel(DazPoseChannel channel)

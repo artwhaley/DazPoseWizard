@@ -624,8 +624,7 @@ namespace DazPose.FirstPerformanceVoid
         {
             if (handGripAcceptanceHarness == null)
             {
-                HandGripAcceptanceHarness[] candidates = UnityEngine.Object.FindObjectsByType<HandGripAcceptanceHarness>(
-                    FindObjectsSortMode.None);
+                HandGripAcceptanceHarness[] candidates = UnityEngine.Object.FindObjectsByType<HandGripAcceptanceHarness>();
                 for (int index = 0; index < candidates.Length; index++)
                 {
                     if (candidates[index] == null || candidates[index].gameObject.scene != gameObject.scene) continue;

@@ -44,7 +44,7 @@ namespace DazPose.UnityValidation
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             Build();
-            var body = FindBody(UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsSortMode.None));
+            var body = FindBody(UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>());
             Selection.activeGameObject = body.gameObject;
             DazGraftProbeWindow.ShowFor(body);
             var view = SceneView.lastActiveSceneView;

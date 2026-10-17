@@ -98,7 +98,6 @@ namespace DazPose.Toys
         private bool _connectInFlight;
         private bool _scanRequested;
         private bool _scanInFlight;
-        private bool _scanStartedOnConnection;
         private float _nextReconnectAt;
         private float _retryDelaySeconds = 1f;
         private int _lifecycleGeneration;
@@ -173,7 +172,7 @@ namespace DazPose.Toys
             while (_mainThreadEvents.TryDequeue(out Action callback))
             {
                 try { callback(); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
             }
 
             bool paused = Time.timeScale <= 0f;
@@ -229,7 +228,6 @@ namespace DazPose.Toys
             }
 
             _connectRequested = true;
-            _scanStartedOnConnection = false;
             _retryDelaySeconds = 1f;
             _nextReconnectAt = 0f;
             EnsureBackend();
@@ -253,7 +251,6 @@ namespace DazPose.Toys
         public Task StartScanningAsync()
         {
             _scanRequested = true;
-            _scanStartedOnConnection = false;
             if (!IsConnected) return Task.CompletedTask;
             return StartScanAttemptAsync();
         }
@@ -261,7 +258,6 @@ namespace DazPose.Toys
         public Task StopScanningAsync()
         {
             _scanRequested = false;
-            _scanStartedOnConnection = false;
             return RunBackendOperation(backend => backend.StopScanningAsync(), "stop scanning");
         }
 
@@ -650,7 +646,6 @@ namespace DazPose.Toys
                 await _backend.ConnectAsync(serverAddress);
                 if (IsConnected)
                 {
-                    _scanStartedOnConnection = false;
                     _retryDelaySeconds = 1f;
                     _nextReconnectAt = 0f;
                     if (_scanRequested) await StartScanAttemptAsync();
@@ -688,7 +683,7 @@ namespace DazPose.Toys
             _scanInFlight = true;
             try { await _backend.StartScanningAsync(); }
             catch (Exception exception) { _lastOutputError = exception.Message; }
-            finally { _scanInFlight = false; _scanStartedOnConnection = true; }
+            finally { _scanInFlight = false; }
         }
 
         private void SetIntensity(ToyOutputCapability capability, float value, int? channel)
@@ -1529,7 +1524,7 @@ namespace DazPose.Toys
                 }
                 else await disconnect;
             }
-            catch (Exception exception) {  }
+            catch (Exception) {  }
             finally { if (disposeBackend) backend.Dispose(); }
         }
 
@@ -1549,7 +1544,6 @@ namespace DazPose.Toys
         private void OnBackendStateChanged(ToyConnectionState state, string message) =>
             _mainThreadEvents.Enqueue(() =>
             {
-                _scanStartedOnConnection = false;
                 if (state != ToyConnectionState.Connected)
                 {
                     InvalidatePendingOutputs();
@@ -1569,7 +1563,7 @@ namespace DazPose.Toys
             if (handlers == null) return;
             foreach (Delegate callback in handlers.GetInvocationList())
                 try { ((Action<ToyConnectionState, string>)callback)(state, message); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
         }
 
         private void RaiseDeviceAdded(ToyDevice device)
@@ -1578,7 +1572,7 @@ namespace DazPose.Toys
             if (handlers == null) return;
             foreach (Delegate callback in handlers.GetInvocationList())
                 try { ((Action<ToyDevice>)callback)(device); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
         }
 
         private void RaiseDeviceRemoved(uint index)
@@ -1587,7 +1581,7 @@ namespace DazPose.Toys
             if (handlers == null) return;
             foreach (Delegate callback in handlers.GetInvocationList())
                 try { ((Action<uint>)callback)(index); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
         }
 
         private void RaiseScanningChanged(bool scanning)
@@ -1596,7 +1590,7 @@ namespace DazPose.Toys
             if (handlers == null) return;
             foreach (Delegate callback in handlers.GetInvocationList())
                 try { ((Action<bool>)callback)(scanning); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
         }
 
         private static uint ToMilliseconds(float seconds)

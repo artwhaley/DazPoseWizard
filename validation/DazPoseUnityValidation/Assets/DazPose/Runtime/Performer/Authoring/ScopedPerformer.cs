@@ -13,12 +13,18 @@ namespace DazPose.Performer
         internal ScopedPerformer(PerformanceRun owner, SuccubusPerformer boundActor)
         { run = owner; actor = boundActor; }
 
+        public void StartHiddenAt(Transform location) { run.ThrowIfActive(); actor.StartHiddenAt(location); }
+        public void StartConfiguredIdle() { run.ThrowIfActive(); actor.StartConfiguredIdle(); }
         public WardrobeState CurrentWardrobe => actor.CurrentWardrobe;
         public PerformerVisibilityState VisibilityState => actor.VisibilityState;
         public bool IsSpeaking => actor.IsSpeaking;
         public bool IsGripping => actor.IsGripping;
         public bool IsSeated => actor.SeatingState==PerformerSeatingState.BasicSeated || actor.SeatingState==PerformerSeatingState.CrossLegsSeated;
 
+        public Awaitable<bool> MagicShaderAsync(PerformerMagicShaderProfile profile) =>
+            run.Execute("MagicShader", () => actor.MagicShaderAsync(profile), result => result,
+                captureCancellation: () => actor.CaptureMagicShaderRestoration(),
+                captureOwnership: () => actor.CaptureMagicShaderRestoration());
         public Awaitable<PoseCompletion> PoseAsync(PerformerPose pose) => PoseAsync(pose, actor.DefaultPoseTransition);
         public Awaitable<PoseCompletion> PoseAsync(PerformerPose pose, PoseTransition transition) =>
             run.Execute("Pose", () => actor.PoseAsync(pose, transition), result => result == PoseCompletion.Settled,
@@ -108,6 +114,13 @@ namespace DazPose.Performer
                 result => result.ToString(), captureCancellation: () => actor.CaptureCancellation(PerformanceCommand.Movement),
                 captureOwnership: () => actor.CapturePersistentCancellation(PerformanceCommand.Movement));
 
+        public Awaitable<PoseCompletion> PersistentSitPoseAsync(PerformerPose pose) =>
+            run.Execute("PersistentSitPose",()=>actor.PersistentSitPoseAsync(pose),result=>result==PoseCompletion.Settled,
+                result=>result.ToString(),captureCancellation:()=>actor.CaptureSeatedPoseCancellation(),captureOwnership:()=>actor.CaptureSeatedPoseCancellation());
+        public Awaitable<DissolveCompletion> StoryDissolveToAsync(Transform location,PerformerSeat seat,PerformerPose pose,float seconds) =>
+            seat==null && !IsSeated ? DissolveToAsync(location,seconds,pose) :
+            run.Execute("DissolveTo",()=>actor.RelocatePresentationAsync(location,seat,pose,seconds),result=>result==DissolveCompletion.Arrived,
+                result=>result.ToString(),captureCancellation:()=>actor.CapturePresentationRelocationCancellation());
         public Awaitable<SeatingCompletion> SitAtAsync(PerformerSeat seat) =>
             run.Execute("SitAt", () => actor.SitAtAsync(seat), result => result == SeatingCompletion.Seated,
                 result => result.ToString(), captureCancellation: () => actor.CaptureCancellation(PerformanceCommand.Seating));

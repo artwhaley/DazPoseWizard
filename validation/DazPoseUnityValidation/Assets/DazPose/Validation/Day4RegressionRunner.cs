@@ -1,3 +1,5 @@
+// This historical regression runner intentionally exercises the obsolete compatibility adapter.
+#pragma warning disable CS0618
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -737,3 +739,4 @@ namespace DazPose.UnityValidation
         }
     }
 }
+#pragma warning restore CS0618

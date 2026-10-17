@@ -42,6 +42,8 @@ namespace DazPose.Performer
         public ScopedToys Toys => scopedToys;
         [Obsolete("Use StartPlayback, StopPlayback and read-only playback state.")]
         public MotionDriver Playback => playback;
+        // Internal adapters share the run-owned clock without exposing a mutable author API.
+        internal MotionDriver PlaybackDriver => playback;
         public bool IsPlaybackRunning => playback!=null && playback.IsRunning;
         public float PlaybackPosition01 => playback!=null ? playback.CurrentSample.Position01 : 0f;
         public IGripTarget ContactTarget => bindings.ContactTarget;

@@ -433,7 +433,7 @@ namespace DazPose.Toys.Buttplug
             if (client == null) return;
             Unsubscribe(client);
             try { client.Dispose(); }
-            catch (Exception exception) {  }
+            catch (Exception) {  }
         }
 
         private void SynchronizeDevices(IEnumerable<ButtplugClientDevice> currentDevices)
@@ -650,7 +650,7 @@ namespace DazPose.Toys.Buttplug
             foreach (Delegate callback in handlers.GetInvocationList())
             {
                 try { ((Action<ToyConnectionState, string>)callback)(state, message); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
             }
         }
 
@@ -661,7 +661,7 @@ namespace DazPose.Toys.Buttplug
             foreach (Delegate callback in handlers.GetInvocationList())
             {
                 try { ((Action<ToyDevice>)callback)(device); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
             }
         }
 
@@ -672,7 +672,7 @@ namespace DazPose.Toys.Buttplug
             foreach (Delegate callback in handlers.GetInvocationList())
             {
                 try { ((Action<uint>)callback)(index); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
             }
         }
 
@@ -683,7 +683,7 @@ namespace DazPose.Toys.Buttplug
             foreach (Delegate callback in handlers.GetInvocationList())
             {
                 try { ((Action<bool>)callback)(scanning); }
-                catch (Exception exception) {  }
+                catch (Exception) {  }
             }
         }
     }

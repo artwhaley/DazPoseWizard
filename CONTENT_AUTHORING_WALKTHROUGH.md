@@ -1,5 +1,7 @@
 # Author your first scene
 
+For current First Contact scene choreography, use the readable [.dazstory guide](docs/story-runtime/DAZSTORY_AUTHORING.md). This earlier walkthrough describes the supported typed C# authoring alternative and shared production tools; it is not the current story-language tutorial.
+
 This walkthrough uses the implemented production path in `validation/DazPoseUnityValidation`. Paths beginning with `Assets/` below are Unity Project-window paths. The API reference is [CONTENT_AUTHORING_API.md](CONTENT_AUTHORING_API.md).
 
 Player navigation, Settings persistence, Stop/Start, Restart and scene switching were accepted by the user on October 11, 2026. This exercise measures how comfortably a new scene can be authored and how the resulting performance feels.

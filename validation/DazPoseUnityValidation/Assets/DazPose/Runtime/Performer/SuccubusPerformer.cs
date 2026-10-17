@@ -27,7 +27,7 @@ namespace DazPose.Performer
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Animator))]
     [AddComponentMenu("Performer/Succubus Performer")]
-    public sealed class SuccubusPerformer : MonoBehaviour
+    public sealed partial class SuccubusPerformer : MonoBehaviour
     {
         [SerializeField] private Animator animator;
         [SerializeField] private PerformerPose initialPose = null;
@@ -1747,6 +1747,7 @@ namespace DazPose.Performer
         private PerformerDissolve RequireDissolveRuntime(string command,
             PerformerVisibilityState requiredState, bool requireStanding, object transitionOwner = null)
         {
+            if (MaterialMode != PerformerMaterialMode.Regular) throw new InvalidOperationException(command+" requires MagicShader(Regular) before a dissolve.");
             if (command == "DissolveTo") PrepareRootMovement(command);
             if (_wardrobeEffectTransitionOwner != null && !ReferenceEquals(_wardrobeEffectTransitionOwner, transitionOwner))
                 throw new InvalidOperationException(command + " is unavailable while a wardrobe scene transition owns the effect lifecycle.");
@@ -1835,6 +1836,7 @@ namespace DazPose.Performer
 
         private void DestroyRuntime()
         {
+            ++_storySeatGeneration;++_storyRelocateGeneration;
             if (_breathing != null) _lastBreathPhase = _breathing.BreathPhase;
             if (_bodyPose != null)
             {

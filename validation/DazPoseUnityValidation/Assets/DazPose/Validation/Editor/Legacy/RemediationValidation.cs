@@ -269,11 +269,11 @@ namespace DazPose.Remediation
                 AssetDatabase.ImportAsset(fixtureScene, ImportAssetOptions.ForceSynchronousImport);
             }
             var scene = EditorSceneManager.OpenScene(fixtureScene, OpenSceneMode.Single);
-            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<ClothingSetupPreviewRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<ClothingSetupPreviewRunner>(FindObjectsInactive.Include))
                 oldRunner.enabled = false;
-            var actor = UnityEngine.Object.FindFirstObjectByType<SuccubusPerformer>(FindObjectsInactive.Include);
+            var actor = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>(FindObjectsInactive.Include);
             if (actor == null) throw new InvalidOperationException("The copied ClothingSetup fixture has no SuccubusPerformer.");
-            var runner = UnityEngine.Object.FindFirstObjectByType<RemediationToeRunner>(FindObjectsInactive.Include);
+            var runner = UnityEngine.Object.FindAnyObjectByType<RemediationToeRunner>(FindObjectsInactive.Include);
             if (runner == null)
             {
                 var holder = new GameObject("Remediation Toe Runner");
@@ -292,11 +292,11 @@ namespace DazPose.Remediation
             const string fixtureScene = "Assets/Production/Scenes/RemediationToeValidation.unity";
             const string outputRoot = "Assets/Production/Wardrobe/Remediation/R03";
             var scene = EditorSceneManager.OpenScene(fixtureScene, OpenSceneMode.Single);
-            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<ClothingSetupPreviewRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<ClothingSetupPreviewRunner>(FindObjectsInactive.Include))
                 oldRunner.enabled = false;
-            foreach (var oldWitness in UnityEngine.Object.FindObjectsByType<RemediationToeRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var oldWitness in UnityEngine.Object.FindObjectsByType<RemediationToeRunner>(FindObjectsInactive.Include))
                 oldWitness.enabled = false;
-            var actor = UnityEngine.Object.FindFirstObjectByType<SuccubusPerformer>(FindObjectsInactive.Include);
+            var actor = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>(FindObjectsInactive.Include);
             if (actor == null) throw new InvalidOperationException("The toe fixture has no primary SuccubusPerformer.");
             var wardrobe = actor.GetComponent<PerformerWardrobe>();
             if (wardrobe == null || wardrobe.Catalog == null || wardrobe.Body == null)
@@ -333,7 +333,7 @@ namespace DazPose.Remediation
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
 
-            var isolation = UnityEngine.Object.FindObjectsByType<SuccubusPerformer>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+            var isolation = UnityEngine.Object.FindObjectsByType<SuccubusPerformer>(FindObjectsInactive.Include)
                 .FirstOrDefault(item => item != actor && item.name == "Remediation Toe Isolation Actor");
             if (isolation == null)
             {
@@ -344,7 +344,7 @@ namespace DazPose.Remediation
                 isolation = clone.GetComponent<SuccubusPerformer>();
             }
             if (isolation == null) throw new InvalidOperationException("R03 could not create its isolation actor.");
-            var runner = UnityEngine.Object.FindFirstObjectByType<RemediationToeRepairRunner>(FindObjectsInactive.Include);
+            var runner = UnityEngine.Object.FindAnyObjectByType<RemediationToeRepairRunner>(FindObjectsInactive.Include);
             if (runner == null)
             {
                 var holder = new GameObject("Remediation Toe Repair Runner");
@@ -369,7 +369,7 @@ namespace DazPose.Remediation
                 AssetDatabase.ImportAsset(fixtureScene, ImportAssetOptions.ForceSynchronousImport);
             }
             var scene = EditorSceneManager.OpenScene(fixtureScene, OpenSceneMode.Single);
-            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include))
                 oldRunner.enabled = false;
             var actor = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>();
             var partner = UnityEngine.Object.FindAnyObjectByType<PartnerBody>();
@@ -403,7 +403,7 @@ namespace DazPose.Remediation
                 AssetDatabase.ImportAsset(fixtureScene, ImportAssetOptions.ForceSynchronousImport);
             }
             var scene = EditorSceneManager.OpenScene(fixtureScene, OpenSceneMode.Single);
-            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include))
                 oldRunner.enabled = false;
             var actor = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>();
             var bindings = UnityEngine.Object.FindAnyObjectByType<PerformanceSceneBindings>();
@@ -439,7 +439,7 @@ namespace DazPose.Remediation
                 AssetDatabase.ImportAsset(fixtureScene, ImportAssetOptions.ForceSynchronousImport);
             }
             var scene = EditorSceneManager.OpenScene(fixtureScene, OpenSceneMode.Single);
-            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include))
                 oldRunner.enabled = false;
             var actor = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>();
             var bindings = UnityEngine.Object.FindAnyObjectByType<PerformanceSceneBindings>();
@@ -472,7 +472,7 @@ namespace DazPose.Remediation
                 AssetDatabase.ImportAsset(fixtureScene, ImportAssetOptions.ForceSynchronousImport);
             }
             var scene = EditorSceneManager.OpenScene(fixtureScene, OpenSceneMode.Single);
-            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include))
                 oldRunner.enabled = false;
             var actor = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>();
             var bindings = UnityEngine.Object.FindAnyObjectByType<PerformanceSceneBindings>();
@@ -529,7 +529,7 @@ namespace DazPose.Remediation
                 AssetDatabase.ImportAsset(fixtureScene, ImportAssetOptions.ForceSynchronousImport);
             }
             var scene = EditorSceneManager.OpenScene(fixtureScene, OpenSceneMode.Single);
-            foreach (var controls in UnityEngine.Object.FindObjectsByType<FirstPerformanceVoidControls>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var controls in UnityEngine.Object.FindObjectsByType<FirstPerformanceVoidControls>(FindObjectsInactive.Include))
                 controls.enabled = false;
             var firstContact = UnityEngine.Object.FindAnyObjectByType<FirstContactPerformance>();
             var actor = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>();
@@ -891,7 +891,7 @@ namespace DazPose.Remediation
             if (sentinelType == null || !typeof(MonoBehaviour).IsAssignableFrom(sentinelType))
                 throw new InvalidOperationException("R11 could not resolve its isolated validation-only player sentinel script.");
 
-            string symbolsBefore = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+            string symbolsBefore = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.Standalone);
             string outputRoot = Path.Combine(projectRoot, "TestOutput", "Remediation", "R11", runId);
             string productionOutput = Path.Combine(outputRoot, "Production", "DazPoseBoundary.exe");
             string validationOutput = Path.Combine(outputRoot, "Validation", "DazPoseBoundary.exe");
@@ -935,7 +935,7 @@ namespace DazPose.Remediation
             }
             finally
             {
-                string symbolsAfter = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+                string symbolsAfter = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.Standalone);
                 AssertR11(report, "validationDefineWasBuildOnly", "Standalone player scripting defines unchanged by R11",
                     string.Equals(symbolsBefore, symbolsAfter, StringComparison.Ordinal), "before='" + symbolsBefore + "'; after='" + symbolsAfter + "'");
                 if (sceneFilesSaved)
@@ -998,7 +998,7 @@ namespace DazPose.Remediation
                 capturedUtc = DateTime.UtcNow.ToString("O"),
                 sourceHash = report.sourceHash,
                 inputAssetHash = report.inputAssetHashes[0],
-                scriptingBackend = PlayerSettings.GetScriptingBackend(BuildTargetGroup.Standalone).ToString(),
+                scriptingBackend = PlayerSettings.GetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone).ToString(),
                 authoredSourceScene = RemediationBuild.AuthoredSourceScene,
                 authoredSourceSceneSha256Before = scenes.authoredSceneSha256Before,
                 authoredSourceSceneSha256After = RemediationBuild.HashAsset(RemediationBuild.AuthoredSourceScene),
@@ -1153,7 +1153,7 @@ namespace DazPose.Remediation
                     throw new IOException("Could not copy the saved Day4 fixture for R09 execution.");
                 bool sceneWasPresent = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) != null;
                 var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
-                foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                foreach (var oldRunner in UnityEngine.Object.FindObjectsByType<Day4RegressionRunner>(FindObjectsInactive.Include))
                     oldRunner.enabled = false;
                 SuccubusPerformer actorOwner = UnityEngine.Object.FindAnyObjectByType<SuccubusPerformer>(FindObjectsInactive.Include);
                 PerformanceSceneBindings sceneBindings = UnityEngine.Object.FindAnyObjectByType<PerformanceSceneBindings>(FindObjectsInactive.Include);

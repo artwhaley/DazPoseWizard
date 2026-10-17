@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace DazPose.Performer
@@ -196,6 +197,7 @@ namespace DazPose.Performer
             if (_state != PerformerSeatingState.BasicSeated && _state != PerformerSeatingState.CrossLegsSeated)
                 throw new InvalidOperationException("StandUp can begin only after the current sit/style transition reaches a stable seated state.");
 
+            ClearPersistentPose();
             if (waiter != null) _standWaiters.Add(waiter);
             if (_currentStyle == PerformerSeatedStyle.CrossLegs) BeginPreparingUncross(true);
             else BeginSitEnd();
@@ -257,6 +259,32 @@ namespace DazPose.Performer
                 throw new InvalidOperationException("WalkTo is unavailable while the performer is sitting down, seated, changing seated style, or standing up. Await StandUpAsync() first.");
         }
 
+        private Transform _persistentHip;
+        public bool HasPersistentPose=>_layer.HasPersistentPose;
+        public bool PersistentPoseSettled => _layer.PersistentPoseSettled;
+        public void SetPersistentPose(PerformerPose pose,PoseTransition transition)
+        {
+            if(_state!=PerformerSeatingState.BasicSeated && _state!=PerformerSeatingState.CrossLegsSeated)throw new InvalidOperationException("PersistentSitPose requires stable seat ownership.");
+            _persistentHip=_actor.GetComponentsInChildren<Transform>(true).Single(t=>t.name=="hip");
+            _layer.SetPersistentPose(pose,transition);
+        }
+        public void ClearPersistentPose() {_layer.ClearPersistentPose();_persistentHip=null;}
+        public void AnchorPersistentPose()
+        {
+            if(_persistentHip==null || !_layer.HasPersistentPose || _currentSeat==null || (_state!=PerformerSeatingState.BasicSeated && _state!=PerformerSeatingState.CrossLegsSeated))return;
+            _actor.rotation=_seatRotation;
+            _actor.position+=_seatPosition-_persistentHip.position;
+            _lastContactError=_seatPosition-_persistentHip.position;
+        }
+        public void ArriveHiddenAt(PerformerSeat seat,PerformerPose pose)
+        {
+            if(seat==null)throw new InvalidOperationException("A seat is required.");
+            if(!seat.TryCaptureFrames(out var approach,out var approachRotation,out var position,out var rotation,out string reason))throw new InvalidOperationException(reason);
+            Cancel();_currentSeat=seat;_currentProfile=seat.SeatingProfile;_currentStyle=PerformerSeatedStyle.Basic;
+            _approachPosition=approach;_approachRotation=approachRotation;_seatPosition=position;_seatRotation=rotation;
+            _layer.PrepareProfile(_currentProfile);_actor.rotation=rotation;_actor.position=position-_actor.TransformVector(_currentProfile.SitStart.PelvisOffsetAt(1));
+            HoldBasicSeatedPose();_layer.SetOwnership(true,0,true);SetPersistentPose(pose,PoseTransition.Snap);
+        }
         public void SetBasicIdleLoopCandidate(bool enabled)
         {
             ThrowIfDisposed();
@@ -305,6 +333,7 @@ namespace DazPose.Performer
             _cancelApproach = null;
             var standWaiters = _standWaiters.ToArray();
             _standWaiters.Clear();
+            ClearPersistentPose();
             _currentSeat = null;
             _currentProfile = null;
             _motion = null;
@@ -676,6 +705,7 @@ namespace DazPose.Performer
         {
             _standingReturnPending = false;
             _lastContactError = Vector3.zero;
+            ClearPersistentPose();
             _currentSeat = null;
             _currentProfile = null;
             _state = PerformerSeatingState.Standing;

@@ -10,6 +10,12 @@ namespace DazPose.Performer
     internal sealed class PerformerSeatingLayer : IDisposable
     {
         private const int MotionCapacity = 6;
+        private AnimationClipPlayable _customPose, _previousCustomPose;
+        private PerformerPose _customAsset;
+        private float _customWeight, _customFromWeight, _customElapsed, _customDuration, _customBlend=1;
+        private AnimationCurve _customCurve;
+        public bool HasPersistentPose => _customAsset != null;
+        public bool PersistentPoseSettled => _customElapsed >= _customDuration;
 
         private readonly PlayableGraph _graph;
         private readonly AnimationMixerPlayable _sourceMixer;
@@ -45,7 +51,7 @@ namespace DazPose.Performer
             if (!graph.IsValid()) throw new ArgumentException("A valid performer PlayableGraph is required.", nameof(graph));
             _graph = graph;
             _motionMixer = AnimationMixerPlayable.Create(graph, MotionCapacity);
-            _sourceMixer = AnimationMixerPlayable.Create(graph, 2);
+            _sourceMixer = AnimationMixerPlayable.Create(graph, 4);
             if (!graph.Connect(baseSource, 0, _sourceMixer, 0)
                 || !graph.Connect(_motionMixer, 0, _sourceMixer, 1))
                 throw new InvalidOperationException("Could not connect the seating layer above the persistent performer body sources.");
@@ -131,10 +137,37 @@ namespace DazPose.Performer
             SetSourceWeights();
         }
 
+        public void SetPersistentPose(PerformerPose pose, PoseTransition transition)
+        {
+            ThrowIfDisposed();transition.Validate();
+            if(pose==null || pose.Clip==null || pose.Clip.empty || pose.Clip.legacy)throw new ArgumentException("A prepared nonempty seated PerformerPose is required.");
+            if(_customAsset==pose)return;
+            if(_previousCustomPose.IsValid()) {_graph.Disconnect(_sourceMixer,3);_previousCustomPose.Destroy();}
+            if(_customPose.IsValid()) {_graph.Disconnect(_sourceMixer,2);_previousCustomPose=_customPose;_graph.Connect(_previousCustomPose,0,_sourceMixer,3);}
+            _customPose=AnimationClipPlayable.Create(_graph,pose.Clip);_customPose.SetApplyFootIK(false);_customPose.SetApplyPlayableIK(false);_customPose.SetSpeed(0);_customPose.SetTime(0);
+            _graph.Connect(_customPose,0,_sourceMixer,2);_customAsset=pose;_customFromWeight=_customWeight;_customDuration=transition.Duration;_customCurve=transition.EffectiveCurve;_customElapsed=0;
+            UpdatePersistentPose(0);
+        }
+        public void ClearPersistentPose()
+        {
+            if(_sourceMixer.IsValid()) {_graph.Disconnect(_sourceMixer,2);_graph.Disconnect(_sourceMixer,3);}
+            if(_customPose.IsValid())_customPose.Destroy();if(_previousCustomPose.IsValid())_previousCustomPose.Destroy();
+            _customPose=default;_previousCustomPose=default;_customAsset=null;_customWeight=0;_customBlend=1;_customDuration=_customElapsed=0;SetSourceWeights();
+        }
+        private void UpdatePersistentPose(float dt)
+        {
+            if(_customAsset==null)return;
+            _customElapsed=Mathf.Min(_customDuration,_customElapsed+dt);
+            float phase=_customDuration<=0 ? 1 : _customElapsed/_customDuration;
+            float blend=Mathf.Clamp01(_customCurve.Evaluate(phase));_customWeight=Mathf.Lerp(_customFromWeight,1,blend);_customBlend=_previousCustomPose.IsValid() ? blend : 1;
+            if(phase>=1 && _previousCustomPose.IsValid()) {_graph.Disconnect(_sourceMixer,3);_previousCustomPose.Destroy();_previousCustomPose=default;_customBlend=1;}
+            SetSourceWeights();
+        }
         public void Advance(float deltaTime)
         {
             if (_disposed) return;
             float dt = Mathf.Max(0f, deltaTime);
+            UpdatePersistentPose(dt);
             if (_blendElapsed < _blendDuration)
             {
                 _blendElapsed = Mathf.Min(_blendDuration, _blendElapsed + dt);
@@ -154,6 +187,7 @@ namespace DazPose.Performer
         public void Dispose()
         {
             if (_disposed) return;
+            ClearPersistentPose();
             _disposed = true;
             foreach (AnimationClipPlayable clip in _clips.Values)
                 if (clip.IsValid()) clip.Destroy();
@@ -185,7 +219,9 @@ namespace DazPose.Performer
         {
             if (!_sourceMixer.IsValid()) return;
             _sourceMixer.SetInputWeight(0, 1f - _ownershipWeight);
-            _sourceMixer.SetInputWeight(1, _ownershipWeight);
+            _sourceMixer.SetInputWeight(1, _ownershipWeight*(1-_customWeight));
+            _sourceMixer.SetInputWeight(2,_customPose.IsValid() ? _ownershipWeight*_customWeight*_customBlend : 0);
+            _sourceMixer.SetInputWeight(3,_previousCustomPose.IsValid() ? _ownershipWeight*_customWeight*(1-_customBlend) : 0);
         }
 
         private int IndexOf(PerformerSeatingMotion motion) => _indices.TryGetValue(motion, out int index)

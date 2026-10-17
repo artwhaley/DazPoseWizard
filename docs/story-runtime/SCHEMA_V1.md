@@ -1,3 +1,5 @@
+> Legacy JSON compatibility reference. Current human authoring uses [.dazstory](DAZSTORY_AUTHORING.md); its flat compiled program has no eight-level source nesting limit.
+
 # dazpose.story v1
 
 Canonical content is a JSON TextAsset with explicit `schema: "dazpose.story"`, `version: 1`, a nonblank `id`, optional `title`, and `steps`. Runtime DTOs are under `Assets/DazPose/Runtime/Story/Serialization`.

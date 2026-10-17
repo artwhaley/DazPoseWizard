@@ -1,0 +1,1 @@
+Temporary engineering motion assets for First Contact. Finisher1 lasts 18 seconds; FinishLoop lasts 4 seconds. Imported through the normal FunscriptImporter. Replace with final authored programs in FirstContact.bindings.asset.
