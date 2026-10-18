@@ -1,0 +1,9 @@
+# S09 — Director inspection and force-eligible global card drilldown
+
+**Depends:** S08. **Goal:** user can rehearse selectable cards from canonical global pool without per-scene registration or shadow selection code.
+
+Add explicit selector policy seam in `StoryDirector.Select` after canonical candidate collection/requirements, maxuses/cooldown/resource rejection/weight but before selection result. Default policy uses current deterministic `StorySessionRandom.Selection` exactly. Rehearsal forced choice only among eligible candidates. Consume one draw even on force to keep future random stream aligned; show 'FORCED' badge in rehearsal log, never persist it to script. Candidate browser shows required query tags, prepared equipment matching, current state, eligibility/rejection, computed weight/history; scenario may request a forced card ID by source invocation ID. Source stepping enters selected globally published `card` entry and steps its nested instructions, then returns to scene. Ineligible request explains state and refuses force rather than making illegal content legal. Check new card publication in test source: new tagged eligible card appears to **unchanged** FirstContact scene and editor, then removed from global index when deleted. Explicit `play Intro` stays local and not selectable. No scene card library lists anywhere.
+
+Tests stable seed baseline, one forced eligible card then next seeded draw deterministic, illegal ankle-restricted candidate cannot be forced, missing pose/location resource rejects card without invalidating all other cards, cooldown/repeats/progress and nested call paths match runtime, new source add/delete accepted without scene write.
+
+**Gate:** Director preview is genuine runtime Director with visible decisions; no copying logic or registering cards to scenes.

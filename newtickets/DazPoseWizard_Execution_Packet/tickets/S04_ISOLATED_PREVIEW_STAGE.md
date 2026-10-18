@@ -1,0 +1,9 @@
+# S04 — Real isolated Lara/PlayerBody/environment preview stage
+
+**Depends:** S03. **Goal:** staging viewport reflects real saved content in Edit Mode without Play, writeback or hardware.
+
+Implement one editor-only `ScenePreviewSession` owner using Unity PreviewRenderUtility and a dedicated disposable preview scene; instantiate **clones** of actual production Lara and prepared male PlayerBody/prefabs plus relevant saved Void environment/seat objects into that preview owner. No improvised anime stick figure or code-only frame. Clone only safe visual/material/rig/seat data; disable/remove `PerformanceHost`, `GameApplication`, `ToyControlService`, asynchronous scene runners and side-effecting MonoBehaviours from clones before evaluating effects. Maintain object mapping and coordinate transfer from saved source scene to preview transforms; if source scene not open, read saved scene composition through safe editor source snapshot process, never edit active source scene. Keep cloned material instances isolated and dispose fully. Use live renderer/animation sampling via Unity Playables or safe EditMode AnimationMode (with explicit lifecycle), not a second animation engine. Orbit and true player camera viewport, frustum, gizmos/anchors. Frame selected performer/location and selected step.
+
+Tests: new/close/reopen window, scene switch, domain reload, malformed asset, failed pose, destroyed actor, repeated preview no memory leakage, **saved source scene prefab/material/actor transforms unchanged**, Unity not Play. Visual test of real Lara at `stepforward` in actual `SexyVamp` imported pose and Lounger seated state. If some ShaderGraph/material sampling is unsupported in preview, clear diagnostics not fabricated equivalent visuals.
+
+**Gate:** Real Lara and authored Void render from correct assets at known location; preview opens/closes without touching saved scene or starting game services.

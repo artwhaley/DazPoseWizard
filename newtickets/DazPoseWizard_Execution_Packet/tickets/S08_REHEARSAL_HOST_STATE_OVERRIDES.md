@@ -1,0 +1,9 @@
+# S08 — Safe rehearsal host, simulated player responses and replay
+
+**Depends:** S07. **Goal:** actual program flow in Edit Mode without real player/profile/hardware/scene mutation.
+
+Implement editor-only `RehearsalStoryHost` implementing `IStoryExecutionHost` + observer hooks. Copy an isolated profile/session/contract/world draft snapshot and seeded random streams; never call `GameApplication.EnsureStarted`, `PlayerProfile.Commit` or `ToyControlService`. Map every existing `StoryVocabulary` command to typed virtual effect: Lara visibility/placement/pose to clone stage, camera, speech/audio preview, magic to preview instances, grip/contact indication, funscript position curve, UI prompt simulated answer, toy command logged neutral/no output, Profile/Kinks/Equipment dialogue use draft only. Unknown verbs fatal; known unsupported render effect explicitly "logical only; real playback required" (cannot be silent). Support step, reset, back, run-to-line, virtual wait durations with max budgets, save test-only rehearsal scenario recipe. Branch override chooses selected arm, trace forced vs computed; when possible apply coherent pre-state but do not silently edit player data. `Popup` offers synthetic inputs; early I Came and natural MotionDriver.Ended race available. Rewind via deterministic Reset+replay preserving RNG/Director decisions, not by reversing Unity async effects. Scope disposable listeners/events/generation IDs like real runtime.
+
+Tests: no profile disk change, all FirstContact branches, loop termination, cancellation while waiting, Stop while audio preview, two climax race paths, setting random seed, back-and-forward deterministic; scene/prefab bytes unchanged absent explicit commit.
+
+**Gate:** Author steps entire FirstContact logical path while actual Unity remains in Edit Mode, no network/output, no profile/scene save, and user can choose alternate branches.

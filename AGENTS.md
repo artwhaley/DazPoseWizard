@@ -1,3 +1,7 @@
+# Active execution — Phase 1 completion, Phase 2 UI, Phase 3 Studio
+
+The October 18 user-authorized packet at `newtickets/DazPoseWizard_Execution_Packet/START_HERE.md` supersedes the prior incomplete C00–C10/lab disposition. Execute F00–F04, U01–U07, S01–S11 in dependency order on main; commit coherent changes locally, no push without fresh authority. Current status: `docs/p2-p3/PROGRESS.md`. Extract useful diagnostics and retire obsolete scaffolding; do not merely relocate eleven scenes into a lab. Preserve protected authored/release/toe data. Latest user boundary: no running the program and no computer-use Unity; no launch, Play, builds, players or hardware. Source compilation and pure managed checks may run. Previous technical evidence remains historical.
+
 # Current cleanup execution — October 18
 
 Task 1 C00–C10 is the active cleanup queue on main. Use [the execution report](docs/cleanup-task1/EXECUTION_REPORT.md) and [current ownership map](docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md) before following older plan links below. The October 7 authoring-readiness plan remains preserved historical/product context; it does not supersede the active cleanup gates. The moved D1–D5 ticket packet is under [oldtickets/D1-D5](oldtickets/D1-D5/README_FIRST.md).

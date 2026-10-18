@@ -1,0 +1,2894 @@
+{
+  "schemaVersion": 1,
+  "projectRoot": "validation/DazPoseUnityValidation",
+  "readOnly": true,
+  "summary": {
+    "inventoryType": "read-only source/YAML inventory; no Unity editor/batch, Play, build, player, or asset mutations",
+    "sceneCount": 28,
+    "sceneCategories": {
+      "candidateAndReleaseReviews": "All TestData/LaraCandidate, TestData/Wardrobe review scenes, and TestData/GraftPairProbe scene paths are individually listed with hashes/GUIDs below.",
+      "template": [
+        "Assets/Production/Environments/VoidEnvironment.unity"
+      ],
+      "obsolete": [
+        "Day2ActorValidation.unity",
+        "Day3CommandValidation.unity",
+        "Day4PartnerContactValidation.unity",
+        "Day5WardrobeValidation.unity",
+        "ProductionRuntimeSmoke.unity",
+        "RemediationValidation.unity",
+        "PoseValidation.unity",
+        "HandGripAcceptance.unity",
+        "PartnerRigAcceptance.unity",
+        "LaraHumanoidKawaiiTest.unity",
+        "AnimationAudit.unity"
+      ],
+      "player": [
+        "Assets/Production/Scenes/MainMenu.unity",
+        "Assets/Production/Scenes/FirstContact.unity"
+      ],
+      "pendingProtectedReview": [
+        "Assets/Production/Scenes/RemediationToeValidation.unity"
+      ],
+      "authoring": [
+        "Assets/Scenes/ClothingSetup.unity"
+      ],
+      "frozenReference": [
+        "Assets/Scenes/FirstPerformanceVoid.unity"
+      ],
+      "showcase": [
+        "Assets/Examples/Scenes/AuthoringShowcase.unity"
+      ]
+    },
+    "publicCatalog": {
+      "entries": [
+        "Assets/Production/Scenes/FirstContact.unity"
+      ],
+      "asset": "Assets/Production/Application/SceneCatalog.asset",
+      "buildSettings": [
+        "Assets/Production/Scenes/MainMenu.unity",
+        "Assets/Production/Scenes/FirstContact.unity"
+      ]
+    },
+    "assemblyMetadata": [
+      "Assets/DazPose/Runtime/DazPose.Runtime.asmdef",
+      "Assets/DazPose/Presentation/DazPose.Presentation.asmdef",
+      "Assets/DazPose/Editor/DazPose.Editor.asmdef",
+      "Assets/DazPose/Validation/DazPose.Validation.asmdef",
+      "Assets/DazPose/Validation/Editor/DazPose.Validation.Editor.asmdef",
+      "Assets/Production/Content/DazPose.Content.asmdef",
+      "Assets/Player/Runtime/DazPose.Runtime.asmref",
+      "Assets/Player/Editor/DazPose.Editor.asmref",
+      "Assets/FirstPerformanceVoid/Editor/DazPose.Editor.asmref",
+      "Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef"
+    ],
+    "incomingReferences": "No direct scene-asset GUID refs found in serialized Assets YAML for the eleven obsolete scenes. Player scene GUIDs are intentionally present in ProjectSettings/EditorBuildSettings.asset; SceneCatalog.asset stores FirstContact as a path string. Review/test scenes may contain ordinary asset GUID references within their own YAML.",
+    "autoHooks": "No InitializeOnLoad/InitializeOnLoadMethod scene loader was found among the eleven scene-specific callers. Project-wide editor auto hooks found in DazPose: DazPoseBrowserImportProcessor, GlobalStoryCardIndexBuilder, ProjectMaintenanceOperations, PerformerDefaultsEditor; they concern import/catalog/default maintenance and must be evaluated independently, not attributed to these scene paths.",
+    "recoveryMissing": 0
+  },
+  "legacyConsumers": [
+    {
+      "scene": "Assets/Production/Scenes/Day2ActorValidation.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Authoring/ProductionPerformerBuilder.cs: ScenePath, Build/Compose entry and EditorSceneManager.OpenScene(SourceScene); current DazPose.Validation.Editor assembly.",
+        "Assets/DazPose/Validation/Editor/Authoring/ProductionTestEnvironmentBuilder.cs: composes Day2 output; current DazPose.Validation.Editor assembly.",
+        "ProductionPerformerBuilder dynamically writes Production/Wardrobe/Candidate-<preset.id>.asset."
+      ],
+      "resident": "ProductionPerformerBuilder and ProductionTestEnvironmentBuilder currently create/use the fixture; refactor to production Lara/prefab and canonical Void; preserve any reusable source extraction/validation."
+    },
+    {
+      "scene": "Assets/Production/Scenes/Day3CommandValidation.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Legacy/RemediationValidation.cs: RunBatch scene list/existence-load check; DazPose.Validation.Editor.",
+        "Assets/DazPose/Validation/Day3RegressionRunner.cs is attached in the scene (DazPose.Validation assembly).",
+        "docs/production-consolidation/validation/Day3Build.cs exists only under docs; not compiled from Assets."
+      ],
+      "resident": "Port meaningful command/lifecycle assertions to managed/Edit Mode fixtures; preserve FirstContact runtime APIs and Day3RegressionRunner behavior until assertions have new owners."
+    },
+    {
+      "scene": "Assets/Production/Scenes/Day4PartnerContactValidation.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Legacy/RemediationValidation.cs: four fixture operations copy/open Day4 and scene list/existence checks; DazPose.Validation.Editor.",
+        "Assets/DazPose/Validation/Day4RegressionRunner.cs is attached in the scene (DazPose.Validation assembly).",
+        "docs/production-consolidation/validation/Day4SceneBuilder.cs exists only under docs; not compiled from Assets."
+      ],
+      "resident": "Extract measured contact-column/partner geometry assertions into managed/Edit Mode tests and preserve production contact-target/partner APIs."
+    },
+    {
+      "scene": "Assets/Production/Scenes/Day5WardrobeValidation.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Legacy/RemediationValidation.cs: included in scene existence/load-check list.",
+        "Assets/DazPose/Validation/Day5WardrobeRunner.cs is attached in the scene (DazPose.Validation assembly).",
+        "Day5WardrobeValidation.cs is an independent isolated transactional test; current exact path search found no reference from it to Day5WardrobeValidation.unity."
+      ],
+      "resident": "Move remaining scene-based assertions to isolated wardrobe fixtures and keep the independent transactional test APIs; wardrobe catalog/draft/release contracts remain live."
+    },
+    {
+      "scene": "Assets/Production/Scenes/ProductionRuntimeSmoke.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/RemediationBuild.cs: ProductionScene constant and creation/save/build workflow; DazPose.Validation.Editor.",
+        "Assets/FirstPerformanceVoid/Runtime/RemediationProductionSmokeRunner.cs is attached in scene; DazPose.Examples assembly."
+      ],
+      "resident": "Extract any runtime smoke assertions to direct Edit Mode/managed tests; retain production runtime dependencies and remove legacy standalone-player scene builder path."
+    },
+    {
+      "scene": "Assets/Production/Scenes/RemediationValidation.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/RemediationBuild.cs: ValidationScene constant and scene creation/save/build workflow; DazPose.Validation.Editor.",
+        "Assets/DazPose/Validation/Editor/Legacy/RemediationValidation.cs: historical assertion owner; DazPose.Validation.Editor.",
+        "Assets/DazPose/Validation/RemediationValidationPlayerRunner.cs is attached in scene; DazPose.Validation assembly."
+      ],
+      "resident": "Port still-relevant assertion cases individually to managed/Edit Mode tests; keep live helper APIs. Remove scene/player workflow and validation runner after coverage lands."
+    },
+    {
+      "scene": "Assets/Scenes/PoseValidation.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Authoring/DazPoseEditorCommands.cs: setup/open selected-character workflow; DazPose.Validation.Editor.",
+        "Assets/FirstPerformanceVoid/Editor/FirstPerformanceVoidBuilder.cs: SourceScenePath copies/loads PoseValidation; Editor assembly via asmref.",
+        "Assets/DazPose/Editor/PerformerSalsaConfigurator.cs: menu setup/audit operates on active/selected performer; stale PoseValidation help text only.",
+        "Assets/DazPose/Validation/RemediationContentPreflightRunner.cs: excludes PoseValidation wording from diagnostic messages; no scene load."
+      ],
+      "resident": "Refactor pose inspection and SALSA setup to the selected/imported performer and typed pose asset; make preflight scene-independent. Keep reusable pose retargeter, pose assets, SALSA package/pipeline."
+    },
+    {
+      "scene": "Assets/Scenes/HandGripAcceptance.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripAcceptanceSetup.cs: AcceptanceScenePath, copy from frozen source, open/save/ValidateScene; DazPose.Validation.Editor.",
+        "HandGripVisualProof.cs, HandGripValidationRunner.cs, HandGripLiveProof.cs open the same path; DazPose.Validation.Editor.",
+        "HandGripAcceptanceHarness.cs is attached to this scene; DazPose.Validation runtime.",
+        "FirstPerformanceVoidControls.cs retains a typed serialized harness field/API; frozen scene has controls script but no Harness component/reference by GUID search."
+      ],
+      "resident": "Preserve HandGripRuntimeSelfTests, SpatialProof, HandGripRigProfile, solver/controller and harness contract or decouple the typed controls field. Move setup/proof onto temp fixture or reusable preview; frozen source scene itself remains untouched."
+    },
+    {
+      "scene": "Assets/Scenes/PartnerRigAcceptance.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Legacy/Partner/PartnerRigAcceptanceBuilder.cs: ScenePath, BuildAcceptanceScene/Build workflow; DazPose.Validation.Editor.",
+        "Assets/DazPose/Editor/Partner/PartnerCharacterPreparation.cs: private ScenePath targets acceptance scene; production prep class also owns canonical manifest verification, conversion and output APIs; DazPose.Editor.",
+        "Assets/DazPose/Validation/Legacy/Partner/PartnerAnatomyTestController.cs and PerformerPoseSmokeHarness.cs are attached."
+      ],
+      "resident": "Split scene-specific loading/saving from PartnerCharacterPreparation. Preserve canonical Partner manifest/source inputs, generated production materials/prefab, measured contact/contact-target APIs, shell geometry/material logic and useful anatomy assertions."
+    },
+    {
+      "scene": "Assets/Scenes/LaraHumanoidKawaiiTest.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Legacy/AnimationAudit/LaraHumanoidKawaiiTestSetup.cs: ScenePath and CreateOrRefresh; DazPose.Validation.Editor.",
+        "Assets/DazPose/Validation/Editor/Legacy/AnimationAudit/HumanoidLegSetupReport.cs reads ModelPath and performs clip/leg checks; same assembly.",
+        "AnimationAuditSceneSetup.cs reuses CreateAuditScene."
+      ],
+      "resident": "Extract importer/model/avatar validation, clip discovery and leg assertions to source/model tests or shared preview; preserve laraHumanoid.fbx importer state and KAWAII source FBX."
+    },
+    {
+      "scene": "Assets/Scenes/AnimationAudit.unity",
+      "callers": [
+        "Assets/DazPose/Validation/Editor/Legacy/AnimationAudit/AnimationAuditSceneSetup.cs: ScenePath/CreateScene/OpenSceneMenu; DazPose.Validation.Editor.",
+        "AnimationAuditValidation.cs opens or creates scene.",
+        "AnimationAuditHarness.cs and AnimationAuditOrbitCamera.cs are attached (DazPose.Validation runtime).",
+        "PerformerLocomotionBaker.cs and PerformerSeatingBaker.cs call AnimationAuditCatalogBuilder.IsAuditableClip; this helper is live, scene-independent."
+      ],
+      "resident": "Retain catalog/clip filtering and baker workflows. Extract interactive catalog clip preview and camera/staging to the new reusable animation browser/preview; remove Create/Open saved-scene functions."
+    }
+  ],
+  "scenes": [
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Examples/Scenes/AuthoringShowcase.unity",
+      "bytes": 592774,
+      "guid": "92b6b9153f46b5a46863deda3b24b50b",
+      "sha256": "cc47f23f0f177979bb5a75665018bb9fd341530ed36ea1f1771ebecf7ee764e1",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Examples/Scenes/AuthoringShowcase.unity.meta",
+      "metaSha256": "3526ea63f5ccc5e65dca975581830cce50d0d09e96825d3563e9075ad7383909",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Examples/Scenes/AuthoringShowcase.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "4f231c4fb786f3946a6b90b886c48677",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "5b3b373bb3f90634db962dd1fea87350",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceHost.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "76c392e42b5098c458856cdf6ecaaaa1",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "8ff941e6fb0126946a1b9b8b31af9cfa",
+          "source": "validation/DazPoseUnityValidation/Assets/Production/Content/AuthoringShowcase.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "902872663fd8f36469b1c7b309a4def1",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Partner/PartnerContactTarget.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c646361e7ae42004eb2bb57996c548bc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/SceneActorIdentity.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/second-outfit/Review.unity",
+      "bytes": 936333,
+      "guid": "47c62e016e186b840803ce6cd491f8ae",
+      "sha256": "ad262242c62b4f6ffb5fb1522a260ad3c0b29cfb54e3a73130e3d2abc88d06f6",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/second-outfit/Review.unity.meta",
+      "metaSha256": "8fe314b025cfb6f309ce19ea89885025e4f5cb738bebfcd47cc2190659774afe",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/second-outfit/Review.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "85f9c972d71ddbb49a2a729b9c0318a5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e6022e2d4bf70f04c82652e55eedbe3a",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraHeelReview.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/second-outfit/Review-20261004-155507.unity",
+      "bytes": 936344,
+      "guid": "3cee90fdeadb477fb50a18a4a21bc672",
+      "sha256": "b00d2ed7979c8a1f62dc32c93eebf9f044f452575fd236140a8236c119112607",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/second-outfit/Review-20261004-155507.unity.meta",
+      "metaSha256": "4e1de3462c31a3605035385224a64d14ecae32fad56f30753e4c661a282f9fd0",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/second-outfit/Review-20261004-155507.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "85f9c972d71ddbb49a2a729b9c0318a5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e6022e2d4bf70f04c82652e55eedbe3a",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraHeelReview.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/first-outfit/Review.unity",
+      "bytes": 891834,
+      "guid": "bf58aa0afaf376d4bb91a261b3e5e92a",
+      "sha256": "0bcffa701fd817063e8994d9e154c606aba8ff566a5af9962b071c4246e5fdcb",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/first-outfit/Review.unity.meta",
+      "metaSha256": "b92635e8dfed313bb2afe0a2fcd4737c12407f1a3b7f262a0fdcf3b3d9328f45",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/first-outfit/Review.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "85f9c972d71ddbb49a2a729b9c0318a5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity",
+      "bytes": 1444426,
+      "guid": "d7b0bd5a23f36634e8cf1626d7e593a0",
+      "sha256": "7daaf28adadb77151fff79c83c77c69382540976ac6ebd4301acd263f2f491d4",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity.meta",
+      "metaSha256": "54b5c69915da2284b4d7d581cbfc731ac05ab955c413e7d8e180cefaa5e39045",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "85f9c972d71ddbb49a2a729b9c0318a5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e6022e2d4bf70f04c82652e55eedbe3a",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraHeelReview.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/FirstOutfit/FirstPerformanceVoidLaraFirstOutfit.unity",
+      "bytes": 885302,
+      "guid": "61408d07c2622ae40a8e5e34447fdc9b",
+      "sha256": "40b778a8b75941dd87dea2157c213da3f11e9c2b346ac61bfccaf102254fee9a",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/FirstOutfit/FirstPerformanceVoidLaraFirstOutfit.unity.meta",
+      "metaSha256": "7b74abbc4773b81f1550865c5ac7b29d0d37047fcf7cab65dec3c8b79183d789",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/FirstOutfit/FirstPerformanceVoidLaraFirstOutfit.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "09ae2717cd6aac144b6afdd9419bb7ab",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraFirstOutfit.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/LaraCandidatePreview.unity",
+      "bytes": 219817,
+      "guid": "a3a9f4375c265524eaa09b191ad20600",
+      "sha256": "eb5db14d8afaf3200acf367de51da0e0cdd65a179d0bc3a7c77941f5e931dbb7",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/LaraCandidatePreview.unity.meta",
+      "metaSha256": "a3f0320f5a6ef64774fdccd88c79747d55c3a323a9589ab1f1fc571b6d355278",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/LaraCandidatePreview.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": []
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+      "bytes": 872654,
+      "guid": "d70909ff9c3c4464c8488ec14be047cc",
+      "sha256": "c1d367021a10122688af992cc5bce1f60518eb5a445da1596627a9ad339cce8b",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity.meta",
+      "metaSha256": "0d2774da078a3d28da3fbb733cd950d784af31248d30168e5d64996c515663ed",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/GraftPairProbe/GraftPairPreview.unity",
+      "bytes": 219119,
+      "guid": "c333a91e1637daa4fa65f4d5e6c7c5d9",
+      "sha256": "ffe6022d1161750655a1e2855ab8f11bf0f0efa0dcfea69dc5ce39e64e0df644",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/GraftPairProbe/GraftPairPreview.unity.meta",
+      "metaSha256": "9ba9dd02744471050a9c27c459f6fc6d60e00f3df60211e2095382fd49245e44",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/GraftPairProbe/GraftPairPreview.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": []
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/PoseValidation.unity",
+      "bytes": 377892,
+      "guid": "1f3c2d21783d2d442b3802aa2c542ca8",
+      "sha256": "0a19414fe4b4a0800a05d9c2b806c800ba2107a4b8a25732330739dd2f51d639",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/PoseValidation.unity.meta",
+      "metaSha256": "e8a63625e94d698ecffaa99ffba98f80f1017c28b9e0b624b9e42a57654c9476",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/PoseValidation.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/PartnerRigAcceptance.unity",
+      "bytes": 71987,
+      "guid": "25267b7dc8b0b264d98b96d5840d38cc",
+      "sha256": "d3bba0062f42388a5f9f23621c672b59dc5a81a00178e9a66743b0dc5e00dc3a",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/PartnerRigAcceptance.unity.meta",
+      "metaSha256": "3b4c16c05e011869443fa79363a470a972d7a03cf7495cc90e7e46bc1206b70e",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/PartnerRigAcceptance.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "5da93131921abb54c96e62b557777a82",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Partner/PartnerAnatomyTestController.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/LaraHumanoidKawaiiTest.unity",
+      "bytes": 17577,
+      "guid": "374d21527f8ea434a8b0a6bb7f2078eb",
+      "sha256": "4e1ded24d1d6cd88232013d8621070e26e4c79436cb34bb09022ee0453c34ea4",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/LaraHumanoidKawaiiTest.unity.meta",
+      "metaSha256": "afe71714383bb57642d2a8aabad843ef7e76d4d6b3f6fba595890d053b169168",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/LaraHumanoidKawaiiTest.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/HandGripAcceptance.unity",
+      "bytes": 873694,
+      "guid": "89a9289125c8278428bceb315fb7482a",
+      "sha256": "3e586a604f3d482ca390907215c73a06eea58118903fb33917716dbf980d3db0",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/HandGripAcceptance.unity.meta",
+      "metaSha256": "f2232cafc404f812647334f9ec31de00ab436b57a33dd31f31bdcfe8b085f175",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/HandGripAcceptance.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1825a808b52b44928c65b182a2d8534e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/HandGrip/GripContactRod.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "21dfcc5191ca45bb85333983f6de6839",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/HandGrip/HandGripAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "29e158f02b6247c8b8c043dbd8220912",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/HandGrip/PerformerHandGripController.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/FirstPerformanceVoid.unity",
+      "bytes": 868936,
+      "guid": "aeaa216543b16494ba3a82bf48937be6",
+      "sha256": "ad9c72a4d1d37729663c99883194a14a186f5f0189c127996efe8873d2d8fa01",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/FirstPerformanceVoid.unity.meta",
+      "metaSha256": "6a9825d275ff71f6d2e64ad0866db80091d0d6f927106d5ae8a9e1aa44042a23",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/FirstPerformanceVoid.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/ClothingSetup.unity",
+      "bytes": 588745,
+      "guid": "6119c9c56fe6af44bbffa5139a6d9f6d",
+      "sha256": "e2c32b34dc89ab65330b376f73685e382dd9391abc9566d5d88854f5c5ae4daf",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/ClothingSetup.unity.meta",
+      "metaSha256": "4f013d2744600da3cbddfde8b127dd19afbc05a34286dd858e5bca0818007df1",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/ClothingSetup.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "8c0edb42b65d4b0f88b491de89b113cb",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/ClothingSetupDraftBinding.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e346b807658d40bc88ca2bb90cc5dd5f",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/ClothingSetupStartup.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/AnimationAudit.unity",
+      "bytes": 26445,
+      "guid": "e6dea64a9da3e3749b7d9f7394375dbe",
+      "sha256": "436e88300ee4f49ca48c518149f6ca0070263a62d7eb94c5467584e5f0ae7a3b",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/AnimationAudit.unity.meta",
+      "metaSha256": "1fe496d042d246ab0c71021c8c19b2902b3390e1b7daff650018eadace0b7c6f",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Scenes/AnimationAudit.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "3dbf346f0721e154fa4200abf3b91576",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/AnimationAudit/AnimationAuditHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "b10a514ffb923c64c9effcc63b2f0b4a",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/AnimationAudit/AnimationAuditOrbitCamera.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/RemediationValidation.unity",
+      "bytes": 872986,
+      "guid": "d5a830258f9b59b4c80583e6a82d53d9",
+      "sha256": "e12bb2ef567f15d97feb95712c736a5e5f64af4f7e20b57897eed8ae2cb8fa62",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/RemediationValidation.unity.meta",
+      "metaSha256": "be7e5e2c9d97386b9726ed699af0450c8f0627bd6f00956d95e9721d82d6f212",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/RemediationValidation.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "d4b3f885d9dd40b1a4c7f8ab248c0ed5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/RemediationValidationPlayerRunner.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/RemediationToeValidation.unity",
+      "bytes": 880763,
+      "guid": "b7bc630a9ca7db749ac59abcf8da04c0",
+      "sha256": "e7df256c704f9a95e5ae919288ab8fa2df72fc9a703f1064eb8dfa8c28d63de0",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/RemediationToeValidation.unity.meta",
+      "metaSha256": "2fa0c3efec638c1683ad34e6ce42b54f1660731e3d73fba06c77df27c0064949",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/RemediationToeValidation.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "29e158f02b6247c8b8c043dbd8220912",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/HandGrip/PerformerHandGripController.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2b4e6f4a2d584ad4a8b716f0ce74a981",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/RemediationToeRepairRunner.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "8c0edb42b65d4b0f88b491de89b113cb",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/ClothingSetupDraftBinding.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "baee53ed00bd2e84c8d9ac0bdc5dabb6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/PerformerWardrobe.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ca151ee0c6bb459db4085dce34b10b32",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/ClothingSetupPreviewRunner.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "d839cfa0bb0f4e299a3bb44d5e91d6b7",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/RemediationToeRunner.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/ProductionRuntimeSmoke.unity",
+      "bytes": 866339,
+      "guid": "64a54fb1efde6cf4c866b3f5351559bd",
+      "sha256": "3982005f6335d6dff21de7b260797156a182f09006e36a9f2d71dbe05cabac68",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/ProductionRuntimeSmoke.unity.meta",
+      "metaSha256": "2fc1d092cb4b0f9d00402167bbc8029d50df3d16ae89ee9b187f1d6259c954ec",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/ProductionRuntimeSmoke.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "9d35a17ce8d146c1ae31e5cdb75b39a6",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/RemediationProductionSmokeRunner.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/MainMenu.unity",
+      "bytes": 41893,
+      "guid": "7b0ea0678e2a15044a1a6fad410ec264",
+      "sha256": "c3cccb400b0976796c76ea0c35925ce933fc9df7cc7f90d06549a0eb075a133a",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/MainMenu.unity.meta",
+      "metaSha256": "0ddc8891ca4c17afe5bef0031f0cc6d5c8d8cb13871a3a933d0d158a3d8e6559",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/MainMenu.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0cd44c1031e13a943bb63640046fad76",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "306cc8c2b49d7114eaa3623786fc2126",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "3c61954f9071c6e4287e518688ba0c5a",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/MainMenuController.cs",
+          "assembly": "DazPose.Presentation (Assets/DazPose/Presentation/DazPose.Presentation.asmdef)"
+        },
+        {
+          "scriptGuid": "4e29b1a8efbd4b44bb3f3716e73f07ff",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "4f231c4fb786f3946a6b90b886c48677",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "59f8146938fff824cb5fd77236b75775",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "5f7201a12d95ffc409449d95f23cf332",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "6d30462d0d0a3084391aa954e916a03a",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/SettingsMenuController.cs",
+          "assembly": "DazPose.Presentation (Assets/DazPose/Presentation/DazPose.Presentation.asmdef)"
+        },
+        {
+          "scriptGuid": "76c392e42b5098c458856cdf6ecaaaa1",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "dc42784cf147c0c48a680349fa168899",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "fe87c0e1cc204ed48ad3b37840f39efc",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/FirstContact.unity",
+      "bytes": 600631,
+      "guid": "4fd2d2bc3572c1744a590a23e4e117c9",
+      "sha256": "3aba29a644fd0027bf4d6a58e350e61e329bf5d74c25eb6051b03c37dfa51dc0",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/FirstContact.unity.meta",
+      "metaSha256": "38208e8c69dfc2734f4b2e750817c5910b5f2869d4b303cc51a567aa0e3da131",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/FirstContact.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0cd44c1031e13a943bb63640046fad76",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "0d90ec4e6aa8401b949d87cc4816a397",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerBodyPresence.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "4382e61c1ac54cfb9c8ac17b059676fe",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StoryProgramSequence.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "4f231c4fb786f3946a6b90b886c48677",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "5b3b373bb3f90634db962dd1fea87350",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceHost.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "76c392e42b5098c458856cdf6ecaaaa1",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "902872663fd8f36469b1c7b309a4def1",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Partner/PartnerContactTarget.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c5fb15ef045043d8bea434722ba7099c",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StorySceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c646361e7ae42004eb2bb57996c548bc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/SceneActorIdentity.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c6dc63e637b64bb8b84b316ac497645e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/UI/StoryDebugPresenter.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "dc42784cf147c0c48a680349fa168899",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "fecee3fa4555418a8ae37d8835226773",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/UI/StoryPromptService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day5WardrobeValidation.unity",
+      "bytes": 589607,
+      "guid": "2eb7586bcdaa7c547a376aa0e22c2ff1",
+      "sha256": "661894fd90eccad3a9f698bc928e08edba5079168a1b380a0ca3e369f9fb675a",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day5WardrobeValidation.unity.meta",
+      "metaSha256": "a777b3aa460ed3f228bb32fea471c8eb4e05893f905f411f7b63b6024488373b",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day5WardrobeValidation.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "8c0edb42b65d4b0f88b491de89b113cb",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/ClothingSetupDraftBinding.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b042c2f263bc47b7ac86aca929a752ed",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Day5WardrobeRunner.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day4PartnerContactValidation.unity",
+      "bytes": 595804,
+      "guid": "2e0bf1a76e1ceb448af92d79f7655bfd",
+      "sha256": "2a34deb8cd21505c9721e9e78ac3ac531e23699494e289e04d38f8f07b97e1b1",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day4PartnerContactValidation.unity.meta",
+      "metaSha256": "43fff541ee95bc46734f804931b8063dfe11206cbc940f820333e83fd487e896",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day4PartnerContactValidation.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "902872663fd8f36469b1c7b309a4def1",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Partner/PartnerContactTarget.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "969d8c04f2b249009108a8ec32d6f2c3",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Day4RegressionRunner.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e3db949f5a2e4b269593e5f1141d9a56",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Partner/PartnerBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day3CommandValidation.unity",
+      "bytes": 597994,
+      "guid": "8ca719727de320f4ea5de8dd2370e555",
+      "sha256": "b461fab95b8134e3d6c6e200f36056b80d5d470b23aa2d87f9f450dc0e25bcc1",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day3CommandValidation.unity.meta",
+      "metaSha256": "65928ad10dcaa8aa8638b21bec39fa455c07c5b535072ee920f14e773fef07a1",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day3CommandValidation.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1825a808b52b44928c65b182a2d8534e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/HandGrip/GripContactRod.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ad4156f8710b47579e04ead787d4d8ae",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Day3RegressionRunner.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day2ActorValidation.unity",
+      "bytes": 590757,
+      "guid": "6147181d1c5f60e458a955b04fbd0627",
+      "sha256": "9bea987d8ab8be349e4fb1d38ebb3e4505574f63456492776f6ff5dc59720de6",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day2ActorValidation.unity.meta",
+      "metaSha256": "b65e3f75a4bfa13e3f4a6f497a3b88d64d678c028f14d077694609e31c8d282e",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Scenes/Day2ActorValidation.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "obsolete",
+      "classificationReason": "One of the eleven historical diagnostic scenes targeted by F01; extract checks/tools and retire the scene.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "86f5e70c5d18b6b45b1bec291f707fb5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformanceSceneBindings.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Environments/VoidEnvironment.unity",
+      "bytes": 589856,
+      "guid": "be93ce3fd47309046b62e64ff4e55eee",
+      "sha256": "b01ce9894f508ce35e288be1730244a6fcd2d4dda1a470f657308d490072900f",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Environments/VoidEnvironment.unity.meta",
+      "metaSha256": "0d6ed339932f6014bbd0023f2d8d3b413618326f9f7114f8e0244368df01a8b7",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/Production/Environments/VoidEnvironment.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/third-outfit/Review-20261004-165635.unity",
+      "bytes": 895141,
+      "guid": "b445dbc89e174648976c79481694de6b",
+      "sha256": "f54606fced4839897e253f2e45dd97decb7acce83711db9228ec4a08848692cb",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/third-outfit/Review-20261004-165635.unity.meta",
+      "metaSha256": "ab641f6b3caf21ea542853a150d3f3eb0794e21026e3501e1cdadda6f3cd2111",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/third-outfit/Review-20261004-165635.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "85f9c972d71ddbb49a2a729b9c0318a5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e6022e2d4bf70f04c82652e55eedbe3a",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraHeelReview.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    },
+    {
+      "path": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/third-outfit/Review.unity",
+      "bytes": 895141,
+      "guid": "8e0c08db4c34e4444a28434771bc1367",
+      "sha256": "f54606fced4839897e253f2e45dd97decb7acce83711db9228ec4a08848692cb",
+      "metaPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/third-outfit/Review.unity.meta",
+      "metaSha256": "d3f67488580865df0e9fe6c9de5b282e2026b49249feee56742abba464b3ddc7",
+      "recovery": {
+        "currentSource": "Git 935fbd23 + .dazposewizard/p2-p3/source-scene-baseline.zip",
+        "metaSource": "Git 935fbd23 or C00 archive",
+        "priorPath": "AssetseWizard/validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/third-outfit/Review.unity",
+        "priorArchive": null,
+        "priorSha256": null,
+        "priorBytesEqual": false
+      },
+      "classification": "protected-review-or-fixture",
+      "classificationReason": "TestData scene; preserve review, input, or fixture evidence pending owner-specific closure.",
+      "buildSettings": "not listed in EditorBuildSettings.asset",
+      "incomingSerializedGuidReferences": [],
+      "attachedLocalScripts": [
+        {
+          "scriptGuid": "07f416cf055a4e9bb1960aa4df5677da",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeat.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "0e14b832b8d1463aba050ee353f99e6a",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "172515602e62fb746b5d573b38a5fe58",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "1837ac89e7d0430cb0fe15b065c3399e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraAnatomyControls.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "23c1ce4fb46143f46bc5cb5224c934f6",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "2583e313cf7044279d34cac832f6f418",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSalsaLipSync.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "2a2fe6749f7e54148a0469b3ec1c1fa5",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffectMask.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "360959898c6644a582c07ad639c82c36",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "61482888192f42e4a262bd3458a99e12",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "7a68c43fe1f2a47cfa234b5eeaa98012",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "85f9c972d71ddbb49a2a729b9c0318a5",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "930806b4069d8f34193388fbbc88b895",
+          "source": "validation/DazPoseUnityValidation/Assets/INab Studio/Interactive Dissolve/Scripts/InteractiveEffect.cs",
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "a8569445824149b08a9e5d9a863f180e",
+          "source": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid/Runtime/FirstContactPerformance.cs",
+          "assembly": "DazPose.Examples (Assets/FirstPerformanceVoid/Runtime/DazPose.Examples.asmdef)"
+        },
+        {
+          "scriptGuid": "a8904787922a42a5a545a40bcf45eabc",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Motion/MotionDriver.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "ade4c6175ed14c838ca15853698903e6",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerParticleBody.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "b37d8e34ad204e7caebca48619808b54",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Toys/ToyControlService.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "c83d98216be249fb901b5c0c48a5a1ca",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerDissolveRig.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "cdafc37f32b176349b1684c4455b98e9",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e194811cd7f2d944f8cce2581df160c0",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/DazPoseCharacterState.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "e1fbb15bf92b84f40a1eb030765b5afe",
+          "source": null,
+          "assembly": "external/package script; no local C# meta match"
+        },
+        {
+          "scriptGuid": "e6022e2d4bf70f04c82652e55eedbe3a",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraHeelReview.cs",
+          "assembly": "DazPose.Runtime (Assets/DazPose/Runtime/DazPose.Runtime.asmdef)"
+        },
+        {
+          "scriptGuid": "f008fe1ecb5447f3a8b52f612a36d0ee",
+          "source": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerController.cs",
+          "assembly": "DazPose.Runtime via Assets/Player/Runtime/DazPose.Runtime.asmref"
+        },
+        {
+          "scriptGuid": "f7a1a5de8cfe49a4870cd23e7dac8f81",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseSmokeHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        },
+        {
+          "scriptGuid": "f9bedf5c39c141c1aff498628808782e",
+          "source": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Legacy/Performer/PerformerPoseAcceptanceHarness.cs",
+          "assembly": "DazPose.Validation (Assets/DazPose/Validation/DazPose.Validation.asmdef)"
+        }
+      ]
+    }
+  ],
+  "recoveryEvidence": "Current scenes are covered by main 935fbd23 and the new source-scene-baseline.zip; prior C00 archive record and content equality are recorded per scene. YAML/source edges are source evidence, not a new AssetDatabase query."
+}

@@ -1,0 +1,3351 @@
+{
+  "head": "935fbd23a9aecf90a495176503ed8bd0337c22c4",
+  "createdUtc": "2026-10-18T19:13:10.796847+00:00",
+  "files": [
+    {
+      "path": "Assets/Production/Player/Meshes/G8M_ErectBody.asset",
+      "sha256": "59945d022b1268c8c7595c4c0f1a21d519c4ae74f6a8febf5bfa5c4e8b4a4b7b",
+      "bytes": 4010529
+    },
+    {
+      "path": "Assets/Production/Player/Meshes/G8M_ErectBody.asset.meta",
+      "sha256": "ce8fc3016d0c7b60881ed3ba392863b5f44c4171e92aa6985b88ac2a250d092a",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/Production/Player/Meshes/G8M_ErectShell.asset",
+      "sha256": "3d975e39c55f51f3625d6f6b65908cbc97014be531f6cda5d724efebfb9e2123",
+      "bytes": 878158
+    },
+    {
+      "path": "Assets/Production/Player/Meshes/G8M_ErectShell.asset.meta",
+      "sha256": "8dada2809d4009f97ae50057b7a32ac29765a0f95b8abe5a43ebb2ae300abac9",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/PartnerProof/Generated/PartnerProof_Body.mat",
+      "sha256": "916b898b4112f1473fd70a29b6a04d858c4e80ef9b61925bd853719f53d73a5c",
+      "bytes": 8129
+    },
+    {
+      "path": "Assets/PartnerProof/Generated/PartnerProof_Body.mat.meta",
+      "sha256": "cf85f63e384ff505a6e668a11cb85b82f5fc1c18a0df7011e88b38405919a4fa",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/PartnerProof/Generated/PartnerProof_Shell.mat",
+      "sha256": "217c8d51e71be69cbc726b10d4467586a02bfba9ae45a75ce44e26361e4c1dbe",
+      "bytes": 8125
+    },
+    {
+      "path": "Assets/PartnerProof/Generated/PartnerProof_Shell.mat.meta",
+      "sha256": "706b18f0b6aec11927031c7624f9a6ffbacd7f13e155795766a1831be744e69d",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/PartnerProof/Generated.meta",
+      "sha256": "f59a48a54ad6b4dca83ff9b1a1284394d67eec7882c58ddc07d8c22fb61012e2",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Player/Support/PartnerCharacter.prefab",
+      "sha256": "cfc8c0340330c00f3fa1e42aa7a2d0f53d7e82370ba08316c45914a55fc9d129",
+      "bytes": 275102
+    },
+    {
+      "path": "Assets/Production/Player/Support/PartnerCharacter.prefab.meta",
+      "sha256": "562fd3e4699081c980d2e9838c4a751c4d4fb21bc26e009b8a7c6b3c3669fccf",
+      "bytes": 151
+    },
+    {
+      "path": "Assets/Production/Player/Shaders/PartnerShell.shadergraph",
+      "sha256": "4c8a23c03224627adb57d4a8fd89614430d850e1927a72956e8dc7e5a45dc975",
+      "bytes": 281434
+    },
+    {
+      "path": "Assets/Production/Player/Shaders/PartnerShell.shadergraph.meta",
+      "sha256": "5fa34fc499ac7dfa775d02f3999ed5886d48df263ad7ee17edcba4acbb96490d",
+      "bytes": 295
+    },
+    {
+      "path": "Assets/Production/Environments/VoidEnvironment.unity",
+      "sha256": "b01ce9894f508ce35e288be1730244a6fcd2d4dda1a470f657308d490072900f",
+      "bytes": 589856
+    },
+    {
+      "path": "Assets/Production/Environments/VoidEnvironment.unity.meta",
+      "sha256": "0d6ed339932f6014bbd0023f2d8d3b413618326f9f7114f8e0244368df01a8b7",
+      "bytes": 162
+    },
+    {
+      "path": "Assets/Production/Performers/Lara.prefab",
+      "sha256": "0fd83904d9b1985c40f8841f25211b88507dda83dbd0f7571ba4d2e26e49cb06",
+      "bytes": 299710
+    },
+    {
+      "path": "Assets/Production/Performers/Lara.prefab.meta",
+      "sha256": "79f6a5819aae9738414b9f693518b79312003c43317e207c16789deb5d01d3d8",
+      "bytes": 154
+    },
+    {
+      "path": "Assets/Production/Player/PlayerBody.prefab",
+      "sha256": "2c13b812b5cb3a153242083c14d9a73de19f974cda2573f9211586ba43349ff5",
+      "bytes": 13211
+    },
+    {
+      "path": "Assets/Production/Player/PlayerBody.prefab.meta",
+      "sha256": "876d2e7fc145d6c55684900e0b9c095c026ed88ef616f9091cd3a9fa0d012052",
+      "bytes": 161
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/004b3846b8da78b4abe6b2397be3eb84.mat",
+      "sha256": "c8965769891968cbd20e2e6850f9414b130d26ca6d179d2a8ad2847086b32f6f",
+      "bytes": 7948
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/004b3846b8da78b4abe6b2397be3eb84.mat.meta",
+      "sha256": "10952bfee33be8054f3108cc3aa2be098ad55034bd6b6707a44a54c9159ee444",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/027e434dc701c214db9159c787ab1bba.mat",
+      "sha256": "c69ef72d50ce9482e659795330bc9617ece0a4fe94214fc4f5ca7fe5bb1e5425",
+      "bytes": 7951
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/027e434dc701c214db9159c787ab1bba.mat.meta",
+      "sha256": "70c94c2b0b3882e43e934cfd50b8f554485643e10357a253e5c87ccfafa1e860",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/058aaadbff2ef884ea19bebc618a8516.mat",
+      "sha256": "66e42446df55bc99fb2b5023ca34c56926efe594d67055ae320137887dc42865",
+      "bytes": 7949
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/058aaadbff2ef884ea19bebc618a8516.mat.meta",
+      "sha256": "4ee908bb4ffb095d3a0e0514207546567f0f152a8ada7d87a0e54e0bcfbec6ef",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/0791be4ccd651fb4cadc1635101416ea.mat",
+      "sha256": "16073222d245e348c79f369c3b4cc6473bbee1602b94c6c33f7a99ecb35772e0",
+      "bytes": 8286
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/0791be4ccd651fb4cadc1635101416ea.mat.meta",
+      "sha256": "58a8320991ac4f972846cf8701f6b4975ec43d3dcaa5fddbec79887488f1ab2f",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/0a3e8f7fa29f62845a98408baad83994.mat",
+      "sha256": "63f1f086b50a96401ea55051701bb8042b80e1b227bee78240ddbcf5a84a4f40",
+      "bytes": 7949
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/0a3e8f7fa29f62845a98408baad83994.mat.meta",
+      "sha256": "8987914771f7f3fbd53c6a0b3175ef16a1e5768647b14b5ab8b4b124d9e01a47",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/0f8e8697d4362924eb4624596e66e366.mat",
+      "sha256": "7d00c5b716f8549de2063e02d27b02e7bf41244077771a6917766602bbccd454",
+      "bytes": 7418
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/0f8e8697d4362924eb4624596e66e366.mat.meta",
+      "sha256": "f61bcf24dd19e14ac9a4219ce8b138db87e712c1adf92ea25ef3322b70e97c32",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/20d64d32119b0454b8c57078a586b56c.mat",
+      "sha256": "88cee12d1e5c0265e47c5154ae02cc65f7fee89441e78f4c2bfd181fceec6a56",
+      "bytes": 5269
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/20d64d32119b0454b8c57078a586b56c.mat.meta",
+      "sha256": "d27e57ef9fa04520111ca7948789dae1f20a4a27d3fdc7d3ea4effb327f9c614",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/20db401eb4d7b6d47bda419c6e15d28c.mat",
+      "sha256": "dbc938b8cb43f6cceb9d286ffd3b2674c2e50404f6c098d039cdb376dd3be36e",
+      "bytes": 7950
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/20db401eb4d7b6d47bda419c6e15d28c.mat.meta",
+      "sha256": "347a5091510adafe9c18d56cbf2e301956d6c52d0cdeac84455628635d989894",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/317706f0b0702a445bf830af90f54f90.mat",
+      "sha256": "32eb7da6398af53f28bcf6e8b8f114ca7fc244a9a149f6f2e83adbe4f2324772",
+      "bytes": 8230
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/317706f0b0702a445bf830af90f54f90.mat.meta",
+      "sha256": "2d910776eb6e0d59e2166e67baf06599b7ce53a347c1d56be46ccdf26705ca52",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/355d5f01b8e85234ebf1a054752e85d5.mat",
+      "sha256": "cbcde167ec80858798fd648e8e73f45718181fe5a5e338d6ac03357265035f66",
+      "bytes": 8226
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/355d5f01b8e85234ebf1a054752e85d5.mat.meta",
+      "sha256": "c6c8bde1c1e8b19521d7b1a4ba1adfae6129dd8966b76d82e41d6be805010515",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/35be51c6f3ef73548902b291f3ae0cd7.mat",
+      "sha256": "faf785b5e3de43bb9f301907a4640898091c600e94069522dc373a23fa5ccf51",
+      "bytes": 7950
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/35be51c6f3ef73548902b291f3ae0cd7.mat.meta",
+      "sha256": "e48077b0986c504d6665d00cdda4381acf951a44a0df14c78ec63954407eb4ae",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/3cd47f792908eda4d9e03e93c8754165.mat",
+      "sha256": "b0457d0258db961fd43606843db61c8ec73263648d9ae33887277e82b0d32fae",
+      "bytes": 4608
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/3cd47f792908eda4d9e03e93c8754165.mat.meta",
+      "sha256": "94245e86d4a47e8a14b6ad2efc8de6b2b28dcb895442f8816a1a41df3986cc70",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/4e37b1af1dedb9446b459350ea9f6e6e.mat",
+      "sha256": "0b1b99900875f883a205d54a6cbef01d5369d3d1055000fc940d9012599f8048",
+      "bytes": 7945
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/4e37b1af1dedb9446b459350ea9f6e6e.mat.meta",
+      "sha256": "3e56bdcb32c9ee303217b1337f4101e0fd9c6adb5c8e64c134c29b2630b25e3f",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/4fc1ada165c125b49ae6c6e4a95912f1.mat",
+      "sha256": "452cfe3e54c41a1cf4ced2fbbf4638a5e88d1f52452cc132929bf979055ba477",
+      "bytes": 7918
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/4fc1ada165c125b49ae6c6e4a95912f1.mat.meta",
+      "sha256": "0cddcea4694c6128057132b21c5b5e2f4055859e36be39330c0323b82599b9cd",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/5306bc6715f7aec46a91ce06a3cf8971.mat",
+      "sha256": "20c62328a26addb7c4352ecf62eb0294be2f19e7354cf209ce47a68a2a32f9c5",
+      "bytes": 7363
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/5306bc6715f7aec46a91ce06a3cf8971.mat.meta",
+      "sha256": "462d5309faf125db4e180ae8c1785ddbc9a1ff98efacd533b4c7f6f2f6472843",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/6262afd3ed59d2941ba52c8c638829fc.mat",
+      "sha256": "c958184023509756c98aeb34e755de2df572a1de6ca3c1e0568f791cd41aacfc",
+      "bytes": 7949
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/6262afd3ed59d2941ba52c8c638829fc.mat.meta",
+      "sha256": "7e83cceb8e95169833124aa8b972ca8f63e975c9542934a85bd7c07ecc564c84",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/66f434cb91390584ba7f8c45c6dfeddb.mat",
+      "sha256": "f588d649e8c44492e5383e2c9f577ac3923c11080cb45655354bf3ffc5a4cbaa",
+      "bytes": 7910
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/66f434cb91390584ba7f8c45c6dfeddb.mat.meta",
+      "sha256": "e6076ab44b0f9c7e88469e2368d9209be23ec091c5555bfaa5363ae89c81fa04",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/6dd1d0df76da05049a6c7786e74f9467.mat",
+      "sha256": "3645920a156df936ff590eb0b0538d20d372e36bebf368dd6c62760687a8e6e8",
+      "bytes": 7911
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/6dd1d0df76da05049a6c7786e74f9467.mat.meta",
+      "sha256": "e574c5b0cea2a417e62d39a60cab274719565324e04069338aad336dbfcaf5a2",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/7f0a5355a8bc3d1479bbe75573a137c2.mat",
+      "sha256": "9f303f1c448ee9989395f1c2526db68480047d8f8240a701153bf5ee62b958ab",
+      "bytes": 8281
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/7f0a5355a8bc3d1479bbe75573a137c2.mat.meta",
+      "sha256": "0efd6c9cb19dabb80454bec265cf0548a74c042d3dd7529b46f6b229213a8c4e",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/993862d8cc8f3624a8288492f71f09d7.mat",
+      "sha256": "4fd7771d5bab17edbc0a0dbb76e396c65c61e0e012c9134d7a111ad386ff009c",
+      "bytes": 7949
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/993862d8cc8f3624a8288492f71f09d7.mat.meta",
+      "sha256": "bdec4a65de6b3bf05d573e5a7cb7dd81a1a9bad8f5f5254b222cd4f39066a069",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/99cd1e9bf11bd5240b62fea89119ae11.mat",
+      "sha256": "c37d7e45b1b29c71ed4e78108f5ce5cc2016523b8c4a04635702e8bf641773ff",
+      "bytes": 7332
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/99cd1e9bf11bd5240b62fea89119ae11.mat.meta",
+      "sha256": "29b9bb4ed135b08125f7d97688631a1997708d11cd512c53b7ff3cdc7f490856",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/9ef7724cc2239cb409dbc847bb05905e.mat",
+      "sha256": "3562c1423a84e6ed8de5135c608b7d9025db37bc0881f1582613d984066a48da",
+      "bytes": 7950
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/9ef7724cc2239cb409dbc847bb05905e.mat.meta",
+      "sha256": "e7453b6a6def3c91c7994fb060d9c8e4e46c36d07b4300da13e5bebbf0b07ba0",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/aaf09dda546ae2144abd12841cf016d2.mat",
+      "sha256": "02067f9b0a95f292192d02e306a858828f4b8fe3bffa2c37b5dbdf626430e9ba",
+      "bytes": 8227
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/aaf09dda546ae2144abd12841cf016d2.mat.meta",
+      "sha256": "bad7b85f5abd73c87185a3d8cdaca78e8abaa3bdd4e671d5ab8961a62c177ad0",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/bdbd04766f16eb8439f84294c77edf0e.mat",
+      "sha256": "2acc54e418482a09ecd177266d19a825a57d35f553b4184ac165ced2e98cb6de",
+      "bytes": 7950
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/bdbd04766f16eb8439f84294c77edf0e.mat.meta",
+      "sha256": "c1f8cb8a5fe7f2671e3b3f54e8f90b1caad836740051039850030b9d922089be",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/c84f9668678317d4784fee342ac71586.mat",
+      "sha256": "1fdad2711c63e18832437910b9eeeac3c9a3daec64b541fad2eb29f99863c0d3",
+      "bytes": 4644
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/c84f9668678317d4784fee342ac71586.mat.meta",
+      "sha256": "0816b9fc8473ed37acd485f416b8182fe1517f9cffaa1be22c265df1c19d86b3",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/ca9f1883dee209a409333b0c7883663d.mat",
+      "sha256": "5814d3eca63e74ab476739d6f2a9c77547d0f14ebf731d6cd030a7fe27d8104b",
+      "bytes": 8230
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/ca9f1883dee209a409333b0c7883663d.mat.meta",
+      "sha256": "d017c3e6429d3fcff918f18b4d506078ae940b7eeee4a914f48ba164697e4e97",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/cdeb55ba68b786e4ea7e92a3e3d4f6b7.mat",
+      "sha256": "eed897ec97d9e207f7ab8b524c02bf45cb9942552b4a14f38b918e0f8de813f4",
+      "bytes": 7331
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/cdeb55ba68b786e4ea7e92a3e3d4f6b7.mat.meta",
+      "sha256": "c9fe55048a3176bd394239b7d3351013916b23fcc99c9cd408114f7cc65a7f89",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/cfce3093506e53c47b1242e46a678e55.mat",
+      "sha256": "c88704e0bf4bbb7952d9d0d51e0a3f0ebbfa7d7dc786e232d01ea4d1a9adc6eb",
+      "bytes": 7950
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/cfce3093506e53c47b1242e46a678e55.mat.meta",
+      "sha256": "04a5acb86c4edfbdb03ee4993a0fe813a17ebb50bd4d27a0d7bae3973d21522d",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/dae1f5a5919152446a390d016ba90ca0.mat",
+      "sha256": "6b1efeb78d1abc1c938338fe61552524562616b618e3ab9b66bb34a83ee441aa",
+      "bytes": 8231
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/dae1f5a5919152446a390d016ba90ca0.mat.meta",
+      "sha256": "69d492d7228002f99df5da2a85abc3bbf0f87feb8729709ab2a9d13b8c386555",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/e004dfc2d60569e4d80940e9e731c9d2.mat",
+      "sha256": "5694c70098bc4700f7e18dce8f74bbe495fd6f825a88c154cde41c056bd1d436",
+      "bytes": 7950
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/e004dfc2d60569e4d80940e9e731c9d2.mat.meta",
+      "sha256": "4b154fd2adb322034f10cea372068d571eeb226bfd0466279e82b67c4b8cc143",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/f457e27fc56d86f4bb9a1e2064e98ff0.mat",
+      "sha256": "9060d42d9d8f85cb67891fdb8f935cb35c970768da79176538a0f21d95d7f0c0",
+      "bytes": 7731
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/f457e27fc56d86f4bb9a1e2064e98ff0.mat.meta",
+      "sha256": "e2de3753ea807ed40214395d76003789974a4ba88db8cfb412209361eb5fc800",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/f787379a9d5b033428eeb343190fa0c6.mat",
+      "sha256": "1a5727a0769960310f1b542526819c0462f6eb306014e93a05c8a4a1e7247dae",
+      "bytes": 4610
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/f787379a9d5b033428eeb343190fa0c6.mat.meta",
+      "sha256": "d8d3ad43ce0aa4e5cf9f8d412465ddf313ee99e57a2d7a12c73a9c650ac6fb67",
+      "bytes": 196
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface0Bindings.asset",
+      "sha256": "52caa83d34ce6f9089eebbf4f1ba2793311704d9425397ed22bbfdaffdd76ab9",
+      "bytes": 2779132
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface0Bindings.asset.meta",
+      "sha256": "6dc46eb582c813abae301c934c425290ceab53baeada48e333ce83fea72c08b3",
+      "bytes": 197
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface0Profile.asset",
+      "sha256": "a2e4ebba41cc693a1aeb2381c78aa3d311b5640027af7197aed6c61df16e81b6",
+      "bytes": 2766
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface0Profile.asset.meta",
+      "sha256": "e0ad7c93520f33bca420519cbb4c7911945bd5a41b92e1b5b97c2e817d645739",
+      "bytes": 197
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface1Bindings.asset",
+      "sha256": "09b30dec27c136cba97e70069c579ad5fb22c1bded71f832d9f0735f912bacc2",
+      "bytes": 2802613
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface1Bindings.asset.meta",
+      "sha256": "99d37ebaa715cdaf6acfc56bf6af185c9340bb036c006ad3f657da0e6b4ebc6c",
+      "bytes": 197
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface1Profile.asset",
+      "sha256": "2d9f0c388e26ab6f9b96c79200cc53c4ec2166a86517cbf2cfc5805c84e3b81e",
+      "bytes": 5278
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface1Profile.asset.meta",
+      "sha256": "6d963d44426f4a88eadab66c68613574c3fb9682abe9ef0f77c4a8d02ed5f5e8",
+      "bytes": 197
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface2Bindings.asset",
+      "sha256": "9c7ff2431dbf97d9b9189b4c11ad7f59901ae4d6ccb995b1be60b8daa1e1f2ef",
+      "bytes": 2742902
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface2Bindings.asset.meta",
+      "sha256": "3b6e3b1cb25a691e29695b31ef23e04b81f29f53cfa575d9d6e8b744db392a1a",
+      "bytes": 197
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface2Profile.asset",
+      "sha256": "71711029ef411f6058f6584651abef25777cebdbf0665df99f8e3b9b822b7e71",
+      "bytes": 1981
+    },
+    {
+      "path": "Assets/Production/Player/Presentation/Surface2Profile.asset.meta",
+      "sha256": "69f3487cf3f9db47385461f53ec55a7e2e68519031ab864b664e170242c39f78",
+      "bytes": 197
+    },
+    {
+      "path": "Assets/Production/Player/Presentation.meta",
+      "sha256": "e97242367412e2edf231a36436811a09e0ca76c4ace70269a1a74c25c5be8ee9",
+      "bytes": 180
+    },
+    {
+      "path": "Assets/Examples/Scenes/AuthoringShowcase.unity",
+      "sha256": "cc47f23f0f177979bb5a75665018bb9fd341530ed36ea1f1771ebecf7ee764e1",
+      "bytes": 592774
+    },
+    {
+      "path": "Assets/Examples/Scenes/AuthoringShowcase.unity.meta",
+      "sha256": "3526ea63f5ccc5e65dca975581830cce50d0d09e96825d3563e9075ad7383909",
+      "bytes": 155
+    },
+    {
+      "path": "Assets/Production/Scenes/FirstContact.unity",
+      "sha256": "3aba29a644fd0027bf4d6a58e350e61e329bf5d74c25eb6051b03c37dfa51dc0",
+      "bytes": 600631
+    },
+    {
+      "path": "Assets/Production/Scenes/FirstContact.unity.meta",
+      "sha256": "38208e8c69dfc2734f4b2e750817c5910b5f2869d4b303cc51a567aa0e3da131",
+      "bytes": 162
+    },
+    {
+      "path": "Assets/Production/Scenes/MainMenu.unity",
+      "sha256": "c3cccb400b0976796c76ea0c35925ce933fc9df7cc7f90d06549a0eb075a133a",
+      "bytes": 41893
+    },
+    {
+      "path": "Assets/Production/Scenes/MainMenu.unity.meta",
+      "sha256": "0ddc8891ca4c17afe5bef0031f0cc6d5c8d8cb13871a3a933d0d158a3d8e6559",
+      "bytes": 155
+    },
+    {
+      "path": "Assets/Production/Scenes/RemediationToeValidation.unity",
+      "sha256": "e7df256c704f9a95e5ae919288ab8fa2df72fc9a703f1064eb8dfa8c28d63de0",
+      "bytes": 880763
+    },
+    {
+      "path": "Assets/Production/Scenes/RemediationToeValidation.unity.meta",
+      "sha256": "2fa0c3efec638c1683ad34e6ce42b54f1660731e3d73fba06c77df27c0064949",
+      "bytes": 155
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_01_Intro_BraveEnough.wav",
+      "sha256": "fdea8fb1c939d396d20ef13abfd638416022cbfecc810ef80b6f70671877ad02",
+      "bytes": 179382
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_01_Intro_BraveEnough.wav.meta",
+      "sha256": "b0c839668b97136a10321b078df1495c468ab36f64d4b69eb0185079125ad1bc",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_02_Intro_DigitalHallucination.wav",
+      "sha256": "fb6c14250b07b860183118d861a40298281cd6953be4921a16a8dfc347ac713a",
+      "bytes": 136138
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_02_Intro_DigitalHallucination.wav.meta",
+      "sha256": "b6305d5c9355f5779a2e5cee82efcb1ab6a642d3f506f003300a128f1e202220",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_03_Intro_Intrusion.wav",
+      "sha256": "76d8b7ae223172257d19a3eeb7313e53839cf563f4a3ea04b1ab303ed362ee61",
+      "bytes": 381750
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_03_Intro_Intrusion.wav.meta",
+      "sha256": "f5d1979f2fabf1e5dbf64be008c7e455a334fb5c39441bdbf6c5f718fd575f72",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_04_Intro_Conditions.wav",
+      "sha256": "51759450f056bacebc7d4d57a215c26a1ef82c74449bb0fb219e40a64a9f9301",
+      "bytes": 218320
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_04_Intro_Conditions.wav.meta",
+      "sha256": "2c555ba89761c02799be6698c3dbdceac981f6d3c6007b015ba532b3848fee91",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_05_Intro_ControlBargain.wav",
+      "sha256": "2a3f890df4527611bfe0b8543dab4c05c77d6e93ae54c716967683dee4bad79a",
+      "bytes": 461604
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_05_Intro_ControlBargain.wav.meta",
+      "sha256": "180680a611e7e1f324b67b3eb689e1197a2ef6109086c0d930d08787ffdab479",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_06_Setup_NotBad.wav",
+      "sha256": "386c9ece4824cd52e4f3204062aeac170dba6a5d898714bc9c0f42cb03c6ad84",
+      "bytes": 81592
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_06_Setup_NotBad.wav.meta",
+      "sha256": "2ea05bd6a1481b73b312129f9b9bf82a66858c0bddd94c12215ccf9f46d2f721",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_07_Setup_SubmissionScore.wav",
+      "sha256": "5fe7f0bbf3b54423e231f9e10845412793cf369376df88ea86d5f7280fdc1d7e",
+      "bytes": 1012428
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_07_Setup_SubmissionScore.wav.meta",
+      "sha256": "f3a7f4be7af9020d9d47b819446ee03a9514b0db07d20088b2565e4e1ea6737c",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_08_Setup_Equipment.wav",
+      "sha256": "caaab52f09f1c9a714b09e7d0cf06a2036da6af79545ffa4fafb823a69c20020",
+      "bytes": 211732
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_08_Setup_Equipment.wav.meta",
+      "sha256": "07b8d661bda4ffd96175f11e21a1c5370ae9669f204910d66ce37853acca844f",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_09_Setup_Clothing.wav",
+      "sha256": "6abc6450927c80b29606cfbeac6e09142f284bca529ed5a6ff9ca4ab8b5474a6",
+      "bytes": 122628
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_09_Setup_Clothing.wav.meta",
+      "sha256": "06cd6e0b4c1f6fd091c820a3114efa4316ea8acabf5ee62de4a4ff1dda6d252b",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_10_Clothing_Naked.wav",
+      "sha256": "be1c2f3000660f8e20a7f81ea9761cd2e42b992ef0fe1ed7decdabd4fb1da8e2",
+      "bytes": 216148
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_10_Clothing_Naked.wav.meta",
+      "sha256": "b930f232e194d1df0d4da43745775dc664d1d46cf8e25be546e9e4b70064645b",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_11_Clothing_OneOrTwo.wav",
+      "sha256": "4c631075e0e04789e3a703a86e4483beb3490831a5a3939600a1b860b1b6a008",
+      "bytes": 156734
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_11_Clothing_OneOrTwo.wav.meta",
+      "sha256": "38323135e1f0836c0e3c25282d13280730b3dd260d942fc0a2d7988badec6dce",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_12_Clothing_TooDressed.wav",
+      "sha256": "8a256473a014ef70872fdd93f818318f955094281cfb89fdd3056a78d7cbb51c",
+      "bytes": 308424
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_12_Clothing_TooDressed.wav.meta",
+      "sha256": "fc01b20821d1d2843cee0fcb43d85cced7e21f1b7e61ca9edcfc2256c6f68a99",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_13_Warmup_Start.wav",
+      "sha256": "1495fc4f2888632417eb2d3d4dcd630ed5e1760200bf3bf949272b0dafc254c5",
+      "bytes": 117768
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_13_Warmup_Start.wav.meta",
+      "sha256": "8bc709db12ed6dba521bd9eaa24ed14250d14073fd80c1b95a9f222071774bf9",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_14_Warmup_RemoveRest.wav",
+      "sha256": "c46d3a46e435f65f3100573326104209c4ab0501dffc4581f36eeb70057e98ed",
+      "bytes": 261210
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_14_Warmup_RemoveRest.wav.meta",
+      "sha256": "436d72c3198f840a160a58aade6e486e4abb3514476deddd17571a5c34811e34",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_15_Main_Start.wav",
+      "sha256": "1022d331c9a117e8be8b4d8e0c8243db39280f850e75b2fc2457e4255cf8b9a2",
+      "bytes": 233926
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_15_Main_Start.wav.meta",
+      "sha256": "7f495fbfef2f070cd76fc0f997ea04b5f5a8fb40dcdf4563d36599dc167850da",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_16_Climax_Start.wav",
+      "sha256": "bbc140ddc6cadf7aaf545d927fddbbee5bdb166a3fc95d3075e002bbc200b784",
+      "bytes": 490168
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_16_Climax_Start.wav.meta",
+      "sha256": "b6dd99be370ccc9d49c5886e03eede452bd743b811e820e5ab8a1959ad877421",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_17_Resolution_Assignment.wav",
+      "sha256": "b11e6ad7a35da3c442075f629e58d07167a310f27347d778821f8859d57d20ed",
+      "bytes": 670354
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_17_Resolution_Assignment.wav.meta",
+      "sha256": "3ee1ef071d7c8d90e85947e26f596b6108b8f613ead408ca46db43afb86cb659",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_18_Resolution_ThinkingAboutMe.wav",
+      "sha256": "cb7a08a47ce4cd275c6225306365f23255e3d071b05a34084dcb5a31faa57962",
+      "bytes": 231158
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_18_Resolution_ThinkingAboutMe.wav.meta",
+      "sha256": "36ccceeacd38d3004b1d212a790b09a05bf3f29d2a91f6ac49d2010522dabdca",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_19_Resolution_Goodbye.wav",
+      "sha256": "85a6cb81ac4ffddd06ab54a49186db87b47b2a2d10b1d6d150a370693654c780",
+      "bytes": 424542
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/D8_19_Resolution_Goodbye.wav.meta",
+      "sha256": "f0230de1a11c501d12592e6ae7ec4450ce2306acfb7fbcc27554c669c7afdd2d",
+      "bytes": 485
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/README.json",
+      "sha256": "d2186d91868ebeb206de7007ea75d795915e8dd8d8ab6a6cfbacd8166755a0d3",
+      "bytes": 4007
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact/README.json.meta",
+      "sha256": "97a6378990c9ece7a006cb546b230c5e8b16394ab70006d214710913aab6feda",
+      "bytes": 158
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder/FirstContact.meta",
+      "sha256": "4887da83c2d5057fd039ad814333bceb43ddf1e4a7b9685a51140c863a0e86c9",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Story/Audio/Placeholder.meta",
+      "sha256": "39d16d4b307b8f3ca7add8af6ae67d0f9a9073a612dcefde1e5fdc14439f14d8",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Story/Audio.meta",
+      "sha256": "4547292c8af443888bf943c5969ed1eb20e91fbb9b7790a9a866803418353e00",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Story/Catalogs/equipment-catalog.json",
+      "sha256": "807247e38bf78c82f07b7dc491291fd24412dbaf25db258eed714a2f488807dc",
+      "bytes": 1259
+    },
+    {
+      "path": "Assets/Production/Story/Catalogs/equipment-catalog.json.meta",
+      "sha256": "cfe50a8ed859102728137aaedf664fb6cc2a6c82242ef0e10b90815cf3887771",
+      "bytes": 62
+    },
+    {
+      "path": "Assets/Production/Story/Catalogs/kink-catalog.json",
+      "sha256": "ea70eea478f9f0aaf83117a9a5c11206e242188361437b95a39a0c0661f8840c",
+      "bytes": 867
+    },
+    {
+      "path": "Assets/Production/Story/Catalogs/kink-catalog.json.meta",
+      "sha256": "89ed5ec8264337ad47e6932198805599be17ae92e25f5ee76232efff20881055",
+      "bytes": 62
+    },
+    {
+      "path": "Assets/Production/Story/Catalogs.meta",
+      "sha256": "1bf488e9c2a9e8d1554fe97341407783455e99c77a6e8a20c293ce40b5437bc6",
+      "bytes": 180
+    },
+    {
+      "path": "Assets/Production/Story/FirstContactMarks.prefab",
+      "sha256": "b7a8d7d6a095be37d43eafe7cec799283ceb36752f3de5b993c576ca2e32a27e",
+      "bytes": 6588
+    },
+    {
+      "path": "Assets/Production/Story/FirstContactMarks.prefab.meta",
+      "sha256": "55a093279ae14c7541005f7956371c85b0ed6346f428f0b3e513f4455f789d23",
+      "bytes": 161
+    },
+    {
+      "path": "Assets/Production/Story/Gestures/Engineering/Disapproval_Engineering.anim",
+      "sha256": "c6395939165bc812941aa2ef7da8dd1a3bc30aa5fc0eafc7f194a0d7f292e371",
+      "bytes": 15855
+    },
+    {
+      "path": "Assets/Production/Story/Gestures/Engineering/Disapproval_Engineering.anim.meta",
+      "sha256": "e279c1e487165628c418c6ca549c0a2ca38c1aaf379fe67ba8fe84bbddc54754",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/Production/Story/Gestures/Engineering/Disapproval_Engineering.asset",
+      "sha256": "0fc594620c1cb0acd037d97e5b580f8b2b48f731d61659d1e840bec9fe4df408",
+      "bytes": 585
+    },
+    {
+      "path": "Assets/Production/Story/Gestures/Engineering/Disapproval_Engineering.asset.meta",
+      "sha256": "61920c4691f7d974f01f0273ef80ee777716d5331b6cb17a5ccf462a88fe5731",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Story/Gestures/Engineering.meta",
+      "sha256": "42cd28c3c947c01310e7625ba86e8845ba658cecebe9de1c2d7e4d7397a808c5",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Story/Gestures.meta",
+      "sha256": "c060444c9944457c848a3ff9dcb5f6e1cb9139c5aa5a9cf7f5af5df99c1c88a4",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Story/Motion/Engineering/Finisher1_Engineering.funscript",
+      "sha256": "1e79dc53918ef6e493283df04c9cd68d66c5fb34c58b5b5c036097fcc2918577",
+      "bytes": 463
+    },
+    {
+      "path": "Assets/Production/Story/Motion/Engineering/Finisher1_Engineering.funscript.meta",
+      "sha256": "7a3020836f8e48ceec577983b432d4d78b9eef4e2b0e3077d2a865e7639e1359",
+      "bytes": 285
+    },
+    {
+      "path": "Assets/Production/Story/Motion/Engineering/FinishLoop_Engineering.funscript",
+      "sha256": "448a005e40f89fde258f9cdb375b1a976b8ad9df49139559114d51cf63b4a4bb",
+      "bytes": 160
+    },
+    {
+      "path": "Assets/Production/Story/Motion/Engineering/FinishLoop_Engineering.funscript.meta",
+      "sha256": "e4225308653650de8d32aa45ff67823b85478e305f39470042701e64626cd90b",
+      "bytes": 285
+    },
+    {
+      "path": "Assets/Production/Story/Motion/Engineering/README.txt",
+      "sha256": "e84ffd0c6ed6182f2c54d79a0f2db9552a833d8540e5fa7885c2740d53e17bb4",
+      "bytes": 226
+    },
+    {
+      "path": "Assets/Production/Story/Motion/Engineering/README.txt.meta",
+      "sha256": "807f21609a114e7607099029b0d413113729d7509a290f783313a57a7982e188",
+      "bytes": 158
+    },
+    {
+      "path": "Assets/Production/Story/Motion/Engineering.meta",
+      "sha256": "7bd03b6eec5bd3c8b8b3ddce9625622b18c8c92e811f4be9d54853ca1ef494f1",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Story/Motion.meta",
+      "sha256": "ab9199096b07114b88e3b17b691c7d0b5681255c2b7a286675555b20622857d4",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Story/Programs/FirstContact.bindings.asset",
+      "sha256": "272edbfafeb2b44c039a8e4a4500813375e84698f1f086fafa890303846b762b",
+      "bytes": 7908
+    },
+    {
+      "path": "Assets/Production/Story/Programs/FirstContact.bindings.asset.meta",
+      "sha256": "b9a00ac8c16d24563effb5559af538a89e27dd0ae0a5198cb3074e05675fb95b",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Story/Programs/FirstContact.dazstory",
+      "sha256": "9a4213b08f0234e6627c40fee004a1ff98cd474cf28aae6c082c1c937985f924",
+      "bytes": 5757
+    },
+    {
+      "path": "Assets/Production/Story/Programs/FirstContact.dazstory.meta",
+      "sha256": "530b66b83c6aae4805a522a860f89a40e398b43c05405998ffae46ccb0683de5",
+      "bytes": 155
+    },
+    {
+      "path": "Assets/Production/Story/Programs/FirstContact.dialogue-map.json",
+      "sha256": "768506f16081d8f60d704d63f024a235952ff38525545aaadedcf1224a391517",
+      "bytes": 5745
+    },
+    {
+      "path": "Assets/Production/Story/Programs/FirstContact.dialogue-map.json.meta",
+      "sha256": "2f2d68d0f1ba5a80a45fa234076a7e4b0c86183caa3f0a27ae25dc161b0753a3",
+      "bytes": 158
+    },
+    {
+      "path": "Assets/Production/Story/Programs.meta",
+      "sha256": "26464448cb10948eb507a1bc0ce0b76a9a235984e1fb351963c435ba825f4882",
+      "bytes": 180
+    },
+    {
+      "path": "Assets/Production/Story/Visuals/GlowyWireframe.asset",
+      "sha256": "a19c99ee186d30ad2595eac5cb3e38871135fb79981a26f697522ca3f848bc50",
+      "bytes": 563
+    },
+    {
+      "path": "Assets/Production/Story/Visuals/GlowyWireframe.asset.meta",
+      "sha256": "5eb1961c8737184282e933adb93bf4b90a62cd83a516ed5f4a4704ad06529caf",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Story/Visuals/GlowyWireframe.mat",
+      "sha256": "ec97443fc246281dc7fe796106776bb91b46e62d7b1e15f448274e357b9a1cf9",
+      "bytes": 840
+    },
+    {
+      "path": "Assets/Production/Story/Visuals/GlowyWireframe.mat.meta",
+      "sha256": "d3198462fbf45b5ac0828dc9b27414dd889659da46d55b690f075697f0a8703e",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/Production/Story/Visuals/Regular.asset",
+      "sha256": "7772a2f9e79ecbf282c1871814da300da6308f87652301683b8b2ce2816b2a9c",
+      "bytes": 501
+    },
+    {
+      "path": "Assets/Production/Story/Visuals/Regular.asset.meta",
+      "sha256": "318661be84c8d4229843ae2406fdd1d1b316d8b757739ad8af91d984ab0a362a",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Story/Visuals.meta",
+      "sha256": "9fac85b6de57edeeab2d0905d6b50c818c404e85cb1392fc40d181eaa37148a3",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-first-outfit.asset",
+      "sha256": "37aa9052f9f654782a9146202a52916e235f4b4ba4c0fe9ec2b19d4a6edc7871",
+      "bytes": 1235
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-first-outfit.asset.meta",
+      "sha256": "b73ebe1a5093c66327ec5a55fbcab3cdcc08240114ee059b7d65f8a818e76dca",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-second-outfit.asset",
+      "sha256": "a4ce0ad50753639f5c3644ac5944a3b05bf39d20c430b549d881b2f8b1b39c07",
+      "bytes": 2447
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-second-outfit.asset.meta",
+      "sha256": "6d455c7ef54a132d7bd102b032eecfa636400005977d1b523594e788a245559f",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-third-outfit.asset",
+      "sha256": "d942f2fa70d726ea25fdf2d7fbda3578be55931a7b8d48b6808cd3ad9986d36c",
+      "bytes": 1332
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-third-outfit.asset.meta",
+      "sha256": "5721ae251f52999b97a690e091dc6a47ecd933be267b019544816fef408baba5",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/Catalog.asset",
+      "sha256": "c152f07106f9f5b80177e91bae9c8dfdb6f10c738ceb900fad58dc0e711dcc21",
+      "bytes": 867
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/Catalog.asset.meta",
+      "sha256": "d2d1534fe4cd9c9a8e28d102f53d42b6eac4f4cf9ebfff1c14908f6c59d10445",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-first-outfit.asset",
+      "sha256": "6fe5def764949c7a4dcc9c7e645aa7116835333f0e3e2786cf5ec68f7d4a6b31",
+      "bytes": 1233
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-first-outfit.asset.meta",
+      "sha256": "c3c14f9245c4b2c8b142b0eb53bb94cc644e8d514795357b097f57c9013f509b",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-second-outfit.asset",
+      "sha256": "cf4609fcb5567ea16ecfd0dafd9adbfae345f3eaa685cdba723029be18d4b9a3",
+      "bytes": 2445
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-second-outfit.asset.meta",
+      "sha256": "454fc608cf57eed0d403127256730218ee91a2b9e443063af0ccd0dff59341c4",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-third-outfit.asset",
+      "sha256": "e7732f310cd40c367f26c48dadb13c166c327ae580c7656ee802104f4ac20d08",
+      "bytes": 1474
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-third-outfit.asset.meta",
+      "sha256": "a3df03903077703e47ad6203c315d1670a68e796a26d512e59a36e647186726f",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/PreviewCatalog.asset",
+      "sha256": "2c4e4015fe2b9a8bdca480fd897489fd2cbb36cf23e2d3d0dc328beb24b24641",
+      "bytes": 930
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/PreviewCatalog.asset.meta",
+      "sha256": "4dab374c4715f784ccacda42f03946be420823aeded4956096f732acf3e8c737",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/PreviewConfiguration.asset",
+      "sha256": "d4ba7806faf9ea0b794a1ec84f08d932bbe5b124c3d9ce09441bb224cc13eebd",
+      "bytes": 2716
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818/PreviewConfiguration.asset.meta",
+      "sha256": "f74039f867ba516f9f306cbe9b2ce8458c7a9aaf439f3df8e5194d64e3f1fa2b",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Day5-20261006-001818.meta",
+      "sha256": "69eda020ac0dd882efe2987cfdfac827a833867bd8108d347fcaabb5bc7a5cf1",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/LaraCatalog.asset",
+      "sha256": "bd0ce02c4b6bc3db9fd28182cf97233e0e634a9832c2cc39e30c407fae91ef22",
+      "bytes": 785
+    },
+    {
+      "path": "Assets/Production/Wardrobe/LaraCatalog.asset.meta",
+      "sha256": "54b2bc5b4c1b0a45418b74c5807d6a61ce866f3ba41c4def0fee4281098c1169",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/LaraConfiguration.asset",
+      "sha256": "e4986f66a655449c92dfa713c0482d666649bfe41e9b9ce9dab4dc9f3b1f6411",
+      "bytes": 2541
+    },
+    {
+      "path": "Assets/Production/Wardrobe/LaraConfiguration.asset.meta",
+      "sha256": "4d2da5b77a00c5edea739dadcffbe4a83a454af58f219505920afab8c0d666a9",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697/Body.asset",
+      "sha256": "7b63b59bd18f44b0c16a703a66e58b9bc9a6b99501ce773290fc5227a0e40384",
+      "bytes": 33190162
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697/Body.asset.meta",
+      "sha256": "c7644aefa72edba313f74f9b74c3749c4da49cecc43dbed4839068339c5da0ff",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697/DissolveProfile.asset",
+      "sha256": "37b3d99f5b310a6c0c84842f932d7e35dde8e7747c96b1e6baa288df88f54e79",
+      "bytes": 4727
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697/DissolveProfile.asset.meta",
+      "sha256": "abad1264a147448c8c3743eb6c25d071b855bfa4dda42f6996524cbe355ccca8",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697/FitState.asset",
+      "sha256": "85f552cb9e9787e046e8b001822f77c5badd89a3cb00f8d09cc566553b73e21e",
+      "bytes": 1871
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697/FitState.asset.meta",
+      "sha256": "cba18e14756e929ae40ac86cd29146cd98f6dc05f07b499addc7708f1de0e442",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697/SurfaceBindings.asset",
+      "sha256": "faea19d1f752ab06acf6cb0cd7ee7c9fd5858b5c1cc1876b28eb9ba6d0e31560",
+      "bytes": 2704474
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697/SurfaceBindings.asset.meta",
+      "sha256": "1271dcbda1dbd08457cba6e4b5dd47059e8223513c58b3f2875d2fe76d37a5a9",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/a4c919fb7b8a36933b04a38c7c76ff9c04775890cfc4a090e00ffae759999697.meta",
+      "sha256": "3bf3ce5cb82b1eee9ffdf6809b8bde360cc1b2c755449e4b7bcc4112346840d9",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/be64b1b2eafefc7844aea5a7b9d1f1a5fcf30ddb44919d77b747d2f8b413bb05/FitState.asset",
+      "sha256": "be78dafdc52e46a3dd610a207e658a7a7c4225c7261bd1a40cc3efcf6a661295",
+      "bytes": 2238
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/be64b1b2eafefc7844aea5a7b9d1f1a5fcf30ddb44919d77b747d2f8b413bb05/FitState.asset.meta",
+      "sha256": "47ec9943b42d1be1e2b889018172246042a478ac30032cff8937c45e3c2439b7",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/be64b1b2eafefc7844aea5a7b9d1f1a5fcf30ddb44919d77b747d2f8b413bb05.meta",
+      "sha256": "fbc2b515e3333d4b6fa0be8c3c5b29ef872b391d5d769c7b942da6f0a67900b3",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/f9bd7e268b0bf546929e4eabd85030e282c5636fa9dfb20789c7f50052cc7e0f/Body.asset",
+      "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+      "bytes": 33191512
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/f9bd7e268b0bf546929e4eabd85030e282c5636fa9dfb20789c7f50052cc7e0f/Body.asset.meta",
+      "sha256": "a918535180dcccef9a3bce44f7d1e6d55b1b55e0f36298aeb80dea3813398989",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/f9bd7e268b0bf546929e4eabd85030e282c5636fa9dfb20789c7f50052cc7e0f/DissolveProfile.asset",
+      "sha256": "b087f9181d4d5c57d8e10c3979397f6ead0313606e2e3a916ac5b2735dc95cfa",
+      "bytes": 4727
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/f9bd7e268b0bf546929e4eabd85030e282c5636fa9dfb20789c7f50052cc7e0f/DissolveProfile.asset.meta",
+      "sha256": "a88ee5edf33d5602f6946b84b872cb4013714456327d4674954571776981a10c",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/f9bd7e268b0bf546929e4eabd85030e282c5636fa9dfb20789c7f50052cc7e0f/SurfaceBindings.asset",
+      "sha256": "89aa71efa2ff0b3e2a60b1977207d29933a2ddd79bf0eada26eb21c293d497b3",
+      "bytes": 2704474
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/f9bd7e268b0bf546929e4eabd85030e282c5636fa9dfb20789c7f50052cc7e0f/SurfaceBindings.asset.meta",
+      "sha256": "10b75c972142ea069266f6d430a2654e44dde1b6bcff789f1edfc26f19fa1771",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/f9bd7e268b0bf546929e4eabd85030e282c5636fa9dfb20789c7f50052cc7e0f.meta",
+      "sha256": "602c58199715d7721b8d3feb7f14d3ccbe91ad729c0035dc741b5ae721752a07",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/naked/FitState.asset",
+      "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+      "bytes": 1022
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/naked/FitState.asset.meta",
+      "sha256": "5c12558717f8b9858c2758a433dbdf0b39a981909b157fb50648588d466ebedf",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit/naked.meta",
+      "sha256": "659e28997e38ba6e416b98cced3e2f986ab0e807056cab6d06b10e3d8105225e",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/second-outfit.meta",
+      "sha256": "ed61330aaae80f6c3c00d362778684f3d187a214adf17156449641885e0e31c6",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/2b01ab5a9d8bd9ed3d437604f5e98c74c901601aba09b03927378154a3dc1c43/Body.asset",
+      "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+      "bytes": 33245826
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/2b01ab5a9d8bd9ed3d437604f5e98c74c901601aba09b03927378154a3dc1c43/Body.asset.meta",
+      "sha256": "cb425d1c4a816f94f7946dfb535f46ea7f2e61143579c6d2a7fcb1cfef52542e",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/2b01ab5a9d8bd9ed3d437604f5e98c74c901601aba09b03927378154a3dc1c43/DissolveProfile.asset",
+      "sha256": "35e51e24a03a7faebfea46823ba332b01da8f240abf84dffb73ecfd8cfb85651",
+      "bytes": 4727
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/2b01ab5a9d8bd9ed3d437604f5e98c74c901601aba09b03927378154a3dc1c43/DissolveProfile.asset.meta",
+      "sha256": "72293d14e844a4dab4e9dc25b9da668bf5599d422bb0cc4fdc6a918fccaaa3fb",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/2b01ab5a9d8bd9ed3d437604f5e98c74c901601aba09b03927378154a3dc1c43/SurfaceBindings.asset",
+      "sha256": "36d011bc761c1b07d202f33622a21e84083f537b43e4d0d52a8ea1ad20c79f38",
+      "bytes": 2704474
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/2b01ab5a9d8bd9ed3d437604f5e98c74c901601aba09b03927378154a3dc1c43/SurfaceBindings.asset.meta",
+      "sha256": "c1509d2fb222dadb3b3c28e59a69e50b8fe83350984b375779ca705fff0fb1ee",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/2b01ab5a9d8bd9ed3d437604f5e98c74c901601aba09b03927378154a3dc1c43.meta",
+      "sha256": "87d78b41d264c69d587700c669e9292068ed523c9da73d460328159d4bb8e3ac",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/50ad223900c41fe644bca935a315a851601d2648747505e4f4f0906dcf02cf2c/FitState.asset",
+      "sha256": "8b833e7f7b8a5acb3ab9aa98d4ae3f3279f844a93efa77cf9b1c84b5fcb44d9d",
+      "bytes": 1317
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/50ad223900c41fe644bca935a315a851601d2648747505e4f4f0906dcf02cf2c/FitState.asset.meta",
+      "sha256": "cb7e13db0d736149fc583b4a90ff3c488a39e5318fb5d447900d347e9eb491ae",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/50ad223900c41fe644bca935a315a851601d2648747505e4f4f0906dcf02cf2c.meta",
+      "sha256": "7278d182cf28fcefa17d7022cf4926fd172e9f39d436419726b31e50cb1fabd8",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/61299af0c079bd986d38b6c62dddebc1b60a77d0bcf1f35f56166ae0e64ad46e/FitState.asset",
+      "sha256": "9746116a784d91fd968b6f9ba8979fd2552a5459b580a2c15d46931eec437f35",
+      "bytes": 1246
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/61299af0c079bd986d38b6c62dddebc1b60a77d0bcf1f35f56166ae0e64ad46e/FitState.asset.meta",
+      "sha256": "f59e54c3233425691d973575b8b796502d21b5191890ea17fdeac881d441a374",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/61299af0c079bd986d38b6c62dddebc1b60a77d0bcf1f35f56166ae0e64ad46e.meta",
+      "sha256": "be46544d6f8e29aa1865b49d691412486774a099e2d65b24f872d10ab92b80ed",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/f661e0ed4027f53b19fffb13833963d99c44c991ba8fa842c1d003e4052f7d33/Body.asset",
+      "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+      "bytes": 33245826
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/f661e0ed4027f53b19fffb13833963d99c44c991ba8fa842c1d003e4052f7d33/Body.asset.meta",
+      "sha256": "ec5ac7437aa1615c6794f80d39deeb258b4d9df9d67c11faa8eb469b5157e28d",
+      "bytes": 188
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/f661e0ed4027f53b19fffb13833963d99c44c991ba8fa842c1d003e4052f7d33/DissolveProfile.asset",
+      "sha256": "f7af9ee516abd055b4ce12cdfbe198166e30125d5c6e593a2ae2f4d34257b4d9",
+      "bytes": 4727
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/f661e0ed4027f53b19fffb13833963d99c44c991ba8fa842c1d003e4052f7d33/DissolveProfile.asset.meta",
+      "sha256": "976464f9e92e70aefedca94e82047a43eca2312bba7912243a9e5c9f15e25b36",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/f661e0ed4027f53b19fffb13833963d99c44c991ba8fa842c1d003e4052f7d33/SurfaceBindings.asset",
+      "sha256": "4a7abaa135408c2242665f993ecf794b6811df82efa479e55aa42a9dcbbdb658",
+      "bytes": 2704474
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/f661e0ed4027f53b19fffb13833963d99c44c991ba8fa842c1d003e4052f7d33/SurfaceBindings.asset.meta",
+      "sha256": "3d18bc7d210979dd2d276b715931469adb87c0a79a57c25ca6265ab5eb0bd89e",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/f661e0ed4027f53b19fffb13833963d99c44c991ba8fa842c1d003e4052f7d33.meta",
+      "sha256": "57701907c1cc81b4e05fb2710a153458dea41aa6a162395e04fda0443cf066be",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/naked/FitState.asset",
+      "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+      "bytes": 1022
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/naked/FitState.asset.meta",
+      "sha256": "2da6b139fa0e63d946d2b639c9df1bbe4bc38e00d761498a66e392883d2681f1",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit/naked.meta",
+      "sha256": "bf3554903c65dc361b17236446c3279ecf1534cf320339a53c04948b0edc4e92",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit/third-outfit.meta",
+      "sha256": "0a40c129469969e40a94cf351e2f283621f00fd0cb9b71dfb67b83e8faab745d",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/third-outfit.meta",
+      "sha256": "86a305c4bd49f30c925f4451a2b1807d9aa5d037bfcbdbd86627d8535614f3d9",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/ToeFixture/third-outfit.asset",
+      "sha256": "83d088d5c634614e31e095bd9ec46feea20d9df176c9c8248542159506a36202",
+      "bytes": 1394
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/ToeFixture/third-outfit.asset.meta",
+      "sha256": "8fe7217c7fd5896ca81ec48d8acb2bab79d4a0e1e93bb4908c7d59859ada4ff8",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/ToeFixture/WardrobeCatalog.asset",
+      "sha256": "34434896099c71ac593ca272fe69897d596d46a6127ff237360c73720acbee78",
+      "bytes": 886
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/ToeFixture/WardrobeCatalog.asset.meta",
+      "sha256": "b09e5c5d59df5d60d3b5109eff39206286a37ada57d03b6beb32789b4a927277",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/ToeFixture/WardrobeConfiguration.asset",
+      "sha256": "cdb176d2e61e359cbc696ff66b083fb770ada2c39be81f7df0c73cd002409507",
+      "bytes": 2717
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/ToeFixture/WardrobeConfiguration.asset.meta",
+      "sha256": "09936b8e1228008c1cf89876c87c0659b7747d5c0497505a9b335dfa5f74c8c1",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03/ToeFixture.meta",
+      "sha256": "532277fbd109b1cb2ec283303f69f7a6c9c5541b869e52576d66b1fbed0a89d5",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation/R03.meta",
+      "sha256": "fb00dca07936f0a3fbb2d83b1f30475c167103131de478cfaa8322729ee02a45",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Remediation.meta",
+      "sha256": "1cc444d20b606dab161ece2b68fabbf1ed1ea1803c96de0a6d91788583dd9cf1",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Scenes/ClothingSetup.unity",
+      "sha256": "e2c32b34dc89ab65330b376f73685e382dd9391abc9566d5d88854f5c5ae4daf",
+      "bytes": 588745
+    },
+    {
+      "path": "Assets/Scenes/ClothingSetup.unity.meta",
+      "sha256": "4f013d2744600da3cbddfde8b127dd19afbc05a34286dd858e5bca0818007df1",
+      "bytes": 155
+    },
+    {
+      "path": "Assets/Scenes/FirstPerformanceVoid.unity",
+      "sha256": "ad9c72a4d1d37729663c99883194a14a186f5f0189c127996efe8873d2d8fa01",
+      "bytes": 868936
+    },
+    {
+      "path": "Assets/Scenes/FirstPerformanceVoid.unity.meta",
+      "sha256": "6a9825d275ff71f6d2e64ad0866db80091d0d6f927106d5ae8a9e1aa44042a23",
+      "bytes": 155
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.fbx",
+      "sha256": "c0a836ba17c50060d1b2b82a30e535d2da0dfb490bd0bd0eb459b8d5169c1aa6",
+      "bytes": 118352416
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.fbx.meta",
+      "sha256": "ce3cbb1657c87992aafd032519fd0d8cbfa5d9d45e3288c294c6d827bb205fb0",
+      "bytes": 2993
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/03CharlenesClosetUnderwear_Leather.jpg",
+      "sha256": "b41903ac3ea1cb6cd6fc993ac29836d408a684fcafa797c744c27ad3ee9e3e28",
+      "bytes": 2849086
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/03CharlenesClosetUnderwear_Leather.jpg.meta",
+      "sha256": "bd09220c7214ff1709048913ce407f8b680d6113b22c3b9a895eadd8a45f2dfd",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/04CharlenesClosetUnderwear_Latex.jpg",
+      "sha256": "c53e5c63405f3f16c28541157b40c2b4f0e1ad53966589a989972aab24758488",
+      "bytes": 1086436
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/04CharlenesClosetUnderwear_Latex.jpg.meta",
+      "sha256": "0caaf87a5050f124af34c9133586dc9d8faf36297727a934c7ed171c9ad92bc9",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EmikoHairbandsTex04.jpg",
+      "sha256": "ee192def025f866349a39b183938a0b282d5d702732e22f2cf70d2db27e410a3",
+      "bytes": 522146
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EmikoHairbandsTex04.jpg.meta",
+      "sha256": "f0c39e90ae3d176037b9ab07db760f53ccc3eeeee21d6b06b03320c6462730fc",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EmikoHairScalpTR.tif",
+      "sha256": "ea8ca20ed8febdb65711815dc894ce9cfa1ead495c3ed665c3935ac6e69f8811",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EmikoHairScalpTR.tif.meta",
+      "sha256": "d7dc3273246511cc3f05cb47934648b72a7cae99521fdc71f5cbe4f656423836",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EmikoHairTex14.tif",
+      "sha256": "0ef99820765ec12a046c2ed7be6d606a3c02405037f372859a4a2b6e16ee951d",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EmikoHairTex14.tif.meta",
+      "sha256": "1deac306f87ba761dabc534d3066dccfd42f26b438478c254941461aea67fe50",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraArms_1004.jpg",
+      "sha256": "7d1f4c3264ed79593bca105edf8e3982db2f63a1a49ea95a888a5ec57ea23004",
+      "bytes": 955182
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraArms_1004.jpg.meta",
+      "sha256": "551c78081f3cc877554420a49589bb012f7d2b03554b87d1fa29b1c5011504a2",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraArmsNails01_1004.jpg",
+      "sha256": "67a3f3ec8327feda874f7bd547855bdae34a7d63294c88bb52f0730ff001eb2c",
+      "bytes": 400738
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraArmsNails01_1004.jpg.meta",
+      "sha256": "4e3fa88b525d15702c85b815232ee037ba33213d174290dc7e05364526f5d9c8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraEyes07_1007.jpg",
+      "sha256": "aeef37bf329c5f6991d3d768fd84330615d072a37b6a8edf710529f61479ba9b",
+      "bytes": 1278168
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraEyes07_1007.jpg.meta",
+      "sha256": "5f4634ebec4810bd66ce0df0ae98eebcd590b9b4e6b45b936de076c3d62ec713",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraFace_1001.jpg",
+      "sha256": "98ecaff7830d9fd3e32eacb54a3f93d55a279a9f618cb58d34601d21187ee98a",
+      "bytes": 1533335
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraFace_1001.jpg.meta",
+      "sha256": "2519ae312ff3c69e5c4cec0d6e1822b10e26babb7f971936ca7e9094856a9eab",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraFace_1001.tif",
+      "sha256": "ec7b4b5038be2ba0e6c26c49f3af9ba2968bbc653f70087616d6a557fac70eda",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraFace_1001.tif.meta",
+      "sha256": "94cdb3e422f0b91a16cd546307364bad0c77dedf8bbe3cbd31117ca6c852b6f6",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraFaceMU08_1001.jpg",
+      "sha256": "139acf492bd9d6e3b606c37259aa9bf978410c0694f229e501d5fcf0cdd00ada",
+      "bytes": 1523172
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraFaceMU08_1001.jpg.meta",
+      "sha256": "955d7741753a284e720cdd74d9b6b492511a2ebe71953926c1dae41d37f91749",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraFaceMULips03_1001.jpg",
+      "sha256": "cdf285ec16d010a4d6f74cf084431291a796d439a1b55fe6a72e9d168ec7cd37",
+      "bytes": 259665
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraFaceMULips03_1001.jpg.meta",
+      "sha256": "53afd305faad1d81166f72fc84a3655ad30f087b423ee8e338a58c9e1e495454",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraLegs_1003.jpg",
+      "sha256": "7c9b9cbb1353c9074dc3382855a0b1f761a86ff1a6e2277a17fb574549167699",
+      "bytes": 909721
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraLegs_1003.jpg.meta",
+      "sha256": "1a77c6afa8ac5e33b46e5e7538b3f473aa78b3bca231ce6ab2a22393b7ed808a",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraMouth_1005.jpg",
+      "sha256": "5b47f6fb31bc099c680fe8ceaeb11393e48540c7cabd8d49d071d6dbd6929e14",
+      "bytes": 404353
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraMouth_1005.jpg.meta",
+      "sha256": "395192efcc0cb4b8b27c71e7d8e9b8f285e7b9c16078e33316e5420f1ef40ed6",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraTorso_1002.jpg",
+      "sha256": "a70a06efb9e6e6317e6459620a0502a8e9b802e926e9c8c7b2124201e7d3919d",
+      "bytes": 787238
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/EphestraTorso_1002.jpg.meta",
+      "sha256": "66951c8ff2ebaa5915037f73dc65f1885f3318150123b922e14b8a57247a3323",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/OMGPSY2.jpg",
+      "sha256": "e7d49e0dd22f0b09facb52fd0c05644a41067a220d1138339575112400b7b364",
+      "bytes": 457295
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/OMGPSY2.jpg.meta",
+      "sha256": "7c6ee1e420135f09f8a24e60eee334cf04d0332ac3332574918abf2360a227c8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/RipplesRefl.jpg",
+      "sha256": "45cf24cd3c9c32c9d309b299810ffa33daf5b91420bf1b595cb5416eb0322891",
+      "bytes": 63852
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images/RipplesRefl.jpg.meta",
+      "sha256": "adad014430d1cdae311adc7163c3b4d7ecb2adb48ae6c9c59e3b151ee760f99c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeclosed.images.meta",
+      "sha256": "fa98cfaab93bc4bdfcb2e2ebecac4d5affbe88116f5d34dcfa17de80b21d6004",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.fbx",
+      "sha256": "bef1a84980dc49cd08dd5abd41580d43f2f7284be42983327d3e5af20e26038c",
+      "bytes": 118352176
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.fbx.meta",
+      "sha256": "32e5388d0eac13c5105e664d7684f8a2c1481e49ae5ff7ba060b31c0470600ad",
+      "bytes": 2993
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/03CharlenesClosetUnderwear_Leather.jpg",
+      "sha256": "b41903ac3ea1cb6cd6fc993ac29836d408a684fcafa797c744c27ad3ee9e3e28",
+      "bytes": 2849086
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/03CharlenesClosetUnderwear_Leather.jpg.meta",
+      "sha256": "9d09beafb4b85d11a605f6d92ee1570ace8d456a47edf668e155f32e7d1fa03c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/04CharlenesClosetUnderwear_Latex.jpg",
+      "sha256": "c53e5c63405f3f16c28541157b40c2b4f0e1ad53966589a989972aab24758488",
+      "bytes": 1086436
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/04CharlenesClosetUnderwear_Latex.jpg.meta",
+      "sha256": "5b7cb8d486f4d794ea9fa189174fbce0cd7366163213efa62a480192890afb36",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EmikoHairbandsTex04.jpg",
+      "sha256": "ee192def025f866349a39b183938a0b282d5d702732e22f2cf70d2db27e410a3",
+      "bytes": 522146
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EmikoHairbandsTex04.jpg.meta",
+      "sha256": "59489d61e36100fad69f6ee6aa14b15a10a075f37d33e7879faf5ed92805aff1",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EmikoHairScalpTR.tif",
+      "sha256": "ea8ca20ed8febdb65711815dc894ce9cfa1ead495c3ed665c3935ac6e69f8811",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EmikoHairScalpTR.tif.meta",
+      "sha256": "d04526a05784f821b9d8f98407e6c3135587b5c4cfa60bb80d47ce93a0d7a4da",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EmikoHairTex14.tif",
+      "sha256": "0ef99820765ec12a046c2ed7be6d606a3c02405037f372859a4a2b6e16ee951d",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EmikoHairTex14.tif.meta",
+      "sha256": "0bafd4e29f0dffbfa8ca6de0f86f9263e112e40deca8608bb5e9da066d76d2cc",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraArms_1004.jpg",
+      "sha256": "7d1f4c3264ed79593bca105edf8e3982db2f63a1a49ea95a888a5ec57ea23004",
+      "bytes": 955182
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraArms_1004.jpg.meta",
+      "sha256": "99f077e8ba47fffeb5220a39943e97df9551296f37542416cd02a0a40071d42c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraArmsNails01_1004.jpg",
+      "sha256": "67a3f3ec8327feda874f7bd547855bdae34a7d63294c88bb52f0730ff001eb2c",
+      "bytes": 400738
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraArmsNails01_1004.jpg.meta",
+      "sha256": "c61d78c21509476f406347d06e70c7638cda36f0233d33d33224feab630c93e8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraEyes07_1007.jpg",
+      "sha256": "aeef37bf329c5f6991d3d768fd84330615d072a37b6a8edf710529f61479ba9b",
+      "bytes": 1278168
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraEyes07_1007.jpg.meta",
+      "sha256": "c96e16682963d8488744090a1930aaffe99c2fae0410d74ff052ee763e1753d3",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraFace_1001.jpg",
+      "sha256": "98ecaff7830d9fd3e32eacb54a3f93d55a279a9f618cb58d34601d21187ee98a",
+      "bytes": 1533335
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraFace_1001.jpg.meta",
+      "sha256": "97b8526419257740012ee7c18054473894406f8f686c3cc5626febf4824023be",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraFace_1001.tif",
+      "sha256": "ec7b4b5038be2ba0e6c26c49f3af9ba2968bbc653f70087616d6a557fac70eda",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraFace_1001.tif.meta",
+      "sha256": "7aecc22a5e49df82d00d4e8cd25e0021a65102d31bf5bd750d60604fccacb7cd",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraFaceMU08_1001.jpg",
+      "sha256": "139acf492bd9d6e3b606c37259aa9bf978410c0694f229e501d5fcf0cdd00ada",
+      "bytes": 1523172
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraFaceMU08_1001.jpg.meta",
+      "sha256": "318e1140d6039f5af8548b9548bb5ccd110cf1790f19611cc9d7d37a3891c74b",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraFaceMULips03_1001.jpg",
+      "sha256": "cdf285ec16d010a4d6f74cf084431291a796d439a1b55fe6a72e9d168ec7cd37",
+      "bytes": 259665
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraFaceMULips03_1001.jpg.meta",
+      "sha256": "6f12fd54fe8ad8d5d063307aecd4c1bc0a0086effba7d2e7aabfb77ff639fc08",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraLegs_1003.jpg",
+      "sha256": "7c9b9cbb1353c9074dc3382855a0b1f761a86ff1a6e2277a17fb574549167699",
+      "bytes": 909721
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraLegs_1003.jpg.meta",
+      "sha256": "4273bf8f912839b3d3ddda840d8bac212b82cf739fb729b917a1a90a28ba1c6e",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraMouth_1005.jpg",
+      "sha256": "5b47f6fb31bc099c680fe8ceaeb11393e48540c7cabd8d49d071d6dbd6929e14",
+      "bytes": 404353
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraMouth_1005.jpg.meta",
+      "sha256": "7e83b24d7c84050877a2a96b77cb124c4b939326d5ed6c86448f1f4da5f2fa79",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraTorso_1002.jpg",
+      "sha256": "a70a06efb9e6e6317e6459620a0502a8e9b802e926e9c8c7b2124201e7d3919d",
+      "bytes": 787238
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/EphestraTorso_1002.jpg.meta",
+      "sha256": "bcf62f40f884fa5275831c96fb381cfc3c067c818bfa3abbb29dc9a584e6877f",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/OMGPSY2.jpg",
+      "sha256": "e7d49e0dd22f0b09facb52fd0c05644a41067a220d1138339575112400b7b364",
+      "bytes": 457295
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/OMGPSY2.jpg.meta",
+      "sha256": "b060f2c33cef601a9d9eb873fea88bfc98b6b3572b1bfd779bb259fda3046561",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/RipplesRefl.jpg",
+      "sha256": "45cf24cd3c9c32c9d309b299810ffa33daf5b91420bf1b595cb5416eb0322891",
+      "bytes": 63852
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images/RipplesRefl.jpg.meta",
+      "sha256": "07d9da9f87ccc931036c0fddc4fadb8c4d2c2507d3b71c2d3c041c2922c54331",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/l.aranudeopen.images.meta",
+      "sha256": "0229ef950d2d1c9a6e4bc980895e0fcbd920c27e933bfd10b1c989bc4badd3c6",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/lara.fbx",
+      "sha256": "fccdeb0960ba70e8c1a3c4b2fe38a43a14f4349c626bc067ce39306729cd95bd",
+      "bytes": 81330016
+    },
+    {
+      "path": "Assets/TestCharacter/lara.fbx.meta",
+      "sha256": "36ac4c853ad58096bd67c20b5e67c7df20bb23cbf5531b9ad470401960da2ba4",
+      "bytes": 5584
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraArms_1004.jpg",
+      "sha256": "7d1f4c3264ed79593bca105edf8e3982db2f63a1a49ea95a888a5ec57ea23004",
+      "bytes": 955182
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraArms_1004.jpg.meta",
+      "sha256": "179433247d8381e321f0d797b41751eb30666b59094c994b5cf052ad10e37aca",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraArmsNails01_1004.jpg",
+      "sha256": "67a3f3ec8327feda874f7bd547855bdae34a7d63294c88bb52f0730ff001eb2c",
+      "bytes": 400738
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraArmsNails01_1004.jpg.meta",
+      "sha256": "f1967ab4af2ba56b9f679328fabea51bced85e992a969f725ee864b6a1c497d0",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraEyes07_1007.jpg",
+      "sha256": "aeef37bf329c5f6991d3d768fd84330615d072a37b6a8edf710529f61479ba9b",
+      "bytes": 1278168
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraEyes07_1007.jpg.meta",
+      "sha256": "7a53462c5e4ba82b90a17a85fe371da398d7bb0f6ba00e8307e2dab9ad6775de",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraFace_1001.jpg",
+      "sha256": "98ecaff7830d9fd3e32eacb54a3f93d55a279a9f618cb58d34601d21187ee98a",
+      "bytes": 1533335
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraFace_1001.jpg.meta",
+      "sha256": "3c19ca713483c7af67a320dba0896b12d96ccffaad1a1fe00931a5ec60419f91",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraFace_1001.tif",
+      "sha256": "ec7b4b5038be2ba0e6c26c49f3af9ba2968bbc653f70087616d6a557fac70eda",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraFace_1001.tif.meta",
+      "sha256": "05f5445d2fd63249be76e6573be70d5c2ce393a3f53744544d5f3d81e96b31fc",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraFaceMU08_1001.jpg",
+      "sha256": "139acf492bd9d6e3b606c37259aa9bf978410c0694f229e501d5fcf0cdd00ada",
+      "bytes": 1523172
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraFaceMU08_1001.jpg.meta",
+      "sha256": "98187d0dd881250d0c6d951321986c0d962f3b6e3b8c68c4f7d6fcc36bf7431f",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraFaceMULips03_1001.jpg",
+      "sha256": "cdf285ec16d010a4d6f74cf084431291a796d439a1b55fe6a72e9d168ec7cd37",
+      "bytes": 259665
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraFaceMULips03_1001.jpg.meta",
+      "sha256": "a2179890653156ea1230904689ea393cba4005bb4bcc684746ad265ef2c656cc",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraLegs_1003.jpg",
+      "sha256": "7c9b9cbb1353c9074dc3382855a0b1f761a86ff1a6e2277a17fb574549167699",
+      "bytes": 909721
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraLegs_1003.jpg.meta",
+      "sha256": "12534daf73a6db652e641d6efc1233acf4b46184adef6bda1aba506759568a4d",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraMouth_1005.jpg",
+      "sha256": "5b47f6fb31bc099c680fe8ceaeb11393e48540c7cabd8d49d071d6dbd6929e14",
+      "bytes": 404353
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraMouth_1005.jpg.meta",
+      "sha256": "d78f3b6b40d9a642d2b78c51678e2fa3440c9cc8f902e8814affcd744564d75d",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraTorso_1002.jpg",
+      "sha256": "a70a06efb9e6e6317e6459620a0502a8e9b802e926e9c8c7b2124201e7d3919d",
+      "bytes": 787238
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/EphestraTorso_1002.jpg.meta",
+      "sha256": "b9f4a4cea064003979bc68a8d7572a0bbc71bfc4a228d5e91fea336881b5e8c8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraArms_1004.jpg",
+      "sha256": "83036c42af4d1f9e263e33ee6f6981a72349bb298252eb97c4137f45fffbbbf0",
+      "bytes": 5163972
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraArms_1004.jpg.meta",
+      "sha256": "41fdb9551ac76750b41f3fb996c6948ab4a979086dd2630f68332fa9a93b3ffe",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraEyes01_1007.jpg",
+      "sha256": "70b0ce2e58249e4bfc721f017ed2a2b2f4ffc6d6ddd1e3a02546ca50a55c0024",
+      "bytes": 1244475
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraEyes01_1007.jpg.meta",
+      "sha256": "de9bcc353862041309779e414e46cf8efaa7f00598e414ab0f13d195ab169250",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraFace_1001.jpg",
+      "sha256": "0a977cb2985a98b4943f543130b49bf7e6db920de726ddc60410aaedd264847e",
+      "bytes": 5254114
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraFace_1001.jpg.meta",
+      "sha256": "50dc3be54c464ca2d436630747f4df310ece6f804b550156452195186c81098d",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraLashes_T_1006.tif",
+      "sha256": "9fe7b96b69144372cedfe5e08028a913eb5fd1b520c0f3aca81c77583c670c6e",
+      "bytes": 16777398
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraLashes_T_1006.tif.meta",
+      "sha256": "e98d45884c05c038f7b05a30cfe04c77c492bceeded0e4d786e0a1d9a93fda2b",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraLegs_1003.jpg",
+      "sha256": "64b282ad0f456ba09d8dbc3854a52b9de35734eb1b60569c2f19bef3fd50c2c9",
+      "bytes": 4744870
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraLegs_1003.jpg.meta",
+      "sha256": "2fc7baffa0414bfa5c1c5248ecb9f72b949647efa24b686f0f4c523098f8c01a",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraMouth_1005.jpg",
+      "sha256": "398fe13866a4347f9489a6feeb38a6888d36dcc281b0e9909d4689eec2eac785",
+      "bytes": 844670
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraMouth_1005.jpg.meta",
+      "sha256": "05fac0cee29ba552f8333c615decdd4f9f038674f8bf1d98814d04571d6a987b",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraTorso_1002.jpg",
+      "sha256": "fb94a13f7ef5362254541f18c983879c790f87f2877458512f537ee99ffff00d",
+      "bytes": 4614316
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images/TWLaraTorso_1002.jpg.meta",
+      "sha256": "1e93355add6929bd1bf9e3795db9a8ea14305f2fafab39be944869453c81f261",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/lara.images.meta",
+      "sha256": "007ff8a283ded1811b8801d1cf4c632bbfe24fdca6371322e43518099c391d10",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.fbx",
+      "sha256": "d18f0416542af4aff30e2e54dd4b40b6500f732a0012ce60cd259eb1c67ed67f",
+      "bytes": 76958432
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.fbx.meta",
+      "sha256": "1f919724c8005831937b397d59da57b03e40e26ee862edd646d1c4b4cd3078be",
+      "bytes": 2993
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraArms_1004.jpg",
+      "sha256": "7d1f4c3264ed79593bca105edf8e3982db2f63a1a49ea95a888a5ec57ea23004",
+      "bytes": 955182
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraArms_1004.jpg.meta",
+      "sha256": "7cf8d725b299fecea56552b790d663d2d9b48a2b45275e8bca13f40cd75987d0",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraArmsNails01_1004.jpg",
+      "sha256": "67a3f3ec8327feda874f7bd547855bdae34a7d63294c88bb52f0730ff001eb2c",
+      "bytes": 400738
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraArmsNails01_1004.jpg.meta",
+      "sha256": "09e9da24ca4df15ad5f189333ee36753609e815f7688f45ca55268c7b8e9d8ad",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraEyes07_1007.jpg",
+      "sha256": "aeef37bf329c5f6991d3d768fd84330615d072a37b6a8edf710529f61479ba9b",
+      "bytes": 1278168
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraEyes07_1007.jpg.meta",
+      "sha256": "48c2fb2e9119edef0974fef5cf9103f74e0c79f25e5af13b232452a98d78aa04",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraFace_1001.jpg",
+      "sha256": "98ecaff7830d9fd3e32eacb54a3f93d55a279a9f618cb58d34601d21187ee98a",
+      "bytes": 1533335
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraFace_1001.jpg.meta",
+      "sha256": "6d95cca8f96c97b012d27a79079e8c13e3c1844a693680687a6cfd9c7ddbd5f4",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraFace_1001.tif",
+      "sha256": "ec7b4b5038be2ba0e6c26c49f3af9ba2968bbc653f70087616d6a557fac70eda",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraFace_1001.tif.meta",
+      "sha256": "115aa109916ecfeaea20e1dea4d55dccf660986f0a6fef2c7b4d518c3b754410",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraFaceMU08_1001.jpg",
+      "sha256": "139acf492bd9d6e3b606c37259aa9bf978410c0694f229e501d5fcf0cdd00ada",
+      "bytes": 1523172
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraFaceMU08_1001.jpg.meta",
+      "sha256": "3f67733033f228cdb54acd5d1729bf922f8e8b58612afc2022a8cedba8a24607",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraFaceMULips03_1001.jpg",
+      "sha256": "cdf285ec16d010a4d6f74cf084431291a796d439a1b55fe6a72e9d168ec7cd37",
+      "bytes": 259665
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraFaceMULips03_1001.jpg.meta",
+      "sha256": "22c891e362434e4c8dfc59045b9f69a40884d04d962d63576a320037239d01e8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraLegs_1003.jpg",
+      "sha256": "7c9b9cbb1353c9074dc3382855a0b1f761a86ff1a6e2277a17fb574549167699",
+      "bytes": 909721
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraLegs_1003.jpg.meta",
+      "sha256": "7b060efe6120143c6af3b9fce2d3158ab37ac7d5ca9cabf3a81933c924f30c40",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraMouth_1005.jpg",
+      "sha256": "5b47f6fb31bc099c680fe8ceaeb11393e48540c7cabd8d49d071d6dbd6929e14",
+      "bytes": 404353
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraMouth_1005.jpg.meta",
+      "sha256": "02562a9f556458d923e8e77ecc0887e3513773fb631d3eeffaae8488e10817d9",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraTorso_1002.jpg",
+      "sha256": "a70a06efb9e6e6317e6459620a0502a8e9b802e926e9c8c7b2124201e7d3919d",
+      "bytes": 787238
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images/EphestraTorso_1002.jpg.meta",
+      "sha256": "a6040d5f677dc3dce4893ac0ec2b1ff7caac582612d1820bbd47ac620ab13332",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laracleanreference.images.meta",
+      "sha256": "fab2755acfe16b3195953802c63a3e22a5aa6736f9701e9cad767e2a6e570b71",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.fbx",
+      "sha256": "992bcc227f7f61a29c44774a42b57d86eb3d9c1072118ee3522ea7e0a1d0b628",
+      "bytes": 178338848
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.fbx.meta",
+      "sha256": "d8c01f9d951341d51e7a7e4de16923938b46ed772fb8cc95aecc5e936d3dbccc",
+      "bytes": 2993
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/03CharlenesClosetUnderwear_Leather.jpg",
+      "sha256": "b41903ac3ea1cb6cd6fc993ac29836d408a684fcafa797c744c27ad3ee9e3e28",
+      "bytes": 2849086
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/03CharlenesClosetUnderwear_Leather.jpg.meta",
+      "sha256": "a21fe35fe480eda9c06e7a874d57a5509c2acb963e33724930a7048e4b61c289",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/04CharlenesClosetUnderwear_Latex.jpg",
+      "sha256": "c53e5c63405f3f16c28541157b40c2b4f0e1ad53966589a989972aab24758488",
+      "bytes": 1086436
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/04CharlenesClosetUnderwear_Latex.jpg.meta",
+      "sha256": "eebf9c83329886901b34ac902bacb264d7e5e8eb26f076cd936b4dfb9a6ddcad",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/09_KalPeekaboo.jpg",
+      "sha256": "bc3638eda943005fdbf424100724cdbad72b087b7cda4ce7a867cb7464ba0572",
+      "bytes": 771165
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/09_KalPeekaboo.jpg.meta",
+      "sha256": "1696cd5e2423f745267adac91a3d1590ef2e24eb843ccb2152c48e6661672474",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EmikoHairbandsTex04.jpg",
+      "sha256": "ee192def025f866349a39b183938a0b282d5d702732e22f2cf70d2db27e410a3",
+      "bytes": 522146
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EmikoHairbandsTex04.jpg.meta",
+      "sha256": "c773f41f9bea1035df679c77d4487103bdb7e44b73b21a069daa4be3556be532",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EmikoHairScalpTR.tif",
+      "sha256": "ea8ca20ed8febdb65711815dc894ce9cfa1ead495c3ed665c3935ac6e69f8811",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EmikoHairScalpTR.tif.meta",
+      "sha256": "1344e71b0db9849655f181fa8701bb6890332e030f9fddfaac47aabefcf0be18",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EmikoHairTex14.tif",
+      "sha256": "0ef99820765ec12a046c2ed7be6d606a3c02405037f372859a4a2b6e16ee951d",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EmikoHairTex14.tif.meta",
+      "sha256": "3ddb1e9d959d9a3df920b0280cb9985781433485251961cf575a938579cee1ef",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraArms_1004.jpg",
+      "sha256": "7d1f4c3264ed79593bca105edf8e3982db2f63a1a49ea95a888a5ec57ea23004",
+      "bytes": 955182
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraArms_1004.jpg.meta",
+      "sha256": "60267f2c9c85c8dc4827992ea533bb86077de0a2f2409e3c7338e2d946d3a78c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraArmsNails01_1004.jpg",
+      "sha256": "67a3f3ec8327feda874f7bd547855bdae34a7d63294c88bb52f0730ff001eb2c",
+      "bytes": 400738
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraArmsNails01_1004.jpg.meta",
+      "sha256": "d346b5365048d8f425a60fe2695a103fe328d6aee30d3d5f5a8a2a1d339aaa7f",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraEyes07_1007.jpg",
+      "sha256": "aeef37bf329c5f6991d3d768fd84330615d072a37b6a8edf710529f61479ba9b",
+      "bytes": 1278168
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraEyes07_1007.jpg.meta",
+      "sha256": "5e7c35836bf9d39a0d25c89309680a903a1725bf183b854f76e16043f0d378d9",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraFace_1001.jpg",
+      "sha256": "98ecaff7830d9fd3e32eacb54a3f93d55a279a9f618cb58d34601d21187ee98a",
+      "bytes": 1533335
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraFace_1001.jpg.meta",
+      "sha256": "da2b4b52a429df5d48317dc69ae369dbf0b5154fe22d76fbb832abd2a88ff3d8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraFace_1001.tif",
+      "sha256": "ec7b4b5038be2ba0e6c26c49f3af9ba2968bbc653f70087616d6a557fac70eda",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraFace_1001.tif.meta",
+      "sha256": "2aff406d8f9c0fe4104362d448dc02a34449b9de1e6abc1effea60a181ac5c35",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraFaceMU08_1001.jpg",
+      "sha256": "139acf492bd9d6e3b606c37259aa9bf978410c0694f229e501d5fcf0cdd00ada",
+      "bytes": 1523172
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraFaceMU08_1001.jpg.meta",
+      "sha256": "906e37e8e4e9153c3a5c4db123e7f3e3f3796d1fba58adfe3bd60ff8254320ef",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraFaceMULips03_1001.jpg",
+      "sha256": "cdf285ec16d010a4d6f74cf084431291a796d439a1b55fe6a72e9d168ec7cd37",
+      "bytes": 259665
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraFaceMULips03_1001.jpg.meta",
+      "sha256": "fa842f7b6b0258cef2adabfdf11530245f9334e590637f6d422cb9c44056495f",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraLegs_1003.jpg",
+      "sha256": "7c9b9cbb1353c9074dc3382855a0b1f761a86ff1a6e2277a17fb574549167699",
+      "bytes": 909721
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraLegs_1003.jpg.meta",
+      "sha256": "9401b58c405d9e6c44dfbf39e6eff78cc36e2b38fc2f1098b0def26137817d6c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraMouth_1005.jpg",
+      "sha256": "5b47f6fb31bc099c680fe8ceaeb11393e48540c7cabd8d49d071d6dbd6929e14",
+      "bytes": 404353
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraMouth_1005.jpg.meta",
+      "sha256": "54525e5a965fb611d9040c9c4caffba531ea0dca1b84e4be88eace838d268b3c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraTorso_1002.jpg",
+      "sha256": "a70a06efb9e6e6317e6459620a0502a8e9b802e926e9c8c7b2124201e7d3919d",
+      "bytes": 787238
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/EphestraTorso_1002.jpg.meta",
+      "sha256": "4a15c3e548dfc512b704ca807554d1c8c7cf2f02b3a2e3069f7b862bdc4a9742",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/OMGPSY2.jpg",
+      "sha256": "e7d49e0dd22f0b09facb52fd0c05644a41067a220d1138339575112400b7b364",
+      "bytes": 457295
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/OMGPSY2.jpg.meta",
+      "sha256": "6d3c534b5c7c511f6f0efed7ed5ff89c4c500c2c3db7d8e319da59030e31f916",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/RipplesRefl.jpg",
+      "sha256": "45cf24cd3c9c32c9d309b299810ffa33daf5b91420bf1b595cb5416eb0322891",
+      "bytes": 63852
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/RipplesRefl.jpg.meta",
+      "sha256": "2a5def80e99fd2f404107145999d5d764c0f522050d5058cfc99df1d1ba6d2d4",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/StarletteHairCapTex01.tif",
+      "sha256": "aa770402ac4b0ecd37a50e0044a9c8b9c78c2d938a40c9df67721cbb540382e2",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/StarletteHairCapTex01.tif.meta",
+      "sha256": "0b2a6d9c3744dffc5cde925032b908185144590b911bb7416430b94d2c5c83c1",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/StarletteHairTex01.tif",
+      "sha256": "ba4a6685beed2ccdf917ed92362ee30216378c08c3f6bedc16ab86c5907da3ce",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images/StarletteHairTex01.tif.meta",
+      "sha256": "88a5b7fa325b62f39b904d68b17e32808cf8d591236164c3bc7bb702f9c28944",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larafirstoutfit.images.meta",
+      "sha256": "5305c100ec204a59ac1a5033028ec45762e181c6f18d3f763494829caa105ae9",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/laraHumanoid.fbx",
+      "sha256": "fccdeb0960ba70e8c1a3c4b2fe38a43a14f4349c626bc067ce39306729cd95bd",
+      "bytes": 81330016
+    },
+    {
+      "path": "Assets/TestCharacter/laraHumanoid.fbx.meta",
+      "sha256": "a37e3a93f0339aa7c9f45062ac4a310386345ea86e3b984a6c9a51c8b84a4488",
+      "bytes": 52857
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.fbx",
+      "sha256": "b9fdf417c6f99750032543884620b79e67d307addc97e177ce5b18a5a74bf5e7",
+      "bytes": 284423008
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.fbx.meta",
+      "sha256": "0aa104b913f300851d5177e972b989babc1f82b7a7ca19c4eb2313ec1980b294",
+      "bytes": 2993
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BW1001_Base_Color.tif",
+      "sha256": "c46c0624cf32c967d1ee18f7455463408398d65734beb0ef306c2b74abfdce80",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BW1001_Base_Color.tif.meta",
+      "sha256": "c371be8c59ed286b0ec415b2e8c311839df11fbd0284498be4f1172ffd31268b",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BWApron1001_Base_Color.jpg",
+      "sha256": "34e5acb6276acb7fe02e680162616a3dda9e02bb62054ac048c2973fda21dbce",
+      "bytes": 2121972
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BWApron1001_Base_Color.jpg.meta",
+      "sha256": "130ee0e58b09f4166330f540a36d9c1060501fde919a7e8d35507a9a4423faff",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BWApron1001_Base_Color.tif",
+      "sha256": "e0e550e42b924e53b9bfbdc1cc71a41cfbe7fdaf211164c16af9ad1608b237c4",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BWApron1001_Base_Color.tif.meta",
+      "sha256": "b7622f6dabe8800e2aae05dab9ce5e227523eeb250a71fec88819506cf7b5830",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BWDress1001_Base_Color.tif",
+      "sha256": "90b94351c57bd2c488528dc697d45384761c18bc16bf56318c945847ceed7169",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BWDress1001_Base_Color.tif.meta",
+      "sha256": "e21c2b936944430ecb67c0446aecb8a77122811cb26042604b88de36ed976799",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BWStocking1001_Base_Color.jpg",
+      "sha256": "6197d984d7d1bdd917ca8afe3d4eb023a6139af6c973776464d4e48444f8b27d",
+      "bytes": 262771
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/BWStocking1001_Base_Color.jpg.meta",
+      "sha256": "681a001ab3eafafd5339af1b724bbc29fa631099e3309fc2f386f67f495678e5",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraArms_1004.jpg",
+      "sha256": "7d1f4c3264ed79593bca105edf8e3982db2f63a1a49ea95a888a5ec57ea23004",
+      "bytes": 955182
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraArms_1004.jpg.meta",
+      "sha256": "4b8c789a7069bcefc8257c124924ed98a20b669a4e37e23d0dd603c6b2191559",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraArmsNails01_1004.jpg",
+      "sha256": "67a3f3ec8327feda874f7bd547855bdae34a7d63294c88bb52f0730ff001eb2c",
+      "bytes": 400738
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraArmsNails01_1004.jpg.meta",
+      "sha256": "f0c735f821800dfc00918d75ec9aa52d454d99d257d1620adec2ae69b6e758b9",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraEyes07_1007.jpg",
+      "sha256": "aeef37bf329c5f6991d3d768fd84330615d072a37b6a8edf710529f61479ba9b",
+      "bytes": 1278168
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraEyes07_1007.jpg.meta",
+      "sha256": "29274624a2445c168422546c8de8f2ef8c4b810341b8714b1567b1c32c247a44",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraFace_1001.jpg",
+      "sha256": "98ecaff7830d9fd3e32eacb54a3f93d55a279a9f618cb58d34601d21187ee98a",
+      "bytes": 1533335
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraFace_1001.jpg.meta",
+      "sha256": "d83b3afdac966c32e04d1cfe5acaacae8d185d7025befb0bc24426806baa7417",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraFace_1001.tif",
+      "sha256": "ec7b4b5038be2ba0e6c26c49f3af9ba2968bbc653f70087616d6a557fac70eda",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraFace_1001.tif.meta",
+      "sha256": "dfa9c514ac2179670b827c07b634a76f0afd068a8d3df121a1aaf75945677e3c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraFaceMU08_1001.jpg",
+      "sha256": "139acf492bd9d6e3b606c37259aa9bf978410c0694f229e501d5fcf0cdd00ada",
+      "bytes": 1523172
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraFaceMU08_1001.jpg.meta",
+      "sha256": "bdc128c8a5ff06082117683eaa34fe1ad17f54508deeae9278fe30b29ee0a72b",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraFaceMULips03_1001.jpg",
+      "sha256": "cdf285ec16d010a4d6f74cf084431291a796d439a1b55fe6a72e9d168ec7cd37",
+      "bytes": 259665
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraFaceMULips03_1001.jpg.meta",
+      "sha256": "613cd556730463213d2bfe2ae3bd1fb4e1a012f189860447df20362b5ed38d2c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraLegs_1003.jpg",
+      "sha256": "7c9b9cbb1353c9074dc3382855a0b1f761a86ff1a6e2277a17fb574549167699",
+      "bytes": 909721
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraLegs_1003.jpg.meta",
+      "sha256": "669f6019e06fdaae8e64dc3cb91f1a9de4d86a9d28ae765349fcaf3f3a84001a",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraMouth_1005.jpg",
+      "sha256": "5b47f6fb31bc099c680fe8ceaeb11393e48540c7cabd8d49d071d6dbd6929e14",
+      "bytes": 404353
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraMouth_1005.jpg.meta",
+      "sha256": "ffeb2b8f9a51852bdc4e0abbc8a76670cdb58137ce9a9ff6ee3cf2f82acee4d8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraTorso_1002.jpg",
+      "sha256": "a70a06efb9e6e6317e6459620a0502a8e9b802e926e9c8c7b2124201e7d3919d",
+      "bytes": 787238
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/EphestraTorso_1002.jpg.meta",
+      "sha256": "832b5fd8c0ccc095a54ccd863928d070c02100dbd34a795d03de120ac8c2f5c2",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/OMGPSY2.jpg",
+      "sha256": "e7d49e0dd22f0b09facb52fd0c05644a41067a220d1138339575112400b7b364",
+      "bytes": 457295
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/OMGPSY2.jpg.meta",
+      "sha256": "2ec2caed2d72a93983770ae5d3700c279d26e3745c7d9e660a380b9069281eb3",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/RipplesRefl.jpg",
+      "sha256": "45cf24cd3c9c32c9d309b299810ffa33daf5b91420bf1b595cb5416eb0322891",
+      "bytes": 63852
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images/RipplesRefl.jpg.meta",
+      "sha256": "a14363cc4d3d1a17c446935757b1947ca8fe487c4164c4034b5e0c82710c90d8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laramaid.images.meta",
+      "sha256": "31ce3c4b67314a9794b5d5cbce5ea0d86af5690b35572047aca59ec0487b9fe2",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.fbx",
+      "sha256": "6aceceebe426d52838b40b50ffaf230e7f51f881df18752cac7c70d559d546aa",
+      "bytes": 137110496
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.fbx.meta",
+      "sha256": "865d89fe2d28769297a2e7e39075665117cc320df2ff8d142b08fa39df17ff3a",
+      "bytes": 2993
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/03CharlenesClosetUnderwear_Leather.jpg",
+      "sha256": "b41903ac3ea1cb6cd6fc993ac29836d408a684fcafa797c744c27ad3ee9e3e28",
+      "bytes": 2849086
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/03CharlenesClosetUnderwear_Leather.jpg.meta",
+      "sha256": "a9cbc103b353447319d846a21235be783ea382b3c324c21fbee214428aa74e22",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/04CharlenesClosetUnderwear_Latex.jpg",
+      "sha256": "c53e5c63405f3f16c28541157b40c2b4f0e1ad53966589a989972aab24758488",
+      "bytes": 1086436
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/04CharlenesClosetUnderwear_Latex.jpg.meta",
+      "sha256": "41d715ee58562f55b2fd4eea892b1577d2b22c0f680256757fc52916ad7c23b2",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/09_KalPeekaboo.jpg",
+      "sha256": "bc3638eda943005fdbf424100724cdbad72b087b7cda4ce7a867cb7464ba0572",
+      "bytes": 771165
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/09_KalPeekaboo.jpg.meta",
+      "sha256": "a3cd1ee2a1b4f2ae6a0982031bb9be5d010469b94d00f84667a9b637973a71c6",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EmikoHairbandsTex04.jpg",
+      "sha256": "ee192def025f866349a39b183938a0b282d5d702732e22f2cf70d2db27e410a3",
+      "bytes": 522146
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EmikoHairbandsTex04.jpg.meta",
+      "sha256": "4ce1f9f686b8f716e2914056e854378c473c9a1ae648c3053be16343f5590624",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EmikoHairScalpTR.tif",
+      "sha256": "ea8ca20ed8febdb65711815dc894ce9cfa1ead495c3ed665c3935ac6e69f8811",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EmikoHairScalpTR.tif.meta",
+      "sha256": "8f10d46ca181e6f7552b0149c4c90704e7ee0844eb7c8aa6499c15948d674fa1",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EmikoHairTex14.tif",
+      "sha256": "0ef99820765ec12a046c2ed7be6d606a3c02405037f372859a4a2b6e16ee951d",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EmikoHairTex14.tif.meta",
+      "sha256": "34315d299d20fab83589f42f00272b57f16d538c94bfcaf88aea804142f4c622",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraArms_1004.jpg",
+      "sha256": "7d1f4c3264ed79593bca105edf8e3982db2f63a1a49ea95a888a5ec57ea23004",
+      "bytes": 955182
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraArms_1004.jpg.meta",
+      "sha256": "19c9d51ca60fb1af3520b060d76039ebe61d46946c801df7e696ab29d14723b8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraArmsNails01_1004.jpg",
+      "sha256": "67a3f3ec8327feda874f7bd547855bdae34a7d63294c88bb52f0730ff001eb2c",
+      "bytes": 400738
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraArmsNails01_1004.jpg.meta",
+      "sha256": "46def7d06cceb70e8cca6ae5d1712399b826c3dee9d5397cc38d5f9c6ff9d1e0",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraEyes07_1007.jpg",
+      "sha256": "aeef37bf329c5f6991d3d768fd84330615d072a37b6a8edf710529f61479ba9b",
+      "bytes": 1278168
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraEyes07_1007.jpg.meta",
+      "sha256": "32c748d87ddde10671848998b93213bd0455c3be7db3a703cca61ad30c6b1280",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraFace_1001.jpg",
+      "sha256": "98ecaff7830d9fd3e32eacb54a3f93d55a279a9f618cb58d34601d21187ee98a",
+      "bytes": 1533335
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraFace_1001.jpg.meta",
+      "sha256": "96796bb5a39893ac8c28ee634f17fdc0e0e580fad0b07a48ff7064552e80c5e5",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraFace_1001.tif",
+      "sha256": "ec7b4b5038be2ba0e6c26c49f3af9ba2968bbc653f70087616d6a557fac70eda",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraFace_1001.tif.meta",
+      "sha256": "33bae6c5df2336f782f2ec0294895d35eabde5acf49484b4f85ee10a88bc4488",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraFaceMU08_1001.jpg",
+      "sha256": "139acf492bd9d6e3b606c37259aa9bf978410c0694f229e501d5fcf0cdd00ada",
+      "bytes": 1523172
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraFaceMU08_1001.jpg.meta",
+      "sha256": "f0f99d911a3d19444428ce59404745561ff5a3058fbd7124d81454ce16dec6da",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraFaceMULips03_1001.jpg",
+      "sha256": "cdf285ec16d010a4d6f74cf084431291a796d439a1b55fe6a72e9d168ec7cd37",
+      "bytes": 259665
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraFaceMULips03_1001.jpg.meta",
+      "sha256": "554e02fadd0ae3cbac8b0792d85b92f86fbe09f95fe6a5b14ce3fc8c24771018",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraLegs_1003.jpg",
+      "sha256": "7c9b9cbb1353c9074dc3382855a0b1f761a86ff1a6e2277a17fb574549167699",
+      "bytes": 909721
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraLegs_1003.jpg.meta",
+      "sha256": "82bec32d6503817eaaa416e8e7db1f0aceca4262060fcdc90e06f1503dfab023",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraMouth_1005.jpg",
+      "sha256": "5b47f6fb31bc099c680fe8ceaeb11393e48540c7cabd8d49d071d6dbd6929e14",
+      "bytes": 404353
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraMouth_1005.jpg.meta",
+      "sha256": "4bbf7cf08bfc7728b460b9be06e2c31ec85dac3f50e1f338d7e991382e342943",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraTorso_1002.jpg",
+      "sha256": "a70a06efb9e6e6317e6459620a0502a8e9b802e926e9c8c7b2124201e7d3919d",
+      "bytes": 787238
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/EphestraTorso_1002.jpg.meta",
+      "sha256": "48032eda187b696c3c7ee2bf590b106d47cf103750bb5cce21413200505b4613",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/OMGPSY2.jpg",
+      "sha256": "e7d49e0dd22f0b09facb52fd0c05644a41067a220d1138339575112400b7b364",
+      "bytes": 457295
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/OMGPSY2.jpg.meta",
+      "sha256": "1d80e47da41f2ddb3892c1466b48da75132960d28ec38c847bc38f309ab33df5",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/RipplesRefl.jpg",
+      "sha256": "45cf24cd3c9c32c9d309b299810ffa33daf5b91420bf1b595cb5416eb0322891",
+      "bytes": 63852
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images/RipplesRefl.jpg.meta",
+      "sha256": "af6992b9577646327121e6a7e2364d1dd7b0f700c4da5183382182aa0dd549c9",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/laranude.images.meta",
+      "sha256": "20f6db7bf12d1bc4727503885788ea36610871f4f15f64e73163bfb318553d0e",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.fbx",
+      "sha256": "ea75a56825b6442a5439f963fa90d3a046d1058b24126f11c6fcec65ab7d4e78",
+      "bytes": 280194080
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.fbx.meta",
+      "sha256": "15249cb7d5c13e678290593f8b41d846f6bd9e3f85d1d5622f7f85b4c4e21a89",
+      "bytes": 2993
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 1024.jpg",
+      "sha256": "67e09bbcfa9ad2b181f3a661be220b8c76888513fcf7a08812528be6f46412c0",
+      "bytes": 26214
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 1024.jpg.meta",
+      "sha256": "6d102caa5b160862f403d7d0188ce6e3d94cf84dd90c8d9315eee0b06c4ab17f",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 1K.tif",
+      "sha256": "7457160a83b6239c7dd9883142b2e480e10e03687f0a2351419b2a27aa6bd422",
+      "bytes": 4194486
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 1K.tif.meta",
+      "sha256": "1be7ab1a020404a6807ffaac87bfc1b8c485d5dc60af7c503ef17f25168611f8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 2K.jpg",
+      "sha256": "5419254d43b8ff9b0b7c5f03f5657c3062305dec51953bf8985e0044817d968c",
+      "bytes": 81523
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 2K.jpg.meta",
+      "sha256": "c34ce527b7ef4bd036de4137fbcb7b255bd0dc235aaefa0b80ac3073a2c54241",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 2K.png",
+      "sha256": "c1a8783bb001c80737e5f3dbbeeb82b9744b2ee3e215ac797af151fe40ea0656",
+      "bytes": 1254110
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 2K.png.meta",
+      "sha256": "7600f4d7740c9be13099c688243cee9bc949515dcb6535702eac844b7eb29dc7",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 2K.tif",
+      "sha256": "05df6714a176f6d694dc86833a6aff364897ebae8b7bb12c208d5c2a629322cd",
+      "bytes": 16777398
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 2K.tif.meta",
+      "sha256": "7b17a305a0953f8a9ccb436e9d3c8639c05f37286e5af2ac03ed0d7d18b0ed28",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 4K.jpg",
+      "sha256": "fc805d50278f4e830affaf046fb4d3901399d08b526a2bd0400203f3b16736cc",
+      "bytes": 961384
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 4K.jpg.meta",
+      "sha256": "b6d75283c81d48b2bb6d21fa0010b5bf217b33932587d9ed82f0842c75ad28c1",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 4K.tif",
+      "sha256": "81a1eac4b4e09b0045a0d3702ad8f7845db81809eb0caa928744270fbf96dc15",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black 4K.tif.meta",
+      "sha256": "acbc2283b8ed653e2a7e3b1f0a74ccf2ebb260db4da54f707032b9d20a0fa4de",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black Nude 4K.tif",
+      "sha256": "1630fd60534ba1b07189b745ccc20d9552ac140fe54da312fb3addfd3c2219e4",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/Black Nude 4K.tif.meta",
+      "sha256": "8738b9317995088d6c97ecbfb1e6725a073f092391db3678a6b6ab85d76fad93",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EmikoHairbandsTex04.jpg",
+      "sha256": "ee192def025f866349a39b183938a0b282d5d702732e22f2cf70d2db27e410a3",
+      "bytes": 522146
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EmikoHairbandsTex04.jpg.meta",
+      "sha256": "b5f29352d70e839ab57707c866dfd1e02d0521a3eb0762bb0df32ff9650ca148",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EmikoHairScalpTR.tif",
+      "sha256": "ea8ca20ed8febdb65711815dc894ce9cfa1ead495c3ed665c3935ac6e69f8811",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EmikoHairScalpTR.tif.meta",
+      "sha256": "042c78b8248bcedf12e3b71be347eac3bc8ceae03a5c6436593e709ba17030b9",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EmikoHairTex14.tif",
+      "sha256": "0ef99820765ec12a046c2ed7be6d606a3c02405037f372859a4a2b6e16ee951d",
+      "bytes": 16000182
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EmikoHairTex14.tif.meta",
+      "sha256": "65d17eb43041816ec19f5dbcfdc8f0658d09ac4ae3f22f53be9c4c3682971b5f",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraArms_1004.jpg",
+      "sha256": "7d1f4c3264ed79593bca105edf8e3982db2f63a1a49ea95a888a5ec57ea23004",
+      "bytes": 955182
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraArms_1004.jpg.meta",
+      "sha256": "fb33da3034c98ee71b68b64a8de1afe1af9bbfca03f89217da5fe084004739ea",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraArmsNails01_1004.jpg",
+      "sha256": "67a3f3ec8327feda874f7bd547855bdae34a7d63294c88bb52f0730ff001eb2c",
+      "bytes": 400738
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraArmsNails01_1004.jpg.meta",
+      "sha256": "7a2cc73d7c122957818c864f67ca2b1057e04727f0c2b1da8407e3a872b3f582",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraEyes07_1007.jpg",
+      "sha256": "aeef37bf329c5f6991d3d768fd84330615d072a37b6a8edf710529f61479ba9b",
+      "bytes": 1278168
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraEyes07_1007.jpg.meta",
+      "sha256": "ab1caf34ec52bda27982eca918e8c73d85c7517175766f726e83c0e0c06c19c0",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraFace_1001.jpg",
+      "sha256": "98ecaff7830d9fd3e32eacb54a3f93d55a279a9f618cb58d34601d21187ee98a",
+      "bytes": 1533335
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraFace_1001.jpg.meta",
+      "sha256": "6dd77baa3eddf62387aed354faa0444f9bb1e2fb308d2ee2fb46a6f3248b0a43",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraFace_1001.tif",
+      "sha256": "ec7b4b5038be2ba0e6c26c49f3af9ba2968bbc653f70087616d6a557fac70eda",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraFace_1001.tif.meta",
+      "sha256": "a05ca721b2bf36d48fc443e4838a3a5c600e130ac514222da0021346218d24ab",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraFaceMU08_1001.jpg",
+      "sha256": "139acf492bd9d6e3b606c37259aa9bf978410c0694f229e501d5fcf0cdd00ada",
+      "bytes": 1523172
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraFaceMU08_1001.jpg.meta",
+      "sha256": "957bbd897090db76cfc0ccf1576c60f331b67abd7ec15119e27020e152dd53cb",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraFaceMULips03_1001.jpg",
+      "sha256": "cdf285ec16d010a4d6f74cf084431291a796d439a1b55fe6a72e9d168ec7cd37",
+      "bytes": 259665
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraFaceMULips03_1001.jpg.meta",
+      "sha256": "eb82b9358391ed7da5547813bca531cccdd91318df54ba656afc176f493e1574",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraLegs_1003.jpg",
+      "sha256": "7c9b9cbb1353c9074dc3382855a0b1f761a86ff1a6e2277a17fb574549167699",
+      "bytes": 909721
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraLegs_1003.jpg.meta",
+      "sha256": "588635326cd036e4a435f47628b681021c07ea5330747719b738ba901e52aff4",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraMouth_1005.jpg",
+      "sha256": "5b47f6fb31bc099c680fe8ceaeb11393e48540c7cabd8d49d071d6dbd6929e14",
+      "bytes": 404353
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraMouth_1005.jpg.meta",
+      "sha256": "7f1937f0a63da607dfe05c79a08e3b9a90b419fbd41a6f5418eeeb872ff8e180",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraTorso_1002.jpg",
+      "sha256": "a70a06efb9e6e6317e6459620a0502a8e9b802e926e9c8c7b2124201e7d3919d",
+      "bytes": 787238
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/EphestraTorso_1002.jpg.meta",
+      "sha256": "edee92b3741d5c0ede5b56dab452b2d34cfe7861ef177769bf7c6de4c3251193",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/mBDShoes01.jpg",
+      "sha256": "aa99bccb00bf266c2174f38b42cbe6181c163d48643d2808997f6e3fee2997b9",
+      "bytes": 2616498
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/mBDShoes01.jpg.meta",
+      "sha256": "ec3af6fd0c6c10808d6cfd7110193fe59fc3b0b3fcc620d8180779fd3d9f4bf4",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/OMGPSY2.jpg",
+      "sha256": "e7d49e0dd22f0b09facb52fd0c05644a41067a220d1138339575112400b7b364",
+      "bytes": 457295
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/OMGPSY2.jpg.meta",
+      "sha256": "e2ed46ad4d619c1e55bfbc027b30d1814a7cfbdfcf40761d51a92d6d4ef165cb",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/RipplesRefl.jpg",
+      "sha256": "45cf24cd3c9c32c9d309b299810ffa33daf5b91420bf1b595cb5416eb0322891",
+      "bytes": 63852
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images/RipplesRefl.jpg.meta",
+      "sha256": "86be8decab69c41ad8df726493283837b45d671fd6572dce036660c8fa8e35ac",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/larasecondoutfit.images.meta",
+      "sha256": "77fb661c67a2cc362a5bd28e4903c1a358df68c8387460831ee8d0f1ffee0ca6",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.fbx",
+      "sha256": "ba2bcca1dadb350a59e86e118a1b9b0195fef6033c00c472cc1523bf9c3481f1",
+      "bytes": 168773744
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.fbx.meta",
+      "sha256": "5b7ddb053c03d5802ec9e33703479d16162d756420e8331871fa77736ea7fe5c",
+      "bytes": 2994
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine Lashes.tif",
+      "sha256": "867e51e462a176b221560f1cb37565f2a3621f90eb5a30310789d8f12a534974",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine Lashes.tif.meta",
+      "sha256": "4897c067339ff205fd17c472b3535e12ad5c2de819f0726f16744dc4a17bd86b",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine Ref.tif",
+      "sha256": "e6e0d3ac01df20169e44a10f8e42964f4e3f01bc0ec8685ef6a47c24b0efbdfa",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine Ref.tif.meta",
+      "sha256": "6bd1361464b4a5a59e684a702d6c62ea5ffdafb228b426cff819278c261235f8",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Arms.jpg",
+      "sha256": "e48619738ed55aaa99d91d5ab200cae63dbc7f36cb39ee28c26f1da9f8f24f4b",
+      "bytes": 2961251
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Arms.jpg.meta",
+      "sha256": "4bbfe3a58ff54eca9bf6ddb2b41de3d053f656d7ed0a165c16999e8ea3a0f10f",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Eyes-01.jpg",
+      "sha256": "576e78ccc6021fe5bb18ff62891178ca81c5673a600c50d2f6e8238c4a30a7e6",
+      "bytes": 613142
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Eyes-01.jpg.meta",
+      "sha256": "8ec81cf24ea53e34ce79602780eb108f208cbd22a4ec3043f08008116f69668a",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Face.jpg",
+      "sha256": "c91e4dd60a9ec4960ab7a49b8346879ee2579f4e31bd8ff2a9a9cad1fbff4a6b",
+      "bytes": 3719958
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Face.jpg.meta",
+      "sha256": "0b14b0f2eb539d4c7b5b464f1cc17ef10e5c1537958293d31e6633d33673e0a0",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Legs.jpg",
+      "sha256": "6db95c618f586534b95c0739ef80d87711b87cf4e4ddc45c4ecb18708f31ff33",
+      "bytes": 2954210
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Legs.jpg.meta",
+      "sha256": "0c11b21016542cd817a764968e28411f2dfcba20f63190f3768ce9a5e70dd374",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Teeth.jpg",
+      "sha256": "dd986a04c3e0f82bea6af8c13676f46c44964aa75c17a4aaf4b82229a142f32a",
+      "bytes": 1974645
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Teeth.jpg.meta",
+      "sha256": "27fa14222e2e097f262380d4e2921eca0354e9b37cc5f3bb8ba46aff57bbb49b",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Torso.jpg",
+      "sha256": "6dcd437d9f2f0319130aef91c91e3983b2fc90f86ee3d345d4439c9c62c0ea98",
+      "bytes": 3043938
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Caine-Torso.jpg.meta",
+      "sha256": "41e25231fa1b39c45fb6f22e352f9d4c28f5924320a9a0c9f968a2aa0f673385",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Dicktator_DK_S1_DifM02a.tif",
+      "sha256": "9b13b9747d73f3ec9efe97028ed64c25ad186bd9d29b6bce0036eadccc29ffe5",
+      "bytes": 16777398
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images/Dicktator_DK_S1_DifM02a.tif.meta",
+      "sha256": "d3926bcb70ccee7c0d3222d61b1f6bd5a06eb759bcdac9edc67c9851797647d7",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playererect.images.meta",
+      "sha256": "d170f908ed84b63c3fc04d034c5c4271cf2dd44c42aa4d0c4fa2d6d2d94c5cbf",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.fbx",
+      "sha256": "7a8e9188ca04e205870f0ef7619cc0f10ab59af81dab2cff4ff3590ed6a0cda4",
+      "bytes": 168773792
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.fbx.meta",
+      "sha256": "f041186843ceebe4fe27ff96597cae536c9440afce90bf2668a9080d7cc8020b",
+      "bytes": 2994
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine Lashes.tif",
+      "sha256": "867e51e462a176b221560f1cb37565f2a3621f90eb5a30310789d8f12a534974",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine Lashes.tif.meta",
+      "sha256": "5e1b2a7dbb59624ca509cfb4ae1de8f6ef4e5ac28ec2393b996a6f438dafd259",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine Ref.tif",
+      "sha256": "e6e0d3ac01df20169e44a10f8e42964f4e3f01bc0ec8685ef6a47c24b0efbdfa",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine Ref.tif.meta",
+      "sha256": "574867002615678634e612f57f33eab539ada36eb8e3b12eeac5bc09c7d430c2",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Arms.jpg",
+      "sha256": "e48619738ed55aaa99d91d5ab200cae63dbc7f36cb39ee28c26f1da9f8f24f4b",
+      "bytes": 2961251
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Arms.jpg.meta",
+      "sha256": "2a0b4abed6bf6f6baa08fb3731e4b1173139462873df3230940b3d706c86a999",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Eyes-01.jpg",
+      "sha256": "576e78ccc6021fe5bb18ff62891178ca81c5673a600c50d2f6e8238c4a30a7e6",
+      "bytes": 613142
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Eyes-01.jpg.meta",
+      "sha256": "63b6e23b0297637da9feceb1a428c3a1b811998253bcf35c50a59cdfd3966814",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Face.jpg",
+      "sha256": "c91e4dd60a9ec4960ab7a49b8346879ee2579f4e31bd8ff2a9a9cad1fbff4a6b",
+      "bytes": 3719958
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Face.jpg.meta",
+      "sha256": "7c7fe1bb651a92b41a0b866892dc698025649508c78ecd9c0cb2f76cdeee70ca",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Legs.jpg",
+      "sha256": "6db95c618f586534b95c0739ef80d87711b87cf4e4ddc45c4ecb18708f31ff33",
+      "bytes": 2954210
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Legs.jpg.meta",
+      "sha256": "79f63c0482be9f1ee6c838a07f43955dc402e5ec8fa2cb5c1f033ceea5eeba61",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Teeth.jpg",
+      "sha256": "dd986a04c3e0f82bea6af8c13676f46c44964aa75c17a4aaf4b82229a142f32a",
+      "bytes": 1974645
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Teeth.jpg.meta",
+      "sha256": "2d7563faa7234ad32267e5842e3c0dbffd6bd3f3902db3d885cb00f8a26b9fbd",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Torso.jpg",
+      "sha256": "6dcd437d9f2f0319130aef91c91e3983b2fc90f86ee3d345d4439c9c62c0ea98",
+      "bytes": 3043938
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Caine-Torso.jpg.meta",
+      "sha256": "c1fe1dcd52c0cb56d6c1a2829429de4f26aef62b5513726fb97c99420208a214",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Dicktator_DK_S1_DifM02a.tif",
+      "sha256": "9b13b9747d73f3ec9efe97028ed64c25ad186bd9d29b6bce0036eadccc29ffe5",
+      "bytes": 16777398
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images/Dicktator_DK_S1_DifM02a.tif.meta",
+      "sha256": "e9a19161249ea9d14138d393105a2ae075bac3d9bd61ae743e6da431305d36e1",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playerflacid.images.meta",
+      "sha256": "5271a7034e6e3042d7c90a1c6e8dc7e4669e3093b14a436f1025d7e09a83901c",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.fbx",
+      "sha256": "be9405fff80359a76546976327d32131873d62585478c044e9ed0db4dfbff4d3",
+      "bytes": 168792608
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.fbx.meta",
+      "sha256": "1ef8e93ecd421f52ef8ee20731f1d07fe339b5ac48847fa927284b784036d4e9",
+      "bytes": 2993
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine Lashes.tif",
+      "sha256": "867e51e462a176b221560f1cb37565f2a3621f90eb5a30310789d8f12a534974",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine Lashes.tif.meta",
+      "sha256": "c8d2e60e60b516c07382a105a6d3e8836e34651988fe39f745310aec36184329",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine Ref.tif",
+      "sha256": "e6e0d3ac01df20169e44a10f8e42964f4e3f01bc0ec8685ef6a47c24b0efbdfa",
+      "bytes": 67109046
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine Ref.tif.meta",
+      "sha256": "cb1e2712d8209f931444f42ad4c5b5b1ebd6778e083ada42e8c047468690076f",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Arms.jpg",
+      "sha256": "e48619738ed55aaa99d91d5ab200cae63dbc7f36cb39ee28c26f1da9f8f24f4b",
+      "bytes": 2961251
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Arms.jpg.meta",
+      "sha256": "9d8ea388d624a2e7ba3e970299f68137a502e5ff8d09bb47f77072d183dee64c",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Eyes-01.jpg",
+      "sha256": "576e78ccc6021fe5bb18ff62891178ca81c5673a600c50d2f6e8238c4a30a7e6",
+      "bytes": 613142
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Eyes-01.jpg.meta",
+      "sha256": "e8841ba4778baf883421521aea2e05ffffdb8f1befdde5f304a33ff8079b57f4",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Face.jpg",
+      "sha256": "c91e4dd60a9ec4960ab7a49b8346879ee2579f4e31bd8ff2a9a9cad1fbff4a6b",
+      "bytes": 3719958
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Face.jpg.meta",
+      "sha256": "4e9b68e81e7ffc3e3d3c3adf15c2666fd6804506679e23786e37aed11d3c731b",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Legs.jpg",
+      "sha256": "6db95c618f586534b95c0739ef80d87711b87cf4e4ddc45c4ecb18708f31ff33",
+      "bytes": 2954210
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Legs.jpg.meta",
+      "sha256": "809eda1a9ac324552c47df2d8f6b35ef700379b52b61c59c899acddb24a5cc3a",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Teeth.jpg",
+      "sha256": "dd986a04c3e0f82bea6af8c13676f46c44964aa75c17a4aaf4b82229a142f32a",
+      "bytes": 1974645
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Teeth.jpg.meta",
+      "sha256": "46bf642416e16733999438685331fcd70b92c4454658aba025e070bc81880207",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Torso.jpg",
+      "sha256": "6dcd437d9f2f0319130aef91c91e3983b2fc90f86ee3d345d4439c9c62c0ea98",
+      "bytes": 3043938
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Caine-Torso.jpg.meta",
+      "sha256": "86241977c9566f88fada76c7aed082c753a1cd0d096a8998a863c5a3d4e26ccf",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Dicktator_DK_S1_DifM02a.tif",
+      "sha256": "9b13b9747d73f3ec9efe97028ed64c25ad186bd9d29b6bce0036eadccc29ffe5",
+      "bytes": 16777398
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images/Dicktator_DK_S1_DifM02a.tif.meta",
+      "sha256": "c8ae6f434a43ac1523f1e4610fa7315d1bd39f3412f8641c7fb7d54699b4f869",
+      "bytes": 2652
+    },
+    {
+      "path": "Assets/TestCharacter/playernude.images.meta",
+      "sha256": "57c30fb953ce9111774b0fae5de4188e7f4785a0bb448170c036917c1514fe21",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Presets/first-outfit.asset",
+      "sha256": "9832e7c53c45a554521753cf05dcc00edc874417503b59a9135dfa31413df104",
+      "bytes": 1225
+    },
+    {
+      "path": "Assets/Wardrobe/Presets/first-outfit.asset.meta",
+      "sha256": "bbd40b6f83ff22f10a65058e8c1141e3bfd19060b7346d6b832be0bfc5b05f10",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Presets/second-outfit.asset",
+      "sha256": "befa50f23f8cf28b4ec4d88493d59b9c83c3d9a963843f97efc7c6e9d741b256",
+      "bytes": 2509
+    },
+    {
+      "path": "Assets/Wardrobe/Presets/second-outfit.asset.meta",
+      "sha256": "f92290512dccf92b41bc88b41a08f3161973c43447205b79cef64a642a606dfc",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Presets/third-outfit.asset",
+      "sha256": "a59785dad0c93f03ed21de59dd2e5932a06abc4332214036e872d7490abb2f76",
+      "bytes": 1322
+    },
+    {
+      "path": "Assets/Wardrobe/Presets/third-outfit.asset.meta",
+      "sha256": "2741a01f04af2ee21659478e98d3ed981daa1c1137359c700728af2cd33414dd",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Presets.meta",
+      "sha256": "ec3f5e6b29b87812b00fa3604261a59ef7b94de53ef8b95fdb22b25037ea710b",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit/Preset.asset",
+      "sha256": "5759694b03ffbceb658caf68b9dab3640d191057a4255e19d9f9eb5e8368e950",
+      "bytes": 1219
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit/Preset.asset.meta",
+      "sha256": "d2e0551d6f2990b0aae18537847443757fb4c3a8c16c0a89be1fb28d7770d91f",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit.meta",
+      "sha256": "632622dfee46004457531b0e5c16454541b1abeed94b120aeeaea38287ba20e8",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit/Preset.asset",
+      "sha256": "55972da5850b0fd0d4a56b398f6c9f45710dad05ea8c81c26a260c2818ad3a3d",
+      "bytes": 2430
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit/Preset.asset.meta",
+      "sha256": "8949439510a1300341407444bb0181b20e5e266b7d656eb075be920f6e6b2a5e",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit.meta",
+      "sha256": "b06ec7150e8b559d3a7198d37deed1659510db1f02d816d77c2e34af887ee7d0",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit/Preset.asset",
+      "sha256": "83bafc73be7c12801e27b62244f4f7581c926573d6b34e4b7921b23cbb7b9e7f",
+      "bytes": 1316
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit/Preset.asset.meta",
+      "sha256": "433d248ff0aafed4c1c58f73d1a65d5e4f248116dead40f170de16dcbaabf9e9",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit.meta",
+      "sha256": "7da45d55b368591fbd3b762bb17d93b163e178486750489c1c55c7c2f5af66ea",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets.meta",
+      "sha256": "7bb0b17bd964e2e62f96d70f90757a2fc6c054e7b2833d1021e9d97b1f622528",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb.meta",
+      "sha256": "d5cdccccf99599fbe8a5694c93a629a68ac820a9b4e3827f132a6241f55fc126",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit/Preset.asset",
+      "sha256": "eeeda77f0ad2f5043416a4df3c71b8ec4f5dd84cdf57f683cde7ce83a9c27965",
+      "bytes": 1219
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit/Preset.asset.meta",
+      "sha256": "4306bc999d307eb0f8a1f4c396dfa774bba6910898c8d5bf2b147e1fe33547e9",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit.meta",
+      "sha256": "d327fd2bba5138d3aa70f0b1af4657fa5bee3fae6c8f1dbab252141680919cc3",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit/Preset.asset",
+      "sha256": "d87524619c062fcaf50b0759653f5190e5c293791b8848b4a963ea3adeafbb32",
+      "bytes": 2430
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit/Preset.asset.meta",
+      "sha256": "baa59c4bff90348ac5cbf671b012526c6f34443f4ba19b896f2290b97defba96",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit.meta",
+      "sha256": "dab2c0dc874439c84205c6fde018fa2f6d8143c8daf37b8012521d5ffe23a0d9",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit/Preset.asset",
+      "sha256": "910dc59f84e42e704201fb9a47ba936c7c908cc285d200ed09dfb4842d306bdd",
+      "bytes": 1460
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit/Preset.asset.meta",
+      "sha256": "604e4974a8ce88a5ff0b83d6b1c11d81d68ab9dc9a3e885d136df3ea180ce4f8",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit.meta",
+      "sha256": "8f1d183d28bf36a4fa576cb317d00bde996065951b38574b1a6777e60406e554",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets.meta",
+      "sha256": "6ae8a6796719428a3d50606422b933f577744e68fdb732f0de410889f082c48c",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553.meta",
+      "sha256": "34d5b44b459fccd96d1d30cb2d8db569fe6fb9595a8fa0393f8728cd29811d07",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/Releases.meta",
+      "sha256": "bf26d1174262bb68f5ecee1229a8503f66a38da1608dda5086248533ea537fba",
+      "bytes": 172
+    },
+    {
+      "path": "Assets/Wardrobe/WardrobeCatalog.asset",
+      "sha256": "e301c3fb8668f7e5c042e36f06eac27ffadbe8758652104476acc12042ebbe5c",
+      "bytes": 931
+    },
+    {
+      "path": "Assets/Wardrobe/WardrobeCatalog.asset.meta",
+      "sha256": "012d046648f35e668ce643f6594b19dda4a55c982725d320ad3433b4dfed5288",
+      "bytes": 189
+    },
+    {
+      "path": "Assets/Wardrobe/WardrobeConfiguration.asset",
+      "sha256": "9b3fd745043d7c7ccd4334b85cc1fbaea7620c953a5b9777c9b49e3b97b7237d",
+      "bytes": 2717
+    },
+    {
+      "path": "Assets/Wardrobe/WardrobeConfiguration.asset.meta",
+      "sha256": "6469f4279e466df4f81881f1d254eab4452b2dbe419f4736e0958cb763a817d8",
+      "bytes": 189
+    }
+  ]
+}

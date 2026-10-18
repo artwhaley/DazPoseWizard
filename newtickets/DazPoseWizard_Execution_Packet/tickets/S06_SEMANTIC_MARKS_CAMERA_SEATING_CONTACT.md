@@ -1,0 +1,9 @@
+# S06 — Contextual spatial placement and commit semantics
+
+**Depends:** S05. **Goal:** seeing the actual performer while adjusting destinations instead of blind empty Transform.
+
+For selected `Lara.DissolveTo(Bedside)`, `Lara.LocomoteTo(stepforward)`, `Lara.SitAt(Lounger)`, `Camera.StartAt(camera_start)`, `Camera.Track(Lara)`, `Lara.Grip(Penis)` render cloned Lara/player body, anchor labels, facing arrows, seat pelvis/contact frames and player camera view. Commands have contextual actions: Create Mark, Pick Existing, Frame, Align to View, Position/Rotation handles, Preview Arrival, Commit Mark. Staging a newly required location uses an unplaced preview ghost until author explicitly Creates/Commits it under `Authoring Marks` and typed scene location binding. Existing marks edited only when explicit "Edit location" activated; all scene object changes use `Undo.RecordObject`/`Undo.RegisterCreatedObjectUndo`, `EditorSceneManager.MarkSceneDirty` and user-driven Save (not auto save every drag). Verify moving the location doesn't modify Lara's saved root or prefab. For Lounger show standing placement and seat anchor/focus separately without inventing a separate symbol or substituting SitAt for seated dissolve. Camera can capture current preview view as mark and compare actual player shot. Contact preview uses prepared measured male target and authored hand target; no live solver/hardware altering production.
+
+Tests: create missing mark, move existing Bedside, rotate MainPosition1, undo twice, scene close/reload, duplicate ID detection, missing seat error, no extra generated marks, correct seat/pelvis metadata, saved Lara unchanged. FirstContact exact original marks should survive selecting/previewing without author Commit.
+
+**Gate:** An author can stage a new `.dazstory` destination visually with real Lara; committed mark persists, Undo works; no automatic scene changes from stepping.

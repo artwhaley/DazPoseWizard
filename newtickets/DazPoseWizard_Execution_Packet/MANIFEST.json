@@ -1,0 +1,197 @@
+{
+  "repo": "artwhaley/DazPoseWizard",
+  "verified_main": "935fbd23a9aecf90a495176503ed8bd0337c22c4",
+  "scope": "complete phase1+phase2+phase3",
+  "counts": {
+    "tickets": 23,
+    "docs": 37,
+    "total_bytes": 104409
+  },
+  "files": [
+    {
+      "path": "ARCHITECTURE.md",
+      "sha256": "256289b0f542b9ac5b23fc476d51ecbd4b25b27942eb37946f9c495cfe1c5a3c",
+      "bytes": 9503
+    },
+    {
+      "path": "CHANGELOG_AND_REVIEW.md",
+      "sha256": "f574ca1083580a6f20a0cf5e8368bd7ca5fcd5e26101ec32c55753765834fdf3",
+      "bytes": 2715
+    },
+    {
+      "path": "CLEANUP_DISPOSITION.md",
+      "sha256": "b9acd257ee357566d7e57e7de08f679b35b269d92969a76968b9102679f70792",
+      "bytes": 5881
+    },
+    {
+      "path": "CONTRACT.md",
+      "sha256": "1335b71efca0218a77fcd60f29a4c05419d31dd6ae31ae7aa72f56120e181d8e",
+      "bytes": 6275
+    },
+    {
+      "path": "EXECUTOR_PROMPT.md",
+      "sha256": "0123cb9a5363b99a62b7df9655b5b2d81660d4c634927beddbb4ae73e515707f",
+      "bytes": 2979
+    },
+    {
+      "path": "GATES.md",
+      "sha256": "64f4185225ce1257dcb7bf1e2e87108e38da3f9f397bf5c74b33eb36019564ff",
+      "bytes": 4658
+    },
+    {
+      "path": "ORDER.md",
+      "sha256": "6837b13c3e27ae54f172dfc9fdb09d057872564ff895f36faec29d777383b26c",
+      "bytes": 2301
+    },
+    {
+      "path": "REHEARSAL_CONTRACT.md",
+      "sha256": "0ffca921051dcbe5c7e27b2c84ff8fccbf58a2d5da61de6ac00a5ce8d6f85cba",
+      "bytes": 5874
+    },
+    {
+      "path": "START_HERE.md",
+      "sha256": "9c29db8af48d7aad58dbd2df7c2ded34950cdb350b1f8a8b44cf2573ae6c30e8",
+      "bytes": 4762
+    },
+    {
+      "path": "STUDIO_SPEC.md",
+      "sha256": "9af90e0577c45654840d44417a0193b3f218472f47341ac3e7b6aa35e5035e69",
+      "bytes": 8923
+    },
+    {
+      "path": "UI_SPEC.md",
+      "sha256": "eb9046f5c6a542783366b39467938aaab2b3288d95a30f493da6da6ae8637175",
+      "bytes": 6701
+    },
+    {
+      "path": "templates/MANUAL_ACCEPTANCE.md",
+      "sha256": "585a99b83b58ebbd648f18cf13ede06290b736c15820ec4c8c073e6224839c93",
+      "bytes": 1934
+    },
+    {
+      "path": "templates/PHASE1_RETIREMENT_REPORT.md",
+      "sha256": "d82477d213cf3f4d9bab65dcbfcbb414be9693ccb1a8b52377007e78bfe77b90",
+      "bytes": 1416
+    },
+    {
+      "path": "templates/PROGRESS.md",
+      "sha256": "043201d439181e35896071e98f9d464517d3bad3caef8ce2ebb4569035b992e2",
+      "bytes": 937
+    },
+    {
+      "path": "tickets/F00_BASELINE_AND_EXHAUSTIVE_INVENTORY.md",
+      "sha256": "de3e6256a43af5b794ccfc2fbabccf1b57cab1d498851636e9ffebc32524d7f2",
+      "bytes": 2001
+    },
+    {
+      "path": "tickets/F01_EXTRACT_LEGACY_CALLERS.md",
+      "sha256": "817443a25ddedaf414a16c870a99211b2e5a5b773829cba79a833198dcddc4fa",
+      "bytes": 2189
+    },
+    {
+      "path": "tickets/F02_PRESERVE_MEANINGFUL_DIAGNOSTICS.md",
+      "sha256": "f8cc4eda9b02be3135d2f4d1f5fdb8a9a1f16f8d3c204d8286fcc66e16c035c3",
+      "bytes": 1923
+    },
+    {
+      "path": "tickets/F03_RETIRE_SCENES_AND_ORPHAN_FIXTURES.md",
+      "sha256": "78e57b15db3610d5c48a41424af65cd66105fe2df0784ac0d620d1812a00f403",
+      "bytes": 2138
+    },
+    {
+      "path": "tickets/F04_CLEANUP_REGRESSION_AND_REPORT.md",
+      "sha256": "a9f3607df11f7029c4e56e24f37ab074a66ea5247c16646eead390c6154bb17a",
+      "bytes": 1744
+    },
+    {
+      "path": "tickets/S01_SOURCE_REQUIREMENTS_ANALYSIS.md",
+      "sha256": "767021d00dcc3283ecf7dad47e2cd79835b1a8695eee55cf4efbb6b7d258e691",
+      "bytes": 2229
+    },
+    {
+      "path": "tickets/S02_BINDINGS_RECONCILE_AND_SOURCE_OWNERSHIP.md",
+      "sha256": "0761451b4bc9bdb5b8d5d1ae54c1cc51968067bb10489517d596a22bda5cda13",
+      "bytes": 2555
+    },
+    {
+      "path": "tickets/S03_STUDIO_WINDOW_AND_SCRIPT_NAVIGATION.md",
+      "sha256": "73284f7305dc1277c39876db4f7c874ca3fa69100435e93a1849bb21bb881eaa",
+      "bytes": 1497
+    },
+    {
+      "path": "tickets/S04_ISOLATED_PREVIEW_STAGE.md",
+      "sha256": "e98859f082796a688d4d5f6e9a55b7b5d203dd44384d5e712194c566e4bd60fb",
+      "bytes": 1915
+    },
+    {
+      "path": "tickets/S05_BINDING_DRAG_DROP_AND_CONTENT_PREVIEW.md",
+      "sha256": "e14b811489279dff3a16aebb572990b2ef3fbd0be54d63473c939d9688525544",
+      "bytes": 1580
+    },
+    {
+      "path": "tickets/S06_SEMANTIC_MARKS_CAMERA_SEATING_CONTACT.md",
+      "sha256": "f423507b5786a96e2d79a725ec15624f30551cc2c951844a17ac510f8a74ee3c",
+      "bytes": 1913
+    },
+    {
+      "path": "tickets/S07_CANONICAL_INTERPRETER_STEP_HOOKS.md",
+      "sha256": "d9f998d1b4f722ffc1a101abc97cbc5cf0b28880a083bdcfb871631ca450ce8f",
+      "bytes": 1579
+    },
+    {
+      "path": "tickets/S08_REHEARSAL_HOST_STATE_OVERRIDES.md",
+      "sha256": "76be7dae1a9e3d5479924f049400819eadd318adbcde84f13482302cbf8f41b5",
+      "bytes": 1902
+    },
+    {
+      "path": "tickets/S09_GLOBAL_DIRECTOR_CARD_REHEARSAL.md",
+      "sha256": "908aaa4165fa294d2840758629cf6cf9e67bb1baff62304cab3790e4614cf66d",
+      "bytes": 1823
+    },
+    {
+      "path": "tickets/S10_REAL_SCENE_STUDIO_INTEGRATION.md",
+      "sha256": "efc31ed99f95df29fa6c180397a8c90bb22b02843da218598a0b861f9990de32",
+      "bytes": 1742
+    },
+    {
+      "path": "tickets/S11_DOCUMENTATION_DELIVERY_AND_MANUAL_HANDOFF.md",
+      "sha256": "4fd22f91fe180b883e17b39167e4e210a14ccb25b80fa2c0d8d771b91d93b896",
+      "bytes": 1737
+    },
+    {
+      "path": "tickets/U01_MENU_LAUNCH_AND_NAVIGATION.md",
+      "sha256": "ac84e3f14d6fc7a09f28c39215829e9315a9a1f91b149e4887dc223e051c0b81",
+      "bytes": 1390
+    },
+    {
+      "path": "tickets/U02_SHARED_UI_FOUNDATION.md",
+      "sha256": "f22ca226b94fa8a58345a13ca4c5fa4e96f47e5ca23ad38777b896112be847df",
+      "bytes": 1417
+    },
+    {
+      "path": "tickets/U03_TRANSACTIONAL_PROFILE_EDIT.md",
+      "sha256": "9168f2c3897bc5792730699cceedd8fd29ee886a6b57df4cfb07ecd37a47a89d",
+      "bytes": 1424
+    },
+    {
+      "path": "tickets/U04_INTERESTS_CATALOG.md",
+      "sha256": "bf549b28cfb6ef1152c5fd7be52b3ccf0802c675cfdba1d0ce5ad156700c2130",
+      "bytes": 1262
+    },
+    {
+      "path": "tickets/U05_EQUIPMENT_CATALOG.md",
+      "sha256": "24d7838ef9a38bd85d4b81bdb518fe065459e572931cee63546cbc69d9d6d8b2",
+      "bytes": 1162
+    },
+    {
+      "path": "tickets/U06_MODAL_SETTINGS_AND_INSESSION.md",
+      "sha256": "8b64b8f863d9e65de71b5441cf321f18d9027b9371bbb371038b9f205f982584",
+      "bytes": 1349
+    },
+    {
+      "path": "tickets/U07_PHASE2_FINAL_VERIFICATION.md",
+      "sha256": "5751af329dbea1fe3c5a7f5a7648f68e8df7aa3e739c450144cad1ff1055d123",
+      "bytes": 1079
+    }
+  ]
+}
