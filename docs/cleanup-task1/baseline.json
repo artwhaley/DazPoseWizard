@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "head": "bc596962aff6206fb54cc189de42defd270ddeda",
+  "branch": "main",
+  "createdUtc": "2026-10-18T06:14:16.667971+00:00",
+  "unity": "6000.5.9f1",
+  "dotnet": "10.0.401",
+  "recoverySnapshotId": "cleanup-task1",
+  "privateManifest": ".dazposewizard/cleanup-task1/recovery-manifest.json",
+  "baselineArchiveSha256": "eb3f7b480bd7a6e6fccce7b8927ec00ed8d54806a82b9fdbb1125e937a2575b7",
+  "deltaArchiveSha256": "898727bc829c155fcd3dc8c0e19a04bc53aa2646877417f4efd39cfecf2a0aa6",
+  "inputFiles": 8771,
+  "deltaFiles": 948,
+  "sourceSnapshotVerified": true,
+  "managedTests": {
+    "story": 49,
+    "application": 69,
+    "failed": 0
+  },
+  "unityDependencyInventory": {
+    "status": "PASS",
+    "evidence": ".dazposewizard/cleanup-task1/editor/727e8e5a5a5348259afcbe5956f22601.result.json",
+    "roots": 9,
+    "loadedScenes": [
+      {
+        "path": "Assets/Production/Scenes/FirstContactD1D5.unity",
+        "dirty": false
+      }
+    ],
+    "unityVersion": "6000.5.9f1"
+  },
+  "playback": "MANUAL PENDING",
+  "player": "NOT RUN",
+  "preExistingChanges": "Private starting-status.txt and starting-diff.patch; expression archive cleanup and ticket moves excluded from cleanup commits."
+}
