@@ -1,3 +1,7 @@
+# Superseded — actual scene retirement follow-up
+
+The new user-authorized packet replaces the lab move proposal below. All eleven target scene/meta pairs were retired after caller extraction and recovery/reference guards. See [follow-up report](../p2-p3/PHASE1_RETIREMENT_REPORT.md) and [active progress](../p2-p3/PROGRESS.md). No lab move was retried. Original rejected proposal remains historical below.
+
 # Pending approval: consolidate retained diagnostic scenes
 
 This plan was not executed. Automatic approval review rejected the grouped relocation and source/script path rewrites because these scenes have active legacy consumers. Existing scenes and callers remain untouched. This blocks complete Task 1 lab consolidation; it does not introduce a broken reference in First Contact.

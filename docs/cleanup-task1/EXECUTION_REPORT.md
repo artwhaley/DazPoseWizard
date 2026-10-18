@@ -1,3 +1,7 @@
+# Follow-up status — 18 October
+
+The new user-authorized F00–F04/U01–U07/S01–S11 packet supersedes this initial partial cleanup state. All eleven obsolete scene/meta pairs are now retired after scene-free caller/test extraction. No relocation into a lab was performed. [Current follow-up report](../p2-p3/PHASE1_RETIREMENT_REPORT.md) records actual results and current native checks NOT RUN; [active progress](../p2-p3/PROGRESS.md) remains authoritative. The initial report below is preserved as historical evidence, not rewritten as an earlier success.
+
 # Task 1 cleanup — execution report
 
 Updated 18 October 2026. **First Contact is prepared for user-controlled manual Play in Unity. Overall Task 1 technical status: PARTIAL**, because consolidation of eleven retained diagnostic scenes into one development lab was rejected by automatic approval review and was not executed. Delivered changes pass the checks below. This is not a claim of full cleanup completion or human visual acceptance.

@@ -1,0 +1,28 @@
+{
+  "protectedFilesUnchanged": 669,
+  "unexpectedChanges": [],
+  "guidCount": 4383,
+  "duplicateGuids": {},
+  "missingMetas": [],
+  "retainedScenes": [
+    "Assets/Examples/Scenes/AuthoringShowcase.unity",
+    "Assets/Production/Environments/VoidEnvironment.unity",
+    "Assets/Production/Scenes/FirstContact.unity",
+    "Assets/Production/Scenes/MainMenu.unity",
+    "Assets/Production/Scenes/RemediationToeValidation.unity",
+    "Assets/Scenes/ClothingSetup.unity",
+    "Assets/Scenes/FirstPerformanceVoid.unity",
+    "Assets/TestData/GraftPairProbe/GraftPairPreview.unity",
+    "Assets/TestData/LaraCandidate/FirstOutfit/FirstPerformanceVoidLaraFirstOutfit.unity",
+    "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+    "Assets/TestData/LaraCandidate/LaraCandidatePreview.unity",
+    "Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity",
+    "Assets/TestData/Wardrobe/first-outfit/Review.unity",
+    "Assets/TestData/Wardrobe/second-outfit/Review-20261004-155507.unity",
+    "Assets/TestData/Wardrobe/second-outfit/Review.unity",
+    "Assets/TestData/Wardrobe/third-outfit/Review-20261004-165635.unity",
+    "Assets/TestData/Wardrobe/third-outfit/Review.unity"
+  ],
+  "sourceAssemblies": "7 PASS with installed compiler /warnaserror; no Unity launch",
+  "nativeEditorChecks": "NOT RUN per user boundary"
+}

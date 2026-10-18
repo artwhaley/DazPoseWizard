@@ -1,0 +1,250 @@
+{
+  "status": "retired_versioned_files",
+  "files": [
+    {
+      "path": "Assets/Production/Scenes/Day2ActorValidation.unity",
+      "guid": "6147181d1c5f60e458a955b04fbd0627",
+      "bytes": 590757,
+      "sha256": "9bea987d8ab8be349e4fb1d38ebb3e4505574f63456492776f6ff5dc59720de6",
+      "metaSha256": "b65e3f75a4bfa13e3f4a6f497a3b88d64d678c028f14d077694609e31c8d282e",
+      "recovery": "baseline",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Production/Scenes/Day3CommandValidation.unity",
+      "guid": "8ca719727de320f4ea5de8dd2370e555",
+      "bytes": 597994,
+      "sha256": "b461fab95b8134e3d6c6e200f36056b80d5d470b23aa2d87f9f450dc0e25bcc1",
+      "metaSha256": "65928ad10dcaa8aa8638b21bec39fa455c07c5b535072ee920f14e773fef07a1",
+      "recovery": "baseline",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Production/Scenes/Day4PartnerContactValidation.unity",
+      "guid": "2e0bf1a76e1ceb448af92d79f7655bfd",
+      "bytes": 595804,
+      "sha256": "2a34deb8cd21505c9721e9e78ac3ac531e23699494e289e04d38f8f07b97e1b1",
+      "metaSha256": "43fff541ee95bc46734f804931b8063dfe11206cbc940f820333e83fd487e896",
+      "recovery": "baseline",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Production/Scenes/Day5WardrobeValidation.unity",
+      "guid": "2eb7586bcdaa7c547a376aa0e22c2ff1",
+      "bytes": 589607,
+      "sha256": "661894fd90eccad3a9f698bc928e08edba5079168a1b380a0ca3e369f9fb675a",
+      "metaSha256": "a777b3aa460ed3f228bb32fea471c8eb4e05893f905f411f7b63b6024488373b",
+      "recovery": "baseline",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Production/Scenes/ProductionRuntimeSmoke.unity",
+      "guid": "64a54fb1efde6cf4c866b3f5351559bd",
+      "bytes": 866339,
+      "sha256": "3982005f6335d6dff21de7b260797156a182f09006e36a9f2d71dbe05cabac68",
+      "metaSha256": "2fc1d092cb4b0f9d00402167bbc8029d50df3d16ae89ee9b187f1d6259c954ec",
+      "recovery": "delta",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Production/Scenes/RemediationValidation.unity",
+      "guid": "d5a830258f9b59b4c80583e6a82d53d9",
+      "bytes": 872986,
+      "sha256": "e12bb2ef567f15d97feb95712c736a5e5f64af4f7e20b57897eed8ae2cb8fa62",
+      "metaSha256": "be7e5e2c9d97386b9726ed699af0450c8f0627bd6f00956d95e9721d82d6f212",
+      "recovery": "delta",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Scenes/PoseValidation.unity",
+      "guid": "1f3c2d21783d2d442b3802aa2c542ca8",
+      "bytes": 377892,
+      "sha256": "0a19414fe4b4a0800a05d9c2b806c800ba2107a4b8a25732330739dd2f51d639",
+      "metaSha256": "e8a63625e94d698ecffaa99ffba98f80f1017c28b9e0b624b9e42a57654c9476",
+      "recovery": "baseline",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Scenes/HandGripAcceptance.unity",
+      "guid": "89a9289125c8278428bceb315fb7482a",
+      "bytes": 873694,
+      "sha256": "3e586a604f3d482ca390907215c73a06eea58118903fb33917716dbf980d3db0",
+      "metaSha256": "f2232cafc404f812647334f9ec31de00ab436b57a33dd31f31bdcfe8b085f175",
+      "recovery": "baseline",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Scenes/PartnerRigAcceptance.unity",
+      "guid": "25267b7dc8b0b264d98b96d5840d38cc",
+      "bytes": 71987,
+      "sha256": "d3bba0062f42388a5f9f23621c672b59dc5a81a00178e9a66743b0dc5e00dc3a",
+      "metaSha256": "3b4c16c05e011869443fa79363a470a972d7a03cf7495cc90e7e46bc1206b70e",
+      "recovery": "baseline",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Scenes/LaraHumanoidKawaiiTest.unity",
+      "guid": "374d21527f8ea434a8b0a6bb7f2078eb",
+      "bytes": 17577,
+      "sha256": "4e1ded24d1d6cd88232013d8621070e26e4c79436cb34bb09022ee0453c34ea4",
+      "metaSha256": "afe71714383bb57642d2a8aabad843ef7e76d4d6b3f6fba595890d053b169168",
+      "recovery": "baseline",
+      "incoming": []
+    },
+    {
+      "path": "Assets/Scenes/AnimationAudit.unity",
+      "guid": "e6dea64a9da3e3749b7d9f7394375dbe",
+      "bytes": 26445,
+      "sha256": "436e88300ee4f49ca48c518149f6ca0070263a62d7eb94c5467584e5f0ae7a3b",
+      "metaSha256": "1fe496d042d246ab0c71021c8c19b2902b3390e1b7daff650018eadace0b7c6f",
+      "recovery": "baseline",
+      "incoming": []
+    }
+  ],
+  "guards": [
+    "exact C00 scene+meta SHA256",
+    "versioned recoverable files only",
+    "no incoming GUID references in all current Assets including metas",
+    "no current C#/PS/Python path consumers",
+    "seven source assembly compile PASS",
+    "129 baseline managed tests PASS"
+  ],
+  "nativeDiagnosticExecution": "NOT RUN: latest user no-program/no-Unity-control boundary",
+  "removedFiles": 22,
+  "removedBytes": 5482787,
+  "removed": [
+    {
+      "path": "Assets/Production/Scenes/Day2ActorValidation.unity",
+      "bytes": 590757,
+      "sha256": "9bea987d8ab8be349e4fb1d38ebb3e4505574f63456492776f6ff5dc59720de6",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/Day2ActorValidation.unity.meta",
+      "bytes": 155,
+      "sha256": "b65e3f75a4bfa13e3f4a6f497a3b88d64d678c028f14d077694609e31c8d282e",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/Day3CommandValidation.unity",
+      "bytes": 597994,
+      "sha256": "b461fab95b8134e3d6c6e200f36056b80d5d470b23aa2d87f9f450dc0e25bcc1",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/Day3CommandValidation.unity.meta",
+      "bytes": 155,
+      "sha256": "65928ad10dcaa8aa8638b21bec39fa455c07c5b535072ee920f14e773fef07a1",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/Day4PartnerContactValidation.unity",
+      "bytes": 595804,
+      "sha256": "2a34deb8cd21505c9721e9e78ac3ac531e23699494e289e04d38f8f07b97e1b1",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/Day4PartnerContactValidation.unity.meta",
+      "bytes": 155,
+      "sha256": "43fff541ee95bc46734f804931b8063dfe11206cbc940f820333e83fd487e896",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/Day5WardrobeValidation.unity",
+      "bytes": 589607,
+      "sha256": "661894fd90eccad3a9f698bc928e08edba5079168a1b380a0ca3e369f9fb675a",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/Day5WardrobeValidation.unity.meta",
+      "bytes": 155,
+      "sha256": "a777b3aa460ed3f228bb32fea471c8eb4e05893f905f411f7b63b6024488373b",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/ProductionRuntimeSmoke.unity",
+      "bytes": 866339,
+      "sha256": "3982005f6335d6dff21de7b260797156a182f09006e36a9f2d71dbe05cabac68",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/ProductionRuntimeSmoke.unity.meta",
+      "bytes": 155,
+      "sha256": "2fc1d092cb4b0f9d00402167bbc8029d50df3d16ae89ee9b187f1d6259c954ec",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/RemediationValidation.unity",
+      "bytes": 872986,
+      "sha256": "e12bb2ef567f15d97feb95712c736a5e5f64af4f7e20b57897eed8ae2cb8fa62",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Production/Scenes/RemediationValidation.unity.meta",
+      "bytes": 155,
+      "sha256": "be7e5e2c9d97386b9726ed699af0450c8f0627bd6f00956d95e9721d82d6f212",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/PoseValidation.unity",
+      "bytes": 377892,
+      "sha256": "0a19414fe4b4a0800a05d9c2b806c800ba2107a4b8a25732330739dd2f51d639",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/PoseValidation.unity.meta",
+      "bytes": 155,
+      "sha256": "e8a63625e94d698ecffaa99ffba98f80f1017c28b9e0b624b9e42a57654c9476",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/HandGripAcceptance.unity",
+      "bytes": 873694,
+      "sha256": "3e586a604f3d482ca390907215c73a06eea58118903fb33917716dbf980d3db0",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/HandGripAcceptance.unity.meta",
+      "bytes": 155,
+      "sha256": "f2232cafc404f812647334f9ec31de00ab436b57a33dd31f31bdcfe8b085f175",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/PartnerRigAcceptance.unity",
+      "bytes": 71987,
+      "sha256": "d3bba0062f42388a5f9f23621c672b59dc5a81a00178e9a66743b0dc5e00dc3a",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/PartnerRigAcceptance.unity.meta",
+      "bytes": 155,
+      "sha256": "3b4c16c05e011869443fa79363a470a972d7a03cf7495cc90e7e46bc1206b70e",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/LaraHumanoidKawaiiTest.unity",
+      "bytes": 17577,
+      "sha256": "4e1ded24d1d6cd88232013d8621070e26e4c79436cb34bb09022ee0453c34ea4",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/LaraHumanoidKawaiiTest.unity.meta",
+      "bytes": 155,
+      "sha256": "afe71714383bb57642d2a8aabad843ef7e76d4d6b3f6fba595890d053b169168",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/AnimationAudit.unity",
+      "bytes": 26445,
+      "sha256": "436e88300ee4f49ca48c518149f6ca0070263a62d7eb94c5467584e5f0ae7a3b",
+      "recovery": "Git 935fbd23 + C00 archive"
+    },
+    {
+      "path": "Assets/Scenes/AnimationAudit.unity.meta",
+      "bytes": 155,
+      "sha256": "1fe496d042d246ab0c71021c8c19b2902b3390e1b7daff650018eadace0b7c6f",
+      "recovery": "Git 935fbd23 + C00 archive"
+    }
+  ],
+  "unityAssetDatabaseVerification": "NOT RUN: user prohibits program/Unity control; verify on next user-controlled refresh"
+}

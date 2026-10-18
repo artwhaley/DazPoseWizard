@@ -5,10 +5,10 @@ User authorized the packet on 18 October 2026. Work on main, no push. No program
 | Ticket | Status | Evidence |
 |---|---|---|
 | F00 | PASS (source baseline) | 28 scenes classified; protected hashes, recovery, dependency graph; managed 60 + 69 baseline. No new Unity execution. |
-| F01 | IN PROGRESS | Selected-asset and disposable-fixture extraction; source compile pending |  |
-| F02 | PENDING |  |
-| F03 | PENDING |  |
-| F04 | PENDING |  |
+| F01 | IMPLEMENTED; source compile PASS | F01_EXTRACTION_MAP.md; zero target-scene path consumers; 7 assemblies compile. Native checks NOT RUN by user boundary. |  |
+| F02 | IMPLEMENTED; verification PARTIAL | Real assertion suites extracted; preview/diagnostic runtime checks NOT RUN; no program/Unity control. |  |
+| F03 | IN PROGRESS | All 11 target scenes retired; 22 scene/meta files, 5,482,787 bytes. Orphan closure audit pending. |  |
+| F04 | IN PROGRESS | 669 protected files unchanged; 7 source compiles; zero duplicate GUIDs/missing metas; native Editor checks NOT RUN. |  |
 | S01 | PENDING |  |
 | S02 | PENDING |  |
 | S03 | PENDING |  |
