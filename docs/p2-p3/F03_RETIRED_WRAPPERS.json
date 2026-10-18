@@ -1,0 +1,62 @@
+[
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripAcceptanceSetup.cs",
+    "bytes": 457,
+    "sha256": "73230a708349254c342dd94ce983fea5ede808a73953b135f79eca3e610fe968",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripAcceptanceSetup.cs.meta",
+    "bytes": 242,
+    "sha256": "1b38c87c182790a78cc37d491ecd2df24ed8403439980644c737ee7e529eb29c",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripValidationRunner.cs",
+    "bytes": 429,
+    "sha256": "666d8f1178fa437d65194047ada6ef10e04fad4e8238745655d6eecc8893bee0",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripValidationRunner.cs.meta",
+    "bytes": 59,
+    "sha256": "3849e7e074726b984cce503fe0756058ad764653c71ec6acf337694f9449ef10",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripLiveProof.cs",
+    "bytes": 334,
+    "sha256": "419de2afa7a02cb123991e57db4943abb40b854cfa92a5001e82b1bf3c8f3aa1",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripLiveProof.cs.meta",
+    "bytes": 59,
+    "sha256": "2f666c18ffa04c2927858551b5ee7eaa8ea96d4d9ed940e7df0ac5470c23bbb5",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripVisualProof.cs",
+    "bytes": 334,
+    "sha256": "0199d8948178921dcbbf379971d81c0493279549d2fd87053505344052cdcbc6",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/HandGrip/HandGripVisualProof.cs.meta",
+    "bytes": 59,
+    "sha256": "4ce62cc388ff174eb59c02698e53c2e68f2f0f75a337e913d666cabdd656cbf7",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/Partner/PartnerRigAcceptanceBuilder.cs",
+    "bytes": 508,
+    "sha256": "9f82d0390d139dcb38a50dbb1bb2aafa3fc07d89cedaa3d9e822a5becdc6e5e9",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/Partner/PartnerRigAcceptanceBuilder.cs.meta",
+    "bytes": 59,
+    "sha256": "61f070e009f1e93ba4413bdc4fe08024e392f14edbf659bddff6e1e20198979a",
+    "recovery": "Git 935fbd23; extracted diagnostics in PreparedActorDiagnostics.cs"
+  }
+]

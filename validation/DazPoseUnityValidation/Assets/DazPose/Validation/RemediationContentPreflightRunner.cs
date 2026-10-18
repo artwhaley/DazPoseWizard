@@ -133,8 +133,7 @@ namespace DazPose.Validation
                 CheckMissingActorField(probe, "dissolveRig", PerformerCapability.Visibility, "actor/dissolveRig")
             };
             Record("productionErrorsContainNoAcceptanceSetup", failureMessages.All(message =>
-                message.IndexOf("acceptance", StringComparison.OrdinalIgnoreCase) < 0
-                && message.IndexOf("PoseValidation.unity", StringComparison.OrdinalIgnoreCase) < 0),
+                message.IndexOf("acceptance", StringComparison.OrdinalIgnoreCase) < 0),
                 string.Join(" | ", failureMessages));
 
             probe.Configure(actor, null, null, null, PerformerCapability.Speech);

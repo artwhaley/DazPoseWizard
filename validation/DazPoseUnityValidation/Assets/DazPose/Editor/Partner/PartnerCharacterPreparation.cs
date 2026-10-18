@@ -20,7 +20,6 @@ namespace DazPose.UnityValidation.Editor.Partner
         public const string GeneratedFolder = "Assets/Production/Player/Materials/Imported";
         public const string PrefabPath = "Assets/Production/Player/Support/PartnerCharacter.prefab";
         private const string ShellPath = "Assets/Production/Player/Meshes/G8M_ErectShell.asset";
-        private const string ScenePath = "Assets/Scenes/PartnerRigAcceptance.unity";
         private const string Shape = "ShellErectionToFlaccid";
         private const float MappingTolerance = 0.000002f;
         private const float EndpointTolerance = 0.00001f;

@@ -1,0 +1,79 @@
+[
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/RemediationValidation.cs",
+    "sha256": "a84ce512f994798ba98d0ffe7f1c5527d2ee2e9e74a449a9d6f8679885b9a757",
+    "bytes": 114790,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Legacy/RemediationValidation.cs.meta",
+    "sha256": "07abf325c27e44fb58012d9f17dbca4f64db485ebbfc83e5179d9d7b86ca2552",
+    "bytes": 240,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/RemediationBuild.cs",
+    "sha256": "9a1bb6c712148ca915eff0d465030802af8f56f7ac083a2f517d2cf41702b4dd",
+    "bytes": 23464,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/RemediationBuild.cs.meta",
+    "sha256": "9c28f78fece2edfd064fe03fbd64760270f9cd2edf1cc6faed7bf9546ae2e4c7",
+    "bytes": 243,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Authoring/ProductionPerformerBuilder.cs",
+    "sha256": "ff04b11dffa411fda39b4e8e0832b93acf0f3aa6512cf4bd643e027ad9a5167b",
+    "bytes": 8439,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Authoring/ProductionPerformerBuilder.cs.meta",
+    "sha256": "07bd2acebb2d74c843566d8f9fcdebc8e062c9c616a54fbd5dd7354aa7392155",
+    "bytes": 59,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Authoring/ProductionTestEnvironmentBuilder.cs",
+    "sha256": "784c742a53d50c7f5c9b807d210d4bc4f494dd9595bbacf546e404205401fbcf",
+    "bytes": 4208,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/Editor/Authoring/ProductionTestEnvironmentBuilder.cs.meta",
+    "sha256": "864a1350af1bb6f8f4dd306a9bc9431021cd0d131dbea8c8731a508c0ada9f54",
+    "bytes": 59,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "scripts/run-remediation-ticket.ps1",
+    "sha256": "e0d1d4e12637327d3e9088f6d30f34f05d9076c51f2cfccba18a9626387d05d4",
+    "bytes": 57691,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "scripts/generate-remediation-source-move-manifest.ps1",
+    "sha256": "f48cd095e0a2f7b007a0536cba345834ec1c2ba17f673b34b4e23227d889916b",
+    "bytes": 49017,
+    "recovery": "Git 935fbd23; source-scene-baseline.zip for C#",
+    "kind": "retired obsolete orchestration"
+  },
+  {
+    "path": "scripts/open-handgrip-manual.ps1",
+    "sha256": "bebba2354d6aba2c2c3232740c48899e5cc4b17650c9e637872776ccdabfffac",
+    "bytes": 3960,
+    "recovery": "Git 935fbd23",
+    "kind": "retired isolated acceptance-scene launcher"
+  }
+]

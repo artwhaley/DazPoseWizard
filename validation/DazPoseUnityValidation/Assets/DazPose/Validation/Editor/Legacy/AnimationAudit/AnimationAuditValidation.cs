@@ -3,50 +3,35 @@ using System.Linq;
 using DazPose.AnimationAudit;
 using UnityEditor;
 using UnityEditor.Animations;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
 namespace DazPose.Editor.AnimationAudit
 {
-    // Optional existing diagnostic entry point. Scene preparation does not run it.
+    /// <summary>Scene-free checks for the installed animation catalog, rig and playback controllers.</summary>
     public static class AnimationAuditValidation
     {
-        public static void RunSetupAndValidation()
-        {
-            AnimationAuditSceneSetup.CreateScene();
-            ValidateGeneratedAssets();
-        }
-
+        public static void RunSetupAndValidation() { ValidateGeneratedAssets(); LaraHumanoidKawaiiTestSetup.ValidateSources(); }
+        [MenuItem("DazPose/Diagnostics/Validate Animation Library Assets")]
         public static void ValidateGeneratedAssets()
         {
-            AnimationAuditCatalog catalog = AssetDatabase.LoadAssetAtPath<AnimationAuditCatalog>(AnimationAuditCatalogBuilder.CatalogPath);
-            Require(catalog != null && catalog.entries.Count > 0, "Catalog contains installed clips.");
-            Require(catalog.entries.All(entry => entry != null && entry.clip != null), "Catalog clip references exist.");
-            Scene scene = SceneManager.GetSceneByPath(AnimationAuditSceneSetup.ScenePath);
-            bool loadedHere = !scene.IsValid() || !scene.isLoaded;
-            if (loadedHere) scene = EditorSceneManager.OpenScene(AnimationAuditSceneSetup.ScenePath, OpenSceneMode.Additive);
-            try
-            {
-                AnimationAuditHarness harness = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<AnimationAuditHarness>(true)).FirstOrDefault();
-                Require(harness != null && harness.catalog == catalog, "Single-actor browser uses the catalog.");
-                Require(harness.animator != null, "Lara Animator exists.");
-                Avatar avatar = harness.animator.avatar;
-                Require(avatar != null && avatar.isHuman && avatar.isValid, "Lara uses a valid imported Human Avatar.");
-                AnimatorController controller = harness.animator.runtimeAnimatorController as AnimatorController;
-                Require(controller != null && controller.layers.Length == 1, "Playback uses one stock Animator layer.");
-                Require(controller.layers[0].stateMachine.states.All(child => child.state.motion is AnimationClip), "States point directly to animation clips.");
-                Require(controller.layers[0].stateMachine.states.Length == catalog.entries.Count(entry => !string.IsNullOrEmpty(entry.animatorStateName)), "Each playable catalog entry has a state.");
-                int actorCount = scene.GetRootGameObjects().Sum(root => root.GetComponentsInChildren<Animator>(true).Length);
-                Require(actorCount == 1, "The scene contains exactly one character Animator.");
-                Debug.Log("Single-Lara audit asset diagnostics passed. Visual animation and root-motion evaluation remains manual.");
-            }
-            finally { if (loadedHere) EditorSceneManager.CloseScene(scene, true); }
+            var catalog = AssetDatabase.LoadAssetAtPath<AnimationAuditCatalog>(AnimationAuditCatalogBuilder.CatalogPath);
+            Require(catalog != null && catalog.entries != null && catalog.entries.Count > 0, "Catalog contains installed clips.");
+            Require(catalog.entries.All(e => e != null && e.clip != null), "Catalog clip references exist.");
+            ValidateController(catalog, AnimationAuditSceneSetup.ControllerPath);
+            ValidateController(catalog, AnimationAuditSceneSetup.FootIKControllerPath);
+            LaraHumanoidKawaiiTestSetup.ValidateSources();
+            Debug.Log("Animation audit asset diagnostics passed. Clip appearance, retargeting and root motion remain preview/manual observations.");
         }
-
-        private static void Require(bool condition, string message)
+        private static void ValidateController(AnimationAuditCatalog catalog, string path)
         {
-            if (!condition) throw new InvalidOperationException("Animation audit: " + message);
+            var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
+            Require(controller != null, "Playback controller exists: " + path);
+            Require(controller.layers.Length == 1, "Playback uses one stock Animator layer: " + path);
+            var states = controller.layers[0].stateMachine.states;
+            Require(states.All(c => c.state != null && c.state.motion is AnimationClip), "States point directly to animation clips: " + path);
+            int expected = catalog.entries.Count(e => !string.IsNullOrEmpty(e.animatorStateName));
+            Require(states.Length == expected, "Controller state count matches playable catalog entries: " + path);
+            Require(states.All(c => catalog.entries.Any(e => e.clip == c.state.motion)), "Every state clip is represented by the catalog: " + path);
         }
+        private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException("Animation audit: " + message); }
     }
 }

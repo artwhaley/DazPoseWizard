@@ -1,36 +1,11 @@
-using UnityEditor;
-using UnityEditor.SceneManagement;
-
 namespace DazPose.Editor.AnimationAudit
 {
+    /// <summary>Shared read-only source paths for animation diagnostics; creates no scenes.</summary>
     public static class AnimationAuditSceneSetup
     {
-        public const string ScenePath = "Assets/Scenes/AnimationAudit.unity";
-        // Separate from the former controller whose states were repeatedly removed.
+        public const string HumanoidModelPath = "Assets/TestCharacter/laraHumanoid.fbx";
+        public const string BreathingMotionPath = "Assets/KAWAII_ANIMATIOMS_100/Assets/Animations/@KA_Idle01_breathing.FBX";
         public const string ControllerPath = "Assets/DazPose/AnimationAudit/LibraryPlayback.controller";
         public const string FootIKControllerPath = "Assets/DazPose/AnimationAudit/LibraryPlaybackWithFootIK.controller";
-
-
-        public static void PrepareAndOpenAuditSceneMenu()
-        {
-            LaraHumanoidKawaiiTestSetup.CreateAuditScene();
-        }
-
-        public static void CreateScene()
-        {
-            LaraHumanoidKawaiiTestSetup.CreateAuditScene();
-        }
-
-
-        public static void OpenSceneMenu()
-        {
-            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null)
-            {
-                PrepareAndOpenAuditSceneMenu();
-                return;
-            }
-            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
-        }
     }
 }

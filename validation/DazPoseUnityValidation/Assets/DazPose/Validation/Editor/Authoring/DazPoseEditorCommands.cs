@@ -27,67 +27,6 @@ namespace DazPose.UnityValidation
         };
 
         
-        public static void SetupValidationScene()
-        {
-            AssetDatabase.Refresh();
-            var model = AssetDatabase.LoadAssetAtPath<GameObject>(CharacterAssetPath);
-            if (model == null) throw new InvalidOperationException("Could not load " + CharacterAssetPath + ". Copy the local lara.fbx into Assets/TestCharacter first.");
-
-            var importer = AssetImporter.GetAtPath(CharacterAssetPath) as ModelImporter;
-            if (importer == null || importer.animationType != ModelImporterAnimationType.Generic || importer.optimizeGameObjects || !importer.importBlendShapes)
-                throw new InvalidOperationException("Lara FBX must import as Generic, Optimize Game Objects off, with Import BlendShapes enabled. Reimport " + CharacterAssetPath + " and retry.");
-
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var character = PrefabUtility.InstantiatePrefab(model, scene) as GameObject;
-            if (character == null) throw new InvalidOperationException("Unity could not instantiate the imported Lara FBX.");
-            character.name = "Lara";
-            character.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-            character.transform.localScale = Vector3.one;
-            DazPoseRestPoseService.Capture(character.transform, true);
-
-            var floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            floor.name = "Validation Floor";
-            floor.transform.position = new Vector3(0, -0.015f, 0);
-            floor.transform.localScale = new Vector3(0.3f, 1, 0.3f);
-            floor.GetComponent<Collider>().enabled = false;
-
-            var lightObject = new GameObject("Validation Light");
-            var light = lightObject.AddComponent<Light>();
-            light.type = LightType.Directional;
-            light.intensity = 1.15f;
-            lightObject.transform.rotation = Quaternion.Euler(35, -25, 0);
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.48f, 0.48f, 0.48f);
-
-            var cameraObject = new GameObject("Validation Camera");
-            var camera = cameraObject.AddComponent<Camera>();
-            camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = new Color(0.19f, 0.21f, 0.24f);
-            camera.fieldOfView = 36;
-            camera.nearClipPlane = 0.03f;
-            camera.farClipPlane = 100;
-            cameraObject.transform.position = new Vector3(0, 1.05f, 3.25f);
-            cameraObject.transform.LookAt(new Vector3(0, 0.95f, 0));
-
-            Directory.CreateDirectory(Path.Combine(ProjectRoot, "Assets", "Scenes"));
-            var scenePath = "Assets/Scenes/PoseValidation.unity";
-            EditorSceneManager.SaveScene(scene, scenePath);
-            Selection.activeGameObject = character;
-            EditorGUIUtility.PingObject(character);
-            Debug.Log("DAZ Pose validation scene ready. Lara uses Generic import; Optimize Game Objects is off. Selected Lara and saved " + scenePath + ".");
-        }
-
-        
-        public static void OpenValidationScene()
-        {
-            EditorSceneManager.OpenScene("Assets/Scenes/PoseValidation.unity", OpenSceneMode.Single);
-            var character = GameObject.Find("Lara");
-            if (character == null) throw new InvalidOperationException("PoseValidation.unity does not contain Lara. Run Tools > DAZ Pose > Setup Validation Scene first.");
-            Selection.activeGameObject = character;
-            EditorGUIUtility.PingObject(character);
-            Debug.Log("Opened PoseValidation.unity and selected Lara. Use the development diagnostics or performer acceptance harness as needed.");
-        }
-
         [MenuItem("DazPose/Diagnostics/Inspect Selected Character")]
         public static void InspectSelectedCharacter()
         {
@@ -455,101 +394,13 @@ namespace DazPose.UnityValidation
             }
         }
 
+        // Scene-independent adapter/morph assertions. Pose conversion and retry identity
+        // are covered by ImportPipelineChecks using unique disposable copies.
         public static void RunBatchValidation()
         {
-            RunBatchValidationCore();
-        }
-
-        private static AnimationClip RunBatchValidationCore()
-        {
-            OpenValidationScene();
-            var character = GameObject.Find("Lara");
-            if (character == null) throw new InvalidOperationException("Validation scene does not contain the Lara root. Run Setup Validation Scene first.");
-            InspectSelectedCharacter();
             RunAdapterSelfTests();
             RunStage5MorphSelfTests();
-            var testFolder = Path.Combine(ProjectRoot, PoseAssetFolder.Replace('/', Path.DirectorySeparatorChar));
-            var posePaths = Directory.Exists(testFolder) ? Directory.GetFiles(testFolder, "*.dazpose.json").OrderBy(path => path, StringComparer.Ordinal).ToArray() : Array.Empty<string>();
-            if (posePaths.Length == 0) throw new FileNotFoundException("No local G8F .dazpose.json fixture is available under " + testFolder + ".");
-
-            AnimationClip firstGeneratedClip = null;
-            foreach (var posePath in posePaths)
-            {
-                if (!TryResolvePose(character.transform, posePath, out var resolved))
-                    throw new InvalidOperationException("Batch validation stopped during pose resolution; inspect TestOutput/pose-application-report.json and the Unity Console log.");
-                ApplyResolvedPose(resolved);
-                var directParity = ValidateDirectApply(resolved);
-                if (!directParity.Passed)
-                    throw new InvalidOperationException("The refactored direct Apply result differs from the captured proven adapter output. " + directParity.Summary);
-
-                var assetPath = DazPoseAnimationClipGenerator.AssetPathFor(resolved);
-                var clipReport = RegenerateAndVerifyAssetIdentity(resolved, assetPath);
-                if (!clipReport.generationPassed || !clipReport.directApplyParityPassed)
-                    throw new InvalidOperationException("Generated clip parity failed for " + Path.GetFileName(posePath) + ".");
-                if (firstGeneratedClip == null) firstGeneratedClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
-                Debug.Log("PASS DAZ Pose Phase 2 regression: direct local transforms match the preserved adapter output; clip parity passed for " + Path.GetFileName(posePath) + ".");
-            }
-            Debug.Log("DAZ Pose Phase 2 batch validation passed for " + posePaths.Length + " available G8F pose fixture(s).");
-            return firstGeneratedClip;
         }
-
-        private static DazPoseAnimationClipReport RegenerateAndVerifyAssetIdentity(ResolvedUnityPose pose, string assetPath)
-        {
-            var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
-            if (clip == null)
-            {
-                DazPoseAnimationClipGenerator.Generate(pose, false);
-                clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
-            }
-            if (clip == null) throw new InvalidOperationException("AnimationClip generation did not create " + assetPath + ".");
-
-            var guidBefore = AssetDatabase.AssetPathToGUID(assetPath);
-            var performerPosePath = Path.ChangeExtension(assetPath, ".asset").Replace('\\', '/');
-            var performerPose = AssetDatabase.LoadAssetAtPath<PerformerPose>(performerPosePath);
-            if (performerPose == null || performerPose.Clip != clip)
-                throw new InvalidOperationException("The generated PerformerPose wrapper is missing or does not reference " + assetPath + ".");
-            var performerPoseGuidBefore = AssetDatabase.AssetPathToGUID(performerPosePath);
-            var sentinelPath = "__DazPoseP3RegenerationProbe_" + Guid.NewGuid().ToString("N");
-            var sentinelBinding = EditorCurveBinding.FloatCurve(sentinelPath, typeof(Transform), "m_LocalPosition.x");
-            AnimationUtility.SetEditorCurve(clip, sentinelBinding, AnimationCurve.Constant(0f, 1f, 0f));
-            EditorUtility.SetDirty(clip);
-            AssetDatabase.SaveAssets();
-
-            try
-            {
-                var report = DazPoseAnimationClipGenerator.Generate(pose, true);
-                var regenerated = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
-                var regeneratedPose = AssetDatabase.LoadAssetAtPath<PerformerPose>(performerPosePath);
-                var guidAfter = AssetDatabase.AssetPathToGUID(assetPath);
-                var performerPoseGuidAfter = AssetDatabase.AssetPathToGUID(performerPosePath);
-                if (!string.Equals(guidBefore, guidAfter, StringComparison.Ordinal))
-                    throw new InvalidOperationException("Regenerating " + assetPath + " changed its asset GUID from " + guidBefore + " to " + guidAfter + ".");
-                if (!string.Equals(performerPoseGuidBefore, performerPoseGuidAfter, StringComparison.Ordinal))
-                    throw new InvalidOperationException("Regenerating " + performerPosePath + " changed its asset GUID from "
-                        + performerPoseGuidBefore + " to " + performerPoseGuidAfter + ".");
-                if (regeneratedPose == null || regeneratedPose.Clip != regenerated)
-                    throw new InvalidOperationException("Regenerated PerformerPose does not reference the exact clip at " + assetPath + ".");
-                if (regenerated == null || AnimationUtility.GetCurveBindings(regenerated).Any(binding => binding.path == sentinelPath))
-                    throw new InvalidOperationException("Regeneration left an obsolete test curve in " + assetPath + ".");
-                Debug.Log("PASS DAZ Pose regeneration regression: AnimationClip GUID " + guidBefore + " and PerformerPose GUID "
-                    + performerPoseGuidBefore + " stayed stable; the wrapper references the regenerated clip and obsolete curves were removed.");
-                return report;
-            }
-            finally
-            {
-                var regenerated = AssetDatabase.LoadAssetAtPath<AnimationClip>(assetPath);
-                if (regenerated != null && AnimationUtility.GetCurveBindings(regenerated).Any(binding => binding.path == sentinelPath))
-                {
-                    AnimationUtility.SetEditorCurve(regenerated, sentinelBinding, null);
-                    EditorUtility.SetDirty(regenerated);
-                    AssetDatabase.SaveAssets();
-                }
-            }
-        }
-
-        private static bool TryResolvePose(Transform root, string jsonPath, out ResolvedUnityPose resolvedPose)
-            => DazPoseUnityResolver.TryResolvePose(root, jsonPath, out resolvedPose, out _, false);
-
 
         private static void ApplyResolvedPose(ResolvedUnityPose pose, bool recordUndoAndDirty = true)
         {

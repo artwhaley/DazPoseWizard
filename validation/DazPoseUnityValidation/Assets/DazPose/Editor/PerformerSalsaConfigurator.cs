@@ -306,7 +306,7 @@ namespace DazPose.Editor.Importing
                 return true;
             }
             failure = candidates.Length == 0
-                ? "No SuccubusPerformer is selected or present in the active scene. Open PoseValidation.unity and select its performer root."
+                ? "Select a SuccubusPerformer root, or open an authored scene containing one."
                 : "More than one SuccubusPerformer is in scope. Select the exact performer root to configure.";
             return false;
         }
