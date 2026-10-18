@@ -109,3 +109,5 @@ Earlier broad animation relocation and whitespace sweeps were rejected; only sub
 ## Explicit commit/push authorization — 18 October
 
 The user explicitly requested committing and pushing this delivered state on main. The commit includes the reviewed cleanup, earlier failed-expression cleanup, and ticket archive relocation. The rejected lab move remains unexecuted and full Task 1 status remains PARTIAL. Large prepared motion animation outputs use Git LFS via .gitattributes; fresh checkouts require LFS assets. No Play/build/player execution is implied. Earlier statements about uncommitted work describe the pre-commit checkpoint.
+
+Implementation checkpoint committed as a9a31be (`Consolidate production authoring and global story cards`) on main. This supersedes the pre-commit local/uncommitted entries above. C00 remains f74d026; the blocked lab action was not included.
