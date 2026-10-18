@@ -56,7 +56,7 @@ namespace DazPose.Performer
         }
     }
 
-    [CreateAssetMenu(menuName = "Performer/Expression", fileName = "Performer Expression")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Expression", fileName = "Performer Expression")]
     public sealed class PerformerExpression : ScriptableObject
     {
         [SerializeField] private AnimationClip clip = null;

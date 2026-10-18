@@ -44,10 +44,10 @@ namespace DazPose.UnityValidation
             if (priorFull != null && priorFull.SurfaceBindings != null && priorFull.SurfaceBindings.SourceMesh == package.reviewBody)
             { fullBindings = priorFull.SurfaceBindings; fullProfile = priorFull.DissolveProfile; }
             var canonicalBindings = AssetDatabase.LoadAssetAtPath<PerformerSurfaceBindingAsset>(
-                "Assets/TestData/LaraCandidate/LaraSurfaceBindings.asset");
+                "Assets/Production/Performers/Lara/Surfaces/LaraSurfaceBindings.asset");
             var canonicalProfile = AssetDatabase.LoadAssetAtPath<PerformerDissolveProfile>(
-                "Assets/TestData/LaraCandidate/LaraDissolveProfile.asset");
-            Mesh canonicalMesh = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset");
+                "Assets/Production/Performers/Lara/Configuration/LaraDissolveProfile.asset");
+            Mesh canonicalMesh = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Production/Performers/Lara/Rig/LaraBody.asset");
             if (fullBindings == null || fullProfile == null || canonicalBindings == null || canonicalProfile == null || canonicalMesh == null)
                 throw new FileNotFoundException("The accepted source/canonical body, dissolve profiles, and surface bindings must exist.");
 

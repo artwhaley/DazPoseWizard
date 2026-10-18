@@ -13,9 +13,7 @@ namespace DazPose.UnityValidation
         private readonly System.Collections.Generic.Dictionary<string,bool> opacitySections=new System.Collections.Generic.Dictionary<string,bool>();
         public static void ShowFor(LaraWardrobe wardrobe)
         {var window=GetWindow<LaraSecondOutfitReviewWindow>("Lara Outfit Review");window.outfit=wardrobe;window.Show();}
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Lara Outfit Review Controls")]
-#endif
+        [MenuItem("DazPose/Diagnostics/Outfit Review Controls")]
         public static void Open()=>ShowFor(UnityEngine.Object.FindAnyObjectByType<LaraWardrobe>());
         private void OnGUI()
         {

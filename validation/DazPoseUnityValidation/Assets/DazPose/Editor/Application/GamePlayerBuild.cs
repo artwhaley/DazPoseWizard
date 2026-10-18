@@ -13,14 +13,30 @@ namespace DazPose.Editor {
    if(!string.IsNullOrEmpty(path)) Build(path);
   }
   public static void BuildBatch()=>Build(Path.GetFullPath("Builds/Authoring/DazPoseGame.exe"));
-  public static void BuildStartupChecks() {
-   BuildBatch();
-   Build(Path.GetFullPath("Builds/AuthoringStartup/DazPoseGame.exe"),"Assets/Production/Scenes/AuthoringShowcase.unity");
+  public static string[] ComputeScenes(SceneCatalog catalog,string startupScene=null) {
+   if(catalog==null)throw new InvalidOperationException("Assign the application SceneCatalog.");
+   var scenes=new[]{catalog.mainMenuPath}.Concat(catalog.entries.Where(e=>e.enabled).Select(e=>e.scenePath)).Distinct().ToArray();
+   if(scenes.Any(string.IsNullOrWhiteSpace))throw new InvalidOperationException("The public scene catalog contains an empty path.");
+   if(startupScene!=null) {
+    if(!scenes.Contains(startupScene))throw new InvalidOperationException("A startup override must already be in the public scene catalog.");
+    scenes=new[]{startupScene}.Concat(scenes.Where(s=>s!=startupScene)).ToArray();
+   }
+   return scenes;
+  }
+  public static void SynchronizePublicSceneList() {
+   if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Update public scenes in Edit Mode.");
+   var catalog=AssetDatabase.LoadAssetAtPath<SceneCatalog>(ProductionApplicationSetup.CatalogPath);
+   var first=catalog.entries.Single(e=>e.scenePath==StorySceneBuilder.ScenePath);
+   if(catalog.entries.Length!=1 || catalog.entries[0]!=first) {
+    catalog.entries=new[]{first};EditorUtility.SetDirty(catalog);AssetDatabase.SaveAssetIfDirty(catalog);
+   }
+   var scenes=ComputeScenes(catalog);
+   if(!EditorBuildSettings.scenes.Select(s=>s.path+"|"+s.enabled).SequenceEqual(scenes.Select(s=>s+"|True")))
+    EditorBuildSettings.scenes=scenes.Select(s=>new EditorBuildSettingsScene(s,true)).ToArray();
   }
   public static void Build(string path,string startupScene=null,BuildOptions options=BuildOptions.None) {
    var catalog=AssetDatabase.LoadAssetAtPath<SceneCatalog>(ProductionApplicationSetup.CatalogPath);
-   var scenes=new[]{catalog.mainMenuPath}.Concat(catalog.entries.Where(e=>e.enabled).Select(e=>e.scenePath)).Distinct().ToArray();
-   if(startupScene!=null) scenes=new[]{startupScene}.Concat(scenes.Where(s=>s!=startupScene)).ToArray();
+   var scenes=ComputeScenes(catalog,startupScene);
    var target=NamedBuildTarget.Standalone;
    string previous=PlayerSettings.GetScriptingDefineSymbols(target);
    var normal=previous.Split(';').Where(d=>d!="DAZPOSE_VALIDATION" && d!="DAZPOSE_DEVELOPMENT_TOOLS");

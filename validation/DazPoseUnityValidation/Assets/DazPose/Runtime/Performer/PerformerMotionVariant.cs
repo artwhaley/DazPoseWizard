@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Motion Variant", fileName = "Performer Motion Variant")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Motion Variant", fileName = "Performer Motion Variant")]
     public sealed class PerformerMotionVariant : ScriptableObject
     {
         [SerializeField] private AnimationClip clip;

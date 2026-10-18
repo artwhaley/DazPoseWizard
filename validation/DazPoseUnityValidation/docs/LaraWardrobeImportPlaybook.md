@@ -1,5 +1,7 @@
 # Lara wardrobe import playbook
 
+Current import procedure is [LaraWardrobeImportQuickStart.md](LaraWardrobeImportQuickStart.md). The dated fixture-builder and one-off review-scene steps below are historical exceptions: their `Tools > DAZ Pose` menus/scenes were retired during cleanup. Use them only as technical provenance for the described old assets, not as current navigation instructions.
+
 For the short operating procedure, start with
 [LaraWardrobeImportQuickStart.md](LaraWardrobeImportQuickStart.md). This document
 is the detailed reference; read relevant sections when the short procedure calls
@@ -215,7 +217,7 @@ existing review scene. `LaraSecondOutfitValidation.Run` checks existing assets;
 `LaraWardrobeMotionDiagnostics.RunSecondOutfit` runs Play-mode walking bounds
 checks and exits itself (omit `-quit`). Evidence is in `second-outfit` and
 `second-outfit-motion`. Preserve owned assets/metas when copying to the main
-project. Open through **Tools > DAZ Pose > Development > Open Lara Second Outfit**
+project. Open through **DazPose > Wardrobe > Imported Outfits**
 and use its **Lara Outfit Review** window for artistic decisions.
 
 `LaraWardrobe` supports the arbitrary part inventory and shared dissolve/shape

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Locomotion Profile", fileName = "Locomotion Profile")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Locomotion Profile", fileName = "Locomotion Profile")]
     public sealed class PerformerLocomotionProfile : ScriptableObject
     {
         [Header("Normalized KAWAII Walk01")]
@@ -59,7 +59,7 @@ namespace DazPose.Performer
             {
                 if (motion == null || motion.BodyClip == null || motion.DurationSeconds <= 0f)
                 {
-                    reason = "The normalized KAWAII Walk01 profile is incomplete. Run Tools > DAZ Pose > Locomotion > Bake KAWAII Walk01 for Generic Lara.";
+                    reason = "The normalized KAWAII Walk01 profile is incomplete. Run DazPose > Content > Advanced > Bake Locomotion for Generic Lara.";
                     return false;
                 }
             }

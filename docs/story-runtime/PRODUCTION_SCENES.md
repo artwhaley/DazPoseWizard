@@ -16,7 +16,7 @@ Keep choreography marks under `Authoring Marks` and create only marks used by th
 
 The variant starts hidden and retains the prepared root placement/rotation and unit scale. Its three skinned surfaces share one finite dissolve owner, reusing the existing dissolve engine, particle graph and authored style. Surface addresses are baked for the actual male meshes. Original materials are restored at stable visibility, including the shell's authored continuous root fade. Effect materials are separate assets; the shell dissolve shader derives from the exact prepared shell graph. Stop cancels the finite transition through the existing scoped player API.
 
-The D1–D5 story still ends before the later body-reveal beat. Hidden male geometry and contact bindings are saved now; appearance/reveal acceptance requires the user's later manual run. No reimport, contact recalibration or rig replacement was performed.
+The full D8 source includes the body-reveal beat. Prepared male geometry/contact bindings are saved; visual acceptance remains the user's manual Unity test. No reimport, contact recalibration or rig replacement was performed.
 
 ## Story tracing
 
@@ -32,10 +32,10 @@ For example:
 [Story first-contact-d1-d5] Set world clothing shoes to no.
 ```
 
-The messages describe the current story runner. D6/D7 Director/card selection is not implemented by this packet.
+The compiled interpreter also logs Director queries, candidate eligibility/rejection, weights, selected cards and committed progress. Tagged cards are globally published; see [the source guide](DAZSTORY_AUTHORING.md).
 
 ## Delivered First Contact composition
 
-`Assets/Production/Scenes/FirstContactD1D5.unity` retains the saved art and only four static story poses: `lara_start`, `player_start`, `camera_start`, `stepforward`. Lara has a separately assigned live focus target; the typed location records also resolve the Lounger seat. The representative camera-move bindings are removed. The four poses also live in `Assets/Production/Story/FirstContactMarks.prefab` so rebuilding this composition does not rediscover test markers. The inherited `FirstPerformanceVoid` wrapper and its complete marker tree are removed.
+`Assets/Production/Scenes/FirstContact.unity` retains the saved art and seven semantic locations: `lara_start`, `player_start`, `camera_start`, `stepforward`, `Lounger`, `MainPosition1`, `Bedside`. Lara has a separately assigned live focus target; the typed location records also resolve the Lounger seat. The representative camera-move bindings are removed. The saved setup marks also live in `Assets/Production/Story/FirstContactMarks.prefab` so rebuilding this composition does not rediscover test markers. The inherited `FirstPerformanceVoid` wrapper and its complete marker tree are removed.
 
-Review the current authored source at `Assets/Production/Story/Programs/FirstContact.dazstory` and the [source guide](DAZSTORY_AUTHORING.md). The former JSON program is legacy compatibility content. Review console tracing in `Assets/DazPose/Runtime/Story/Runtime/StoryRunner.cs` and `StoryFlowLog.cs`. Edit Mode checks and manual playback acceptance are recorded separately in the handoff.
+Review the current authored source at `Assets/Production/Story/Programs/FirstContact.dazstory` and the [source guide](DAZSTORY_AUTHORING.md). The inactive JSON asset is retired to a historical sample; runtime JSON compatibility remains. Review console tracing in `Assets/DazPose/Runtime/Story/Runtime/StoryRunner.cs` and `StoryFlowLog.cs`. Edit Mode checks and manual playback acceptance are recorded separately in the handoff.

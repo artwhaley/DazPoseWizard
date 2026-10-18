@@ -45,9 +45,7 @@ namespace DazPose.UnityValidation
             public string RendererPath;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Validate Always-Export Morphs")]
-#endif
+        [MenuItem("DazPose/Diagnostics/Validate Required Face Morphs")]
         private static void ValidateConfiguredAlwaysExportMorphs()
         {
             var projectRoot = Directory.GetParent(Application.dataPath).FullName;
@@ -74,7 +72,7 @@ namespace DazPose.UnityValidation
             var referenceModel = DazPosePipelineSettings.LoadReferenceModel(out var assetPath);
             if (referenceModel == null)
             {
-                Debug.LogError("Always-export morph validation requires a refreshed reference model in Tools > DAZ Pose > Pipeline Settings.");
+                Debug.LogError("Always-export morph validation requires a refreshed reference model in DazPose > Settings > Pipeline Settings.");
                 return;
             }
 

@@ -1,5 +1,8 @@
 # Content authoring API
 
+For narrative authoring, `.dazstory` is the current source of First Contact setup, explicit Intro and sequence beats. Tagged selectable cards are published separately under `Assets/Production/Story/Cards/` and discovered globally by the Director. See the [current authoring guide](docs/story-runtime/DAZSTORY_AUTHORING.md) and [scene/content ownership](docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md). Current saved scenes are `Assets/Production/Scenes/MainMenu.unity` and `Assets/Production/Scenes/FirstContact.unity`; Clothing Setup is `Assets/Scenes/ClothingSetup.unity`, and the saved Showcase is under `Assets/Examples/Scenes`. `AuthoringWelcome` and `AuthoringCompanion` were retired. Historical implementation notes below are not current workflow instructions.
+
+
 Current story authoring is `.dazstory`, introduced by the revised D5.5–D8 stack.
 Start with [the readable source guide](docs/story-runtime/DAZSTORY_AUTHORING.md) and
 [the full-session handoff](docs/story-runtime/D6_D8_HANDOFF.md). The full authored
@@ -24,7 +27,7 @@ Write a scene as a sequence of actions against `PerformanceRun`. The saved scene
 
 A new session starts with `WelcomePerformance` and Lara's existing InitialPose. If several unbound actors, cameras or clocks exist, assign the intended ones; the initializer does not choose arbitrarily. Each scene and actor has a distinct saved ID for tuning.
 
-The delivered examples are [AuthoringShowcase.cs](validation/DazPoseUnityValidation/Assets/Production/Content/AuthoringShowcase.cs) and [AuthoringCompanion.cs](validation/DazPoseUnityValidation/Assets/Production/Content/AuthoringCompanion.cs). Their saved scenes are under `Assets/Production/Scenes`.
+The preserved Showcase example source is [AuthoringShowcase.cs](validation/DazPoseUnityValidation/Assets/Production/Content/AuthoringShowcase.cs); its saved scene is `Assets/Examples/Scenes/AuthoringShowcase.unity`. The old Companion scene is retired. The authoring sequences are regression/example source, not public scene entries.
 
 ## A short sequence
 
@@ -200,14 +203,14 @@ Save the scene with its host and sequence. Press Play in that exact scene, then 
 
 The fresh Windows entry point is `validation/DazPoseUnityValidation/Builds/Authoring/DazPoseGame.exe`. Both example scenes completed saved-scene graphics Editor playback. The user accepted the remaining functional player checks on October 11, 2026. Artistic approval and the historical toe observation remain separate in [the acceptance record](docs/production-consolidation/authoring-reports/B08_MANUAL_CHECKS.md).
 
-## Legacy JSON story compatibility — historical D1–D5 delivery
+## Legacy JSON story compatibility — archived D1–D5 reference
 
 A saved `StoryProgramSequence` can now serve as the host's sequence. It reads a `dazpose.story` v1 JSON TextAsset, validates saved symbolic bindings before the first step and uses the same scoped `PerformanceRun` verbs. Existing C# sequences remain supported. Application-owned `Profile` stores interests, equipment and persistent story memory separately from settings/tuning; fresh story invocations own contract/session/world/local state.
 
-The former representative First Contact JSON scene has been migrated to the full `.dazstory` source. **DazPose → Story → Prepare First Contact Authoring** refreshes its saved production scene. Use **DazPose > Story > Prepare Full First Contact Session** for the full session. MainPosition1 and Bedside are movable scene transforms. The existing imported poses and engineering motions are bound; broader binding UX work is deferred. Settings and scene negotiation continue to share the same profile editors. See the current authoring guide above.
+This is a historical account of the D1–D5 compatibility delivery, not a current refresh procedure. The saved scene is now `Assets/Production/Scenes/FirstContact.unity`; `.dazstory` authoring and current scene operations are documented at the top of this guide. The moved ticket packet is archived under [oldtickets/D1-D5](oldtickets/D1-D5/README_FIRST.md).
 
 Player body vocabulary is `await run.Player.DissolveBodyInAsync(seconds)` and `DissolveBodyOutAsync(seconds)`, using its saved prepared-male body binding and the existing finite dissolve engine. The player body retains the original male meshes and measured contact-column setup; it is not a Lara copy. The D1–D5 checkpoint does not include the later body-reveal beat.
 
-See [schema v1](docs/story-runtime/SCHEMA_V1.md), [source handoff](docs/story-runtime/D1_D5_HANDOFF.md) and [manual checklist](docs/story-runtime/MANUAL_TEST_CHECKLIST.md). The JSON supports eight nested step blocks; deeper content is rejected explicitly. Source/Editor checks passed; **user Play Mode acceptance is pending**.
+See [schema v1](docs/story-runtime/SCHEMA_V1.md), [source handoff](docs/story-runtime/D1_D5_HANDOFF.md) (historical; original ticket packet: [oldtickets/D1-D5](oldtickets/D1-D5/README_FIRST.md)) and [manual checklist](docs/story-runtime/MANUAL_TEST_CHECKLIST.md). The JSON supports eight nested step blocks; deeper content is rejected explicitly. Source/Editor checks passed; **user Play Mode acceptance is pending**.
 
 Production scene composition and clear-English Console tracing: [Production scenes](docs/story-runtime/PRODUCTION_SCENES.md).

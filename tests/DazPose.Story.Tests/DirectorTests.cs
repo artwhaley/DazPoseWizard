@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace DazPose.Story.Tests;
 public sealed class DirectorTests {
- sealed class Host : IStoryExecutionHost,IStoryDirectorObserver,IStoryPhaseObserver {
+ internal class Host : IStoryExecutionHost,IStoryDirectorObserver,IStoryPhaseObserver {
   public readonly Dictionary<string,StoryData> State=new() {
    ["Session.Mood"]=new(50d),["Session.Phase"]=new("Setup"),["Session.PhaseCompletion"]=new(0d),["Session.IntensityMultiplier"]=new(1d),["Contract.PacingMultiplier"]=new(1d),
    ["World.Posture"]=new("Standing"),["World.Hands"]=new("Free"),["World.Ankles"]=new("Free"),["World.Oral"]=new("Free"),["World.Anal"]=new("Free"),["World.Genital"]=new("Free"),
@@ -51,7 +51,12 @@ public sealed class DirectorTests {
   public void CancelOperations()=>Cancelled=true;
   public void Trace(StorySource source,string message)=>TraceLines.Add(message);
  }
- static CompiledStoryProgram Actual()=>DazStoryCompiler.Compile(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"FirstContact.dazstory")),"FirstContact.dazstory");
+ [Fact] public async Task ExtractedGlobalCardsPreservePreCleanupSeed82017() {
+  var host=new Host();await new StoryMachine(Actual(),host,new StorySessionRandom(82017)).RunAsync("FirstContact");
+  Assert.Equal(new[]{"WarmupCheckIn","WarmupBreathing","WarmupCounting","WarmupCheckIn","WarmupCounting","MainStandingVariation","MainStandingCheckIn","EquipmentRope","MainSeatedPause","MainSeatedCheckIn","MainSeatedRhythm","ResolutionReflection"},host.Selected);
+  Assert.Equal(110,host.PhaseCompletion["Warmup"]);Assert.Equal(105,host.PhaseCompletion["Main"]);
+ }
+ static CompiledStoryProgram Actual()=>AuthoredStoryTestContent.Compile();
  static CompiledStoryProgram Compile(string source)=>DazStoryCompiler.Compile(source,"cards.dazstory");
  [Theory][InlineData(0,"rope",true)][InlineData(2,null,false)][InlineData(4,"ice",true)]
  public async Task FullAuthoredSourceCompletesAllPhasesAndExactBranches(int clothing,string equipment,bool early) {

@@ -29,9 +29,7 @@ namespace DazPose.UnityValidation
         [Serializable] private class Heel {public string sourceSHA256,referenceSHA256;public LaraCandidateBuilder.Entry[] entries;}
         [Serializable] private class Audit
         { public string node;public int vertices,bones,materials;public bool shell;public float maximumRestError; }
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Open Lara Second Outfit")]
-#endif
+
         public static void Open()
         {
             if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return;

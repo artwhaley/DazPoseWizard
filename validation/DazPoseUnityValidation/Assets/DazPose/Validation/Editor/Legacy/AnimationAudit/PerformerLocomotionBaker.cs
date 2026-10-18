@@ -20,7 +20,7 @@ namespace DazPose.Editor.AnimationAudit
     public static class PerformerLocomotionBaker
     {
         private const string ProxyPath = "Assets/TestCharacter/laraHumanoid.fbx";
-        private const string OutputFolder = "Assets/Animations/Performer/Locomotion";
+        private const string OutputFolder = "Assets/Production/Content/Motions/Locomotion";
         private const string BakeControllerPath = OutputFolder + "/LocomotionBake.controller";
         private const string ProfilePath = OutputFolder + "/KawaiiWalk01Profile.asset";
         private const string ReportPath = "docs/animation-audit/Walk01BakeReport.md";
@@ -54,9 +54,7 @@ namespace DazPose.Editor.AnimationAudit
             public int Count => RootPositions.Length;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Locomotion/Bake KAWAII Walk01 for Generic Lara")]
-#endif
+        [MenuItem("DazPose/Content/Advanced/Bake Locomotion for Generic Lara")]
         public static void BakeWalk01()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -68,7 +66,7 @@ namespace DazPose.Editor.AnimationAudit
                 throw new InvalidOperationException("The validated laraHumanoid.fbx and its valid Human Avatar are required. The baker does not modify the model importer.");
 
             EnsureFolder("Assets/Animations");
-            EnsureFolder("Assets/Animations/Performer");
+            EnsureFolder("Assets/Production/Content/Motions");
             EnsureFolder(OutputFolder);
             Directory.CreateDirectory(ProjectPath("docs/animation-audit"));
             MotionSpec[] specs = CreateSpecs();

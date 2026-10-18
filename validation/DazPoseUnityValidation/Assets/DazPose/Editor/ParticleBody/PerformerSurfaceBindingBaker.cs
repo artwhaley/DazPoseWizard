@@ -52,9 +52,7 @@ namespace DazPose.Editor.ParticleBody
             public float NextUnitFloat() => (NextUInt() >> 8) * (1f / 16777216f);
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/First Performance Void/Bake Performer Surface Bindings")]
-#endif
+        [MenuItem("DazPose/Content/Advanced/Bake Surface Bindings")]
         public static void BakeSelectedRenderer()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

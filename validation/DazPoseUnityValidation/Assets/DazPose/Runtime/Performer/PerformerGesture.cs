@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Gesture", fileName = "Performer Gesture")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Gesture", fileName = "Performer Gesture")]
     public sealed class PerformerGesture : ScriptableObject
     {
         [SerializeField] private AnimationClip clip;

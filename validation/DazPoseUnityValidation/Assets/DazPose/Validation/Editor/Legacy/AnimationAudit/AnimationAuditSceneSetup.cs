@@ -10,9 +10,7 @@ namespace DazPose.Editor.AnimationAudit
         public const string ControllerPath = "Assets/DazPose/AnimationAudit/LibraryPlayback.controller";
         public const string FootIKControllerPath = "Assets/DazPose/AnimationAudit/LibraryPlaybackWithFootIK.controller";
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Animation Audit/Prepare and Open Audit Scene")]
-#endif
+
         public static void PrepareAndOpenAuditSceneMenu()
         {
             LaraHumanoidKawaiiTestSetup.CreateAuditScene();
@@ -23,9 +21,7 @@ namespace DazPose.Editor.AnimationAudit
             LaraHumanoidKawaiiTestSetup.CreateAuditScene();
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Animation Audit/Open AnimationAudit Scene")]
-#endif
+
         public static void OpenSceneMenu()
         {
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null)

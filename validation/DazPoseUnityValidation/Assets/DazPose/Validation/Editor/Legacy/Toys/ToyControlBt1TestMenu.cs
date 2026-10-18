@@ -6,9 +6,7 @@ namespace DazPose.Editor.Toys
 {
     internal static class ToyControlBt1TestMenu
     {
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Toys/Run BT.1 Offline Registry Tests")]
-#endif
+
         private static void RunBt1Tests()
         {
             string[] failures = ButtplugTransportSelfTests.Run();

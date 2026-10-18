@@ -4,7 +4,7 @@ namespace DazPose.Performer
 {
     public enum WardrobeFitStatus { Candidate, Validated, NeedsFit, Invalid }
 
-    [CreateAssetMenu(menuName = "DAZ Pose/Wardrobe/Fit State")]
+    [CreateAssetMenu(menuName = "DazPose/Wardrobe/Fit State")]
     public sealed class WardrobeFitState : ScriptableObject
     {
         [SerializeField, Range(0, 7)] private int visibleMask;

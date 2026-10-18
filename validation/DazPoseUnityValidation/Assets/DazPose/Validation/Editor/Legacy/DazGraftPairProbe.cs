@@ -37,9 +37,7 @@ namespace DazPose.UnityValidation
             public bool hostOpeningUnchanged, correctedGraftBlinkZero;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Open Graft Pair Preview")]
-#endif
+
         public static void OpenPreview()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

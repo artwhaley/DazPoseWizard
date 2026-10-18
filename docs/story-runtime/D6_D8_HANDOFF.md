@@ -1,4 +1,26 @@
-# D6-D8 - ready for user manual Play in Unity
+# D6-D8 — cleanup handoff
+
+## October 18 — Task 1 cleanup active
+
+Current scene: `Assets/Production/Scenes/FirstContact.unity`; original GUID and persistence IDs preserved. Local Intro/setup/sequence plus 17 globally published cards retain the combined 19-dialogue oracle. See [cleanup status](../cleanup-task1/EXECUTION_REPORT.md) for outstanding gates. This supersedes earlier readiness statements while cleanup is active. No Play/build/player ran during cleanup. Human visual acceptance and toe observation remain pending. The original D1–D5 ticket packet is archived at [oldtickets/D1-D5](../../oldtickets/D1-D5/README_FIRST.md).
+
+## October 17 - rejected expression imports cleared
+
+Archived all eleven current failed expression inputs (eight missing required Lara
+morphs and three body-only presets) with their metas and status records outside
+watched roots. All 33 archived files retain their hashes; no failed expression
+jobs remain. Original DAZ presets and generated assets were untouched. The earlier
+eight-job retry is historical: it exposed missing morphs, and those jobs are now
+archived rather than pending.
+
+Automatic reference-model refresh no longer forces failed imports to retry.
+Future cleanup is **DazPose > Content > Archive Failed Expression Imports**.
+Click Console **Clear** once for old messages; archiving does not erase unrelated logs.
+Recovery instructions: docs/IMPORT_FAILURE_CLEANUP.md.
+Affected Editor assemblies compile cleanly with warnings as errors; nine managed
+archive safety checks passed. No Unity Play or standalone build/launch was performed.
+Evidence: .dazposewizard/import-archive-fix/result.json.
+
 
 ## October 17 - Unity diagnostics cleanup
 
@@ -29,11 +51,15 @@ reconversion/visual playback passed. Evidence:
 .dazposewizard/unity-diagnostics-cleanup/result.json and compile/ logs.
 
 
-The complete session is implemented and saved on main. Open
-validation/DazPoseUnityValidation/Assets/Production/Scenes/FirstContactD1D5.unity
-and press Play yourself. The legacy filename now contains the full session: its
+## Historical D1–D5 handoff (scene later renamed)
+
+At that historical handoff, the scene was named `FirstContactD1D5.unity`. It was later renamed to `Assets/Production/Scenes/FirstContact.unity` with its GUID and persistence identity preserved. The original D1–D5 ticket packet is archived at [oldtickets/D1-D5](../../oldtickets/D1-D5/README_FIRST.md); use the current cleanup report above for present readiness and workflow instructions.
+
+At that time, the complete session was implemented and saved on main. The superseded handoff pointed to
+`FirstContactD1D5.unity` (later renamed to `Assets/Production/Scenes/FirstContact.unity`)
+At the historical revision, the filename contained the full session:
 saved runner starts the authored source, with no preview cutoff or missing bindings.
-No helper injection or test runner is needed in the production scene.
+This historical note does not replace the current cleanup report or manual-testing boundary.
 
 The user is the tester. Do not start Unity Play, automated scene playback,
 standalone builds or players without a new explicit request. The user intentionally

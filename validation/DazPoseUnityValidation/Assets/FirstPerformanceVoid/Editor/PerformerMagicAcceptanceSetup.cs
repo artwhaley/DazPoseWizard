@@ -14,7 +14,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
     internal static class PerformerMagicAcceptanceSetup
     {
         private const string EffectRoot = "Assets/DazPose/Effects/Magic";
-        private const string GeneratedRoot = "Assets/DazPose/Generated/Magic";
+        private const string GeneratedRoot = "Assets/Production/Content/Magic";
 
         private sealed class StarterStyle
         {
@@ -40,9 +40,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
             public float Pulse;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Magic/Generate Starter Magic Assets")]
-#endif
+
         public static void GenerateStarterMagicAssets()
         {
             try

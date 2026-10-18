@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Magic/Catalog", fileName = "Performer Magic Catalog")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Magic/Catalog", fileName = "Performer Magic Catalog")]
     public sealed class PerformerMagicCatalog : ScriptableObject
     {
         [SerializeField] private List<PerformerSpell> spells = new List<PerformerSpell>();

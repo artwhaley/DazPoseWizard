@@ -15,7 +15,7 @@ namespace DazPose.UnityValidation
         private const string CandidateScene = "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity";
         private const string CandidateCatalog = "Assets/Wardrobe/WardrobeCatalog.asset";
         private const string ConfigPath = "Assets/Wardrobe/WardrobeConfiguration.asset";
-        private const string CanonicalBody = "Assets/TestData/LaraCandidate/LaraBody.asset";
+        private const string CanonicalBody = "Assets/Production/Performers/Lara/Rig/LaraBody.asset";
 
         public static void StartRuntimeGate()
         {

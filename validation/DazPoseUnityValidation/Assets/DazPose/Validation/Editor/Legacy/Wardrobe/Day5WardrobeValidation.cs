@@ -73,7 +73,7 @@ namespace DazPose.UnityValidation
                 "Assets/Wardrobe/WardrobeConfiguration.asset",
                 "Assets/Production/Wardrobe/LaraCatalog.asset",
                 "Assets/Production/Wardrobe/LaraConfiguration.asset",
-                "Assets/TestData/LaraCandidate/LaraBody.asset",
+                "Assets/Production/Performers/Lara/Rig/LaraBody.asset",
                 "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
                 "Assets/TestData/Wardrobe/first-outfit/Outfit.asset",
                 "Assets/TestData/Wardrobe/second-outfit/Outfit.asset",
@@ -115,7 +115,7 @@ namespace DazPose.UnityValidation
                 AssetDatabase.ImportAsset("Assets/Wardrobe/WardrobeConfiguration.asset", ImportAssetOptions.ForceUpdate);
                 var sourceCatalog = AssetDatabase.LoadAssetAtPath<WardrobeCatalog>("Assets/Wardrobe/WardrobeCatalog.asset");
                 var sourceConfig = AssetDatabase.LoadAssetAtPath<WardrobeConfiguration>("Assets/Wardrobe/WardrobeConfiguration.asset");
-                var bodyMesh = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset");
+                var bodyMesh = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Production/Performers/Lara/Rig/LaraBody.asset");
                 if (sourceCatalog == null || sourceConfig == null || bodyMesh == null)
                     throw new InvalidDataException("Day 5 requires the imported wardrobe catalog/configuration and canonical body mesh.");
                 var body = UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Include)

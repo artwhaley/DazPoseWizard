@@ -10,7 +10,6 @@ using UnityEngine.Rendering.HighDefinition;
 
 namespace DazPose.UnityValidation
 {
-    [InitializeOnLoad]
     public static class LaraCandidateLiveDiagnostics
     {
         private const string Pending = "Lara.LiveDiagnostics.Pending";
@@ -22,10 +21,6 @@ namespace DazPose.UnityValidation
         private static Color32[] hiddenPixels;
         private static bool Wardrobe=>SessionState.GetBool("Lara.LiveDiagnostics.Wardrobe",false);
         private static string Output=>"TestOutput/appearance-evidence/"+(Wardrobe?"first-outfit-live":"live");
-        static LaraCandidateLiveDiagnostics()
-        {
-            if (SessionState.GetBool(Pending,false)) EditorApplication.update += Tick;
-        }
         public static void Run()
         {
             SessionState.SetBool("Lara.LiveDiagnostics.Wardrobe",false);Begin(LaraCandidateInstaller.ValidationScene);

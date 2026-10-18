@@ -18,16 +18,14 @@ namespace DazPose.FirstPerformanceVoid.Editor
     {
         public const string ScenePath = "Assets/Scenes/FirstPerformanceVoid.unity";
         private const string SourceScenePath = "Assets/Scenes/PoseValidation.unity";
-        private const string Root = "Assets/FirstPerformanceVoid";
+        private const string Root = "Assets/Production/Environments/Void";
         private const string ProfilePath = Root + "/Settings/V_FirstPerformanceVoid.asset";
         private const string SeatPrefabPath = Root + "/Prefabs/ValidatedLoungeSeat.prefab";
         private const string MaskPath = Root + "/Textures/T_FogDensity32.asset";
         private const string RingPath = Root + "/Meshes/StageGlowRing.asset";
         private static readonly Color Neon = new Color(1f, 0.015f, 1f);
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/First Performance Void/Build or Open Lounge")]
-#endif
+
         public static void BuildOrOpen()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -50,9 +48,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
             Build(path);
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/First Performance Void/Refresh Generated Materials and Volume Defaults")]
-#endif
+
         public static void RefreshLookDefaults()
         {
             // Explicitly requested refresh resets only these owned assets, never scene placement.

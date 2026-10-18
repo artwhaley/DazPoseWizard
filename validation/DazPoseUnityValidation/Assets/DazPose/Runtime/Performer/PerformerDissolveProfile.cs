@@ -4,7 +4,7 @@ using UnityEngine.VFX;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Dissolve Profile", fileName = "Performer Dissolve Profile")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Dissolve Profile", fileName = "Performer Dissolve Profile")]
     public sealed class PerformerDissolveProfile : ScriptableObject
     {
         private const int MaterialSlotCount = 16;

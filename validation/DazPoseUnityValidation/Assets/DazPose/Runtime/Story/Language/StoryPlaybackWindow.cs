@@ -18,7 +18,7 @@ namespace DazPose.Story.Language {
       var text=instruction.arguments.Single(a=>a.name=="text");
       foreach(var atom in program.expressions[text.expression].atoms.Where(a=>a.code==StoryAtomCode.String))dialogue.Add(StoryDialogue.IdFor(atom.text));
      }
-     if(instruction.code==StoryCode.Play && cards.Add(instruction.name)) {var card=program.RequireEntry(instruction.name,"card");Collect(card,card.end);}
+     if(instruction.code==StoryCode.Play && cards.Add(instruction.name)) {var card=program.RequireEntry(StoryProgramLinker.ResolveCard(program,instruction.name,instruction.source?.unit,instruction.source).ProgramEntry,"card");Collect(card,card.end);}
      if(instruction.code==StoryCode.Return)continue;
      if(instruction.code==StoryCode.Jump) {pending.Push(instruction.jump);continue;}
      if(instruction.code==StoryCode.JumpFalse || instruction.code==StoryCode.RepeatBegin || instruction.code==StoryCode.RepeatEnd)pending.Push(instruction.jump);
@@ -27,7 +27,7 @@ namespace DazPose.Story.Language {
    }
    var setup=program.entries.SingleOrDefault(e=>e.kind=="setup" && e.name==sequence);if(setup!=null)Collect(setup,setup.end);
    Collect(entry,boundary);
-   return new CompiledStoryProgram {version=program.version,name=program.name,instructions=program.instructions,expressions=program.expressions,entries=program.entries,cards=program.cards,bindings=program.bindings.Where(b=>reached.Contains(b.instruction)).ToArray(),dialogue=program.dialogue.Where(d=>dialogue.Contains(d.id)).ToArray()};
+   return new CompiledStoryProgram {version=program.version,name=program.name,linked=program.linked,instructions=program.instructions,expressions=program.expressions,entries=program.entries,cards=program.cards,bindings=program.bindings.Where(b=>reached.Contains(b.instruction)).ToArray(),dialogue=program.dialogue.Where(d=>dialogue.Contains(d.id)).ToArray()};
   }
  }
 }

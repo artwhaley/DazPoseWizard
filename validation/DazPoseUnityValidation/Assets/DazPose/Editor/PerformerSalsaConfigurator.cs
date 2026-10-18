@@ -30,9 +30,7 @@ namespace DazPose.Editor.Importing
             public string SpeechAudioPath;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Setup or Refresh Performer SALSA Lip Sync")]
-#endif
+        [MenuItem("DazPose/Content/Advanced/Set Up SALSA Lip Sync")]
         private static void SetupOrRefreshFromMenu()
         {
             if (!TryGetTargetPerformer(out var performer, out var targetFailure))
@@ -73,9 +71,7 @@ namespace DazPose.Editor.Importing
             }
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Audit Performer SALSA Lip Sync")]
-#endif
+        [MenuItem("DazPose/Diagnostics/Audit SALSA Lip Sync")]
         private static void AuditFromMenu()
         {
             if (!TryGetTargetPerformer(out var performer, out var failure))

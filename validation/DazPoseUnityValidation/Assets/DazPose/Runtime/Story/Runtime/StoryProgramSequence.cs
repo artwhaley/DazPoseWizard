@@ -33,12 +33,12 @@ namespace DazPose.Story {
   public override async Awaitable ExecuteAsync(PerformanceRun run) {
    if(compiledSource!=null) {
     if(!compiledSource.IsCompiled) throw new InvalidOperationException(string.Join("\n",compiledSource.diagnostics));
-    var validation=string.IsNullOrEmpty(stopBeforePhase) ? compiledSource.program : DazPose.Story.Language.StoryPlaybackWindow.BeforePhase(compiledSource.program,sequenceName,stopBeforePhase);
-    string[] missing=compiledSource.content.Diagnostics(validation,storyBindings);
+    var linked=StoryLinkedContent.Create(compiledSource);
+    string[] missing=linked.MandatoryDiagnostics(storyBindings,sequenceName,stopBeforePhase);
     if(missing.Length>0) throw new InvalidOperationException("First Contact content bindings require attention:\n"+string.Join("\n",missing));
     using(var context=new StoryRuntimeContext(run,storyBindings,GameApplication.EnsureStarted(),sequenceName,SessionSeed,pacingMultiplier)) {
      Observe(context);
-     try {await StoryRunner.ExecuteAsync(compiledSource.program,compiledSource.content,context,sequenceName,stopBeforePhase);}
+     try {await StoryRunner.ExecuteAsync(linked,context,sequenceName,stopBeforePhase);}
      finally {if(ReferenceEquals(active,context))active=null;}
     }
     return;

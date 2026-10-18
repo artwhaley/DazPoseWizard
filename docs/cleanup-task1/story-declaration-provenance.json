@@ -1,0 +1,202 @@
+[
+  {
+    "kind": "setup",
+    "name": "FirstContact",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 1,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "newLine": 1,
+    "blockSha256": "118ac10e0ebd7ec272b56f946c610bdad5ae5b42efca1603ba3d6f84ad6e6578",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "Intro",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 10,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "newLine": 10,
+    "blockSha256": "3c558970bc91ed074e63fa963d10bd0e5538c38c4042431d8a0b06aba108f450",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "sequence",
+    "name": "FirstContact",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 42,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "newLine": 42,
+    "blockSha256": "58ceba6a46bd786f4adb7fba28b9d7d5fd239782ddb03309db0039ba0aea8c8d",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "WarmupBreathing",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 216,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 1,
+    "blockSha256": "54d7b99c8360e56747b482d28cd625da31a7fa90ff842fd9b48d4c4ea7063527",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "WarmupCounting",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 231,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 16,
+    "blockSha256": "beb68dd838eee836b80247206c70c258adabebe82445c9ffc6cc2ee38eb9fa85",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "WarmupCheckIn",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 246,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 31,
+    "blockSha256": "2de2ceed5d214b2bf46edd2009dbce192e0660255950aebc5a858e7d2ffa41d7",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "WarmupStandingOnly",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 258,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 43,
+    "blockSha256": "252a7db089c35a6e4e85282442f849f2af930448158dda3e21229410ef2e9fb9",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "MainStandingPoise",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 270,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 55,
+    "blockSha256": "fc70dcba767b97d7512f18aa28439454bd3723921c8c777f9bfb1399b0b92642",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "MainStandingVariation",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 283,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 68,
+    "blockSha256": "2b8534f4233c61eff60620fccfc1cbd4c4eda752742173fcbeacbacf9b9733a1",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "MainStandingCheckIn",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 298,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 83,
+    "blockSha256": "20847450456b08788b0b2ee304f2c58abf83c3b99ef4e23d035cb25961042267",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "MainSeatedRhythm",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 310,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 95,
+    "blockSha256": "0f6fa92d75f2893073aa57eb4a8cfbde3f21c9746ffa036fc5c245c21d06b3b3",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "MainSeatedPause",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 325,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 110,
+    "blockSha256": "b4a9c39cf7a46944b27152f88b3884f67f0ffd2bea6255fe11c2eced7fc90679",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "MainSeatedCheckIn",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 338,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 123,
+    "blockSha256": "1c3c751cf7b9aaeaece5158ce2575605b30385098e9d94dfcfdda5208460c4c0",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "ResolutionBreathing",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 350,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 135,
+    "blockSha256": "83a0bf5137664899055a63497e7347a1b8349871b1574567fd49e79d9fae0152",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "ResolutionReflection",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 364,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 149,
+    "blockSha256": "336fe5ef2beec314ff3271180eebecbc121d6b3f6fce64cd88e6becd17109f47",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "EquipmentButtPlug",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 377,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 162,
+    "blockSha256": "6e6f517012935fe14eec12b562f8556183cae507af1d89d6907a67624c1ad245",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "EquipmentRope",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 392,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 177,
+    "blockSha256": "ed3e16c8610591e4c344093b2ca29bfe765632523a9fef872552ae901a470d19",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "EquipmentDildoAnal",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 407,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 192,
+    "blockSha256": "76e297e0dba8df88132e9d01701d8b5cbe73e57e6474380f6ab8a1d1147889b1",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "EquipmentDildoOral",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 422,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 207,
+    "blockSha256": "d5937f079c12b7e007464e6d54fb76437a1cb7c46951c3a3b96d6e101159d376",
+    "authoredBlockUnchanged": true
+  },
+  {
+    "kind": "card",
+    "name": "EquipmentIce",
+    "oldPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+    "oldLine": 437,
+    "newPath": "validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory",
+    "newLine": 222,
+    "blockSha256": "7544fde8d1950d743a63a4968124182408b22029c0331953625d5c16e5283db0",
+    "authoredBlockUnchanged": true
+  }
+]

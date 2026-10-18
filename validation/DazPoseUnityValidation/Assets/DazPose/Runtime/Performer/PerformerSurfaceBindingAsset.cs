@@ -26,7 +26,7 @@ namespace DazPose.Performer
     }
 
     /// <summary>Deterministic triangle/surface coordinates for one source mesh topology.</summary>
-    [CreateAssetMenu(menuName = "DAZ Pose/Performer Surface Bindings", fileName = "PerformerSurfaceBindings")]
+    [CreateAssetMenu(menuName = "DazPose/Performer Surface Bindings", fileName = "PerformerSurfaceBindings")]
     public sealed class PerformerSurfaceBindingAsset : ScriptableObject
     {
         public const int RequiredBindingCount = 32768;

@@ -12,49 +12,13 @@ using RenderingLayerMask = UnityEngine.Rendering.HighDefinition.RenderingLayerMa
 namespace DazPose.FirstPerformanceVoid.Editor
 {
     /// <summary>Focused lighting corrections; preserves camera, chair, geometry and Bloom tuning.</summary>
-    [InitializeOnLoad]
     public static class FirstPerformanceVoidLighting
     {
         private static readonly Color Magenta = new Color(1f, 0.015f, 1f);
         private const uint PerformerLayer = 2;
         private const int CurrentRevision = 5;
 
-        static FirstPerformanceVoidLighting()
-        {
-            // External .unity writes cannot update a scene already loaded in the user's editor.
-            // Upgrade that exact loaded scene once, preserving its current camera and manual edits.
-            EditorApplication.delayCall += UpgradeLoadedLounge;
-            EditorSceneManager.sceneOpened += (_, __) => EditorApplication.delayCall += UpgradeLoadedLounge;
-            EditorApplication.playModeStateChanged += state =>
-            {
-                if (state == PlayModeStateChange.ExitingEditMode) UpgradeLoadedLounge();
-                else if (state == PlayModeStateChange.EnteredEditMode)
-                    EditorApplication.delayCall += UpgradeLoadedLounge;
-            };
-        }
 
-        private static void UpgradeLoadedLounge()
-        {
-            if (EditorApplication.isPlaying || EditorApplication.isCompiling) return;
-            Scene scene = SceneManager.GetSceneByPath(FirstPerformanceVoidBuilder.ScenePath);
-            if (!scene.IsValid() || !scene.isLoaded) return;
-            var controls = scene.GetRootGameObjects()
-                .SelectMany(go => go.GetComponentsInChildren<FirstPerformanceVoidControls>(true)).SingleOrDefault();
-            if (controls == null || controls.LightingRevision >= CurrentRevision) return;
-            try
-            {
-                ApplyToScene(scene);
-                EditorSceneManager.MarkSceneDirty(scene);
-                AssetDatabase.SaveAssets();
-                if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Could not save the corrected lounge.");
-                Debug.Log("P0C_LOADED_SCENE_UPGRADED: saved character lights and fog lights into the loaded lounge; existing camera/placement edits preserved.");
-            }
-            catch (Exception exception) { Debug.LogException(exception); }
-        }
-
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/First Performance Void/Apply Lara Lighting and Fog Corrections")]
-#endif
         public static void Apply()
         {
             Scene scene = SceneManager.GetSceneByPath(FirstPerformanceVoidBuilder.ScenePath);
@@ -128,7 +92,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
             Point(rig, "Soft Character Fill", new Vector3(1.1f, 1.1f, -0.8f),
                 new Color(0.78f, 0.86f, 1f), 950f, true);
 
-            Material neon = AssetDatabase.LoadAssetAtPath<Material>("Assets/FirstPerformanceVoid/Materials/M_NeonMagenta.mat");
+            Material neon = AssetDatabase.LoadAssetAtPath<Material>("Assets/Production/Environments/Void/Materials/M_NeonMagenta.mat");
             if (neon == null) throw new InvalidOperationException("Lounge neon material is missing.");
             HDMaterial.SetUseEmissiveIntensity(neon, true);
             HDMaterial.SetEmissiveColor(neon, Magenta);

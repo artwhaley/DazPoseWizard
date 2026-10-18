@@ -16,7 +16,10 @@ namespace DazPose.UnityValidation
     {
         public const string Folder = "Assets/TestData/LaraCandidate";
         public const string PreviewScene = Folder + "/LaraCandidatePreview.unity";
-        public const string MeshPath = Folder + "/LaraBody.asset";
+        public const string GeneratedFolder = "Assets/Production/Performers/Lara";
+        public const string MeshPath = GeneratedFolder + "/Rig/LaraBody.asset";
+        public const string SurfaceBindingsPath = GeneratedFolder + "/Surfaces/LaraSurfaceBindings.asset";
+        public const string DissolveProfilePath = GeneratedFolder + "/Configuration/LaraDissolveProfile.asset";
         private const string ShaderFolder = "Assets/DazPose/Effects/Dissolve/Shaders/";
         private const float Tolerance = 2e-6f;
         [Serializable] public class Manifest
@@ -51,9 +54,7 @@ namespace DazPose.UnityValidation
             return manifest;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Open Lara Candidate Preview")]
-#endif
+
         public static void OpenPreview()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -345,9 +346,7 @@ namespace DazPose.UnityValidation
                 if (runtime.HasProperty(property) && accepted.HasProperty(property)) runtime.SetFloat(property,accepted.GetFloat(property));
             EditorUtility.SetDirty(runtime);
         }
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Copy Accepted Lara Skin Response")]
-#endif
+
         public static void CopyAcceptedSkinResponse()
         {
             foreach (var surface in ReadManifest().materials)
@@ -387,12 +386,20 @@ namespace DazPose.UnityValidation
         }
         internal static T Save<T>(T generated, string path) where T : UnityEngine.Object
         {
+            EnsureGeneratedFolder(Path.GetDirectoryName(path).Replace('\\', '/'));
             var existing = AssetDatabase.LoadAssetAtPath<T>(path);
             if (existing == null) { AssetDatabase.CreateAsset(generated, path); return generated; }
             EditorUtility.CopySerialized(generated, existing);
             UnityEngine.Object.DestroyImmediate(generated);
             EditorUtility.SetDirty(existing);
             return existing;
+        }
+        private static void EnsureGeneratedFolder(string folder)
+        {
+            if(AssetDatabase.IsValidFolder(folder))return;
+            EnsureGeneratedFolder(Path.GetDirectoryName(folder).Replace('\\', '/'));
+            string guid=AssetDatabase.CreateFolder(Path.GetDirectoryName(folder).Replace('\\', '/'),Path.GetFileName(folder));
+            if(string.IsNullOrEmpty(guid))throw new IOException("Could not create generated asset folder "+folder);
         }
         private static Vector3Int Cell(Vector3 p) => new Vector3Int(Mathf.FloorToInt(p.x/Tolerance), Mathf.FloorToInt(p.y/Tolerance), Mathf.FloorToInt(p.z/Tolerance));
         private static string Hash(string path)
@@ -414,9 +421,7 @@ namespace DazPose.UnityValidation
             window.breasts = window.breastsBakedValue;
             window.Show();
         }
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Lara Candidate Controls")]
-#endif
+
         public static void Connect()
         {
             var renderer = Selection.activeGameObject == null ? null : Selection.activeGameObject.GetComponent<SkinnedMeshRenderer>();

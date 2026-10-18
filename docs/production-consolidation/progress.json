@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "plan": "AUTHORING_READINESS_BUILD_PLAN.md",
   "approvedDate": "2026-10-08",
-  "status": "source_complete_awaiting_user_retest",
+  "status": "task1_cleanup_in_progress_not_ready_for_manual_testing",
   "currentDay": null,
-  "activePacket": "D1-D5/README_FIRST.md",
+  "activePacket": "newtickets/DazPoseWizard_Task1_Cleanup_Execution_Packet/START_HERE.md",
   "days": {
     "1": "complete",
     "2": "complete_with_accepted_runner_omission",
@@ -478,7 +478,7 @@
   "architecturalReviewReassessment": {
     "recordedUtc": "2026-10-06T02:37:58.9900788Z",
     "path": "docs/production-consolidation/ARCHITECTURAL_REVIEW_REASSESSMENT.md",
-    "scope": "All six original reviews against current source and Days 1â€“5 evidence; documentation only; Day 6 not executed"
+    "scope": "All six original reviews against current source and Days 1\u00e2\u20ac\u201c5 evidence; documentation only; Day 6 not executed"
   },
   "preAuthoringRemediation": {
     "approvedIssues": [
@@ -527,7 +527,7 @@
     "R08Evidence": ".dazposewizard/remediation-evidence/R08/20261006-051010-521/report.json",
     "R09Evidence": ".dazposewizard/remediation-evidence/R09/20261006-075614-154/report.json",
     "R09MeasuredOutcome": "39 assertions passed: ordinary-folder prepared Gesture/Action copied and executed through scoped calls; malformed clips remained rejected; scene-open stale asset-handle fixture cause fixed by reacquiring owner assets after scene load.",
-    "nextAction": "Historical remediation technical work is complete. Toe appearance still needs user observation; current implementation order is the root authoring plan B01–B08.",
+    "nextAction": "Historical remediation technical work is complete. Toe appearance still needs user observation; current implementation order is the root authoring plan B01\u2013B08.",
     "R10Evidence": ".dazposewizard/remediation-evidence/R10/20261006-084756-019/report.json",
     "R10MeasuredOutcome": "18 read-only assertions passed: 267 source/meta pairs, exact GUIDs/destinations, five asmdef and three asmref payloads, package IDs, first-party graph with zero Runtime leaks, 77 editor entrypoints, two source-path references, type-placement evidence and registered narrow DAZ adapter repair.",
     "R12Evidence": ".dazposewizard/remediation-evidence/R12/20261006-131620-150/report.json",
@@ -676,7 +676,7 @@
   "currentPacket": "D1-D5",
   "storyRuntime": {
     "packet": "D1-D5/README_FIRST.md",
-    "status": "SOURCE COMPLETE — AWAITING USER RETEST",
+    "status": "SOURCE COMPLETE \u2014 AWAITING USER RETEST",
     "authorizationDate": "2026-10-16",
     "updatedAtUtc": "2026-10-17T06:24:31.0637014Z",
     "branch": "codex/d1-d5-story-runtime",
@@ -821,7 +821,7 @@
       "userVisualApproval": "pending"
     },
     "userVisualApproval": "pending for current full session; user is tester",
-    "updatedAtUtc": "2026-10-17T17:04:18.618485+00:00",
+    "updatedAtUtc": "2026-10-17T12:04:18.618485-05:00",
     "handoff": "docs/story-runtime/D6_D8_HANDOFF.md",
     "sourceGuide": "docs/story-runtime/DAZSTORY_AUTHORING.md",
     "activeSource": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
@@ -933,7 +933,7 @@
       "latestCorrection": "User intentionally closed standalone player; no further standalone builds this turn"
     },
     "postDeliveryDiagnostics": {
-      "updatedAtUtc": "2026-10-17T17:14:33.631459+00:00",
+      "updatedAtUtc": "2026-10-17T12:14:33.631459-05:00",
       "status": "source compiler clean; normal Unity refresh pending",
       "projectAssembliesCompiled": 7,
       "errors": 0,
@@ -941,12 +941,63 @@
       "warningsAsErrors": true,
       "managedImportPolicyChecksPassed": 21,
       "affectedExpressionInputsChecked": 8,
-      "expressionImportsQueuedForNormalEditorRefresh": 8,
+      "expressionImportsQueuedForNormalEditorRefresh": 0,
       "invalidExpressionInputsRetained": 3,
       "sceneChanged": false,
       "playMode": "NOT RUN",
       "standaloneBuildOrLaunch": "NOT RUN",
-      "evidence": ".dazposewizard/unity-diagnostics-cleanup/result.json"
+      "evidence": ".dazposewizard/unity-diagnostics-cleanup/result.json",
+      "expressionArchive": {
+        "imports": 11,
+        "files": 33,
+        "remainingFailedExpressionImports": 0,
+        "archive": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\.dazposewizard\\archived-expression-imports\\20261018T011858766Z-464f73d745ac432c87f220387192a915",
+        "contentAndMetasPreserved": true,
+        "archiveSafetyChecksPassed": 9,
+        "automaticForcedRetryRemoved": true,
+        "menu": "DazPose/Content/Archive Failed Expression Imports",
+        "evidence": ".dazposewizard/import-archive-fix/result.json"
+      }
     }
+  },
+  "cleanupTask1": {
+    "status": "partial_lab_consolidation_blocked",
+    "activeTickets": [
+      "C08",
+      "C10"
+    ],
+    "currentReport": "docs/cleanup-task1/EXECUTION_REPORT.md",
+    "ownership": "docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md",
+    "verifiedRetirements": [
+      "Assets/Production/Scenes/AuthoringWelcome.unity",
+      "Assets/Production/Scenes/AuthoringCompanion.unity",
+      "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1",
+      "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c",
+      "Assets/Production/Story/Programs/FirstContactD1D5.story.json",
+      "Assets/Crazy Minnow Studio/Examples/Scenes/SALSA-basic3D-boxhead.unity",
+      "Assets/FemaleMovementAnimsetPro/Scenes/FemaleDemo.unity",
+      "Assets/FemaleMovementAnimsetPro/Scenes/FemaleTopDownDemo.unity",
+      "Assets/FemaleMovementAnimsetPro/Standard Assets/Effects/TessellationShaders/Scenes/TessellationSample.unity",
+      "Assets/INab Studio/Demo Assets/StarterAssets/Environment/Art/Demo Scene.unity",
+      "Assets/KAWAII_ANIMATIOMS_100/Demo/KAWAII_ANIMATIOMS_100.unity"
+    ],
+    "protectedDraftHolds": [
+      "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98",
+      "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854",
+      "Assets/TestData/WardrobeRuntime/DraftAttempts/a6595a7b018d4a14937b9c70e9c3b8f7"
+    ],
+    "manualTestingReady": true,
+    "note": "Unity Edit Mode checks passed; no Play, build, player or human visual approval performed. Later cleanup source remains uncommitted; C00 committed f74d026.",
+    "manualTestingScope": "Saved FirstContact in Unity; user starts Play. Full cleanup acceptance remains partial for the rejected lab consolidation.",
+    "technicalChecks": "PASS for delivered changes; required lab relocation NOT EXECUTED after automatic approval review rejection",
+    "verifiedOriginalAssetMoves": 163,
+    "verifiedDeletedFilesIncludingMetas": 116,
+    "verifiedDeletedBytes": 287660094,
+    "managedStoryTestsPassed": 60,
+    "managedAppTestsPassed": 69,
+    "unityAssembliesCompiled": 7,
+    "duplicateGuids": 0,
+    "missingMetas": 0,
+    "blockedPlan": "docs/cleanup-task1/PENDING_LAB_CONSOLIDATION.md"
   }
 }

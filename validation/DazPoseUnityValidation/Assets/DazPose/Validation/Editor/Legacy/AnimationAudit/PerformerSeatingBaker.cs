@@ -17,7 +17,7 @@ namespace DazPose.Editor.AnimationAudit
     public static class PerformerSeatingBaker
     {
         private const string ProxyPath = "Assets/TestCharacter/laraHumanoid.fbx";
-        private const string OutputFolder = "Assets/Animations/Performer/Seating";
+        private const string OutputFolder = "Assets/Production/Content/Motions/Seating";
         private const string ControllerPath = OutputFolder + "/SeatingBake.controller";
         private const string ProfilePath = OutputFolder + "/KawaiiSeatingProfile.asset";
         private const string ReportPath = "docs/animation-audit/SeatingBakeReport.md";
@@ -50,9 +50,7 @@ namespace DazPose.Editor.AnimationAudit
             public float Duration => SourceClip.length;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Seating/Bake KAWAII Seating for Generic Lara")]
-#endif
+        [MenuItem("DazPose/Content/Advanced/Bake Seating for Generic Lara")]
         public static void BakeSeating()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -64,7 +62,7 @@ namespace DazPose.Editor.AnimationAudit
                 throw new InvalidOperationException("The validated laraHumanoid.fbx and its valid Human Avatar are required. The seating baker does not modify either Lara model importer.");
 
             EnsureFolder("Assets/Animations");
-            EnsureFolder("Assets/Animations/Performer");
+            EnsureFolder("Assets/Production/Content/Motions");
             EnsureFolder(OutputFolder);
             Directory.CreateDirectory(ProjectPath("docs/animation-audit"));
 
@@ -504,7 +502,7 @@ namespace DazPose.Editor.AnimationAudit
                 report.AppendLine("Audition-only `KA_Idle10_Sit_Loop` best entry phase: **"
                     + ((float)idleEntry / Mathf.Max(1, idleCandidate.UniqueFrameCount)).ToString("0.000")
                     + "**. It is not selected automatically.\n");
-            report.AppendLine("These are numerical transform matches, not a visual quality verdict. In Tools > DAZ Pose > Seating > Edit Mode Preview, use Play Sit Down from Approach and Show Seated End Pose to tune the anchors. Sit Start and Sit End use the same actor root calculation as playback, including final anchor correction. Disable Apply playback final correction to inspect the natural landing; Fit Approach to Sit Start moves the actual ApproachAnchor so the natural endpoint meets SeatAnchor. Seated body clips hold the actor root fixed. Then in Play Mode inspect: standing → Sit_Start → Basic hold; Basic → CrossLegs_Start → loop; loop → CrossLegs_End → Basic; and Basic → Sit_End → standing. Keep the loop running for several cycles and check whether Lara drifts relative to the seat.\n");
+            report.AppendLine("These are numerical transform matches, not a visual quality verdict. In DazPose > Diagnostics > Seating Preview, use Play Sit Down from Approach and Show Seated End Pose to tune the anchors. Sit Start and Sit End use the same actor root calculation as playback, including final anchor correction. Disable Apply playback final correction to inspect the natural landing; Fit Approach to Sit Start moves the actual ApproachAnchor so the natural endpoint meets SeatAnchor. Seated body clips hold the actor root fixed. Then in Play Mode inspect: standing → Sit_Start → Basic hold; Basic → CrossLegs_Start → loop; loop → CrossLegs_End → Basic; and Basic → Sit_End → standing. Keep the loop running for several cycles and check whether Lara drifts relative to the seat.\n");
             File.WriteAllText(ProjectPath(ReportPath), report.ToString());
         }
 

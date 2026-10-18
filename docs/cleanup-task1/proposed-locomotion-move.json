@@ -1,0 +1,264 @@
+{
+  "status": "executed_and_bytes_metas_guids_verified",
+  "unityDependencyEvidence": ".dazposewizard/cleanup-task1/editor/4b5539a288094268af6647d3a5b9cbc0.result.json",
+  "pathConsumers": [
+    "DazPose/Validation/Editor/Legacy/AnimationAudit/PerformerLocomotionBaker.cs OutputFolder + parent-folder creation",
+    "DazPose/Validation/Editor/Legacy/LaraWardrobeMotionDiagnostics.cs Walk01_Loop.anim read",
+    "DazPose/Validation/Editor/Authoring/DazPoseEditorCommands.cs LocomotionProfilePath"
+  ],
+  "moves": [
+    {
+      "source": "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/KawaiiWalk01Profile.asset",
+      "guid": "b41f3e2279fd4b6428b58e48b2995ffc",
+      "sha256": "1a4881c8e9bd087cf8c29279b9777cd5845776c184cf98fa9532194764d08e48",
+      "metaSha256": "d7b2e46f35bec53faa48700b6ad6d4da259f548ec1ddfd6c7577228feef8e598",
+      "bytes": 1558,
+      "serializedConsumers": [
+        "Assets/Scenes/FirstPerformanceVoid.unity",
+        "Assets/Scenes/HandGripAcceptance.unity",
+        "Assets/Scenes/PoseValidation.unity",
+        "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+        "Assets/TestData/Wardrobe/first-outfit/Review.unity",
+        "Assets/TestData/Wardrobe/second-outfit/Review-20261004-155507.unity",
+        "Assets/TestData/Wardrobe/second-outfit/Review.unity",
+        "Assets/TestData/Wardrobe/third-outfit/Review-20261004-165635.unity",
+        "Assets/TestData/Wardrobe/third-outfit/Review.unity",
+        "Assets/TestData/LaraCandidate/FirstOutfit/FirstPerformanceVoidLaraFirstOutfit.unity",
+        "Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity",
+        "Assets/Production/Performers/Lara.prefab",
+        "Assets/Production/Scenes/ProductionRuntimeSmoke.unity",
+        "Assets/Production/Scenes/RemediationToeValidation.unity",
+        "Assets/Production/Scenes/RemediationValidation.unity"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/LocomotionBake.controller",
+      "destination": "Assets/Production/Content/Motions/Locomotion/LocomotionBake.controller",
+      "guid": "59a7856d9b84699448d12e1d6cba0046",
+      "sha256": "87b1cd2bb278802ca799d057bb58a4da63381e8254cdde12e3d416da744d4376",
+      "metaSha256": "eb53187c2a0524611a9e017616905f5d63fbbbeb7d7a56b46b9d44bf9fbebc63",
+      "bytes": 8581,
+      "serializedConsumers": [],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/TurnLeft180.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/TurnLeft180.anim",
+      "guid": "63ad162cc258f0e44b83a7090c29faa7",
+      "sha256": "3a98ca92aad051aa2e774399afd8018e00ea602bdf5cd35a811381f6b37db8d5",
+      "metaSha256": "91f12242ec321590c4e0568d1f259984150c096b0534ca21711f7070788c5f4b",
+      "bytes": 59577987,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/TurnLeft180.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/TurnLeft180.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/TurnLeft180.asset",
+      "guid": "837036304db6800459a6a056cfbc52d7",
+      "sha256": "ae7dcaa3afbab3aac1701659a345fb0e1df927084a6ad80ed13e1dd24b3917dd",
+      "metaSha256": "6af75f4fcea3fdd65a07f38fe98565c2e52f5d32dd2c4680c1abe07b88aca44f",
+      "bytes": 133143,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/TurnLeft90.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/TurnLeft90.anim",
+      "guid": "f87e10e824d440745b202e2043805f20",
+      "sha256": "49e16e3ed344f23caf85bf9666c2e62438a5947b97f9e68b4f201905b4473298",
+      "metaSha256": "abdc6702bf0bfdc2c86199af2720a480044d9e9bf0f9eeefd2f6392c6c81cf5e",
+      "bytes": 41137368,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/TurnLeft90.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/TurnLeft90.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/TurnLeft90.asset",
+      "guid": "9ae0386451507cf459f319490860663e",
+      "sha256": "ae9ab7f28e6b29433ff453edd45c67c8ce88d6cacb43e14fe3c48f167107fef9",
+      "metaSha256": "109460ecb11190c9cbf39722bd58abd3facac4a4f48b8223f2bbf19e09e3a99d",
+      "bytes": 93338,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/TurnRight180.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/TurnRight180.anim",
+      "guid": "3295ca641cdfa9142b735c81bc6f2206",
+      "sha256": "3ba81c38b9502a6f7db6759e9d8021d00ccb546528b816308b256da64aea801c",
+      "metaSha256": "2dafe074b2ff72cddba095e22307fdee98baf3d1be2bed9e78d203174408a705",
+      "bytes": 59672629,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/TurnRight180.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/TurnRight180.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/TurnRight180.asset",
+      "guid": "2e8b723e748b4ec47af19a8312054b66",
+      "sha256": "ab274aba8d361889d25ed8e1ba6f0cdfdb4f495c62d7341d0a8bde953a143bb8",
+      "metaSha256": "363627f5aebab9e84963f5b0d39b5ac19e3a3edc9a0423784b55f51cd1dee62f",
+      "bytes": 133277,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/TurnRight90.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/TurnRight90.anim",
+      "guid": "b8d6c86859f8e164d95773e9b787bcec",
+      "sha256": "6bb4562add9d0ec5e023e253f0393e120ff25db871d29b00475484faca74fd48",
+      "metaSha256": "189eae5c992c38c232358760c35fbdf21f38b99be4235bc0cdd3e7d6acf3edc7",
+      "bytes": 41135674,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/TurnRight90.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/TurnRight90.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/TurnRight90.asset",
+      "guid": "f1c336b51ab463a48b217e3dc8e04b2c",
+      "sha256": "eb6c96b8af5db0a00a2360432acdcf8ad5cc2b73f168575f3ef280ff6d5c4608",
+      "metaSha256": "e72990fc3077671fcabfbf7e8c6e3372943bdd15bddd56aa55ab82b7f3b12ab5",
+      "bytes": 93233,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Loop.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Loop.anim",
+      "guid": "626bbf8087bf9aa429005bd7f640df14",
+      "sha256": "a654e00db42fa1a49208ed103dd0344c640bc93927417f7a8c252fdac6617599",
+      "metaSha256": "d6dcbcab7f856f1db25627c83f2853e8d66cfad9332aeaf465f8d81eb8822855",
+      "bytes": 30265529,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/Walk01_Loop.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Loop.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Loop.asset",
+      "guid": "4b5cecf8e6c708a498d6bca949c31f96",
+      "sha256": "fcb38f12c88517dbac5f67b095537bc859f335f4f0f97d1df11f15cdf189d2e6",
+      "metaSha256": "84525b17faf47a665d721ea2597e3e0b3ec79584a252495339d27a49e88b594c",
+      "bytes": 64836,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Start_A.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Start_A.anim",
+      "guid": "6b187a12a1fdd9745a4f25f85ead7a59",
+      "sha256": "065bb23d2febe18279b09752fc27b8211f149acb2b2d9e3bf3e59ef2a0c30810",
+      "metaSha256": "643524dacd490bf177c6f51f0e8b4b749be6a2104db407557ddeabbb8836c7b0",
+      "bytes": 52872145,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/Walk01_Start_A.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Start_A.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Start_A.asset",
+      "guid": "f089cf4c5dc93c341bdac89d48a118d5",
+      "sha256": "4750cbe17621258468bc88a6a250e40826a78844bd3625ef51341e3f2431a8da",
+      "metaSha256": "fc277d392c084e88778936a102bf16f8942bdc992debc2fd539f023c9dc510f2",
+      "bytes": 118445,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Start_B_Mirrored.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Start_B_Mirrored.anim",
+      "guid": "e2f478d843f9a944295b18366bb47342",
+      "sha256": "0e63e788c313fb8b85a8ee516ab59c56b2bf30af7c080f61d29e4210beb37aac",
+      "metaSha256": "ec5b63091b35b3c94a0ab566d80e8be419397ff842cbadc0da0c5e7bd6da1ad3",
+      "bytes": 52873891,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/Walk01_Start_B_Mirrored.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Start_B_Mirrored.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Start_B_Mirrored.asset",
+      "guid": "76edab562d5123d4bb3fb3410779e0aa",
+      "sha256": "c30c2204d79f86849eb3a4f6648cd938ee4f9de77c07194ab156a76b9617f87f",
+      "metaSha256": "343ce1e139bd8fcb6ff2a5a31cfe72c8f61ae10d716f5c86b5fbe154bb66b879",
+      "bytes": 118537,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Stop_A.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Stop_A.anim",
+      "guid": "f2533a039d8f1ad4f92a7b664b07adf7",
+      "sha256": "035fbc23c8121418bd78211e10bda2354d5fed804b61f786424b7362a5bcf2cb",
+      "metaSha256": "b439ad8cf0cf01dbd8fdaf9bc99f37ae8c7c98a7fad9863e93a7db270e303b0e",
+      "bytes": 67606236,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/Walk01_Stop_A.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Stop_A.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Stop_A.asset",
+      "guid": "12096c85dea59b64c8916c1219f6ebdf",
+      "sha256": "2f2a18f05d457aaaa3ac396dd55f7ba39bc23bed5f20b00eee709fbcc0687473",
+      "metaSha256": "2005eedc5223d042c41062f25a9dfe412377eb866d2c4e5363357eb37a75babb",
+      "bytes": 151702,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Stop_B_Mirrored.anim",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Stop_B_Mirrored.anim",
+      "guid": "5638799c7b562ad428d58f3e63f26d21",
+      "sha256": "97599f41a16ab53a5598600c26961208aeefca4b0ebd4a8c6e1d83124307cbe1",
+      "metaSha256": "71b5b592c2491a4d548b13caf19a3df00006ffb039b76577b298a147dbd69462",
+      "bytes": 67609452,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/Walk01_Stop_B_Mirrored.asset"
+      ],
+      "sourceRecovery": "baseline"
+    },
+    {
+      "source": "Assets/Animations/Performer/Locomotion/Walk01_Stop_B_Mirrored.asset",
+      "destination": "Assets/Production/Content/Motions/Locomotion/Walk01_Stop_B_Mirrored.asset",
+      "guid": "5ad9e77812af9ab479cc192c7eef4bce",
+      "sha256": "b4fd3730edb5d558ff85a6928efca0dcfb2f89055ea88e5254bf79a5ccdf1cd9",
+      "metaSha256": "558bb3593c14e6b7e30c064e4b76b355d5c8f2b560e5bafcdff3431c2bbde7de",
+      "bytes": 151067,
+      "serializedConsumers": [
+        "Assets/Animations/Performer/Locomotion/KawaiiWalk01Profile.asset"
+      ],
+      "sourceRecovery": "baseline"
+    }
+  ],
+  "executionId": "1389ebc3cca04de8866388896edc03cf"
+}

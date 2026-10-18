@@ -11,9 +11,7 @@ namespace DazPose.Editor.AnimationAudit
     // Reads imported Avatar data; does not instantiate, animate, or modify any model.
     public static class HumanoidLegSetupReport
     {
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Animation Audit/Report Humanoid Leg Setup")]
-#endif
+        [MenuItem("DazPose/Diagnostics/Report Humanoid Leg Setup")]
         public static void WriteReport()
         {
             var report = new StringBuilder("# Imported Humanoid leg setup\n\n");

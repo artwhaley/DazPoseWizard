@@ -6,7 +6,7 @@ namespace DazPose.Performer
 {
     public enum WardrobeHairAction { Keep, Set, Clear }
 
-    [CreateAssetMenu(menuName = "DAZ Pose/Wardrobe/Preset")]
+    [CreateAssetMenu(menuName = "DazPose/Wardrobe/Preset")]
     public sealed class WardrobePreset : ScriptableObject
     {
         [Serializable] public sealed class Part

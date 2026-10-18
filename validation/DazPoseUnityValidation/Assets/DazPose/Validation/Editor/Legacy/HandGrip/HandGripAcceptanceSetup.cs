@@ -17,11 +17,9 @@ namespace DazPose.Editor.HandGrip
     {
         public const string SourceScenePath = "Assets/Scenes/FirstPerformanceVoid.unity";
         public const string AcceptanceScenePath = "Assets/Scenes/HandGripAcceptance.unity";
-        public const string ProfilePath = "Assets/DazPose/Generated/HandGrip/Profiles/LaraRightHandGrip.asset";
+        public const string ProfilePath = "Assets/Production/Performers/Lara/Contact/LaraRightHandGrip.asset";
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Handjob/Create Acceptance Scene")]
-#endif
+
         public static void CreateAcceptanceScene()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -132,9 +130,7 @@ namespace DazPose.Editor.HandGrip
                 + "; graph=Motion → Gesture → Breathing → Arm IK → FingerGrip; Position01 comes from MotionDriver.CurrentSample.", controller);
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Handjob/Run Geometry and Solver Tests")]
-#endif
+
         public static void RunSolverTests()
         {
             string[] failures = HandGripRuntimeSelfTests.Run();
@@ -219,8 +215,8 @@ namespace DazPose.Editor.HandGrip
         private static HandGripRigProfile CreateProfileAsset(string path)
         {
             EnsureFolder("Assets/DazPose/Generated");
-            EnsureFolder("Assets/DazPose/Generated/HandGrip");
-            EnsureFolder("Assets/DazPose/Generated/HandGrip/Profiles");
+            EnsureFolder("Assets/Production/Performers/Lara");
+            EnsureFolder("Assets/Production/Performers/Lara/Contact");
             var profile = ScriptableObject.CreateInstance<HandGripRigProfile>();
             profile.name = Path.GetFileNameWithoutExtension(path);
             AssetDatabase.CreateAsset(profile, path);

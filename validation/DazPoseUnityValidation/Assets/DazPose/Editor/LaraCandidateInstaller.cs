@@ -20,9 +20,7 @@ namespace DazPose.UnityValidation
             public bool dissolveReady, particleReady, anatomyReady, salsaReady, canonicalMorphIndicesPreserved;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Open First Performance Void Lara Candidate")]
-#endif
+
         public static void OpenCandidate()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -47,9 +45,7 @@ namespace DazPose.UnityValidation
             AssetDatabase.SaveAssets();
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Replace Lara In First Performance Void")]
-#endif
+
         public static void ReplaceInOriginal()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -131,13 +127,13 @@ namespace DazPose.UnityValidation
             var oldProfile = performerData.FindProperty("dissolveProfile").objectReferenceValue as PerformerDissolveProfile;
             if (oldProfile == null) throw new IOException("Existing dissolve profile missing.");
             if (!oldProfile.IsShaderReady(out string originalProfileReason)) throw new IOException(originalProfileReason);
-            var profile = LaraCandidateBuilder.Save(UnityEngine.Object.Instantiate(oldProfile), LaraCandidateBuilder.Folder + "/LaraDissolveProfile.asset");
+            var profile = LaraCandidateBuilder.Save(UnityEngine.Object.Instantiate(oldProfile), LaraCandidateBuilder.DissolveProfilePath);
             profile.ConfigureConvertedMaterials(oldProfile.SssDissolveShader,oldProfile.WetDissolveShader,materials,materials.Select(m => m.shader).ToArray());
             var rig = performer.GetComponent<PerformerDissolveRig>();
             var particle = rig == null ? null : rig.ParticleBody;
             if (particle == null) throw new IOException("Existing particle body missing.");
             var bindings = PerformerSurfaceBindingBaker.Bake(renderer,PerformerSurfaceBindingAsset.RequiredBindingCount,0x504f3942,
-                LaraCandidateBuilder.Folder + "/LaraSurfaceBindings.asset");
+                LaraCandidateBuilder.SurfaceBindingsPath);
             var particleData = new SerializedObject(particle);
             particleData.FindProperty("targetRenderer").objectReferenceValue = renderer;
             particleData.FindProperty("surfaceBindings").objectReferenceValue = bindings;

@@ -149,7 +149,7 @@ namespace DazPose.UnityValidation
                 partsAgree &= preset.Parts.All(part => resolved.Parts.Single(p => p.sourcePieceId == part.sourcePieceId).layer == part.layer);
                 var reachable = resolved.ReachableMasks;
                 masksAgree &= preset.FitStates.Select(f => f.VisibleMask).OrderBy(x => x).SequenceEqual(reachable.OrderBy(x => x));
-                bindingsValid &= preset.FitStates.Any(f => f.VisibleMask == 0 && f.BodyMesh == AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset") && f.SurfaceBindings.SourceMesh == f.BodyMesh);
+                bindingsValid &= preset.FitStates.Any(f => f.VisibleMask == 0 && f.BodyMesh == AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Production/Performers/Lara/Rig/LaraBody.asset") && f.SurfaceBindings.SourceMesh == f.BodyMesh);
                 bindingsValid &= preset.FitStates.All(f => f.Status == DazPose.Performer.WardrobeFitStatus.Validated && f.SurfaceBindings.SourceMesh == f.BodyMesh &&
                     f.SurfaceBindings.BindingCount == PerformerSurfaceBindingAsset.RequiredBindingCount && f.DissolveProfile.SurfaceBindings == f.SurfaceBindings);
             }
@@ -162,8 +162,8 @@ namespace DazPose.UnityValidation
             summary.idempotent = second.idempotent;
             checks.Add(Check("stableSecondGeneration", "same catalog GUID", firstGuid, stable));
             checks.Add(Check("canonicalMorphCount", ">=124",
-                AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset").blendShapeCount.ToString(),
-                AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset").blendShapeCount >= 124));
+                AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Production/Performers/Lara/Rig/LaraBody.asset").blendShapeCount.ToString(),
+                AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Production/Performers/Lara/Rig/LaraBody.asset").blendShapeCount >= 124));
             File.WriteAllText("TestOutput/wardrobe-execution/migration/summary.json", JsonUtility.ToJson(summary, true));
             WriteReport("Migration", checks, Array.Empty<string>());
         }
@@ -176,7 +176,7 @@ namespace DazPose.UnityValidation
             {
                 const string candidateScene = "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity";
                 EditorSceneManager.OpenScene(candidateScene, OpenSceneMode.Single);
-                var canonicalMesh = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset");
+                var canonicalMesh = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Production/Performers/Lara/Rig/LaraBody.asset");
                 var canonicalRenderer = UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Include)
                     .SingleOrDefault(r => r.sharedMesh == canonicalMesh);
                 var first = AssetDatabase.LoadAssetAtPath<DazPose.Performer.WardrobePreset>("Assets/Wardrobe/Presets/first-outfit.asset");
@@ -394,7 +394,7 @@ namespace DazPose.UnityValidation
                 EditorSceneManager.OpenScene(candidateScene, OpenSceneMode.Single);
                 var sourceCatalog = AssetDatabase.LoadAssetAtPath<DazPose.Performer.WardrobeCatalog>("Assets/Wardrobe/WardrobeCatalog.asset");
                 var sourceConfig = AssetDatabase.LoadAssetAtPath<DazPose.Performer.WardrobeConfiguration>("Assets/Wardrobe/WardrobeConfiguration.asset");
-                var canonical = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/TestData/LaraCandidate/LaraBody.asset");
+                var canonical = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Production/Performers/Lara/Rig/LaraBody.asset");
                 var body = UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsInactive.Include)
                     .FirstOrDefault(r => r.sharedMesh == canonical);
                 if (sourceCatalog == null || sourceConfig == null || body == null)
@@ -656,7 +656,7 @@ namespace DazPose.UnityValidation
         private static string PreparePlayerFixtureScene()
         {
             const string candidateScene = "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity";
-            const string canonicalBodyPath = "Assets/TestData/LaraCandidate/LaraBody.asset";
+            const string canonicalBodyPath = "Assets/Production/Performers/Lara/Rig/LaraBody.asset";
             const string sourceCatalogPath = "Assets/Wardrobe/WardrobeCatalog.asset";
             const string sourceConfigurationPath = "Assets/Wardrobe/WardrobeConfiguration.asset";
             const string playerFolder = "Assets/TestData/WardrobeRuntime/PlayerValidation";

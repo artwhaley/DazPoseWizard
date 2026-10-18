@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Action", fileName = "Performer Action")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Action", fileName = "Performer Action")]
     public sealed class PerformerAction : ScriptableObject
     {
         public const float GroundReturnToleranceMeters = 0.02f;

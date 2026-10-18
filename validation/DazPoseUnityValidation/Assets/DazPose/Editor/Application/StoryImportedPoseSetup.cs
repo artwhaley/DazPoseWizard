@@ -22,66 +22,27 @@ namespace DazPose.Editor {
 
   [Serializable] public sealed class Report {public int seed;public Choice[] choices;public string gesture,preview;}
 
-  [MenuItem("DazPose/Story/Assign Missing First Contact Poses from Imports")]
+  public static void PrepareImportedPoses()=>FirstContactRepair.Prepare();
 
-  public static void PrepareImportedPoses() {
-
-   if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Assign story poses in Edit Mode.");
-
-   if(!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return;
-
-   StoryFoundationBuilder.Prepare();
-
-   var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-
-   var sequence=GameSessionSceneSetup.InScene<StoryProgramSequence>(scene).Single();var content=sequence.CompiledSource.content;
-
+  internal static bool FillMissing(StoryContentBindings content,StorySceneBindings bindings) {
+   bool changed=false;
    var candidates=AssetDatabase.FindAssets("t:PerformerPose",new[]{"Assets/Animations/DazPoses"}).Select(AssetDatabase.GUIDToAssetPath)
-
     .Where(path=>File.Exists("Assets/DazPoseImports/"+Path.GetFileNameWithoutExtension(path)+".dazpose.json"))
-
     .Select(AssetDatabase.LoadAssetAtPath<PerformerPose>).Where(p=>p!=null && p.Clip!=null && !p.Clip.empty && !p.Clip.legacy).OrderBy(p=>p.name,StringComparer.Ordinal).ToList();
-
-   int seed=unchecked((int)DateTime.UtcNow.Ticks);var random=new System.Random(seed);
-
+   var random=new System.Random(unchecked((int)DateTime.UtcNow.Ticks));
    foreach(var row in content.poses) {
-
-    if(row.value!=null)continue; // Refresh never overwrites an author's existing choice.
-
+    if(row.value!=null) continue;
     string term=row.posture==PlayerPosture.Sitting ? "sit" : "stand";
-
     var pool=candidates.Where(p=>p.name.IndexOf(term,StringComparison.OrdinalIgnoreCase)>=0 && !content.poses.Any(r=>r.value==p)).ToArray();
-
-    if(pool.Length==0)throw new InvalidOperationException("Import another distinct PerformerPose with '"+term+"' in its name for "+row.id+".");
-
-    row.value=pool[random.Next(pool.Length)];
-
+    if(pool.Length==0)throw new InvalidOperationException("Import a distinct PerformerPose with '"+term+"' in its name for "+row.id+".");
+    row.value=pool[random.Next(pool.Length)];changed=true;
    }
-
-   foreach(var row in content.poses)ValidatePose(row.value,sequence.Bindings.lara.ConfiguredAnimator);
-
-   var gesture=content.gestures.Single(g=>g.id=="Disapproval");
-
-   if(gesture.value==null)gesture.value=CreateDisapprovalFixture(sequence.Bindings.lara);
-
-   if(!gesture.value.IsReady(out string reason))throw new InvalidOperationException(reason);
-
-   EditorUtility.SetDirty(content);EditorUtility.SetDirty(sequence);
-
-   AssetDatabase.SaveAssets();AssetDatabase.ImportAsset(StoryFoundationBuilder.SourcePath,ImportAssetOptions.ForceUpdate);
-
-   EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);
-
-   var report=new Report {seed=seed,preview=string.IsNullOrEmpty(sequence.StopBeforePhase) ? "full session" : "before "+sequence.StopBeforePhase,choices=content.poses.Select(p=>new Choice {alias=p.id,posture=p.posture.ToString(),pose=AssetDatabase.GetAssetPath(p.value),clip=AssetDatabase.GetAssetPath(p.value.Clip)}).ToArray(),gesture=AssetDatabase.GetAssetPath(gesture.value)};
-
-   Directory.CreateDirectory("TestOutput/StoryFoundation");File.WriteAllText("TestOutput/StoryFoundation/imported-poses.json",JsonUtility.ToJson(report,true));
-
-   var preview=string.IsNullOrEmpty(sequence.StopBeforePhase) ? sequence.CompiledSource.program : DazPose.Story.Language.StoryPlaybackWindow.BeforePhase(sequence.CompiledSource.program,"FirstContact",sequence.StopBeforePhase);
-
-   string[] errors=content.Diagnostics(preview,sequence.Bindings);if(errors.Length>0)throw new InvalidOperationException(string.Join("\n",errors));
-
-   Debug.Log("FIRST_CONTACT_IMPORTED_POSES_READY: "+JsonUtility.ToJson(report));
-
+   foreach(var row in content.poses) ValidatePose(row.value,bindings.lara.ConfiguredAnimator);
+   foreach(var row in content.gestures) {
+    if(row.value==null && row.id=="Disapproval") {row.value=CreateDisapprovalFixture(bindings.lara);changed=true;}
+    if(row.value==null || !row.value.IsReady(out _)) throw new InvalidOperationException("Assign a ready gesture for "+row.id+".");
+   }
+   return changed;
   }
 
   static void ValidatePose(PerformerPose pose,Animator animator) {

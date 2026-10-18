@@ -6,7 +6,12 @@
     "GUID:6e8763cc84e641be96da510df920c8bb",
     "GUID:700d5ce39949420093b3b48027c9e252",
     "GUID:df380645f10b7bc4b97d4f5eb6303d95",
-    "GUID:f49e99254b924e90b979a734d998d99d"
+    "GUID:f49e99254b924e90b979a734d998d99d",
+    "GUID:78bd2ddd6e276394a9615c203e574844",
+    "GUID:e0cd26848372d4e5c891c569017e11f1",
+    "DazPose.Presentation",
+    "Unity.ugui",
+    "DazPose.Content"
   ],
   "includePlatforms": [
     "Editor"

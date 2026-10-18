@@ -3,7 +3,7 @@ using UnityEngine;
 using DazPose.Performer.HandGrip;
 namespace DazPose.UnityValidation.Partner
 {
-    [CreateAssetMenu(menuName="Performer/Partner Contact Profile")]
+    [CreateAssetMenu(menuName="DazPose/Performer/Partner Contact Profile")]
     public sealed class PartnerContactProfile : ScriptableObject
     {
         [SerializeField] private Mesh bodyMesh;

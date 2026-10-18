@@ -1,0 +1,2583 @@
+{
+  "schemaVersion": 1,
+  "scope": "Only four named abandoned draft/setup directories. Live DraftAttempts/a6595a7b018d4a14937b9c70e9c3b8f7 was excluded.",
+  "evidence": {
+    "recoveryManifest": ".dazposewizard/cleanup-task1/recovery-manifest.json",
+    "baseArchive": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\recovery\\18b268afe4df1ce11046a760b757002571a104c6\\unity-inputs.zip",
+    "baseArchiveSha256": "eb3f7b480bd7a6e6fccce7b8927ec00ed8d54806a82b9fdbb1125e937a2575b7",
+    "deltaArchive": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\cleanup-task1\\recovery-delta.zip",
+    "deltaArchiveSha256": "898727bc829c155fcd3dc8c0e19a04bc53aa2646877417f4efd39cfecf2a0aa6",
+    "targetFiles": 210,
+    "targetBytes": 643461886,
+    "recoveryMappedFiles": 210,
+    "sha256AndByteMatches": 210,
+    "missingOrMismatched": 0,
+    "serializedSearch": "Text serialized guid refs in validation/DazPoseUnityValidation/Assets, excluding *.meta; candidate GUIDs from target .meta files. Per-file incoming owners include intra-root references.",
+    "directCodeConsumer": "Assets/DazPose/Editor/Wardrobe/WardrobeCandidateWorkflow.cs TrySaveDraft creates DraftAttempts/<new GUID>. No exact ID consumer found. ClothingSetupWindow creates SetupVariants/<new GUID>, not SetupCandidates.",
+    "reviewMetadata": {
+      "path": "ProjectSettings/DazPose/WardrobeReviewMetadata.json",
+      "scenePaths": [
+        "Assets/TestData/Wardrobe/first-outfit/Review.unity",
+        "Assets/TestData/Wardrobe/second-outfit/Review-20261004-155507.unity",
+        "Assets/TestData/Wardrobe/third-outfit/Review-20261004-165635.unity"
+      ],
+      "referencesTargetRoots": false
+    },
+    "knownExternalEdges": [
+      {
+        "lineNumbers": [
+          34,
+          35,
+          36
+        ],
+        "owner": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-first-outfit.asset",
+        "targetRoot": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98"
+      },
+      {
+        "lineNumbers": [
+          79,
+          80
+        ],
+        "owner": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-second-outfit.asset",
+        "targetRoot": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98"
+      },
+      {
+        "lineNumbers": [
+          41,
+          42,
+          43,
+          44
+        ],
+        "owner": "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-third-outfit.asset",
+        "targetRoot": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98"
+      },
+      {
+        "lineNumbers": [
+          34,
+          35,
+          36
+        ],
+        "owner": "Assets/Production/Wardrobe/Candidate-first-outfit.asset",
+        "targetRoot": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854"
+      },
+      {
+        "lineNumbers": [
+          79,
+          80
+        ],
+        "owner": "Assets/Production/Wardrobe/Candidate-second-outfit.asset",
+        "targetRoot": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854"
+      },
+      {
+        "lineNumbers": [
+          41,
+          42
+        ],
+        "owner": "Assets/Production/Wardrobe/Candidate-third-outfit.asset",
+        "targetRoot": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854"
+      }
+    ]
+  },
+  "roots": [
+    {
+      "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1",
+      "kind": "DraftAttempts",
+      "decision": "RETIRE_READY",
+      "recommendation": "All files are recovery-mapped and hash-identical; no incoming serialized GUID refs from outside this folder; no exact-ID code, recipe, or review-metadata consumer. Producer creates a fresh random GUID folder.",
+      "fileCount": 48,
+      "totalBytes": 142886916.0,
+      "recoveryMappedFileCount": 48,
+      "hashMatchedFileCount": 48,
+      "files": [
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit.meta",
+          "bytes": 172,
+          "sha256": "873a87bdb0229142a15be3779a87f08e2f71457d5d671b1dcd3af1e4e66caa0f",
+          "recovery": "baseline",
+          "recoverySha256": "873a87bdb0229142a15be3779a87f08e2f71457d5d671b1dcd3af1e4e66caa0f",
+          "matchesRecovery": true,
+          "guid": "58057cfab7d1de6469e47b92372e8427",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit.meta",
+          "bytes": 172,
+          "sha256": "b307ca99fc4b10c4765007cd8c1ac56399ca7c2146c1f4aaeb0561406ae2b542",
+          "recovery": "baseline",
+          "recoverySha256": "b307ca99fc4b10c4765007cd8c1ac56399ca7c2146c1f4aaeb0561406ae2b542",
+          "matchesRecovery": true,
+          "guid": "7ad910fb7ff8d174d98c098494423ef4",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit.meta",
+          "bytes": 172,
+          "sha256": "3c63ca505aea00e7a4d39cc03ce787b3349dc24a046b5c61ffbec5aff706c796",
+          "recovery": "baseline",
+          "recoverySha256": "3c63ca505aea00e7a4d39cc03ce787b3349dc24a046b5c61ffbec5aff706c796",
+          "matchesRecovery": true,
+          "guid": "a08577213a1b951488dfc9928e814ea0",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f.meta",
+          "bytes": 172,
+          "sha256": "f857f42f5fe1a4560e57add07d2ea97da4abd47d85085333b650bce5a309926c",
+          "recovery": "baseline",
+          "recoverySha256": "f857f42f5fe1a4560e57add07d2ea97da4abd47d85085333b650bce5a309926c",
+          "matchesRecovery": true,
+          "guid": "54c7778524fd5ff47a885145f3ab4911",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48.meta",
+          "bytes": 172,
+          "sha256": "12e38adf77d8853ac84687375bdb0bff1e92f067e1370764eabf1ac538786e6c",
+          "recovery": "baseline",
+          "recoverySha256": "12e38adf77d8853ac84687375bdb0bff1e92f067e1370764eabf1ac538786e6c",
+          "matchesRecovery": true,
+          "guid": "d78c17b20fe947648af921a59e253e84",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "f3cba9f6c961c80feac9e0605cd5f4ab91a03ac04b1d7efb9869a1b0019a5833",
+          "recovery": "baseline",
+          "recoverySha256": "f3cba9f6c961c80feac9e0605cd5f4ab91a03ac04b1d7efb9869a1b0019a5833",
+          "matchesRecovery": true,
+          "guid": "d9a8c33d4f740564fbd652a6b3597251",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f/Body.asset",
+          "bytes": 32799257,
+          "sha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "recovery": "baseline",
+          "recoverySha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "matchesRecovery": true,
+          "guid": "8ec20b8e7b9941f4da9136617edfa0ad",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "ddf5e6ecd8a54fdfea6bc100a1adb0fbb158901c6fd9881d27c6bac46524856c",
+          "recovery": "baseline",
+          "recoverySha256": "ddf5e6ecd8a54fdfea6bc100a1adb0fbb158901c6fd9881d27c6bac46524856c",
+          "matchesRecovery": true,
+          "guid": "8ec20b8e7b9941f4da9136617edfa0ad",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "9153cf5a3b4dda30aef8112e5ff7423327cd71f695229d44e3d594ad84f1c2e6",
+          "recovery": "baseline",
+          "recoverySha256": "9153cf5a3b4dda30aef8112e5ff7423327cd71f695229d44e3d594ad84f1c2e6",
+          "matchesRecovery": true,
+          "guid": "03a86f473939bb742b76cf237b60df9d",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "f8d6fe1bcc622a603db51f8fc3dc4cf2efc651aba4c99d84a6a9d363e5a1b70b",
+          "recovery": "baseline",
+          "recoverySha256": "f8d6fe1bcc622a603db51f8fc3dc4cf2efc651aba4c99d84a6a9d363e5a1b70b",
+          "matchesRecovery": true,
+          "guid": "03a86f473939bb742b76cf237b60df9d",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f/FitState.asset",
+          "bytes": 1212,
+          "sha256": "e524693488bff5f106cc8be5ee38af9d7c7370e1c466ee05a3e2fce428ba2495",
+          "recovery": "baseline",
+          "recoverySha256": "e524693488bff5f106cc8be5ee38af9d7c7370e1c466ee05a3e2fce428ba2495",
+          "matchesRecovery": true,
+          "guid": "21eef05a88b7aae44a174b86759b55c0",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "1e26f4b05308092313a3d6d070ac5c1f09db8ced99c0654d7c0d00663e019830",
+          "recovery": "baseline",
+          "recoverySha256": "1e26f4b05308092313a3d6d070ac5c1f09db8ced99c0654d7c0d00663e019830",
+          "matchesRecovery": true,
+          "guid": "21eef05a88b7aae44a174b86759b55c0",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "54f3fa79f8f4ee97a9ee39dc81998a8e7baaf4cce47309021f2802797ef54434",
+          "recovery": "baseline",
+          "recoverySha256": "54f3fa79f8f4ee97a9ee39dc81998a8e7baaf4cce47309021f2802797ef54434",
+          "matchesRecovery": true,
+          "guid": "e19588eb228ed014fad14c94bc5141e2",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "d7aaafdcec3e77e7fbf5a1216c81e21540dae62156301511aec29583a6fbc9a0",
+          "recovery": "baseline",
+          "recoverySha256": "d7aaafdcec3e77e7fbf5a1216c81e21540dae62156301511aec29583a6fbc9a0",
+          "matchesRecovery": true,
+          "guid": "e19588eb228ed014fad14c94bc5141e2",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\743f729a83d3355975284d3e496ee7c5afcae6532fff554aa018712e46aaa47f\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48/Body.asset",
+          "bytes": 32799257,
+          "sha256": "59b0219aa8b6ccbd3f0ed2337a99d29ce939bff1b30fcfac01fdc82d385c8a68",
+          "recovery": "baseline",
+          "recoverySha256": "59b0219aa8b6ccbd3f0ed2337a99d29ce939bff1b30fcfac01fdc82d385c8a68",
+          "matchesRecovery": true,
+          "guid": "e5cc3e96b8ee09c4eb03f5f8b8a9c3cd",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "c3e7d9c270a453bae158722b80766829df65a6659a42f0b4d43a13fd5e031be8",
+          "recovery": "baseline",
+          "recoverySha256": "c3e7d9c270a453bae158722b80766829df65a6659a42f0b4d43a13fd5e031be8",
+          "matchesRecovery": true,
+          "guid": "e5cc3e96b8ee09c4eb03f5f8b8a9c3cd",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "4d2731d0d2d129c800fc149f477c59fe6df933952f65405c95ac69ba4e624c82",
+          "recovery": "baseline",
+          "recoverySha256": "4d2731d0d2d129c800fc149f477c59fe6df933952f65405c95ac69ba4e624c82",
+          "matchesRecovery": true,
+          "guid": "86b9bab0b122a524fa1e4ca63f16510d",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "367aef6f9df1bf4742d8051f0acad29b87ff29e4b579a3a1aedbf37f8c56e837",
+          "recovery": "baseline",
+          "recoverySha256": "367aef6f9df1bf4742d8051f0acad29b87ff29e4b579a3a1aedbf37f8c56e837",
+          "matchesRecovery": true,
+          "guid": "86b9bab0b122a524fa1e4ca63f16510d",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48/FitState.asset",
+          "bytes": 1120,
+          "sha256": "2e762145fe06b79efea40489f66d6373074d69f14e09de703924091b70099589",
+          "recovery": "baseline",
+          "recoverySha256": "2e762145fe06b79efea40489f66d6373074d69f14e09de703924091b70099589",
+          "matchesRecovery": true,
+          "guid": "c9208c1130e26564098e11bfbf7ffa7a",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "25c3b4af3e70351b5038eb211ac5d7c4f006179ea0322f2345a66c4fb7885d3e",
+          "recovery": "baseline",
+          "recoverySha256": "25c3b4af3e70351b5038eb211ac5d7c4f006179ea0322f2345a66c4fb7885d3e",
+          "matchesRecovery": true,
+          "guid": "c9208c1130e26564098e11bfbf7ffa7a",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "f616f324377f9deefa37efc3048137f9f7e68aa81424d5afcd931f03ddc67058",
+          "recovery": "baseline",
+          "recoverySha256": "f616f324377f9deefa37efc3048137f9f7e68aa81424d5afcd931f03ddc67058",
+          "matchesRecovery": true,
+          "guid": "e3f300bcecb228e4a97592c76bd2dae6",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "c9248304dd7dc0417db6a80d92651213658cb8a2be254929269cf1404c60bdca",
+          "recovery": "baseline",
+          "recoverySha256": "c9248304dd7dc0417db6a80d92651213658cb8a2be254929269cf1404c60bdca",
+          "matchesRecovery": true,
+          "guid": "e3f300bcecb228e4a97592c76bd2dae6",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\first-outfit\\bee4c91d1378a00843cfe5a46446006b6b41a9f04ee41bc08629c57ca40b1e48\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "816eaa01183eb334da63442079ed63aa",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/first-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "2f0fd0416af4fc10978dc000f500f5977c5afbcef64e56ec58c87a16e9b7789e",
+          "recovery": "baseline",
+          "recoverySha256": "2f0fd0416af4fc10978dc000f500f5977c5afbcef64e56ec58c87a16e9b7789e",
+          "matchesRecovery": true,
+          "guid": "816eaa01183eb334da63442079ed63aa",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4.meta",
+          "bytes": 172,
+          "sha256": "faa59d894a4483d44a1526f077c17d04ed91977f7e78abc432e318a1431709bc",
+          "recovery": "baseline",
+          "recoverySha256": "faa59d894a4483d44a1526f077c17d04ed91977f7e78abc432e318a1431709bc",
+          "matchesRecovery": true,
+          "guid": "ce8bccd7dc9882947b5f3009d377e419",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "33dc319094e57c144508861e1bfccfdfe4d338418e70670a5e1cd8ffc6c3070e",
+          "recovery": "baseline",
+          "recoverySha256": "33dc319094e57c144508861e1bfccfdfe4d338418e70670a5e1cd8ffc6c3070e",
+          "matchesRecovery": true,
+          "guid": "d610e67e788d4eb45bfce14bad2ab73a",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset",
+          "bytes": 33191512,
+          "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "recovery": "baseline",
+          "recoverySha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "matchesRecovery": true,
+          "guid": "ff4a5806c16f691418b5b1b1bb8367ad",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "4d675ef05b8ec74c5675c89f9dd3712c7a81388db19a4508363dc3904c4d41cf",
+          "recovery": "baseline",
+          "recoverySha256": "4d675ef05b8ec74c5675c89f9dd3712c7a81388db19a4508363dc3904c4d41cf",
+          "matchesRecovery": true,
+          "guid": "ff4a5806c16f691418b5b1b1bb8367ad",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "4bda1a80a0e6361fb7a376d41e9fdda5a50d31db9a66cc51a86bc9d43d142ebc",
+          "recovery": "baseline",
+          "recoverySha256": "4bda1a80a0e6361fb7a376d41e9fdda5a50d31db9a66cc51a86bc9d43d142ebc",
+          "matchesRecovery": true,
+          "guid": "f690661c5fd980545a62ccbf5464a7ea",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:39"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "d397daf431a7e10ab47b4f06acc47db448841a120f511577baaf1268fdaee306",
+          "recovery": "baseline",
+          "recoverySha256": "d397daf431a7e10ab47b4f06acc47db448841a120f511577baaf1268fdaee306",
+          "matchesRecovery": true,
+          "guid": "f690661c5fd980545a62ccbf5464a7ea",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:39"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset",
+          "bytes": 2238,
+          "sha256": "039e46b08ec0dc00a3907f44563e51bd140c6ac0729e8ff4dfa806726ca5b664",
+          "recovery": "baseline",
+          "recoverySha256": "039e46b08ec0dc00a3907f44563e51bd140c6ac0729e8ff4dfa806726ca5b664",
+          "matchesRecovery": true,
+          "guid": "c0c27a145366dfa4a86fb584e5f7adbb",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "9610f4e0e8210346452da87315935e47b3cf4b6cec3142ed27726b6dc72ad4d6",
+          "recovery": "baseline",
+          "recoverySha256": "9610f4e0e8210346452da87315935e47b3cf4b6cec3142ed27726b6dc72ad4d6",
+          "matchesRecovery": true,
+          "guid": "c0c27a145366dfa4a86fb584e5f7adbb",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "fdba8e0fb7169edebbc4f11f03b7459bac5588c27332b234404c9f3e3b59cc9c",
+          "recovery": "baseline",
+          "recoverySha256": "fdba8e0fb7169edebbc4f11f03b7459bac5588c27332b234404c9f3e3b59cc9c",
+          "matchesRecovery": true,
+          "guid": "f4059a9198ba61e40b08818dfa45693b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:38"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "33689e8b77c62f7ec481ded4b710762b9405ce843d559c0303263e339f3b0fb4",
+          "recovery": "baseline",
+          "recoverySha256": "33689e8b77c62f7ec481ded4b710762b9405ce843d559c0303263e339f3b0fb4",
+          "matchesRecovery": true,
+          "guid": "f4059a9198ba61e40b08818dfa45693b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:38"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "7048835ee8f7eec49bf5852e6a489077",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/second-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "460707a82e35f118cb1386f33308489bf56561f5e18f6cb0e2f53b7e5f968ebf",
+          "recovery": "baseline",
+          "recoverySha256": "460707a82e35f118cb1386f33308489bf56561f5e18f6cb0e2f53b7e5f968ebf",
+          "matchesRecovery": true,
+          "guid": "7048835ee8f7eec49bf5852e6a489077",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799.meta",
+          "bytes": 172,
+          "sha256": "269b5e26bd01c1480ce38173a68f4ebb5b36d6c2756b8f601ed828350cc5da5d",
+          "recovery": "baseline",
+          "recoverySha256": "269b5e26bd01c1480ce38173a68f4ebb5b36d6c2756b8f601ed828350cc5da5d",
+          "matchesRecovery": true,
+          "guid": "a3258bda8a8ecee43af1cd7c32e18014",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "5a4bf619c26c3e6b48dbb9587790ca6466c03778300564044d3719c9a507d34d",
+          "recovery": "baseline",
+          "recoverySha256": "5a4bf619c26c3e6b48dbb9587790ca6466c03778300564044d3719c9a507d34d",
+          "matchesRecovery": true,
+          "guid": "71889af850d183842a3c5a1310f0df6a",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/Body.asset",
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": "baseline",
+          "recoverySha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "matchesRecovery": true,
+          "guid": "abb05af6409b911428fe9eb4946d92b1",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "a42c325f122cbcd0e0ad928f1143022c9b497e7cd2b8ed6bfa649866e6011ac7",
+          "recovery": "baseline",
+          "recoverySha256": "a42c325f122cbcd0e0ad928f1143022c9b497e7cd2b8ed6bfa649866e6011ac7",
+          "matchesRecovery": true,
+          "guid": "abb05af6409b911428fe9eb4946d92b1",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "99d0f7b6d1d411c1a914d2d320b7a5e2d166495cf040eda3af9cc7afee3aa596",
+          "recovery": "baseline",
+          "recoverySha256": "99d0f7b6d1d411c1a914d2d320b7a5e2d166495cf040eda3af9cc7afee3aa596",
+          "matchesRecovery": true,
+          "guid": "10980f4cda4bf3947b160b40900128e7",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:26"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "e1c14b1b8d35b95a351017e4055fd3470c09a3d08acaebc4f608fae18ed1e9b7",
+          "recovery": "baseline",
+          "recoverySha256": "e1c14b1b8d35b95a351017e4055fd3470c09a3d08acaebc4f608fae18ed1e9b7",
+          "matchesRecovery": true,
+          "guid": "10980f4cda4bf3947b160b40900128e7",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:26"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/FitState.asset",
+          "bytes": 1317,
+          "sha256": "794e679c1e552f5cf1107c0be51c2fc81cdbcf7aa6e79044912bd172aa3b3999",
+          "recovery": "baseline",
+          "recoverySha256": "794e679c1e552f5cf1107c0be51c2fc81cdbcf7aa6e79044912bd172aa3b3999",
+          "matchesRecovery": true,
+          "guid": "31adc2529f6f9cc4b992a3d248bc16e2",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "51fe6109dd43edc1b8afa24ea34b8eefda2d9249e6fd51b578ea3fc66b7ac862",
+          "recovery": "baseline",
+          "recoverySha256": "51fe6109dd43edc1b8afa24ea34b8eefda2d9249e6fd51b578ea3fc66b7ac862",
+          "matchesRecovery": true,
+          "guid": "31adc2529f6f9cc4b992a3d248bc16e2",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "c663950e27ddbfec7df7d0e808a73a828a00d3386fef8d676c9a2e8c58e36929",
+          "recovery": "baseline",
+          "recoverySha256": "c663950e27ddbfec7df7d0e808a73a828a00d3386fef8d676c9a2e8c58e36929",
+          "matchesRecovery": true,
+          "guid": "22ff187e58393454ea288767cce7e7ec",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "bcde5e8c358275c594c040e4ad8038bc4395d21afb74c2f7a1dc76334b152ba6",
+          "recovery": "baseline",
+          "recoverySha256": "bcde5e8c358275c594c040e4ad8038bc4395d21afb74c2f7a1dc76334b152ba6",
+          "matchesRecovery": true,
+          "guid": "22ff187e58393454ea288767cce7e7ec",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\02aa66ebd298461cb41043fd44d637e1\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "20e511556fe9e6448a3666fbd9989ef8",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1/third-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "2c6b670170832ecf111fcbba12870b373d48160179eb7a88fe1d7ea94a39ab7d",
+          "recovery": "baseline",
+          "recoverySha256": "2c6b670170832ecf111fcbba12870b373d48160179eb7a88fe1d7ea94a39ab7d",
+          "matchesRecovery": true,
+          "guid": "20e511556fe9e6448a3666fbd9989ef8",
+          "incomingSerializedGuidReferences": []
+        }
+      ]
+    },
+    {
+      "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c",
+      "kind": "DraftAttempts",
+      "decision": "RETIRE_READY",
+      "recommendation": "All files are recovery-mapped and hash-identical; no incoming serialized GUID refs from outside this folder; no exact-ID code, recipe, or review-metadata consumer. Producer creates a fresh random GUID folder.",
+      "fileCount": 48,
+      "totalBytes": 142886904.0,
+      "recoveryMappedFileCount": 48,
+      "hashMatchedFileCount": 48,
+      "files": [
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit.meta",
+          "bytes": 172,
+          "sha256": "ba7427cd0e3349dc45e46d42f422fcd70d10719a42ed094584f0b28e207ddf08",
+          "recovery": "baseline",
+          "recoverySha256": "ba7427cd0e3349dc45e46d42f422fcd70d10719a42ed094584f0b28e207ddf08",
+          "matchesRecovery": true,
+          "guid": "61d46505c9958cb40b956f1208ac3387",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit.meta",
+          "bytes": 172,
+          "sha256": "2087690c3930f9435f8b05c0965fdf37695f7f263c029f65a5dc5f39eee2b510",
+          "recovery": "baseline",
+          "recoverySha256": "2087690c3930f9435f8b05c0965fdf37695f7f263c029f65a5dc5f39eee2b510",
+          "matchesRecovery": true,
+          "guid": "62ea4cfb98c57294ba3359182185b350",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit.meta",
+          "bytes": 172,
+          "sha256": "7167e87e3f97860b2b1b7394de1435e33c3ce4415837addd76661e282342624c",
+          "recovery": "baseline",
+          "recoverySha256": "7167e87e3f97860b2b1b7394de1435e33c3ce4415837addd76661e282342624c",
+          "matchesRecovery": true,
+          "guid": "88f2b2783be837b44b78b443950c2f9b",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e.meta",
+          "bytes": 172,
+          "sha256": "cf83b2a2366fdee20010f2c96d5a03b7b8f0c879baca34d0845cb7754e448c63",
+          "recovery": "baseline",
+          "recoverySha256": "cf83b2a2366fdee20010f2c96d5a03b7b8f0c879baca34d0845cb7754e448c63",
+          "matchesRecovery": true,
+          "guid": "18f113d63e26bd34baa7f880744a1719",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981.meta",
+          "bytes": 172,
+          "sha256": "a65423c18de53b48f90f9be59c6723a90efd6cb8ddf4dd5df9fef85470671042",
+          "recovery": "baseline",
+          "recoverySha256": "a65423c18de53b48f90f9be59c6723a90efd6cb8ddf4dd5df9fef85470671042",
+          "matchesRecovery": true,
+          "guid": "db72f0b6fb615584a8e3845a01db9640",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "a8f1d3ab4a64364003f30afd6e1dd30715827a5e6229236b4b87ab78294d0ba5",
+          "recovery": "baseline",
+          "recoverySha256": "a8f1d3ab4a64364003f30afd6e1dd30715827a5e6229236b4b87ab78294d0ba5",
+          "matchesRecovery": true,
+          "guid": "04dec3ee584b6384d9d1e50d0449f088",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset",
+          "bytes": 32799257,
+          "sha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "recovery": "baseline",
+          "recoverySha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "matchesRecovery": true,
+          "guid": "9ff6f3b983a901c45a9bd996258c9eed",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "9150367fecb6ca949f7d77ea83eacc38ecd53545d3c775a31112b451bfde9ea0",
+          "recovery": "baseline",
+          "recoverySha256": "9150367fecb6ca949f7d77ea83eacc38ecd53545d3c775a31112b451bfde9ea0",
+          "matchesRecovery": true,
+          "guid": "9ff6f3b983a901c45a9bd996258c9eed",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "9f70d439cad728334616fdae79f9c10340c1082333d62145a8d50c67f09fd4dc",
+          "recovery": "baseline",
+          "recoverySha256": "9f70d439cad728334616fdae79f9c10340c1082333d62145a8d50c67f09fd4dc",
+          "matchesRecovery": true,
+          "guid": "0f058210563eea6408873b5ac3ff8c4a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "818dc87c81cde38e69686486daaa3647d52cad9cf9d39300701ffc694528d076",
+          "recovery": "baseline",
+          "recoverySha256": "818dc87c81cde38e69686486daaa3647d52cad9cf9d39300701ffc694528d076",
+          "matchesRecovery": true,
+          "guid": "0f058210563eea6408873b5ac3ff8c4a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset",
+          "bytes": 1212,
+          "sha256": "c4362678d83160260ccadfffb10c9447d2b7996919e3308d05a08d149babad61",
+          "recovery": "baseline",
+          "recoverySha256": "c4362678d83160260ccadfffb10c9447d2b7996919e3308d05a08d149babad61",
+          "matchesRecovery": true,
+          "guid": "8e8e5748f3dfa30439c568a864b92d31",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "705338e93ca0ddf67fd74499aec3ae714e9d813cdf02dcaacc6e38c6b9b34939",
+          "recovery": "baseline",
+          "recoverySha256": "705338e93ca0ddf67fd74499aec3ae714e9d813cdf02dcaacc6e38c6b9b34939",
+          "matchesRecovery": true,
+          "guid": "8e8e5748f3dfa30439c568a864b92d31",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "2de40d0e0b3e860817a88e395e724eb53704dbb322562d1802e677ad5068b66d",
+          "recovery": "baseline",
+          "recoverySha256": "2de40d0e0b3e860817a88e395e724eb53704dbb322562d1802e677ad5068b66d",
+          "matchesRecovery": true,
+          "guid": "d8bac171e714a2944aaf8fa39f6a6336",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "d790658595a4d4fbea84cada49abd1ed8e1859d0f1786bc8c7a123b23d277363",
+          "recovery": "baseline",
+          "recoverySha256": "d790658595a4d4fbea84cada49abd1ed8e1859d0f1786bc8c7a123b23d277363",
+          "matchesRecovery": true,
+          "guid": "d8bac171e714a2944aaf8fa39f6a6336",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset",
+          "bytes": 32799257,
+          "sha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b",
+          "recovery": "baseline",
+          "recoverySha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b",
+          "matchesRecovery": true,
+          "guid": "85be8bb39398b3b4e8dd93417dc995ce",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "890b0ae3bb4d786f9e331d1bd65e226494240027d23cf9b78a0356efd04b49bd",
+          "recovery": "baseline",
+          "recoverySha256": "890b0ae3bb4d786f9e331d1bd65e226494240027d23cf9b78a0356efd04b49bd",
+          "matchesRecovery": true,
+          "guid": "85be8bb39398b3b4e8dd93417dc995ce",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "1ff46928b53f549e2c5cd9e743fbf0e3dd87f528868c3b60ccce14ae653ea8ac",
+          "recovery": "baseline",
+          "recoverySha256": "1ff46928b53f549e2c5cd9e743fbf0e3dd87f528868c3b60ccce14ae653ea8ac",
+          "matchesRecovery": true,
+          "guid": "a35512cc13e752f48b4458d29967266c",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "bf747370878a0948ab83c84a2923d20ed16227636759fafdc6383ac9db281c00",
+          "recovery": "baseline",
+          "recoverySha256": "bf747370878a0948ab83c84a2923d20ed16227636759fafdc6383ac9db281c00",
+          "matchesRecovery": true,
+          "guid": "a35512cc13e752f48b4458d29967266c",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset",
+          "bytes": 1108,
+          "sha256": "58d8c341b0635cb6bc08290927722df2058efec80ac39e6299d846ac54053c2c",
+          "recovery": "baseline",
+          "recoverySha256": "58d8c341b0635cb6bc08290927722df2058efec80ac39e6299d846ac54053c2c",
+          "matchesRecovery": true,
+          "guid": "2e9ebf2e9c2b2fa4c935db600a4c26a1",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "a0a70e8ca2c8b5ec3a3154f9b2ef6f0587141e6a3a3512d1872cf5c94a4c2172",
+          "recovery": "baseline",
+          "recoverySha256": "a0a70e8ca2c8b5ec3a3154f9b2ef6f0587141e6a3a3512d1872cf5c94a4c2172",
+          "matchesRecovery": true,
+          "guid": "2e9ebf2e9c2b2fa4c935db600a4c26a1",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "9a88b00183d9464794d95f97942756d642ec16fcdcf24835079c869f1a9c923b",
+          "recovery": "baseline",
+          "recoverySha256": "9a88b00183d9464794d95f97942756d642ec16fcdcf24835079c869f1a9c923b",
+          "matchesRecovery": true,
+          "guid": "6439c1518301f4645bafb4ee0062c23b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "e79bc8d71828325ecbf9da1736a01abb81d4f8b101dd9ecac0aa0ebdafdc41a1",
+          "recovery": "baseline",
+          "recoverySha256": "e79bc8d71828325ecbf9da1736a01abb81d4f8b101dd9ecac0aa0ebdafdc41a1",
+          "matchesRecovery": true,
+          "guid": "6439c1518301f4645bafb4ee0062c23b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "028adcb66db6a3b40a51822163b413c1",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/first-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "aac414a09561c1eb5b89949f8cb3a9d6db59892ef3cdd0f88e89ed8dafd6dd0c",
+          "recovery": "baseline",
+          "recoverySha256": "aac414a09561c1eb5b89949f8cb3a9d6db59892ef3cdd0f88e89ed8dafd6dd0c",
+          "matchesRecovery": true,
+          "guid": "028adcb66db6a3b40a51822163b413c1",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4.meta",
+          "bytes": 172,
+          "sha256": "b495a6dad13404334007f00cf8456c892d8b8be73b4bf15f250af66204be914f",
+          "recovery": "baseline",
+          "recoverySha256": "b495a6dad13404334007f00cf8456c892d8b8be73b4bf15f250af66204be914f",
+          "matchesRecovery": true,
+          "guid": "4c15cecb86939fe479e040810ce88cd4",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "3f341d8fd5c907ae223029ab8dfed34316acf0636d669d6a8451e4bc55567656",
+          "recovery": "baseline",
+          "recoverySha256": "3f341d8fd5c907ae223029ab8dfed34316acf0636d669d6a8451e4bc55567656",
+          "matchesRecovery": true,
+          "guid": "0a95c1852ace3b54babcf494ff20da05",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset",
+          "bytes": 33191512,
+          "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "recovery": "baseline",
+          "recoverySha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "matchesRecovery": true,
+          "guid": "f799d4c04b7deda459da75c3979ebd55",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "82ddd4a7d0543eb4e45bddaac854a8a7dc92544be3e0aee27a731b64ce9464c7",
+          "recovery": "baseline",
+          "recoverySha256": "82ddd4a7d0543eb4e45bddaac854a8a7dc92544be3e0aee27a731b64ce9464c7",
+          "matchesRecovery": true,
+          "guid": "f799d4c04b7deda459da75c3979ebd55",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "05a362b4a9885c38ad3b9da1873d56fa5ad263e8e7426afefe3f355e02baec78",
+          "recovery": "baseline",
+          "recoverySha256": "05a362b4a9885c38ad3b9da1873d56fa5ad263e8e7426afefe3f355e02baec78",
+          "matchesRecovery": true,
+          "guid": "34d09cc10127dc54a83ef93fa334246a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:39"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "bdc70c950c92a5cdca5dae6ac42e3b8b44f149f7fb66df01b4da63dd452a883d",
+          "recovery": "baseline",
+          "recoverySha256": "bdc70c950c92a5cdca5dae6ac42e3b8b44f149f7fb66df01b4da63dd452a883d",
+          "matchesRecovery": true,
+          "guid": "34d09cc10127dc54a83ef93fa334246a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:39"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset",
+          "bytes": 2238,
+          "sha256": "236c6f591a2b530eba054ae054f8fd74736105a05788df67312c277fdae54682",
+          "recovery": "baseline",
+          "recoverySha256": "236c6f591a2b530eba054ae054f8fd74736105a05788df67312c277fdae54682",
+          "matchesRecovery": true,
+          "guid": "fa6c813f2072d5a4bb7388e1f9cdcfc9",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "3b592ef88d8a6b32907dbd619b4e591c2720559096ccafd24f49c82c2c94007d",
+          "recovery": "baseline",
+          "recoverySha256": "3b592ef88d8a6b32907dbd619b4e591c2720559096ccafd24f49c82c2c94007d",
+          "matchesRecovery": true,
+          "guid": "fa6c813f2072d5a4bb7388e1f9cdcfc9",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "0cb420d097dcb898e2e1b297eb59678227bb81e7917411b8798c78f9d549089f",
+          "recovery": "baseline",
+          "recoverySha256": "0cb420d097dcb898e2e1b297eb59678227bb81e7917411b8798c78f9d549089f",
+          "matchesRecovery": true,
+          "guid": "52d44c35bf18889438f357e4b09477bd",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:38"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "66e1b6ee32ff55dfbb739dd6214c2275c2651fdd0b8f2d194674d7f2bbdd3cf3",
+          "recovery": "baseline",
+          "recoverySha256": "66e1b6ee32ff55dfbb739dd6214c2275c2651fdd0b8f2d194674d7f2bbdd3cf3",
+          "matchesRecovery": true,
+          "guid": "52d44c35bf18889438f357e4b09477bd",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:38"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "c47447dfed4292f458e4141668c19b31",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/second-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "8f6730543c5070e34a91fb4f211a26b8b69f0d81bc0cd5a94ce06e10244282ec",
+          "recovery": "baseline",
+          "recoverySha256": "8f6730543c5070e34a91fb4f211a26b8b69f0d81bc0cd5a94ce06e10244282ec",
+          "matchesRecovery": true,
+          "guid": "c47447dfed4292f458e4141668c19b31",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799.meta",
+          "bytes": 172,
+          "sha256": "e200eb59e07b2a4d94c9dda8cfc6dccce9a27885cfb4006799a7d033757a0663",
+          "recovery": "baseline",
+          "recoverySha256": "e200eb59e07b2a4d94c9dda8cfc6dccce9a27885cfb4006799a7d033757a0663",
+          "matchesRecovery": true,
+          "guid": "8c02679487b25844ab4c9a44d83fed37",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "72aa2449c944353a50df384348f98b43c837c2653aa1b9400409ec0d5b97648a",
+          "recovery": "baseline",
+          "recoverySha256": "72aa2449c944353a50df384348f98b43c837c2653aa1b9400409ec0d5b97648a",
+          "matchesRecovery": true,
+          "guid": "d40882fb47af2644eacb67e662bc7a23",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/Body.asset",
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": "baseline",
+          "recoverySha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "matchesRecovery": true,
+          "guid": "0995eca3d9482514199122608213e12b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "c52d5f78c3ad8b20102f199b5d7cd29371866655fd81f7b4f5bde9ec32f5bf39",
+          "recovery": "baseline",
+          "recoverySha256": "c52d5f78c3ad8b20102f199b5d7cd29371866655fd81f7b4f5bde9ec32f5bf39",
+          "matchesRecovery": true,
+          "guid": "0995eca3d9482514199122608213e12b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "b3e39f1f9e28e3207aba79ca7b616285072f1e39ad830c70bc049cf15645a041",
+          "recovery": "baseline",
+          "recoverySha256": "b3e39f1f9e28e3207aba79ca7b616285072f1e39ad830c70bc049cf15645a041",
+          "matchesRecovery": true,
+          "guid": "2130343a2aefe8c4b96c19b19f6f4a8c",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:26"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "90bf8177334e36b88db76ae65c563cf5522ff7b4266a3df7cef13f80962cc115",
+          "recovery": "baseline",
+          "recoverySha256": "90bf8177334e36b88db76ae65c563cf5522ff7b4266a3df7cef13f80962cc115",
+          "matchesRecovery": true,
+          "guid": "2130343a2aefe8c4b96c19b19f6f4a8c",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:26"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/FitState.asset",
+          "bytes": 1317,
+          "sha256": "965acd7647bbe9b612f3b3d7959c54e8ef459b8d8a73df69c4afaf8cfb2577a9",
+          "recovery": "baseline",
+          "recoverySha256": "965acd7647bbe9b612f3b3d7959c54e8ef459b8d8a73df69c4afaf8cfb2577a9",
+          "matchesRecovery": true,
+          "guid": "abf6e4076a8a00040b70d56741def73a",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "8999c97407c96933efce8549951c64846775262d2d7cf0d3e5283228b773f8dc",
+          "recovery": "baseline",
+          "recoverySha256": "8999c97407c96933efce8549951c64846775262d2d7cf0d3e5283228b773f8dc",
+          "matchesRecovery": true,
+          "guid": "abf6e4076a8a00040b70d56741def73a",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "12f5528dd7d2b194f020e8ea8f1857945e710003a3f9a42c939343eec4030232",
+          "recovery": "baseline",
+          "recoverySha256": "12f5528dd7d2b194f020e8ea8f1857945e710003a3f9a42c939343eec4030232",
+          "matchesRecovery": true,
+          "guid": "b3e715f77f532d845a04414381f1c2c0",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "a1b95ceb111539f734e0f84d8224f317c24fb5005e790a4e5d0daa8f888d4066",
+          "recovery": "baseline",
+          "recoverySha256": "a1b95ceb111539f734e0f84d8224f317c24fb5005e790a4e5d0daa8f888d4066",
+          "matchesRecovery": true,
+          "guid": "b3e715f77f532d845a04414381f1c2c0",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\94c58ce304554ea4bef67c908ad40e6c\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "30f325071f64ea94d9cf05acae5bdf3f",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c/third-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "71c98e10a1476138a11f9ed6f5f87a4edb22a71810332bfbd7bbe896474c0e6e",
+          "recovery": "baseline",
+          "recoverySha256": "71c98e10a1476138a11f9ed6f5f87a4edb22a71810332bfbd7bbe896474c0e6e",
+          "matchesRecovery": true,
+          "guid": "30f325071f64ea94d9cf05acae5bdf3f",
+          "incomingSerializedGuidReferences": []
+        }
+      ]
+    },
+    {
+      "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98",
+      "kind": "DraftAttempts",
+      "decision": "HOLD",
+      "recommendation": "Production/Day5-20261006-001818 Preview-first/second/third-outfit assets serialize GUID refs into this folder (9 unique ref lines to FitState assets). Keep until preview refs are detached or replaced.",
+      "fileCount": 66,
+      "totalBytes": 214801162.0,
+      "recoveryMappedFileCount": 66,
+      "hashMatchedFileCount": 66,
+      "files": [
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit.meta",
+          "bytes": 172,
+          "sha256": "6a2df7342a7180112c0285066113c83ba858ade7a91150d978a9ea5bd1091f02",
+          "recovery": "baseline",
+          "recoverySha256": "6a2df7342a7180112c0285066113c83ba858ade7a91150d978a9ea5bd1091f02",
+          "matchesRecovery": true,
+          "guid": "563567ec8382bd74eb87433305f3ed04",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit.meta",
+          "bytes": 172,
+          "sha256": "a4e6bd6ba63c2ff486c812e95c898ef89f25ed0d746beee0129fce082720b8f9",
+          "recovery": "baseline",
+          "recoverySha256": "a4e6bd6ba63c2ff486c812e95c898ef89f25ed0d746beee0129fce082720b8f9",
+          "matchesRecovery": true,
+          "guid": "df673b51608bf0f4dab571c06bd627c2",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit.meta",
+          "bytes": 172,
+          "sha256": "801a322bc0169f33c7b57484e5ae1365a3fa3f3a1a3a5561c8709a7a30a3a60e",
+          "recovery": "baseline",
+          "recoverySha256": "801a322bc0169f33c7b57484e5ae1365a3fa3f3a1a3a5561c8709a7a30a3a60e",
+          "matchesRecovery": true,
+          "guid": "692d23bf8dfc9df40ac836307d3898ca",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e.meta",
+          "bytes": 172,
+          "sha256": "a3ceecd16b345f3a472b2f1723f91b3691b96628cd6ec5f8917bf61a0152acaf",
+          "recovery": "baseline",
+          "recoverySha256": "a3ceecd16b345f3a472b2f1723f91b3691b96628cd6ec5f8917bf61a0152acaf",
+          "matchesRecovery": true,
+          "guid": "108a337f58d389b4ab4e98730e21e384",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981.meta",
+          "bytes": 172,
+          "sha256": "c5b05d1117d44844385a69d8fcf3c22bb587ae4acb54d79b4f2fc43239f7202c",
+          "recovery": "baseline",
+          "recoverySha256": "c5b05d1117d44844385a69d8fcf3c22bb587ae4acb54d79b4f2fc43239f7202c",
+          "matchesRecovery": true,
+          "guid": "05515ef69ad5fbf4ab42758001b098b0",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "0c1070645c088d6586ec866c06d35b561c45b62c6256d90d5ca908d0aa25eac7",
+          "recovery": "baseline",
+          "recoverySha256": "0c1070645c088d6586ec866c06d35b561c45b62c6256d90d5ca908d0aa25eac7",
+          "matchesRecovery": true,
+          "guid": "dfc91f2408c91654383074323b891623",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset",
+          "bytes": 32799257,
+          "sha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "recovery": "baseline",
+          "recoverySha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "matchesRecovery": true,
+          "guid": "fec293232db35a441aca536c2e834e3a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "8e62c013bd241405c316000a3384823ab04fb080e97ce209a9a0449579f9470e",
+          "recovery": "baseline",
+          "recoverySha256": "8e62c013bd241405c316000a3384823ab04fb080e97ce209a9a0449579f9470e",
+          "matchesRecovery": true,
+          "guid": "fec293232db35a441aca536c2e834e3a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "bdc2ab499676fe2d3f0ab2688fd4d674912c1bc6b9a869acf044e20747bfbc86",
+          "recovery": "baseline",
+          "recoverySha256": "bdc2ab499676fe2d3f0ab2688fd4d674912c1bc6b9a869acf044e20747bfbc86",
+          "matchesRecovery": true,
+          "guid": "9b30863c5d7882949891f29ec7913044",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "82e2db8935398d4b3d06b93e21a246ef3217ca69f7ed309254befe93b9a5e5ac",
+          "recovery": "baseline",
+          "recoverySha256": "82e2db8935398d4b3d06b93e21a246ef3217ca69f7ed309254befe93b9a5e5ac",
+          "matchesRecovery": true,
+          "guid": "9b30863c5d7882949891f29ec7913044",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset",
+          "bytes": 1212,
+          "sha256": "ac1a0bc93305396ca7b58d6d15d5f20a305009f5836a62b62a0d64401d6fdb60",
+          "recovery": "baseline",
+          "recoverySha256": "ac1a0bc93305396ca7b58d6d15d5f20a305009f5836a62b62a0d64401d6fdb60",
+          "matchesRecovery": true,
+          "guid": "4f0d199575588fe4092f98d643c83f17",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-first-outfit.asset:34"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "fe288949c7d56250e2a351c2f0e3e966282ccd572f92d0a4650e2bcf299319b8",
+          "recovery": "baseline",
+          "recoverySha256": "fe288949c7d56250e2a351c2f0e3e966282ccd572f92d0a4650e2bcf299319b8",
+          "matchesRecovery": true,
+          "guid": "4f0d199575588fe4092f98d643c83f17",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-first-outfit.asset:34"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "749379c66e18430cba7ac8b27ee8800b2e5099676b74340a3f097074e7a292c4",
+          "recovery": "baseline",
+          "recoverySha256": "749379c66e18430cba7ac8b27ee8800b2e5099676b74340a3f097074e7a292c4",
+          "matchesRecovery": true,
+          "guid": "7e785c4a9a9b6104f9196e3d6b4cdd69",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "14f2b50fb8ae7739b82024a703502057e367e0877882b21fef1bd94276239f31",
+          "recovery": "baseline",
+          "recoverySha256": "14f2b50fb8ae7739b82024a703502057e367e0877882b21fef1bd94276239f31",
+          "matchesRecovery": true,
+          "guid": "7e785c4a9a9b6104f9196e3d6b4cdd69",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset",
+          "bytes": 32799257,
+          "sha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b",
+          "recovery": "baseline",
+          "recoverySha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b",
+          "matchesRecovery": true,
+          "guid": "01dc80c941759dd42857e313ecb108a6",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "ecc22c44923c6170ff76348e6ebb829d26f227570a3aec6c9cfbdb431b637121",
+          "recovery": "baseline",
+          "recoverySha256": "ecc22c44923c6170ff76348e6ebb829d26f227570a3aec6c9cfbdb431b637121",
+          "matchesRecovery": true,
+          "guid": "01dc80c941759dd42857e313ecb108a6",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "42180821422066a0be0f043890d2471e480c303c30685e985f3730f124fcd40e",
+          "recovery": "baseline",
+          "recoverySha256": "42180821422066a0be0f043890d2471e480c303c30685e985f3730f124fcd40e",
+          "matchesRecovery": true,
+          "guid": "51992b9bf76a7b645b00d3d0fd8e7df2",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "41d74db30e5f1a91a49eaf6cb23b79a9578f6ea86778627ce701ece05de57e51",
+          "recovery": "baseline",
+          "recoverySha256": "41d74db30e5f1a91a49eaf6cb23b79a9578f6ea86778627ce701ece05de57e51",
+          "matchesRecovery": true,
+          "guid": "51992b9bf76a7b645b00d3d0fd8e7df2",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset",
+          "bytes": 1108,
+          "sha256": "3781b74a62bff0fe290a40f1b47f27cca35fe0070e0574e6be1ba5b3e95c8edf",
+          "recovery": "baseline",
+          "recoverySha256": "3781b74a62bff0fe290a40f1b47f27cca35fe0070e0574e6be1ba5b3e95c8edf",
+          "matchesRecovery": true,
+          "guid": "c1b0d88e6426d364980b151eb3fb039c",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-first-outfit.asset:35"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "5aab03f3eea1b641d34761fb294f7217e5aff790dc631b2dc1cd658a77dcd7c4",
+          "recovery": "baseline",
+          "recoverySha256": "5aab03f3eea1b641d34761fb294f7217e5aff790dc631b2dc1cd658a77dcd7c4",
+          "matchesRecovery": true,
+          "guid": "c1b0d88e6426d364980b151eb3fb039c",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-first-outfit.asset:35"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "62eae7faf569af030d2e23e002c472cce7a51a788b71e9ca8b67c2ec62f97313",
+          "recovery": "baseline",
+          "recoverySha256": "62eae7faf569af030d2e23e002c472cce7a51a788b71e9ca8b67c2ec62f97313",
+          "matchesRecovery": true,
+          "guid": "a9cf6f2001d82d346935910dbac5fa9c",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "931ba9b8c0bd7629223ebcc127ac5c72b9bf9fd4c3453d0a0d24f423f157cab3",
+          "recovery": "baseline",
+          "recoverySha256": "931ba9b8c0bd7629223ebcc127ac5c72b9bf9fd4c3453d0a0d24f423f157cab3",
+          "matchesRecovery": true,
+          "guid": "a9cf6f2001d82d346935910dbac5fa9c",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "e12298a71c426dd44b5570f4ec1d13ad",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-first-outfit.asset:36"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "2fa370ecadafda3495983bee9b14f07fd8ae5896ca7abdeb8f1f290f95f85d2d",
+          "recovery": "baseline",
+          "recoverySha256": "2fa370ecadafda3495983bee9b14f07fd8ae5896ca7abdeb8f1f290f95f85d2d",
+          "matchesRecovery": true,
+          "guid": "e12298a71c426dd44b5570f4ec1d13ad",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-first-outfit.asset:36"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4.meta",
+          "bytes": 172,
+          "sha256": "3529fb67313834889389dd2f4478921c90076922ec8c2c19e708b221f216f1f7",
+          "recovery": "baseline",
+          "recoverySha256": "3529fb67313834889389dd2f4478921c90076922ec8c2c19e708b221f216f1f7",
+          "matchesRecovery": true,
+          "guid": "4a980490a8bf7a6498038bc5f45de8d7",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "a3ef69dcedf28843764c8b46510d94f4d5012d491f10279414584122d1cc6365",
+          "recovery": "baseline",
+          "recoverySha256": "a3ef69dcedf28843764c8b46510d94f4d5012d491f10279414584122d1cc6365",
+          "matchesRecovery": true,
+          "guid": "352e560f054670841ac6b615ef777e47",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset",
+          "bytes": 33191512,
+          "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "recovery": "baseline",
+          "recoverySha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "matchesRecovery": true,
+          "guid": "b1e5cb14c3139764580eaab936996874",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "e6ef75ee0ff5b38f32c0c0e5fd97a84c9452b214bbf0918f194ca648a84ba458",
+          "recovery": "baseline",
+          "recoverySha256": "e6ef75ee0ff5b38f32c0c0e5fd97a84c9452b214bbf0918f194ca648a84ba458",
+          "matchesRecovery": true,
+          "guid": "b1e5cb14c3139764580eaab936996874",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "f30ade3cd35c0479b5256d05e08db0cde9774672f09fe1a028a026542b5942ff",
+          "recovery": "baseline",
+          "recoverySha256": "f30ade3cd35c0479b5256d05e08db0cde9774672f09fe1a028a026542b5942ff",
+          "matchesRecovery": true,
+          "guid": "66f1408b1750f604980029eb5bc5af82",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:39"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "c9505114a05db1aeeee118dbbfa6145ad44bb196a4cacc72edd0e163ef98ca2b",
+          "recovery": "baseline",
+          "recoverySha256": "c9505114a05db1aeeee118dbbfa6145ad44bb196a4cacc72edd0e163ef98ca2b",
+          "matchesRecovery": true,
+          "guid": "66f1408b1750f604980029eb5bc5af82",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:39"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset",
+          "bytes": 2238,
+          "sha256": "819b6d92fe6ac8b595780d00c2d871825163d53694fb6ec77e90356dfa345979",
+          "recovery": "baseline",
+          "recoverySha256": "819b6d92fe6ac8b595780d00c2d871825163d53694fb6ec77e90356dfa345979",
+          "matchesRecovery": true,
+          "guid": "8ffb2c5d62944194780cea11fdb12f79",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-second-outfit.asset:79"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "a17f3086e25ac553d0a105973cabdd122bf20730aef24e12d662315af77d517a",
+          "recovery": "baseline",
+          "recoverySha256": "a17f3086e25ac553d0a105973cabdd122bf20730aef24e12d662315af77d517a",
+          "matchesRecovery": true,
+          "guid": "8ffb2c5d62944194780cea11fdb12f79",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-second-outfit.asset:79"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "10a1eed63df7a2c38c9d9f07ff1817e90c7f7f884f4a7c06b20245b99e07340c",
+          "recovery": "baseline",
+          "recoverySha256": "10a1eed63df7a2c38c9d9f07ff1817e90c7f7f884f4a7c06b20245b99e07340c",
+          "matchesRecovery": true,
+          "guid": "69a6c5e4dea04aa4dba6b15569df3641",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:38"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "cadff6bce0abcc4f273e380a6ea8c516127b089c96dd08ad277588dd3a0a7eb9",
+          "recovery": "baseline",
+          "recoverySha256": "cadff6bce0abcc4f273e380a6ea8c516127b089c96dd08ad277588dd3a0a7eb9",
+          "matchesRecovery": true,
+          "guid": "69a6c5e4dea04aa4dba6b15569df3641",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:38"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "0159909e9ccb453489e58e532c81f57e",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-second-outfit.asset:80"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "9b56e0175f97e9496527a22caa5e858bbb74917e6fab00a2f81ddb63551b5e15",
+          "recovery": "baseline",
+          "recoverySha256": "9b56e0175f97e9496527a22caa5e858bbb74917e6fab00a2f81ddb63551b5e15",
+          "matchesRecovery": true,
+          "guid": "0159909e9ccb453489e58e532c81f57e",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-second-outfit.asset:80"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2.meta",
+          "bytes": 172,
+          "sha256": "7511ac3c7c56a1aa20114334774652e30307e1e127d799802127fc266ea808b8",
+          "recovery": "baseline",
+          "recoverySha256": "7511ac3c7c56a1aa20114334774652e30307e1e127d799802127fc266ea808b8",
+          "matchesRecovery": true,
+          "guid": "a732b1d1fc996c14c94a537175b3ac28",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17.meta",
+          "bytes": 172,
+          "sha256": "a60e9037c5e1ea1a0e40be33d6f2f5f425d1ab3609d76198e24f87cbd9088757",
+          "recovery": "baseline",
+          "recoverySha256": "a60e9037c5e1ea1a0e40be33d6f2f5f425d1ab3609d76198e24f87cbd9088757",
+          "matchesRecovery": true,
+          "guid": "6fef3d2ad6f64bc4faca5e8b3409a7d3",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac.meta",
+          "bytes": 172,
+          "sha256": "bcf8024a77e263b9efcba2b0972128d9fcc06bb8d3d6f9d859e3c5401657b18b",
+          "recovery": "baseline",
+          "recoverySha256": "bcf8024a77e263b9efcba2b0972128d9fcc06bb8d3d6f9d859e3c5401657b18b",
+          "matchesRecovery": true,
+          "guid": "bac950dc3b839144dbce4cc73eaaf5d4",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "5bd3fd4bf8f47a1f6d5e4d2ba75ea9b5b875924a267a4d5018d4d5dc48035695",
+          "recovery": "baseline",
+          "recoverySha256": "5bd3fd4bf8f47a1f6d5e4d2ba75ea9b5b875924a267a4d5018d4d5dc48035695",
+          "matchesRecovery": true,
+          "guid": "ba72509523083ed47a76b599858a3d48",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/Body.asset",
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": "baseline",
+          "recoverySha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "matchesRecovery": true,
+          "guid": "342e6cd5b9d92f94bbd35ac1e759fe60",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "c79ef87035cf7c44d08e9b9ca13283559deaaf367aeebfaff42794f2c9e411ee",
+          "recovery": "baseline",
+          "recoverySha256": "c79ef87035cf7c44d08e9b9ca13283559deaaf367aeebfaff42794f2c9e411ee",
+          "matchesRecovery": true,
+          "guid": "342e6cd5b9d92f94bbd35ac1e759fe60",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "95fc42370a521dae66e8153950717dccc20d54321c9df1c9f4c8a4c0eed570cc",
+          "recovery": "baseline",
+          "recoverySha256": "95fc42370a521dae66e8153950717dccc20d54321c9df1c9f4c8a4c0eed570cc",
+          "matchesRecovery": true,
+          "guid": "2a78cbbd43f95814a92a95d8f5b2748a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\FitState.asset:26"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "e123b6e8cca4acc2637a53dd586ab72e44970f7bda885e4e58286e935f538337",
+          "recovery": "baseline",
+          "recoverySha256": "e123b6e8cca4acc2637a53dd586ab72e44970f7bda885e4e58286e935f538337",
+          "matchesRecovery": true,
+          "guid": "2a78cbbd43f95814a92a95d8f5b2748a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\FitState.asset:26"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/FitState.asset",
+          "bytes": 1317,
+          "sha256": "0caee4b8c0e23d4deec513ad757bf3e1f927f3e28ad210f02c4008d93ad2c383",
+          "recovery": "baseline",
+          "recoverySha256": "0caee4b8c0e23d4deec513ad757bf3e1f927f3e28ad210f02c4008d93ad2c383",
+          "matchesRecovery": true,
+          "guid": "d259a8051692b1143a3418c4c9ae2a36",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-third-outfit.asset:41"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "9debdf3ecaa0dd1e0e94f177ff6246ac021e75b6c7cf8c5ee78258d0f4c77720",
+          "recovery": "baseline",
+          "recoverySha256": "9debdf3ecaa0dd1e0e94f177ff6246ac021e75b6c7cf8c5ee78258d0f4c77720",
+          "matchesRecovery": true,
+          "guid": "d259a8051692b1143a3418c4c9ae2a36",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-third-outfit.asset:41"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "f419d233dc26efd76365263fd13b03230d3a72c290213167e0750e8fdf2ccab8",
+          "recovery": "baseline",
+          "recoverySha256": "f419d233dc26efd76365263fd13b03230d3a72c290213167e0750e8fdf2ccab8",
+          "matchesRecovery": true,
+          "guid": "0a30a3544230dc4459ce48a8897199de",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "3d1ef587c4bec0043aeafff46f35ef7d2a7d78598c1ff7e634bc703b4bd4e7ff",
+          "recovery": "baseline",
+          "recoverySha256": "3d1ef587c4bec0043aeafff46f35ef7d2a7d78598c1ff7e634bc703b4bd4e7ff",
+          "matchesRecovery": true,
+          "guid": "0a30a3544230dc4459ce48a8897199de",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/Body.asset",
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": "baseline",
+          "recoverySha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "matchesRecovery": true,
+          "guid": "a65f8ab21a388ba4f913fc0cc2dabc3f",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "0716e46333be8fbb0c7788c96c167069e919d0f7328003547d1ae41af6003f0a",
+          "recovery": "baseline",
+          "recoverySha256": "0716e46333be8fbb0c7788c96c167069e919d0f7328003547d1ae41af6003f0a",
+          "matchesRecovery": true,
+          "guid": "a65f8ab21a388ba4f913fc0cc2dabc3f",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "b7a5afebf772c3650dd081440c0c1a8d8637259a2b00cfa2233a40329a92a007",
+          "recovery": "baseline",
+          "recoverySha256": "b7a5afebf772c3650dd081440c0c1a8d8637259a2b00cfa2233a40329a92a007",
+          "matchesRecovery": true,
+          "guid": "d31dcf9b59944934cbb6e9993406bed3",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "253253908d32c3645107cdc248202dc1ecb366f81a2225affdf5c5501b19785d",
+          "recovery": "baseline",
+          "recoverySha256": "253253908d32c3645107cdc248202dc1ecb366f81a2225affdf5c5501b19785d",
+          "matchesRecovery": true,
+          "guid": "d31dcf9b59944934cbb6e9993406bed3",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/FitState.asset",
+          "bytes": 1104,
+          "sha256": "fae7b89c3167909e34ae3f077a680a8ec71ede9c7552a7373f0d12bfb6277f8f",
+          "recovery": "baseline",
+          "recoverySha256": "fae7b89c3167909e34ae3f077a680a8ec71ede9c7552a7373f0d12bfb6277f8f",
+          "matchesRecovery": true,
+          "guid": "6b9fcdda86b88b7408f8f0992eddc9f6",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-third-outfit.asset:43"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "45dca39aafadd3ba63c425540c680ad5b5ea13675bb4899ac97980116cb2feb4",
+          "recovery": "baseline",
+          "recoverySha256": "45dca39aafadd3ba63c425540c680ad5b5ea13675bb4899ac97980116cb2feb4",
+          "matchesRecovery": true,
+          "guid": "6b9fcdda86b88b7408f8f0992eddc9f6",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-third-outfit.asset:43"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "90f0d41e51074fbb0562a28608e8d0577fa1b8c008682032e6778007047f87d3",
+          "recovery": "baseline",
+          "recoverySha256": "90f0d41e51074fbb0562a28608e8d0577fa1b8c008682032e6778007047f87d3",
+          "matchesRecovery": true,
+          "guid": "1831656d34e379247ab52752093474e3",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "44db8953711dc29b24584d2855c8f18b33bbb6d1d67a0e854ac3853a1822ed50",
+          "recovery": "baseline",
+          "recoverySha256": "44db8953711dc29b24584d2855c8f18b33bbb6d1d67a0e854ac3853a1822ed50",
+          "matchesRecovery": true,
+          "guid": "1831656d34e379247ab52752093474e3",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/Body.asset",
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": "baseline",
+          "recoverySha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "matchesRecovery": true,
+          "guid": "4eac6344637c1a64ca20d2f93470a56b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "07b1a381c8cfdba5b410cfa618af354218745f655a56153c1df1bda7624581ab",
+          "recovery": "baseline",
+          "recoverySha256": "07b1a381c8cfdba5b410cfa618af354218745f655a56153c1df1bda7624581ab",
+          "matchesRecovery": true,
+          "guid": "4eac6344637c1a64ca20d2f93470a56b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "6d63b401242397c41c26ec38de4f3908b6459690f081fa2d22ed574803ca9aa8",
+          "recovery": "baseline",
+          "recoverySha256": "6d63b401242397c41c26ec38de4f3908b6459690f081fa2d22ed574803ca9aa8",
+          "matchesRecovery": true,
+          "guid": "34f7a3cf52784794992c33414f459210",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "06b89be4be32d9b49818795961fc52e90b7527c1833227a408561274f4a22b5a",
+          "recovery": "baseline",
+          "recoverySha256": "06b89be4be32d9b49818795961fc52e90b7527c1833227a408561274f4a22b5a",
+          "matchesRecovery": true,
+          "guid": "34f7a3cf52784794992c33414f459210",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/FitState.asset",
+          "bytes": 1246,
+          "sha256": "f09e7e96e102d02be39f173e42fc37f3cbdda83a00c0e9cbc1573b7b7941af9d",
+          "recovery": "baseline",
+          "recoverySha256": "f09e7e96e102d02be39f173e42fc37f3cbdda83a00c0e9cbc1573b7b7941af9d",
+          "matchesRecovery": true,
+          "guid": "7a1417b853a1072449e60c5b41917439",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-third-outfit.asset:42"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "3ee31998d35666e141a97ba3434d30dd23d576d0191bb008343fb09d827c1396",
+          "recovery": "baseline",
+          "recoverySha256": "3ee31998d35666e141a97ba3434d30dd23d576d0191bb008343fb09d827c1396",
+          "matchesRecovery": true,
+          "guid": "7a1417b853a1072449e60c5b41917439",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-third-outfit.asset:42"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "4f088d0611053d1bd5372ef01be21b6aeb5e9c08524d62f29392ba0dd8bdd478",
+          "recovery": "baseline",
+          "recoverySha256": "4f088d0611053d1bd5372ef01be21b6aeb5e9c08524d62f29392ba0dd8bdd478",
+          "matchesRecovery": true,
+          "guid": "af5da10804e68854e931250988214987",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "5fd012844f2c56d87db15ca732c082c75bc4b3ae3bccf3de69ec2f0c296210b6",
+          "recovery": "baseline",
+          "recoverySha256": "5fd012844f2c56d87db15ca732c082c75bc4b3ae3bccf3de69ec2f0c296210b6",
+          "matchesRecovery": true,
+          "guid": "af5da10804e68854e931250988214987",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\DraftAttempts\\ffc251e0c3f54ba5b4d2306f9d6a7c98\\third-outfit\\d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "a4171a259372bcd4392e4dd39dc18667",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-third-outfit.asset:44"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "52b7ef729278412147b6100960c890f19141fb06034ec17d85489d3cd1e2f714",
+          "recovery": "baseline",
+          "recoverySha256": "52b7ef729278412147b6100960c890f19141fb06034ec17d85489d3cd1e2f714",
+          "matchesRecovery": true,
+          "guid": "a4171a259372bcd4392e4dd39dc18667",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Day5-20261006-001818\\Preview-third-outfit.asset:44"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854",
+      "kind": "SetupCandidates",
+      "decision": "HOLD",
+      "recommendation": "Production/Wardrobe/Candidate-first/second/third-outfit assets serialize GUID refs into this folder (7 unique ref lines to FitState assets). Keep until candidate refs are detached or replaced.",
+      "fileCount": 48,
+      "totalBytes": 142886904.0,
+      "recoveryMappedFileCount": 48,
+      "hashMatchedFileCount": 48,
+      "files": [
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit.meta",
+          "bytes": 172,
+          "sha256": "62ab675aa110d51e90603f03a4c99cd82bd90195f2060cad0bf509327757f7f9",
+          "recovery": "baseline",
+          "recoverySha256": "62ab675aa110d51e90603f03a4c99cd82bd90195f2060cad0bf509327757f7f9",
+          "matchesRecovery": true,
+          "guid": "43aac2f2ccf5d1849a598e3c42172edb",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit.meta",
+          "bytes": 172,
+          "sha256": "20bcb2a8b3269364ae185e177f26197d0e14491c097adf6883d7914e07cce780",
+          "recovery": "baseline",
+          "recoverySha256": "20bcb2a8b3269364ae185e177f26197d0e14491c097adf6883d7914e07cce780",
+          "matchesRecovery": true,
+          "guid": "9a212fe8057da354db0cf26472bca934",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit.meta",
+          "bytes": 172,
+          "sha256": "78416604766b8e0cd20174c7a3460b367395f0ee31b1a2bbee7862b53b224e2e",
+          "recovery": "baseline",
+          "recoverySha256": "78416604766b8e0cd20174c7a3460b367395f0ee31b1a2bbee7862b53b224e2e",
+          "matchesRecovery": true,
+          "guid": "7eb87a700aa78f948b9e9947b598243b",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e.meta",
+          "bytes": 172,
+          "sha256": "6e9ea47f9ca5545de29230718321dad2b34742ab3a73d0d365eb8f13be69c6b1",
+          "recovery": "baseline",
+          "recoverySha256": "6e9ea47f9ca5545de29230718321dad2b34742ab3a73d0d365eb8f13be69c6b1",
+          "matchesRecovery": true,
+          "guid": "1609eb35bb2361c4393ed597d5d0169d",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981.meta",
+          "bytes": 172,
+          "sha256": "238a4cd6d5b709b2ede519a1f4de5486f5de8b4eba36526f2f413d0f47aa608b",
+          "recovery": "baseline",
+          "recoverySha256": "238a4cd6d5b709b2ede519a1f4de5486f5de8b4eba36526f2f413d0f47aa608b",
+          "matchesRecovery": true,
+          "guid": "949278731fc7d864d9cbcfc6585a0a0b",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "f30a275c0f5b6656c5c63492cab69a0b94fbdb236a6f975f47f024b809a3bad1",
+          "recovery": "baseline",
+          "recoverySha256": "f30a275c0f5b6656c5c63492cab69a0b94fbdb236a6f975f47f024b809a3bad1",
+          "matchesRecovery": true,
+          "guid": "656c5cb020aad1c43add09b4ea74d899",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset",
+          "bytes": 32799257,
+          "sha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "recovery": "baseline",
+          "recoverySha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "matchesRecovery": true,
+          "guid": "f470c9850a9d447498079507fed162fc",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "35c5f7e30dd293bea310a22c8e61695c1acee0528cfcbc91b7fbf6a63adf96b2",
+          "recovery": "baseline",
+          "recoverySha256": "35c5f7e30dd293bea310a22c8e61695c1acee0528cfcbc91b7fbf6a63adf96b2",
+          "matchesRecovery": true,
+          "guid": "f470c9850a9d447498079507fed162fc",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "34f2a3c43ac07ec14b6945b22a417a1600a9ec3bcd337cf01f7372854a0e9526",
+          "recovery": "baseline",
+          "recoverySha256": "34f2a3c43ac07ec14b6945b22a417a1600a9ec3bcd337cf01f7372854a0e9526",
+          "matchesRecovery": true,
+          "guid": "2cc369239e8fe0844995b89d3f11396a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "1401a85b2bb44ccb99c24b6cc367630843912322d12840a8f31232d2889397ea",
+          "recovery": "baseline",
+          "recoverySha256": "1401a85b2bb44ccb99c24b6cc367630843912322d12840a8f31232d2889397ea",
+          "matchesRecovery": true,
+          "guid": "2cc369239e8fe0844995b89d3f11396a",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:24"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset",
+          "bytes": 1212,
+          "sha256": "811fd7bb77346a6ded38a2ae3977ba7d427e24a81b117315c43b9b18212bcabc",
+          "recovery": "baseline",
+          "recoverySha256": "811fd7bb77346a6ded38a2ae3977ba7d427e24a81b117315c43b9b18212bcabc",
+          "matchesRecovery": true,
+          "guid": "34cebecf2ffe19e4aaa57c300a90f0fe",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-first-outfit.asset:34"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "f918d9e814877f387c64f8f46d35920b2558883444d2b425761c7072ba0bf94b",
+          "recovery": "baseline",
+          "recoverySha256": "f918d9e814877f387c64f8f46d35920b2558883444d2b425761c7072ba0bf94b",
+          "matchesRecovery": true,
+          "guid": "34cebecf2ffe19e4aaa57c300a90f0fe",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-first-outfit.asset:34"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "aa8082002517203c0d3d3885d2e5c3caff5c44813cb5b678f8100586f1f456c0",
+          "recovery": "baseline",
+          "recoverySha256": "aa8082002517203c0d3d3885d2e5c3caff5c44813cb5b678f8100586f1f456c0",
+          "matchesRecovery": true,
+          "guid": "6d7a25bc280f6904796149962b1405ff",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "6a4b57d6c3f30674a81a10a42e3eb5344e0127eb2848a868f18e668d46799289",
+          "recovery": "baseline",
+          "recoverySha256": "6a4b57d6c3f30674a81a10a42e3eb5344e0127eb2848a868f18e668d46799289",
+          "matchesRecovery": true,
+          "guid": "6d7a25bc280f6904796149962b1405ff",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset",
+          "bytes": 32799257,
+          "sha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b",
+          "recovery": "baseline",
+          "recoverySha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b",
+          "matchesRecovery": true,
+          "guid": "feffb7226ee40d74c8c6056bb63e94d5",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "d1d92357150e85796e2e8c3c0fee996a9ea314b2f9459b3cb252bc6c2ae45ede",
+          "recovery": "baseline",
+          "recoverySha256": "d1d92357150e85796e2e8c3c0fee996a9ea314b2f9459b3cb252bc6c2ae45ede",
+          "matchesRecovery": true,
+          "guid": "feffb7226ee40d74c8c6056bb63e94d5",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "6c5e2a38e4a51b9b527e8be5f07c449f898e6f278e78123c6bd6c2b624ef5e24",
+          "recovery": "baseline",
+          "recoverySha256": "6c5e2a38e4a51b9b527e8be5f07c449f898e6f278e78123c6bd6c2b624ef5e24",
+          "matchesRecovery": true,
+          "guid": "eaddb344aa567084d89862a2704ad21f",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "f437e278be6f4859e3fe3ae07f2b3f2556b98158d81e151045a8901285d01bfe",
+          "recovery": "baseline",
+          "recoverySha256": "f437e278be6f4859e3fe3ae07f2b3f2556b98158d81e151045a8901285d01bfe",
+          "matchesRecovery": true,
+          "guid": "eaddb344aa567084d89862a2704ad21f",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:23"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset",
+          "bytes": 1108,
+          "sha256": "0ff70f8c2813dcbd8cb56ec80944c9be16f5eccb780cdeef881ddd17f56e5bed",
+          "recovery": "baseline",
+          "recoverySha256": "0ff70f8c2813dcbd8cb56ec80944c9be16f5eccb780cdeef881ddd17f56e5bed",
+          "matchesRecovery": true,
+          "guid": "ea58e0929e0aef847ac480459ed46841",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-first-outfit.asset:35"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "26af67bde8aa37dc2b4d1b91b32d5d5c9ecc08c743e48aa2500996670830fe84",
+          "recovery": "baseline",
+          "recoverySha256": "26af67bde8aa37dc2b4d1b91b32d5d5c9ecc08c743e48aa2500996670830fe84",
+          "matchesRecovery": true,
+          "guid": "ea58e0929e0aef847ac480459ed46841",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-first-outfit.asset:35"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "4c51dd27be296bedcd1ca2c10fac881d1d8471318dfcc67b0d07e61709fb3a04",
+          "recovery": "baseline",
+          "recoverySha256": "4c51dd27be296bedcd1ca2c10fac881d1d8471318dfcc67b0d07e61709fb3a04",
+          "matchesRecovery": true,
+          "guid": "c0cf764c9a3bbd8479b0a7b07bacce26",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "6063968a29e2263903b09228a8a0d932d20735f0f58ccedfe539395bf15df89b",
+          "recovery": "baseline",
+          "recoverySha256": "6063968a29e2263903b09228a8a0d932d20735f0f58ccedfe539395bf15df89b",
+          "matchesRecovery": true,
+          "guid": "c0cf764c9a3bbd8479b0a7b07bacce26",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\first-outfit\\a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981\\FitState.asset:22"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "95833867ed725ff41a729a6ad317e7d7",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-first-outfit.asset:36"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "694009e2e87e28253f9dceb04a6f23c4522dc69b9cea2540eed386f46c8eeada",
+          "recovery": "baseline",
+          "recoverySha256": "694009e2e87e28253f9dceb04a6f23c4522dc69b9cea2540eed386f46c8eeada",
+          "matchesRecovery": true,
+          "guid": "95833867ed725ff41a729a6ad317e7d7",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-first-outfit.asset:36"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4.meta",
+          "bytes": 172,
+          "sha256": "eeec861dd3db02ad755de47db5d3eee1170365a59c1557a48c7c7f025cb0b0f6",
+          "recovery": "baseline",
+          "recoverySha256": "eeec861dd3db02ad755de47db5d3eee1170365a59c1557a48c7c7f025cb0b0f6",
+          "matchesRecovery": true,
+          "guid": "9c9524403e120f14f8b11414ee1a7d63",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "78de39e51a378ed86a95c7e091569e092e74fc6129c9fa9f79f48b0adcf6fb0c",
+          "recovery": "baseline",
+          "recoverySha256": "78de39e51a378ed86a95c7e091569e092e74fc6129c9fa9f79f48b0adcf6fb0c",
+          "matchesRecovery": true,
+          "guid": "c85f35ae78fdd124aa87284bf9cf582f",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset",
+          "bytes": 33191512,
+          "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "recovery": "baseline",
+          "recoverySha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "matchesRecovery": true,
+          "guid": "71f8fab1f54b07c43b784a520d4f1ccc",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "ad358845e1690f199d3aba1c805d319278e4949a256f979594cff374ad87d5d8",
+          "recovery": "baseline",
+          "recoverySha256": "ad358845e1690f199d3aba1c805d319278e4949a256f979594cff374ad87d5d8",
+          "matchesRecovery": true,
+          "guid": "71f8fab1f54b07c43b784a520d4f1ccc",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "779a4aa22fba2d155dbb52e21b5d02991c1a936e2a6d1a4013a261a3bc538635",
+          "recovery": "baseline",
+          "recoverySha256": "779a4aa22fba2d155dbb52e21b5d02991c1a936e2a6d1a4013a261a3bc538635",
+          "matchesRecovery": true,
+          "guid": "7eb0a44c46177ae49aa15ba3f7aa625e",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:39"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "938ba32d0e1da6ca355ac1e4ad4a04e5f97d88b12a81ac3f59b0fb31b861464c",
+          "recovery": "baseline",
+          "recoverySha256": "938ba32d0e1da6ca355ac1e4ad4a04e5f97d88b12a81ac3f59b0fb31b861464c",
+          "matchesRecovery": true,
+          "guid": "7eb0a44c46177ae49aa15ba3f7aa625e",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:39"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset",
+          "bytes": 2238,
+          "sha256": "ef6a411818442d5d83bb2a7298a5c98b08e4c32fbdb967c5285bf601aefd1bc6",
+          "recovery": "baseline",
+          "recoverySha256": "ef6a411818442d5d83bb2a7298a5c98b08e4c32fbdb967c5285bf601aefd1bc6",
+          "matchesRecovery": true,
+          "guid": "8e21d983b93fc464cb76dcbabced2396",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-second-outfit.asset:79"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "e5237fe2701c91f2894dddb185ca0c437c2b8b34488e3eaff57e7af53db40716",
+          "recovery": "baseline",
+          "recoverySha256": "e5237fe2701c91f2894dddb185ca0c437c2b8b34488e3eaff57e7af53db40716",
+          "matchesRecovery": true,
+          "guid": "8e21d983b93fc464cb76dcbabced2396",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-second-outfit.asset:79"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "9d92db2dccf92e434bb711f1ce96f95cb794e1b1feda2d75245122c2e9065f1b",
+          "recovery": "baseline",
+          "recoverySha256": "9d92db2dccf92e434bb711f1ce96f95cb794e1b1feda2d75245122c2e9065f1b",
+          "matchesRecovery": true,
+          "guid": "29afd863f993dd346a88a141ebd08dd0",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:38"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "49da63233eb879cf2dfa07fad61d8cad513d5005978771a03b7d40c504126891",
+          "recovery": "baseline",
+          "recoverySha256": "49da63233eb879cf2dfa07fad61d8cad513d5005978771a03b7d40c504126891",
+          "matchesRecovery": true,
+          "guid": "29afd863f993dd346a88a141ebd08dd0",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\second-outfit\\3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4\\FitState.asset:38"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "44baa5aa8b3d74e418ab63aac1e6571d",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-second-outfit.asset:80"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "7ec3d0ffa88b543a383388a9437b12967577947e52cd270fc34054a223f8a9bd",
+          "recovery": "baseline",
+          "recoverySha256": "7ec3d0ffa88b543a383388a9437b12967577947e52cd270fc34054a223f8a9bd",
+          "matchesRecovery": true,
+          "guid": "44baa5aa8b3d74e418ab63aac1e6571d",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-second-outfit.asset:80"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799.meta",
+          "bytes": 172,
+          "sha256": "2ecb7bf32fe859aaa48294d02b318c1502480e3a1e5801e730dcf56a4e8943e4",
+          "recovery": "baseline",
+          "recoverySha256": "2ecb7bf32fe859aaa48294d02b318c1502480e3a1e5801e730dcf56a4e8943e4",
+          "matchesRecovery": true,
+          "guid": "0467c3c10414ab245b629178b5f886d3",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/naked.meta",
+          "bytes": 172,
+          "sha256": "7c3bf4b5dc85d78732c20a425198825770424a6d0aac5885544e70ce6ec394ee",
+          "recovery": "baseline",
+          "recoverySha256": "7c3bf4b5dc85d78732c20a425198825770424a6d0aac5885544e70ce6ec394ee",
+          "matchesRecovery": true,
+          "guid": "06dbbd725c2e0ea45aafba3f7115815a",
+          "incomingSerializedGuidReferences": []
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/Body.asset",
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": "baseline",
+          "recoverySha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "matchesRecovery": true,
+          "guid": "b20ee712070e06048ab24e224af69685",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/Body.asset.meta",
+          "bytes": 188,
+          "sha256": "ccf598fa8f79876fbe4cb830a936a0e958ce7c64551e0cab6ba8fa05cbe58dbf",
+          "recovery": "baseline",
+          "recoverySha256": "ccf598fa8f79876fbe4cb830a936a0e958ce7c64551e0cab6ba8fa05cbe58dbf",
+          "matchesRecovery": true,
+          "guid": "b20ee712070e06048ab24e224af69685",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:19",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\SurfaceBindings.asset:15"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/DissolveProfile.asset",
+          "bytes": 4727,
+          "sha256": "dd1a5411470be77f6d6834a41f78ee1757eb652378401b6da9dc101f034b421d",
+          "recovery": "baseline",
+          "recoverySha256": "dd1a5411470be77f6d6834a41f78ee1757eb652378401b6da9dc101f034b421d",
+          "matchesRecovery": true,
+          "guid": "04356f65de749fc48919ace6a55f4fc2",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:26"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/DissolveProfile.asset.meta",
+          "bytes": 189,
+          "sha256": "e27b9eee9e4fe50956c0a5e8134d7d432bf0863c2ab0b0431fd03cc4300d0cde",
+          "recovery": "baseline",
+          "recoverySha256": "e27b9eee9e4fe50956c0a5e8134d7d432bf0863c2ab0b0431fd03cc4300d0cde",
+          "matchesRecovery": true,
+          "guid": "04356f65de749fc48919ace6a55f4fc2",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:26"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/FitState.asset",
+          "bytes": 1317,
+          "sha256": "aa50ae58ae88aba642701e24894581b3ed2d7f46c8b498f2eafb2ce9d7682199",
+          "recovery": "baseline",
+          "recoverySha256": "aa50ae58ae88aba642701e24894581b3ed2d7f46c8b498f2eafb2ce9d7682199",
+          "matchesRecovery": true,
+          "guid": "540bba1b8ed27054789136f02057728b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-third-outfit.asset:41"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "8a1a07974877ed300bf9216af859757747386bbb7a2791a7ebd8146030bf0846",
+          "recovery": "baseline",
+          "recoverySha256": "8a1a07974877ed300bf9216af859757747386bbb7a2791a7ebd8146030bf0846",
+          "matchesRecovery": true,
+          "guid": "540bba1b8ed27054789136f02057728b",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-third-outfit.asset:41"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/SurfaceBindings.asset",
+          "bytes": 2704474,
+          "sha256": "816e8df5d5f4b2cae3fc5968313418b29ef274a96896506774b9c3c4c32f8e0f",
+          "recovery": "baseline",
+          "recoverySha256": "816e8df5d5f4b2cae3fc5968313418b29ef274a96896506774b9c3c4c32f8e0f",
+          "matchesRecovery": true,
+          "guid": "032f80c712d51d0498d8ebf37c9e0987",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/SurfaceBindings.asset.meta",
+          "bytes": 189,
+          "sha256": "ee289cf814c3044c1e9018a9601d865a54891b6e714ae9b7d1833a14ff97cf79",
+          "recovery": "baseline",
+          "recoverySha256": "ee289cf814c3044c1e9018a9601d865a54891b6e714ae9b7d1833a14ff97cf79",
+          "matchesRecovery": true,
+          "guid": "032f80c712d51d0498d8ebf37c9e0987",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\DissolveProfile.asset:68",
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\TestData\\WardrobeRuntime\\SetupCandidates\\685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854\\third-outfit\\429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799\\FitState.asset:25"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/naked/FitState.asset",
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": "baseline",
+          "recoverySha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "matchesRecovery": true,
+          "guid": "3d631cde34a3d914fa4dcb4833db9496",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-third-outfit.asset:42"
+          ]
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/naked/FitState.asset.meta",
+          "bytes": 189,
+          "sha256": "debba639fcf410ca9422a2b58dbfe907114269a0a976bf8ed7e5cd0f4dabcfae",
+          "recovery": "baseline",
+          "recoverySha256": "debba639fcf410ca9422a2b58dbfe907114269a0a976bf8ed7e5cd0f4dabcfae",
+          "matchesRecovery": true,
+          "guid": "3d631cde34a3d914fa4dcb4833db9496",
+          "incomingSerializedGuidReferences": [
+            "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\Production\\Wardrobe\\Candidate-third-outfit.asset:42"
+          ]
+        }
+      ]
+    }
+  ]
+}

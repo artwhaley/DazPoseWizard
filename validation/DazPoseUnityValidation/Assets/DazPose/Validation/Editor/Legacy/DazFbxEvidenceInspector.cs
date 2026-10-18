@@ -15,9 +15,7 @@ namespace DazPose.UnityValidation
         private const string OutputDirectory = "TestOutput/appearance-evidence";
         private const double MovedThreshold = 1e-7; // Mesh-local Unity units; recorded in every report.
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Inspect Selected FBX Evidence")]
-#endif
+        [MenuItem("DazPose/Diagnostics/Inspect Selected FBX Evidence")]
         public static void InspectSelected()
         {
             string path = AssetDatabase.GetAssetPath(Selection.activeObject);

@@ -1,3 +1,9 @@
+# Current cleanup execution — October 18
+
+Task 1 C00–C10 is the active cleanup queue on main. Use [the execution report](docs/cleanup-task1/EXECUTION_REPORT.md) and [current ownership map](docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md) before following older plan links below. The October 7 authoring-readiness plan remains preserved historical/product context; it does not supersede the active cleanup gates. The moved D1–D5 ticket packet is under [oldtickets/D1-D5](oldtickets/D1-D5/README_FIRST.md).
+
+The user authorized the reviewed Task 1 stack in `newtickets/DazPoseWizard_Task1_Cleanup_Execution_Packet/START_HERE.md`. Execute C00–C10 on main; no new branch or push. See `docs/cleanup-task1/EXECUTION_REPORT.md` for verified state and outstanding gates. The manual-testing boundary below remains authoritative. Historical D1-D5 tickets are under oldtickets.
+
 # Manual testing boundary - latest October 17 user instruction
 
 The user is the tester. Prepare code and the saved scene for manual Play IN UNITY.
@@ -23,9 +29,9 @@ importer. No additional user asset work is required. Complete and validate the f
 saved scene, clear its preview cutoff, and distinguish technical playback from user
 visual approval. See docs/story-runtime/D6_D8_HANDOFF.md for current status.
 
-# Current authoritative work plan
+# Authoring-readiness plan reference (after active cleanup gates)
 
-The user's October 7, 2026 authoring-readiness revision is authoritative.
+The October 7 authoring-readiness revision remains the reference for that separate product plan after active Task 1 cleanup gates; it is not the current C00–C10 execution queue.
 
 Start at [AUTHORING_READINESS_BUILD_PLAN.md](AUTHORING_READINESS_BUILD_PLAN.md)
 

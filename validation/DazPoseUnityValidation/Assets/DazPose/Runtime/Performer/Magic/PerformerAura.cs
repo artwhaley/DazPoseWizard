@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Magic/Aura", fileName = "Aura")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Magic/Aura", fileName = "Aura")]
     public sealed class PerformerAura : ScriptableObject
     {
         [SerializeField] private PerformerMagicStyle style;

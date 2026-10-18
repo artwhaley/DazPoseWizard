@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using DazPose.FirstPerformanceVoid;
 using DazPose.Performer;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -15,8 +14,7 @@ namespace DazPose.Editor
     /// <summary>Bakes project-owned Generic upper-body Gesture clips without editing source clips.</summary>
     public static class PerformerGestureBaker
     {
-        private const string GestureFolder = "Assets/DazPose/Generated/Gestures";
-        private const string AcceptanceFolder = GestureFolder + "/Acceptance";
+        private const string GestureFolder = "Assets/Production/Content/Gestures";
         private const string MaskPath = GestureFolder + "/PerformerUpperBodyGesture.mask";
         private const string ScenePath = "Assets/Scenes/FirstPerformanceVoid.unity";
         private const float WaveDuration = 1.4f;
@@ -67,89 +65,13 @@ namespace DazPose.Editor
                 + ". The selected source asset was read-only and was not edited.", gesture);
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Gesture/Generate Gesture Acceptance Assets")]
-#endif
-        public static void GenerateAcceptanceWave()
-        {
-            if (EditorApplication.isPlayingOrWillChangePlaymode)
-                throw new InvalidOperationException("Generate Gesture acceptance assets in Edit Mode.");
-            Scene scene = SceneManager.GetSceneByPath(ScenePath);
-            if (!scene.IsValid() || !scene.isLoaded)
-                throw new InvalidOperationException("Open the existing FirstPerformanceVoid scene before generating the Gesture acceptance Wave.");
 
-            FirstPerformanceVoidControls[] controlMatches = scene.GetRootGameObjects()
-                .SelectMany(root => root.GetComponentsInChildren<FirstPerformanceVoidControls>(true)).ToArray();
-            if (controlMatches.Length != 1)
-                throw new InvalidOperationException("Expected exactly one FirstPerformanceVoidControls in FirstPerformanceVoid. Found "
-                    + controlMatches.Length + ".");
-            FirstPerformanceVoidControls controls = controlMatches[0];
-            var controlsData = new SerializedObject(controls);
-            SuccubusPerformer performer = Read<SuccubusPerformer>(controlsData, "performer");
-            if (performer == null || performer.gameObject.scene != scene)
-                throw new InvalidOperationException("The existing Lara reference on FirstPerformanceVoidControls is required.");
-            Animator animator = RequireRootAnimator(performer);
-            if (!PerformerGestureMaskUtility.TryCollectUpperBody(animator, out _, out _,
-                    out string[] paths, out string reason))
-                throw new InvalidOperationException(reason);
-
-            Transform shoulder = FindUniqueBone(animator, "rShldrBend");
-            Transform forearm = FindUniqueBone(animator, "rForearmBend");
-            Transform hand = FindUniqueBone(animator, "rHand");
-            string[] pathArray = { PerformerGestureMaskUtility.GetPath(animator.transform, shoulder),
-                PerformerGestureMaskUtility.GetPath(animator.transform, forearm),
-                PerformerGestureMaskUtility.GetPath(animator.transform, hand) };
-            var maskPaths = new HashSet<string>(paths, StringComparer.Ordinal);
-            foreach (string path in pathArray)
-                if (!maskPaths.Contains(path))
-                    throw new InvalidOperationException("Acceptance Wave bone path '" + path + "' is outside the resolved chestLower mask.");
-
-            EnsureFolder(GestureFolder);
-            EnsureFolder(AcceptanceFolder);
-            AvatarMask mask = CreateOrUpdateMask(animator);
-            AnimationClip clip = GetOrCreateClip(AcceptanceFolder + "/RightHandWave_Gesture.anim", "RightHandWave_Gesture");
-            BuildAcceptanceWave(clip, animator.transform, shoulder, forearm, hand);
-            ValidateAcceptanceWave(clip, pathArray);
-            PerformerGesture gesture = GetOrCreateGesture(AcceptanceFolder + "/RightHandWave.asset", "RightHandWave");
-            gesture.ConfigureInEditor(clip, 0.12f, 0.18f);
-            if (!gesture.IsReady(out reason)) throw new InvalidOperationException(reason);
-
-            Undo.RecordObjects(new UnityEngine.Object[] { performer, controls }, "Configure Gesture Acceptance");
-            AssignMask(performer, mask);
-            controls.ConfigureGestureAcceptance(gesture);
-            EditorUtility.SetDirty(performer);
-            EditorUtility.SetDirty(controls);
-            EditorUtility.SetDirty(gesture);
-
-            PerformerPoseAcceptanceHarness harness = performer.GetComponent<PerformerPoseAcceptanceHarness>();
-            if (harness != null)
-            {
-                Undo.RecordObject(harness, "Assign Gesture Acceptance Wave");
-                var harnessData = new SerializedObject(harness);
-                SerializedProperty waveProperty = harnessData.FindProperty("gestureAcceptanceWave");
-                if (waveProperty != null)
-                {
-                    waveProperty.objectReferenceValue = gesture;
-                    harnessData.ApplyModifiedProperties();
-                    EditorUtility.SetDirty(harness);
-                }
-            }
-
-            EditorSceneManager.MarkSceneDirty(scene);
-            AssetDatabase.SaveAssets();
-            if (!EditorSceneManager.SaveScene(scene))
-                throw new IOException("Could not save the Gesture references to FirstPerformanceVoid.");
-            Debug.Log("GESTURE_ACCEPTANCE_INSTALLED: " + AssetDatabase.GetAssetPath(gesture)
-                + " and " + AssetDatabase.GetAssetPath(clip) + "; mask root=chestLower; active transforms="
-                + paths.Length + "; animated bones=" + string.Join(", ", pathArray)
-                + ". Only Gesture and acceptance references were written; scene camera/environment values were not changed.", controls);
-        }
 
         private static int BakeFilteredCurves(AnimationClip source, AnimationClip destination,
             Transform animatorRoot, Transform chestLower, string[] allowedPaths)
         {
             if (source == destination)
-                throw new InvalidOperationException("The selected source clip resolves to the generated destination. Choose a vendor or project source clip outside DazPose/Generated/Gestures.");
+                throw new InvalidOperationException("The selected source clip resolves to the generated destination. Choose a vendor or project source clip outside Production/Content/Gestures.");
             if (source.legacy)
                 throw new InvalidOperationException("Legacy AnimationClips cannot be used by the performer's PlayableGraph Gesture layer.");
             ModelImporter modelImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(source)) as ModelImporter;

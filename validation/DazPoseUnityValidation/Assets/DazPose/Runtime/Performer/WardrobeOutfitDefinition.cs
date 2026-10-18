@@ -4,7 +4,7 @@ using UnityEngine;
 namespace DazPose.Performer
 {
     /// <summary>Imported equipment data. Runtime vocabulary/equipping is a separate consumer.</summary>
-    [CreateAssetMenu(menuName="DAZ Pose/Wardrobe Outfit")]
+    [CreateAssetMenu(menuName="DazPose/Wardrobe Outfit")]
     public sealed class WardrobeOutfitDefinition : ScriptableObject
     {
         [Serializable] public sealed class LocalBone

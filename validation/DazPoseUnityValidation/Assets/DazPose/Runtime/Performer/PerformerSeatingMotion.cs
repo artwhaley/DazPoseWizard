@@ -3,7 +3,7 @@ using UnityEngine;
 namespace DazPose.Performer
 {
     /// <summary>Generic body clip plus the actor-root and pelvis trajectories measured during its Humanoid bake.</summary>
-    [CreateAssetMenu(menuName = "Performer/Seating Motion", fileName = "Seating Motion")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Seating Motion", fileName = "Seating Motion")]
     public sealed class PerformerSeatingMotion : ScriptableObject
     {
         [SerializeField] private AnimationClip bodyClip;
@@ -60,7 +60,7 @@ namespace DazPose.Performer
         {
             if (bodyClip == null || durationSeconds <= 0f)
             {
-                reason = name + " is missing its baked Generic body clip or duration. Run Tools > DAZ Pose > Seating > Bake KAWAII Seating for Generic Lara.";
+                reason = name + " is missing its baked Generic body clip or duration. Run DazPose > Content > Advanced > Bake Seating for Generic Lara.";
                 return false;
             }
             if (rootX == null || rootY == null || rootZ == null || rootYaw == null
@@ -68,7 +68,7 @@ namespace DazPose.Performer
                 || rootX.length == 0 || rootY.length == 0 || rootZ.length == 0
                 || rootYaw.length == 0 || pelvisX.length == 0 || pelvisY.length == 0 || pelvisZ.length == 0)
             {
-                reason = name + " is missing a baked root/contact trajectory. Run Tools > DAZ Pose > Seating > Bake KAWAII Seating for Generic Lara.";
+                reason = name + " is missing a baked root/contact trajectory. Run DazPose > Content > Advanced > Bake Seating for Generic Lara.";
                 return false;
             }
             reason = null;

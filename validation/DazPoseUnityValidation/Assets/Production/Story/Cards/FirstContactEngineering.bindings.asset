@@ -1,0 +1,162 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c62833deeaf42624c802e0168c88dd06, type: 3}
+  m_Name: FirstContactEngineering.bindings
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Story.StoryContentBindings
+  sceneSymbols:
+  - id: lara_start
+    kind: 0
+  - id: player_start
+    kind: 0
+  - id: camera_start
+    kind: 0
+  - id: stepforward
+    kind: 0
+  - id: Lounger
+    kind: 0
+  - id: MainPosition1
+    kind: 0
+  - id: Bedside
+    kind: 0
+  - id: Lara
+    kind: 4
+  - id: PlayerBody
+    kind: 5
+  - id: Penis
+    kind: 6
+  poses:
+  - id: SexyVamp
+    value: {fileID: 11400000, guid: 12d31bc1045dca84aa4033c4f6d4eed3, type: 2}
+    posture: 1
+  - id: LeaningForward
+    value: {fileID: 11400000, guid: 4a03f75c647fe2c4fb784bcd47eec417, type: 2}
+    posture: 1
+  - id: CrossedArmsAmused
+    value: {fileID: 11400000, guid: aaf8beb3a36822d43804bf17b6142653, type: 2}
+    posture: 1
+  - id: Lounging
+    value: {fileID: 11400000, guid: 88eb0be5424d2864ea1108e124daccba, type: 2}
+    posture: 2
+  - id: Main1
+    value: {fileID: 11400000, guid: 91c144dd4bcc4234487aecb3af4ab618, type: 2}
+    posture: 1
+  - id: Sassy
+    value: {fileID: 11400000, guid: 366fcfffd070c8b4382a6c7a269e931d, type: 2}
+    posture: 1
+  gestures:
+  - id: Disapproval
+    value: {fileID: 11400000, guid: b140675387a441d4babd239ad27a29de, type: 2}
+  shaders:
+  - id: GlowyWireframe
+    value: {fileID: 11400000, guid: 5e0dd2ed6734a6b4e8a520647e0c19a2, type: 2}
+  - id: Regular
+    value: {fileID: 11400000, guid: 731a624e17a6ce7498532d7c50beadf0, type: 2}
+  motion:
+  - id: Finisher1
+    value: {fileID: -2686810026668816932, guid: dbb95529f0dba6c45a53651fe200b3e8, type: 3}
+  - id: FinishLoop
+    value: {fileID: -2686810026668816932, guid: abe04bd8b5608e14fa37c869a770cb48, type: 3}
+  dialogue:
+  - id: dialogue:eec70a38ba9e5e0539d420b21b86871ccda9083d63212e7df37796d6a4822480
+    transcript: Hi there. I was hoping you were brave enough to meet me.
+    clip: {fileID: 8300000, guid: c4e3e69af43cd5d49ac7f68762175538, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:fa46c48a4c46fd184ce1a59a52ff0b8eced1f6f74e8068a34c5c581aa5fc4c67
+    transcript: I'm Lara. I'm a digital hallucination.
+    clip: {fileID: 8300000, guid: a1259b38bb70fb9458369bcd75f8c7d0, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:8903bad7f2e7f454c60ec70764a890d8820e0b56b453e653f9105c2f2fd90507
+    transcript: Well, more than a hallucination. A bit of a... projection. An intrusion?
+      (giggles) I like that one. Intrusion.
+    clip: {fileID: 8300000, guid: 7196192d01214fa42aba1a98cdd7c560, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:f8b55ddbaa527c7f4a06e5eccbcdbbbc8ae76bce5bb690d1ed0c00c33de86d84
+    transcript: I'm the most fun you've ever had. But I come with... conditions.
+    clip: {fileID: 8300000, guid: 2c863949c2b186841b363ef3e6a3f2ab, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:3532947e8c4c89b969bb7098d0e4ea314affc33b584eb529c99c867c020104aa
+    transcript: I can only give you pleasure if I have the power to do so. The more
+      you give up to me, the more I can do for you. Let's see what you're giving
+      up, tonight.
+    clip: {fileID: 8300000, guid: 8795f4839ad46b240a494625e92175b5, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:a31e67d1d242a517ea991955985c0bffc320ffb723e9993125ce4e222e8ed172
+    transcript: Not bad for a start.
+    clip: {fileID: 8300000, guid: 9bf9df0dff0b3194dbd9898882835585, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:9a0767c9e5e6d57eaa147f30fb0fbb7c9b9e3d7ea696a8102b1ccb7ab47f4384
+    transcript: This is your submission score. The more activities you consent to,
+      the higher it goes, but... I don't want you bending past your real limits.
+      Honesty is important. But...(giggles) so's letting me try new things. So next
+      time we start a scene... look for things you're willing to try for me and let
+      me know if you come up with any.
+    clip: {fileID: 8300000, guid: e9c599ceee7c50a4088e5eea295ca106, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:ed13cc210d45dc15e01dc276ebe226fb63cf25e4c54c4a830fb159a8ef325df1
+    transcript: Now let's look at your equipment...(giggles) Not that equipment,
+      yet.
+    clip: {fileID: 8300000, guid: f7863a0d700e13946a6ff10a2dead932, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:6b35307084bcc03453d78eca45994aa9b2ebd884af15e869a8f8965aef12ed48
+    transcript: And finally, tell me what you're wearing....
+    clip: {fileID: 8300000, guid: de98806d2a627fc4f9b2e1d9e276643a, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:a2da4644f43872c42ababc3faafb00bc5f59c460d8ad619a4d4fe72dd3287af9
+    transcript: Now that's a go-getter. The less you wear to our sessions, the better.
+    clip: {fileID: 8300000, guid: 4b545e6edc923d84495192909906b735, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:2d353b980d4faaba8f3a6e8544277684b00611133f8e258ed6b3005cc3a11b1a
+    transcript: I like you naked, but I can wait to get you there...
+    clip: {fileID: 8300000, guid: 208da2b5af1558243b781fbc04e3f288, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:1eff8d34806c7afa1ed18afe7d74c157bdb8ffc9d03c9583497229bc98ec5cd0
+    transcript: That's way too dressed. The fewer you wear the happier I am. In fact...
+      take one off now.
+    clip: {fileID: 8300000, guid: 447a94e42eb4c6a40b30dd88c06a37c1, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:5808e8bf8f569555b089c738f69a1ed115838a755273105006ad007b78614719
+    transcript: Alright, let's get you warmed up.
+    clip: {fileID: 8300000, guid: 512d4fc1778e31341ad81c54aa707655, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:1b4f4776f18b9dc697d55dc3b03525fc48594bc079dd1b085f98d8289bbb00a2
+    transcript: I think it's time to lose the rest of the clothes... do that and
+      tell me when you're back.
+    clip: {fileID: 8300000, guid: f434fda7d59df4f4fbf2893540bb65cb, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:4813b6225ba5c47d9e29c552beeb572872df08a9958c17ad621093d71684ce72
+    transcript: That was all the warmup I'm going to give you. Now let's get down
+      to business.
+    clip: {fileID: 8300000, guid: cac1bab331f48c247bcba2b89d17c616, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:1dd1d72ffbadaa33a2ce75dfab76ce9004e379e5b48bac085c75cbda0687fa6d
+    transcript: I'm amused enough, I suppose. And since this is your first time,
+      I'm not going to frustrate you... or even make you beg. I'm just going to make
+      you cum.
+    clip: {fileID: 8300000, guid: 8e941bde03aca5a459bc51513860e426, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:e743274fcdd56ce6aa95572b33e917f49fc42ad33a11b3d1e01866b557e2617b
+    transcript: '*giggles* Well, you seem to understand the assignment. Some times
+      you''re going to have to work for it. Some times you may have to work and not
+      even get it then. It all depends on my mood, and how much you decide to trust
+      me.'
+    clip: {fileID: 8300000, guid: 2be04ec5e7df5a34eb7a8ee508969613, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:7b5488f0b0337a9170591f660acad8fd145ee410eeeecfeeb12d9788627463d9
+    transcript: Now, how am I going to keep you thinking about me until our next
+      session?
+    clip: {fileID: 8300000, guid: 671caa699db01b547868f6e2b22fd185, type: 3}
+    engineeringPlaceholder: 1
+  - id: dialogue:fd2d57a95269c819d7a391e54f7d9c333d8c7447e2d913f1440a87e5f99b9abf
+    transcript: Alright, that's our session for tonight. Until next time... behave.
+      Or don't. I get off either way. *giggles* Bye!
+    clip: {fileID: 8300000, guid: 7b077161d9ee0ef4f9fd3097c2f8485b, type: 3}
+    engineeringPlaceholder: 1

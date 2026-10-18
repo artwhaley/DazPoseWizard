@@ -63,6 +63,39 @@ namespace DazPose.Editor.Importing
             Reconcile(true, true);
         }
 
+        [MenuItem("DazPose/Content/Archive Failed Expression Imports")]
+        private static void ArchiveFailedExpressionImports()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("Archive imports in Edit Mode.");
+            if (!TryLoadBridge(out var bridge, true)) return;
+            ValidateBridge(bridge, out _, out _, out var expressionImportRoot, out _);
+            if (string.IsNullOrEmpty(expressionImportRoot)) return;
+            var importDirectory = AssetToDiskPath(expressionImportRoot);
+            if (!Directory.Exists(importDirectory)) return;
+            var files = new List<string>();
+            var archivedAssets = new List<string>();
+            foreach (var diskPath in EnumerateCanonicalFiles(importDirectory))
+            {
+                var assetPath = DiskToAssetPath(diskPath);
+                var status = ReadStatus(assetPath);
+                if (status == null || !string.Equals(status.state, "Failed", StringComparison.OrdinalIgnoreCase)
+                    || !string.Equals(status.canonicalContentHash, ContentHash(diskPath), StringComparison.OrdinalIgnoreCase))
+                    continue;
+                archivedAssets.Add(assetPath);
+                files.Add(assetPath);
+                if (File.Exists(diskPath + ".meta")) files.Add(assetPath + ".meta");
+                var statusPath = GetStatusPath(assetPath);
+                if (File.Exists(statusPath)) files.Add(Path.GetRelativePath(ProjectRoot, statusPath));
+            }
+            if (files.Count == 0) { Debug.Log("No unchanged failed expression imports to archive."); return; }
+            var archive = DazPoseImportArchive.ArchiveFiles(ProjectRoot, files);
+            foreach (var path in archivedAssets) { Queued.Remove(path); RetryFailed.Remove(path); }
+            AssetDatabase.Refresh();
+            Debug.Log("Archived " + archivedAssets.Count + " failed expression imports outside the watched folders. "
+                + "Original DAZ files and generated assets are unchanged. Recovery copy: " + archive);
+        }
+
         internal static void OnAssetsImported(string[] importedAssets)
         {
             if (importedAssets == null || importedAssets.Length == 0) return;
@@ -93,7 +126,7 @@ namespace DazPose.Editor.Importing
                     && (IsWithinRoot(assetPath, poseImportRoot)
                         || (!string.IsNullOrEmpty(expressionImportRoot) && IsWithinRoot(assetPath, expressionImportRoot)))) Enqueue(assetPath, false);
             }
-            if (referenceWasImported) Reconcile(false, true);
+            if (referenceWasImported) Reconcile(false, false);
         }
 
         private static void ReconcileAtStartup()
@@ -280,7 +313,7 @@ namespace DazPose.Editor.Importing
                 string referenceAssetPath;
                 var referenceModel = DazPosePipelineSettings.LoadReferenceModel(out referenceAssetPath);
                 if (referenceModel == null)
-                    throw new InvalidOperationException("Configure a Genesis 8 Female reference FBX in Tools > DAZ Pose > Pipeline Settings.");
+                    throw new InvalidOperationException("Configure a Genesis 8 Female reference FBX in DazPose > Settings > Pipeline Settings.");
                 ValidateReferenceImporter(referenceAssetPath);
 
                 previewScene = EditorSceneManager.NewPreviewScene();
@@ -616,6 +649,58 @@ namespace DazPose.Editor.Importing
         }
 
         private static string ProjectRoot => Directory.GetParent(Application.dataPath).FullName;
+    }
+
+    // Filesystem-only recovery operation; never modifies original DAZ presets or generated assets.
+    internal static class DazPoseImportArchive
+    {
+        internal static string ArchiveFiles(string projectRoot, IEnumerable<string> relativePaths)
+        {
+            var root = Path.GetFullPath(projectRoot).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var prefix = root + Path.DirectorySeparatorChar;
+            var paths = relativePaths.Distinct(StringComparer.OrdinalIgnoreCase).Select(relative =>
+            {
+                if (Path.IsPathRooted(relative)) throw new InvalidDataException("Archive paths must be project-relative.");
+                var source = Path.GetFullPath(Path.Combine(root, relative));
+                if (!source.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidDataException("Archive source escaped the Unity project.");
+                if (!File.Exists(source)) throw new FileNotFoundException("Archive input no longer exists.", source);
+                return source;
+            }).ToArray();
+            if (paths.Length == 0) throw new InvalidDataException("No import files were selected.");
+            var archive = Path.GetFullPath(Path.Combine(root, ".dazposewizard", "archived-expression-imports",
+                DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ") + "-" + Guid.NewGuid().ToString("N")));
+            if (!archive.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("Archive destination escaped the Unity project.");
+            var moved = new List<KeyValuePair<string, string>>();
+            var manifest = new List<string> { "originalProjectRelativePath\tsha256" };
+            try
+            {
+                foreach (var source in paths)
+                {
+                    var relative = Path.GetRelativePath(root, source);
+                    var destination = Path.GetFullPath(Path.Combine(archive, relative));
+                    if (!destination.StartsWith(archive + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidDataException("Archive destination escaped the recovery folder.");
+                    string hash;
+                    using (var sha = SHA256.Create())
+                        hash = BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(source))).Replace("-", string.Empty);
+                    Directory.CreateDirectory(Path.GetDirectoryName(destination));
+                    File.Move(source, destination);
+                    moved.Add(new KeyValuePair<string, string>(source, destination));
+                    manifest.Add(relative.Replace('\\', '/') + "\t" + hash);
+                }
+                File.WriteAllLines(Path.Combine(archive, "manifest.tsv"), manifest, new UTF8Encoding(false));
+                return archive;
+            }
+            catch
+            {
+                for (var i = moved.Count - 1; i >= 0; i--)
+                    if (File.Exists(moved[i].Value) && !File.Exists(moved[i].Key))
+                        File.Move(moved[i].Value, moved[i].Key);
+                throw;
+            }
+        }
     }
 
     internal sealed class DazPoseBrowserImportPostprocessor : AssetPostprocessor

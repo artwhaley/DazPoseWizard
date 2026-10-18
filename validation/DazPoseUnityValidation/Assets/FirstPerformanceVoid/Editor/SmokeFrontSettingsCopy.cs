@@ -7,37 +7,10 @@ using UnityEngine.SceneManagement;
 
 namespace DazPose.FirstPerformanceVoid.Editor
 {
-    /// <summary>Copies the user's live Front settings once, independently of saved scene revisions.</summary>
-    [InitializeOnLoad]
+    /// <summary>Explicitly copies the loaded Front settings when requested by an editor operation.</summary>
     public static class SmokeFrontSettingsCopy
     {
-        private const string RequestKey = "DazPose.P0C.CopyLiveSmokeFront.20261001.2";
 
-        static SmokeFrontSettingsCopy()
-        {
-            EditorApplication.delayCall += ApplyPendingCopy;
-            EditorSceneManager.sceneOpened += (_, __) => EditorApplication.delayCall += ApplyPendingCopy;
-            EditorApplication.playModeStateChanged += state =>
-            {
-                if (state == PlayModeStateChange.EnteredEditMode)
-                    EditorApplication.delayCall += ApplyPendingCopy;
-                else if (state == PlayModeStateChange.ExitingEditMode) ApplyPendingCopy();
-            };
-        }
-
-        private static void ApplyPendingCopy()
-        {
-            string key = RequestKey + Application.dataPath;
-            if (EditorPrefs.GetBool(key, false) || EditorApplication.isPlaying || EditorApplication.isCompiling) return;
-            Scene scene = SceneManager.GetSceneByPath(FirstPerformanceVoidBuilder.ScenePath);
-            if (!scene.IsValid() || !scene.isLoaded) return;
-            CopyLoadedFront();
-            EditorPrefs.SetBool(key, true);
-        }
-
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/First Performance Void/Copy Current Smoke Front to Other Edges")]
-#endif
         public static void CopyLoadedFront()
         {
             Scene scene = SceneManager.GetSceneByPath(FirstPerformanceVoidBuilder.ScenePath);

@@ -296,7 +296,7 @@ namespace DazPose.Performer
             if (_failureReported) return;
             _failureReported = true;
             Debug.LogError("P0.9B realtime lip sync is unavailable: " + _status
-                + " PerformerSpeech playback is unaffected. Run Tools > DAZ Pose > Development > Setup or Refresh Performer SALSA Lip Sync after correcting the setup.", this);
+                + " PerformerSpeech playback is unaffected. Run DazPose > Content > Advanced > Set Up SALSA Lip Sync after correcting the setup.", this);
         }
 
         private void SetOwnedWeightsToRest()

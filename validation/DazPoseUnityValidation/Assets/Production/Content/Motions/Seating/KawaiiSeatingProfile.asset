@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f3ba4edc694a86a3dd053b4c9623fe, type: 3}
+  m_Name: KawaiiSeatingProfile
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerSeatingProfile
+  sitStart: {fileID: 11400000, guid: 87a6715548cc6e049b81a39ac38a52a1, type: 2}
+  sitEnd: {fileID: 11400000, guid: ab04a13d5a93a8e4c9d3eed38533d559, type: 2}
+  crossLegsStart: {fileID: 11400000, guid: d0b19ed5ac71a7c43a8fa0b1eb05af59, type: 2}
+  crossLegsLoop: {fileID: 11400000, guid: a76173e93d40b1343830f3b6c0cc55be, type: 2}
+  crossLegsEnd: {fileID: 11400000, guid: 3ff25fc01f8befa4c938f5a67122a393, type: 2}
+  basicIdleLoopCandidate: {fileID: 11400000, guid: 5f800ffbac42ab24ba357227678a935b, type: 2}
+  playbackSpeed: 1
+  bodyBlendSeconds: 0.18
+  crossLegsExitBlendSeconds: 0.5
+  finalBlendSeconds: 0.5
+  approachAlignmentSeconds: 0.18
+  maximumApproachPositionErrorMeters: 0.05
+  maximumApproachFacingErrorDegrees: 4
+  crossLegsExitLoopPhase: 0.9987196
+  sitEndEntryPhase: 0
+  crossLegsBodyRootOffset: {x: -0.00000009810901, y: 0.34618187, z: -0.00000017136335}
+  hasCrossLegsSeatContactRebase: 1

@@ -76,3 +76,22 @@ yet been observed; no claim is made that the live Console was cleared or that
 reconversion/visual playback passed. Evidence:
 .dazposewizard/unity-diagnostics-cleanup/result.json and compile/ logs.
 
+
+
+## October 17 - rejected expression imports cleared
+
+Archived all eleven current failed expression inputs (eight missing required Lara
+morphs and three body-only presets) with their metas and status records outside
+watched roots. All 33 archived files retain their hashes; no failed expression
+jobs remain. Original DAZ presets and generated assets were untouched. The earlier
+eight-job retry is historical: it exposed missing morphs, and those jobs are now
+archived rather than pending.
+
+Automatic reference-model refresh no longer forces failed imports to retry.
+Future cleanup is **DazPose > Content > Archive Failed Expression Imports**.
+Click Console **Clear** once for old messages; archiving does not erase unrelated logs.
+Recovery instructions: docs/IMPORT_FAILURE_CLEANUP.md.
+Affected Editor assemblies compile cleanly with warnings as errors; nine managed
+archive safety checks passed. No Unity Play or standalone build/launch was performed.
+Evidence: .dazposewizard/import-archive-fix/result.json.
+

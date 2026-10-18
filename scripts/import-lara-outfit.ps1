@@ -176,6 +176,48 @@ try {
         }
         if(Test-Path -LiteralPath (Join-Path $taskOutput 'reimport-validation.json')){Copy-Changed (Join-Path $taskOutput 'reimport-validation.json') (Join-Path $taskEvidenceMain 'reimport-validation.json')}
         $taskReport | Add-Member -NotePropertyName publishedReviewScene -NotePropertyValue ($taskConfig.destination+'/'+$taskReview) -Force
+        $taskReviewMetadataPath=Join-Path $taskMain 'ProjectSettings/DazPose/WardrobeReviewMetadata.json'
+        $taskReviewMetadataDirectory=Split-Path -Parent $taskReviewMetadataPath
+        if(Test-Path -LiteralPath $taskReviewMetadataPath){
+            try{$taskReviewMetadata=Get-Content -LiteralPath $taskReviewMetadataPath -Raw | ConvertFrom-Json}catch{throw "Wardrobe review metadata is malformed at $taskReviewMetadataPath; publication stopped without replacing it. $($_.Exception.Message)"}
+            if($taskReviewMetadata.schemaVersion -ne 1 -or $null -eq $taskReviewMetadata.entries){throw "Wardrobe review metadata has an unsupported schema or missing entries array: $taskReviewMetadataPath"}
+            $taskReviewEntries=@($taskReviewMetadata.entries)
+        }else{
+            $taskReviewMetadata=[pscustomobject]@{schemaVersion=1;entries=@()}
+            $taskReviewEntries=@()
+        }
+        if([string]::IsNullOrWhiteSpace($taskReport.id) -or [string]::IsNullOrWhiteSpace($taskReport.definition) -or
+           [string]::IsNullOrWhiteSpace($taskReport.recipeHash) -or [string]::IsNullOrWhiteSpace($taskReport.fbxHash) -or [string]::IsNullOrWhiteSpace($taskReport.dufHash)){
+            throw 'The validated report lacks package/release/source identity fields required for review metadata.'
+        }
+        foreach($taskExistingReview in $taskReviewEntries){
+            if([string]::IsNullOrWhiteSpace($taskExistingReview.packageId) -or [string]::IsNullOrWhiteSpace($taskExistingReview.releaseId) -or
+               [string]::IsNullOrWhiteSpace($taskExistingReview.generationId) -or [string]::IsNullOrWhiteSpace($taskExistingReview.scenePath) -or
+               !$taskExistingReview.scenePath.StartsWith('Assets/',[StringComparison]::OrdinalIgnoreCase) -or $taskExistingReview.scenePath.Contains('../')){
+                throw 'Wardrobe review metadata contains a malformed entry; publication stopped without replacing it.'
+            }
+        }
+        $taskPublishedScene=$taskConfig.destination+'/'+$taskReview
+        $taskGenerationIdentity=($taskReport.recipeHash.ToLowerInvariant()+'|'+$taskReport.fbxHash.ToLowerInvariant()+'|'+$taskReport.dufHash.ToLowerInvariant())
+        $taskReviewEntry=[pscustomobject]@{
+            packageId=$taskReport.id
+            releaseId=$taskReport.definition.Replace([char]92,'/')
+            generationId=$taskGenerationIdentity
+            scenePath=$taskPublishedScene
+            publishedAtUtc=[DateTime]::UtcNow.ToString('o')
+        }
+        $taskAlreadyRecorded=$false
+        foreach($taskExistingReview in $taskReviewEntries){
+            if($taskExistingReview.packageId -ceq $taskReviewEntry.packageId -and
+               $taskExistingReview.releaseId.Replace([char]92,'/') -ieq $taskReviewEntry.releaseId -and
+               $taskExistingReview.generationId -ieq $taskReviewEntry.generationId -and
+               $taskExistingReview.scenePath.Replace([char]92,'/') -ieq $taskReviewEntry.scenePath){$taskAlreadyRecorded=$true;break}
+        }
+        if(!$taskAlreadyRecorded){
+            New-Item -ItemType Directory -Force -Path $taskReviewMetadataDirectory | Out-Null
+            $taskReviewMetadata.entries=@($taskReviewEntries)+@($taskReviewEntry)
+            $taskReviewMetadata | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $taskReviewMetadataPath -Encoding utf8NoBOM
+        }
         $taskReport | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath (Join-Path $taskEvidenceMain 'report.json') -Encoding utf8
         Add-Content -LiteralPath (Join-Path $taskEvidenceMain 'report.md') -Value ('Published review: '+$taskConfig.destination+'/'+$taskReview)
         Write-Output ('PUBLISHED_OWNED_ASSETS: '+$taskOwned+'; existing review scene/artist overrides preserved')

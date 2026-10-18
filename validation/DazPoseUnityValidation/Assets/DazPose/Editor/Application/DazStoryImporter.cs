@@ -6,16 +6,16 @@ using UnityEditor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 namespace DazPose.Editor {
- [ScriptedImporter(1,"dazstory")]
+ [ScriptedImporter(2,"dazstory")]
  public sealed class DazStoryImporter : ScriptedImporter {
   public override void OnImportAsset(AssetImportContext context) {
-   var asset=ScriptableObject.CreateInstance<CompiledStoryAsset>(); asset.name=Path.GetFileNameWithoutExtension(context.assetPath);
+   var asset=ScriptableObject.CreateInstance<CompiledStoryAsset>(); asset.name=Path.GetFileNameWithoutExtension(context.assetPath);asset.sourceIdentity=AssetDatabase.AssetPathToGUID(context.assetPath);
    string bindingPath=Path.ChangeExtension(context.assetPath,"bindings.asset").Replace('\\','/');
    try {
     context.DependsOnSourceAsset(bindingPath);
     asset.content=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(bindingPath);
-    if(asset.content==null) throw new InvalidOperationException("Assign the companion content bindings at "+bindingPath+". Use DazPose > Story > Prepare First Contact Authoring to create them.");
-    asset.program=DazStoryCompiler.Compile(File.ReadAllText(context.assetPath),context.assetPath,asset.content.Symbols());
+    if(asset.content==null) {asset.content=ScriptableObject.CreateInstance<StoryContentBindings>();asset.content.name="Content bindings";context.AddObjectToAsset("bindings",asset.content);}
+    asset.program=DazStoryCompiler.Compile(File.ReadAllText(context.assetPath),context.assetPath,asset.content.Symbols(),allowExternalCards:true);
    } catch(Exception error) { asset.diagnostics=new[]{error.Message}; context.LogImportError(error.Message); }
    context.AddObjectToAsset("compiled",asset); context.SetMainObject(asset);
   }
@@ -25,11 +25,23 @@ namespace DazPose.Editor {
   public override void OnInspectorGUI() {
    var asset=(CompiledStoryAsset)target;
    if(GUILayout.Button("Open .dazstory source")) EditorUtility.OpenWithDefaultApp(Path.GetFullPath(AssetDatabase.GetAssetPath(asset)));
+   string bindingPath=Path.ChangeExtension(AssetDatabase.GetAssetPath(asset),"bindings.asset").Replace('\\','/');
+   if(!File.Exists(bindingPath) && GUILayout.Button("Create companion content bindings")) {
+    var content=UnityEngine.Object.Instantiate(asset.content);content.name=Path.GetFileNameWithoutExtension(bindingPath);
+    AssetDatabase.CreateAsset(content,bindingPath);AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));Selection.activeObject=content;return;
+   }
    if(asset.content!=null && GUILayout.Button("Select content bindings")) Selection.activeObject=asset.content;
    if(!asset.IsCompiled) { foreach(var message in asset.diagnostics) EditorGUILayout.HelpBox(message,MessageType.Error); return; }
    EditorGUILayout.LabelField("Compiled instructions",asset.program.instructions.Length.ToString());
    EditorGUILayout.LabelField("Dialogue bindings",asset.program.dialogue.Length.ToString());
    foreach(var message in asset.content.Diagnostics(asset.program)) EditorGUILayout.HelpBox(message,MessageType.Warning);
+   if(!AssetDatabase.GetAssetPath(asset).StartsWith(GlobalStoryCardIndexBuilder.PublishedRoot+"/",StringComparison.Ordinal)) {
+    try {
+     var linked=StoryLinkedContent.Create(asset);
+     EditorGUILayout.LabelField("Global selectable cards",System.Linq.Enumerable.Count(linked.Program.cards,c=>c.Selectable).ToString());
+     foreach(var message in linked.Diagnostics(linked.Program))EditorGUILayout.HelpBox(message,MessageType.Warning);
+    } catch(Exception error) {EditorGUILayout.HelpBox(error.Message,MessageType.Error);}
+   }
   }
  }
 }

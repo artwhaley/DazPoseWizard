@@ -3,7 +3,7 @@ using UnityEngine.VFX;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Magic/Style", fileName = "Magic Style")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Magic/Style", fileName = "Magic Style")]
     public sealed class PerformerMagicStyle : ScriptableObject
     {
         [Header("Identity")]

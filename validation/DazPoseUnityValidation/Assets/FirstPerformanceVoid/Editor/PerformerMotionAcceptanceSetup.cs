@@ -15,16 +15,14 @@ namespace DazPose.FirstPerformanceVoid.Editor
     public static class PerformerMotionAcceptanceSetup
     {
         private const string ScenePath = "Assets/Scenes/FirstPerformanceVoid.unity";
-        private const string MotionFolder = "Assets/DazPose/Generated/Motion";
-        private const string AcceptanceFolder = MotionFolder + "/Acceptance";
+        private const string MotionFolder = "Assets/Production/Content/Motions";
+        private const string AcceptanceFolder = MotionFolder + "/BasicStroke";
         private const string MaskPath = MotionFolder + "/RightArmMotion.mask";
         private const string ClipPath = AcceptanceFolder + "/BasicStroke.anim";
         private const string VariantPath = AcceptanceFolder + "/BasicStroke.asset";
         private const string SetPath = AcceptanceFolder + "/BasicStrokeSet.asset";
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Motion/Generate BasicStroke and Install Acceptance Harness")]
-#endif
+
         public static void Install()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Seating Profile", fileName = "Seating Profile")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Seating Profile", fileName = "Seating Profile")]
     public sealed class PerformerSeatingProfile : ScriptableObject
     {
         [Header("KAWAII → validated Lara Humanoid → Generic Lara")]
@@ -53,7 +53,7 @@ namespace DazPose.Performer
             {
                 if (motion == null)
                 {
-                    reason = "The KAWAII seating profile is incomplete. Run Tools > DAZ Pose > Seating > Bake KAWAII Seating for Generic Lara.";
+                    reason = "The KAWAII seating profile is incomplete. Run DazPose > Content > Advanced > Bake Seating for Generic Lara.";
                     return false;
                 }
                 if (!motion.IsReady(out reason)) return false;
@@ -72,7 +72,7 @@ namespace DazPose.Performer
             }
             if (!hasCrossLegsSeatContactRebase)
             {
-                reason = "This seating profile predates the Cross Legs seat-contact fix. Run Tools > DAZ Pose > Seating > Bake KAWAII Seating for Generic Lara before using it.";
+                reason = "This seating profile predates the Cross Legs seat-contact fix. Run DazPose > Content > Advanced > Bake Seating for Generic Lara before using it.";
                 return false;
             }
             float crossLegsEntryContactError = Vector3.Distance(
@@ -80,7 +80,7 @@ namespace DazPose.Performer
             if (crossLegsEntryContactError > 0.01f)
             {
                 reason = "The baked Cross Legs Start pelvis is " + crossLegsEntryContactError.ToString("0.000")
-                    + " m from the Sit Start seat contact. Run Tools > DAZ Pose > Seating > Bake KAWAII Seating for Generic Lara again.";
+                    + " m from the Sit Start seat contact. Run DazPose > Content > Advanced > Bake Seating for Generic Lara again.";
                 return false;
             }
             reason = null;

@@ -409,9 +409,9 @@ namespace DazPose.Remediation
             var bindings = UnityEngine.Object.FindAnyObjectByType<PerformanceSceneBindings>();
             var gesture = AssetDatabase.LoadAssetAtPath<PerformerGesture>("Assets/DazPose/Generated/Gestures/Acceptance/RightHandWave.asset");
             var action = AssetDatabase.LoadAssetAtPath<PerformerAction>("Assets/DazPose/Generated/Actions/Acceptance/JumpForJoy.asset");
-            var spell = AssetDatabase.LoadAssetAtPath<PerformerSpell>("Assets/DazPose/Generated/Magic/Spells/Spell_VioletSerenity.asset");
-            var aura = AssetDatabase.LoadAssetAtPath<PerformerAura>("Assets/DazPose/Generated/Magic/Auras/Aura_VioletSerenity.asset");
-            var style = AssetDatabase.LoadAssetAtPath<PerformerMagicStyle>("Assets/DazPose/Generated/Magic/Styles/Style_VioletSerenity.asset");
+            var spell = AssetDatabase.LoadAssetAtPath<PerformerSpell>("Assets/Production/Content/Magic/Spells/Spell_VioletSerenity.asset");
+            var aura = AssetDatabase.LoadAssetAtPath<PerformerAura>("Assets/Production/Content/Magic/Auras/Aura_VioletSerenity.asset");
+            var style = AssetDatabase.LoadAssetAtPath<PerformerMagicStyle>("Assets/Production/Content/Magic/Styles/Style_VioletSerenity.asset");
             if (actor == null || bindings == null || gesture == null || action == null || spell == null || aura == null || style == null)
                 throw new InvalidOperationException("The R05 fixture is missing its actor, scene bindings or prepared Gesture/Action/Magic assets.");
             var runner = UnityEngine.Object.FindAnyObjectByType<RemediationContentPreflightRunner>();
@@ -480,7 +480,7 @@ namespace DazPose.Remediation
             var toys = UnityEngine.Object.FindAnyObjectByType<ToyControlService>();
             var playback = actor != null ? actor.MotionSource : UnityEngine.Object.FindAnyObjectByType<MotionDriver>();
             var contact = UnityEngine.Object.FindAnyObjectByType<PartnerContactTarget>();
-            var program = AssetDatabase.LoadAssetAtPath<FunscriptMotionProgram>("Assets/motiondrive.funscript");
+            var program = AssetDatabase.LoadAssetAtPath<FunscriptMotionProgram>("Assets/Production/Content/Motions/motiondrive.funscript");
             var expression = AssetDatabase.LoadAssetAtPath<PerformerExpression>("Assets/Production/ValidationData/Day3Expression.asset");
             var auras = AssetDatabase.FindAssets("t:PerformerAura")
                 .Select(AssetDatabase.GUIDToAssetPath)
@@ -536,7 +536,7 @@ namespace DazPose.Remediation
             var player = UnityEngine.Object.FindAnyObjectByType<PlayerController>();
             var playback = actor != null ? actor.MotionSource : UnityEngine.Object.FindAnyObjectByType<MotionDriver>();
             var expression = AssetDatabase.LoadAssetAtPath<PerformerExpression>("Assets/Production/ValidationData/Day3Expression.asset");
-            var program = AssetDatabase.LoadAssetAtPath<FunscriptMotionProgram>("Assets/motiondrive.funscript");
+            var program = AssetDatabase.LoadAssetAtPath<FunscriptMotionProgram>("Assets/Production/Content/Motions/motiondrive.funscript");
             var firstClip = AssetDatabase.LoadAssetAtPath<AudioClip>(AssetDatabase.GUIDToAssetPath("4284b0d5624bc0f49a0463d2f8374245"));
             var secondClip = AssetDatabase.LoadAssetAtPath<AudioClip>(AssetDatabase.GUIDToAssetPath("85425b705aedcf840ac41b53f1062cd1"));
             if (firstContact == null || actor == null || player == null || playback == null || expression == null || program == null || firstClip == null || secondClip == null)
@@ -837,7 +837,7 @@ namespace DazPose.Remediation
             {
                 "Assets/Production/Performers/Lara.prefab",
                 "Assets/Production/Partners/Partner.prefab",
-                "Assets/PartnerProof/PartnerCharacter.prefab"
+                "Assets/Production/Player/Support/PartnerCharacter.prefab"
             };
             var prefabFailures = new List<string>();
             foreach (string path in prefabs)

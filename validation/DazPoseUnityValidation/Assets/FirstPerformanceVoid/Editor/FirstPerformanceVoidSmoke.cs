@@ -11,7 +11,7 @@ namespace DazPose.FirstPerformanceVoid.Editor
     /// <summary>Authored native particle billows, replacing the rectangular perimeter fog banks.</summary>
     public static class FirstPerformanceVoidSmoke
     {
-        private const string Root = "Assets/FirstPerformanceVoid";
+        private const string Root = "Assets/Production/Environments/Void";
         private const uint SmokeLayer = 4;
 
         public static void CopyFrontSettings(Transform room)

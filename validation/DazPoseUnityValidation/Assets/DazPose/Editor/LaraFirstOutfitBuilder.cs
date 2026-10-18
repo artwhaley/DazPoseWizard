@@ -17,16 +17,6 @@ namespace DazPose.UnityValidation
     {
         public const string Folder=LaraCandidateBuilder.Folder + "/FirstOutfit";
         public const string ScenePath=Folder + "/FirstPerformanceVoidLaraFirstOutfit.unity";
-        [InitializeOnLoadMethod]
-        private static void RefreshOpenReviewScene()
-        {
-            EditorApplication.delayCall+=()=>
-            {
-                if(Application.isBatchMode || EditorApplication.isPlayingOrWillChangePlaymode)return;
-                var current=UnityEngine.Object.FindAnyObjectByType<LaraFirstOutfit>();if(current==null)return;
-                ConfigurePresentation();current.Apply();EditorSceneManager.MarkSceneDirty(current.gameObject.scene);
-            };
-        }
         [Serializable] private class Manifest { public string asset,sha256,duf,dufSHA256; public Part[] parts; }
         [Serializable] private class Part
         {
@@ -38,9 +28,7 @@ namespace DazPose.UnityValidation
             public string node; public int vertices,canonicalBones,localBones,channels,materials;
             public float maximumRestError,maximumBreastTransfer;
         }
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Open Lara First Outfit")]
-#endif
+
         public static void Open()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

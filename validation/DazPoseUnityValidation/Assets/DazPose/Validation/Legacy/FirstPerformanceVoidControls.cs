@@ -515,7 +515,7 @@ namespace DazPose.FirstPerformanceVoid
             GUILayout.EndHorizontal();
 
             if (!driver.HasFunscriptProgram)
-                GUILayout.Label("Assign the imported Assets/motiondrive.funscript asset to MotionDriver.");
+                GUILayout.Label("Assign the imported Assets/Production/Content/Motions/motiondrive.funscript asset to MotionDriver.");
 
             MotionSample sample = driver.CurrentSample;
             if (driver.SourceMode == MotionSourceMode.Sine)

@@ -3,7 +3,7 @@ using UnityEngine;
 namespace DazPose.Performer
 {
     /// <summary>Per-shoe fit and support data, independent of a particular scene.</summary>
-    [CreateAssetMenu(menuName="DAZ Pose/Footwear Profile")]
+    [CreateAssetMenu(menuName="DazPose/Footwear Profile")]
     public sealed class PerformerFootwearProfile : ScriptableObject
     {
         public string sourceName;

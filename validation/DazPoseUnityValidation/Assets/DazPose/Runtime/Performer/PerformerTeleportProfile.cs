@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Teleport Profile", fileName = "Performer Teleport Profile")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Teleport Profile", fileName = "Performer Teleport Profile")]
     public sealed class PerformerTeleportProfile : ScriptableObject
     {
         [SerializeField] private GameObject effectPrefab;

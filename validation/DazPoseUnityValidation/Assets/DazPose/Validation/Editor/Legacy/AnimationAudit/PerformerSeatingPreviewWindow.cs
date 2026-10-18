@@ -55,9 +55,7 @@ namespace DazPose.Editor.AnimationAudit
         private Vector3 lastPerformerScale;
         private string status;
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Seating/Edit Mode Preview")]
-#endif
+        [MenuItem("DazPose/Diagnostics/Seating Preview")]
         public static void ShowWindow()
         {
             var window = GetWindow<PerformerSeatingPreviewWindow>();
@@ -125,7 +123,7 @@ namespace DazPose.Editor.AnimationAudit
             if (!profile.IsReady(out string reason))
             {
                 EditorGUILayout.HelpBox(reason, MessageType.Error);
-                EditorGUILayout.HelpBox("After updating the seating scripts, run Tools > DAZ Pose > Seating > Bake KAWAII Seating for Generic Lara. The current generated assets predate the seat-contact rebase.", MessageType.Warning);
+                EditorGUILayout.HelpBox("After updating the seating scripts, run DazPose > Content > Advanced > Bake Seating for Generic Lara. The current generated assets predate the seat-contact rebase.", MessageType.Warning);
                 DrawPreviewToggle(profile);
                 return;
             }

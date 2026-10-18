@@ -10,7 +10,6 @@ using UnityEngine.Rendering.HighDefinition;
 
 namespace DazPose.UnityValidation
 {
-    [InitializeOnLoad]
     public static class LaraWardrobeMotionDiagnostics
     {
         private const string Pending="Lara.WardrobeMotion.Pending",Second="Lara.WardrobeMotion.Second";
@@ -36,7 +35,6 @@ namespace DazPose.UnityValidation
         private static float maximumShoeShapeError,maximumSupportError,maximumFloorPenetration;
         private static int supportedSamples;
         private static bool rigidShoes;
-        static LaraWardrobeMotionDiagnostics(){if(SessionState.GetBool(Pending,false))EditorApplication.update+=Tick;}
         public static void Run()
         {
             SessionState.SetString(RecipeOutput,"");
@@ -100,7 +98,7 @@ namespace DazPose.UnityValidation
                     }
                     var animator=body.GetComponentInParent<Animator>();owner=animator.transform;animator.enabled=false;
                     position=owner.position;rotation=owner.rotation;
-                    clip=AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Animations/Performer/Locomotion/Walk01_Loop.anim");
+                    clip=AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Production/Content/Motions/Locomotion/Walk01_Loop.anim");
                     if(clip==null)throw new IOException("Walking fixture not found.");
                     var paths=AnimationUtility.GetCurveBindings(clip).Select(b=>b.path).Distinct().ToArray();
                     owner=new[] {animator.transform,animator.transform.parent,body.rootBone.parent,actor}.Where(r=>r!=null).Distinct().OrderByDescending(r=>paths.Count(p=>p=="" || r.Find(p)!=null)).First();

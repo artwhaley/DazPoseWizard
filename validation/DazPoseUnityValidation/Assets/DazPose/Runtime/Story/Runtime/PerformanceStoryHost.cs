@@ -7,18 +7,20 @@ using DazPose.Story.Language;
 using UnityEngine;
 namespace DazPose.Story {
  // Unity adapter only. All choreography and branches come from the compiled authored source.
- public sealed class PerformanceStoryHost : IStoryExecutionHost,IStoryDirectorObserver,IStoryPhaseObserver {
+ public sealed class PerformanceStoryHost : IStoryExecutionHost,IStoryDirectorObserver,IStoryPhaseObserver,IStoryCardEligibility {
   readonly StoryRuntimeContext context;
   readonly StoryContentBindings content;
+  readonly StoryLinkedContent linked;
   StorySignalHub signals=new StorySignalHub();
   CancellationTokenSource phaseLifetime;
   int phaseInvocation;
   long playbackGeneration=-1;
   Action<long> motionEnded;
-  public PerformanceStoryHost(StoryRuntimeContext context,StoryContentBindings content) {
-   this.context=context;this.content=content;phaseLifetime=CancellationTokenSource.CreateLinkedTokenSource(context.Cancellation);
+  public PerformanceStoryHost(StoryRuntimeContext context,StoryContentBindings content,StoryLinkedContent linked=null) {
+   this.context=context;this.content=content;this.linked=linked;phaseLifetime=CancellationTokenSource.CreateLinkedTokenSource(context.Cancellation);
    context.Run.RegisterPersistentCleanup(()=> {phaseLifetime.Cancel();context.Bindings.prompts.ClearActions();if(motionEnded!=null && context.Run.PlaybackDriver!=null)context.Run.PlaybackDriver.Ended-=motionEnded;});
   }
+  public string ResourceIssue(CardDefinition card)=>linked?.ResourceIssue(card,context.Bindings);
   public void ObserveDirector(DirectorSnapshot snapshot,CardExecutionContext card) {context.Snapshot.SetDirector(snapshot,card);}
   public void LeavePhase(string phase) {context.Bindings.prompts.ClearActions();phaseLifetime.Cancel();Trace(null,"Phase "+phase+" ended; its actions and event subscriptions were removed.");}
   void BeginPhase() {
@@ -89,6 +91,7 @@ namespace DazPose.Story {
   string[] Tags(string id) {var item=context.Catalogs.Equipment.Require(id);return item.identityTags.Concat(item.themeTags).Distinct(StringComparer.Ordinal).ToArray();}
   public async Task<StoryData> InvokeAsync(StoryCommand command,CancellationToken cancellation) {
    cancellation.ThrowIfCancellationRequested(); context.CheckAuthority();
+   var content=linked?.ContentFor(command.Source) ?? this.content;
    var run=context.Run; var scene=context.Bindings; var world=context.Session.world;
    string Arg(string name)=>command.Require(name).String;
    StoryLocationBinding Location()=>scene.RequireLocation(Arg("location"));

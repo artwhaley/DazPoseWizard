@@ -1,8 +1,11 @@
 # Lara wardrobe import status
 
+Updated 2026-10-18. Current operator procedure: [LaraWardrobeImportQuickStart.md](LaraWardrobeImportQuickStart.md). Current scene/menu ownership and protected roots: [cleanup ownership](../../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md) and [execution status](../../../docs/cleanup-task1/EXECUTION_REPORT.md). The dated reports below are historical evidence. Older `Tools > DAZ Pose` and one-off test-scene links describe retired navigation; use **DazPose > Wardrobe > Imported Outfits** and the current saved Clothing Setup scene for present workflows.
+
+
 Updated 2026-10-04. Procedure: [LaraWardrobeImportPlaybook.md](LaraWardrobeImportPlaybook.md).
 
-## Current consolidation handoff
+## Historical consolidation handoff (4 October)
 
 Day 5 technical implementation now includes runtime layer switching, rebuilt Clothing Setup, explicit draft compilation and immutable publication. Both saved scene/player checks passed. Actual reimport checks passed for all three outfits; source assets and GUIDs remain protected. See repository `docs/production-consolidation/DAY_5_REPORT.md` and shared progress. Human Day 5 workflow/appearance review and independent recipe-only clean-context import acceptance remain separate and pending. The following October 4 import handoff is historical; its statements about runtime switching being absent no longer describe current source.
 
@@ -45,7 +48,7 @@ Third input request: one saved DUF and one direct FBX with the approved Lara/gra
 reference, visible outfit and relevant followers/morphs; retain supplied shoe pose.
 No routine bridge export or new clean reference.
 
-## Third import: shared footwear pose calibration
+## Historical third import: shared footwear pose calibration
 
 Created `configs/wardrobe/third-outfit.json` for `laramaid.duf` and
 `Assets/TestCharacter/laramaid.fbx`, targeting

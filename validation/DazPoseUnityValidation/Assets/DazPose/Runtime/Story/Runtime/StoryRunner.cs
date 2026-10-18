@@ -12,7 +12,11 @@ namespace DazPose.Story {
 
   public static async Awaitable ExecuteAsync(DazPose.Story.Language.CompiledStoryProgram program,StoryContentBindings content,StoryRuntimeContext context,string sequence,string stopBeforePhase=null) {
 
-   var machine=new DazPose.Story.Language.StoryMachine(program,new PerformanceStoryHost(context,content),context.Randoms);
+   await ExecuteAsync(StoryLinkedContent.Create(program,content),context,sequence,stopBeforePhase);
+  }
+
+  public static async Awaitable ExecuteAsync(StoryLinkedContent linked,StoryRuntimeContext context,string sequence,string stopBeforePhase=null) {
+   var machine=new DazPose.Story.Language.StoryMachine(linked.Program,new PerformanceStoryHost(context,linked.RootContent,linked),context.Randoms);
 
    await machine.RunAsync(sequence,context.Cancellation,stopBeforePhase);
 

@@ -17,7 +17,7 @@ namespace DazPose.Editor {
   [MenuItem("DazPose/Scene/Initialize Game Session")] public static void Initialize() => GameSessionSceneSetup.Initialize();
   [MenuItem("DazPose/Scene/Add Lara Performer")] static void AddLara()=>GameSessionSceneSetup.AddLara();
   [MenuItem("DazPose/Scene/Add Partner")] static void AddPartner()=>GameSessionSceneSetup.AddPartner();
-  [MenuItem("DazPose/Scene/New Sequence Script...")] static void NewScript() {
+  [MenuItem("DazPose/Content/Advanced/New Sequence Script...")] static void NewScript() {
    string path=EditorUtility.SaveFilePanelInProject("New Sequence Script","MyPerformance","cs","Create an authoring script");
    if(string.IsNullOrEmpty(path)) return;
    string name=Path.GetFileNameWithoutExtension(path);
@@ -46,7 +46,7 @@ namespace DazPose.Editor {
   }
   [MenuItem("DazPose/Game/Build Windows Player...")] static void BuildPlayer()=>GamePlayerBuild.BuildInteractive();
   [MenuItem("DazPose/Help/Content Authoring API")] static void Api()=>OpenRoot("CONTENT_AUTHORING_API.md");
-  [MenuItem("DazPose/Help/Authoring Build Plan")] static void Plan()=>OpenRoot("AUTHORING_READINESS_BUILD_PLAN.md");
+  [MenuItem("DazPose/Help/Story Authoring Guide")] static void StoryGuide()=>OpenRoot("docs/story-runtime/DAZSTORY_AUTHORING.md");
   static void OpenRoot(string file) => EditorUtility.OpenWithDefaultApp(Path.GetFullPath(Path.Combine(Application.dataPath,"../../..",file)));
  }
 }

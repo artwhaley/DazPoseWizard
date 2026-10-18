@@ -9,7 +9,7 @@ namespace DazPose.Performer.HandGrip
     /// Prepared immutable-at-runtime triangle geometry for local signed-distance contact queries.
     /// Configure this asset during content preparation, then treat its cloned data as a release snapshot.
     /// </summary>
-    [CreateAssetMenu(menuName = "DAZ Pose/Performer/Grip Contact Surface", fileName = "GripContactSurface")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Grip Contact Surface", fileName = "GripContactSurface")]
     public sealed class GripContactSurfaceData : ScriptableObject
     {
         public const int LeafTriangleLimit = 8;

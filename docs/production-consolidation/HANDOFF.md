@@ -1,4 +1,28 @@
-# Current - full session ready for user manual Play in Unity
+# Current cleanup handoff — 18 October 2026
+
+First Contact is prepared for user-controlled manual Play in the open Unity Editor at `Assets/Production/Scenes/FirstContact.unity`. The delivered cleanup changes passed seven assembly compiles, 129 managed tests, actual EditMode reference/global-card/import/scene checks, 163 move-preservation checks, and final GUID/protected-byte audits. Verified deletions total 116 files/metas and 287,660,094 bytes. No Play, automated scene playback, build or player was started. Human visual acceptance and the toe observation remain pending.
+
+Task 1 remains technically PARTIAL for one required unexecuted step: consolidating eleven retained legacy diagnostic scenes into one development lab. Automatic approval review rejected that relocation/path-rewrite action because active callers remain. Existing callers/scenes are intact; see [the exact pending plan](../cleanup-task1/PENDING_LAB_CONSOLIDATION.md) and [final report](../cleanup-task1/EXECUTION_REPORT.md). Protected Lara material paths, canonical sources, wardrobe releases/review closure and toe fixtures remain deliberate HOLDs. Work is on main; only C00 is committed (f74d026), later source remains local and uncommitted. No push.
+
+# Historical October 17 handoff — full session awaiting user retest
+
+## October 17 - rejected expression imports cleared
+
+Archived all eleven current failed expression inputs (eight missing required Lara
+morphs and three body-only presets) with their metas and status records outside
+watched roots. All 33 archived files retain their hashes; no failed expression
+jobs remain. Original DAZ presets and generated assets were untouched. The earlier
+eight-job retry is historical: it exposed missing morphs, and those jobs are now
+archived rather than pending.
+
+Automatic reference-model refresh no longer forces failed imports to retry.
+Future cleanup is **DazPose > Content > Archive Failed Expression Imports**.
+Click Console **Clear** once for old messages; archiving does not erase unrelated logs.
+Recovery instructions: docs/IMPORT_FAILURE_CLEANUP.md.
+Affected Editor assemblies compile cleanly with warnings as errors; nine managed
+archive safety checks passed. No Unity Play or standalone build/launch was performed.
+Evidence: .dazposewizard/import-archive-fix/result.json.
+
 
 ## October 17 - Unity diagnostics cleanup
 

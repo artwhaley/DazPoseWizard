@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "Performer/Magic/Spell", fileName = "Spell")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Magic/Spell", fileName = "Spell")]
     public sealed class PerformerSpell : ScriptableObject
     {
         [SerializeField] private PerformerMagicStyle style;

@@ -2,8 +2,6 @@
   "name": "DazPose.Editor",
   "references": [
     "GUID:457756d89b35d2941b3e7b37b4ece6f1",
-    "GUID:6e8763cc84e641be96da510df920c8bb",
-    "GUID:700d5ce39949420093b3b48027c9e252",
     "GUID:78bd2ddd6e276394a9615c203e574844",
     "GUID:df380645f10b7bc4b97d4f5eb6303d95",
     "GUID:e0cd26848372d4e5c891c569017e11f1",

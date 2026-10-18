@@ -11,9 +11,7 @@ namespace DazPose.Editor.Performer
 {
     public static class SceneBindingMigration
     {
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Production/Bind player and toy references in selected scope")]
-#endif
+
         static void BindSelection()
         {
             try { Bind(Selection.activeGameObject); }

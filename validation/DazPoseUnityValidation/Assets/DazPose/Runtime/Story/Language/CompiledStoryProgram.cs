@@ -10,7 +10,7 @@ namespace DazPose.Story.Language {
  public enum StoryAtomCode { Number, String, Bool, Symbol, Read, Add, Subtract, Multiply, Divide, Range, Negate, Not, Equal, NotEqual, Less, LessEqual, Greater, GreaterEqual, AndSkip, OrSkip, Function, List }
  public enum StoryBindingKind { Location, Pose, Gesture, MagicShaderProfile, Performer, PlayerBody, ContactTarget, Funscript }
  [Serializable] public sealed class StorySource {
-  public string file, declaration;
+  public string file, declaration, unit;
   public int line,column;
   public StorySource() { }
   public StorySource(string file,int line,int column,string declaration=null) { this.file=file; this.line=line; this.column=column; this.declaration=declaration; }
@@ -57,6 +57,7 @@ namespace DazPose.Story.Language {
  [Serializable] public sealed class CompiledStoryProgram {
   public int version=1;
   public string name;
+  public bool linked;
   public StoryInstruction[] instructions=Array.Empty<StoryInstruction>();
   public StoryExpression[] expressions=Array.Empty<StoryExpression>();
   public StoryEntry[] entries=Array.Empty<StoryEntry>();

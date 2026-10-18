@@ -23,9 +23,7 @@ namespace DazPose.Editor.AnimationAudit
         private const string ControllerPath = AssetFolder + "/LaraHumanoidBreathing.controller";
         private const string FloorMaterialPath = AssetFolder + "/Floor.mat";
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Animation Audit/Create or Refresh Simple Humanoid Test")]
-#endif
+
         public static void CreateOrRefresh()
         {
             Create(false);

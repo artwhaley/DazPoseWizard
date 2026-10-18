@@ -84,7 +84,7 @@ public sealed class LanguageTests {
   Assert.Equal("Lara.StartIdle",host.Calls[0]); Assert.Equal("Warmup",host.State["Session.Phase"].String); Assert.Equal(0,host.State["Session.PhaseCompletion"].Numeric);Assert.Equal(55,host.State["Session.Mood"].Numeric);
  }
  [Fact] public void ActualNorthStarCompilesAllNineteenDialogueBeatsAndAllPhases() {
-  var program=DazStoryCompiler.Compile(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"FirstContact.dazstory")),"FirstContact.dazstory");
+  var program=AuthoredStoryTestContent.Compile();
   Assert.Equal(19,program.dialogue.Length);
   Assert.Equal(new[]{"Warmup","Main","Climax","Resolution"},program.instructions.Where(i=>i.code==StoryCode.EnterPhase).Select(i=>i.name));
   Assert.Contains(program.instructions,i=>i.code==StoryCode.WaitAny);
@@ -93,7 +93,7 @@ public sealed class LanguageTests {
   Assert.DoesNotContain(program.instructions.Skip(intro.start).Take(intro.end-intro.start),i=>i.name=="Lara.SitAt" || i.name=="Camera.MoveTo");
  } [Theory] [InlineData(0,true,55,false)][InlineData(2,false,50,false)][InlineData(4,true,50,true)]
  public async Task ActualIntroAndNegotiationReachWarmupInAllClothingBranches(int clothes,bool equipment,int mood,bool disapproval) {
-  var source=File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"FirstContact.dazstory"));var program=DazStoryCompiler.Compile(source,"FirstContact.dazstory");
+  var program=AuthoredStoryTestContent.Compile();
   var host=new Host();host.State["World.Clothing.Count"]=new StoryData((double)clothes);host.State["Session.PreparedEquipment.Count"]=new StoryData(0d);host.State["Session.PreparedEquipment"]=new StoryData(Array.Empty<string>());
 
   var commands=new List<StoryCommand>();
@@ -113,7 +113,7 @@ public sealed class LanguageTests {
   Assert.DoesNotContain("Lara.SitAt",host.Calls);Assert.DoesNotContain("Camera.MoveTo",host.Calls);
   if(disapproval)Assert.Equal("shoes",commands.Single(c=>c.Verb=="Popup.RemoveClothingItem").Require("item").String);
  } [Fact] public void PreviewValidationIncludesAllSetupBranchesAndExcludesLaterContent() {
-  var program=DazStoryCompiler.Compile(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"FirstContact.dazstory")),"FirstContact.dazstory");
+  var program=AuthoredStoryTestContent.Compile();
   var view=StoryPlaybackWindow.BeforePhase(program,"FirstContact","Warmup");
   Assert.Contains(view.bindings,b=>b.symbol=="Disapproval");Assert.Contains(view.bindings,b=>b.symbol=="SexyVamp");Assert.Contains(view.bindings,b=>b.symbol=="Lounger");
   Assert.DoesNotContain(view.bindings,b=>b.kind==StoryBindingKind.Funscript || b.symbol=="MainPosition1" || b.symbol=="Bedside");

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace DazPose.Performer.HandGrip
 {
     /// <summary>Project-owned calibration for one Generic-rig hand.</summary>
-    [CreateAssetMenu(menuName = "DAZ Pose/Performer/Hand Grip Rig Profile", fileName = "HandGripRigProfile")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Hand Grip Rig Profile", fileName = "HandGripRigProfile")]
     public sealed class HandGripRigProfile : ScriptableObject
     {
         [SerializeField] private string handPath;

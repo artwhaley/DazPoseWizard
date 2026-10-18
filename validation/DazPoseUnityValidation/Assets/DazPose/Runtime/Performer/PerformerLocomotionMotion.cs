@@ -5,7 +5,7 @@ namespace DazPose.Performer
 {
     public enum LocomotionSupportFoot { Unknown, Left, Right, Both, Neither }
 
-    [CreateAssetMenu(menuName = "Performer/Locomotion Motion", fileName = "Locomotion Motion")]
+    [CreateAssetMenu(menuName = "DazPose/Performer/Locomotion Motion", fileName = "Locomotion Motion")]
     public sealed class PerformerLocomotionMotion : ScriptableObject
     {
         [SerializeField] private AnimationClip bodyClip;

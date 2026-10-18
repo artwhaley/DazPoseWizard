@@ -964,7 +964,7 @@ PrefabInstance:
       addedObject: {fileID: 323584082}
     - targetCorrespondingSourceObject: {fileID: 7510028542162113535, guid: 91a9b9576df9bc249b23f61c5fa7038f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 323584081}
+      addedObject: {fileID: 323584083}
   m_SourcePrefab: {fileID: 100100000, guid: 91a9b9576df9bc249b23f61c5fa7038f, type: 3}
 --- !u!1 &323584077 stripped
 GameObject:
@@ -1005,6 +1005,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86f5e70c5d18b6b45b1bec291f707fb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformanceSceneBindings
+  sceneId:
+  actorId:
   performer: {fileID: 323584079}
   player: {fileID: 0}
   playback: {fileID: 323584078}
@@ -1020,20 +1022,11 @@ MonoBehaviour:
   expressions: []
   speechClips: []
   seats: []
---- !u!114 &323584081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 323584077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca151ee0c6bb459db4085dce34b10b32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Validation.ClothingSetupPreviewRunner
-  actor: {fileID: 323584079}
-  initialOutfitId: first-outfit
+  wardrobePresets: []
+  gestures: []
+  actions: []
+  spells: []
+  auras: []
 --- !u!114 &323584082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1048,6 +1041,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.ClothingSetupDraftBinding
   catalog: {fileID: 11400000, guid: 31ff3f8225fdb364482ac21d466610e3, type: 2}
   configuration: {fileID: 11400000, guid: fc8b22915d8757e41981ff953cc3a047, type: 2}
+--- !u!114 &323584083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 323584077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e346b807658d40bc88ca2bb90cc5dd5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.ClothingSetupStartup
+  actor: {fileID: 323584079}
+  initialOutfitId: first-outfit
 --- !u!1 &342798745
 GameObject:
   m_ObjectHideFlags: 0
@@ -10969,6 +10976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Player.PlayerController
   view: {fileID: 685317202}
+  bodyPresence: {fileID: 0}
   toyControlService: {fileID: 0}
 --- !u!114 &685317202
 MonoBehaviour:

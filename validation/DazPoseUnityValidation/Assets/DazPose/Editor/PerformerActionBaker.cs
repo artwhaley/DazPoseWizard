@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using DazPose.Editor.Importing;
-using DazPose.FirstPerformanceVoid;
 using DazPose.Performer;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -50,35 +49,7 @@ namespace DazPose.Editor
             Bake(source, GeneratedFolder, Sanitize(source.name), "Selected source clip.", null);
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Action/Generate Jump for Joy Acceptance Assets")]
-#endif
-        public static void GenerateJumpForJoyAcceptance()
-        {
-            if (EditorApplication.isPlayingOrWillChangePlaymode)
-                throw new InvalidOperationException("Generate Action acceptance assets in Edit Mode.");
-            Scene scene = SceneManager.GetSceneByPath(ScenePath);
-            if (!scene.IsValid() || !scene.isLoaded)
-                throw new InvalidOperationException("Open the existing FirstPerformanceVoid scene before generating Action acceptance assets.");
 
-            FirstPerformanceVoidControls[] controlsMatches = scene.GetRootGameObjects()
-                .SelectMany(root => root.GetComponentsInChildren<FirstPerformanceVoidControls>(true)).ToArray();
-            if (controlsMatches.Length != 1)
-                throw new InvalidOperationException("Expected exactly one FirstPerformanceVoidControls in FirstPerformanceVoid. Found "
-                    + controlsMatches.Length + ".");
-            FirstPerformanceVoidControls controls = controlsMatches[0];
-            SuccubusPerformer performer = controls.GetComponent<SuccubusPerformer>();
-            var controlsData = new SerializedObject(controls);
-            SerializedProperty performerProperty = controlsData.FindProperty("performer");
-            if (performerProperty != null) performer = performerProperty.objectReferenceValue as SuccubusPerformer;
-            if (performer == null || performer.gameObject.scene != scene)
-                throw new InvalidOperationException("The existing Lara reference on FirstPerformanceVoidControls is required.");
-
-            AnimationClip source = ResolveJumpForJoySource();
-            (PerformerAction jumpForJoy, PerformerAction recoveryTest) = Bake(source, AcceptanceFolder,
-                "JumpForJoy", "KAWAII Jump-for-Joy acceptance action.", performer);
-            ConfigureAcceptanceScene(scene, controls, performer, jumpForJoy, recoveryTest);
-        }
 
         private static (PerformerAction Action, PerformerAction RecoveryTest) Bake(AnimationClip source,
             string outputFolder, string outputName, string bakeNotes, SuccubusPerformer performer)
@@ -161,7 +132,7 @@ namespace DazPose.Editor
                 Debug.Log("PERFORMER_ACTION_BAKED: source=" + sourcePath
                     + "; duration=" + action.DurationSeconds.ToString("0.000") + " s"
                     + "; displacement=" + action.NominalDisplacement.ToString("F3") + " m"
-                    + "; yaw=" + action.NominalYawDegrees.ToString("0.0") + "°"
+                    + "; yaw=" + action.NominalYawDegrees.ToString("0.0") + "Â°"
                     + "; peak root Y=" + sample.RootPositions.Max(position => position.y).ToString("0.000") + " m"
                     + "; body clip=" + AssetDatabase.GetAssetPath(bodyClip)
                     + "; action=" + AssetDatabase.GetAssetPath(action)
@@ -426,38 +397,14 @@ namespace DazPose.Editor
             });
             fixture.ConfigureInEditor(bodyClip, zero, y, z, yaw, bodyClip.length, sourcePath,
                 "Deterministic acceptance-only trajectory using the " + outputName
-                + " full-body clip: 0.75 m forward, 25° yaw, 0.62 m peak root Y, and zero final elevation. Not a production action.");
+                + " full-body clip: 0.75 m forward, 25Â° yaw, 0.62 m peak root Y, and zero final elevation. Not a production action.");
             if (!fixture.IsReady(out string reason))
                 throw new InvalidOperationException("The deterministic displaced recovery fixture failed validation: " + reason);
             EditorUtility.SetDirty(fixture);
             return fixture;
         }
 
-        private static void ConfigureAcceptanceScene(Scene scene, FirstPerformanceVoidControls controls,
-            SuccubusPerformer performer, PerformerAction jumpForJoy, PerformerAction recoveryTest)
-        {
-            PerformerPoseAcceptanceHarness harness = performer.GetComponent<PerformerPoseAcceptanceHarness>();
-            if (harness == null)
-                throw new InvalidOperationException("The Lara performer needs PerformerPoseAcceptanceHarness so the generated Action can be included in F5 acceptance checks.");
 
-            Undo.RecordObjects(new UnityEngine.Object[] { controls, harness }, "Configure PerformerAction Acceptance");
-            controls.ConfigureActionAcceptance(jumpForJoy, recoveryTest);
-            EditorUtility.SetDirty(controls);
-            var harnessData = new SerializedObject(harness);
-            SerializedProperty jumpProperty = harnessData.FindProperty("actionAcceptanceJumpForJoy");
-            SerializedProperty recoveryProperty = harnessData.FindProperty("actionAcceptanceDisplacedTest");
-            if (jumpProperty == null || recoveryProperty == null)
-                throw new InvalidOperationException("PerformerPoseAcceptanceHarness does not expose the P0.Perform acceptance action fields.");
-            jumpProperty.objectReferenceValue = jumpForJoy;
-            recoveryProperty.objectReferenceValue = recoveryTest;
-            harnessData.ApplyModifiedProperties();
-            EditorUtility.SetDirty(harness);
-
-            EditorSceneManager.MarkSceneDirty(scene);
-            AssetDatabase.SaveAssets();
-            if (!EditorSceneManager.SaveScene(scene))
-                throw new IOException("Could not save PerformerAction acceptance references to FirstPerformanceVoid.");
-        }
 
         private static void WriteBakeReport(AnimationClip source, string sourcePath,
             PerformerAction action, SampleSet sample, PerformerAction recoveryTest, bool generatedFixture)
@@ -468,7 +415,7 @@ namespace DazPose.Editor
             var report = new StringBuilder();
             report.AppendLine("# PerformerAction Bake Report");
             report.AppendLine();
-            report.AppendLine("Generated by Tools > DAZ Pose > Action. Source assets were read-only inputs.");
+            report.AppendLine("Generated by DazPose > Content > Bake Selected Clip as Action. Source assets were read-only inputs.");
             report.AppendLine();
             report.AppendLine("- Source clip: `" + source.name + "`");
             report.AppendLine("- Source asset: `" + sourcePath + "`");
@@ -477,7 +424,7 @@ namespace DazPose.Editor
             report.AppendLine("- Duration: " + action.DurationSeconds.ToString("0.000") + " s");
             report.AppendLine("- Sample rate: " + SampleRate + " fps");
             report.AppendLine("- Nominal root displacement (X/Y/Z): `" + action.NominalDisplacement.ToString("F4") + " m`");
-            report.AppendLine("- Nominal root yaw: " + action.NominalYawDegrees.ToString("0.00") + "°");
+            report.AppendLine("- Nominal root yaw: " + action.NominalYawDegrees.ToString("0.00") + "Â°");
             report.AppendLine("- Peak sampled root Y: " + sample.RootPositions.Max(position => position.y).ToString("0.0000") + " m");
             report.AppendLine("- Final root Y: " + action.RootY.Evaluate(1f).ToString("0.0000") + " m (limit "
                 + PerformerAction.GroundReturnToleranceMeters.ToString("0.000") + " m)");

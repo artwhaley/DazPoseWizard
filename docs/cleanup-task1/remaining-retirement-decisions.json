@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "scope": "C08 final legacy validation and vendor demo scene dispositions",
+  "evidence": {
+    "assetRows": "retirement-manifest.csv records exact bytes/GUID/C00 hash/recovery path; all listed scenes report zero serialized GUID refs.",
+    "coverage": [
+      "TestOutput/CleanupTask1/final-structure.json passed: 18 cards, 19 dialogue entries, 6 poses, 7 marks.",
+      "TestOutput/CleanupTask1/retained-references.json passed for FirstContact, Showcase, ClothingSetup, frozen FirstPerformanceVoid, MainMenu, VoidEnvironment, Lara, PlayerBody and Partner.",
+      "Managed story/application/global-card and Edit Mode checks cover current shipped behavior, not every legacy specialized diagnostic."
+    ],
+    "vendorProvenance": "Preserve all package content outside these scenes. FemaleMovementAnimsetPro/readme.txt identifies Kubold; SALSA LipSync/Editor/readme.txt identifies Crazy Minnow Studio; INab Interactive Dissolve/Readme.txt and package license/notices document effects; KAWAII documentation describes animation content. Missing local license alone does not block scene-only retirement."
+  },
+  "decisions": [
+    {
+      "path": "Assets/Crazy Minnow Studio/Examples/Scenes/SALSA-basic3D-boxhead.unity",
+      "bytes": 79812,
+      "guid": "174994280e6a4c24e948fcbecee27891",
+      "sha256": "0452053224eccbb505ff8b41ba50525c66b460363c3f2792ebd43d866ed4ae96",
+      "decision": "RETIRED",
+      "currentConsumers": "Unity incoming-reference and build-membership checks passed; package/runtime/source/license/provenance retained.",
+      "reason": "Exact C00 asset/meta hashes verified; Unity scene-only retirement 9185714b5a84442b9d9e6c3052d68812 passed.",
+      "nextAction": "None; preserved package assets remain supported."
+    },
+    {
+      "path": "Assets/FemaleMovementAnimsetPro/Scenes/FemaleDemo.unity",
+      "bytes": 215154,
+      "guid": "0fee8d5278ac18144830ae73da886b77",
+      "sha256": "148c9a397e777726ee093680665ee90a0991d269f91fedf99f2abdc66fea03b0",
+      "decision": "RETIRED",
+      "currentConsumers": "Unity incoming-reference and build-membership checks passed; package/runtime/source/license/provenance retained.",
+      "reason": "Exact C00 asset/meta hashes verified; Unity scene-only retirement 9185714b5a84442b9d9e6c3052d68812 passed.",
+      "nextAction": "None; preserved package assets remain supported."
+    },
+    {
+      "path": "Assets/FemaleMovementAnimsetPro/Scenes/FemaleTopDownDemo.unity",
+      "bytes": 215350,
+      "guid": "804e598d57a1673429e2da915024fedb",
+      "sha256": "8f2774c32aa6f1e19ac77a37925b7bba9ef0497a91d372666dc0fc57bae72cd4",
+      "decision": "RETIRED",
+      "currentConsumers": "Unity incoming-reference and build-membership checks passed; package/runtime/source/license/provenance retained.",
+      "reason": "Exact C00 asset/meta hashes verified; Unity scene-only retirement 9185714b5a84442b9d9e6c3052d68812 passed.",
+      "nextAction": "None; preserved package assets remain supported."
+    },
+    {
+      "path": "Assets/FemaleMovementAnimsetPro/Standard Assets/Effects/TessellationShaders/Scenes/TessellationSample.unity",
+      "bytes": 22243,
+      "guid": "31f6763de0920574092c8a69a66c717e",
+      "sha256": "f4893aebbae79409ced7a7e92e80cf51c3ac237ffc44a3e0d686859f56a804bb",
+      "decision": "RETIRED",
+      "currentConsumers": "Unity incoming-reference and build-membership checks passed; package/runtime/source/license/provenance retained.",
+      "reason": "Exact C00 asset/meta hashes verified; Unity scene-only retirement 9185714b5a84442b9d9e6c3052d68812 passed.",
+      "nextAction": "None; preserved package assets remain supported."
+    },
+    {
+      "path": "Assets/INab Studio/Demo Assets/StarterAssets/Environment/Art/Demo Scene.unity",
+      "bytes": 13554,
+      "guid": "f57054d772cd992498990341f8691414",
+      "sha256": "5a5fda641a7e8fb5edf1dc683bf007ad0afbf2bf70ef4383b6fbb03992102536",
+      "decision": "RETIRED",
+      "currentConsumers": "Unity incoming-reference and build-membership checks passed; package/runtime/source/license/provenance retained.",
+      "reason": "Exact C00 asset/meta hashes verified; Unity scene-only retirement 9185714b5a84442b9d9e6c3052d68812 passed.",
+      "nextAction": "None; preserved package assets remain supported."
+    },
+    {
+      "path": "Assets/KAWAII_ANIMATIOMS_100/Demo/KAWAII_ANIMATIOMS_100.unity",
+      "bytes": 125434,
+      "guid": "ea83ce21f86ef634ab82ebbf6a40a2bb",
+      "sha256": "0dc7948295547166c1a24ff21c0179f4660f9ccb534abcea48cd433f5af7bd96",
+      "decision": "RETIRED",
+      "currentConsumers": "Unity incoming-reference and build-membership checks passed; package/runtime/source/license/provenance retained.",
+      "reason": "Exact C00 asset/meta hashes verified; Unity scene-only retirement 9185714b5a84442b9d9e6c3052d68812 passed.",
+      "nextAction": "None; preserved package assets remain supported."
+    },
+    {
+      "path": "Assets/Production/Scenes/AuthoringWelcome.unity",
+      "bytes": 597784,
+      "guid": "887718b1f3fd5e045bab6b9ec4940cf3",
+      "sha256": "858ac85357f8cc10c14e9f21c4e9f6dce55f73e8c47600c73a0603d937c52939",
+      "decision": "ALREADY_RETIRED",
+      "currentConsumers": "Legacy producers removed; tuning/navigation checks use saved First Contact; existing Showcase preserved.",
+      "reason": "Retired by the verified C08 operation; recovery/hash and Unity dependency checks are recorded in retirement-manifest.csv.",
+      "nextAction": "No further scene action."
+    },
+    {
+      "path": "Assets/Production/Scenes/AuthoringCompanion.unity",
+      "bytes": 601420,
+      "guid": "1a04ee160147fbd4cb8f5ca8f4da13e1",
+      "sha256": "b316dc72296959d471dbad20ac363e30eea1689a713c92c037e4d208a285f08e",
+      "decision": "ALREADY_RETIRED",
+      "currentConsumers": "Legacy producers removed; tuning/navigation checks use saved First Contact; existing Showcase preserved.",
+      "reason": "Retired by the verified C08 operation; recovery/hash and Unity dependency checks are recorded in retirement-manifest.csv.",
+      "nextAction": "No further scene action."
+    },
+    {
+      "path": "Assets/Production/Scenes/Day2ActorValidation.unity",
+      "bytes": 590757,
+      "guid": "6147181d1c5f60e458a955b04fbd0627",
+      "sha256": "9bea987d8ab8be349e4fb1d38ebb3e4505574f63456492776f6ff5dc59720de6",
+      "decision": "HOLD",
+      "currentConsumers": "ProductionPerformerBuilder.cs",
+      "reason": "ProductionPerformerBuilder.ScenePath and ProductionTestEnvironmentBuilder.Compose still generate/use this scene; dynamic Candidate-<preset id> asset paths also remain.",
+      "nextAction": "Detach scene generation and Candidate asset writes; retain reusable performer helpers; then recheck."
+    },
+    {
+      "path": "Assets/Production/Scenes/Day3CommandValidation.unity",
+      "bytes": 597994,
+      "guid": "8ca719727de320f4ea5de8dd2370e555",
+      "sha256": "b461fab95b8134e3d6c6e200f36056b80d5d470b23aa2d87f9f450dc0e25bcc1",
+      "decision": "HOLD",
+      "currentConsumers": "RemediationValidation.cs; Day3Build.cs",
+      "reason": "Day3Build and RemediationValidation scene/fixture checks remain; managed command tests do not prove all legacy assertions.",
+      "nextAction": "Port remaining scene-specific assertions to managed/Edit Mode fixtures or retarget explicit callers, then run the normal exact-hash and Unity dependency guard."
+    },
+    {
+      "path": "Assets/Production/Scenes/Day4PartnerContactValidation.unity",
+      "bytes": 595804,
+      "guid": "2e0bf1a76e1ceb448af92d79f7655bfd",
+      "sha256": "2a34deb8cd21505c9721e9e78ac3ac531e23699494e289e04d38f8f07b97e1b1",
+      "decision": "HOLD",
+      "currentConsumers": "RemediationValidation.cs; Day4SceneBuilder.cs",
+      "reason": "Day4SceneBuilder and four RemediationValidation source-scene checks remain; current PlayerBody checks do not cover contact acceptance.",
+      "nextAction": "Port contact-column/rig assertions; remove scene paths; preserve production PartnerCharacterPreparation."
+    },
+    {
+      "path": "Assets/Production/Scenes/Day5WardrobeValidation.unity",
+      "bytes": 589607,
+      "guid": "2eb7586bcdaa7c547a376aa0e22c2ff1",
+      "sha256": "661894fd90eccad3a9f698bc928e08edba5079168a1b380a0ca3e369f9fb675a",
+      "decision": "HOLD",
+      "currentConsumers": "RemediationValidation.cs; Day5WardrobeValidation.cs",
+      "reason": "Day5WardrobeValidation and RemediationValidation reference the scene; metadata/import tests do not cover all scene integration assertions.",
+      "nextAction": "Port integration assertions; keep isolated transactional test APIs until superseded; then detach scene path."
+    },
+    {
+      "path": "Assets/Production/Scenes/ProductionRuntimeSmoke.unity",
+      "bytes": 866339,
+      "guid": "64a54fb1efde6cf4c866b3f5351559bd",
+      "sha256": "3982005f6335d6dff21de7b260797156a182f09006e36a9f2d71dbe05cabac68",
+      "decision": "HOLD",
+      "currentConsumers": "RemediationBuild.cs",
+      "reason": "RemediationBuild still generates the scene and standalone runner; managed tests cover shipped behavior. Standalone player execution is not authorized.",
+      "nextAction": "Map smoke assertions to managed/Edit Mode, detach player generation, retire scene and runner together."
+    },
+    {
+      "path": "Assets/Production/Scenes/RemediationValidation.unity",
+      "bytes": 872986,
+      "guid": "d5a830258f9b59b4c80583e6a82d53d9",
+      "sha256": "e12bb2ef567f15d97feb95712c736a5e5f64af4f7e20b57897eed8ae2cb8fa62",
+      "decision": "HOLD",
+      "currentConsumers": "RemediationBuild.cs",
+      "reason": "RemediationBuild and RemediationValidation own it; path/import/contact/wardrobe assertions are not fully mapped.",
+      "nextAction": "Map relevant assertions individually; keep shared helpers; remove only self-owned scene/player workflow."
+    },
+    {
+      "path": "Assets/Scenes/PoseValidation.unity",
+      "bytes": 377892,
+      "guid": "1f3c2d21783d2d442b3802aa2c542ca8",
+      "sha256": "0a19414fe4b4a0800a05d9c2b806c800ba2107a4b8a25732330739dd2f51d639",
+      "decision": "HOLD",
+      "currentConsumers": "DazPoseEditorCommands.cs; RemediationContentPreflightRunner.cs; PerformerSalsaConfigurator.cs",
+      "reason": "DazPoseEditorCommands, RemediationContentPreflightRunner and PerformerSalsaConfigurator retain explicit target paths.",
+      "nextAction": "Retarget to FirstContact or temporary fixtures; preserve shared Salsa/import helpers; then remove scene."
+    },
+    {
+      "path": "Assets/Scenes/HandGripAcceptance.unity",
+      "bytes": 873694,
+      "guid": "89a9289125c8278428bceb315fb7482a",
+      "sha256": "3e586a604f3d482ca390907215c73a06eea58118903fb33917716dbf980d3db0",
+      "decision": "HOLD",
+      "currentConsumers": "HandGripAcceptanceSetup.cs; validation runner",
+      "reason": "HandGrip setup/visual/live proof tools target it. RuntimeSelfTests/SpatialProof lack equivalent visual proof; Harness is referenced by frozen FirstPerformanceVoidControls.",
+      "nextAction": "Keep this diagnostic and shared solver/profile/calibration APIs until visual replacement exists."
+    },
+    {
+      "path": "Assets/Scenes/PartnerRigAcceptance.unity",
+      "bytes": 71987,
+      "guid": "25267b7dc8b0b264d98b96d5840d38cc",
+      "sha256": "d3bba0062f42388a5f9f23621c672b59dc5a81a00178e9a66743b0dc5e00dc3a",
+      "decision": "HOLD",
+      "currentConsumers": "PartnerRigAcceptanceBuilder.cs; PartnerCharacterPreparation.cs",
+      "reason": "Acceptance builder owns the fixture; PartnerCharacterPreparation is also used by production; current PlayerBody checks do not replace rig-fit acceptance.",
+      "nextAction": "Keep until fit/contact assertions have managed/Edit Mode coverage; split shared preparation before builder retirement."
+    },
+    {
+      "path": "Assets/Scenes/LaraHumanoidKawaiiTest.unity",
+      "bytes": 17577,
+      "guid": "374d21527f8ea434a8b0a6bb7f2078eb",
+      "sha256": "4e1ded24d1d6cd88232013d8621070e26e4c79436cb34bb09022ee0453c34ea4",
+      "decision": "HOLD",
+      "currentConsumers": "LaraHumanoidKawaiiTestSetup.cs",
+      "reason": "HumanoidLegSetupReport reads ModelPath and AnimationAuditSceneSetup reuses setup; no equivalent leg visual diagnostic.",
+      "nextAction": "Split shared model/controller/catalog prep from scene creation and port leg assertions."
+    },
+    {
+      "path": "Assets/Scenes/AnimationAudit.unity",
+      "bytes": 26445,
+      "guid": "e6dea64a9da3e3749b7d9f7394375dbe",
+      "sha256": "436e88300ee4f49ca48c518149f6ca0070263a62d7eb94c5467584e5f0ae7a3b",
+      "decision": "HOLD",
+      "currentConsumers": "AnimationAuditSceneSetup.cs",
+      "reason": "Locomotion and seating bakers call AnimationAuditCatalogBuilder.IsAuditableClip; validation opens this interactive motion review scene.",
+      "nextAction": "Keep scene/catalog/baker helpers until a supported motion review UI replaces it."
+    }
+  ],
+  "keepSharedCode": [
+    {
+      "path": "Assets/DazPose/Editor/Partner/PartnerCharacterPreparation.cs",
+      "reason": "Used by production partner setup; split from acceptance scene builder."
+    },
+    {
+      "path": "Assets/DazPose/Validation/Editor/Legacy/AnimationAudit/AnimationAuditCatalogBuilder.cs",
+      "reason": "Locomotion and seating bakers call IsAuditableClip."
+    },
+    {
+      "path": "Assets/DazPose/Validation/Legacy/Performer/HandGrip/HandGripAcceptanceHarness.cs",
+      "reason": "Referenced by frozen FirstPerformanceVoidControls; preserve runtime tests and profile APIs."
+    },
+    {
+      "path": "Assets/DazPose/Validation/Editor/Legacy/RemediationValidation.cs",
+      "reason": "Contains unmapped specialized assertions and Day3/4/5 path references; do not drop wholesale."
+    }
+  ]
+}

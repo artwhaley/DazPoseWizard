@@ -16,14 +16,12 @@ namespace DazPose.FirstPerformanceVoid.Editor
         private const string Folder = "Assets/DazPose/Effects/Teleport";
         private const string ProfilePath = Folder + "/FirstContactTeleportProfile.asset";
         private const string PrefabPath = Folder + "/MagentaTeleportFlash.prefab";
-        private const string SoundPath = "Assets/teleportsound.mp3";
+        private const string SoundPath = "Assets/Production/Content/Audio/teleportsound.mp3";
         private const string ParticleShaderGraphPath = Folder + "/ParticleUnlit.shadergraph";
         private const string ParticleVertexColorPath = Folder + "/Particle Vertex Color.shadersubgraph";
         private const string ParticleShaderName = "Shader Graphs/Particles/ParticleUnlit";
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/First Performance Void/Install Teleport Acceptance Harness")]
-#endif
+
         public static void Install()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

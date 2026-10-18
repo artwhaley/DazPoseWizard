@@ -27,17 +27,13 @@ namespace DazPose.UnityValidation.Editor.Partner
         private static readonly string[] ShaftPathNames = { "shaft1", "shaft2", "shaft3", "shaft4", "shaft5", "shaft6", "shaft7" };
         private static readonly string[] BodySlots = { "Face", "Lips", "Teeth", "Torso", "Ears", "Legs", "EyeSocket", "Mouth", "Arms", "Pupils", "EyeMoisture", "Fingernails", "Cornea", "Irises", "Sclera", "Toenails", "Glans", "Shaft", "Testicles", "Torso_Front", "Torso_Middle", "Torso_Back", "Rectum" };
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Partner Proof/Build Acceptance Scene")]
-#endif
+
         public static void BuildAcceptanceScene()
         {
             Build();
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Partner Proof/Recheck Generated Endpoint Data")]
-#endif
+
         public static void Recheck()
         {
             string report = Path.GetFullPath(Path.Combine(Application.dataPath, "../TestOutput/G8MArtistErectionProof/UnityAcceptanceProof.json"));
@@ -99,8 +95,8 @@ namespace DazPose.UnityValidation.Editor.Partner
                 RendererBundle erect = FindBundle(erectPrefab.transform);
                 RendererBundle flaccid = FindBundle(flaccidPrefab.transform);
                 ValidatePair(erectPrefab.transform, flaccidPrefab.transform, erect, flaccid);
-                Mesh bodyGenerated = SaveGeneratedMesh(MakeSkinnedBodyShapeMesh(erect.body, flaccid.body, BodyShape), Generated + "/G8M_ErectBody.asset");
-                Mesh shellGenerated = SaveGeneratedMesh(PartnerCharacterPreparation.CreateSkinnedShell(erect.body, erect.shellMesh, erect.shellTransform, flaccid.shellMesh, flaccid.shellTransform), Generated + "/G8M_ErectShell.asset");
+                Mesh bodyGenerated = SaveGeneratedMesh(MakeSkinnedBodyShapeMesh(erect.body, flaccid.body, BodyShape), "Assets/Production/Player/Meshes/G8M_ErectBody.asset");
+                Mesh shellGenerated = SaveGeneratedMesh(PartnerCharacterPreparation.CreateSkinnedShell(erect.body, erect.shellMesh, erect.shellTransform, flaccid.shellMesh, flaccid.shellTransform), "Assets/Production/Player/Meshes/G8M_ErectShell.asset");
                 Material[] characterMaterials = PartnerCharacterPreparation.BuildMaterials();
 
                 LineData erectLine = DeriveGeometryLine(erectPrefab.transform, erect.body, BodySlots, 16, 17, 33);
@@ -363,6 +359,7 @@ namespace DazPose.UnityValidation.Editor.Partner
 
         private static Mesh SaveGeneratedMesh(Mesh generated, string path)
         {
+            EnsureAssetFolder(Path.GetDirectoryName(path).Replace('\\', '/'));
             Mesh existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing == null) { AssetDatabase.CreateAsset(generated, path); return generated; }
             else
@@ -886,26 +883,4 @@ namespace DazPose.UnityValidation.Editor.Partner
         }
     }
 
-    [InitializeOnLoad]
-    internal static class PartnerRigAcceptanceOneShot
-    {
-        private const string Trigger = "Library/PartnerRigAcceptanceBuild.once";
-        static PartnerRigAcceptanceOneShot()
-        {
-            EditorApplication.delayCall += () =>
-            {
-                string path = Path.GetFullPath(Path.Combine(Directory.GetParent(Application.dataPath).FullName, Trigger));
-                if (!File.Exists(path)) return;
-                File.Delete(path);
-                try { PartnerRigAcceptanceBuilder.BuildFromOneShotRequest(); }
-                catch (Exception e)
-                {
-                    string root = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "TestOutput", "G8MArtistErectionProof");
-                    Directory.CreateDirectory(root);
-                    File.WriteAllText(Path.Combine(root, "UnityBuildFailure.txt"), e.ToString());
-                    Debug.LogException(e);
-                }
-            };
-        }
-    }
 }

@@ -19,9 +19,9 @@ namespace DazPose.UnityValidation
         private const string PresetRoot = "Assets/Wardrobe/Presets";
         private const string StateRoot = "Assets/TestData/WardrobeRuntime/FitStates";
         private const string CandidateScene = "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity";
-        private const string CanonicalBodyPath = "Assets/TestData/LaraCandidate/LaraBody.asset";
-        private const string CanonicalBindingsPath = "Assets/TestData/LaraCandidate/LaraSurfaceBindings.asset";
-        private const string CanonicalProfilePath = "Assets/TestData/LaraCandidate/LaraDissolveProfile.asset";
+        private const string CanonicalBodyPath = "Assets/Production/Performers/Lara/Rig/LaraBody.asset";
+        private const string CanonicalBindingsPath = "Assets/Production/Performers/Lara/Surfaces/LaraSurfaceBindings.asset";
+        private const string CanonicalProfilePath = "Assets/Production/Performers/Lara/Configuration/LaraDissolveProfile.asset";
         private static readonly string[] PackageIds = { "first-outfit", "second-outfit", "third-outfit" };
 
         [Serializable] public sealed class Summary

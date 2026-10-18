@@ -37,7 +37,7 @@ namespace DazPose.Performer
             }
             if (seatingProfile == null)
             {
-                reason = name + " needs a baked PerformerSeatingProfile. Run Tools > DAZ Pose > Seating > Bake KAWAII Seating for Generic Lara.";
+                reason = name + " needs a baked PerformerSeatingProfile. Run DazPose > Content > Advanced > Bake Seating for Generic Lara.";
                 return false;
             }
             if (!seatingProfile.IsReady(out reason)) return false;

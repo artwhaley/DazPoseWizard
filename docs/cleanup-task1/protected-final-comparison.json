@@ -1,0 +1,33 @@
+{
+  "unchanged": 666,
+  "changed": [
+    {
+      "original": "Assets/Production/Scenes/AuthoringShowcase.unity",
+      "current": "Assets/Examples/Scenes/AuthoringShowcase.unity",
+      "baseline": "aa0ccb4a9695d281d35d71fcba64492950ec8d40b7f5bf8a503660278c6877b3",
+      "sha256": "cc47f23f0f177979bb5a75665018bb9fd341530ed36ea1f1771ebecf7ee764e1"
+    },
+    {
+      "original": "Assets/Production/Story/Programs/FirstContact.dazstory",
+      "current": "Assets/Production/Story/Programs/FirstContact.dazstory",
+      "baseline": "d09821f660755a7a4b136357078cef572ca30a1da42ef46d1ec1fcc00a783f66",
+      "sha256": "f3bf35355383b98c5b4a0458d7119cf087fc2e2e3f569a6302f85b0a2d89a9ca"
+    },
+    {
+      "original": "Assets/Scenes/ClothingSetup.unity",
+      "current": "Assets/Scenes/ClothingSetup.unity",
+      "baseline": "17d4864f7cc084f22373613e1a06b706a184a6392b7fb3b83a271ad99b19ff3b",
+      "sha256": "aa8ebbad349a0182a923ebd6f4fd99863e33aa105db2550f0152c7af8ad80efd"
+    }
+  ],
+  "missing": [
+    {
+      "original": "Assets/Production/Story/Programs/FirstContactD1D5.story.json",
+      "current": "Assets/Production/Story/Programs/FirstContactD1D5.story.json"
+    },
+    {
+      "original": "Assets/Production/Story/Programs/FirstContactD1D5.story.json.meta",
+      "current": "Assets/Production/Story/Programs/FirstContactD1D5.story.json.meta"
+    }
+  ]
+}

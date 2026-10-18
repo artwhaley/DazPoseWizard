@@ -35,7 +35,6 @@ namespace DazPose.AnimationAudit
         public string IdentityName => string.IsNullOrEmpty(displayName) ? clipName : displayName;
     }
 
-    [CreateAssetMenu(menuName = "DAZ Pose/Animation Audit Catalog", fileName = "AnimationAuditCatalog")]
     public sealed class AnimationAuditCatalog : ScriptableObject
     {
         public List<AnimationAuditEntry> entries = new List<AnimationAuditEntry>();

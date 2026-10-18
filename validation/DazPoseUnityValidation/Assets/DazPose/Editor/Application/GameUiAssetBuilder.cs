@@ -136,8 +136,6 @@ namespace DazPose.Editor {
   }
   public static void BuildShell() {
    EnsureAssets();
-   string welcome="Assets/Production/Scenes/AuthoringWelcome.unity";
-   EditorSceneManager.OpenScene(welcome); GameSessionSceneSetup.Initialize();
    var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
    var go=Canvas("Main Menu",0); var panel=FullPanel(go);
    Text("DazPose",panel,-380,-100,700,80,48); Text("Choose a scene",panel,-380,-194,700,44,24);
@@ -149,10 +147,8 @@ namespace DazPose.Editor {
    EnsureEventSystem();
    Directory.CreateDirectory("Assets/Production/Scenes");
    EditorSceneManager.SaveScene(scene,"Assets/Production/Scenes/MainMenu.unity");
-   var existing=EditorBuildSettings.scenes.ToList();
-   foreach(string path in new[]{"Assets/Production/Scenes/MainMenu.unity",welcome})
-    if(!existing.Any(s=>s.path==path)) existing.Add(new EditorBuildSettingsScene(path,true));
-   var main=existing.Single(s=>s.path=="Assets/Production/Scenes/MainMenu.unity"); existing.Remove(main); existing.Insert(0,main); EditorBuildSettings.scenes=existing.ToArray();
+   var catalog=AssetDatabase.LoadAssetAtPath<DazPose.Game.SceneCatalog>(ProductionApplicationSetup.CatalogPath);
+   EditorBuildSettings.scenes=GamePlayerBuild.ComputeScenes(catalog).Select(path=>new EditorBuildSettingsScene(path,true)).ToArray();
   }
  }
 }

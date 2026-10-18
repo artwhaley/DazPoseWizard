@@ -11,7 +11,7 @@ namespace DazPose.Editor.HandGrip
 {
     public sealed class HandGripCalibrationWindow : EditorWindow
     {
-        private const string ProfilePath = "Assets/DazPose/Generated/HandGrip/Profiles/LaraRightHandGrip.asset";
+        private const string ProfilePath = "Assets/Production/Performers/Lara/Contact/LaraRightHandGrip.asset";
         private static readonly HandGripDigit[] Digits =
         {
             HandGripDigit.Thumb, HandGripDigit.Index, HandGripDigit.Middle,
@@ -25,9 +25,7 @@ namespace DazPose.Editor.HandGrip
         private bool _previewActive;
         private Vector2 _scroll;
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Handjob/Open Calibration Window")]
-#endif
+        [MenuItem("DazPose/Diagnostics/Contact Calibration")]
         public static void Open()
         {
             HandGripCalibrationWindow window = GetWindow<HandGripCalibrationWindow>("Hand Grip Calibration");
@@ -36,9 +34,7 @@ namespace DazPose.Editor.HandGrip
             window.Show();
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Handjob/Capture Lara Right Hand Profile From Selection")]
-#endif
+        [MenuItem("DazPose/Content/Advanced/Capture Right Hand Profile")]
         public static void CaptureProfileFromSelection()
         {
             Animator animator = Selection.activeGameObject != null
@@ -487,8 +483,8 @@ namespace DazPose.Editor.HandGrip
         private static HandGripRigProfile LoadOrCreateProfile(string assetPath)
         {
             EnsureFolder("Assets/DazPose/Generated");
-            EnsureFolder("Assets/DazPose/Generated/HandGrip");
-            EnsureFolder("Assets/DazPose/Generated/HandGrip/Profiles");
+            EnsureFolder("Assets/Production/Performers/Lara");
+            EnsureFolder("Assets/Production/Performers/Lara/Contact");
             HandGripRigProfile profile = AssetDatabase.LoadAssetAtPath<HandGripRigProfile>(assetPath);
             if (profile != null) return profile;
             profile = ScriptableObject.CreateInstance<HandGripRigProfile>();

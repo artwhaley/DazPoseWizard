@@ -1,0 +1,26 @@
+{
+    "schemaVersion": 1,
+    "entries": [
+        {
+            "packageId": "first-outfit",
+            "releaseId": "Assets/TestData/Wardrobe/first-outfit/Outfit.asset",
+            "generationId": "797ccaace52d0200a1a8097aab5cafcff11bef828c1f0173197a573d54cda1b6|992bcc227f7f61a29c44774a42b57d86eb3d9c1072118ee3522ea7e0a1d0b628|c37fec189a828ef1803e4a0fd0c325f6d4edc8c5ebcc2d361f08f66e5b16e31e",
+            "scenePath": "Assets/TestData/Wardrobe/first-outfit/Review.unity",
+            "publishedAtUtc": ""
+        },
+        {
+            "packageId": "second-outfit",
+            "releaseId": "Assets/TestData/Wardrobe/second-outfit/Outfit.asset",
+            "generationId": "3de4b86b0c8844421ae582b05fbb60c5d6d7aac4653851778f878d3408957d94|ea75a56825b6442a5439f963fa90d3a046d1058b24126f11c6fcec65ab7d4e78|9da68f1803ac44b6c528524efd2dae60a0347d8e070b02538b6e77ae9f138ef6",
+            "scenePath": "Assets/TestData/Wardrobe/second-outfit/Review-20261004-155507.unity",
+            "publishedAtUtc": ""
+        },
+        {
+            "packageId": "third-outfit",
+            "releaseId": "Assets/TestData/Wardrobe/third-outfit/Outfit.asset",
+            "generationId": "afdc9beb718c0f583ecaef03bd439b96b9bebf1a0de24eeab870da30311bbe74|b9fdf417c6f99750032543884620b79e67d307addc97e177ce5b18a5a74bf5e7|1006d4d8a35529766a9ce425aba99af8287508814ee5a7f1a14448cc226d48ee",
+            "scenePath": "Assets/TestData/Wardrobe/third-outfit/Review-20261004-165635.unity",
+            "publishedAtUtc": ""
+        }
+    ]
+}

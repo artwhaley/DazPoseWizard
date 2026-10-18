@@ -1682,7 +1682,7 @@ namespace DazPose.Performer
             if (_locomotion == null || _isTearingDown || !isActiveAndEnabled)
             {
                 string setup = locomotionProfile == null
-                    ? "Assign the generated KawaiiWalk01Profile in the Locomotion section after running Tools > DAZ Pose > Locomotion > Bake KAWAII Walk01 for Generic Lara."
+                    ? "Assign the generated KawaiiWalk01Profile in the Locomotion section after running DazPose > Content > Advanced > Bake Locomotion for Generic Lara."
                     : "SuccubusPerformer locomotion is available only while enabled in Play Mode and after its profile has initialized.";
                 throw new InvalidOperationException("SuccubusPerformer cannot receive WalkTo commands. " + setup);
             }

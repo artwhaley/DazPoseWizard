@@ -2,6 +2,12 @@
 
 This Unity 6 editor tooling imports canonical DAZ poses produced by DazPoseWizard and exposes them as production-ready PerformerPose assets. The validation scene is for development checks; it is not part of normal importing.
 
+## Current authoring entry
+
+Open Assets/Production/Scenes/MainMenu.unity or Assets/Production/Scenes/FirstContact.unity. New Performance Scene copies the saved art-only Void environment. Clothing Setup is under DazPose > Wardrobe; Showcase is under Assets/Examples/Scenes. See [ownership](../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md), [story guide](../../docs/story-runtime/DAZSTORY_AUTHORING.md), and [cleanup status](../../docs/cleanup-task1/EXECUTION_REPORT.md).
+
+The user is the tester. Do not start Play, automated scene playback, builds or players without an explicit request. The saved gameplay scenes are `Assets/Production/Scenes/FirstContact.unity` and `Assets/Production/Scenes/MainMenu.unity`; `Assets/Scenes/FirstPerformanceVoid.unity` is a frozen reference, not the production-scene template. See [scene/content ownership](../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md) for global-card publication, protected import roots and exact held draft directories.
+
 ## Importing a new production pose
 
 1. Open DazPoseWizard and choose the Unity destination folder.
@@ -13,13 +19,13 @@ Each import writes a canonical file under the configured import root, normally A
 
 DazPoseWizard reports Converted only when the .anim and PerformerPose .asset both exist, their Unity meta files are available, and the wrapper references that clip. Unity also loads both assets and checks the typed PerformerPose reference before writing a Converted status. If either output is missing or mismatched, the app leaves the job awaiting Unity and Unity reconciles it again.
 
-Canonical files can be enqueued while Unity is closed. On the next Unity startup the importer scans the configured canonical root and processes pending or incomplete jobs. Reports and per-job status are stored outside Assets under .dazposewizard. Failures appear in the Unity Console and on the corresponding DazPoseWizard card, with details in the job report. Use Tools > DAZ Pose > Reconcile Pending Pose Imports to retry or recover imports explicitly.
+Canonical files can be enqueued while Unity is closed. On the next Unity startup the importer scans the configured canonical root and processes pending or incomplete jobs. Reports and per-job status are stored outside Assets under .dazposewizard. Failures appear in the Unity Console and on the corresponding DazPoseWizard card, with details in the job report. Use DazPose > Content > Reconcile Pending Pose Imports to retry or recover imports explicitly.
 
-Normal importing does not require opening PoseValidation.unity, selecting Lara, generating JSON in Unity, or running a validation menu command.
+Normal importing does not require opening PoseValidation.unity, selecting Lara, generating JSON in Unity, or running a validation menu command. For rejected expression inputs, use **DazPose > Content > Archive Failed Expression Imports** and follow [the recovery guide](../../docs/IMPORT_FAILURE_CLEANUP.md). Automatic reconciliation suppresses unchanged failures; explicit **Reconcile Pending Pose Imports** retries them, and changed canonical bytes are eligible for normal reconciliation.
 
 ## Configure the Unity project once
 
-In Unity, open Tools > DAZ Pose > Pipeline Settings and assign the neutral Genesis 8 Female reference model. Its importer must use Generic rig import, Optimize Game Objects disabled, and Import BlendShapes enabled. The reference-model GUID is saved in ProjectSettings/DazPoseWizardSettings.json.
+In Unity, open DazPose > Settings > Pipeline Settings and assign the neutral Genesis 8 Female reference model. Its importer must use Generic rig import, Optimize Game Objects disabled, and Import BlendShapes enabled. The reference-model GUID is saved in ProjectSettings/DazPoseWizardSettings.json.
 
 DazPoseWizard creates DazPoseWizard.project.json at the Unity project root after project configuration. It records the canonical import root and final asset root. Keep those roots separate and inside Assets. The application uses the project you select in its settings.
 
@@ -44,11 +50,11 @@ Pose returns while the transition continues. PoseAsync suspends its calling asyn
 
 SuccubusPerformer owns one serialized `SpeechAudioSource` reference. In the validation Lara rig, setup finds the unique `head` transform beneath `Genesis8Female` and places the source under it, with its local position set from the upper/lower lip landmarks. The full transform path is logged by the setup command because the head is nested beneath the spine bones in this rig. Since the source is a child of the animated head bone, it follows Lara when the head moves. The setup command reuses an already assigned head-mounted source or creates the child once. Runtime resolves the serialized reference or an existing named voice anchor and fails clearly if neither exists; it does not create AudioSources. A newly created source uses 3D spatial blend; an existing source keeps its authored spatial settings. Playback only controls clip assignment, Play, Stop, and queue progression. The runtime enforces `loop = false` and `playOnAwake = false`, while preserving volume, pitch, spatial blend, mixer routing, distance, rolloff, doppler, and spatializer settings.
 
-Run **Tools > DAZ Pose > Development > Setup or Refresh Performer Pose Acceptance Harness** once after updating the validation project. It reuses the existing head child and assigns the serialized source reference; repeated runs do not add another AudioSource. The Performer Pose Smoke Harness has Speech Clip A/B/C slots and controls to say one clip, queue A+B+C, or stop speaking. Its readout shows current clip, pending count, and AudioSource playback state. The development setup looks for `Assets/generated/A.mp3`, `B.mp3`, and `C.mp3` and fills empty slots when those assets are present.
+The production Lara prefab carries its saved head-mounted speech source. Normal authoring does not require installing the old smoke/acceptance harness. Historical speech test evidence remains under docs; the user controls manual Play.
 
 ### Realtime SALSA lip sync
 
-Run **Tools > DAZ Pose > Development > Setup or Refresh Performer SALSA Lip Sync** once for the selected performer (or the sole performer in the active scene). This editor command requires the already assigned `SpeechAudioSource` directly under the `head` bone. It adds or reuses one root Salsa, one root QueueProcessor, and one `PerformerSalsaLipSync` validator. It never creates or moves an AudioSource and does not change its playback settings. It marks the scene dirty; save and reload it before acceptance testing. The command is safe to repeat. It stops before mutation if it finds duplicate modules, an unrelated SALSA viseme setup, a wrong audio-source reference, missing speech morphs, or missing Always-Export rules.
+Run **DazPose > Content > Advanced > Set Up SALSA Lip Sync** once for the selected performer (or the sole performer in the active scene). This editor command requires the already assigned `SpeechAudioSource` directly under the `head` bone. It adds or reuses one root Salsa, one root QueueProcessor, and one `PerformerSalsaLipSync` validator. It never creates or moves an AudioSource and does not change its playback settings. It marks the scene dirty; save and reload it before acceptance testing. The command is safe to repeat. It stops before mutation if it finds duplicate modules, an unrelated SALSA viseme setup, a wrong audio-source reference, missing speech morphs, or missing Always-Export rules.
 
 SALSA uses normal internal analysis of the same `SpeechAudioSource` that `PerformerSpeech` plays. The editor-authored list is Shape-only and ordered W, F, T, TH, OW, EE, UW, AA, with trigger distribution applied after the list is built. It uses Lara's exact `Genesis8Female/Genesis8Female.Shape` bindings. SALSA's `maxShape` is a normalized amount: `0.5` maps to Unity blendshape weight `50`; setting it to `50` causes a 100x overshoot. The current maximum is SALSA amount `1`, equivalent to Unity weight `100`, doubling the previous setting after it looked too subtle. A static full-weight preview at 100 looked exaggerated, so the live smoke harness reports actual audio-driven weights against this ceiling for visual acceptance. Each viseme uses 0.12 second on, no hold, and 0.06 second off timing. The visual candidate audit covered 18 imported full-form shapes, 17 jaw-only variants, and 17 lips-only variants at 25 and 50 Unity units from front and three-quarter views; the selected eight full-form shapes were also checked at 100 units. W/F/T/TH/OW/EE/UW/AA preserve the broad visible lip, dental, rounding, and jaw-opening forms. M was omitted because amplitude-only triggering cannot distinguish a bilabial closure from low energy or silence; SH/S/L/K/IY/IH/ER/EH were omitted because their distinctions are phoneme-specific and cannot be identified from amplitude alone. The installed SALSA package is 2.5.6.150. SALSA does not select clips, own the FIFO queue, or complete speech requests. A short release after audio completion is expected.
 
@@ -79,24 +85,13 @@ The validation scene has a root-level empty `Gaze Target` at eye height in front
 
 ## Continuing production workflows
 
-- Tools > DAZ Pose > Validate Always-Export Morphs checks configured runtime morphs after refreshing the reference model.
-- DazPoseWizard can generate the DAZ Morph Export Rules CSV from required morphs and approved pins. Import that CSV in DAZ Studio before exporting an updated reference FBX.
-- After replacing the reference model, use Tools > DAZ Pose > Pipeline Settings to confirm its importer configuration and refresh waiting imports.
-- Tools > DAZ Pose > Copy Bridge Materials to Selected Lara copies the bridge example's material assignments to the selected Lara scene object as undoable overrides. It does not alter FBX importer settings.
+- DazPose > Diagnostics > Validate Required Face Morphs checks the configured runtime morph contract.
+- Generate the DAZ Morph Export Rules CSV from required morphs and approved pins before exporting an updated reference FBX.
+- Use DazPose > Settings > Pipeline Settings for the reference model and configured roots.
+- Supported contact, SALSA, seating, locomotion, pose inspection and outfit tools are listed in [the menu census](../../docs/cleanup-task1/menu-census.md).
+- DazPose > Content > Archive Failed Expression Imports clears rejected expression jobs into recoverable storage; [details](../../docs/IMPORT_FAILURE_CLEANUP.md).
 
-## Development menu
-
-The normal Tools > DAZ Pose menu keeps production operations at its top level:
-
-- Pipeline Settings
-- Reconcile Pending Pose Imports
-- Validate Always-Export Morphs
-- Copy Bridge Materials to Selected Lara
-- Development
-
-Development contains validation-scene setup/opening, the performer acceptance harness setup, and diagnostics for the selected character, pose bone mapping, and clip bindings. Historical direct-apply, manual clip-generation, preview, old Playables demo, and one-off Stack3 setup commands have been removed.
-
-PoseValidation.unity remains a development harness with the current SuccubusPerformer, PerformerPoseSmokeHarness, and PerformerPoseAcceptanceHarness. The acceptance harness checks transition continuity, latest-wins behavior, awaitable settlement, snap, supersession, same-target waiters, disable completion, and reentrant retargeting. It is not needed to import production content.
+Legacy PoseValidation and smoke overlays are historical validation fixtures. They are not required to create scenes, import content or author stories. Do not add their runners/marker hierarchies to production scenes.
 
 ## Local validation inputs
 

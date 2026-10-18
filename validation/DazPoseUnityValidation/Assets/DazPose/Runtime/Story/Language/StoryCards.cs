@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 namespace DazPose.Story.Language {
  [Serializable] public sealed class CardRequirement {public int Expression;public string Description;public StorySource Source;}
  [Serializable] public sealed class CardDefinition {
-  public string Id,ProgramEntry;
+  public string Id,ProgramEntry,OriginUnit,LocalId;
+  public bool Selectable=true;
   public string[] Tags=Array.Empty<string>();
   public CardRequirement[] Requirements=Array.Empty<CardRequirement>();
   public double BaseWeight=1,Progress;
@@ -81,11 +82,12 @@ namespace DazPose.Story.Language {
   readonly Func<string,StoryData> read;
   readonly StorySessionRandom random;
   readonly Action<string> trace;
+  readonly Func<CardDefinition,string> resourceIssue;
   public CardHistory History {get;}=new CardHistory();
   public DirectorSnapshot Snapshot {get;private set;}=new DirectorSnapshot();
   public readonly List<ICardWeightContributor> WeightContributors=new List<ICardWeightContributor>();
   int selectionsWithoutProgress;
-  public StoryDirector(CompiledStoryProgram program,Func<int,StoryData> evaluate,Func<string,StoryData> read,StorySessionRandom random,Action<string> trace) {this.program=program;this.evaluate=evaluate;this.read=read;this.random=random;this.trace=trace;CardCatalog.Validate(program);}
+  public StoryDirector(CompiledStoryProgram program,Func<int,StoryData> evaluate,Func<string,StoryData> read,StorySessionRandom random,Action<string> trace,Func<CardDefinition,string> resourceIssue=null) {this.program=program;this.evaluate=evaluate;this.read=read;this.random=random;this.trace=trace;this.resourceIssue=resourceIssue;CardCatalog.Validate(program);}
   public CardDefinition Select(CardSelectionRequest request) {
    if(double.IsNaN(request.Intensity) || double.IsInfinity(request.Intensity) || request.Intensity<=0)throw new InvalidOperationException("Card intensity must be finite and positive.");
    Snapshot=new DirectorSnapshot {Query=request.ToString(),Recent=History.Recent.ToArray()};
@@ -95,9 +97,11 @@ namespace DazPose.Story.Language {
    var candidates=new List<CardCandidate>();
    foreach(var card in program.cards) {
     var candidate=new CardCandidate {Id=card.Id};candidates.Add(candidate);
-    if(request.ExplicitCardId!=null && card.Id!=request.ExplicitCardId)candidate.Reason="A different explicit card was requested.";
+    if(request.ExplicitCardId==null && (!card.Selectable || card.Tags.Length==0))candidate.Reason="Local card is not published for random selection.";
+    else if(request.ExplicitCardId!=null && card.Id!=request.ExplicitCardId)candidate.Reason="A different explicit card was requested.";
     else if(!request.RequiredTags.All(card.Tags.Contains))candidate.Reason="Missing required classification tags ["+string.Join(", ",request.RequiredTags.Where(t=>!card.Tags.Contains(t)))+"].";
     else if(request.EquipmentRequested && !card.Tags.Intersect(request.EquipmentTags,StringComparer.Ordinal).Any())candidate.Reason="Does not match selected equipment identity/content tags.";
+    else if(resourceIssue!=null && (candidate.Reason=resourceIssue(card))!=null) { }
     else {
      foreach(var requirement in card.Requirements) {
       bool legal;

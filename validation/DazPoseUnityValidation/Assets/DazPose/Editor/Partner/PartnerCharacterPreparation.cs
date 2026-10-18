@@ -16,9 +16,10 @@ namespace DazPose.UnityValidation.Editor.Partner
     /// <summary>Prepare the existing partner without replacing its scene or camera.</summary>
     public static class PartnerCharacterPreparation
     {
-        public const string Folder = "Assets/TestData/PartnerCharacter";
-        public const string PrefabPath = "Assets/PartnerProof/PartnerCharacter.prefab";
-        private const string ShellPath = "Assets/PartnerProof/Generated/G8M_ErectShell.asset";
+        public const string Folder = "Assets/TestData/PartnerCharacter"; // Canonical manifest/source staging.
+        public const string GeneratedFolder = "Assets/Production/Player/Materials/Imported";
+        public const string PrefabPath = "Assets/Production/Player/Support/PartnerCharacter.prefab";
+        private const string ShellPath = "Assets/Production/Player/Meshes/G8M_ErectShell.asset";
         private const string ScenePath = "Assets/Scenes/PartnerRigAcceptance.unity";
         private const string Shape = "ShellErectionToFlaccid";
         private const float MappingTolerance = 0.000002f;
@@ -65,63 +66,7 @@ namespace DazPose.UnityValidation.Editor.Partner
             return manifest;
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Partner Proof/Prepare Skinned Character and Materials")]
-#endif
-        public static void Prepare()
-        {
-            Require(!EditorApplication.isPlayingOrWillChangePlaymode, "Prepare partner assets outside Play mode.");
-            Manifest manifest = ReadManifest();
-            Scene existingScene = SceneManager.GetSceneByPath(ScenePath);
-            bool previouslyDirty = existingScene.IsValid() && existingScene.isDirty;
-            Scene preview = EditorSceneManager.NewPreviewScene();
-            GameObject erect = null, flaccid = null;
-            try
-            {
-                erect = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(manifest.erectAsset));
-                flaccid = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(manifest.flaccidAsset));
-                SceneManager.MoveGameObjectToScene(erect, preview);
-                SceneManager.MoveGameObjectToScene(flaccid, preview);
-                SkinnedMeshRenderer body = SourceBody(erect);
-                MeshFilter shell = SourceShell(erect);
-                MeshFilter otherShell = SourceShell(flaccid);
-                Mesh generated = CreateSkinnedShell(body, shell.sharedMesh, shell.transform, otherShell.sharedMesh, otherShell.transform);
-                Mesh existing = AssetDatabase.LoadAssetAtPath<Mesh>(ShellPath);
-                Require(existing != null, "Build the artist-authored erection proof before preparing its character.");
-                EditorUtility.CopySerialized(generated, existing);
-                UnityEngine.Object.DestroyImmediate(generated);
-                EditorUtility.SetDirty(existing);
-                AssetDatabase.SaveAssets();
-                Directory.CreateDirectory("TestOutput/PartnerCharacter");
-                File.WriteAllText("TestOutput/PartnerCharacter/SkinTransfer.json", JsonUtility.ToJson(LastAudit, true) + "\n");
-                Material[] materials = BuildMaterials();
-                AssetDatabase.SaveAssets();
-                PatchAcceptanceScene(existing, materials, manifest, preview, previouslyDirty);
-                LastAudit.materialShaders = materials.Select(m => m.shader.name).Distinct().ToArray();
-                LastAudit.materialSlots = materials.Length;
-                LastAudit.sourceTextures = manifest.sourceTextureCount;
-                LastAudit.materialTexturesVerified = true;
-                LastAudit.sourceDUF = manifest.sourceDUF;
-                LastAudit.sourceDUFSHA256 = manifest.dufSHA256;
-                LastAudit.runtimeWeightCap = QualitySettings.skinWeights.ToString();
-                LastAudit.glossReference = "Accepted Lara runtime skin: roughness/lobe roughness, glossy/dual-lobe/top-coat weights and ratio; partner maps and colors retained.";
-                LastAudit.appearanceLimits = new[] {
-                    "Bridge conversion approximates Iray; final appearance awaits user review.",
-                    "Shell uses authored opacity coverage with an alpha-blended bridge specular graph and reduced gloss.",
-                    "Skin weights follow bones. A future mesh squeeze needs corresponding shell vertex deltas/morphs.",
-                    "Contact-frame samples remain the existing endpoint-derived line; they do not follow procedural bending yet." };
-                Directory.CreateDirectory("TestOutput/PartnerCharacter");
-                File.WriteAllText("TestOutput/PartnerCharacter/Preparation.json", JsonUtility.ToJson(LastAudit, true) + "\n");
-                AssetDatabase.SaveAssets();
-                Debug.Log("PARTNER_CHARACTER_PREPARED: " + PrefabPath + " ; report=TestOutput/PartnerCharacter/Preparation.json");
-            }
-            finally
-            {
-                if (erect != null) UnityEngine.Object.DestroyImmediate(erect);
-                if (flaccid != null) UnityEngine.Object.DestroyImmediate(flaccid);
-                EditorSceneManager.ClosePreviewScene(preview);
-            }
-        }
+
 
         internal static Mesh CreateSkinnedShell(SkinnedMeshRenderer body, Mesh shell, Transform shellTransform,
             Mesh flaccidShell, Transform flaccidTransform)
@@ -244,8 +189,9 @@ namespace DazPose.UnityValidation.Editor.Partner
         {
             Manifest source = ReadManifest();
             var bridge = JsonUtility.FromJson<LaraCandidateBuilder.Manifest>(File.ReadAllText(Folder + "/manifest.json"));
-            foreach (string directory in new[] { "TextureSources", "Textures", "SourceMaterials", "RuntimeMaterials" })
-                Directory.CreateDirectory(Folder + "/" + directory);
+            Directory.CreateDirectory(Folder + "/TextureSources");
+            foreach (string directory in new[] { "Textures", "SourceMaterials", "RuntimeMaterials" })
+                Directory.CreateDirectory(GeneratedFolder + "/" + directory);
             AssetDatabase.Refresh();
             var materials = new Material[bridge.materials.Length];
             foreach (LaraCandidateBuilder.Surface surface in bridge.materials)
@@ -264,18 +210,18 @@ namespace DazPose.UnityValidation.Editor.Partner
                     }
                     properties.Add(new DtuConversionProperty(input.name, input.kind, input.number, input.color, input.text, texture));
                 }
-                var request = new DtuConversionRequest(Folder + "/manifest.json", Folder + "/Textures",
+                var request = new DtuConversionRequest(Folder + "/manifest.json", GeneratedFolder + "/Textures",
                     surface.node, surface.surface, "Iray Uber", "Actor/Character", "Partner", surface.node,
                     DtuMaterialConversionKind.IrayUber, properties.ToArray());
                 Material converted = DazPoseDtuConversionBridge.Convert(request);
                 Require(converted != null, "Bridge could not convert " + surface.node + "/" + surface.surface);
                 converted.name = "M_" + surface.node + "_" + surface.surface;
                 string filename = WardrobeImporter.Safe(converted.name);
-                string sourcePath = Folder + "/SourceMaterials/" + filename + ".mat";
+                string sourcePath = GeneratedFolder + "/SourceMaterials/" + filename + ".mat";
                 Material oldSource = AssetDatabase.LoadAssetAtPath<Material>(sourcePath);
                 Material baseline = oldSource == null ? null : UnityEngine.Object.Instantiate(oldSource);
                 converted = SaveMaterial(converted, sourcePath);
-                string runtimePath = Folder + "/RuntimeMaterials/" + filename + ".mat";
+                string runtimePath = GeneratedFolder + "/RuntimeMaterials/" + filename + ".mat";
                 Material runtime = AssetDatabase.LoadAssetAtPath<Material>(runtimePath);
                 if (runtime == null) runtime = SaveMaterial(UnityEngine.Object.Instantiate(converted), runtimePath);
                 else
@@ -340,7 +286,7 @@ namespace DazPose.UnityValidation.Editor.Partner
 
         private static void ConfigureShellMaterial(Material material)
         {
-            material.shader = AssetDatabase.LoadAssetAtPath<Shader>("Assets/PartnerProof/PartnerShell.shadergraph");
+            material.shader = AssetDatabase.LoadAssetAtPath<Shader>("Assets/Production/Player/Shaders/PartnerShell.shadergraph");
             Require(material.shader != null, "Partner alpha blend shell shader is missing.");
             material.SetFloat("_SurfaceType", 1);
             material.SetFloat("_AlphaCutoffEnable", 0);
@@ -360,7 +306,7 @@ namespace DazPose.UnityValidation.Editor.Partner
 
         public static void RefreshShellMaterials()
         {
-            foreach (string guid in AssetDatabase.FindAssets("t:Material", new[] { Folder + "/RuntimeMaterials" }))
+            foreach (string guid in AssetDatabase.FindAssets("t:Material", new[] { GeneratedFolder + "/RuntimeMaterials" }))
             {
                 Material material = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
                 if (!material.name.StartsWith("M_Dicktator_Shell_", StringComparison.Ordinal)) continue;
@@ -398,53 +344,7 @@ namespace DazPose.UnityValidation.Editor.Partner
             }
         }
 
-        private static void PatchAcceptanceScene(Mesh mesh, Material[] materials, Manifest manifest, Scene preview, bool previouslyDirty)
-        {
-            Scene scene = SceneManager.GetSceneByPath(ScenePath);
-            bool opened = !scene.IsValid() || !scene.isLoaded;
-            if (opened) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
-            bool wasDirty = previouslyDirty;
-            try
-            {
-                var controller = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<PartnerAnatomyTestController>(true)).Single();
-                GameObject root = controller.gameObject;
-                SkinnedMeshRenderer body = SourceBody(root);
-                var shell = root.GetComponentsInChildren<SkinnedMeshRenderer>(true).Single(r => r.name.Contains("Dicktator Shell"));
-                ConfigureSkin(shell, body, mesh);
-                ApplyMaterials(root, materials, manifest);
-                var state = new SerializedObject(controller);
-                state.FindProperty("shellRenderer").objectReferenceValue = shell;
-                state.FindProperty("shellVisible").boolValue = true;
-                state.ApplyModifiedPropertiesWithoutUndo();
-                shell.enabled = true;
-                PrefabUtility.RecordPrefabInstancePropertyModifications(shell);
-                EditorSceneManager.MarkSceneDirty(scene);
-                // Keep preexisting editor changes unsaved; do not save them incidentally.
-                LastAudit.sceneSaved = !wasDirty && EditorSceneManager.SaveScene(scene);
-                LastAudit.scene = ScenePath;
-                GameObject copy = UnityEngine.Object.Instantiate(root);
-                SceneManager.MoveGameObjectToScene(copy, preview);
-                try
-                {
-                    copy.name = "PartnerCharacter";
-                    copy.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-                    var prefabController = new SerializedObject(copy.GetComponent<PartnerAnatomyTestController>());
-                    prefabController.FindProperty("viewCamera").objectReferenceValue = null;
-                    prefabController.ApplyModifiedPropertiesWithoutUndo();
-                    Require(PrefabUtility.SaveAsPrefabAsset(copy, PrefabPath) != null, "Could not save the prepared partner prefab.");
-                    var saved = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath).GetComponent<PartnerAnatomyTestController>();
-                    Require(saved.ShellFollowsBones && saved.StructuralBody != null && saved.ShellRenderer != null,
-                        "Saved partner prefab lost its skin/controller references.");
-                    Require(saved.ShellRenderer.bones.All(b => b != null), "Saved partner prefab has missing bone references.");
-                    Require(new SerializedObject(saved).FindProperty("viewCamera").objectReferenceValue == null,
-                        "Prepared partner prefab still owns a scene camera.");
-                    LastAudit.prefabReferencesVerified = true;
-                }
-                finally { UnityEngine.Object.DestroyImmediate(copy); }
-                LastAudit.prefab = PrefabPath;
-            }
-            finally { if (opened) EditorSceneManager.CloseScene(scene, true); }
-        }
+
 
         private static void ValidateEndpoints(SkinnedMeshRenderer shell, Vector3[] erect, Vector3[] flaccid, Audit audit)
         {
@@ -534,25 +434,4 @@ namespace DazPose.UnityValidation.Editor.Partner
         private static void Require(bool condition, string message) { if (!condition) throw new InvalidDataException(message); }
     }
 
-    [InitializeOnLoad]
-    internal static class PartnerCharacterPreparationRequest
-    {
-        private static double nextCheck;
-        static PartnerCharacterPreparationRequest() { EditorApplication.update += Check; }
-        private static void Check()
-        {
-            if (EditorApplication.timeSinceStartup < nextCheck) return;
-            nextCheck = EditorApplication.timeSinceStartup + 1;
-            const string request = "Library/PartnerCharacterPreparation.once";
-            if (!File.Exists(request) || EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling || EditorApplication.isUpdating) return;
-            File.Delete(request);
-            try { PartnerCharacterPreparation.Prepare(); }
-            catch (Exception error)
-            {
-                Directory.CreateDirectory("TestOutput/PartnerCharacter");
-                File.WriteAllText("TestOutput/PartnerCharacter/Failure.txt", error.ToString());
-                Debug.LogException(error);
-            }
-        }
-    }
 }

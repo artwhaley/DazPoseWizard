@@ -83,7 +83,7 @@ namespace DazPose.Editor {
    var saved=AssetDatabase.LoadAssetAtPath<Material>(path); if(saved!=null) return saved;
    string family=original.shader.name;
    string graph;
-   if(AssetDatabase.GetAssetPath(original.shader)=="Assets/PartnerProof/PartnerShell.shadergraph") graph="Player Shell Dissolve.shadergraph";
+   if(AssetDatabase.GetAssetPath(original.shader)=="Assets/Production/Player/Shaders/PartnerShell.shadergraph") graph="Player Shell Dissolve.shadergraph";
    else if(family=="Daz3D/Wet") graph="Wet Dissolve.shadergraph";
    else if(family=="Daz3D/uDTU HDRP.SSS") graph="uDTU HDRP SSS Dissolve.shadergraph";
    else if(family=="Daz3D/uDTU HDRP.Hair") graph="uDTU HDRP Hair Dissolve.shadergraph";

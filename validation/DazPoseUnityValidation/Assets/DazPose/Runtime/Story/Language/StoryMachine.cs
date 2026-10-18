@@ -35,7 +35,7 @@ namespace DazPose.Story.Language {
   sealed class CheckpointReached : Exception { }
   public StoryMachine(CompiledStoryProgram program,IStoryExecutionHost host,StorySessionRandom random=null) {
    this.program=program;this.host=host;this.random=random ?? new StorySessionRandom(0);
-   Director=new StoryDirector(program,index=>Evaluate(index,new Dictionary<string,StoryData>(StringComparer.Ordinal)),Read,this.random,message=>host.Trace(null,message));
+   Director=new StoryDirector(program,index=>Evaluate(index,new Dictionary<string,StoryData>(StringComparer.Ordinal)),Read,this.random,message=>host.Trace(null,message),host is IStoryCardEligibility eligibility ? new Func<CardDefinition,string>(eligibility.ResourceIssue) : null);
   }
   public async Task RunAsync(string sequence,CancellationToken cancellation=default,string stopBeforePhase=null) {
    if(!string.IsNullOrEmpty(stopBeforePhase)) StoryPlaybackWindow.BeforePhase(program,sequence,stopBeforePhase);
@@ -107,7 +107,7 @@ namespace DazPose.Story.Language {
        repeats[instruction.loop]=(int)count; if(count==0) pc=instruction.jump-1; break;
       }
       case StoryCode.RepeatEnd: if(--repeats[instruction.loop]>0) pc=instruction.jump-1; else repeats.Remove(instruction.loop);break;
-      case StoryCode.Play:host.Trace(instruction.source,"Play card "+instruction.name+"."); await ExecuteCard(program.cards.Single(c=>c.Id==instruction.name),ReadOptional("Session.IntensityMultiplier",new StoryData(1d)).Numeric,false);break;
+      case StoryCode.Play:host.Trace(instruction.source,"Play card "+instruction.name+"."); await ExecuteCard(StoryProgramLinker.ResolveCard(program,instruction.name,instruction.source?.unit,instruction.source),ReadOptional("Session.IntensityMultiplier",new StoryData(1d)).Numeric,false,instruction.source);break;
       case StoryCode.EnterPhase:if(instruction.name==stopBeforePhase)throw new CheckpointReached();host.Write("Session.Phase",new StoryData(instruction.name)); host.Write("Session.PhaseCompletion",new StoryData(0d)); host.Trace(instruction.source,"Enter phase "+instruction.name+" at zero completion.");break;
       case StoryCode.LeavePhase:if(host is IStoryPhaseObserver phaseObserver)phaseObserver.LeavePhase(instruction.name);host.Trace(instruction.source,"Leave phase "+instruction.name+".");break;
       case StoryCode.WaitAny: {
@@ -162,7 +162,7 @@ namespace DazPose.Story.Language {
   void PublishDirector() {if(host is IStoryDirectorObserver observer)observer.ObserveDirector(Director.Snapshot,CardContext);}
   async Task Direct(StoryCommand command) {
    var request=new CardSelectionRequest {Phase=ReadOptional("Session.Phase",new StoryData("Setup")).String,Intensity=command.Number("intensity",ReadOptional("Session.IntensityMultiplier",new StoryData(1d)).Numeric),Completion=ReadOptional("Session.PhaseCompletion",new StoryData(0d)).Numeric,CompletionTarget=completionTarget ?? 100,RequireProgress=completionTarget.HasValue};
-   if(command.Verb=="Director.Execute")request.ExplicitCardId=command.Require("card").String;
+   if(command.Verb=="Director.Execute")request.ExplicitCardId=StoryProgramLinker.ResolveCard(program,command.Require("card").String,command.Source?.unit,command.Source).Id;
    if(command.Arguments.TryGetValue("tags",out var tags))request.RequiredTags=tags.Items ?? throw new InvalidOperationException("Director tags require a list.");
    if(command.Arguments.TryGetValue("equipment",out var equipment)) {
     request.EquipmentRequested=true;request.EquipmentIds=equipment.Items ?? throw new InvalidOperationException("Director equipment requires a list.");
@@ -172,13 +172,14 @@ namespace DazPose.Story.Language {
    try {selected=Director.Select(request);}finally {PublishDirector();}
    if(selected==null)return;
    try {
-    await ExecuteCard(selected,request.Intensity,true);
+    await ExecuteCard(selected,request.Intensity,true,command.Source);
     double progress=Director.Complete(selected,ReadOptional("Contract.PacingMultiplier",new StoryData(1d)).Numeric);
     host.Write("Session.PhaseCompletion",new StoryData(ReadOptional("Session.PhaseCompletion",new StoryData(0d)).Numeric+progress));
     PublishDirector();
    }catch {Director.Snapshot.Outcome="Failed or cancelled; no progress credit.";PublishDirector();throw;}
   }
-  async Task ExecuteCard(CardDefinition card,double intensity,bool selected) {
+  async Task ExecuteCard(CardDefinition card,double intensity,bool selected,StorySource callSite=null) {
+   if(host is IStoryCardEligibility eligibility) {string issue=eligibility.ResourceIssue(card);if(issue!=null)throw new StorySourceException(callSite ?? card.Source,issue);}
    if(++cardDepth>128)throw new InvalidOperationException("Card recursion exceeded 128 active entries.");
    var previous=CardContext;
    CardContext=new CardExecutionContext {CardId=card.Id,Phase=ReadOptional("Session.Phase",new StoryData("Setup")).String,SessionSeed=random.Seed,Random=random,IntensityMultiplier=intensity,InvocationNumber=Director.History.For(card.Id).TimesUsed+1,PreparedEquipment=ReadOptional("Session.PreparedEquipment",new StoryData(Array.Empty<string>())).Items,ActiveEquipment=ReadOptional("Session.ActiveEquipment",new StoryData(Array.Empty<string>())).Items};

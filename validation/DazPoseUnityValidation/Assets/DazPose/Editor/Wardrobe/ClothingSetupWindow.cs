@@ -29,7 +29,6 @@ namespace DazPose.UnityValidation
         private string _compileError;
         private bool _isCompiling;
 
-        [MenuItem("DazPose/Wardrobe/Outfit Configuration")]
         public static void Open() => GetWindow<ClothingSetupWindow>("Wardrobe Setup");
 
         private void OnEnable() { minSize = new Vector2(780, 600); RefreshBinding(); }

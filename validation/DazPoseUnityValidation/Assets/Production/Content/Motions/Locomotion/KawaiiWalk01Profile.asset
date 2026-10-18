@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67936e6e71dc48a0a9486cc4e12450b5, type: 3}
+  m_Name: KawaiiWalk01Profile
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerLocomotionProfile
+  startA: {fileID: 11400000, guid: f089cf4c5dc93c341bdac89d48a118d5, type: 2}
+  startB: {fileID: 11400000, guid: 76edab562d5123d4bb3fb3410779e0aa, type: 2}
+  walkLoop: {fileID: 11400000, guid: 4b5cecf8e6c708a498d6bca949c31f96, type: 2}
+  stopA: {fileID: 11400000, guid: 12096c85dea59b64c8916c1219f6ebdf, type: 2}
+  stopB: {fileID: 11400000, guid: 5ad9e77812af9ab479cc192c7eef4bce, type: 2}
+  turnLeft90: {fileID: 11400000, guid: 9ae0386451507cf459f319490860663e, type: 2}
+  turnRight90: {fileID: 11400000, guid: f1c336b51ab463a48b217e3dc8e04b2c, type: 2}
+  turnLeft180: {fileID: 11400000, guid: 837036304db6800459a6a056cfbc52d7, type: 2}
+  turnRight180: {fileID: 11400000, guid: 2e8b723e748b4ec47af19a8312054b66, type: 2}
+  playbackSpeed: 0.665
+  smallTurnThreshold: 45
+  arrivalPositionTolerance: 0.07
+  arrivalHeadingTolerance: 3
+  bodyBlendSeconds: 0.16
+  idleToLocomotionBlendSeconds: 0.5
+  locomotionToIdleBlendSeconds: 0.5
+  maxSteeringDegreesPerSecond: 10
+  maximumEndpointCorrection: 0.12
+  maximumStopWarpFraction: 0.2
+  maximumTurnWarpDegrees: 50
+  minimumWalkDistance: 3.930736

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "DAZ Pose/Wardrobe/Configuration")]
+    [CreateAssetMenu(menuName = "DazPose/Wardrobe/Configuration")]
     public sealed class WardrobeConfiguration : ScriptableObject
     {
         [Serializable] public sealed class PieceAssignment

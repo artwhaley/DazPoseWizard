@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    [CreateAssetMenu(menuName = "DAZ Pose/Wardrobe/Catalog")]
+    [CreateAssetMenu(menuName = "DazPose/Wardrobe/Catalog")]
     public sealed class WardrobeCatalog : ScriptableObject
     {
         [SerializeField] private int schemaVersion = 1;

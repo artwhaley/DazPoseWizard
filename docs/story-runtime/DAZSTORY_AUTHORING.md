@@ -4,11 +4,17 @@ The revised D5.5–D8 stack is the current story plan. The complete user oracle 
 
 ## Current full-session work
 
-D6-D8 is implemented and the full saved scene is ready for the user's manual Play test IN UNITY. The user controls testing; do not start Play or build/launch a standalone player without a new explicit request. Six imported pose wrappers and an animated engineering Disapproval gesture are assigned. MainPosition1 and Bedside are ordinary movable scene marks. The full-session setup clears the former Warmup preview cutoff. See [the current handoff](D6_D8_HANDOFF.md) for the verified playback/build results and user visual approval status.
+D6-D8 is implemented; Task 1 cleanup is active and final manual-testing readiness is pending. See [cleanup status](../cleanup-task1/EXECUTION_REPORT.md). The user controls testing; do not start Play or build/launch a standalone player without a new explicit request. Six imported pose wrappers and an animated engineering Disapproval gesture are assigned. MainPosition1 and Bedside are ordinary movable scene marks. The full-session setup clears the former Warmup preview cutoff. See [the current handoff](D6_D8_HANDOFF.md) for the verified playback/build results and user visual approval status.
+
+## Global cards and explicit local beats
+
+Publish tagged cards below `Assets/Production/Story/Cards/`; import automatically updates one application-owned runtime index. The compiled Inspector opens source or selects its adjacent typed companion. No GUID pasting or per-scene registration is required. Public tagged IDs are unique; untagged helpers remain source-local and never enter random draws. `play Intro` retains direct execution.
+
+Tags classify; requirements establish legality. Equipment tags remain open. Missing scene resources reject the affected card; invalid owned assets/code invalidate publication with source diagnostics. Remove a declaration/source to remove its cards. The compiler is `Assets/DazPose/Runtime/Story/Language/DazStoryCompiler.cs`; typed binding navigation is in `Assets/DazPose/Editor/Application/StoryContentBindingsEditor.cs`. See [publication and ownership](../cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md#publish-a-selectable-card).
 
 ## Write the scene
 
-Edit `validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory`. The actual file preserves the full source supplied in the packet. Dialogue remains literal readable text. Commands and branching belong here; the Unity adapter does not contain a second choreography script.
+Edit `validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory`. The local file holds setup, Intro and sequence. The 17 original tagged cards now live in `Assets/Production/Story/Cards/FirstContactEngineering.dazstory`; their bodies and combined 19-dialogue oracle are preserved. Dialogue remains literal readable text. Commands and branching belong here; the Unity adapter does not contain a second choreography script. `Profile.SubmissionScore` is persistent profile state from 0–100; `SubmissionScore.Calculate()` recomputes it from enabled kink catalog entries. It is separate from card `Progress`, which contributes through the session pacing multiplier.
 
 ```text
 
@@ -68,7 +74,7 @@ Dialogue audio is selected beneath the transcript. All 19 supplied WAVs are boun
 
 Scene locations and roles are on the saved `StorySceneBindings` component. A location supplies a placement and optional seat/focus. `Lounger` therefore works as the same symbol for a standing dissolve destination and a seat request. The current standing placement is its existing authored ApproachAnchor. The user authorized movable placeholder transforms for MainPosition1 and Bedside. Full-session setup creates them under Authoring Marks, using stepforward and the accepted contact staging as starting placements. Move them in the scene as needed; refresh preserves existing transforms and positions.
 
-Use **DazPose > Story > Prepare First Contact Authoring** or **Build or Refresh First Contact** to refresh the saved production composition. Both use the same foundation implementation and preserve tuning identities. **DazPose > Story > Prepare Full First Contact Session** additionally binds normal imported engineering motions and enables the entire sequence. The original four setup marks are `lara_start`, `player_start`, `camera_start` and `stepforward`. Inherited test markers and the earlier representative camera-move marks are absent.
+The saved source and bindings are authoritative; there is no scene-generation or full-session setup command. If a saved assignment needs repair, use the explicit **DazPose > Content > Advanced > Repair First Contact Bindings** command in Edit Mode. It only repairs missing bindings in the existing saved scene and preserves authored marks, poses, audio, wardrobe, identities and artwork. The original four setup marks are `lara_start`, `player_start`, `camera_start` and `stepforward`; inherited test markers and earlier representative camera-move marks are absent.
 
 ## Visual mode and diagnostics
 

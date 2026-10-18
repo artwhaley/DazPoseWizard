@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace DazPose.Editor.HandGrip
 {
-    [InitializeOnLoad]
     public static class HandGripLiveProof
     {
         private const string Pending = "HandGrip.LiveProof.Pending";
@@ -28,10 +27,6 @@ namespace DazPose.Editor.HandGrip
         private static GripCompletion _secondCompletion;
         private static double _started;
         private static Vector3 _root;
-        static HandGripLiveProof()
-        {
-            if (SessionState.GetBool(Pending, false)) EditorApplication.update += Tick;
-        }
         public static void Run()
         {
             if (!Application.isBatchMode || !Application.dataPath.Replace('\\', '/').Contains("handgrip-validation/project/Assets"))

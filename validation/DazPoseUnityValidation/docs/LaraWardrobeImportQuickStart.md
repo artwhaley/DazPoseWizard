@@ -1,5 +1,8 @@
 # Lara import: operator manual
 
+Current editor/menu and scene ownership is recorded in [cleanup status](../../../docs/cleanup-task1/EXECUTION_REPORT.md) and [scene/content ownership](../../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md). Use **DazPose > Wardrobe > Imported Outfits**; older dated notes may show the retired `Tools > DAZ Pose` menu path. Current Unity workflows are linked from the [Unity project README](../README.md).
+
+
 Read root AGENTS.md and **Current handoff** in [status](LaraWardrobeImportStatus.md).
 This is the operating procedure for the recipe importer. The
 [detailed playbook](LaraWardrobeImportPlaybook.md) is an exception reference.
@@ -147,7 +150,7 @@ backs up owned assets and preserves existing main-project artist materials,
 footwear settings and review scenes. Concurrent override edits cause publication
 to stop; save those edits and rerun All. A new review revision preserves the
 previous scene. It does not switch the user's active scene.
-Review through **Tools > DAZ Pose > Wardrobe > Imported Outfits**. Save material
+Review through **DazPose > Wardrobe > Imported Outfits**. Save material
 and footwear edits; the next import stages those authoritative overrides first.
 
 ## Produced assets and handoff

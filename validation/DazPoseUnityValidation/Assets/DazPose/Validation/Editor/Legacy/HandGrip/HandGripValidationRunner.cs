@@ -61,9 +61,7 @@ namespace DazPose.Editor.HandGrip
             }
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Handjob/Validate Target Driven Grip")]
-#endif
+
         public static void Run()
         {
             Directory.CreateDirectory(Path.GetDirectoryName(Report));

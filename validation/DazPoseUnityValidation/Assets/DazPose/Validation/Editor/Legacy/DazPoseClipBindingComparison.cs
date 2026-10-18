@@ -36,9 +36,7 @@ namespace DazPose.UnityValidation
 
     public static class DazPoseClipBindingComparison
     {
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Diagnostics/Compare Pose Clip Bindings")]
-#endif
+        [MenuItem("DazPose/Diagnostics/Compare Pose Clip Bindings")]
         public static void CompareSelectedPoseClips()
         {
             var startFolder = Path.Combine(Directory.GetParent(Application.dataPath).FullName,

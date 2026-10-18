@@ -49,7 +49,6 @@ namespace DazPose.Story {
   }
   public string[] Diagnostics(CompiledStoryProgram program,StorySceneBindings scene=null) {
    var errors=new List<string>(); Symbols();
-   if(program.cards.Any(c=>c.Tags.Contains("Warmup"))) {try {CardCatalog.Validate(program,StoryCatalogs.Load().Equipment.entries.Select(e=>e.id));}catch(Exception error) {errors.Add(error.Message);}}
    foreach(var use in program.bindings) {
     try {
      switch(use.kind) {

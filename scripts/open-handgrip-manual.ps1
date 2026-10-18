@@ -20,7 +20,7 @@ $paths = @(
     'Assets/DazPose/Runtime/Performer/PerformerMotionLayer.cs',
     'Assets/DazPose/Runtime/Performer/PerformerExpressionLayer.cs',
     'Assets/DazPose/Validation/Legacy/FirstPerformanceVoidControls.cs',
-    'Assets/DazPose/Generated/HandGrip/Profiles/LaraRightHandGrip.asset',
+    'Assets/Production/Performers/Lara/Contact/LaraRightHandGrip.asset',
     'Assets/Scenes/HandGripAcceptance.unity',
     'Packages/manifest.json', 'Packages/packages-lock.json'
 )

@@ -11,11 +11,9 @@ namespace DazPose.Motion.Editor
     /// <summary>Batch- and menu-runnable acceptance checks against the repository's real script asset.</summary>
     public static class FunscriptAcceptanceRunner
     {
-        private const string AcceptancePath = "Assets/motiondrive.funscript";
+        private const string AcceptancePath = "Assets/Production/Content/Motions/motiondrive.funscript";
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Motion/Run Funscript Acceptance Checks")]
-#endif
+
         public static async void Run()
         {
             var failures = new List<string>();
@@ -23,7 +21,7 @@ namespace DazPose.Motion.Editor
             FunscriptMotionProgram program = AssetDatabase.LoadAssetAtPath<FunscriptMotionProgram>(AcceptancePath);
             if (program == null)
             {
-                failures.Add("Assets/motiondrive.funscript did not import as a FunscriptMotionProgram.");
+                failures.Add("Assets/Production/Content/Motions/motiondrive.funscript did not import as a FunscriptMotionProgram.");
                 Finish(failures, null);
                 return;
             }

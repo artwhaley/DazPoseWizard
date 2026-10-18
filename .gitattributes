@@ -1,0 +1,2 @@
+
+validation/DazPoseUnityValidation/Assets/Production/Content/Motions/**/*.anim filter=lfs diff=lfs merge=lfs -text

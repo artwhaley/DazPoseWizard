@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace DazPose.Story.Language {
  public static class DazStoryCompiler {
-  public static CompiledStoryProgram Compile(string source,string file,IReadOnlyDictionary<string,StoryBindingKind> symbols=null) => new Builder(file,symbols).Compile(new StoryParser(source,file).Parse());
+  public static CompiledStoryProgram Compile(string source,string file,IReadOnlyDictionary<string,StoryBindingKind> symbols=null,bool allowExternalCards=false) => new Builder(file,symbols,allowExternalCards).Compile(new StoryParser(source,file).Parse());
   sealed class Builder {
    readonly string file;
    readonly IReadOnlyDictionary<string,StoryBindingKind> symbols;
@@ -15,6 +15,7 @@ namespace DazPose.Story.Language {
    readonly HashSet<string> locals=new HashSet<string>(StringComparer.Ordinal);
    StoryAstDeclaration current;
    int loopId;
+   readonly bool allowExternalCards;
    static readonly HashSet<string> readable=new HashSet<string>(new[]{
     "Completion","Session.Phase","Session.PhaseCompletion","Session.Mood","Session.IntensityMultiplier",
     "Session.PreparedEquipment","Session.PreparedEquipment.Count","Contract.PacingMultiplier","Profile.SubmissionScore","Profile.Favor",
@@ -22,7 +23,7 @@ namespace DazPose.Story.Language {
     "World.Clothing.Shoes","World.Clothing.Socks","World.Clothing.Shirt","World.Clothing.Pants","World.Clothing.Bra","World.Clothing.Underwear",
     "Card.Intensity","Card.Invocation","Card.Id","Session.ActiveEquipment","Session.ActiveEquipmentTags","Contract.SubmissionScore","Contract.Favor" },StringComparer.Ordinal);
    static readonly HashSet<string> functions=new HashSet<string>(new[]{"random","round","World.Clothing.LeastRisqueWorn","UI.Pressed","Equipment.ActiveHasTag","Equipment.PreparedHasTag","Equipment.IsPrepared","Contract.KinkEnabled"},StringComparer.Ordinal);
-   public Builder(string file,IReadOnlyDictionary<string,StoryBindingKind> symbols) { this.file=file; this.symbols=symbols; }
+   public Builder(string file,IReadOnlyDictionary<string,StoryBindingKind> symbols,bool allowExternalCards) { this.file=file; this.symbols=symbols; this.allowExternalCards=allowExternalCards; }
    StorySource At(StoryToken token)=>new StorySource(file,token.line,token.column,current.kind+" "+current.name);
    StorySourceException Error(StoryToken token,string message)=>new StorySourceException(At(token),message);
    public CompiledStoryProgram Compile(List<StoryAstDeclaration> declarations) {
@@ -42,10 +43,10 @@ namespace DazPose.Story.Language {
      Emit(declaration.body); Add(StoryCode.Return,declaration.token); entry.end=instructions.Count; entries.Add(entry);
     }
     foreach(var instruction in instructions.Where(i=>i.code==StoryCode.Play))
-     if(!entries.Any(e=>e.kind=="card" && e.name==instruction.name)) throw new StorySourceException(instruction.source,"Unknown card declaration '"+instruction.name+"'.");
+     if(!allowExternalCards && !entries.Any(e=>e.kind=="card" && e.name==instruction.name)) throw new StorySourceException(instruction.source,"Unknown card declaration '"+instruction.name+"'.");
     foreach(var instruction in instructions.Where(i=>i.code==StoryCode.Call && i.name=="Director.Execute")) {
      var argument=instruction.arguments.Single(a=>a.name=="card");var atoms=expressions[argument.expression].atoms;
-     if(atoms.Length==1 && (atoms[0].code==StoryAtomCode.Symbol || atoms[0].code==StoryAtomCode.String) && !cards.Any(c=>c.Id==atoms[0].text))throw new StorySourceException(instruction.source,"Unknown explicit card '"+atoms[0].text+"'.");
+     if(atoms.Length==1 && (atoms[0].code==StoryAtomCode.Symbol || atoms[0].code==StoryAtomCode.String) && !allowExternalCards && !cards.Any(c=>c.Id==atoms[0].text))throw new StorySourceException(instruction.source,"Unknown explicit card '"+atoms[0].text+"'.");
     }
     return new CompiledStoryProgram {name=System.IO.Path.GetFileNameWithoutExtension(file),instructions=instructions.ToArray(),expressions=expressions.ToArray(),entries=entries.ToArray(),cards=cards.ToArray(),bindings=bindings.ToArray(),dialogue=dialogue.Values.ToArray()};
    }

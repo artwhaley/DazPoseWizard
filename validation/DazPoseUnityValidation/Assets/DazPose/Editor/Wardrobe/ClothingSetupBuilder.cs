@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using DazPose.Performer;
-using DazPose.Validation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -14,7 +13,7 @@ namespace DazPose.UnityValidation
     {
         public const string ScenePath = "Assets/Scenes/ClothingSetup.unity";
         public const string CandidateScenePath = "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity";
-        public const string EnvironmentScenePath = "Assets/Production/Scenes/Day2ActorValidation.unity";
+        public const string EnvironmentScenePath = DazPose.Editor.ProductionSceneEnvironment.TemplatePath;
         public const string CatalogPath = "Assets/Wardrobe/WardrobeCatalog.asset";
         public const string ConfigurationPath = "Assets/Wardrobe/WardrobeConfiguration.asset";
 
@@ -26,9 +25,7 @@ namespace DazPose.UnityValidation
             else ClothingSetupWindow.Open();
         }
 
-        #if DAZPOSE_DEVELOPMENT_TOOLS
-[MenuItem("DazPose/Development/Legacy/Wardrobe Setup/Prepare and Open Clothing Setup")]
-#endif
+
         public static void PrepareAndOpenFromMenu()
         {
             if (!TryPrepareAndOpen(out _, out string error))
@@ -66,13 +63,13 @@ namespace DazPose.UnityValidation
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null)
             {
                 if (scene.path == ScenePath) { error = null; return true; }
-                if (EditorSceneManager.GetActiveScene().isDirty)
+                if (Enumerable.Range(0,SceneManager.sceneCount).Select(SceneManager.GetSceneAt).Any(s=>s.isDirty))
                 { error = "The active scene has unsaved changes. Save it or close it before opening Clothing Setup."; return false; }
                 try { scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single); error = null; return true; }
                 catch (Exception exception) { error = "Could not open Clothing Setup: " + exception.Message; return false; }
             }
 
-            if (EditorSceneManager.GetActiveScene().isDirty)
+            if (Enumerable.Range(0,SceneManager.sceneCount).Select(SceneManager.GetSceneAt).Any(s=>s.isDirty))
             { error = "The active scene has unsaved changes. Save it before creating Clothing Setup."; return false; }
             var catalog = AssetDatabase.LoadAssetAtPath<WardrobeCatalog>(CatalogPath);
             var configuration = AssetDatabase.LoadAssetAtPath<WardrobeConfiguration>(ConfigurationPath);
@@ -83,24 +80,21 @@ namespace DazPose.UnityValidation
 
             try
             {
-                scene = EditorSceneManager.OpenScene(EnvironmentScenePath, OpenSceneMode.Single);
-                var performers = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<SuccubusPerformer>(true)).OrderBy(p => p.name).ToArray();
-                var performer = performers.FirstOrDefault();
-                var body = performer != null ? performer.GetComponent<PerformerWardrobe>()?.Body : null;
-                if (performer == null || body == null)
-                { error = "The candidate scene does not contain the expected Lara performer and canonical body."; return false; }
-                var wardrobe = performer.GetComponent<PerformerWardrobe>() ?? Undo.AddComponent<PerformerWardrobe>(performer.gameObject);
-                wardrobe.ConfigureBinding(catalog, configuration, body, performer, true);
-                EditorUtility.SetDirty(wardrobe);
+                scene = DazPose.Editor.ProductionSceneEnvironment.Copy(ScenePath);
+                const string performerPath="Assets/Production/Performers/Lara.prefab";
+                var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(performerPath);
+                if(prefab==null) throw new InvalidOperationException("Prepare the supported Lara prefab before creating Clothing Setup: "+performerPath);
+                var instance=(GameObject)PrefabUtility.InstantiatePrefab(prefab,scene);
+                var performer=instance.GetComponent<SuccubusPerformer>();
+                var wardrobe=instance.GetComponent<PerformerWardrobe>();
+                if(performer==null || wardrobe==null || wardrobe.Body==null)
+                    throw new InvalidOperationException("The supported Lara prefab is missing its performer/wardrobe body binding.");
+                wardrobe.ConfigureBinding(catalog,configuration,wardrobe.Body,performer,true);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(wardrobe);
-                foreach (var other in performers.Skip(1)) UnityEngine.Object.DestroyImmediate(other.gameObject);
-                performer.transform.SetPositionAndRotation(new Vector3(0, 0, -.8f), Quaternion.identity);
-                var draft = performer.GetComponent<ClothingSetupDraftBinding>() ?? performer.gameObject.AddComponent<ClothingSetupDraftBinding>();
-                draft.Configure(catalog, configuration);
-                performer.gameObject.AddComponent<ClothingSetupPreviewRunner>().Configure(performer);
-                var camera = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Camera>(true)).Single(c => c.CompareTag("MainCamera"));
-                camera.fieldOfView = 45f; camera.transform.position = new Vector3(2.5f, 1.5f, 3.2f);
-                camera.transform.rotation = Quaternion.LookRotation(new Vector3(0, .95f, -.8f) - camera.transform.position, Vector3.up);
+                var draft=instance.GetComponent<ClothingSetupDraftBinding>() ?? instance.AddComponent<ClothingSetupDraftBinding>();
+                draft.Configure(catalog,configuration);
+                var startup=instance.GetComponent<ClothingSetupStartup>() ?? instance.AddComponent<ClothingSetupStartup>();
+                startup.Configure(performer);
                 EnsureFolder("Assets/Scenes");
                 if (!EditorSceneManager.SaveScene(scene, ScenePath))
                 { error = "Unity could not save the new Clothing Setup scene."; return false; }
@@ -109,6 +103,36 @@ namespace DazPose.UnityValidation
                 return true;
             }
             catch (Exception exception) { error = "Could not create Clothing Setup: " + exception; return false; }
+        }
+
+        // Explicit one-time workspace migration, never called by opening the tool.
+        public static bool MigrateSavedStartup(Scene scene)
+        {
+            if(scene.path!=ScenePath) throw new InvalidOperationException("Migrate only the saved Clothing Setup workspace.");
+            bool changed=false;
+            var components=scene.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<MonoBehaviour>(true)).Where(c=>c!=null).ToArray();
+            foreach(var old in components.Where(c=>c.GetType().FullName=="DazPose.Validation.ClothingSetupPreviewRunner"))
+            {
+                foreach(var consumer in components.Where(c=>c!=old))
+                {
+                    using var serialized=new SerializedObject(consumer);
+                    var field=serialized.GetIterator();
+                    while(field.Next(true))
+                        if(field.propertyType==SerializedPropertyType.ObjectReference && field.objectReferenceValue==old)
+                            throw new InvalidOperationException("A component still references the old preview startup: "+consumer.name+"."+field.propertyPath);
+                }
+                using var data=new SerializedObject(old);
+                var actor=data.FindProperty("actor").objectReferenceValue as SuccubusPerformer;
+                string initial=data.FindProperty("initialOutfitId").stringValue;
+                if(actor==null) throw new InvalidOperationException("Preserve the saved Clothing Setup actor binding before migrating startup.");
+                var startup=old.GetComponent<ClothingSetupStartup>() ?? Undo.AddComponent<ClothingSetupStartup>(old.gameObject);
+                startup.Configure(actor,initial);
+                EditorUtility.SetDirty(startup);
+                Undo.DestroyObjectImmediate(old);
+                changed=true;
+            }
+            if(changed) EditorSceneManager.MarkSceneDirty(scene);
+            return changed;
         }
 
         private static void EnsureFolder(string path)

@@ -10,18 +10,10 @@ using UnityEngine.SceneManagement;
 
 namespace DazPose.UnityValidation
 {
-    // Migration of this proof's owned assets. Never save an interactive user's scene.
-    [InitializeOnLoad]
+    // Explicit repair operations for this proof's owned assets. Never mutate scenes on open/reload.
     public static class LaraSecondOutfitRepair
     {
         public const string ProfilePath=LaraSecondOutfitBuilder.Folder+"/BD Shoes Footwear.asset";
-        static LaraSecondOutfitRepair()
-        {
-            EditorApplication.delayCall+=BindLoaded;
-            EditorSceneManager.sceneOpened+=OnSceneOpened;
-            EditorApplication.playModeStateChanged+=state=>{if(state==PlayModeStateChange.EnteredEditMode)EditorApplication.delayCall+=BindLoaded;};
-        }
-        private static void OnSceneOpened(Scene scene,OpenSceneMode mode)=>BindLoaded();
         public static void BindLoaded()
         {
             if(EditorApplication.isPlayingOrWillChangePlaymode)return;
@@ -224,14 +216,6 @@ namespace DazPose.UnityValidation
             var weights=new NativeArray<BoneWeight1>(mesh.vertices.Select(v=>new BoneWeight1{weight=1,boneIndex=bones[Mathf.Abs(v.x-centers[0].x)<Mathf.Abs(v.x-centers[1].x)?0:1]}).ToArray(),Allocator.Temp);
             try{mesh.SetBoneWeights(counts,weights);}finally{counts.Dispose();weights.Dispose();}
             shoe.sharedMesh=LaraCandidateBuilder.Save(mesh,AssetDatabase.GetAssetPath(source));
-        }
-    }
-    internal sealed class LaraFootwearMigrationPostprocessor : AssetPostprocessor
-    {
-        private static void OnPostprocessAllAssets(string[] imported,string[] deleted,string[] moved,string[] movedFrom)
-        {
-            if(imported.Any(path=>path.StartsWith(LaraSecondOutfitBuilder.Folder+"/",StringComparison.Ordinal) && path.EndsWith(".asset",StringComparison.Ordinal)))
-                EditorApplication.delayCall+=LaraSecondOutfitRepair.BindLoaded;
         }
     }
 }
