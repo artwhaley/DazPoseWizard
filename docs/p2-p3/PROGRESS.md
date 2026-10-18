@@ -20,8 +20,8 @@ User authorized the packet on 18 October 2026. Work on main, no push. No program
 | S09 | PENDING |  |
 | S10 | PENDING |  |
 | S11 | PENDING |  |
-| U01 | IN PROGRESS | Main Menu/navigation API and state tests next. |  |
-| U02 | PENDING |  |
+| U01 | NAVIGATION IMPLEMENTED; browser in U02 | SceneNavigationCoordinator: 9 async error/double-click/cancellation cases; story suite 69 PASS; 7 source compiles. Real browser/prefab and native navigation checks pending. |  |
+| U02 | IN PROGRESS | Shared presenter/prefab contracts and responsive UI foundation. |  |
 | U03 | PENDING |  |
 | U04 | PENDING |  |
 | U05 | PENDING |  |

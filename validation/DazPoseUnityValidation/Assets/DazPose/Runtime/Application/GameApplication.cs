@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using DazPose.Toys;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,7 +12,9 @@ namespace DazPose.Game {
   [SerializeField] SceneCatalog catalog;
   Action stopSession;
   object session;
-  bool navigating;
+  SceneNavigationCoordinator navigation;
+  public bool IsNavigating => navigation != null && navigation.IsNavigating;
+  public string NavigationError => navigation?.LastError;
   public static GameApplication Current => instance;
   public ToyControlService Toys => toys;
   public SceneCatalog Catalog => catalog;
@@ -46,19 +50,25 @@ namespace DazPose.Game {
    stop?.Invoke();
    try { toys?.StopAllOutput(); } catch {}
   }
-  public void StartScene(string id) {
-   foreach(var entry in catalog.entries)
-    if(entry.enabled && entry.id==id) { Navigate(entry.scenePath); return; }
+  SceneNavigationCoordinator Navigation => navigation ?? (navigation =
+   new SceneNavigationCoordinator(StopSession, LoadSceneAsync, path => Application.CanStreamedLevelBeLoaded(path)));
+  public void StartScene(string id) { _ = StartSceneAsync(id); }
+  public Task<bool> StartSceneAsync(string id) {
+   var entry = catalog?.entries?.FirstOrDefault(e => e != null && e.enabled && e.id == id);
+   if(entry == null) return Task.FromResult(Navigation.Reject("That scene is not published or is no longer available."));
+   return Navigation.NavigateAsync(entry.scenePath);
   }
-  public void RestartCurrentScene() => Navigate(SceneManager.GetActiveScene().path);
-  public void ReturnToMenu() => Navigate(catalog.mainMenuPath);
-  async void Navigate(string path) {
-   if(navigating || string.IsNullOrEmpty(path)) return;
-   navigating=true;
-   try { StopSession(); Debug.Log("DazPose scene load started: "+path); var load=SceneManager.LoadSceneAsync(path);
-    while(!load.isDone) await Awaitable.NextFrameAsync();
-    Debug.Log("DazPose scene load completed: "+path);
-   } finally { navigating=false; }
+  public void RestartCurrentScene() { _ = Navigation.NavigateAsync(SceneManager.GetActiveScene().path); }
+  public void ReturnToMenu() { _ = ReturnToMenuAsync(); }
+  public Task<bool> ReturnToMenuAsync() => catalog == null ?
+   Task.FromResult(Navigation.Reject("The application scene catalog is unavailable.")) :
+   Navigation.NavigateAsync(catalog.mainMenuPath);
+  static async Task LoadSceneAsync(string path) {
+   Debug.Log("DazPose scene load started: " + path);
+   var load = SceneManager.LoadSceneAsync(path);
+   if(load == null) throw new InvalidOperationException("Unity did not create a scene load operation.");
+   while(!load.isDone) await Awaitable.NextFrameAsync();
+   Debug.Log("DazPose scene load completed: " + path);
   }
   public void Configure(ToyControlService service, SceneCatalog scenes) { toys=service; catalog=scenes; }
   void OnDestroy() { if(instance==this) { StopSession(); instance=null; } }
