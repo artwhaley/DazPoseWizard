@@ -1,0 +1,150 @@
+{
+  "status": "retired_exact_verified_files",
+  "files": [
+    {
+      "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.anim",
+      "bytes": 96019259,
+      "sha256": "6aefb17ed5a9b02eb3fe788394135493a356f8f1d9fa88113e5f2c9fd066a420",
+      "recovery": "delta",
+      "group": "folder-independent-action-gesture-copies"
+    },
+    {
+      "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.anim.meta",
+      "bytes": 188,
+      "sha256": "70b747266ac62392f5d50a93bffbdb263a97bbfd6ff333d6480b036a5d4fb2ad",
+      "recovery": "delta",
+      "group": "folder-independent-action-gesture-copies"
+    },
+    {
+      "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.asset",
+      "bytes": 218741,
+      "sha256": "020068589d53841d8fa89adec8e0b278a1f1675050cf8a18f43a4810d92ce72b",
+      "recovery": "delta",
+      "group": "folder-independent-action-gesture-copies"
+    },
+    {
+      "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.asset.meta",
+      "bytes": 189,
+      "sha256": "fbb81464671a74721571bd86b0ec29859912aa8d018173bae0e2d21e65a04a1c",
+      "recovery": "delta",
+      "group": "folder-independent-action-gesture-copies"
+    },
+    {
+      "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.anim",
+      "bytes": 73677,
+      "sha256": "260556ceaa73d9beb924062de8738ced8ddbe5b3828e8b16f7e67a61b5598e1b",
+      "recovery": "delta",
+      "group": "folder-independent-action-gesture-copies"
+    },
+    {
+      "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.anim.meta",
+      "bytes": 188,
+      "sha256": "ed00a90a6b408a182e162c37bda9b27eded676b7b3570ce0c7ed69e3d1d5fc78",
+      "recovery": "delta",
+      "group": "folder-independent-action-gesture-copies"
+    },
+    {
+      "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.asset",
+      "bytes": 586,
+      "sha256": "7c8316bc8f27d966ba6a13fdd4c58d6d7e95286a2ebfa734e722ad9282d09f01",
+      "recovery": "delta",
+      "group": "folder-independent-action-gesture-copies"
+    },
+    {
+      "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.asset.meta",
+      "bytes": 189,
+      "sha256": "ca435dbc73d8e903b9299d3ea403eaf9b630df934bf0c43acdc80dbe9a8495e0",
+      "recovery": "delta",
+      "group": "folder-independent-action-gesture-copies"
+    },
+    {
+      "path": "Assets/Production/ValidationData/Day3Face.anim",
+      "bytes": 2182,
+      "sha256": "a43d8a4b93210bdf99662c9bde9d9a18c9f539062bb0573b4f7ea657d5a56ced",
+      "recovery": "baseline",
+      "group": "day3-face-expression-fixtures"
+    },
+    {
+      "path": "Assets/Production/ValidationData/Day3Face.anim.meta",
+      "bytes": 188,
+      "sha256": "d1de9509910a413628eabe58293459b17f66ffc016308bec70d0dd2e26758a1c",
+      "recovery": "baseline",
+      "group": "day3-face-expression-fixtures"
+    },
+    {
+      "path": "Assets/Production/ValidationData/Day3Expression.asset",
+      "bytes": 865,
+      "sha256": "0960689da5176f6ed0b2e98d32eab1086635368650279c51c10948179cfdedf6",
+      "recovery": "baseline",
+      "group": "day3-face-expression-fixtures"
+    },
+    {
+      "path": "Assets/Production/ValidationData/Day3Expression.asset.meta",
+      "bytes": 189,
+      "sha256": "54bcf4b2f4352a5957d616c1556e233dabc9211b6f030dd81c69e74ced5617a0",
+      "recovery": "baseline",
+      "group": "day3-face-expression-fixtures"
+    },
+    {
+      "path": "Assets/PartnerProof/Generated/PartnerProof_Body.mat",
+      "bytes": 8129,
+      "sha256": "916b898b4112f1473fd70a29b6a04d858c4e80ef9b61925bd853719f53d73a5c",
+      "recovery": "baseline",
+      "group": "legacy-partner-proof-materials"
+    },
+    {
+      "path": "Assets/PartnerProof/Generated/PartnerProof_Body.mat.meta",
+      "bytes": 188,
+      "sha256": "cf85f63e384ff505a6e668a11cb85b82f5fc1c18a0df7011e88b38405919a4fa",
+      "recovery": "baseline",
+      "group": "legacy-partner-proof-materials"
+    },
+    {
+      "path": "Assets/PartnerProof/Generated/PartnerProof_Shell.mat",
+      "bytes": 8125,
+      "sha256": "217c8d51e71be69cbc726b10d4467586a02bfba9ae45a75ce44e26361e4c1dbe",
+      "recovery": "baseline",
+      "group": "legacy-partner-proof-materials"
+    },
+    {
+      "path": "Assets/PartnerProof/Generated/PartnerProof_Shell.mat.meta",
+      "bytes": 188,
+      "sha256": "706b18f0b6aec11927031c7624f9a6ffbacd7f13e155795766a1831be744e69d",
+      "recovery": "baseline",
+      "group": "legacy-partner-proof-materials"
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-first-outfit.asset",
+      "bytes": 1235,
+      "sha256": "37aa9052f9f654782a9146202a52916e235f4b4ba4c0fe9ec2b19d4a6edc7871",
+      "recovery": "baseline",
+      "group": "wardrobe-candidate-first-outfit"
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-first-outfit.asset.meta",
+      "bytes": 189,
+      "sha256": "b73ebe1a5093c66327ec5a55fbcab3cdcc08240114ee059b7d65f8a818e76dca",
+      "recovery": "baseline",
+      "group": "wardrobe-candidate-first-outfit"
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-third-outfit.asset",
+      "bytes": 1332,
+      "sha256": "d942f2fa70d726ea25fdf2d7fbda3578be55931a7b8d48b6808cd3ad9986d36c",
+      "recovery": "baseline",
+      "group": "wardrobe-candidate-third-outfit"
+    },
+    {
+      "path": "Assets/Production/Wardrobe/Candidate-third-outfit.asset.meta",
+      "bytes": 189,
+      "sha256": "5721ae251f52999b97a690e091dc6a47ecd933be267b019544816fef408baba5",
+      "recovery": "baseline",
+      "group": "wardrobe-candidate-third-outfit"
+    }
+  ],
+  "totalBytes": 96336016,
+  "protectedCorrection": "ffc251 retained: actual Day5 preview incoming GUID references and distinct layer configurations; no generated-tree deletion authorized by this plan",
+  "removedFiles": 20,
+  "removedBytes": 96336016,
+  "nativeAssetDatabaseCheck": "NOT RUN per user boundary"
+}

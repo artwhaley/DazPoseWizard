@@ -15,7 +15,6 @@ namespace DazPose.UnityValidation
     public static class LaraCandidateBuilder
     {
         public const string Folder = "Assets/TestData/LaraCandidate";
-        public const string PreviewScene = Folder + "/LaraCandidatePreview.unity";
         public const string GeneratedFolder = "Assets/Production/Performers/Lara";
         public const string MeshPath = GeneratedFolder + "/Rig/LaraBody.asset";
         public const string SurfaceBindingsPath = GeneratedFolder + "/Surfaces/LaraSurfaceBindings.asset";
@@ -57,14 +56,10 @@ namespace DazPose.UnityValidation
 
         public static void OpenPreview()
         {
-            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-            Build();
-            var body = UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>().Single(r => r.enabled);
-            Selection.activeGameObject = body.gameObject;
-            LaraCandidateWindow.ShowFor(body);
-            var view = SceneView.lastActiveSceneView ?? EditorWindow.GetWindow<SceneView>();
-            view.sceneLighting = false;
-            view.LookAtDirect(new Vector3(0, 1.05f, 0), Quaternion.Euler(0, 180, 0), 1.05f);
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Production/Performers/Lara.prefab");
+            if (model == null)
+                throw new InvalidOperationException("Prepare the production Lara prefab before opening a read-only asset preview.");
+            DazPose.Editor.AnimationContentPreviewWindow.Open(model, null);
         }
 
         // Headless generation/validation entry, without changing FirstPerformanceVoid.
@@ -128,16 +123,6 @@ namespace DazPose.UnityValidation
             foreach (string property in new[] { "_DiffuseMap", "_NormalMap", "_HeightMap" })
                 if (materials[0].GetTexture(property) != materials[16].GetTexture(property)) throw new IOException("Torso maps differ at graft seam: " + property);
             audit.torsoInputsEqual = true;
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var preview = UnityEngine.Object.Instantiate(sourceObject);
-            preview.name = "Lara Candidate";
-            var body = Body(preview);
-            foreach (var renderer in preview.GetComponentsInChildren<Renderer>(true)) renderer.enabled = renderer == body;
-            body.sharedMesh = candidate;
-            body.sharedMaterials = materials;
-            body.quality = SkinQuality.Auto;
-            for (int i = 0; i < candidate.blendShapeCount; i++) body.SetBlendShapeWeight(i, 0);
-            EditorSceneManager.SaveScene(scene, PreviewScene);
             Directory.CreateDirectory("TestOutput/appearance-evidence");
             File.WriteAllText("TestOutput/appearance-evidence/lara-candidate.validation.json", JsonUtility.ToJson(audit, true));
             AssetDatabase.SaveAssets();

@@ -16,6 +16,11 @@ namespace DazPose.Editor
         private PreviewRenderUtility preview;
         private readonly List<Material> previewMaterials = new List<Material>();
         private readonly Dictionary<Material, Material> materialCopies = new Dictionary<Material, Material>();
+        private readonly List<BlendShapeControl> blendShapes = new List<BlendShapeControl>();
+        private Vector2 blendShapeScroll;
+        private SkinnedMeshRenderer replacementSourceRenderer;
+        private Mesh replacementMesh;
+        private bool replacementApplied;
         private bool playing, loop = true, ownsAnimationMode;
         private float previewTime, playbackSpeed = 1f, yaw, pitch = 8f;
         private double lastTick;
@@ -27,8 +32,10 @@ namespace DazPose.Editor
         {
             var w=GetWindow<AnimationContentPreviewWindow>();
             w.titleContent=new GUIContent("Animation Preview");
+            w.ResetBlendShapeOverrides();
+            w.replacementSourceRenderer=null; w.replacementMesh=null;
             if(Selection.activeObject is AnimationClip c) w.clipAsset=c;
-            else if(Selection.activeObject is GameObject g) w.modelAsset=g;
+            else if(Selection.activeObject is GameObject g) { w.modelAsset=g; w.clipAsset=null; }
             w.CreatePreview();
             w.Show();
         }
@@ -36,7 +43,26 @@ namespace DazPose.Editor
         {
             var w=GetWindow<AnimationContentPreviewWindow>();
             w.titleContent=new GUIContent("Animation Preview");
+            w.ResetBlendShapeOverrides();
+            w.replacementSourceRenderer=null; w.replacementMesh=null;
             w.modelAsset=model; w.clipAsset=clip; w.CreatePreview(); w.Show();
+        }
+        public static void Open(GameObject model)
+        {
+            var w=GetWindow<AnimationContentPreviewWindow>();
+            w.titleContent=new GUIContent("Model Preview");
+            w.ResetBlendShapeOverrides();
+            w.replacementSourceRenderer=null; w.replacementMesh=null;
+            w.modelAsset=model; w.clipAsset=null; w.CreatePreview(); w.Show();
+        }
+        public static void OpenGeometry(GameObject modelAsset, SkinnedMeshRenderer sourceRenderer, Mesh replacementMesh)
+        {
+            var w=GetWindow<AnimationContentPreviewWindow>();
+            w.titleContent=new GUIContent("Graft Geometry Preview");
+            w.ResetBlendShapeOverrides();
+            w.modelAsset=modelAsset; w.clipAsset=null;
+            w.replacementSourceRenderer=sourceRenderer; w.replacementMesh=replacementMesh;
+            w.CreatePreview(); w.Show();
         }
         private void OnEnable()
         {
@@ -74,7 +100,13 @@ namespace DazPose.Editor
             modelAsset=(GameObject)EditorGUILayout.ObjectField("Model asset",modelAsset,typeof(GameObject),false);
             clipAsset=(AnimationClip)EditorGUILayout.ObjectField("Animation clip",clipAsset,typeof(AnimationClip),false);
             bool changed=EditorGUI.EndChangeCheck();
-            if(changed) { playing=false; previewTime=0f; yaw=0f; CreatePreview(); }
+            if(changed)
+            {
+                playing=false; previewTime=0f; yaw=0f;
+                ResetBlendShapeOverrides();
+                replacementSourceRenderer=null; replacementMesh=null;
+                CreatePreview();
+            }
             using(new EditorGUILayout.HorizontalScope())
             {
                 GUI.enabled=previewRoot!=null && clipAsset!=null && clipAsset.length>0f;
@@ -95,10 +127,11 @@ namespace DazPose.Editor
                 if(!Mathf.Approximately(next,previewTime)) { previewTime=next; TrySample(); }
                 EditorGUILayout.LabelField("Clip length",clipAsset.length.ToString("0.000")+" s");
             }
+            DrawBlendShapeControls();
             Rect rect=GUILayoutUtility.GetRect(100,280,GUILayout.ExpandWidth(true),GUILayout.ExpandHeight(true));
             if(previewRoot==null || preview==null)
             {
-                EditorGUI.HelpBox(rect,error??"Assign a model asset and animation clip.",MessageType.Info);
+                EditorGUI.HelpBox(rect,error??"Assign a persistent model asset (animation clip optional).",MessageType.Info);
                 return;
             }
             bool began=false;
@@ -118,18 +151,27 @@ namespace DazPose.Editor
             }
             if(Event.current.type==EventType.Repaint)
                 GUI.Label(new Rect(rect.x+8,rect.y+8,rect.width-16,20),
-                    modelAsset.name+" - "+clipAsset.name+"  "+previewTime.ToString("0.00")+" s",EditorStyles.whiteMiniLabel);
+                    modelAsset.name+(clipAsset!=null ? " - "+clipAsset.name+"  "+previewTime.ToString("0.00")+" s" : " - static preview"),
+                    EditorStyles.whiteMiniLabel);
         }
 
         private void CreatePreview()
         {
-            Cleanup(); error=null;
-            if(modelAsset==null || clipAsset==null) return;
+            Cleanup(); error=null; replacementApplied=false;
+            if(modelAsset==null) return;
             if(!EditorUtility.IsPersistent(modelAsset) || string.IsNullOrEmpty(AssetDatabase.GetAssetPath(modelAsset)))
             { error="Choose a model asset from the Project window; scene objects cannot be previewed."; return; }
-            if(!EditorUtility.IsPersistent(clipAsset) || string.IsNullOrEmpty(AssetDatabase.GetAssetPath(clipAsset)))
+            if(clipAsset!=null && (!EditorUtility.IsPersistent(clipAsset) || string.IsNullOrEmpty(AssetDatabase.GetAssetPath(clipAsset))))
             { error="Choose an animation clip asset from the Project window."; return; }
-            if(AnimationMode.InAnimationMode())
+            if(replacementSourceRenderer!=null)
+            {
+                if(!EditorUtility.IsPersistent(replacementSourceRenderer) ||
+                    (replacementSourceRenderer.transform!=modelAsset.transform && !replacementSourceRenderer.transform.IsChildOf(modelAsset.transform)))
+                { error="The source renderer must belong to the persistent model asset."; return; }
+                if(replacementMesh==null || !EditorUtility.IsPersistent(replacementMesh) || string.IsNullOrEmpty(AssetDatabase.GetAssetPath(replacementMesh)))
+                { error="Choose a persistent replacement mesh asset."; return; }
+            }
+            if(clipAsset!=null && AnimationMode.InAnimationMode())
             { error="Another editor currently owns Animation Mode. Stop or close that preview, then reopen this window."; return; }
             try
             {
@@ -154,7 +196,8 @@ namespace DazPose.Editor
                     {
                         var skin=dst.AddComponent<SkinnedMeshRenderer>();
                         EditorUtility.CopySerialized(sourceSkin,skin);
-                        skin.sharedMesh=sourceSkin.sharedMesh;
+                        skin.sharedMesh=sourceSkin==replacementSourceRenderer ? replacementMesh : sourceSkin.sharedMesh;
+                        if(sourceSkin==replacementSourceRenderer) replacementApplied=true;
                         skin.sharedMaterials=CloneMaterials(sourceSkin.sharedMaterials);
                         skin.rootBone=Remap(sourceRoot,map,sourceSkin.rootBone);
                         skin.bones=(sourceSkin.bones??Array.Empty<Transform>()).Select(b=>Remap(sourceRoot,map,b)).ToArray();
@@ -182,6 +225,9 @@ namespace DazPose.Editor
                 if(preview.lights!=null && preview.lights.Length>1)
                 { preview.lights[1].intensity=.7f; preview.lights[1].transform.rotation=Quaternion.Euler(25,-135,0); }
                 preview.AddSingleGO(previewRoot);
+                if(replacementSourceRenderer!=null && !replacementApplied)
+                    throw new InvalidOperationException("The requested source renderer was not found while cloning the model.");
+                BuildBlendShapeControls();
                 UpdateBounds(); Sample();
             }
             catch(Exception e) { FailPreview(e); }
@@ -213,7 +259,12 @@ namespace DazPose.Editor
         }
         private void Sample()
         {
-            if(previewRoot==null || clipAsset==null)return;
+            if(previewRoot==null)return;
+            if(clipAsset==null)
+            {
+                ApplyBlendShapeOverrides();
+                return;
+            }
             if(AnimationMode.InAnimationMode())
             {
                 if(!ownsAnimationMode) throw new InvalidOperationException("Another editor began Animation Mode. Stop or close that preview before sampling this clip.");
@@ -222,6 +273,69 @@ namespace DazPose.Editor
             AnimationMode.BeginSampling();
             try { AnimationMode.SampleAnimationClip(previewRoot,clipAsset,Mathf.Clamp(previewTime,0f,clipAsset.length)); }
             finally { AnimationMode.EndSampling(); }
+            ApplyBlendShapeOverrides();
+        }
+        private sealed class BlendShapeControl
+        {
+            public SkinnedMeshRenderer renderer;
+            public int index;
+            public string label;
+            public bool overrideEnabled;
+            public float weight, initialWeight;
+        }
+        private void BuildBlendShapeControls()
+        {
+            blendShapes.Clear();
+            foreach(var renderer in previewRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                if(renderer.sharedMesh==null)continue;
+                for(int i=0;i<renderer.sharedMesh.blendShapeCount;i++)
+                    blendShapes.Add(new BlendShapeControl
+                    {
+                        renderer=renderer,index=i,
+                        label=renderer.name+"/"+renderer.sharedMesh.GetBlendShapeName(i),
+                        weight=renderer.GetBlendShapeWeight(i), initialWeight=renderer.GetBlendShapeWeight(i)
+                    });
+            }
+        }
+        private void DrawBlendShapeControls()
+        {
+            if(blendShapes.Count==0)return;
+            EditorGUILayout.LabelField("Blend shapes (preview clone only)",EditorStyles.boldLabel);
+            float height=Mathf.Min(190f,Mathf.Max(70f,blendShapes.Count*22f+4f));
+            blendShapeScroll=EditorGUILayout.BeginScrollView(blendShapeScroll,GUILayout.Height(height));
+            try
+            {
+                foreach(var item in blendShapes)
+                {
+                    using(new EditorGUILayout.HorizontalScope())
+                    {
+                        bool enabled=EditorGUILayout.Toggle(item.overrideEnabled,GUILayout.Width(18));
+                        float value=EditorGUILayout.Slider(item.label,item.weight,-100f,100f);
+                        if(enabled!=item.overrideEnabled || !Mathf.Approximately(value,item.weight))
+                        {
+                            if (item.overrideEnabled && !enabled && item.renderer!=null)
+                                item.renderer.SetBlendShapeWeight(item.index,item.initialWeight);
+                            item.overrideEnabled=enabled; item.weight=value;
+                            ApplyBlendShapeOverrides();
+                        }
+                    }
+                }
+            }
+            finally { EditorGUILayout.EndScrollView(); }
+        }
+        private void ApplyBlendShapeOverrides()
+        {
+            foreach(var item in blendShapes)
+                if(item.overrideEnabled && item.renderer!=null)
+                    item.renderer.SetBlendShapeWeight(item.index,item.weight);
+        }
+        private void ResetBlendShapeOverrides()
+        {
+            foreach(var item in blendShapes)
+                if(item.renderer!=null && item.renderer.sharedMesh!=null && item.index<item.renderer.sharedMesh.blendShapeCount)
+                    item.renderer.SetBlendShapeWeight(item.index,item.initialWeight);
+            blendShapes.Clear();
         }
         private Material[] CloneMaterials(Material[] originals)
         {
@@ -277,6 +391,7 @@ namespace DazPose.Editor
             }
             if(previewRoot!=null) { try { DestroyImmediate(previewRoot); } catch { } }
             previewRoot=null;
+            blendShapes.Clear();
             if(preview!=null) { try { preview.Cleanup(); } catch { } preview=null; }
             foreach(var material in previewMaterials) if(material!=null) { try { DestroyImmediate(material); } catch { } }
             previewMaterials.Clear(); materialCopies.Clear();

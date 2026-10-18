@@ -7,8 +7,8 @@ User authorized the packet on 18 October 2026. Work on main, no push. No program
 | F00 | PASS (source baseline) | 28 scenes classified; protected hashes, recovery, dependency graph; managed 60 + 69 baseline. No new Unity execution. |
 | F01 | IMPLEMENTED; source compile PASS | F01_EXTRACTION_MAP.md; zero target-scene path consumers; 7 assemblies compile. Native checks NOT RUN by user boundary. |  |
 | F02 | IMPLEMENTED; verification PARTIAL | Real assertion suites extracted; preview/diagnostic runtime checks NOT RUN; no program/Unity control. |  |
-| F03 | IN PROGRESS | All 11 target scenes retired; 22 scene/meta files, 5,482,787 bytes. Orphan closure audit pending. |  |
-| F04 | IN PROGRESS | 669 protected files unchanged; 7 source compiles; zero duplicate GUIDs/missing metas; native Editor checks NOT RUN. |  |
+| F03 | IMPLEMENTED; source audit PASS | 13 scenes retired; 46 asset/meta files total, 102,258,049 bytes. Referenced/artistic wardrobe closure retained with exact evidence. |  |
+| F04 | SOURCE/MANAGED PASS; native NOT RUN | 7 assemblies; 60 story + 69 app; 661 protected unchanged, 8 explicitly retired disposable records; 4,371 GUIDs/no duplicates/metas missing; no new unresolved scripts. Native Editor checks prohibited this turn. |  |
 | S01 | PENDING |  |
 | S02 | PENDING |  |
 | S03 | PENDING |  |
@@ -20,7 +20,7 @@ User authorized the packet on 18 October 2026. Work on main, no push. No program
 | S09 | PENDING |  |
 | S10 | PENDING |  |
 | S11 | PENDING |  |
-| U01 | PENDING |  |
+| U01 | IN PROGRESS | Main Menu/navigation API and state tests next. |  |
 | U02 | PENDING |  |
 | U03 | PENDING |  |
 | U04 | PENDING |  |

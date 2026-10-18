@@ -1,3 +1,7 @@
+# Current Phase 1 completion / UI / Studio execution
+
+The new October 18 packet is active on main. All eleven legacy scenes plus two generated-only previews are retired after extracting maintained assertions and safe asset previews. Asset removal: 46 files/metas, 102,258,049 bytes. Current source/managed gates pass; native Editor/render/Undo/Play checks are not run under the user boundary. See [progress](../p2-p3/PROGRESS.md) and [follow-up retirement report](../p2-p3/PHASE1_RETIREMENT_REPORT.md). UI U01–U07 and Studio S01–S11 are still executing. No app/Unity launch, computer-use Unity, build/player/hardware or push is authorized for this packet. Older handoffs below are historical.
+
 # Current cleanup handoff — 18 October 2026
 
 First Contact is prepared for user-controlled manual Play in the open Unity Editor at `Assets/Production/Scenes/FirstContact.unity`. The delivered cleanup changes passed seven assembly compiles, 129 managed tests, actual EditMode reference/global-card/import/scene checks, 163 move-preservation checks, and final GUID/protected-byte audits. Verified deletions total 116 files/metas and 287,660,094 bytes. No Play, automated scene playback, build or player was started. Human visual acceptance and the toe observation remain pending.

@@ -961,7 +961,7 @@
     }
   },
   "cleanupTask1": {
-    "status": "partial_lab_consolidation_blocked",
+    "status": "superseded_by_F_series_followup",
     "activeTickets": [
       "C08",
       "C10"
@@ -998,7 +998,19 @@
     "unityAssembliesCompiled": 7,
     "duplicateGuids": 0,
     "missingMetas": 0,
-    "blockedPlan": "docs/cleanup-task1/PENDING_LAB_CONSOLIDATION.md",
+    "blockedPlan": "superseded: docs/p2-p3/PHASE1_RETIREMENT_REPORT.md",
     "implementationCommit": "a9a31be"
+  },
+  "phase1CompletionPhase2Phase3": {
+    "packet": "newtickets/DazPoseWizard_Execution_Packet/START_HERE.md",
+    "status": "executing_U01_after_cleanup_source_implementation",
+    "progress": "docs/p2-p3/PROGRESS.md",
+    "startingHead": "935fbd23a9aecf90a495176503ed8bd0337c22c4",
+    "phase1RetiredScenes": 13,
+    "phase1RemovedAssetFilesIncludingMetas": 46,
+    "phase1RemovedAssetBytes": 102258049,
+    "nativeEditorChecks": "NOT RUN by latest no-program/no-Unity-control instruction",
+    "manualVisualApproval": "PENDING",
+    "push": "not authorized for this packet"
   }
 }

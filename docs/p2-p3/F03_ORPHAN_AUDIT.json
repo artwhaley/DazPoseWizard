@@ -1,0 +1,2064 @@
+{
+  "schemaVersion": 1,
+  "title": "F03 read-only orphan audit",
+  "auditUtc": "2026-10-18",
+  "readOnly": true,
+  "scope": "Targeted remaining candidates from docs/cleanup-task1/asset-dispositions.json and retirement-manifest.csv: folder-independent copies, Day3 expression fixtures, A/B/C audio, PartnerProof and LaraSkin materials, Candidate-first/second/third, SetupCandidates/685f, DraftAttempts/ffc251.",
+  "method": {
+    "serializedReferenceScan": "Current Unity YAML GUID search over remaining Assets/**/*.unity, *.prefab, *.asset, *.anim and *.mat; only internal fixture links are counted as self-contained.",
+    "codePathScan": "Current Unity source/Editor path/name searches for candidate and validation assets, plus direct code reads identified below.",
+    "unityDependencyScan": "NOT RUN (read-only audit; no Unity launch). Exact current text GUID results are reported. Root can request Unity AssetDatabase confirmation before retirement.",
+    "recoverySource": ".dazposewizard/cleanup-task1/recovery-manifest.json; every existing candidate file and sidecar below records exact current SHA-256 and matching recovery manifest SHA-256 when present."
+  },
+  "fixedAssetGroups": [
+    {
+      "name": "folder-independent-action-gesture-copies",
+      "decision": "RETIRED",
+      "reason": "Exact GUID/path scan found only each PerformerAction/PerformerGesture asset pointing to its paired AnimationClip. No current saved scene references either ScriptableObject after the scene retirements; no current source literal names the fixture path. RemediationContentLocationRunner is generic and receives explicit action/gesture references. The four files are validation output copies; recovered bytes and metas are recorded.",
+      "currentConsumers": [
+        "Internal asset-to-clip links only: FolderIndependentAction.asset -> FolderIndependentAction.anim; FolderIndependentGesture.asset -> FolderIndependentGesture.anim. No current scene GUID reference."
+      ],
+      "files": [
+        {
+          "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.anim",
+          "exists": true,
+          "bytes": 96019259,
+          "sha256": "6aefb17ed5a9b02eb3fe788394135493a356f8f1d9fa88113e5f2c9fd066a420",
+          "recovery": {
+            "snapshot": "delta",
+            "bytes": 96019259,
+            "sha256": "6aefb17ed5a9b02eb3fe788394135493a356f8f1d9fa88113e5f2c9fd066a420"
+          },
+          "meta": {
+            "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.anim.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "70b747266ac62392f5d50a93bffbdb263a97bbfd6ff333d6480b036a5d4fb2ad",
+            "guid": "86202f053fbccaf48a38c5ec7e7fc65b",
+            "recovery": {
+              "snapshot": "delta",
+              "bytes": 188,
+              "sha256": "70b747266ac62392f5d50a93bffbdb263a97bbfd6ff333d6480b036a5d4fb2ad"
+            }
+          },
+          "metaPath": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.anim.meta"
+        },
+        {
+          "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.asset",
+          "exists": true,
+          "bytes": 218741,
+          "sha256": "020068589d53841d8fa89adec8e0b278a1f1675050cf8a18f43a4810d92ce72b",
+          "recovery": {
+            "snapshot": "delta",
+            "bytes": 218741,
+            "sha256": "020068589d53841d8fa89adec8e0b278a1f1675050cf8a18f43a4810d92ce72b"
+          },
+          "meta": {
+            "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.asset.meta",
+            "exists": true,
+            "bytes": 189,
+            "sha256": "fbb81464671a74721571bd86b0ec29859912aa8d018173bae0e2d21e65a04a1c",
+            "guid": "73d34cd4ee313134cbc7aa9602c4af1a",
+            "recovery": {
+              "snapshot": "delta",
+              "bytes": 189,
+              "sha256": "fbb81464671a74721571bd86b0ec29859912aa8d018173bae0e2d21e65a04a1c"
+            }
+          },
+          "metaPath": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentAction.asset.meta"
+        },
+        {
+          "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.anim",
+          "exists": true,
+          "bytes": 73677,
+          "sha256": "260556ceaa73d9beb924062de8738ced8ddbe5b3828e8b16f7e67a61b5598e1b",
+          "recovery": {
+            "snapshot": "delta",
+            "bytes": 73677,
+            "sha256": "260556ceaa73d9beb924062de8738ced8ddbe5b3828e8b16f7e67a61b5598e1b"
+          },
+          "meta": {
+            "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.anim.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "ed00a90a6b408a182e162c37bda9b27eded676b7b3570ce0c7ed69e3d1d5fc78",
+            "guid": "a9c0a06be3676dc43a35e3abbefb038e",
+            "recovery": {
+              "snapshot": "delta",
+              "bytes": 188,
+              "sha256": "ed00a90a6b408a182e162c37bda9b27eded676b7b3570ce0c7ed69e3d1d5fc78"
+            }
+          },
+          "metaPath": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.anim.meta"
+        },
+        {
+          "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.asset",
+          "exists": true,
+          "bytes": 586,
+          "sha256": "7c8316bc8f27d966ba6a13fdd4c58d6d7e95286a2ebfa734e722ad9282d09f01",
+          "recovery": {
+            "snapshot": "delta",
+            "bytes": 586,
+            "sha256": "7c8316bc8f27d966ba6a13fdd4c58d6d7e95286a2ebfa734e722ad9282d09f01"
+          },
+          "meta": {
+            "path": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.asset.meta",
+            "exists": true,
+            "bytes": 189,
+            "sha256": "ca435dbc73d8e903b9299d3ea403eaf9b630df934bf0c43acdc80dbe9a8495e0",
+            "guid": "717869b81b8a5844ea5f2ba30409070d",
+            "recovery": {
+              "snapshot": "delta",
+              "bytes": 189,
+              "sha256": "ca435dbc73d8e903b9299d3ea403eaf9b630df934bf0c43acdc80dbe9a8495e0"
+            }
+          },
+          "metaPath": "Assets/Content/Remediation/Folder With Spaces/20261006-125650-623/FolderIndependentGesture.asset.meta"
+        }
+      ],
+      "independentAllAssetsGuidScan": {
+        "incoming": [],
+        "scope": "all Assets files including meta; no ignored/binary exclusion"
+      },
+      "executionEvidence": "F03_ORPHAN_RETIREMENT_PLAN.json; exact source/meta and actual recovery archive hashes verified; independent all-Assets GUID scan empty outside closure."
+    },
+    {
+      "name": "day3-face-expression-fixtures",
+      "decision": "RETIRED",
+      "reason": "Current saved-scene GUID scan has no references to either fixture. The only Unity asset link is Day3Expression.asset -> Day3Face.anim. Current compiled-source searches have no exact Day3Face/Day3Expression/ValidationData path; the prior Day3 builder lives under docs/production-consolidation/validation and is historical/disposable-project tooling. The Day3RegressionRunner has no remaining saved scene. The pair can retire together after preserving the source/meta recovery identities.",
+      "currentConsumers": [
+        "Internal Day3Expression.asset -> Day3Face.anim only; no current saved-scene references."
+      ],
+      "files": [
+        {
+          "path": "Assets/Production/ValidationData/Day3Face.anim",
+          "exists": true,
+          "bytes": 2182,
+          "sha256": "a43d8a4b93210bdf99662c9bde9d9a18c9f539062bb0573b4f7ea657d5a56ced",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2182,
+            "sha256": "a43d8a4b93210bdf99662c9bde9d9a18c9f539062bb0573b4f7ea657d5a56ced"
+          },
+          "meta": {
+            "path": "Assets/Production/ValidationData/Day3Face.anim.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "d1de9509910a413628eabe58293459b17f66ffc016308bec70d0dd2e26758a1c",
+            "guid": "c3d22df06e679dc4f898aa569b0c43e3",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "d1de9509910a413628eabe58293459b17f66ffc016308bec70d0dd2e26758a1c"
+            }
+          },
+          "metaPath": "Assets/Production/ValidationData/Day3Face.anim.meta"
+        },
+        {
+          "path": "Assets/Production/ValidationData/Day3Expression.asset",
+          "exists": true,
+          "bytes": 865,
+          "sha256": "0960689da5176f6ed0b2e98d32eab1086635368650279c51c10948179cfdedf6",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 865,
+            "sha256": "0960689da5176f6ed0b2e98d32eab1086635368650279c51c10948179cfdedf6"
+          },
+          "meta": {
+            "path": "Assets/Production/ValidationData/Day3Expression.asset.meta",
+            "exists": true,
+            "bytes": 189,
+            "sha256": "54bcf4b2f4352a5957d616c1556e233dabc9211b6f030dd81c69e74ced5617a0",
+            "guid": "202dcf8972595584d81c552423885e9d",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 189,
+              "sha256": "54bcf4b2f4352a5957d616c1556e233dabc9211b6f030dd81c69e74ced5617a0"
+            }
+          },
+          "metaPath": "Assets/Production/ValidationData/Day3Expression.asset.meta"
+        }
+      ],
+      "independentAllAssetsGuidScan": {
+        "incoming": [],
+        "scope": "all Assets files including meta; no ignored/binary exclusion"
+      },
+      "executionEvidence": "F03_ORPHAN_RETIREMENT_PLAN.json; exact source/meta and actual recovery archive hashes verified; independent all-Assets GUID scan empty outside closure."
+    },
+    {
+      "name": "obsolete-example-audio-a-b-c",
+      "decision": "PROTECTED",
+      "reason": "All three audio files remain required: Assets/Scenes/FirstPerformanceVoid.unity serializes two A references, two B references, and one C reference (C lives in a second control component); DazPoseEditorCommands.AssignSpeechFixtures also loads A/B/C by path for the performer smoke harness. Preserve the entire trio and exact paths until both consumers are migrated.",
+      "currentConsumers": [
+        "Assets/Scenes/FirstPerformanceVoid.unity: A GUID x2, B GUID x2, C GUID x1. Assets/DazPose/Validation/Editor/Authoring/DazPoseEditorCommands.cs: AssignSpeechFixtures loads Assets/generated/{A,B,C}.mp3 (Windows case-insensitive path spelling)."
+      ],
+      "files": [
+        {
+          "path": "Assets/Generated/A.mp3",
+          "exists": true,
+          "bytes": 14732,
+          "sha256": "de645e04095f00ecd270a2db961555d75f4afe41aa0ec09da22cddb955b892cc",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 14732,
+            "sha256": "de645e04095f00ecd270a2db961555d75f4afe41aa0ec09da22cddb955b892cc"
+          },
+          "meta": {
+            "path": "Assets/Generated/A.mp3.meta",
+            "exists": true,
+            "bytes": 485,
+            "sha256": "62140a32ea803ee40bfc9b01520141af2f853de446950832d183b22a4a75509e",
+            "guid": "4284b0d5624bc0f49a0463d2f8374245",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 485,
+              "sha256": "62140a32ea803ee40bfc9b01520141af2f853de446950832d183b22a4a75509e"
+            }
+          },
+          "metaPath": "Assets/Generated/A.mp3.meta"
+        },
+        {
+          "path": "Assets/Generated/B.mp3",
+          "exists": true,
+          "bytes": 16748,
+          "sha256": "7a4be0f968d9528461c394c58c9d1d988866e63229b97347ab719601972c8e90",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 16748,
+            "sha256": "7a4be0f968d9528461c394c58c9d1d988866e63229b97347ab719601972c8e90"
+          },
+          "meta": {
+            "path": "Assets/Generated/B.mp3.meta",
+            "exists": true,
+            "bytes": 485,
+            "sha256": "f9f1485dd0c62c2a7012e25edf6e240852a0121d785794d380e9528a1e937531",
+            "guid": "85425b705aedcf840ac41b53f1062cd1",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 485,
+              "sha256": "f9f1485dd0c62c2a7012e25edf6e240852a0121d785794d380e9528a1e937531"
+            }
+          },
+          "metaPath": "Assets/Generated/B.mp3.meta"
+        },
+        {
+          "path": "Assets/Generated/C.mp3",
+          "exists": true,
+          "bytes": 48428,
+          "sha256": "c5868d38ca6649f2ec18f7e8689fdf32206bedbc494ad163775b6df6cd366494",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 48428,
+            "sha256": "c5868d38ca6649f2ec18f7e8689fdf32206bedbc494ad163775b6df6cd366494"
+          },
+          "meta": {
+            "path": "Assets/Generated/C.mp3.meta",
+            "exists": true,
+            "bytes": 485,
+            "sha256": "40577452b76ce585fe2db54b7c1fc04817f2cebe97521e9989045e66a2a32c50",
+            "guid": "94ca9a9bbf94e384aba746ab72ab6d87",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 485,
+              "sha256": "40577452b76ce585fe2db54b7c1fc04817f2cebe97521e9989045e66a2a32c50"
+            }
+          },
+          "metaPath": "Assets/Generated/C.mp3.meta"
+        }
+      ]
+    },
+    {
+      "name": "legacy-partner-proof-materials",
+      "decision": "RETIRED",
+      "reason": "No current serialized GUID reference or exact code path consumer was found for either old proof material. Current partner import/preparation output is Assets/Production/Player/Materials/Imported/{SourceMaterials,RuntimeMaterials}; current PlayerBody/PartnerCharacter support content is elsewhere. The old material assets may retire with their metas after root review; preserve canonical source/import/runtime materials.",
+      "currentConsumers": [
+        "No current GUID reference and no current path/name consumer found in Unity Assets source."
+      ],
+      "files": [
+        {
+          "path": "Assets/PartnerProof/Generated/PartnerProof_Body.mat",
+          "exists": true,
+          "bytes": 8129,
+          "sha256": "916b898b4112f1473fd70a29b6a04d858c4e80ef9b61925bd853719f53d73a5c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 8129,
+            "sha256": "916b898b4112f1473fd70a29b6a04d858c4e80ef9b61925bd853719f53d73a5c"
+          },
+          "meta": {
+            "path": "Assets/PartnerProof/Generated/PartnerProof_Body.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "cf85f63e384ff505a6e668a11cb85b82f5fc1c18a0df7011e88b38405919a4fa",
+            "guid": "f1e6765dff7a3664fabefe39e04db543",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "cf85f63e384ff505a6e668a11cb85b82f5fc1c18a0df7011e88b38405919a4fa"
+            }
+          },
+          "metaPath": "Assets/PartnerProof/Generated/PartnerProof_Body.mat.meta"
+        },
+        {
+          "path": "Assets/PartnerProof/Generated/PartnerProof_Shell.mat",
+          "exists": true,
+          "bytes": 8125,
+          "sha256": "217c8d51e71be69cbc726b10d4467586a02bfba9ae45a75ce44e26361e4c1dbe",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 8125,
+            "sha256": "217c8d51e71be69cbc726b10d4467586a02bfba9ae45a75ce44e26361e4c1dbe"
+          },
+          "meta": {
+            "path": "Assets/PartnerProof/Generated/PartnerProof_Shell.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "706b18f0b6aec11927031c7624f9a6ffbacd7f13e155795766a1831be744e69d",
+            "guid": "53bacea86d1166644b4154057badca75",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "706b18f0b6aec11927031c7624f9a6ffbacd7f13e155795766a1831be744e69d"
+            }
+          },
+          "metaPath": "Assets/PartnerProof/Generated/PartnerProof_Shell.mat.meta"
+        }
+      ],
+      "independentAllAssetsGuidScan": {
+        "incoming": [],
+        "scope": "all Assets files including meta; no ignored/binary exclusion"
+      },
+      "executionEvidence": "F03_ORPHAN_RETIREMENT_PLAN.json; exact source/meta and actual recovery archive hashes verified; independent all-Assets GUID scan empty outside closure."
+    },
+    {
+      "name": "legacy-lara-skin-material-copies",
+      "decision": "PROTECTED",
+      "reason": "Seven exact paths remain named in Assets/FirstPerformanceVoid/Editor/PerformerDissolveSetup.cs; FirstPerformanceVoidLighting.cs still creates/uses the LaraSkin output folder. Keep all seven paths until those producers are detached and migrated. Current production LaraRuntimeMaterials do not by themselves make the path-based editor workflow dead.",
+      "currentConsumers": [
+        "Assets/FirstPerformanceVoid/Editor/PerformerDissolveSetup.cs: exact path array for all seven materials. Assets/FirstPerformanceVoid/Editor/FirstPerformanceVoidLighting.cs: LaraSkin output folder."
+      ],
+      "files": [
+        {
+          "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Arms.mat",
+          "exists": true,
+          "bytes": 7200,
+          "sha256": "fb58c09425359ab66d3743fd99029a1422c4bb3f53cce45bdfdb9edc7f5f4fe0",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 7200,
+            "sha256": "fb58c09425359ab66d3743fd99029a1422c4bb3f53cce45bdfdb9edc7f5f4fe0"
+          },
+          "meta": {
+            "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Arms.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "520b6ad5f59d60ed12223bb1a68eea3774819afe0340b85cf0b3d210a3d8dc27",
+            "guid": "dc93e13e44666a740905bcd82bd9a0c9",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "520b6ad5f59d60ed12223bb1a68eea3774819afe0340b85cf0b3d210a3d8dc27"
+            }
+          },
+          "metaPath": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Arms.mat.meta"
+        },
+        {
+          "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Ears.mat",
+          "exists": true,
+          "bytes": 7199,
+          "sha256": "ed786f003036bb13b54c4ed32fdb73ebb48e899be5b000a3762ddf95fb940fc5",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 7199,
+            "sha256": "ed786f003036bb13b54c4ed32fdb73ebb48e899be5b000a3762ddf95fb940fc5"
+          },
+          "meta": {
+            "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Ears.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "b04b0120bc3e67808859eb4b99603d0eb5e0dc9f1a6d34f347551cc8980b2b31",
+            "guid": "807cb31e8b202d14192315d25051a47f",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "b04b0120bc3e67808859eb4b99603d0eb5e0dc9f1a6d34f347551cc8980b2b31"
+            }
+          },
+          "metaPath": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Ears.mat.meta"
+        },
+        {
+          "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_EyeSocket.mat",
+          "exists": true,
+          "bytes": 7259,
+          "sha256": "7f42151cb8edfb51f78c7a74033e7568f81673aa13b49785b335e816783ca55e",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 7259,
+            "sha256": "7f42151cb8edfb51f78c7a74033e7568f81673aa13b49785b335e816783ca55e"
+          },
+          "meta": {
+            "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_EyeSocket.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "6bee0ebe0281b19876e990c1254fd3c0b77a09bbba1c720c4d68ffca20bc40a0",
+            "guid": "9dec1cb1b561f12488a2264026d98656",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "6bee0ebe0281b19876e990c1254fd3c0b77a09bbba1c720c4d68ffca20bc40a0"
+            }
+          },
+          "metaPath": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_EyeSocket.mat.meta"
+        },
+        {
+          "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Face.mat",
+          "exists": true,
+          "bytes": 7199,
+          "sha256": "003d04fcbad4ffc64b0bbf8adb3a85a132b8155f93988d960df3351cd40338fa",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 7199,
+            "sha256": "003d04fcbad4ffc64b0bbf8adb3a85a132b8155f93988d960df3351cd40338fa"
+          },
+          "meta": {
+            "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Face.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "a53c9c83268f95b5d06d7dcba87af31987832d195023dec4ad9625e2da89203f",
+            "guid": "8fcf99daa2beec449a577500f88712a5",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "a53c9c83268f95b5d06d7dcba87af31987832d195023dec4ad9625e2da89203f"
+            }
+          },
+          "metaPath": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Face.mat.meta"
+        },
+        {
+          "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Legs.mat",
+          "exists": true,
+          "bytes": 7198,
+          "sha256": "6fa0b1efc97f1a55cc77dc11861ae9b8cfc98e7786a3ca03d0820d5b2705dc56",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 7198,
+            "sha256": "6fa0b1efc97f1a55cc77dc11861ae9b8cfc98e7786a3ca03d0820d5b2705dc56"
+          },
+          "meta": {
+            "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Legs.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "2084150675091083f6205bd2a2c9c66e47aca163831b4c73ead96fe01bffca64",
+            "guid": "f1233367148ab484bbe42626ec7d9120",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "2084150675091083f6205bd2a2c9c66e47aca163831b4c73ead96fe01bffca64"
+            }
+          },
+          "metaPath": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Legs.mat.meta"
+        },
+        {
+          "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Lips.mat",
+          "exists": true,
+          "bytes": 7199,
+          "sha256": "69776c759da988dc176306a44e751c704019f87bf6f89ffb11fb1afc64fe8693",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 7199,
+            "sha256": "69776c759da988dc176306a44e751c704019f87bf6f89ffb11fb1afc64fe8693"
+          },
+          "meta": {
+            "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Lips.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "9906ee0c5e9a763aa006f15d8f7a8d275475a552e2d9934e99478e9f486349ef",
+            "guid": "07a7af5fe0f09a94ba19a67d20cfd02c",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "9906ee0c5e9a763aa006f15d8f7a8d275475a552e2d9934e99478e9f486349ef"
+            }
+          },
+          "metaPath": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Lips.mat.meta"
+        },
+        {
+          "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Torso.mat",
+          "exists": true,
+          "bytes": 7200,
+          "sha256": "1f0bd0a7393d1a285a78f7f8dd757e6b73274fc6c871c730c30eba078a65e419",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 7200,
+            "sha256": "1f0bd0a7393d1a285a78f7f8dd757e6b73274fc6c871c730c30eba078a65e419"
+          },
+          "meta": {
+            "path": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Torso.mat.meta",
+            "exists": true,
+            "bytes": 188,
+            "sha256": "4643e2451b8612f3344b032df85cd2b354264d0ddd4ffab88bac373ea6b009c6",
+            "guid": "3e803fc762b0b434fbc7b1f60e89c9ed",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 188,
+              "sha256": "4643e2451b8612f3344b032df85cd2b354264d0ddd4ffab88bac373ea6b009c6"
+            }
+          },
+          "metaPath": "Assets/FirstPerformanceVoid/Materials/LaraSkin/M_LaraSkin_Torso.mat.meta"
+        }
+      ]
+    },
+    {
+      "name": "wardrobe-candidate-first-outfit",
+      "decision": "RETIRED",
+      "reason": "No current serialized GUID or exact path consumer remains; the former ProductionPerformerBuilder.Candidate path producer is absent. The user-edited values are preserved in current configuration/review content. Candidate-first-outfit is revision 2 with CharlenesCloset_Panty_1981 and PeekaBoo_16572 both layer 0; Day5 Preview-first-outfit revision 3 has them at layers 2 and 1, and current R03 ToeFixture/WardrobeConfiguration revision 4 has layers 1 and 2. Preserve the latter current configuration and do not copy stale layer-0 values forward.",
+      "currentConsumers": [
+        "No current serialized GUID refs or path literal. Candidate identity is a historical generated preset."
+      ],
+      "files": [
+        {
+          "path": "Assets/Production/Wardrobe/Candidate-first-outfit.asset",
+          "exists": true,
+          "bytes": 1235,
+          "sha256": "37aa9052f9f654782a9146202a52916e235f4b4ba4c0fe9ec2b19d4a6edc7871",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1235,
+            "sha256": "37aa9052f9f654782a9146202a52916e235f4b4ba4c0fe9ec2b19d4a6edc7871"
+          },
+          "meta": {
+            "path": "Assets/Production/Wardrobe/Candidate-first-outfit.asset.meta",
+            "exists": true,
+            "bytes": 189,
+            "sha256": "b73ebe1a5093c66327ec5a55fbcab3cdcc08240114ee059b7d65f8a818e76dca",
+            "guid": "5250418dd8985aa4ca4609796b643335",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 189,
+              "sha256": "b73ebe1a5093c66327ec5a55fbcab3cdcc08240114ee059b7d65f8a818e76dca"
+            }
+          },
+          "metaPath": "Assets/Production/Wardrobe/Candidate-first-outfit.asset.meta"
+        }
+      ],
+      "exactDataDifferences": {
+        "historicalCandidate": {
+          "configurationRevision": 2,
+          "parts": {
+            "CharlenesCloset_Panty_1981": 0,
+            "PeekaBoo_16572": 0
+          }
+        },
+        "preservedDay5Preview": {
+          "configurationRevision": 3,
+          "parts": {
+            "CharlenesCloset_Panty_1981": 2,
+            "PeekaBoo_16572": 1
+          }
+        },
+        "currentR03Configuration": {
+          "configurationRevision": 4,
+          "parts": {
+            "CharlenesCloset_Panty_1981": 1,
+            "PeekaBoo_16572": 2
+          }
+        }
+      },
+      "independentAllAssetsGuidScan": {
+        "incoming": [],
+        "scope": "all Assets files including meta; no ignored/binary exclusion"
+      },
+      "executionEvidence": "F03_ORPHAN_RETIREMENT_PLAN.json; exact source/meta and actual recovery archive hashes verified; independent all-Assets GUID scan empty outside closure."
+    },
+    {
+      "name": "wardrobe-candidate-second-outfit",
+      "decision": "PROTECTED",
+      "reason": "The second-outfit candidate remains inside the pending toe appearance/review boundary and is associated with protected R03 second-outfit evidence. Preserve the full preset, meta, package/footwear/fit-state references and matching release/review inputs until the user closes the toe visual observation.",
+      "currentConsumers": [
+        "No direct candidate GUID/path consumer identified; protection is the explicit pending second-outfit toe review/release identity."
+      ],
+      "files": [
+        {
+          "path": "Assets/Production/Wardrobe/Candidate-second-outfit.asset",
+          "exists": true,
+          "bytes": 2447,
+          "sha256": "a4ce0ad50753639f5c3644ac5944a3b05bf39d20c430b549d881b2f8b1b39c07",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2447,
+            "sha256": "a4ce0ad50753639f5c3644ac5944a3b05bf39d20c430b549d881b2f8b1b39c07"
+          },
+          "meta": {
+            "path": "Assets/Production/Wardrobe/Candidate-second-outfit.asset.meta",
+            "exists": true,
+            "bytes": 189,
+            "sha256": "6d455c7ef54a132d7bd102b032eecfa636400005977d1b523594e788a245559f",
+            "guid": "e2b682418d163284e9c633d3f9d0dcb5",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 189,
+              "sha256": "6d455c7ef54a132d7bd102b032eecfa636400005977d1b523594e788a245559f"
+            }
+          },
+          "metaPath": "Assets/Production/Wardrobe/Candidate-second-outfit.asset.meta"
+        }
+      ]
+    },
+    {
+      "name": "wardrobe-candidate-third-outfit",
+      "decision": "RETIRED",
+      "reason": "No current serialized GUID or exact path consumer remains; the former ProductionPerformerBuilder.Candidate path producer is absent. This revision-2 snapshot records all four parts at layer 0. Day5 Preview-third-outfit revision 3 preserves shoes layer 2, dress layer 1, apron layer 1, stockings layer 0; current R03 ToeFixture/third-outfit revision 4 preserves shoes layer 1, remaining three parts layer 0. Retire only this superseded snapshot; retain Day5/R03 and all toe fixtures unchanged.",
+      "currentConsumers": [
+        "No current serialized GUID refs or path literal. The R03 third-outfit preset is a separate protected GUID."
+      ],
+      "files": [
+        {
+          "path": "Assets/Production/Wardrobe/Candidate-third-outfit.asset",
+          "exists": true,
+          "bytes": 1332,
+          "sha256": "d942f2fa70d726ea25fdf2d7fbda3578be55931a7b8d48b6808cd3ad9986d36c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1332,
+            "sha256": "d942f2fa70d726ea25fdf2d7fbda3578be55931a7b8d48b6808cd3ad9986d36c"
+          },
+          "meta": {
+            "path": "Assets/Production/Wardrobe/Candidate-third-outfit.asset.meta",
+            "exists": true,
+            "bytes": 189,
+            "sha256": "5721ae251f52999b97a690e091dc6a47ecd933be267b019544816fef408baba5",
+            "guid": "7e39499566b4b1447b1bebdad3dacbae",
+            "recovery": {
+              "snapshot": "baseline",
+              "bytes": 189,
+              "sha256": "5721ae251f52999b97a690e091dc6a47ecd933be267b019544816fef408baba5"
+            }
+          },
+          "metaPath": "Assets/Production/Wardrobe/Candidate-third-outfit.asset.meta"
+        }
+      ],
+      "exactDataDifferences": {
+        "historicalCandidate": {
+          "configurationRevision": 2,
+          "parts": {
+            "shoe_12520": 0,
+            "Stockings_5340": 0,
+            "dress_7510": 0,
+            "Apron_6708": 0
+          }
+        },
+        "preservedDay5Preview": {
+          "configurationRevision": 3,
+          "parts": {
+            "shoe_12520": 2,
+            "Stockings_5340": 0,
+            "dress_7510": 1,
+            "Apron_6708": 1
+          }
+        },
+        "currentR03ToeFixture": {
+          "configurationRevision": 4,
+          "parts": {
+            "shoe_12520": 1,
+            "Stockings_5340": 0,
+            "dress_7510": 0,
+            "Apron_6708": 0
+          }
+        }
+      },
+      "independentAllAssetsGuidScan": {
+        "incoming": [],
+        "scope": "all Assets files including meta; no ignored/binary exclusion"
+      },
+      "executionEvidence": "F03_ORPHAN_RETIREMENT_PLAN.json; exact source/meta and actual recovery archive hashes verified; independent all-Assets GUID scan empty outside closure."
+    }
+  ],
+  "generatedTrees": [
+    {
+      "name": "wardrobe-setup-candidate-685f",
+      "root": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854",
+      "decision": "PROTECTED",
+      "reason": "The exact generation identifier 685f686e... is still present in three current serialized configuration inputs: Assets/Wardrobe/WardrobeConfiguration.asset, Assets/Production/Wardrobe/Remediation/R03/ToeFixture/WardrobeConfiguration.asset, and Assets/Production/Wardrobe/Day5-20261006-001818/PreviewConfiguration.asset. These are inputHashes identity strings, not Unity GUID/path references, but they explicitly link the setup candidate generation to preserved wardrobe configuration. Preserve this generation until a deliberate hash/provenance transfer; no user-edited layer/config fields were changed. Current root contains 48 files (142,886,904 bytes); recovery manifest contains 49 entries including folder metadata.",
+      "currentFileCount": 49,
+      "currentTotalBytes": 142881597,
+      "files": [
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "6f38acf05db44825ce8604242926b062331a8f8dcc55b060e15e6085c081ae98",
+          "guid": "0232282381192c542b9fc5a7d3beafd0",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "6f38acf05db44825ce8604242926b062331a8f8dcc55b060e15e6085c081ae98"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "62ab675aa110d51e90603f03a4c99cd82bd90195f2060cad0bf509327757f7f9",
+          "guid": "43aac2f2ccf5d1849a598e3c42172edb",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "62ab675aa110d51e90603f03a4c99cd82bd90195f2060cad0bf509327757f7f9"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "6e9ea47f9ca5545de29230718321dad2b34742ab3a73d0d365eb8f13be69c6b1",
+          "guid": "1609eb35bb2361c4393ed597d5d0169d",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "6e9ea47f9ca5545de29230718321dad2b34742ab3a73d0d365eb8f13be69c6b1"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset",
+          "exists": true,
+          "bytes": 32799257,
+          "sha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 32799257,
+            "sha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "35c5f7e30dd293bea310a22c8e61695c1acee0528cfcbc91b7fbf6a63adf96b2",
+          "guid": "f470c9850a9d447498079507fed162fc",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "35c5f7e30dd293bea310a22c8e61695c1acee0528cfcbc91b7fbf6a63adf96b2"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "34f2a3c43ac07ec14b6945b22a417a1600a9ec3bcd337cf01f7372854a0e9526",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "34f2a3c43ac07ec14b6945b22a417a1600a9ec3bcd337cf01f7372854a0e9526"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "1401a85b2bb44ccb99c24b6cc367630843912322d12840a8f31232d2889397ea",
+          "guid": "2cc369239e8fe0844995b89d3f11396a",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "1401a85b2bb44ccb99c24b6cc367630843912322d12840a8f31232d2889397ea"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset",
+          "exists": true,
+          "bytes": 1212,
+          "sha256": "811fd7bb77346a6ded38a2ae3977ba7d427e24a81b117315c43b9b18212bcabc",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1212,
+            "sha256": "811fd7bb77346a6ded38a2ae3977ba7d427e24a81b117315c43b9b18212bcabc"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "f918d9e814877f387c64f8f46d35920b2558883444d2b425761c7072ba0bf94b",
+          "guid": "34cebecf2ffe19e4aaa57c300a90f0fe",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "f918d9e814877f387c64f8f46d35920b2558883444d2b425761c7072ba0bf94b"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "aa8082002517203c0d3d3885d2e5c3caff5c44813cb5b678f8100586f1f456c0",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "aa8082002517203c0d3d3885d2e5c3caff5c44813cb5b678f8100586f1f456c0"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "6a4b57d6c3f30674a81a10a42e3eb5344e0127eb2848a868f18e668d46799289",
+          "guid": "6d7a25bc280f6904796149962b1405ff",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "6a4b57d6c3f30674a81a10a42e3eb5344e0127eb2848a868f18e668d46799289"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "238a4cd6d5b709b2ede519a1f4de5486f5de8b4eba36526f2f413d0f47aa608b",
+          "guid": "949278731fc7d864d9cbcfc6585a0a0b",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "238a4cd6d5b709b2ede519a1f4de5486f5de8b4eba36526f2f413d0f47aa608b"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset",
+          "exists": true,
+          "bytes": 32799257,
+          "sha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 32799257,
+            "sha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "d1d92357150e85796e2e8c3c0fee996a9ea314b2f9459b3cb252bc6c2ae45ede",
+          "guid": "feffb7226ee40d74c8c6056bb63e94d5",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "d1d92357150e85796e2e8c3c0fee996a9ea314b2f9459b3cb252bc6c2ae45ede"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "6c5e2a38e4a51b9b527e8be5f07c449f898e6f278e78123c6bd6c2b624ef5e24",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "6c5e2a38e4a51b9b527e8be5f07c449f898e6f278e78123c6bd6c2b624ef5e24"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "f437e278be6f4859e3fe3ae07f2b3f2556b98158d81e151045a8901285d01bfe",
+          "guid": "eaddb344aa567084d89862a2704ad21f",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "f437e278be6f4859e3fe3ae07f2b3f2556b98158d81e151045a8901285d01bfe"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset",
+          "exists": true,
+          "bytes": 1108,
+          "sha256": "0ff70f8c2813dcbd8cb56ec80944c9be16f5eccb780cdeef881ddd17f56e5bed",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1108,
+            "sha256": "0ff70f8c2813dcbd8cb56ec80944c9be16f5eccb780cdeef881ddd17f56e5bed"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "26af67bde8aa37dc2b4d1b91b32d5d5c9ecc08c743e48aa2500996670830fe84",
+          "guid": "ea58e0929e0aef847ac480459ed46841",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "26af67bde8aa37dc2b4d1b91b32d5d5c9ecc08c743e48aa2500996670830fe84"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "4c51dd27be296bedcd1ca2c10fac881d1d8471318dfcc67b0d07e61709fb3a04",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "4c51dd27be296bedcd1ca2c10fac881d1d8471318dfcc67b0d07e61709fb3a04"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "6063968a29e2263903b09228a8a0d932d20735f0f58ccedfe539395bf15df89b",
+          "guid": "c0cf764c9a3bbd8479b0a7b07bacce26",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "6063968a29e2263903b09228a8a0d932d20735f0f58ccedfe539395bf15df89b"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/naked.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "f30a275c0f5b6656c5c63492cab69a0b94fbdb236a6f975f47f024b809a3bad1",
+          "guid": "656c5cb020aad1c43add09b4ea74d899",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "f30a275c0f5b6656c5c63492cab69a0b94fbdb236a6f975f47f024b809a3bad1"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/naked/FitState.asset",
+          "exists": true,
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1022,
+            "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/first-outfit/naked/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "694009e2e87e28253f9dceb04a6f23c4522dc69b9cea2540eed386f46c8eeada",
+          "guid": "95833867ed725ff41a729a6ad317e7d7",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "694009e2e87e28253f9dceb04a6f23c4522dc69b9cea2540eed386f46c8eeada"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "20bcb2a8b3269364ae185e177f26197d0e14491c097adf6883d7914e07cce780",
+          "guid": "9a212fe8057da354db0cf26472bca934",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "20bcb2a8b3269364ae185e177f26197d0e14491c097adf6883d7914e07cce780"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "eeec861dd3db02ad755de47db5d3eee1170365a59c1557a48c7c7f025cb0b0f6",
+          "guid": "9c9524403e120f14f8b11414ee1a7d63",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "eeec861dd3db02ad755de47db5d3eee1170365a59c1557a48c7c7f025cb0b0f6"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset",
+          "exists": true,
+          "bytes": 33191512,
+          "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 33191512,
+            "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "ad358845e1690f199d3aba1c805d319278e4949a256f979594cff374ad87d5d8",
+          "guid": "71f8fab1f54b07c43b784a520d4f1ccc",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "ad358845e1690f199d3aba1c805d319278e4949a256f979594cff374ad87d5d8"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "779a4aa22fba2d155dbb52e21b5d02991c1a936e2a6d1a4013a261a3bc538635",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "779a4aa22fba2d155dbb52e21b5d02991c1a936e2a6d1a4013a261a3bc538635"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "938ba32d0e1da6ca355ac1e4ad4a04e5f97d88b12a81ac3f59b0fb31b861464c",
+          "guid": "7eb0a44c46177ae49aa15ba3f7aa625e",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "938ba32d0e1da6ca355ac1e4ad4a04e5f97d88b12a81ac3f59b0fb31b861464c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset",
+          "exists": true,
+          "bytes": 2238,
+          "sha256": "ef6a411818442d5d83bb2a7298a5c98b08e4c32fbdb967c5285bf601aefd1bc6",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2238,
+            "sha256": "ef6a411818442d5d83bb2a7298a5c98b08e4c32fbdb967c5285bf601aefd1bc6"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "e5237fe2701c91f2894dddb185ca0c437c2b8b34488e3eaff57e7af53db40716",
+          "guid": "8e21d983b93fc464cb76dcbabced2396",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "e5237fe2701c91f2894dddb185ca0c437c2b8b34488e3eaff57e7af53db40716"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "9d92db2dccf92e434bb711f1ce96f95cb794e1b1feda2d75245122c2e9065f1b",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "9d92db2dccf92e434bb711f1ce96f95cb794e1b1feda2d75245122c2e9065f1b"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "49da63233eb879cf2dfa07fad61d8cad513d5005978771a03b7d40c504126891",
+          "guid": "29afd863f993dd346a88a141ebd08dd0",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "49da63233eb879cf2dfa07fad61d8cad513d5005978771a03b7d40c504126891"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/naked.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "78de39e51a378ed86a95c7e091569e092e74fc6129c9fa9f79f48b0adcf6fb0c",
+          "guid": "c85f35ae78fdd124aa87284bf9cf582f",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "78de39e51a378ed86a95c7e091569e092e74fc6129c9fa9f79f48b0adcf6fb0c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/naked/FitState.asset",
+          "exists": true,
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1022,
+            "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/second-outfit/naked/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "7ec3d0ffa88b543a383388a9437b12967577947e52cd270fc34054a223f8a9bd",
+          "guid": "44baa5aa8b3d74e418ab63aac1e6571d",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "7ec3d0ffa88b543a383388a9437b12967577947e52cd270fc34054a223f8a9bd"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "78416604766b8e0cd20174c7a3460b367395f0ee31b1a2bbee7862b53b224e2e",
+          "guid": "7eb87a700aa78f948b9e9947b598243b",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "78416604766b8e0cd20174c7a3460b367395f0ee31b1a2bbee7862b53b224e2e"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "2ecb7bf32fe859aaa48294d02b318c1502480e3a1e5801e730dcf56a4e8943e4",
+          "guid": "0467c3c10414ab245b629178b5f886d3",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "2ecb7bf32fe859aaa48294d02b318c1502480e3a1e5801e730dcf56a4e8943e4"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/Body.asset",
+          "exists": true,
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 33245826,
+            "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "ccf598fa8f79876fbe4cb830a936a0e958ce7c64551e0cab6ba8fa05cbe58dbf",
+          "guid": "b20ee712070e06048ab24e224af69685",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "ccf598fa8f79876fbe4cb830a936a0e958ce7c64551e0cab6ba8fa05cbe58dbf"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "dd1a5411470be77f6d6834a41f78ee1757eb652378401b6da9dc101f034b421d",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "dd1a5411470be77f6d6834a41f78ee1757eb652378401b6da9dc101f034b421d"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "e27b9eee9e4fe50956c0a5e8134d7d432bf0863c2ab0b0431fd03cc4300d0cde",
+          "guid": "04356f65de749fc48919ace6a55f4fc2",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "e27b9eee9e4fe50956c0a5e8134d7d432bf0863c2ab0b0431fd03cc4300d0cde"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/FitState.asset",
+          "exists": true,
+          "bytes": 1317,
+          "sha256": "aa50ae58ae88aba642701e24894581b3ed2d7f46c8b498f2eafb2ce9d7682199",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1317,
+            "sha256": "aa50ae58ae88aba642701e24894581b3ed2d7f46c8b498f2eafb2ce9d7682199"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "8a1a07974877ed300bf9216af859757747386bbb7a2791a7ebd8146030bf0846",
+          "guid": "540bba1b8ed27054789136f02057728b",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "8a1a07974877ed300bf9216af859757747386bbb7a2791a7ebd8146030bf0846"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "816e8df5d5f4b2cae3fc5968313418b29ef274a96896506774b9c3c4c32f8e0f",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "816e8df5d5f4b2cae3fc5968313418b29ef274a96896506774b9c3c4c32f8e0f"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/429ee81190d10700b659f24c09ee41ff9d2daee4f2251995715bd1c8fbdf8799/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "ee289cf814c3044c1e9018a9601d865a54891b6e714ae9b7d1833a14ff97cf79",
+          "guid": "032f80c712d51d0498d8ebf37c9e0987",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "ee289cf814c3044c1e9018a9601d865a54891b6e714ae9b7d1833a14ff97cf79"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/naked.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "7c3bf4b5dc85d78732c20a425198825770424a6d0aac5885544e70ce6ec394ee",
+          "guid": "06dbbd725c2e0ea45aafba3f7115815a",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "7c3bf4b5dc85d78732c20a425198825770424a6d0aac5885544e70ce6ec394ee"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/naked/FitState.asset",
+          "exists": true,
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1022,
+            "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/SetupCandidates/685f686eff13122c46493b5558faed839b468b0bf5bca4cf471f025637a21854/third-outfit/naked/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "debba639fcf410ca9422a2b58dbfe907114269a0a976bf8ed7e5cd0f4dabcfae",
+          "guid": "3d631cde34a3d914fa4dcb4833db9496",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "debba639fcf410ca9422a2b58dbfe907114269a0a976bf8ed7e5cd0f4dabcfae"
+          }
+        }
+      ]
+    },
+    {
+      "name": "wardrobe-draft-attempt-ffc251",
+      "root": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98",
+      "decision": "PROTECTED_CURRENT_CONSUMERS",
+      "reason": "No current GUID or exact path reference to this static attempt ID was found. WardrobeCandidateWorkflow.TryCompile creates a fresh Assets/TestData/WardrobeRuntime/DraftAttempts/<new Guid> output for each compile; it does not reload this specific root. The assets are generated fit/body/binding/profile outputs, not authored layer assignments. Current root contains 66 files (214,801,162 bytes); the separate source candidate/configuration records remain untouched. Recovery manifest contains 67 entries including folder metadata.",
+      "currentFileCount": 67,
+      "currentTotalBytes": 214794001,
+      "files": [
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "6a9ee227fc5da3feea5e95505f68e5afded187b7bfed0107cfa29f91d0ef3c59",
+          "guid": "858507f1b2593ea41a2797048fc53c5f",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "6a9ee227fc5da3feea5e95505f68e5afded187b7bfed0107cfa29f91d0ef3c59"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "6a2df7342a7180112c0285066113c83ba858ade7a91150d978a9ea5bd1091f02",
+          "guid": "563567ec8382bd74eb87433305f3ed04",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "6a2df7342a7180112c0285066113c83ba858ade7a91150d978a9ea5bd1091f02"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "a3ceecd16b345f3a472b2f1723f91b3691b96628cd6ec5f8917bf61a0152acaf",
+          "guid": "108a337f58d389b4ab4e98730e21e384",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "a3ceecd16b345f3a472b2f1723f91b3691b96628cd6ec5f8917bf61a0152acaf"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset",
+          "exists": true,
+          "bytes": 32799257,
+          "sha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 32799257,
+            "sha256": "83ee9ced9ca556170c5ac7f7a8973678ec37593e2a3febb593cbce2f12b93fd6"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "8e62c013bd241405c316000a3384823ab04fb080e97ce209a9a0449579f9470e",
+          "guid": "fec293232db35a441aca536c2e834e3a",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "8e62c013bd241405c316000a3384823ab04fb080e97ce209a9a0449579f9470e"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "bdc2ab499676fe2d3f0ab2688fd4d674912c1bc6b9a869acf044e20747bfbc86",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "bdc2ab499676fe2d3f0ab2688fd4d674912c1bc6b9a869acf044e20747bfbc86"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "82e2db8935398d4b3d06b93e21a246ef3217ca69f7ed309254befe93b9a5e5ac",
+          "guid": "9b30863c5d7882949891f29ec7913044",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "82e2db8935398d4b3d06b93e21a246ef3217ca69f7ed309254befe93b9a5e5ac"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset",
+          "exists": true,
+          "bytes": 1212,
+          "sha256": "ac1a0bc93305396ca7b58d6d15d5f20a305009f5836a62b62a0d64401d6fdb60",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1212,
+            "sha256": "ac1a0bc93305396ca7b58d6d15d5f20a305009f5836a62b62a0d64401d6fdb60"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "fe288949c7d56250e2a351c2f0e3e966282ccd572f92d0a4650e2bcf299319b8",
+          "guid": "4f0d199575588fe4092f98d643c83f17",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "fe288949c7d56250e2a351c2f0e3e966282ccd572f92d0a4650e2bcf299319b8"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "749379c66e18430cba7ac8b27ee8800b2e5099676b74340a3f097074e7a292c4",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "749379c66e18430cba7ac8b27ee8800b2e5099676b74340a3f097074e7a292c4"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/3e00d0aa22acd9b4ba00a14667abde4b5b9194b303121860804194f33165c01e/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "14f2b50fb8ae7739b82024a703502057e367e0877882b21fef1bd94276239f31",
+          "guid": "7e785c4a9a9b6104f9196e3d6b4cdd69",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "14f2b50fb8ae7739b82024a703502057e367e0877882b21fef1bd94276239f31"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "c5b05d1117d44844385a69d8fcf3c22bb587ae4acb54d79b4f2fc43239f7202c",
+          "guid": "05515ef69ad5fbf4ab42758001b098b0",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "c5b05d1117d44844385a69d8fcf3c22bb587ae4acb54d79b4f2fc43239f7202c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset",
+          "exists": true,
+          "bytes": 32799257,
+          "sha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 32799257,
+            "sha256": "513dce1402f4a7b54da8c32b34a8fdf49341d4fcbbe8ecbe6924e89ec093b42b"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "ecc22c44923c6170ff76348e6ebb829d26f227570a3aec6c9cfbdb431b637121",
+          "guid": "01dc80c941759dd42857e313ecb108a6",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "ecc22c44923c6170ff76348e6ebb829d26f227570a3aec6c9cfbdb431b637121"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "42180821422066a0be0f043890d2471e480c303c30685e985f3730f124fcd40e",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "42180821422066a0be0f043890d2471e480c303c30685e985f3730f124fcd40e"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "41d74db30e5f1a91a49eaf6cb23b79a9578f6ea86778627ce701ece05de57e51",
+          "guid": "51992b9bf76a7b645b00d3d0fd8e7df2",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "41d74db30e5f1a91a49eaf6cb23b79a9578f6ea86778627ce701ece05de57e51"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset",
+          "exists": true,
+          "bytes": 1108,
+          "sha256": "3781b74a62bff0fe290a40f1b47f27cca35fe0070e0574e6be1ba5b3e95c8edf",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1108,
+            "sha256": "3781b74a62bff0fe290a40f1b47f27cca35fe0070e0574e6be1ba5b3e95c8edf"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "5aab03f3eea1b641d34761fb294f7217e5aff790dc631b2dc1cd658a77dcd7c4",
+          "guid": "c1b0d88e6426d364980b151eb3fb039c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "5aab03f3eea1b641d34761fb294f7217e5aff790dc631b2dc1cd658a77dcd7c4"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "62eae7faf569af030d2e23e002c472cce7a51a788b71e9ca8b67c2ec62f97313",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "62eae7faf569af030d2e23e002c472cce7a51a788b71e9ca8b67c2ec62f97313"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/a2c7a93ebb0ef67397e3a27576c480b47481278c8b126fb227d5914ad6c05981/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "931ba9b8c0bd7629223ebcc127ac5c72b9bf9fd4c3453d0a0d24f423f157cab3",
+          "guid": "a9cf6f2001d82d346935910dbac5fa9c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "931ba9b8c0bd7629223ebcc127ac5c72b9bf9fd4c3453d0a0d24f423f157cab3"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/naked.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "0c1070645c088d6586ec866c06d35b561c45b62c6256d90d5ca908d0aa25eac7",
+          "guid": "dfc91f2408c91654383074323b891623",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "0c1070645c088d6586ec866c06d35b561c45b62c6256d90d5ca908d0aa25eac7"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/naked/FitState.asset",
+          "exists": true,
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1022,
+            "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/first-outfit/naked/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "2fa370ecadafda3495983bee9b14f07fd8ae5896ca7abdeb8f1f290f95f85d2d",
+          "guid": "e12298a71c426dd44b5570f4ec1d13ad",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "2fa370ecadafda3495983bee9b14f07fd8ae5896ca7abdeb8f1f290f95f85d2d"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "a4e6bd6ba63c2ff486c812e95c898ef89f25ed0d746beee0129fce082720b8f9",
+          "guid": "df673b51608bf0f4dab571c06bd627c2",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "a4e6bd6ba63c2ff486c812e95c898ef89f25ed0d746beee0129fce082720b8f9"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "3529fb67313834889389dd2f4478921c90076922ec8c2c19e708b221f216f1f7",
+          "guid": "4a980490a8bf7a6498038bc5f45de8d7",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "3529fb67313834889389dd2f4478921c90076922ec8c2c19e708b221f216f1f7"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset",
+          "exists": true,
+          "bytes": 33191512,
+          "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 33191512,
+            "sha256": "cb4d32be7addb30e8c2110876bd4b4b6c8cb12bf0a3e9e4d012ca6cd67848bde"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "e6ef75ee0ff5b38f32c0c0e5fd97a84c9452b214bbf0918f194ca648a84ba458",
+          "guid": "b1e5cb14c3139764580eaab936996874",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "e6ef75ee0ff5b38f32c0c0e5fd97a84c9452b214bbf0918f194ca648a84ba458"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "f30ade3cd35c0479b5256d05e08db0cde9774672f09fe1a028a026542b5942ff",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "f30ade3cd35c0479b5256d05e08db0cde9774672f09fe1a028a026542b5942ff"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "c9505114a05db1aeeee118dbbfa6145ad44bb196a4cacc72edd0e163ef98ca2b",
+          "guid": "66f1408b1750f604980029eb5bc5af82",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "c9505114a05db1aeeee118dbbfa6145ad44bb196a4cacc72edd0e163ef98ca2b"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset",
+          "exists": true,
+          "bytes": 2238,
+          "sha256": "819b6d92fe6ac8b595780d00c2d871825163d53694fb6ec77e90356dfa345979",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2238,
+            "sha256": "819b6d92fe6ac8b595780d00c2d871825163d53694fb6ec77e90356dfa345979"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "a17f3086e25ac553d0a105973cabdd122bf20730aef24e12d662315af77d517a",
+          "guid": "8ffb2c5d62944194780cea11fdb12f79",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "a17f3086e25ac553d0a105973cabdd122bf20730aef24e12d662315af77d517a"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "10a1eed63df7a2c38c9d9f07ff1817e90c7f7f884f4a7c06b20245b99e07340c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "10a1eed63df7a2c38c9d9f07ff1817e90c7f7f884f4a7c06b20245b99e07340c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/3bf03ed92a60949afd071af0f4aae2fa6affd13740dabc86ff98f9a83066a7d4/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "cadff6bce0abcc4f273e380a6ea8c516127b089c96dd08ad277588dd3a0a7eb9",
+          "guid": "69a6c5e4dea04aa4dba6b15569df3641",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "cadff6bce0abcc4f273e380a6ea8c516127b089c96dd08ad277588dd3a0a7eb9"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/naked.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "a3ef69dcedf28843764c8b46510d94f4d5012d491f10279414584122d1cc6365",
+          "guid": "352e560f054670841ac6b615ef777e47",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "a3ef69dcedf28843764c8b46510d94f4d5012d491f10279414584122d1cc6365"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/naked/FitState.asset",
+          "exists": true,
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1022,
+            "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/second-outfit/naked/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "9b56e0175f97e9496527a22caa5e858bbb74917e6fab00a2f81ddb63551b5e15",
+          "guid": "0159909e9ccb453489e58e532c81f57e",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "9b56e0175f97e9496527a22caa5e858bbb74917e6fab00a2f81ddb63551b5e15"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "801a322bc0169f33c7b57484e5ae1365a3fa3f3a1a3a5561c8709a7a30a3a60e",
+          "guid": "692d23bf8dfc9df40ac836307d3898ca",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "801a322bc0169f33c7b57484e5ae1365a3fa3f3a1a3a5561c8709a7a30a3a60e"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "7511ac3c7c56a1aa20114334774652e30307e1e127d799802127fc266ea808b8",
+          "guid": "a732b1d1fc996c14c94a537175b3ac28",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "7511ac3c7c56a1aa20114334774652e30307e1e127d799802127fc266ea808b8"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/Body.asset",
+          "exists": true,
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 33245826,
+            "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "c79ef87035cf7c44d08e9b9ca13283559deaaf367aeebfaff42794f2c9e411ee",
+          "guid": "342e6cd5b9d92f94bbd35ac1e759fe60",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "c79ef87035cf7c44d08e9b9ca13283559deaaf367aeebfaff42794f2c9e411ee"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "95fc42370a521dae66e8153950717dccc20d54321c9df1c9f4c8a4c0eed570cc",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "95fc42370a521dae66e8153950717dccc20d54321c9df1c9f4c8a4c0eed570cc"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "e123b6e8cca4acc2637a53dd586ab72e44970f7bda885e4e58286e935f538337",
+          "guid": "2a78cbbd43f95814a92a95d8f5b2748a",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "e123b6e8cca4acc2637a53dd586ab72e44970f7bda885e4e58286e935f538337"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/FitState.asset",
+          "exists": true,
+          "bytes": 1317,
+          "sha256": "0caee4b8c0e23d4deec513ad757bf3e1f927f3e28ad210f02c4008d93ad2c383",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1317,
+            "sha256": "0caee4b8c0e23d4deec513ad757bf3e1f927f3e28ad210f02c4008d93ad2c383"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "9debdf3ecaa0dd1e0e94f177ff6246ac021e75b6c7cf8c5ee78258d0f4c77720",
+          "guid": "d259a8051692b1143a3418c4c9ae2a36",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "9debdf3ecaa0dd1e0e94f177ff6246ac021e75b6c7cf8c5ee78258d0f4c77720"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "f419d233dc26efd76365263fd13b03230d3a72c290213167e0750e8fdf2ccab8",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "f419d233dc26efd76365263fd13b03230d3a72c290213167e0750e8fdf2ccab8"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/96a2d1d476c5b0ee419b64d5ece2096692eaa8773475b65d18bcdc3cbbccbda2/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "3d1ef587c4bec0043aeafff46f35ef7d2a7d78598c1ff7e634bc703b4bd4e7ff",
+          "guid": "0a30a3544230dc4459ce48a8897199de",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "3d1ef587c4bec0043aeafff46f35ef7d2a7d78598c1ff7e634bc703b4bd4e7ff"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "a60e9037c5e1ea1a0e40be33d6f2f5f425d1ab3609d76198e24f87cbd9088757",
+          "guid": "6fef3d2ad6f64bc4faca5e8b3409a7d3",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "a60e9037c5e1ea1a0e40be33d6f2f5f425d1ab3609d76198e24f87cbd9088757"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/Body.asset",
+          "exists": true,
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 33245826,
+            "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "0716e46333be8fbb0c7788c96c167069e919d0f7328003547d1ae41af6003f0a",
+          "guid": "a65f8ab21a388ba4f913fc0cc2dabc3f",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "0716e46333be8fbb0c7788c96c167069e919d0f7328003547d1ae41af6003f0a"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "b7a5afebf772c3650dd081440c0c1a8d8637259a2b00cfa2233a40329a92a007",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "b7a5afebf772c3650dd081440c0c1a8d8637259a2b00cfa2233a40329a92a007"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "253253908d32c3645107cdc248202dc1ecb366f81a2225affdf5c5501b19785d",
+          "guid": "d31dcf9b59944934cbb6e9993406bed3",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "253253908d32c3645107cdc248202dc1ecb366f81a2225affdf5c5501b19785d"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/FitState.asset",
+          "exists": true,
+          "bytes": 1104,
+          "sha256": "fae7b89c3167909e34ae3f077a680a8ec71ede9c7552a7373f0d12bfb6277f8f",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1104,
+            "sha256": "fae7b89c3167909e34ae3f077a680a8ec71ede9c7552a7373f0d12bfb6277f8f"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "45dca39aafadd3ba63c425540c680ad5b5ea13675bb4899ac97980116cb2feb4",
+          "guid": "6b9fcdda86b88b7408f8f0992eddc9f6",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "45dca39aafadd3ba63c425540c680ad5b5ea13675bb4899ac97980116cb2feb4"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "90f0d41e51074fbb0562a28608e8d0577fa1b8c008682032e6778007047f87d3",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "90f0d41e51074fbb0562a28608e8d0577fa1b8c008682032e6778007047f87d3"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/991394eed8e361d16f26e54b5c0941b5dfe9bc83f958ada3917bc62fc3a19a17/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "44db8953711dc29b24584d2855c8f18b33bbb6d1d67a0e854ac3853a1822ed50",
+          "guid": "1831656d34e379247ab52752093474e3",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "44db8953711dc29b24584d2855c8f18b33bbb6d1d67a0e854ac3853a1822ed50"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "bcf8024a77e263b9efcba2b0972128d9fcc06bb8d3d6f9d859e3c5401657b18b",
+          "guid": "bac950dc3b839144dbce4cc73eaaf5d4",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "bcf8024a77e263b9efcba2b0972128d9fcc06bb8d3d6f9d859e3c5401657b18b"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/Body.asset",
+          "exists": true,
+          "bytes": 33245826,
+          "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 33245826,
+            "sha256": "7fdfb24a25cf77d05d381be87e61f58acf87aaa82e0dead3bbfc15dcc7598120"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/Body.asset.meta",
+          "exists": true,
+          "bytes": 188,
+          "sha256": "07b1a381c8cfdba5b410cfa618af354218745f655a56153c1df1bda7624581ab",
+          "guid": "4eac6344637c1a64ca20d2f93470a56b",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 188,
+            "sha256": "07b1a381c8cfdba5b410cfa618af354218745f655a56153c1df1bda7624581ab"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/DissolveProfile.asset",
+          "exists": true,
+          "bytes": 4727,
+          "sha256": "6d63b401242397c41c26ec38de4f3908b6459690f081fa2d22ed574803ca9aa8",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 4727,
+            "sha256": "6d63b401242397c41c26ec38de4f3908b6459690f081fa2d22ed574803ca9aa8"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/DissolveProfile.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "06b89be4be32d9b49818795961fc52e90b7527c1833227a408561274f4a22b5a",
+          "guid": "34f7a3cf52784794992c33414f459210",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "06b89be4be32d9b49818795961fc52e90b7527c1833227a408561274f4a22b5a"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/FitState.asset",
+          "exists": true,
+          "bytes": 1246,
+          "sha256": "f09e7e96e102d02be39f173e42fc37f3cbdda83a00c0e9cbc1573b7b7941af9d",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1246,
+            "sha256": "f09e7e96e102d02be39f173e42fc37f3cbdda83a00c0e9cbc1573b7b7941af9d"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "3ee31998d35666e141a97ba3434d30dd23d576d0191bb008343fb09d827c1396",
+          "guid": "7a1417b853a1072449e60c5b41917439",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "3ee31998d35666e141a97ba3434d30dd23d576d0191bb008343fb09d827c1396"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/SurfaceBindings.asset",
+          "exists": true,
+          "bytes": 2704474,
+          "sha256": "4f088d0611053d1bd5372ef01be21b6aeb5e9c08524d62f29392ba0dd8bdd478",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 2704474,
+            "sha256": "4f088d0611053d1bd5372ef01be21b6aeb5e9c08524d62f29392ba0dd8bdd478"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/d571cd7e72c3ee257037c550c6dca8ac7a242a6b04af11552870f6a87a5332ac/SurfaceBindings.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "5fd012844f2c56d87db15ca732c082c75bc4b3ae3bccf3de69ec2f0c296210b6",
+          "guid": "af5da10804e68854e931250988214987",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "5fd012844f2c56d87db15ca732c082c75bc4b3ae3bccf3de69ec2f0c296210b6"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/naked.meta",
+          "exists": true,
+          "bytes": 172,
+          "sha256": "5bd3fd4bf8f47a1f6d5e4d2ba75ea9b5b875924a267a4d5018d4d5dc48035695",
+          "guid": "ba72509523083ed47a76b599858a3d48",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 172,
+            "sha256": "5bd3fd4bf8f47a1f6d5e4d2ba75ea9b5b875924a267a4d5018d4d5dc48035695"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/naked/FitState.asset",
+          "exists": true,
+          "bytes": 1022,
+          "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 1022,
+            "sha256": "2e38f0a566685dbf1441b0f8fdd4b5b249043d65909dd6fb15417805ffeef75c"
+          }
+        },
+        {
+          "path": "Assets/TestData/WardrobeRuntime/DraftAttempts/ffc251e0c3f54ba5b4d2306f9d6a7c98/third-outfit/naked/FitState.asset.meta",
+          "exists": true,
+          "bytes": 189,
+          "sha256": "52b7ef729278412147b6100960c890f19141fb06034ec17d85489d3cd1e2f714",
+          "guid": "a4171a259372bcd4392e4dd39dc18667",
+          "recovery": {
+            "snapshot": "baseline",
+            "bytes": 189,
+            "sha256": "52b7ef729278412147b6100960c890f19141fb06034ec17d85489d3cd1e2f714"
+          }
+        }
+      ],
+      "independentAllAssetsGuidScan": {
+        "incoming": [
+          "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-third-outfit.asset",
+          "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-second-outfit.asset",
+          "Assets/Production/Wardrobe/Day5-20261006-001818/Preview-first-outfit.asset"
+        ],
+        "scope": "all Assets files including meta; no ignored/binary exclusion"
+      },
+      "independentCorrection": "Original RETIRE_READY rejected by root verification; current outgoing consumers remain."
+    }
+  ],
+  "alreadyRetired": [
+    {
+      "root": "Assets/TestData/WardrobeRuntime/DraftAttempts/02aa66ebd298461cb41043fd44d637e1",
+      "status": "RETIRED per retirement-manifest.csv and current project path absent."
+    },
+    {
+      "root": "Assets/TestData/WardrobeRuntime/DraftAttempts/94c58ce304554ea4bef67c908ad40e6c",
+      "status": "RETIRED per retirement-manifest.csv and current project path absent."
+    }
+  ],
+  "preservationBoundary": "Do not modify immutable releases, the second-outfit candidate/review chain, retained R03 toe fixtures, current Lara/Partner source/runtime materials, or any production scene during this audit."
+}

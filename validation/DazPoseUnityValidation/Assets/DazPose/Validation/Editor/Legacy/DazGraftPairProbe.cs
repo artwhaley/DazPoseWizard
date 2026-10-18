@@ -13,7 +13,6 @@ namespace DazPose.UnityValidation
     public static class DazGraftPairProbe
     {
         public const string DirectoryPath = "Assets/TestData/GraftPairProbe";
-        public const string ScenePath = DirectoryPath + "/GraftPairPreview.unity";
         private const float PositionTolerance = 2e-6f;
         private const float CellSize = 2e-6f;
 
@@ -40,19 +39,18 @@ namespace DazPose.UnityValidation
 
         public static void OpenPreview()
         {
-            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-            Build();
-            var body = FindBody(UnityEngine.Object.FindObjectsByType<SkinnedMeshRenderer>());
-            Selection.activeGameObject = body.gameObject;
-            DazGraftProbeWindow.ShowFor(body);
-            var view = SceneView.lastActiveSceneView;
-            if (view == null) view = EditorWindow.GetWindow<SceneView>();
-            view.sceneLighting = false;
-            view.LookAtDirect(new Vector3(0, .95f, .035f), Quaternion.Euler(10, 180, 0), .28f);
-            view.Repaint();
+            var manifest = JsonUtility.FromJson<Manifest>(File.ReadAllText(DirectoryPath + "/endpoint-manifest.json"));
+            if (Hash(manifest.closedAsset) != manifest.closedSHA256 || Hash(manifest.openAsset) != manifest.openSHA256)
+                throw new IOException("Graft endpoint inputs changed; validate and explicitly regenerate before preview.");
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>(manifest.closedAsset);
+            var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(DirectoryPath + "/RecoveredBody.asset");
+            if (model == null || mesh == null)
+                throw new InvalidOperationException("Prepare the recovered graft mesh before preview; opening never rebuilds source assets.");
+            DazPose.Editor.AnimationContentPreviewWindow.OpenGeometry(model,
+                FindBody(model.GetComponentsInChildren<SkinnedMeshRenderer>(true)), mesh);
         }
 
-        // Batch entry: generated assets and scene stay in the ignored TestData folder.
+        // Explicit source-validated mesh generation; no saved diagnostic scene.
         public static void Build()
         {
             var manifest = JsonUtility.FromJson<Manifest>(File.ReadAllText(DirectoryPath + "/endpoint-manifest.json"));
@@ -167,14 +165,6 @@ namespace DazPose.UnityValidation
             }
             else AssetDatabase.CreateAsset(recovered, meshPath);
             AssetDatabase.SaveAssets();
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var preview = UnityEngine.Object.Instantiate(closed);
-            preview.name = "Graft Pair Preview";
-            var previewBody = FindBody(preview.GetComponentsInChildren<SkinnedMeshRenderer>(true));
-            foreach (var renderer in preview.GetComponentsInChildren<Renderer>(true)) renderer.enabled = renderer == previewBody;
-            previewBody.sharedMesh = recovered;
-            for (int i = 0; i < recovered.blendShapeCount; i++) previewBody.SetBlendShapeWeight(i, 0);
-            EditorSceneManager.SaveScene(scene, ScenePath);
             System.IO.Directory.CreateDirectory("TestOutput/appearance-evidence");
             File.WriteAllText("TestOutput/appearance-evidence/graft-recovery.validation.json", JsonUtility.ToJson(validation, true));
             Debug.Log("GRAFT_RECOVERY_VALIDATED: " + JsonUtility.ToJson(validation));
