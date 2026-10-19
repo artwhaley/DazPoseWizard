@@ -37,6 +37,9 @@ namespace DazPose.Performer
             && body.sharedMesh.GetBlendShapeIndex("LaraBreastsAdjustment") >= 0;
         public void Apply()
         {
+#if UNITY_EDITOR
+            if (NativePreviewWriterGuard.Holds(this)) return;
+#endif
             if (body == null || body.sharedMesh == null) return;
             if (resolvedMesh != body.sharedMesh)
             {

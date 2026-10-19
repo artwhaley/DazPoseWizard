@@ -13,6 +13,11 @@
     <Using Include="Xunit" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/PreviewPropertyLedger.cs" Link="Native/PreviewPropertyLedger.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/NativeStandingRules.cs" Link="Native/NativeStandingRules.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerViewEndpoint.cs" Link="Native/PlayerViewEndpoint.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/*.cs" Link="Runtime/Language/%(Filename)%(Extension)" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfile.cs" Link="Runtime/PlayerProfile.cs" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfileJson.cs" Link="Runtime/PlayerProfileJson.cs" />

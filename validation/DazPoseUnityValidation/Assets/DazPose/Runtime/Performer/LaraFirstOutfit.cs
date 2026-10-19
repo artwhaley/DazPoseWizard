@@ -29,6 +29,9 @@ namespace DazPose.Performer
         private void LateUpdate() => Apply();
         public void Apply()
         {
+#if UNITY_EDITOR
+            if (NativePreviewWriterGuard.Holds(this)) return;
+#endif
             if (body == null || body.sharedMesh == null || hair == null || dress == null || panties == null) return;
             attachments ??= new[] { hair,dress,panties };
             if (resolvedBody != body.sharedMesh || bodyIndices == null)

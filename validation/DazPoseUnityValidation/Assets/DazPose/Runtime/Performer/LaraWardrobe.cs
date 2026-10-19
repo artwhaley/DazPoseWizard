@@ -36,6 +36,9 @@ namespace DazPose.Performer
         private void LateUpdate() => Apply();
         public void Apply()
         {
+#if UNITY_EDITOR
+            if (NativePreviewWriterGuard.Holds(this)) return;
+#endif
             if(body==null || body.sharedMesh==null)return;
             if(resolvedBody!=body.sharedMesh || shapeIndices==null || shapeIndices.Length!=pieces.Length)
             {

@@ -90,7 +90,7 @@ def prepare():
     print(f"Independent fixture ready: {FIXTURE}; no Unity launched",flush=True)
     verify()
 
-def sync_code():
+def sync_code(gate="G1"):
     marker=json.loads((FIXTURE/MARKER).read_text())
     if Path(marker["fixtureProject"]).resolve()!=FIXTURE.resolve() or Path(marker["sourceProject"]).resolve()!=SOURCE.resolve():
         raise RuntimeError("Fixture identity differs")
@@ -115,7 +115,7 @@ def sync_code():
     for path,sha in values.items():
         if digest(FIXTURE/path)!=sha:raise RuntimeError(f"Code sync verification failed: {path}")
     write_json(FIXTURE/MARKER,marker)
-    write_json(DOCS/"G1_CODE_SYNC.json",{"baseRevision":json.loads(BASELINE.read_text())["head"],"codeHash":marker["codeHash"],"files":len(values),"fixtureProject":str(FIXTURE),"unityLaunched":False})
+    write_json(DOCS/(gate+"_CODE_SYNC.json"),{"baseRevision":json.loads(BASELINE.read_text())["head"],"codeHash":marker["codeHash"],"files":len(values),"fixtureProject":str(FIXTURE),"unityLaunched":False})
     print(f"Code and meta sync PASS: {len(values)} files, {marker['codeHash']}")
 
 def verify():
@@ -129,5 +129,6 @@ def verify():
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action",choices=["prepare","sync-code","verify"])
+    parser.add_argument("--gate",choices=["G1","G2","G3","G4"],default="G1",help="Evidence filename for code-only synchronization")
     args=parser.parse_args()
-    {"prepare":prepare,"sync-code":sync_code,"verify":verify}[args.action]()
+    {"prepare":prepare,"sync-code":lambda:sync_code(args.gate),"verify":verify}[args.action]()

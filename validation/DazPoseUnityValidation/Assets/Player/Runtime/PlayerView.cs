@@ -388,13 +388,7 @@ namespace DazPose.Player
             Transform rig = RequireViewRig();
             Transform origin = mainCamera != null ? mainCamera.transform : headPose;
             if (origin == null) throw new InvalidOperationException("PlayerView needs a HeadPose or MainCamera view origin.");
-            Vector3 direction = worldTarget - origin.position;
-            if (direction.sqrMagnitude < 1e-8f) return rig.rotation;
-            direction.Normalize();
-            Vector3 up = Vector3.up;
-            if (Mathf.Abs(Vector3.Dot(direction, up)) > 0.999f)
-                up = Vector3.forward;
-            return Quaternion.LookRotation(direction, up);
+            return PlayerViewEndpoint.DesiredRotation(worldTarget, origin.position, rig.rotation);
         }
 
         private void EnsureOperational()

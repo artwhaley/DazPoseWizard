@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -23,10 +24,10 @@ namespace DazPose.Editor.Studio
             public string fixtureId = "", sourceProject = "", fixtureProject = "", scenePath = "", sourceRevision = "", codeHash = "", sceneBaselineSha256 = "";
             public CodeFile[] codeFiles = Array.Empty<CodeFile>();
         }
-        [Serializable] sealed class ObservedObject { public string id, path, type, json; }
+        [Serializable] internal sealed class ObservedObject { public string id, path, type, json; }
         [Serializable] sealed class OverrideRow { public string target, propertyPath, value, objectReference; }
         [Serializable] sealed class Overrides { public OverrideRow[] properties; }
-        [Serializable] sealed class Snapshot
+        [Serializable] internal sealed class Snapshot
         {
             public bool sceneDirty;
             public int undoGroup;
@@ -34,7 +35,7 @@ namespace DazPose.Editor.Studio
             public Vector3 cameraPosition, cameraForward;
             public ObservedObject[] objects;
         }
-        [Serializable] sealed class Difference { public string id, path, before, after; }
+        [Serializable] internal sealed class Difference { public string id, path, before, after; }
         [Serializable] sealed class Report
         {
             public string diagnosticVersion, timestampUtc, gate, nativeResult, projectPath, scenePath, fixtureId, sourceRevision, codeHash, unityVersion;
@@ -165,6 +166,8 @@ namespace DazPose.Editor.Studio
             status = "Isolated fixture and current source hashes verified. Camera: " + NativeStageContext.ObjectPath(context.Camera.transform);
         }
 
+        internal static bool HasShift => Resources.FindObjectsOfTypeAll<NativeDirectingG1Window>().Any(w=>w.shifted);
+
         void Shift()
         {
             if (shifted) throw new InvalidOperationException("Restore the current G1 shift first.");
@@ -215,7 +218,35 @@ namespace DazPose.Editor.Studio
             Repaint();
         }
 
-        static Snapshot Capture(NativeStageContext current)
+        [Serializable] sealed class ObjectReferenceJson { public UnityEngine.Object value; }
+        static string StableJson(UnityEngine.Object obj)
+        {
+            // Obtain reference tokens through serialization itself: no obsolete int/EntityId conversions.
+            const string pattern="\\\"instanceID\\\"\\s*:\\s*(-?\\d+)";
+            var identities=new Dictionary<string,string>();
+            using(var serialized=new SerializedObject(obj))
+            {
+                var property=serialized.GetIterator();
+                while(property.Next(true))
+                {
+                    if(property.propertyType!=SerializedPropertyType.ObjectReference)continue;
+                    var reference=property.objectReferenceValue;
+                    if(reference==null)continue;
+                    var token=Regex.Match(JsonUtility.ToJson(new ObjectReferenceJson{value=reference}),pattern);
+                    if(!token.Success)continue;
+                    var global=GlobalObjectId.GetGlobalObjectIdSlow(reference);
+                    identities[token.Groups[1].Value]=global.identifierType==0?"transient:"+reference.GetEntityId():global.ToString();
+                }
+            }
+            return Regex.Replace(EditorJsonUtility.ToJson(obj),pattern,match=>
+            {
+                string id=match.Groups[1].Value;
+                if(id=="0")return "\"stableObjectID\":\"null\"";
+                return identities.TryGetValue(id,out var identity)?"\"stableObjectID\":\""+identity+"\"":match.Value;
+            });
+        }
+
+        internal static Snapshot Capture(NativeStageContext current)
         {
             var objects = new HashSet<UnityEngine.Object> { current.Host, current.Performance, current.Player, current.View, current.Camera, current.Lara, current.Body };
             foreach (var root in new[] { current.PlayerRoot, current.Lara.transform, current.Body.transform })
@@ -231,7 +262,7 @@ namespace DazPose.Editor.Studio
                 var component = obj as Component;
                 var go = obj as GameObject;
                 rows.Add(new ObservedObject { id = GlobalObjectId.GetGlobalObjectIdSlow(obj).ToString(), type = obj.GetType().FullName,
-                    path = NativeStageContext.ObjectPath(component != null ? component.transform : go.transform), json = EditorJsonUtility.ToJson(obj) });
+                    path = NativeStageContext.ObjectPath(component != null ? component.transform : go.transform), json = StableJson(obj) });
             }
             var prefabs = new HashSet<GameObject>();
             foreach (var t in current.Scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<Transform>(true)))
@@ -252,7 +283,7 @@ namespace DazPose.Editor.Studio
                 cameraPosition = current.Camera.transform.position, cameraForward = current.Camera.transform.forward,
                 objects = rows.OrderBy(r => r.id, StringComparer.Ordinal).ToArray() };
         }
-        static Difference[] Compare(Snapshot before, Snapshot after)
+        internal static Difference[] Compare(Snapshot before, Snapshot after)
         {
             if (before == null) return Array.Empty<Difference>();
             var a = before.objects.ToDictionary(o => o.id); var b = after.objects.ToDictionary(o => o.id);

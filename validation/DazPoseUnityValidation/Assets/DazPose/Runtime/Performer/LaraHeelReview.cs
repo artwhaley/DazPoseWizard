@@ -50,10 +50,21 @@ namespace DazPose.Performer
         }
         private void OnEnable() => Apply();
         private void LateUpdate() => Apply();
-        private void OnValidate() {ResetBindings();Apply();}
-        private void ResetBindings(){UndoPrevious();bones=null;}
+        private void OnValidate() {
+#if UNITY_EDITOR
+            if (NativePreviewWriterGuard.Holds(this)) return;
+#endif
+            ResetBindings();Apply();}
+        private void ResetBindings(){
+#if UNITY_EDITOR
+            if (NativePreviewWriterGuard.Holds(this)) return;
+#endif
+            UndoPrevious();bones=null;}
         private void OnDisable()
         {
+#if UNITY_EDITOR
+            if (NativePreviewWriterGuard.Holds(this)) return;
+#endif
             UndoPrevious();if(rigRoot!=null){var p=rigRoot.localPosition;p.y=baseRigY;rigRoot.localPosition=p;}
         }
         private void UndoPrevious()
@@ -74,6 +85,9 @@ namespace DazPose.Performer
         }
         public void Apply()
         {
+#if UNITY_EDITOR
+            if (NativePreviewWriterGuard.Holds(this)) return;
+#endif
             if(body==null || body.sharedMesh==null || rigRoot==null)return;
             UndoPrevious();
             if(bones==null)ResolveBindings();
