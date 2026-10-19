@@ -31,11 +31,27 @@ namespace DazPose.Editor.Studio
         public bool PlayerCamera {get;set;}
         public float Yaw,Pitch=10,Distance=4;
         Vector3 focus=Vector3.up;
-        bool customCamera;
+        bool customCamera,trackingLara,laraFocusIsChild;
+        Vector3 laraFocusOffset;
+        public Transform LaraFocus {get;private set;}
+        public Vector3 CameraPosition=>shotPosition;
+        public Quaternion CameraRotation=>shotRotation;
         Vector3 shotPosition;
         Quaternion shotRotation;
-        public void PreviewCameraAt(Vector3 position,Quaternion rotation){shotPosition=position;shotRotation=rotation;customCamera=true;}
-        public void TrackLara(){if(Lara!=null){var direction=Lara.position+Vector3.up-shotPosition;if(direction.sqrMagnitude>.0001f){shotRotation=Quaternion.LookRotation(direction);customCamera=true;}}}
+        public void PreviewCameraAt(Vector3 position,Quaternion rotation){trackingLara=false;shotPosition=position;shotRotation=rotation;customCamera=true;}
+        public void TrackLara(){
+            if(Lara==null)return;
+            if(!customCamera){var camera=SourceCamera!=null?CloneFor(SourceCamera.transform)?.GetComponent<Camera>():null;var transform=camera!=null?camera.transform:SourceCamera!=null?SourceCamera.transform:utility.camera.transform;shotPosition=transform.position;shotRotation=transform.rotation;customCamera=true;}
+            trackingLara=true;UpdateTrackedCamera();
+            if(LaraFocus==null){const string message="Camera tracking uses Lara's upper renderer bounds because no mapped laraFocus is available.";if(!diagnostics.Contains(message))diagnostics.Add(message);Diagnostic=string.Join(" ",diagnostics.Distinct());}
+        }
+        public void UpdateTrackedCamera(){
+            if(!trackingLara||Lara==null)return;
+            Vector3 target;
+            if(LaraFocus!=null)target=laraFocusIsChild?LaraFocus.position:Lara.TransformPoint(laraFocusOffset);
+            else {var renderers=Lara.GetComponentsInChildren<Renderer>(true);if(renderers.Length==0)target=Lara.position+Lara.up*1.6f;else{var bounds=renderers[0].bounds;foreach(var renderer in renderers.Skip(1))bounds.Encapsulate(renderer.bounds);target=bounds.center+Vector3.up*bounds.extents.y*.65f;}}
+            var direction=target-shotPosition;if(direction.sqrMagnitude>.0001f)shotRotation=Quaternion.LookRotation(direction,Vector3.up);
+        }
         public Vector3 Project(Vector3 world,Rect rect){if(utility==null)return new Vector3(-10000,-10000,-1);var v=utility.camera.WorldToViewportPoint(world);return new Vector3(rect.x+v.x*rect.width,rect.y+(1-v.y)*rect.height,v.z);}
         public bool DragOnGround(Vector2 mouse,Rect rect,Vector3 current,out Vector3 next){
             next=current;if(utility==null)return false;
@@ -68,6 +84,8 @@ namespace DazPose.Editor.Studio
                         Copy(source.transform,root.transform);
                     }
                     Lara=CloneFor(scene.lara!=null?scene.lara.transform:null);
+                    LaraFocus=CloneFor(scene.laraFocus);laraFocusIsChild=LaraFocus!=null&&Lara!=null&&LaraFocus.IsChildOf(Lara);
+                    if(LaraFocus!=null&&Lara!=null)laraFocusOffset=Lara.InverseTransformPoint(LaraFocus.position);
                     PlayerBody=CloneFor(scene.playerBody!=null?scene.playerBody.transform:null);
                     SourceCamera=scene.gameObject.scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<Camera>(true)).FirstOrDefault(c=>c.CompareTag("MainCamera"));
                     AddSceneMarkers(scene);
@@ -196,19 +214,28 @@ namespace DazPose.Editor.Studio
             var renderers=target.GetComponentsInChildren<Renderer>(true);
             var bounds=new Bounds(target.position+Vector3.up,Vector3.one);
             foreach(var r in renderers)bounds.Encapsulate(r.bounds);
-            focus=bounds.center;Distance=Mathf.Max(2,bounds.extents.magnitude*2.3f);
+            focus=bounds.center;Distance=Mathf.Max(2,bounds.extents.magnitude*2.3f);UpdateTrackedCamera();
         }
         public void Arrival(Transform placement) {
             if(Lara==null||placement==null)throw new InvalidOperationException("Preview requires Lara and a placement.");
             Lara.gameObject.SetActive(true);Lara.SetPositionAndRotation(placement.position,placement.rotation);Frame(Lara);
         }
+        public void SeatedArrival(PerformerSeat seat,AnimationClip pose=null) {
+            if(seat==null||seat.SeatAnchor==null||seat.SeatingProfile?.SitStart==null)throw new InvalidOperationException("Seated preview needs the authored seat, pelvis anchor and seating profile.");
+            Arrival(seat.SeatAnchor);
+            var motion=seat.SeatingProfile.SitStart;var clip=pose??motion.BodyClip;
+            Sample(clip,pose!=null?0:clip.length);
+            Lara.position=seat.SeatAnchor.position-Lara.TransformVector(motion.PelvisOffsetAt(1));
+            Frame(Lara);
+        }
         public void Sample(AnimationClip clip,float time) {
             if(Lara==null||clip==null)throw new InvalidOperationException("Choose the generated pose/gesture wrapper and a Lara preview.");
             if(AnimationMode.InAnimationMode()&&!animationMode)throw new InvalidOperationException("Another editor owns Animation Mode. Close that preview first.");
             if(!animationMode){AnimationMode.StartAnimationMode();animationMode=true;}
+            var placement=Lara.position;var facing=Lara.rotation;
             AnimationMode.BeginSampling();
             try{AnimationMode.SampleAnimationClip(Lara.gameObject,clip,Mathf.Clamp(time,0,clip.length));}
-            finally{AnimationMode.EndSampling();}
+            finally{AnimationMode.EndSampling();Lara.SetPositionAndRotation(placement,facing);UpdateTrackedCamera();}
         }
         public void Magic(PerformerMagicShaderProfile profile) {
             if(profile==null)throw new ArgumentNullException(nameof(profile));profile.ValidateConfiguration();
@@ -226,7 +253,7 @@ namespace DazPose.Editor.Studio
             }
             var camera=utility.camera;
             var cameraClone=SourceCamera!=null?CloneFor(SourceCamera.transform)?.GetComponent<Camera>():null;
-            if(PlayerCamera&&customCamera){camera.transform.SetPositionAndRotation(shotPosition,shotRotation);camera.fieldOfView=SourceCamera!=null?SourceCamera.fieldOfView:45;}
+            if(PlayerCamera&&customCamera){UpdateTrackedCamera();camera.transform.SetPositionAndRotation(shotPosition,shotRotation);camera.fieldOfView=SourceCamera!=null?SourceCamera.fieldOfView:45;}
             else if(PlayerCamera&&cameraClone!=null){camera.CopyFrom(cameraClone);camera.enabled=true;camera.targetTexture=null;camera.transform.SetPositionAndRotation(cameraClone.transform.position,cameraClone.transform.rotation);}
             else if(PlayerCamera&&SourceCamera!=null){camera.transform.SetPositionAndRotation(SourceCamera.transform.position,SourceCamera.transform.rotation);camera.fieldOfView=SourceCamera.fieldOfView;}
             else {ViewRotation=Quaternion.Euler(Pitch,Yaw,0);ViewPosition=focus-ViewRotation*Vector3.forward*Distance;
@@ -246,7 +273,7 @@ namespace DazPose.Editor.Studio
             utility?.Cleanup();utility=null;
             foreach(var material in ownedMaterials)if(material!=null)UnityEngine.Object.DestroyImmediate(material);
             foreach(var mesh in ownedMeshes)if(mesh!=null)UnityEngine.Object.DestroyImmediate(mesh);
-            ownedMaterials.Clear();ownedMeshes.Clear();markers.Clear();diagnostics.Clear();materials.Clear();regular.Clear();map.Clear();customCamera=false;Lara=null;PlayerBody=null;SourceCamera=null;Diagnostic=null;
+            ownedMaterials.Clear();ownedMeshes.Clear();markers.Clear();diagnostics.Clear();materials.Clear();regular.Clear();map.Clear();customCamera=false;trackingLara=false;laraFocusIsChild=false;laraFocusOffset=Vector3.zero;LaraFocus=null;Lara=null;PlayerBody=null;SourceCamera=null;Diagnostic=null;
         }
     }
 }

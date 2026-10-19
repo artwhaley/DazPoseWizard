@@ -83,6 +83,7 @@ namespace DazPose.Story.Language {
   public override string ToString() => Kind==StoryDataKind.Bool ? (Boolean ? "yes" : "no") : Kind==StoryDataKind.List ? "["+string.Join(", ",Items)+"]" : Kind==StoryDataKind.Text ? Text : Number.ToString("0.###",CultureInfo.InvariantCulture);
  }
  public sealed class StoryCommand {
+  public StoryInstructionVisit Visit;
   public string Verb;
   public bool Awaited;
   public StorySource Source;

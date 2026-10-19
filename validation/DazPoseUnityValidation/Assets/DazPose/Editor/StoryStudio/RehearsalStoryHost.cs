@@ -12,6 +12,9 @@ namespace DazPose.Editor {
  [Serializable] public sealed class RehearsalEventChoice { public string key,eventId; }
  [Serializable] public sealed class RehearsalCardChoice { public string invocationKey,cardId; }
  [Serializable] public sealed class RehearsalScenario {
+  public int schemaVersion=2;
+  public string programFingerprint;
+  public bool reviewRequired;
   public int seed=1;
   public float pacingMultiplier=1;
   public float maxVirtualWaitSeconds=1800;
@@ -26,7 +29,7 @@ namespace DazPose.Editor {
   public RehearsalEventChoice[] events=Array.Empty<RehearsalEventChoice>();
   public RehearsalCardChoice[] cards=Array.Empty<RehearsalCardChoice>();
   public RehearsalScenario Copy() {
-   return new RehearsalScenario {seed=seed,pacingMultiplier=pacingMultiplier,maxVirtualWaitSeconds=maxVirtualWaitSeconds,maxRunToSteps=maxRunToSteps,
+   return new RehearsalScenario {schemaVersion=schemaVersion,programFingerprint=programFingerprint,reviewRequired=reviewRequired,seed=seed,pacingMultiplier=pacingMultiplier,maxVirtualWaitSeconds=maxVirtualWaitSeconds,maxRunToSteps=maxRunToSteps,
     initialProfile=initialProfile==null?null:PlayerProfileService.Clone(initialProfile),initialClothing=(bool[])initialClothing.Clone(),
     popupKinks=popupKinks?.Select(x=>new KinkPreference{id=x.id,frequency=x.frequency,sentiment=x.sentiment}).ToArray(),
     popupEquipment=popupEquipment?.Select(x=>new EquipmentPreference{id=x.id,ownedAndWilling=x.ownedAndWilling,useAsReward=x.useAsReward,useAsPunishment=x.useAsPunishment}).ToArray(),
@@ -60,6 +63,8 @@ namespace DazPose.Editor {
   public SessionState Session {get;}=new SessionState();
   public SessionContract Contract {get;}
   public StorySessionRandom Randoms=>random;
+  public Func<StoryInstructionVisit,StoryData[],CancellationToken,Task<StoryData>> ChooseEvent {get;set;}
+  StoryInstructionVisit waitingVisit;
   public Action<StoryCommand> VisualEffect {get;set;}
   public event Action<StorySource,string> TraceLine;
   public DirectorSnapshot LastDirectorSnapshot {get;private set;}
@@ -173,7 +178,7 @@ namespace DazPose.Editor {
    }
   }
   string[] Tags(string id){var item=equipmentCatalog.Require(id);return item.identityTags.Concat(item.themeTags).Distinct(StringComparer.Ordinal).ToArray();}
-  public Task<StoryData> InvokeAsync(StoryCommand command,CancellationToken cancellation) {
+  public async Task<StoryData> InvokeAsync(StoryCommand command,CancellationToken cancellation) {
    cancellation.ThrowIfCancellationRequested();if(cancelled)throw new OperationCanceledException();var spec=StoryVocabulary.Require(command.Verb,command.Source);
    if(spec.setupOnly&&command.Verb.StartsWith("Lara.",StringComparison.Ordinal)&&command.Verb!="Lara.StartIdle"){} // the canonical compiler/runtime own setup semantics.
    string Arg(string name)=>command.Require(name).String;
@@ -220,7 +225,7 @@ namespace DazPose.Editor {
     case "UI.ShowAction":activeActions.Add(Arg("action"));Trace(command.Source,"Virtual action shown: "+Arg("action")+" — "+Arg("label")+".");break;
     case "UI.HideAction":activeActions.Remove(Arg("action"));Trace(command.Source,"Virtual action hidden: "+Arg("action")+".");break;
     case "UI.WaitFor": {
-     string action=Arg("action");if(!pressedActions.Contains(action))throw new InvalidOperationException("No simulated press response for UI action '"+action+"'; add it to the scenario.");
+     string action=Arg("action");if(!pressedActions.Remove(action)){if(ChooseEvent==null)throw new InvalidOperationException("A simulated press is required.");await ChooseEvent(command.Visit,new[]{new StoryData("UI.Pressed:"+action)},cancellation);}
      Trace(command.Source,"Simulated player pressed "+action+".");break;
     }
     case "Equipment.Activate": {
@@ -235,7 +240,7 @@ namespace DazPose.Editor {
     }
     default:throw new StorySourceException(command.Source,"No typed rehearsal effect is registered for vocabulary command '"+command.Verb+"'.");
    }
-   return Task.FromResult(default(StoryData));
+   return default;
   }
   void RequireReady(StorySource source,StoryBindingKind kind,string alias){var row=RequireBinding(source,kind,alias);if(!row.ready)throw new StorySourceException(source,row.issue??("No ready "+kind+" assignment for "+alias+"."));}
   ContentRow RequireBinding(StorySource source,StoryBindingKind kind,string alias) {
@@ -244,7 +249,7 @@ namespace DazPose.Editor {
    throw new StorySourceException(source,"No source-owned "+kind+" assignment snapshot exists for '"+alias+"'.");
   }
   void Stage(StoryCommand command) {if(VisualEffect==null){Trace(command.Source,"logical only; real playback required for this visual effect.");return;}VisualEffect(Copy(command));Trace(command.Source,"Queued isolated preview effect: "+command.Verb+" (no authored scene object was changed).");}
-  static StoryCommand Copy(StoryCommand source) {var copy=new StoryCommand{Verb=source.Verb,Awaited=source.Awaited,Source=source.Source==null?null:new StorySource(source.Source.file,source.Source.line,source.Source.column,source.Source.declaration){unit=source.Source.unit}};foreach(var p in source.Arguments)copy.Arguments[p.Key]=p.Value.Kind==StoryDataKind.List?new StoryData(p.Value.Items.ToArray()):p.Value;return copy;}
+  static StoryCommand Copy(StoryCommand source) {var copy=new StoryCommand{Visit=source.Visit,Verb=source.Verb,Awaited=source.Awaited,Source=source.Source==null?null:new StorySource(source.Source.file,source.Source.line,source.Source.column,source.Source.declaration){unit=source.Source.unit}};foreach(var p in source.Arguments)copy.Arguments[p.Key]=p.Value.Kind==StoryDataKind.List?new StoryData(p.Value.Items.ToArray()):p.Value;return copy;}
   void HandlePopup(string panel,StorySource source) {
    switch(panel) {
     case "Kinks":if(scenario.popupKinks!=null){Profile.kinks=scenario.popupKinks.Select(x=>new KinkPreference{id=x.id,frequency=x.frequency,sentiment=x.sentiment}).ToArray();Contract.RefreshKinks(Profile);}Trace(source,"Simulated Kinks popup applied to detached profile draft: "+(scenario.popupKinks==null?"unchanged":"updated preferences")+".");break;
@@ -253,12 +258,14 @@ namespace DazPose.Editor {
     default:throw new ArgumentException("Unknown popup panel '"+panel+"'.");
    }
   }
-  public Task<StoryData> WaitAnyAsync(StoryData[] events,CancellationToken cancellation) {
+  public void SetWaitingVisit(StoryInstructionVisit visit)=>waitingVisit=visit;
+  public async Task<StoryData> WaitAnyAsync(StoryData[] events,CancellationToken cancellation) {
    cancellation.ThrowIfCancellationRequested();var accepted=events.Select(e=>e.String).ToArray();
    string selected=null; // Source-keyed event overrides are injected by the canonical controller, never borrowed from another race.
    if(selected==null)selected=accepted.FirstOrDefault(id=>pressedActions.Contains(id.StartsWith("UI.Pressed:",StringComparison.Ordinal)?id.Substring(11):id));
-   if(selected==null)throw new InvalidOperationException("A simulated response is required for event race ["+string.Join(", ",accepted)+"]. Add an event choice for its source key to the scenario.");
-   Trace(null,"Simulated event race selected "+selected+"; no live events or listeners were installed.");return Task.FromResult(new StoryData(selected));
+   if(selected==null){if(ChooseEvent==null)throw new InvalidOperationException("A simulated response is required for this event race.");return await ChooseEvent(waitingVisit,events,cancellation);}
+   pressedActions.Remove(selected.StartsWith("UI.Pressed:",StringComparison.Ordinal)?selected.Substring(11):selected);
+   Trace(null,"Simulated event race selected "+selected+"; no live events or listeners were installed.");return new StoryData(selected);
   }
   public void SimulateAction(string action) {
    if(cancelled)throw new OperationCanceledException();

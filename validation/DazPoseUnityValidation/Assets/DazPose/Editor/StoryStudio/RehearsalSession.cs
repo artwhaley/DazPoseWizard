@@ -31,6 +31,7 @@ namespace DazPose.Editor {
   public StoryMachine Machine {get;private set;}
   public Task RunTask {get;private set;}
   public Exception Failure {get;private set;}
+  public StoryInstructionSnapshot CompletedSnapshot {get;private set;}
   public StoryInstructionSnapshot ReadySnapshot {get;private set;}
   public IReadOnlyList<StoryInstructionSnapshot> History {get {lock(sync)return history.ToArray();}}
   public event Action<StorySource,string> TraceLine;
@@ -46,15 +47,19 @@ namespace DazPose.Editor {
    sourceProgram=linkedContent?.Program??program??throw new ArgumentNullException(nameof(program));this.sequence=sequence??throw new ArgumentNullException(nameof(sequence));
    if(profile==null)throw new ArgumentNullException(nameof(profile));initialProfile=PlayerProfileService.Clone(profile);kinks=kinkCatalog??throw new ArgumentNullException(nameof(kinkCatalog));equipment=equipmentCatalog??throw new ArgumentNullException(nameof(equipmentCatalog));
    this.sourceBindings=sourceBindings;linked=linkedContent;sceneBindings=readOnlySceneBindings;this.visualEffect=visualEffect;editorContext=SynchronizationContext.Current;
-   Scenario=scenario?.Copy()??new RehearsalScenario();Initialize();
+   Scenario=scenario?.Copy()??new RehearsalScenario();
+   string fingerprint=StoryDialogue.IdFor(JsonUtility.ToJson(sourceProgram));
+   if(Scenario.schemaVersion!=2||Scenario.reviewRequired||(!string.IsNullOrEmpty(Scenario.programFingerprint)&&Scenario.programFingerprint!=fingerprint))throw new InvalidOperationException("Scenario is legacy or belongs to a changed program. Review its choices and create a new visit-scoped scenario.");
+   Scenario.programFingerprint=fingerprint;Initialize();
   }
   void Initialize() {
-   lock(sync){history.Clear();nextReady=NewReady();ReadySnapshot=null;Failure=null;RunTask=null;started=false;}
+   lock(sync){history.Clear();nextReady=NewReady();ReadySnapshot=null;CompletedSnapshot=null;Failure=null;RunTask=null;started=false;}
    cancellation=new CancellationTokenSource();Host=new RehearsalStoryHost(sourceProgram,initialProfile,kinks,equipment,Scenario.seed,sourceBindings,linked,sceneBindings,Scenario,visualEffect);
-   Controller=new StoryRehearsalController();Controller.InstructionReady+=OnInstructionReady;Controller.BranchObserved+=OnBranch;Controller.WaitObserved+=OnWait;Controller.DirectorObserved+=OnDirector;
+   Controller=new StoryRehearsalController();Controller.InstructionReady+=OnInstructionReady;Controller.InstructionCompleted+=OnInstructionCompleted;Controller.BranchObserved+=OnBranch;Controller.WaitObserved+=OnWait;Controller.DirectorObserved+=OnDirector;
    foreach(var item in Scenario.branches??Array.Empty<RehearsalBranchChoice>())Controller.SetBranchOverride(item.key,item.condition);
    foreach(var item in Scenario.events??Array.Empty<RehearsalEventChoice>())Controller.SetEventResponse(item.key,new StoryData(item.eventId));
    foreach(var item in Scenario.cards??Array.Empty<RehearsalCardChoice>())Controller.SetForcedDirectorCard(item.invocationKey,item.cardId);
+   Host.ChooseEvent=(visit,events,token)=>Controller.WaitForEventAsync(new StoryWaitSnapshot(ReadySnapshot?.EntryName,visit.ProgramCounter,ReadySnapshot?.Source,events,visit),token);
    Machine=new StoryMachine(sourceProgram,Host,Host.Randoms,Controller);Host.TraceLine+=OnTrace;
   }
   public Task Start() {
@@ -79,6 +84,21 @@ namespace DazPose.Editor {
     if(!await StepAsync(token))throw new InvalidOperationException("The story completed before reaching the requested source instruction.");
    }
   }
+  public async Task<StoryInstructionSnapshot> RunThroughSelectedAsync(string owner,string entryName,int pc,int encounter=1,CancellationToken token=default) {
+   if(encounter<1)throw new ArgumentOutOfRangeException(nameof(encounter));token.ThrowIfCancellationRequested();
+   if(!sourceProgram.entries.Any(e=>e.name==entryName&&pc>=e.start&&pc<e.end)||pc<0||pc>=sourceProgram.instructions.Length||(sourceProgram.instructions[pc].source?.unit??sourceProgram.instructions[pc].source?.file??"")!=owner)throw new InvalidOperationException("Selected source owner/entry is no longer in the linked program.");
+   await ResetAsync(false,token);_=Start();string chosen=null;
+   for(int steps=0;steps<=Scenario.maxRunToSteps;steps++) {
+    var current=await ReadyOrFinished(token);
+    if(chosen!=null&&CompletedSnapshot?.Visit.Key==chosen)return CompletedSnapshot;
+    if(current==null)throw new InvalidOperationException("Selected instruction visit is unreachable on this seed/scenario path. Review branch, card and event choices.");
+    if(current.EntryName==entryName&&current.ProgramCounter==pc&&current.Visit.Encounter==encounter)chosen=current.Visit.Key;
+    if(steps==Scenario.maxRunToSteps)break;
+    bool more=await StepAsync(token);if(chosen!=null&&CompletedSnapshot?.Visit.Key==chosen)return CompletedSnapshot;
+    if(!more)throw new InvalidOperationException("Story completed before the selected instruction visit; choose another path or visit.");
+   }
+   throw new InvalidOperationException("Source navigation exceeded the scenario instruction budget. Choose a reachable visit or revise the path.");
+  }
   public async Task BackAsync(CancellationToken token=default) {
    token.ThrowIfCancellationRequested();ThrowIfDisposed();int priorCount;lock(sync)priorCount=history.Count;
    await ResetAsync(false,token);_=Start();await ReadyOrFinished(token);
@@ -86,22 +106,37 @@ namespace DazPose.Editor {
    for(int i=0;i<advances;i++)if(!await StepAsync(token))break;
   }
   public async Task ResetAsync(bool start=true,CancellationToken token=default) {
-   token.ThrowIfCancellationRequested();ThrowIfDisposed();await StopCoreAsync(token);Unsubscribe();Controller?.Dispose();Host?.CancelOperations();cancellation?.Dispose();await OnEditorContextAsync(Initialize,token);if(start)_=Start();
+   token.ThrowIfCancellationRequested();ThrowIfDisposed();await StopCoreAsync(token);ThrowIfDisposed();Unsubscribe();Controller?.Dispose();Host?.CancelOperations();cancellation?.Dispose();await OnEditorContextAsync(()=>{ThrowIfDisposed();Initialize();},token);if(start)_=Start();
   }
   public void SetBranchOverride(StorySource source,int pc,bool condition) {
-   ThrowIfDisposed();string key=StoryRehearsalController.BranchKey(source,pc);var rows=(Scenario.branches??Array.Empty<RehearsalBranchChoice>()).ToList();int i=rows.FindIndex(x=>x.key==key);
+   ThrowIfDisposed();if(ReadySnapshot?.Code!=StoryCode.JumpFalse)throw new InvalidOperationException("Pause at a branch visit first.");string key=RequireVisit(source,pc).Key;var rows=(Scenario.branches??Array.Empty<RehearsalBranchChoice>()).ToList();int i=rows.FindIndex(x=>x.key==key);
    if(i<0)rows.Add(new RehearsalBranchChoice{key=key,condition=condition});else rows[i].condition=condition;Scenario.branches=rows.ToArray();Controller.SetBranchOverride(key,condition);
   }
   public void SetEventResponse(StorySource source,int pc,string eventId) {
-   ThrowIfDisposed();string key=StoryRehearsalController.SourceKey(source,pc);var rows=(Scenario.events??Array.Empty<RehearsalEventChoice>()).ToList();int i=rows.FindIndex(x=>x.key==key);
+   ThrowIfDisposed();string key=RequireVisit(source,pc).Key;
+   var accepted=Controller.PendingWait?.Events??(ReadySnapshot.Code==StoryCode.WaitAny?Machine.InspectWait(ReadySnapshot):Array.Empty<StoryData>());
+   if(!accepted.Any(e=>e.Kind==StoryDataKind.Text&&e.String==eventId))throw new InvalidOperationException("Choose an event offered by this instruction visit.");
+   var rows=(Scenario.events??Array.Empty<RehearsalEventChoice>()).ToList();int i=rows.FindIndex(x=>x.key==key);
    if(i<0)rows.Add(new RehearsalEventChoice{key=key,eventId=eventId});else rows[i].eventId=eventId;Scenario.events=rows.ToArray();Controller.SetEventResponse(key,new StoryData(eventId));
   }
   public void ForceDirectorCard(StorySource source,string cardId) {
-   ThrowIfDisposed();string key=StoryRehearsalController.DirectorKey(source);var rows=(Scenario.cards??Array.Empty<RehearsalCardChoice>()).ToList();int i=rows.FindIndex(x=>x.invocationKey==key);
+   ThrowIfDisposed();string key=RequireVisit(source,ReadySnapshot?.ProgramCounter??-1).Key;
+   var candidate=Machine.InspectDirector(ReadySnapshot).Candidates.FirstOrDefault(c=>c.Id==cardId);
+   if(candidate==null||!candidate.Eligible||candidate.FinalWeight<=0)throw new InvalidOperationException("Cannot force this card: "+(candidate?.Reason??"not a candidate for this visit"));
+   var rows=(Scenario.cards??Array.Empty<RehearsalCardChoice>()).ToList();int i=rows.FindIndex(x=>x.invocationKey==key);
    if(i<0)rows.Add(new RehearsalCardChoice{invocationKey=key,cardId=cardId});else rows[i].cardId=cardId;Scenario.cards=rows.ToArray();Controller.SetForcedDirectorCard(key,cardId);
   }
+  StoryInstructionVisit RequireVisit(StorySource source,int pc) {
+   var current=ReadySnapshot;if(current==null||current.ProgramCounter!=pc||current.Source?.unit!=source?.unit||current.Source?.file!=source?.file||!Controller.IsPausedAt(current.Visit))throw new InvalidOperationException("Pause at the chosen instruction visit before assigning a response.");return current.Visit;
+  }
+  [Serializable] sealed class ScenarioHeader {public int schemaVersion=0;}
+  public static RehearsalScenario ImportScenarioJson(string json) {
+   var result=JsonUtility.FromJson<RehearsalScenario>(json)??throw new InvalidOperationException("Invalid scenario.");
+   if(JsonUtility.FromJson<ScenarioHeader>(json)?.schemaVersion!=2||result.schemaVersion!=2){result.reviewRequired=true;throw new InvalidOperationException("Legacy scenario uses source-site choices. Review and recreate it with visit-scoped decisions.");}
+   return result;
+  }
   public void SimulateAction(string action) {
-   ThrowIfDisposed();Host.SimulateAction(action);Scenario.pressedActions=(Scenario.pressedActions??Array.Empty<string>()).Concat(new[]{action}).Distinct(StringComparer.Ordinal).ToArray();
+   ThrowIfDisposed();if(Controller.PendingWait!=null)SetEventResponse(ReadySnapshot.Source,ReadySnapshot.ProgramCounter,"UI.Pressed:"+action);else Host.SimulateAction(action);
   }
   public string ExportScenarioJson()=>JsonUtility.ToJson(Scenario.Copy(),true);
   Task<StoryInstructionSnapshot> ReadyOrFinished(CancellationToken token) {
@@ -120,13 +155,14 @@ namespace DazPose.Editor {
     await completed;return null;
    }
   }
+  void OnInstructionCompleted(StoryInstructionSnapshot snapshot){lock(sync)CompletedSnapshot=snapshot;}
   void OnInstructionReady(StoryInstructionSnapshot snapshot) {
    lock(sync){ReadySnapshot=snapshot;history.Add(snapshot);nextReady.TrySetResult(snapshot);}
    InstructionReady?.Invoke(snapshot);
   }
   void OnTrace(StorySource source,string text)=>TraceLine?.Invoke(source,text);
   void OnBranch(StoryBranchSnapshot value)=>BranchObserved?.Invoke(value);
-  void OnWait(StoryWaitSnapshot value)=>WaitObserved?.Invoke(value);
+  void OnWait(StoryWaitSnapshot value){Host.SetWaitingVisit(value.Visit);WaitObserved?.Invoke(value);}
   void OnDirector(StoryDirectorSelectionSnapshot value)=>DirectorObserved?.Invoke(value);
   static async Task<T> AwaitWithCancellation<T>(Task<T> task,CancellationToken token) {
    if(!token.CanBeCanceled)return await task;var cancelled=new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -148,7 +184,7 @@ namespace DazPose.Editor {
    started=false;
   }
   void Unsubscribe() {
-   if(Controller!=null){Controller.InstructionReady-=OnInstructionReady;Controller.BranchObserved-=OnBranch;Controller.WaitObserved-=OnWait;Controller.DirectorObserved-=OnDirector;}
+   if(Controller!=null){Controller.InstructionReady-=OnInstructionReady;Controller.InstructionCompleted-=OnInstructionCompleted;Controller.BranchObserved-=OnBranch;Controller.WaitObserved-=OnWait;Controller.DirectorObserved-=OnDirector;}
    if(Host!=null)Host.TraceLine-=OnTrace;
   }
   void ThrowIfDisposed(){if(disposed)throw new ObjectDisposedException(nameof(RehearsalSession));}

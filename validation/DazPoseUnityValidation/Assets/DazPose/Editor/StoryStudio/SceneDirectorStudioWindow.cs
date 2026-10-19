@@ -18,6 +18,14 @@ namespace DazPose.Editor.Studio
         [SerializeField] StorySceneBindings host;
         SourceBindingManifest manifest;
         StoryContentBindings content;
+        StoryLinkedContent flowContent;
+        SourceBindingManifest detailManifest;
+        StorySource selectedSource;
+        string selectedEntry;
+        int selectedVisit=1;
+        string stagedResult;
+        SourceBindingManifest Details=>detailManifest??manifest;
+        StoryContentBindings DetailContent=>selectedSource!=null&&flowContent!=null?flowContent.ContentFor(selectedSource):content;
         readonly ScenePreviewSession stage=new ScenePreviewSession();
         Vector2 flowScroll,detailScroll;
         string search="",requirementFilter="All",error,sequence;
@@ -42,26 +50,30 @@ namespace DazPose.Editor.Studio
         }
         void OnEnable() {
             titleContent=new GUIContent("Scene Director Studio");
+            EditorApplication.projectChanged+=RevisionChanged;EditorApplication.hierarchyChanged+=RevisionChanged;Undo.undoRedoPerformed+=RevisionChanged;Undo.postprocessModifications+=Modified;
+            EditorApplication.playModeStateChanged+=PlayStateChanged;EditorSceneManager.sceneClosed+=ClosedScene;
             EditorApplication.update+=Tick;AssemblyReloadEvents.beforeAssemblyReload+=Release;
             EditorSceneManager.activeSceneChangedInEditMode+=SceneChanged;SceneView.duringSceneGui+=DrawSceneHandles;
             if(source!=null)Refresh();
         }
         void OnDisable() {
+            EditorApplication.projectChanged-=RevisionChanged;EditorApplication.hierarchyChanged-=RevisionChanged;Undo.undoRedoPerformed-=RevisionChanged;Undo.postprocessModifications-=Modified;
+            EditorApplication.playModeStateChanged-=PlayStateChanged;EditorSceneManager.sceneClosed-=ClosedScene;
             EditorApplication.update-=Tick;AssemblyReloadEvents.beforeAssemblyReload-=Release;
             EditorSceneManager.activeSceneChangedInEditMode-=SceneChanged;SceneView.duringSceneGui-=DrawSceneHandles;Release();
         }
         void Release(){StopRehearsal();StopAudio();stage.Dispose();if(audioEditor!=null)DestroyImmediate(audioEditor);audioEditor=null;}
         void SceneChanged(Scene oldScene,Scene newScene){Release();host=null;editLocation=false;error="Scene changed. Select the saved scene host and rebuild the isolated preview.";Repaint();}
         void Tick() {
-            DrainRehearsal();
+            CheckRevision();DrainRehearsal();
             if(source!=null) {
                 string path=AssetDatabase.GetAssetPath(source);
-                if(File.Exists(path)&&File.GetLastWriteTimeUtc(path)!=sourceWrite) {Refresh();Repaint();}
+                if(File.Exists(path)&&File.GetLastWriteTimeUtc(path)!=sourceWrite) {revisionDirty=true;CheckRevision();Repaint();}
             }
         }
-        void SelectSource(CompiledStoryAsset value){Release();source=value;selectedPc=selectedRequirement=-1;selectedKey=null;Refresh();}
+        void SelectSource(CompiledStoryAsset value){Release();sourceStamp=null;revisionDirty=true;source=value;selectedSource=null;detailManifest=null;stagedResult=null;selectedPc=selectedRequirement=-1;selectedKey=null;Refresh();}
         void Refresh() {
-            manifest=null;content=null;error=null;
+            manifest=null;content=null;flowContent=null;detailManifest=null;error=null;
             if(source==null)return;
             try {
                 string path=AssetDatabase.GetAssetPath(source);
@@ -69,18 +81,19 @@ namespace DazPose.Editor.Studio
                 sourceWrite=File.GetLastWriteTimeUtc(path);
                 manifest=SourceBindingManifest.Analyze(path,AssetDatabase.AssetPathToGUID(path));
                 content=SourceBindingReconciler.FindOwner(manifest.SourceGuid,SourceBindingReconciler.CompanionPath(path));
+                try{if(source.IsCompiled&&content!=null)flowContent=StoryLinkedContent.Create(source);}catch(Exception e){error="Linked flow: "+e.Message;}
                 var sequences=manifest.Analysis.Program?.entries.Where(e=>e.kind=="sequence").Select(e=>e.name).ToArray()??Array.Empty<string>();
                 if(!sequences.Contains(sequence))sequence=sequences.FirstOrDefault();
-                if(selectedKey!=null)selectedRequirement=Array.FindIndex(manifest.Requirements,r=>r.Id==selectedKey);
+                if(selectedKey!=null)selectedRequirement=Array.FindIndex(Details.Requirements,r=>r.Id==selectedKey);
             }catch(Exception e){error=e.Message;}
         }
         void OnGUI() {
             using(new EditorGUILayout.HorizontalScope(EditorStyles.toolbar)) {
                 var next=(CompiledStoryAsset)EditorGUILayout.ObjectField(source,typeof(CompiledStoryAsset),false,GUILayout.MinWidth(120));
                 if(next!=source)SelectSource(next);
-                host=(StorySceneBindings)EditorGUILayout.ObjectField(host,typeof(StorySceneBindings),true,GUILayout.MinWidth(120));
-                if(GUILayout.Button("Find scene host",EditorStyles.toolbarButton))host=UnityEngine.Object.FindObjectsByType<StorySceneBindings>(FindObjectsInactive.Include).FirstOrDefault(s=>s.gameObject.scene==SceneManager.GetActiveScene());
-                if(GUILayout.Button("Refresh",EditorStyles.toolbarButton))Refresh();
+                SelectHost((StorySceneBindings)EditorGUILayout.ObjectField(host,typeof(StorySceneBindings),true,GUILayout.MinWidth(120)));
+                if(GUILayout.Button("Find scene host",EditorStyles.toolbarButton))SelectHost(UnityEngine.Object.FindObjectsByType<StorySceneBindings>(FindObjectsInactive.Include).FirstOrDefault(s=>s.gameObject.scene==SceneManager.GetActiveScene()));
+                if(GUILayout.Button("Refresh",EditorStyles.toolbarButton)){revisionDirty=true;CheckRevision();Refresh();}
                 if(GUILayout.Button("Sync source bindings",EditorStyles.toolbarButton))Try(()=>{
                     if(manifest==null)throw new InvalidOperationException("Choose a valid source first.");
                     content=SourceBindingReconciler.ReconcileAsset(manifest.SourcePath,manifest.SourceGuid);AssetDatabase.ImportAsset(manifest.SourcePath);Refresh();
@@ -114,18 +127,25 @@ namespace DazPose.Editor.Studio
         void DrawFlow() {
             EditorGUILayout.LabelField("Source flow",EditorStyles.boldLabel);
             search=EditorGUILayout.TextField(search,EditorStyles.toolbarSearchField);
+            selectedVisit=Mathf.Max(1,EditorGUILayout.IntField("Instruction visit",selectedVisit));
+            if(selectedSource!=null&&GUILayout.Button("Open selected source line"))OpenLine(selectedSource);
+            if(selectedSource!=null&&GUILayout.Button("Stage selected visit (after)"))NavigateSelected();
+            if(stagedResult!=null)EditorGUILayout.HelpBox(stagedResult,MessageType.Info);
             flowScroll=EditorGUILayout.BeginScrollView(flowScroll);
             if(manifest?.Analysis.Program!=null) {
-                var program=manifest.Analysis.Program;
+                var program=flowContent?.Program??manifest.Analysis.Program;
                 foreach(var entry in program.entries) {
-                    EditorGUILayout.LabelField(entry.kind+" · "+entry.name,EditorStyles.boldLabel);
+                    EditorGUILayout.LabelField(entry.kind+" · "+entry.name+" · "+(entry.start<program.instructions.Length?program.instructions[entry.start].source?.file:""),EditorStyles.boldLabel);
                     for(int pc=entry.start;pc<entry.end;pc++) {
                         var instruction=program.instructions[pc];string label=(instruction.source?.line.ToString()??"?")+"  "+instruction.code+" "+instruction.name;
                         if(search.Length>0&&label.IndexOf(search,StringComparison.OrdinalIgnoreCase)<0)continue;
                         bool selected=selectedPc==pc;
                         if(GUILayout.Toggle(selected,label,"Button")&&!selected) {
-                            selectedPc=pc;var use=manifest.Requirements.FirstOrDefault(r=>r.Occurrences.Any(o=>o.line==instruction.source?.line&&o.declaration==instruction.source?.declaration));
-                            if(use!=null)SelectRequirement(Array.IndexOf(manifest.Requirements,use));
+                            selectedPc=pc;selectedSource=instruction.source;selectedEntry=entry.name;
+                            detailManifest=instruction.source!=null&&File.Exists(instruction.source.file)?SourceBindingManifest.Analyze(instruction.source.file,instruction.source.unit):null;
+                            var use=Details.Requirements.FirstOrDefault(r=>r.Occurrences.Any(o=>o.line==instruction.source?.line&&o.declaration==instruction.source?.declaration));
+                            if(use!=null)SelectRequirement(Array.IndexOf(Details.Requirements,use));
+                            NavigateSelected();
                         }
                     }
                 }
@@ -175,24 +195,25 @@ namespace DazPose.Editor.Studio
             string[] filters={"All","Unbound","Locations","Audio","Poses","Warnings"};
             int chosen=Array.IndexOf(filters,requirementFilter);requirementFilter=filters[EditorGUILayout.Popup(Mathf.Max(0,chosen),filters)];
             if(manifest!=null) {
-                for(int i=0;i<manifest.Requirements.Length;i++) {
-                    var r=manifest.Requirements[i];bool unbound=Value(r)==null;
+                for(int i=0;i<Details.Requirements.Length;i++) {
+                    var r=Details.Requirements[i];bool unbound=Value(r)==null;
                     if(requirementFilter=="Unbound"&&!unbound||requirementFilter=="Locations"&&r.Kind!=StoryBindingKind.Location||
                         requirementFilter=="Audio"&&!r.IsDialogue||requirementFilter=="Poses"&&r.Kind!=StoryBindingKind.Pose)continue;
                     if(GUILayout.Toggle(selectedRequirement==i,(unbound?"○ ":"● ")+r.ExpectedType+" · "+r.Alias,"Button")&&selectedRequirement!=i)SelectRequirement(i);
                 }
-                if(selectedRequirement>=0&&selectedRequirement<manifest.Requirements.Length)DrawRequirement(manifest.Requirements[selectedRequirement]);
+                if(selectedRequirement>=0&&selectedRequirement<Details.Requirements.Length)DrawRequirement(Details.Requirements[selectedRequirement]);
             }
             if(error!=null)EditorGUILayout.HelpBox(error,MessageType.Error);
             EditorGUILayout.EndScrollView();
         }
         void SelectRequirement(int index) {
-            selectedRequirement=index;selectedKey=manifest.Requirements[index].Id;editLocation=false;sampledClip=null;sampleTime=0;StopAudio();
-            var r=manifest.Requirements[index];var location=host?.locations.FirstOrDefault(l=>l.id==r.Alias);
+            selectedRequirement=index;selectedKey=Details.Requirements[index].Id;editLocation=false;sampledClip=null;sampleTime=0;StopAudio();
+            var r=Details.Requirements[index];var location=host?.locations.FirstOrDefault(l=>l.id==r.Alias);
             ghostPosition=location?.placement!=null?location.placement.position:Vector3.zero;
             ghostRotation=location?.placement!=null?location.placement.eulerAngles:Vector3.zero;
         }
         UnityEngine.Object Value(StoryBindingRequirement r) {
+            var content=DetailContent;
             if(r.Kind==StoryBindingKind.Location)return host?.locations.FirstOrDefault(l=>l.id==r.Alias)?.placement;
             if(content==null)return null;
             if(r.IsDialogue)return content.dialogue.FirstOrDefault(d=>d.id==StoryDialogue.IdFor(r.Transcript))?.clip;
@@ -207,6 +228,7 @@ namespace DazPose.Editor.Studio
             }
         }
         void DrawRequirement(StoryBindingRequirement r) {
+            var content=DetailContent;
             EditorGUILayout.Space();EditorGUILayout.LabelField(r.ExpectedType,EditorStyles.boldLabel);
             foreach(var occurrence in r.Occurrences)if(GUILayout.Button(occurrence.ToString(),EditorStyles.linkLabel))OpenLine(occurrence);
             if(r.Kind==StoryBindingKind.Location){DrawLocation(r);return;}
@@ -228,7 +250,7 @@ namespace DazPose.Editor.Studio
                 EditorGUILayout.PropertyField(row.FindPropertyRelative("posture"),new GUIContent("World posture"));
                 EditorGUILayout.HelpBox("Choose a generated PerformerPose wrapper. Import a DAZ pose with the normal importer; an .anim alone is not a pose binding.",MessageType.Info);
             }
-            if(serialized.ApplyModifiedProperties())AssetDatabase.SaveAssetIfDirty(content);
+            if(serialized.ApplyModifiedProperties()){AssetDatabase.SaveAssetIfDirty(content);RevisionChanged();}
             var value=Value(r);
             if(value==null){EditorGUILayout.HelpBox("Unbound. Drag the requested asset type from Project.",MessageType.Warning);return;}
             if(value is PerformerPose pose&&GUILayout.Button("Preview pose"))Try(()=>{sampledClip=pose.Clip;sampleTime=0;stage.Sample(sampledClip,0);});
@@ -243,7 +265,7 @@ namespace DazPose.Editor.Studio
         }
         void DrawLocation(StoryBindingRequirement requirement) {
             if(host==null){EditorGUILayout.HelpBox("Choose a host in an open saved scene. No marks are created automatically.",MessageType.Warning);return;}
-            if(GUILayout.Button("Attach missing location records"))Try(()=>SceneMarkAuthoring.AttachRequirements(host,manifest.Analysis));
+            if(GUILayout.Button("Attach missing location records"))Try(()=>SceneMarkAuthoring.AttachRequirements(host,Details.Analysis));
             var matches=host.locations.Where(l=>l.id==requirement.Alias).ToArray();
             if(matches.Length>1){EditorGUILayout.HelpBox("Duplicate location IDs. Resolve them before editing.",MessageType.Error);return;}
             var row=matches.FirstOrDefault();Transform mark=row?.placement;
@@ -289,7 +311,7 @@ namespace DazPose.Editor.Studio
             ghostPosition=Handles.PositionHandle(ghostPosition,Quaternion.Euler(ghostRotation));
             var rotation=Handles.RotationHandle(Quaternion.Euler(ghostRotation),ghostPosition);
             Handles.ArrowHandleCap(0,ghostPosition,rotation,.5f,EventType.Repaint);
-            Handles.Label(ghostPosition,manifest.Requirements[selectedRequirement].Alias+" (uncommitted preview)");
+            Handles.Label(ghostPosition,Details.Requirements[selectedRequirement].Alias+" (uncommitted preview)");
             if(EditorGUI.EndChangeCheck()){ghostRotation=rotation.eulerAngles;Repaint();}
         }
         static void OpenLine(StorySource location) {
@@ -306,6 +328,6 @@ namespace DazPose.Editor.Studio
             var type=typeof(AudioImporter).Assembly.GetType("UnityEditor.AudioUtil");
             type?.GetMethod("StopAllPreviewClips",System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.Public)?.Invoke(null,null);
         }
-        void Try(Action action){try{action();error=null;}catch(Exception e){error=e.GetBaseException().Message;}Repaint();}
+        void Try(Action action){try{action();error=null;RevisionChanged();}catch(Exception e){error=e.GetBaseException().Message;}Repaint();}
     }
 }

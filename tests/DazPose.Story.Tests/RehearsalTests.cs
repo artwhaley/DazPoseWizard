@@ -93,5 +93,39 @@ public sealed class RehearsalTests {
   var error=Assert.Throws<InvalidOperationException>(()=>director.Select(new CardSelectionRequest {RequiredTags=new[]{"Warmup"},Phase="Warmup"},"Restricted"));
   Assert.Contains("not an eligible positive-weight candidate",error.Message);Assert.False(director.Snapshot.Candidates.Single().Eligible);Assert.Contains("Required",director.Snapshot.Candidates.Single().Reason);
  }
+ [Fact] public async Task LoopDecisionsUseOneCanonicalVisitAndConsumeOnlySecondChoice() {
+  var program=Compile("sequence Test {\nrepeat 3 {\nif true {\nSession.Mood += 1\n}\n}\n}");
+  var controller=new StoryRehearsalController();var before=new List<StoryInstructionSnapshot>();var after=new List<StoryInstructionSnapshot>();var branches=new List<StoryBranchSnapshot>();
+  controller.InstructionReady+=snapshot=>{before.Add(snapshot);if(snapshot.Code==StoryCode.JumpFalse&&snapshot.Visit.Encounter==2)controller.SetBranchOverride(snapshot.Visit.Key,false);};
+  controller.InstructionCompleted+=after.Add;controller.BranchObserved+=branches.Add;controller.Continue();var host=new Host();
+  await new StoryMachine(program,host,null,controller).RunAsync("Test");
+  Assert.Equal(new[]{1,2,3},branches.Select(b=>b.Visit.Encounter));Assert.Equal(new[]{false,true,false},branches.Select(b=>b.Forced));Assert.Equal(52,host.Read("Session.Mood").Numeric);
+  foreach(var snapshot in after)Assert.Contains(before,b=>ReferenceEquals(b.Visit,snapshot.Visit));
+ }
+ [Fact] public async Task RepeatedDirectorForcingChangesOnlySecondDrawAndKeepsRngPosition() {
+  const string source="card A\ntags [Warmup]\n{\nwait 1s\n}\ncard B\ntags [Warmup]\n{\nwait 1s\n}\nsequence Test {\nrepeat 3 {\nawait Director.DrawAndExecute(tags: [Warmup])\n}\n}";
+  async Task<(string[],double)> Run(bool force) {
+   var controller=new StoryRehearsalController();var random=new StorySessionRandom(179);var cards=new List<string>();
+   controller.InstructionReady+=s=>{if(force&&s.Name=="Director.DrawAndExecute"&&s.Visit.Encounter==2)controller.SetForcedDirectorCard(s.Visit.Key,"B");};
+   controller.DirectorObserved+=s=>cards.Add(s.SelectedCardId);controller.Continue();await new StoryMachine(Compile(source),new Host(),random,controller).RunAsync("Test");return(cards.ToArray(),random.Selection.NextDouble());
+  }
+  var normal=await Run(false);var forced=await Run(true);Assert.Equal(normal.Item1[0],forced.Item1[0]);Assert.Equal("B",forced.Item1[1]);Assert.Equal(normal.Item1[2],forced.Item1[2]);Assert.Equal(normal.Item2,forced.Item2);
+ }
+ [Fact] public async Task RepeatedWaitChoicesAreSingleUseAndStableOnReplay() {
+  var program=Compile("sequence Test {\nrepeat 3 {\nlet response = await wait any {\nUI.Pressed(Ready)\n}\n}\n}");
+  async Task<string[]> Run() {
+   var controller=new StoryRehearsalController();var keys=new List<string>();controller.InstructionReady+=s=>{if(s.Code==StoryCode.WaitAny){keys.Add(s.Visit.Key);if(s.Visit.Encounter==2)controller.SetEventResponse(s.Visit.Key,new StoryData("UI.Pressed:Ready"));}};
+   controller.Continue();var host=new Host();await new StoryMachine(program,host,null,controller).RunAsync("Test");Assert.Equal(2,host.WaitCalls);return keys.ToArray();
+  }
+  Assert.Equal(await Run(),await Run());
+ }
+ [Fact] public void PublishedCardAdditionAndRemovalNeedsNoSceneRegistration() {
+  var root=Compile("sequence Test {\nawait Director.DrawAndExecute(tags: [Warmup])\n}");
+  var published=Compile("card Published\ntags [Warmup]\n{\nwait 1s\n}\n");
+  int Count(StoryLinkUnit[] pool) {
+   var linked=StoryProgramLinker.Link(root,pool,"scene");var director=NewDirector(linked,new StorySessionRandom(1));return director.Inspect(new CardSelectionRequest{RequiredTags=new[]{"Warmup"},Phase="Warmup"}).Candidates.Count(c=>c.Eligible);
+  }
+  Assert.Equal(0,Count(Array.Empty<StoryLinkUnit>()));Assert.Equal(1,Count(new[]{new StoryLinkUnit("published",published)}));Assert.Equal(0,Count(Array.Empty<StoryLinkUnit>()));Assert.Empty(root.cards);
+ }
  static StoryDirector NewDirector(CompiledStoryProgram program,StorySessionRandom random)=>new StoryDirector(program,_=>default,_=>new StoryData("Free"),random,_=>{});
 }

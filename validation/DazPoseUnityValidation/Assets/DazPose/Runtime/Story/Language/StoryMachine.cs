@@ -30,6 +30,7 @@ namespace DazPose.Story.Language {
   readonly StorySessionRandom random;
   readonly IStoryRehearsalObserver rehearsalObserver;
   readonly List<StoryCallFrameSnapshot> entryFrames=new List<StoryCallFrameSnapshot>();
+  readonly Dictionary<string,int> visits=new Dictionary<string,int>(StringComparer.Ordinal);
   StoryInstructionSnapshot lastPausedSnapshot; StoryInstruction lastPausedInstruction; Dictionary<string,StoryData> lastPausedLocals;
   public StoryDirector Director {get;}
   public CardExecutionContext CardContext {get;private set;}
@@ -85,11 +86,13 @@ namespace DazPose.Story.Language {
     if(executed%256==0) await host.YieldAsync(lifetime.Token);
     var instruction=program.instructions[pc];
     try {
-     int instructionPc=pc;var rehearsalSnapshot=rehearsalObserver!=null ? RehearsalSnapshot(entry,instructionPc,instruction,locals,repeats) : null;
+     int instructionPc=pc;StoryInstructionVisit visit=null;
+     if(rehearsalObserver!=null){var first=new StoryInstructionVisit(instruction.source,pc,1);visits.TryGetValue(first.Key,out int encounter);visits[first.Key]=++encounter;visit=new StoryInstructionVisit(instruction.source,pc,encounter);}
+     var rehearsalSnapshot=rehearsalObserver!=null ? RehearsalSnapshot(entry,instructionPc,instruction,locals,repeats,visit) : null;
      if(rehearsalObserver!=null) {lastPausedSnapshot=rehearsalSnapshot;lastPausedInstruction=instruction;lastPausedLocals=new Dictionary<string,StoryData>(locals,StringComparer.Ordinal);await rehearsalObserver.BeforeInstructionAsync(rehearsalSnapshot,lifetime.Token);Check();}
      switch(instruction.code) {
       case StoryCode.Call: {
-       var command=new StoryCommand {Verb=instruction.name,Awaited=instruction.awaited,Source=instruction.source};
+       var command=new StoryCommand {Verb=instruction.name,Awaited=instruction.awaited,Source=instruction.source,Visit=visit};
        foreach(var argument in instruction.arguments) command.Arguments.Add(argument.name,Evaluate(argument.expression,locals));
        var task=Start(command,scopeChildren); if(instruction.awaited || StoryVocabulary.Require(command.Verb,command.Source).instant) await AwaitOwned(task); break;
       }
@@ -101,7 +104,7 @@ namespace DazPose.Story.Language {
       case StoryCode.Jump:pc=instruction.jump-1;break;
       case StoryCode.JumpFalse: {
        bool evaluated=Evaluate(instruction.expression,locals).Boolean;bool condition=evaluated;bool forced=false;
-       if(rehearsalObserver!=null) {var decision=new StoryBranchSnapshot(entry.name,pc,instruction.source,ExpressionText(instruction.expression),evaluated,evaluated,false);if(rehearsalObserver.TryOverrideBranch(decision,out var overridden)){condition=overridden;forced=true;}rehearsalObserver.ObserveBranch(new StoryBranchSnapshot(entry.name,pc,instruction.source,ExpressionText(instruction.expression),evaluated,condition,forced));}
+       if(rehearsalObserver!=null) {var decision=new StoryBranchSnapshot(entry.name,pc,instruction.source,ExpressionText(instruction.expression),evaluated,evaluated,false,visit);if(rehearsalObserver.TryOverrideBranch(decision,out var overridden)){condition=overridden;forced=true;}rehearsalObserver.ObserveBranch(new StoryBranchSnapshot(entry.name,pc,instruction.source,ExpressionText(instruction.expression),evaluated,condition,forced,visit));}
        host.Trace(instruction.source,"Condition is "+(condition ? "true; enter this branch." : "false; skip this branch."));
        if(instruction.completionLoop) {
         if(condition)loops[pc]=instruction.completionTarget>=0 ? Evaluate(instruction.completionTarget,locals).Numeric : 100;else loops.Remove(pc);
@@ -120,7 +123,7 @@ namespace DazPose.Story.Language {
       case StoryCode.LeavePhase:if(host is IStoryPhaseObserver phaseObserver)phaseObserver.LeavePhase(instruction.name);host.Trace(instruction.source,"Leave phase "+instruction.name+".");break;
       case StoryCode.WaitAny: {
        var events=instruction.arguments.Select(a=>Evaluate(a.expression,locals)).ToArray();
-       var waitSnapshot=new StoryWaitSnapshot(entry.name,pc,instruction.source,events);
+       var waitSnapshot=new StoryWaitSnapshot(entry.name,pc,instruction.source,events,visit);
        rehearsalObserver?.ObserveWaitAny(waitSnapshot);
        if(rehearsalObserver!=null && rehearsalObserver.TryInjectEvent(waitSnapshot,out var response)) {
         if(response.Kind!=StoryDataKind.Text || !events.Any(e=>e.Kind==StoryDataKind.Text && e.String==response.String))
@@ -132,7 +135,7 @@ namespace DazPose.Story.Language {
       case StoryCode.Return:pc=entry.end;break;
       default:throw new InvalidOperationException("Unknown compiled instruction "+instruction.code+".");
      }
-     if(rehearsalObserver!=null)rehearsalObserver.AfterInstruction(RehearsalSnapshot(entry,instructionPc,instruction,locals,repeats));
+     if(rehearsalObserver!=null)rehearsalObserver.AfterInstruction(RehearsalSnapshot(entry,instructionPc,instruction,locals,repeats,visit));
     } catch(CheckpointReached) { throw; }
     catch(OperationCanceledException) { throw; }
     catch(StorySourceException) { throw; }
@@ -162,9 +165,9 @@ namespace DazPose.Story.Language {
    } finally { foreach(string key in required) if(channels.TryGetValue(key,out var owner) && ReferenceEquals(owner,lease)) channels.Remove(key); }
   }
 
-  StoryInstructionSnapshot RehearsalSnapshot(StoryEntry entry,int pc,StoryInstruction instruction,Dictionary<string,StoryData> locals,Dictionary<int,int> repeats) {
+  StoryInstructionSnapshot RehearsalSnapshot(StoryEntry entry,int pc,StoryInstruction instruction,Dictionary<string,StoryData> locals,Dictionary<int,int> repeats,StoryInstructionVisit visit) {
    var state=host is IStoryRehearsalStateReader reader ? reader.SnapshotState() : new Dictionary<string,StoryData>(StringComparer.Ordinal);
-   return new StoryInstructionSnapshot(entry.name,entry.kind,pc,instruction,instruction.expression>=0 ? ExpressionText(instruction.expression) : null,entryFrames,locals,state,repeats);
+   return new StoryInstructionSnapshot(entry.name,entry.kind,pc,instruction,instruction.expression>=0 ? ExpressionText(instruction.expression) : null,entryFrames,locals,state,repeats,visit);
   }
   string ExpressionText(int index) => string.Join(" ",program.expressions[index].atoms.Select(a=>a.code==StoryAtomCode.Number ? a.number.ToString(System.Globalization.CultureInfo.InvariantCulture) : a.text ?? a.code.ToString()));
   StoryData ReadOptional(string key,StoryData fallback) {try{return host.Read(key);}catch(KeyNotFoundException){return fallback;}}
@@ -204,13 +207,18 @@ namespace DazPose.Story.Language {
    }
    return Director.Inspect(BuildDirectorRequest(command));
   }
+  public StoryData[] InspectWait(StoryInstructionSnapshot snapshot) {
+   if(snapshot==null||!ReferenceEquals(snapshot,lastPausedSnapshot)||lastPausedInstruction?.code!=StoryCode.WaitAny)throw new InvalidOperationException("Pause at the current event race first.");
+   if(lastPausedInstruction.arguments.Any(a=>program.expressions[a.expression].atoms.Any(atom=>atom.code==StoryAtomCode.Function&&atom.text=="random")))throw new InvalidOperationException("Inspection cannot evaluate a random event expression.");
+   return lastPausedInstruction.arguments.Select(a=>Evaluate(a.expression,lastPausedLocals)).ToArray();
+  }
   async Task Direct(StoryCommand command) {
    var request=BuildDirectorRequest(command);
    CardDefinition selected;
    string forcedCardId=null;
-   if(rehearsalObserver!=null)forcedCardId=rehearsalObserver.ForcedDirectorCardId(new StoryDirectorCallSnapshot(command.Source,StoryRehearsalController.DirectorKey(command.Source),request));
-   try {selected=Director.Select(request,forcedCardId);rehearsalObserver?.ObserveDirectorSelection(new StoryDirectorSelectionSnapshot(selected?.Id,forcedCardId!=null,forcedCardId,Director.Snapshot.Candidates));}
-   catch {if(forcedCardId!=null)rehearsalObserver?.ObserveDirectorSelection(new StoryDirectorSelectionSnapshot(null,true,forcedCardId,Director.Snapshot.Candidates));throw;}
+   if(rehearsalObserver!=null)forcedCardId=rehearsalObserver.ForcedDirectorCardId(new StoryDirectorCallSnapshot(command.Source,command.Visit.Key,request,command.Visit));
+   try {selected=Director.Select(request,forcedCardId);rehearsalObserver?.ObserveDirectorSelection(new StoryDirectorSelectionSnapshot(selected?.Id,forcedCardId!=null,forcedCardId,Director.Snapshot.Candidates,command.Visit));}
+   catch {if(forcedCardId!=null)rehearsalObserver?.ObserveDirectorSelection(new StoryDirectorSelectionSnapshot(null,true,forcedCardId,Director.Snapshot.Candidates,command.Visit));throw;}
    finally {PublishDirector();}
    if(selected==null)return;
    try {

@@ -46,4 +46,45 @@ public sealed class FirstContactRehearsalTests {
   var program=DazStoryCompiler.Compile(source,"fixture.dazstory",new Dictionary<string,StoryBindingKind>{{"Absent",StoryBindingKind.Pose}});
   var empty=new StoryContentBindings();var host=new RehearsalStoryHost(program,RehearsalTestSupport.Profile(),RehearsalTestSupport.Kinks,RehearsalTestSupport.Equipment,12,empty,null,new StorySceneBindings(Array.Empty<string>()));var issue=host.ResourceIssue(program.cards.Single());Assert.Contains("Absent",issue);
  }
+ [Fact] public async Task RunThroughStagesSelectedLogicalResultAndPausesBeforeNextInstruction() {
+  var program=DazStoryCompiler.Compile("sequence FirstContact {\nSession.Mood += 1\nSession.Mood += 2\nSession.Mood += 3\n}","Navigation.dazstory");
+  using var session=RehearsalTestSupport.Session(program);var selected=await session.RunThroughSelectedAsync("Navigation.dazstory","FirstContact",1);
+  Assert.Equal(53,session.Host.Session.mood);Assert.Equal(1,selected.ProgramCounter);Assert.Equal(2,session.ReadySnapshot.ProgramCounter);
+  var visit=selected.Visit.Key;await session.BackAsync();await session.RunThroughSelectedAsync("Navigation.dazstory","FirstContact",1);Assert.Equal(visit,session.CompletedSnapshot.Visit.Key);
+ }
+ [Fact] public async Task RunThroughCanChooseRepeatedVisitAndReportsUnreachablePath() {
+  var program=DazStoryCompiler.Compile("sequence FirstContact {\nrepeat 3 {\nSession.Mood += 1\n}\n}","Repeated.dazstory");int pc=Array.FindIndex(program.instructions,i=>i.name=="Session.Mood");
+  using var session=RehearsalTestSupport.Session(program);var completed=await session.RunThroughSelectedAsync("Repeated.dazstory","FirstContact",pc,2);Assert.Equal(52,session.Host.Session.mood);Assert.Equal(2,completed.Visit.Encounter);
+  var error=await Assert.ThrowsAsync<InvalidOperationException>(()=>session.RunThroughSelectedAsync("Repeated.dazstory","FirstContact",pc,4));Assert.Contains("completed",error.Message,StringComparison.OrdinalIgnoreCase);
+ }
+ [Fact] public async Task UnconfiguredRaceWaitsForVisitResponseAndCancellationSettlesNavigation() {
+  var program=DazStoryCompiler.Compile("sequence FirstContact {\nlet result = await wait any {\nUI.Pressed(Ready)\n}\nSession.Mood += 1\n}","Pending.dazstory");
+  using var session=RehearsalTestSupport.Session(program);session.Continue();
+  for(int i=0;i<100&&session.Controller.PendingWait==null;i++)await Task.Delay(5);
+  Assert.NotNull(session.Controller.PendingWait);Assert.False(session.RunTask.IsCompleted);
+  Assert.Throws<InvalidOperationException>(()=>session.SetEventResponse(session.ReadySnapshot.Source,session.ReadySnapshot.ProgramCounter,"Wrong"));
+  session.SetEventResponse(session.ReadySnapshot.Source,session.ReadySnapshot.ProgramCounter,"UI.Pressed:Ready");await session.RunTask;Assert.Equal(51,session.Host.Session.mood);
+  await session.ResetAsync(false);session.Continue();await session.RunTask;Assert.Equal(51,session.Host.Session.mood);
+  using var pending=RehearsalTestSupport.Session(program);pending.Continue();await pending.StopAsync();Assert.True(pending.RunTask.IsCompleted);
+ }
+ [Fact] public void LegacyAndChangedProgramScenariosRequireReview() {
+  Assert.Throws<InvalidOperationException>(()=>RehearsalSession.ImportScenarioJson("{\"seed\":1,\"branches\":[]}"));
+  var program=DazStoryCompiler.Compile("sequence FirstContact {}","Fingerprint.dazstory");
+  Assert.Throws<InvalidOperationException>(()=>RehearsalTestSupport.Session(program,new RehearsalScenario{programFingerprint="different"}));
+ }
+
+ [Fact] public async Task GlobalPoseNavigationUsesOwningContentAfterAuthoredLocomotion() {
+  var root=DazStoryCompiler.Compile("sequence FirstContact {\nawait Lara.LocomoteTo(Mark)\nawait Director.DrawAndExecute(tags: [Warmup])\n}","Root.dazstory",new Dictionary<string,StoryBindingKind>{{"Mark",StoryBindingKind.Location}});
+  var card=DazStoryCompiler.Compile("card PoseCard\ntags [Warmup]\n{\nawait Lara.PersistentPose(GlobalPose)\n}\n","Published.dazstory",new Dictionary<string,StoryBindingKind>{{"GlobalPose",StoryBindingKind.Pose}});
+  var linked=StoryProgramLinker.Link(root,new[]{new StoryLinkUnit("published-guid",card)},"root-guid");
+  var rootFixture=RehearsalTestSupport.Bindings(StoryProgramLinker.Link(root,Array.Empty<StoryLinkUnit>(),"root-guid"));
+  var globalFixture=RehearsalTestSupport.Bindings(linked);var content=new StoryLinkedContent(linked,rootFixture.Content,new Dictionary<string,StoryContentBindings>{{"root-guid",rootFixture.Content},{"published-guid",globalFixture.Content}});
+  var effects=new List<StoryCommand>();using var session=new RehearsalSession(root,"FirstContact",RehearsalTestSupport.Profile(),RehearsalTestSupport.Kinks,RehearsalTestSupport.Equipment,rootFixture.Content,content,globalFixture.Scene,visualEffect:effects.Add);
+  int pc=Array.FindIndex(linked.instructions,i=>i.name=="Lara.PersistentPose");var entry=linked.entries.Single(e=>pc>=e.start&&pc<e.end);
+  var completed=await session.RunThroughSelectedAsync("published-guid",entry.name,pc);
+  Assert.Equal("published-guid",completed.Source.unit);Assert.Equal("Published.dazstory",completed.Source.file);
+  Assert.Equal(new[]{"Lara.LocomoteTo","Lara.PersistentPose"},effects.Where(c=>c.Verb.StartsWith("Lara.")).Select(c=>c.Verb));
+  Assert.Equal("Mark",effects.First().Require("location").String);Assert.Equal("published-guid",effects.Last().Source.unit);Assert.Equal("GlobalPose",effects.Last().Require("pose").String);
+ }
+
 }
