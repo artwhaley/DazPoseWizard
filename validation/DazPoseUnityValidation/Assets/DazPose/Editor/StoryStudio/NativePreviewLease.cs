@@ -132,7 +132,7 @@ namespace DazPose.Editor.Studio
             finally { applying=false; }
         }
         internal void Own(Material material) { materials.Add(material); }
-        public void Sample(AnimationClip clip)
+        public void Sample(AnimationClip clip,float seconds=0)
         {
             if(!applying || !AnimationMode.InAnimationMode(driver))throw new InvalidOperationException("Sampling requires this active lease.");
             if(clip==null)throw new InvalidOperationException("Assign a real PerformerPose clip; no neutral fallback is synthesized.");
@@ -143,12 +143,13 @@ namespace DazPose.Editor.Studio
                 bool supported=binding.type==typeof(Transform) || binding.type==typeof(SkinnedMeshRenderer) && binding.propertyName.StartsWith("blendShape.",StringComparison.Ordinal);
                 if(!supported)throw new InvalidOperationException("INCOMPLETE: unsupported clip property "+binding.path+":"+binding.propertyName);
                 var target=string.IsNullOrEmpty(binding.path)?Context.Lara.transform:Context.Lara.transform.Find(binding.path);
-                if(target==Context.Host.laraFocus || Context.Host.locations.Any(l=>l.placement==target || l.focus==target))
+                if(target==null)throw new InvalidOperationException("Clip '"+clip.name+"' targets missing Lara rig path '"+binding.path+"'. Use the source-bound clip prepared for this saved rig.");
+                if(target==Context.Host.laraFocus || Context.Host.locations.Any(l=>l.placement==target || l.focus!=null && l.focus==target))
                     throw new InvalidOperationException("Pose clip targets an authored anchor; sampling refused.");
             }
             var root=Context.Lara.transform;
             Vector3 position=root.position,scale=root.localScale;Quaternion rotation=root.rotation;
-            try { sampler.GetOrCreate(()=>new NativePoseSampler(Context.Lara.ConfiguredAnimator)).Sample(clip); }
+            try { sampler.GetOrCreate(()=>new NativePoseSampler(Context.Lara.ConfiguredAnimator)).Sample(clip,seconds); }
             finally { root.SetPositionAndRotation(position,rotation);root.localScale=scale; }
 
         }

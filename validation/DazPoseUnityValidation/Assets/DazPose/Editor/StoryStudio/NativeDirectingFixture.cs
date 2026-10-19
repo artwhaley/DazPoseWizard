@@ -33,7 +33,7 @@ namespace DazPose.Editor.Studio
                 throw new InvalidOperationException("Invalid independent fixture identity. Recreate/repair the fixture through its source-only preparation tool.");
             if (value.scenePath != "Assets/__NativeDirectingFixtures/G1_FirstContact.unity"
                 || SceneManager.GetActiveScene().path != value.scenePath)
-                throw new InvalidOperationException("Open only the disposable scene Assets/__NativeDirectingFixtures/G1_FirstContact.unity for G1. Production scenes are refused.");
+                throw new InvalidOperationException("Open the disposable Assets/__NativeDirectingFixtures/G1_FirstContact.unity scene in the isolated project. Production scenes are refused.");
             if (value.codeFiles == null || value.codeFiles.Length == 0) throw new InvalidOperationException("Fixture code sync manifest is missing.");
             var codeText = new StringBuilder();
             foreach (var file in value.codeFiles.OrderBy(f => f.path, StringComparer.Ordinal))

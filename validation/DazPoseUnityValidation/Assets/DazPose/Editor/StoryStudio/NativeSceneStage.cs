@@ -21,7 +21,7 @@ namespace DazPose.Editor.Studio
         { LaraMark=laraMark;CameraMark=cameraMark;PrecedingMark=precedingMark;Pose=pose;Endpoint=endpoint;TrackLara=trackLara;HideBody=hideBody;Material=material; }
     }
     /// <summary>Saved actors and PlayerView only. No interpreter, async gameplay, cloned scene, or custom rendering.</summary>
-    public sealed class NativeSceneStage : IDisposable
+    public sealed partial class NativeSceneStage : IDisposable
     {
         readonly NativePreviewLease lease;
         public NativeStageContext Context=>lease.Context;
@@ -34,6 +34,7 @@ namespace DazPose.Editor.Studio
         public void Apply(NativeStandingProjection projection)
         {
             if(projection==null)throw new ArgumentNullException(nameof(projection));
+            LastSeating=null;
             lease.Apply(()=>Stage(projection));
         }
         void Stage(NativeStandingProjection p)
@@ -50,28 +51,32 @@ namespace DazPose.Editor.Studio
             if(p.Endpoint==NativeStandingEndpoint.Locomote)
                 position.y=p.PrecedingMark!=null?p.PrecedingMark.position.y:c.Lara.transform.position.y;
             c.Lara.transform.SetPositionAndRotation(position,facing);
-            bool hidden=p.Endpoint==NativeStandingEndpoint.StartHidden;
+            Present(p.Endpoint==NativeStandingEndpoint.StartHidden,p.HideBody,p.Material,p.CameraMark,p.TrackLara);
+        }
+        void Present(bool hidden,bool hideBody,PerformerMagicShaderProfile material,Transform cameraMark,bool trackLara)
+        {
+            var c=Context;
             foreach(var renderer in c.Lara.GetComponentsInChildren<Renderer>(true))
             {
                 // Endpoint dissolve requires no residual dissolve block. We never mutate or discard unknown MPB data.
                 EnsureSettledDissolve(renderer);
                 renderer.forceRenderingOff=hidden;
             }
-            if(p.HideBody)foreach(var renderer in c.Body.GetComponentsInChildren<Renderer>(true))renderer.forceRenderingOff=true;
-            if(p.Material!=null)
+            if(hideBody)foreach(var renderer in c.Body.GetComponentsInChildren<Renderer>(true))renderer.forceRenderingOff=true;
+            if(material!=null)
             {
-                p.Material.ValidateConfiguration();
-                if(p.Material.mode==PerformerMaterialMode.GlowyWireframe)
+                material.ValidateConfiguration();
+                if(material.mode==PerformerMaterialMode.GlowyWireframe)
                     foreach(var renderer in c.Lara.GetComponentsInChildren<Renderer>(true).Where(r=>r.enabled && r.gameObject.activeInHierarchy && (r is MeshRenderer || r is SkinnedMeshRenderer)))
                     {
                         var refs=renderer.sharedMaterials;
-                        for(int i=0;i<refs.Length;i++){var clone=new Material(p.Material.wireframeMaterial){hideFlags=HideFlags.HideAndDontSave};lease.Own(clone);refs[i]=clone;}
+                        for(int i=0;i<refs.Length;i++){var clone=new Material(material.wireframeMaterial){hideFlags=HideFlags.HideAndDontSave};lease.Own(clone);refs[i]=clone;}
                         renderer.sharedMaterials=refs;
                     }
             }
             // PlayerView.ResetPerformanceView endpoint only: position lives on player, rotation on ViewRig.
-            c.PlayerRoot.position=p.CameraMark.position;c.ViewRig.rotation=p.CameraMark.rotation;
-            c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(p.TrackLara,p.CameraMark.rotation,c.Host.laraFocus.position,c.Camera.transform.position);
+            c.PlayerRoot.position=cameraMark.position;c.ViewRig.rotation=cameraMark.rotation;
+            c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(trackLara,cameraMark.rotation,c.Host.laraFocus.position,c.Camera.transform.position);
         }
         void RequireAnchor(Transform value,string label)
         {

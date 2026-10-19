@@ -1,0 +1,6 @@
+C:\Users\artwh\OneDrive\Documents\DazPoseWizard\validation\DazPoseUnityValidation\Assets\DazPose\Runtime\Story\Content\StoryCatalogs.cs(21,51): warning CS0649: Field 'CatalogValidation.Header.version' is never assigned to, and will always have its default value 0 [C:\Users\artwh\OneDrive\Documents\DazPoseWizard\tests\DazPose.Player.Tests\DazPose.Player.Tests.csproj]
+  DazPose.Player.Tests -> C:\Users\artwh\OneDrive\Documents\DazPoseWizard\tests\DazPose.Player.Tests\bin\Debug\net10.0\DazPose.Player.Tests.dll
+Test run for C:\Users\artwh\OneDrive\Documents\DazPoseWizard\tests\DazPose.Player.Tests\bin\Debug\net10.0\DazPose.Player.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    24, Skipped:     0, Total:    24, Duration: 604 ms - DazPose.Player.Tests.dll (net10.0)

@@ -8,6 +8,8 @@ namespace UnityEngine
     {
         public float x,y,z;
         public Vector3(float x,float y,float z){this.x=x;this.y=y;this.z=z;}
+        public static Vector3 one=>new(1,1,1);
+        public static Vector3 Scale(Vector3 a,Vector3 b)=>new(a.x*b.x,a.y*b.y,a.z*b.z);
         public static Vector3 up=>new(0,1,0);
         public static Vector3 forward=>new(0,0,1);
         public float sqrMagnitude=>x*x+y*y+z*z;
@@ -22,6 +24,7 @@ namespace UnityEngine
     public struct Quaternion
     {
         public NQuaternion value;
+        public static Vector3 operator *(Quaternion q,Vector3 v){var r=NVector.Transform(new NVector(v.x,v.y,v.z),q.value);return new Vector3(r.X,r.Y,r.Z);}
         public static Quaternion identity=>new(){value=NQuaternion.Identity};
         public static Quaternion LookRotation(Vector3 direction,Vector3 up)
         {
@@ -30,5 +33,5 @@ namespace UnityEngine
             return new(){value=NQuaternion.CreateFromRotationMatrix(new Matrix(r.X,r.Y,r.Z,0,u.X,u.Y,u.Z,0,f.X,f.Y,f.Z,0,0,0,0,1))};
         }
     }
-    public static class Mathf {public static float Abs(float value)=>MathF.Abs(value);}
+    public static class Mathf {public static float Abs(float value)=>MathF.Abs(value);public static float Sqrt(float value)=>MathF.Sqrt(value);}
 }

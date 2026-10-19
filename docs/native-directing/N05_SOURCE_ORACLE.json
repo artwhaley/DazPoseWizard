@@ -1,0 +1,116 @@
+{
+  "recordedUtc": "2026-10-19T19:12:40.133776+00:00",
+  "auditKind": "Read-only YAML/source inspection; not Unity sampling",
+  "hipPaths": [
+    "Lara/Genesis8Female/hip"
+  ],
+  "bakedMotions": [
+    {
+      "motion": "validation\\DazPoseUnityValidation\\Assets\\Production\\Content\\Motions\\Seating\\Sit_Start.asset",
+      "motionSha256": "38672c4a41e5e09b8aeae76a277ceb8ede2c50603f7c8ddfa1fdd588b8c18fa3",
+      "clip": "validation\\DazPoseUnityValidation\\Assets\\Production\\Content\\Motions\\Seating\\Sit_Start.anim",
+      "clipSha256": "83d25178ccb687590e6464e8e00d41bfea268eb34fbd93a52b53b183df6d2308",
+      "clipPathCount": 95,
+      "missingRigPaths": [],
+      "pelvisFirstLastXYZ": [
+        [
+          -8.66347e-05,
+          -0.00019207368
+        ],
+        [
+          1.0484769,
+          0.9391111
+        ],
+        [
+          0.016013138,
+          -0.09671423
+        ]
+      ],
+      "duration": 3.0000002,
+      "sourceEntryPhase": 0.0
+    },
+    {
+      "motion": "validation\\DazPoseUnityValidation\\Assets\\Production\\Content\\Motions\\Seating\\Sit_CrossLegs_Start.asset",
+      "motionSha256": "67fa9ef8e0699db0f7f3163e3109034d1acd319cfa3d22bc1f0f3639d92143a5",
+      "clip": "validation\\DazPoseUnityValidation\\Assets\\Production\\Content\\Motions\\Seating\\Sit_CrossLegs_Start.anim",
+      "clipSha256": "a4bf1b295e267e44ffd6fddc4ac5fa24f26dbbde5cf03308b2a29bb6ddc62e5a",
+      "clipPathCount": 95,
+      "missingRigPaths": [],
+      "pelvisFirstLastXYZ": [
+        [
+          -0.00019207368,
+          -0.008644917
+        ],
+        [
+          0.9391111,
+          0.9186549
+        ],
+        [
+          -0.09671423,
+          -0.12535626
+        ]
+      ],
+      "duration": 2.0,
+      "sourceEntryPhase": 0.0
+    },
+    {
+      "motion": "validation\\DazPoseUnityValidation\\Assets\\Production\\Content\\Motions\\Seating\\Sit_CrossLegs_Loop.asset",
+      "motionSha256": "2195654be31ce340653285ac6adac45df1b12240f693162b01e41fa1346edec3",
+      "clip": "validation\\DazPoseUnityValidation\\Assets\\Production\\Content\\Motions\\Seating\\Sit_CrossLegs_Loop.anim",
+      "clipSha256": "38179c51bcdfb61876d44a65f4b444f38e2f56e42ba93de2de566f404b398621",
+      "clipPathCount": 95,
+      "missingRigPaths": [],
+      "pelvisFirstLastXYZ": [
+        [
+          -0.008643368,
+          -0.008643368
+        ],
+        [
+          0.94614124,
+          0.94614124
+        ],
+        [
+          -0.12533292,
+          -0.12533292
+        ]
+      ],
+      "duration": 13.000001,
+      "sourceEntryPhase": 0.0012804097
+    }
+  ],
+  "canonicalDefaultLoopHipMinusSitStartContact": [
+    -0.00845129432,
+    0.007030140000000018,
+    -0.02861868999999999
+  ],
+  "canonicalUnitScaleHipSeatGapMeters": 0.030657407937054362,
+  "defaultResidualToleranceMeters": 0.01,
+  "persistentHipSeatToleranceMeters": 0.001,
+  "defaultRule": "Keep SitStart landing root; sample actual CrossLegsLoop frame zero. Loop clip frames already reordered by baker; do not apply sourceEntryPhase again.",
+  "persistentRule": "Set captured seat yaw; sample source-bound Lounging; translate root by SeatAnchor.position minus actual sampled hip.position.",
+  "fixtureScenePath": ".dazposewizard\\native-directing\\G1Project\\Assets\\__NativeDirectingFixtures\\G1_FirstContact.unity",
+  "fixtureSceneSha256BeforeSync": "37be5c675563d117029cf7c1be6a583fb48ba06a426914bb69adfc5507dc95ab",
+  "protectedReferences": [
+    {
+      "path": "validation\\DazPoseUnityValidation\\Assets\\Production\\Performers\\Lara.prefab",
+      "sha256": "0fd83904d9b1985c40f8841f25211b88507dda83dbd0f7571ba4d2e26e49cb06"
+    },
+    {
+      "path": "validation\\DazPoseUnityValidation\\Assets\\Production\\Environments\\Void\\Prefabs\\ValidatedLoungeSeat.prefab",
+      "sha256": "80dab224c00eeaa11cf8ce185c2dec453f2aeaeffa9b0c658331ca4292437b86"
+    },
+    {
+      "path": "validation\\DazPoseUnityValidation\\Assets\\Production\\Content\\Motions\\Seating\\KawaiiSeatingProfile.asset",
+      "sha256": "8ad057d18faf11f040b3c3c8b61b29a43f15ae84cbd820bda6d936d37ee95b16"
+    },
+    {
+      "path": "validation\\DazPoseUnityValidation\\Assets\\Production\\Story\\Programs\\FirstContact.dazstory",
+      "sha256": "9a4213b08f0234e6627c40fee004a1ff98cd474cf28aae6c082c1c937985f924"
+    },
+    {
+      "path": "validation\\DazPoseUnityValidation\\Assets\\Production\\Story\\Programs\\FirstContact.bindings.asset",
+      "sha256": "272edbfafeb2b44c039a8e4a4500813375e84698f1f086fafa890303846b762b"
+    }
+  ],
+  "unityOperatedByExecutor": false
+}

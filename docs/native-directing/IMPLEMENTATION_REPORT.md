@@ -1,6 +1,6 @@
 # Native directing execution report — October 19, 2026
 
-**Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766` (matches revised packet). **Overall:** PARTIAL. **Workflow:** G2 PASS confirmed by Art after the v2 repair (`c8afbc2`). Next: N05 seating → mandatory G3. G1/G2 are accepted; G3/G4 remain pending.
+**Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766` (matches revised packet). **Overall:** PARTIAL. **Workflow:** WAITING ON ART (G3). G2 PASS confirmed after v2 repair c8afbc2. N05 source/diagnostic is delivered; N06–N11 are held pending G3. G1/G2 remain accepted; G3/G4 are pending.
 
 ## Ticket and manual gate ledger
 
@@ -11,13 +11,14 @@
 | N02 | Source implemented; managed restoration regressions pass | G2 PASS — additional seat/material families remain provisional until G3/G4 | Exclusive lease/driver, per-property restore, save/lifecycle callbacks, guarded editor writers |
 | N03 | Source implemented; extracted camera formula parity checked | G2 PASS — Art reported | Real PlayerView root/rig adapter, actual camera origin, post-sample focus |
 | N04 | Source implemented; seven assemblies compile | G2 PASS — standing/camera; later material proof pending G4 | Real Lara manual-graph sampling, standing/visibility/material adapter and G2 fixture |
-| N05–N11 | NOT STARTED | NOT RUN | Next N05 → G3; N06–N10 → G4 |
+| N05 | Source implemented; managed geometry/oracle checks and seven source compiles pass | NOT RUN — G3 requested | Distinct baked default and sampled-hip seating adapters; G3 native save/contact proof |
+| N06–N11 | NOT STARTED | NOT RUN | G3 required before N06; G4 final regression remains mandatory |
 
 | Gate | Art action | Response / evidence | Native status | Dependency |
 |---|---|---|---|---|
 | G1 | G1_ART_HANDOFF.md, real camera Shift -> observe Game -> Restore -> observe -> Export | Art: "Pass… The camera shifted correctly. We're good to proceed… Continue." Screenshots explicitly declined; verbal PASS accepted. No exported restoration report supplied. | PASS — user reported | N02 |
 | G2 | G2_ART_HANDOFF.md: standing/camera/drag + normal and forced save + Undo/Stop/reopen | Initial run failed and was repaired in c8afbc2. Art then reported: "Okay, success this time." Accepted as G2 PASS; no screenshots or exported native report supplied | PASS — user reported | N05 |
-| G3 | Default seating and persistent sampled-hip proof after N05 | Not requested yet | NOT RUN | N06 |
+| G3 | G3_ART_HANDOFF.md: A default CrossLegs, B persistent Lounging, C Main seated dissolve; live anchors, scale and save/Undo/Stop | Source-bound diagnostic and current code sync prepared; no screenshots required | NOT RUN / WAITING ON ART | N06 |
 | G4 | Full regression during N10 | Not requested yet | NOT RUN | N11 final acceptance |
 
 ## Delivered source
@@ -66,3 +67,13 @@ Repair validation: **223 managed tests PASS** (90 Story, 24 Player, 40 Rehearsal
 ## G2 acceptance after repair
 
 Art reported: "Okay, success this time. What's our next sprint > gate?" This supersedes the failed v1 gate disposition while preserving its evidence. G2 is accepted from the explicit user report for repaired v2 code c8afbc2; no new screenshots or repeat approval requested. No native diagnostic export was supplied, and no executor Unity operation occurred. The next implementation is N05 (default SitAt, persistent seated pose, seated dissolve and live seat/contact anchors), followed by mandatory Art-operated G3. N05 has not begun in this status-answer turn. G3/G4 still govern their additional property families.
+
+## N05 seating delivery — G3 requested
+
+NativeSceneStage now resolves real PerformerSeat frames/profile and samples default CrossLegs from its actual rebased loop while retaining the baked SitStart landing root. Persistent Lounging and Main seated dissolve separately solve from the actual sampled hip. Geometry errors, readiness and posture metadata are diagnosed explicitly. The native stage preserves anchors and performs camera tracking after pose/contact placement. The retained G2 sampling graph now supports explicit sample seconds; existing standing calls remain at zero. No runtime state-machine policy, rig/prefab/content, baked data or artist setting was changed.
+
+G3 Seating Proof provides the three source-bound endpoints, native seat/approach/chair/camera/focus selection, live mark and parent-matrix updates, contact diagnostics, a ledger-owned temporary nonuniform actor-scale probe, and forced/normal save evidence per endpoint family. Default's measured baked hip gap (0.0306574 m at canonical unit scale) is distinguished from its 0.01 m baked-geometry residual tolerance; Lounging uses 0.001 m direct hip-to-seat tolerance. G3 must validate rendering, real contact, dirty/Undo/override preservation, scale and save callback behavior; no native PASS is inferred from source or math tests.
+
+See N05_SOURCE_NOTES.md, N05_SOURCE_ORACLE.json, N05_* evidence and G3_ART_HANDOFF.md. Source work stops here at G3; N06 transport has not begun. The user remains the Unity operator. No screenshots required, no launch/Play/build/player/hardware by the executor, local commits only and no push.
+
+Final N05 source evidence: **244 managed tests PASS** (90 Story, 24 Player, 61 Rehearsal including 21 new seating/scale/oracle checks, 69 Application), zero failures/skips. All seven standalone source assembly compiles PASS. Static asset audit: zero issues, duplicate GUIDs or missing metas. All 7,211 protected original files unchanged. Native sampling, visual contact and Unity save/Undo acceptance are pending Art G3.

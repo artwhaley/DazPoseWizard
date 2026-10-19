@@ -28,7 +28,7 @@ namespace DazPose.Editor.Studio
             }
             catch { if(graph.IsValid())graph.Destroy();throw; }
         }
-        public void Sample(AnimationClip clip)
+        public void Sample(AnimationClip clip,float seconds=0)
         {
             if(!graph.IsValid())throw new InvalidOperationException("Native preview's owned sampling graph was destroyed externally.");
             if(currentClip!=clip)
@@ -39,9 +39,10 @@ namespace DazPose.Editor.Studio
                 playable.SetApplyFootIK(false);playable.SetApplyPlayableIK(false);
                 output.SetSourcePlayable(playable);currentClip=clip;
             }
-            playable.SetTime(0);output.SetTarget(animator);graph.Play();
+            float time=Mathf.Clamp(seconds,0,clip.length);
+            playable.SetTime(time);output.SetTarget(animator);graph.Play();
             AnimationMode.BeginSampling();
-            try { AnimationMode.SamplePlayableGraph(graph,0,0); }
+            try { AnimationMode.SamplePlayableGraph(graph,0,time); }
             finally { AnimationMode.EndSampling(); }
         }
         public void Suspend()
