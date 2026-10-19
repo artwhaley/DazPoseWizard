@@ -1,3 +1,7 @@
+# Current UI and Studio ownership
+
+Source-first `.dazstory` import and source-owned companions are managed by SourceBindingReconciler. Scene Director Studio owns only disposable visual/rehearsal data unless the author explicitly changes a typed binding or commits a mark. Shared runtime UI prefabs/theme are under `Assets/Production/UI`; `Assets/Resources/DazPose/ProductionUi.asset` connects them. Settings and story use one profile presenter/transaction path. See [Studio guide](../story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md) and [current status](../p2-p3/PROGRESS.md). Native testing is pending; no live execution was performed.
+
 # Current Unity scene and content ownership
 
 The F-series follow-up retired all eleven obsolete feature scenes plus two generated-only preview scenes after caller extraction. Current asset inventory: fifteen scenes; no development-lab copies. See [active progress](../p2-p3/PROGRESS.md), [retirement report](../p2-p3/PHASE1_RETIREMENT_REPORT.md) and [complete scene matrix](../p2-p3/PHASE1_SCENE_DISPOSITION.csv). Source compiles/managed checks pass; new native Editor checks and human visual acceptance remain pending under the latest no-program/no-Unity-control boundary. Phase 2 UI and Phase 3 Studio implementation follow.

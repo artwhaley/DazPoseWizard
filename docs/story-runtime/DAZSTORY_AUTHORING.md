@@ -1,10 +1,12 @@
 # Authoring with .dazstory
 
+Current generic authoring workflow: [Scene Director Studio guide](SCENE_DIRECTOR_STUDIO_GUIDE.md). Source-first import derives typed binding rows automatically; use Studio asset fields and visual marks. Manual serialized arrays/GUID entry and mandatory dialogue refresh are superseded. Native Studio/visual acceptance is pending; see [current execution](../p2-p3/PROGRESS.md).
+
 The revised D5.5–D8 stack is the current story plan. The complete user oracle is [FIRST_CONTACT_D8_ORACLE.md](FIRST_CONTACT_D8_ORACLE.md); the complete execution packet is [REVISED_EXECUTION_STACK.md](d5_5-d8/REVISED_EXECUTION_STACK.md).
 
 ## Current full-session work
 
-D6-D8 is implemented; Task 1 cleanup is active and final manual-testing readiness is pending. See [cleanup status](../cleanup-task1/EXECUTION_REPORT.md). The user controls testing; do not start Play or build/launch a standalone player without a new explicit request. Six imported pose wrappers and an animated engineering Disapproval gesture are assigned. MainPosition1 and Bedside are ordinary movable scene marks. The full-session setup clears the former Warmup preview cutoff. See [the current handoff](D6_D8_HANDOFF.md) for the verified playback/build results and user visual approval status.
+D6-D8 remains implemented. The October 18 cleanup/UI/Studio packet is the active delivery; see [current status](../p2-p3/PROGRESS.md). The user controls testing; do not start Play or build/launch a standalone player without a new explicit request. Six imported pose wrappers and an animated engineering Disapproval gesture are assigned. MainPosition1 and Bedside are ordinary movable scene marks. The full-session setup clears the former Warmup preview cutoff. See [the current handoff](D6_D8_HANDOFF.md) for the verified playback/build results and user visual approval status.
 
 ## Global cards and explicit local beats
 

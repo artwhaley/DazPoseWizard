@@ -18,7 +18,7 @@ The initial C00–C10 delivery was partial. This follow-up now retires all eleve
 
 Actually deleted scene/meta files: **22**, **5,482,787 bytes**. No moves or prior Task 1 savings are counted. `F03_SCENE_RETIREMENT_PLAN.json` records exact hashes/bytes/recovery. Source-only wrappers/orchestrators are measured separately in F01_RETIRED_ORCHESTRATION.json and F03_RETIRED_WRAPPERS.json.
 
-Guards passed: original scene/meta recovery hashes; tracked-version recovery; zero incoming current Assets GUID references (including metas); zero current .cs/.ps1/.py target-path consumers. Source compile after retirement: all seven assemblies PASS with warnings as errors. All 669 current protected files remain byte-identical; GUID/meta audit has no duplicates/missing metas.
+Guards passed: original scene/meta recovery hashes; tracked-version recovery; zero incoming current Assets GUID references (including metas); zero current .cs/.ps1/.py target-path consumers. Source compile after retirement: all seven assemblies PASS with warnings as errors. At this eleven-scene checkpoint the protected inventory was unchanged; the final audit below accounts separately for eight authorized disposable removals and the later MainMenu UI migration; GUID/meta audit has no duplicates/missing metas.
 
 Native Editor diagnostics, preview rendering, AssetDatabase disappearance and open/close/Undo checks: **NOT RUN under the latest user no-program/no-Unity-control boundary**. No source inspection or compilation is described as native runtime success. Existing historical Editor results are not reused as new passes.
 

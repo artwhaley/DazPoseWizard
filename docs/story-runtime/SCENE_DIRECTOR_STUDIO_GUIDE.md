@@ -1,0 +1,41 @@
+# Scene Director Studio
+
+Open **DazPose > Story > Scene Director Studio** in Unity Edit Mode. This delivery has passed source compilation and managed tests; its native Editor rendering, asset import, input and Undo checks have not been run. The user controls Unity testing.
+
+## Create and bind a source
+
+Create a performance scene with **DazPose > Scene > New Performance Scene...**, which copies the saved art-only Void composition. Write choreography in `.dazstory`; publish selectable tagged cards under `Assets/Production/Story/Cards/`. No scene card-membership list is needed.
+
+Import analyzes source before any asset assignments exist. A delayed reconciliation creates the same-basename `.bindings.asset` once and adds typed empty rows. Existing assignments and unused rows are retained. Choose the imported source in Studio; **Sync source bindings** is a recovery action, not a required hand-editing step. Syntax errors are distinct from unbound requirements.
+
+Use the flow tree to select a source instruction. Clicking its occurrence opens the original source line. Filter requirements by Unbound, Locations, Audio or Poses. Drag the correct asset type into its field. Pose fields accept generated **PerformerPose** wrappers, not raw `.anim`; use the normal DAZ pose importer to create wrappers. Set the pose's World posture explicitly where appropriate. Audio rows show the exact transcript; changing text creates a new hash/empty audio row while the old assignment remains retained. Asset changes use Unity serialized properties/Undo. New companions store source ownership by GUID; source moves retain that identity.
+
+Select a pose or gesture and use its preview/time slider. Audio uses Unity's contextual waveform/preview controls and explicit Stop. Motion displays the imported position curve and cannot output to hardware. Magic changes only cloned preview materials.
+
+## Visual stage and locations
+
+Open the saved story scene and select its **StorySceneBindings** host. **Build preview** copies its visual hierarchy, actual Lara/prepared male meshes, material instances, lighting and a fixed particle snapshot into an isolated preview owner. It never instantiates gameplay scripts. Orbit by dragging; scroll to zoom. **Player camera** uses the saved/virtual camera shot; orbit view shows a shortened camera frustum.
+
+A source without an open story scene can inspect content/prefab visuals. Loading a closed `.unity` composition directly is not implemented: open that scene yourself first. The tool intentionally does not load a closed scene with potentially side-effecting editor scripts. Volume post-processing, evaluated irregular contact geometry, live grip solving and animated effect timing are not reproduced; the preview reports those limits. Nominal measured contact radii and seat/placement/focus anchors are shown.
+
+Choose a Location requirement. **Attach missing location records** adds empty typed records only when explicitly requested. **Pick existing** accepts objects from the same saved scene. **Create Mark at Preview Placement** creates the selected source location under **Authoring Marks**. No random coordinates or marks are generated automatically.
+
+Enable **Edit location** to change a draft. Use position/rotation fields, optional Scene view handles, or Shift-drag in the Studio viewport to place the draft on its horizontal plane; Ctrl+Shift-drag changes yaw. **Preview arrival** moves the cloned actor only. **Align to preview view** captures the view pose as the draft. Seat approach, pelvis, focus and seating profile remain separate fields; framing at a pelvis anchor alone does not apply a seated pose. Select the authored sitting wrapper to inspect it.
+
+**Commit Mark** is the only movement writeback: it records Undo and dirties the intended uniquely bound mark under Authoring Marks. Save the scene yourself. Merely selecting, previewing or stepping never commits placement. Existing FirstContact marks are preserved. Seat/focus assignments and binding existing objects are explicit Undo-supported edits.
+
+## Rehearsal
+
+Choose a sequence and seed, then **Start / Reset**. Studio runs the canonical StoryMachine and StoryDirector with a detached profile/world/contract and virtual effects. It never starts GameApplication, persists a profile or connects hardware. The initial profile is isolated author test data; it does not read the user's profile.
+
+**Step**, **Continue**, **Pause**, **Run to selected**, **Back** and Reset operate on the same flat program. Back resets and deterministically replays; it does not reverse native animation effects. State shows detached host values, locals and invocation stack. Branch controls explicitly force the chosen arm; traces distinguish forced/computed decisions.
+
+At a paused Director call, candidates come from the canonical eligibility/weight calculation, including current requirements/resources/cooldowns. Force a candidate with its button. Ineligible cards are refused. A successful forced selection consumes exactly one normal selection draw. Global tagged sources are linked from the existing application index; untagged local beats remain explicit.
+
+At a race instruction, choose a source-derived simulated event. At a UI action wait, simulate the authored action. This supports the early climax response and natural motion-end/loop-then-response paths. Prompt/catalog inputs, branch/event/card overrides and seeds can be saved/loaded as test-only scenario JSON. Unknown commands fail with source context; effects that are logical only say so. Audio is not automatically started during fast replay; use the explicit Audio requirement preview.
+
+Stop or window/scene/reload teardown cancels rehearsal gates, listeners and owned preview work. Source changes are refreshed safely; opening Studio alone does not reconcile or dirty assets.
+
+## Test the delivery yourself
+
+See [manual acceptance](../p2-p3/MANUAL_ACCEPTANCE.md). Open `Assets/Production/Scenes/MainMenu.unity`, let Unity import/compile, and start Play yourself. Verify navigation and the same profile editors in Settings and FirstContact. Native reference/layout/Undo checks and visual approval are pending; managed PASS does not substitute for them.

@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "plan": "AUTHORING_READINESS_BUILD_PLAN.md",
   "approvedDate": "2026-10-08",
-  "status": "task1_cleanup_in_progress_not_ready_for_manual_testing",
+  "status": "source_delivery_prepared_pending_native_and_manual_acceptance",
   "currentDay": null,
-  "activePacket": "newtickets/DazPoseWizard_Task1_Cleanup_Execution_Packet/START_HERE.md",
+  "activePacket": "newtickets/DazPoseWizard_Execution_Packet/START_HERE.md",
   "days": {
     "1": "complete",
     "2": "complete_with_accepted_runner_omission",
@@ -1003,7 +1003,7 @@
   },
   "phase1CompletionPhase2Phase3": {
     "packet": "newtickets/DazPoseWizard_Execution_Packet/START_HERE.md",
-    "status": "executing_U01_after_cleanup_source_implementation",
+    "status": "source_implemented_managed_pass_native_and_visual_pending",
     "progress": "docs/p2-p3/PROGRESS.md",
     "startingHead": "935fbd23a9aecf90a495176503ed8bd0337c22c4",
     "phase1RetiredScenes": 13,
@@ -1011,6 +1011,18 @@
     "phase1RemovedAssetBytes": 102258049,
     "nativeEditorChecks": "NOT RUN by latest no-program/no-Unity-control instruction",
     "manualVisualApproval": "PENDING",
-    "push": "not authorized for this packet"
+    "push": "not authorized for this packet",
+    "managedStoryTestsPassed": 86,
+    "managedPlayerTestsPassed": 20,
+    "managedRehearsalTestsPassed": 8,
+    "managedAppTestsPassed": 69,
+    "unitySourceAssembliesCompiled": 7,
+    "remainingSourceLimitations": [
+      "Saved scene must be open for its Studio visual composition; no closed-scene snapshot loader."
+    ],
+    "manualTestingReady": "prepared for user-controlled testing; native import/render/input/Undo unverified",
+    "implementationSha": "980ed44c095ecb56e62fc7a25345e4c590ab3de9",
+    "finalGuidCount": 4453,
+    "sourceCompileOnly": true
   }
 }
