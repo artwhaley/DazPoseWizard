@@ -19,6 +19,7 @@ namespace DazPose.Story {
  }
  [CreateAssetMenu(menuName="DazPose/Story/Content Bindings")]
  public sealed class StoryContentBindings : ScriptableObject {
+  [HideInInspector] public string ownerSourceGuid;
   public StorySceneSymbol[] sceneSymbols=Array.Empty<StorySceneSymbol>();
   public StoryPoseContent[] poses=Array.Empty<StoryPoseContent>();
   public StoryGestureContent[] gestures=Array.Empty<StoryGestureContent>();

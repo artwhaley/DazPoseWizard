@@ -43,3 +43,6 @@ validation/DazPoseUnityValidation/Assets/Generated/
 
 # Hand-authored profile transaction test project
 !tests/DazPose.Player.Tests/DazPose.Player.Tests.csproj
+
+# Hand-authored isolated rehearsal test project
+!tests/DazPose.Rehearsal.Tests/DazPose.Rehearsal.Tests.csproj

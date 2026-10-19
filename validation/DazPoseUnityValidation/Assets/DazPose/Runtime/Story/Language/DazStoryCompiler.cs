@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 namespace DazPose.Story.Language {
- public static class DazStoryCompiler {
+ public static partial class DazStoryCompiler {
   public static CompiledStoryProgram Compile(string source,string file,IReadOnlyDictionary<string,StoryBindingKind> symbols=null,bool allowExternalCards=false) => new Builder(file,symbols,allowExternalCards).Compile(new StoryParser(source,file).Parse());
   sealed class Builder {
    readonly string file;

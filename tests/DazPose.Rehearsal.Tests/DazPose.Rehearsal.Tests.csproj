@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/*.cs" Link="Runtime/Language/%(Filename)%(Extension)" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfile.cs" Link="Runtime/PlayerProfile.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfileJson.cs" Link="Runtime/PlayerProfileJson.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfileService.cs" Link="Runtime/PlayerProfileService.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/ProfileData.cs" Link="Runtime/ProfileData.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/PlayerWorldState.cs" Link="Runtime/PlayerWorldState.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/SessionState.cs" Link="Runtime/SessionState.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/SessionContract.cs" Link="Runtime/SessionContract.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/KinkCatalog.cs" Link="Runtime/KinkCatalog.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/KinkDefinition.cs" Link="Runtime/KinkDefinition.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/EquipmentCatalog.cs" Link="Runtime/EquipmentCatalog.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/EquipmentCompatibility.cs" Link="Runtime/EquipmentCompatibility.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/EquipmentDefinition.cs" Link="Runtime/EquipmentDefinition.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Content/StoryCatalogs.cs" Link="Runtime/StoryCatalogs.cs" Condition="Exists('../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Content/StoryCatalogs.cs')" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Serialization/StoryArgument.cs" Link="Runtime/StoryArgument.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Serialization/StoryValue.cs" Link="Runtime/StoryValue.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/RehearsalStoryHost.cs" Link="Editor/RehearsalStoryHost.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/RehearsalSession.cs" Link="Editor/RehearsalSession.cs" />
+    <Content Include="../../validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory" Link="FirstContact.dazstory" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../validation/DazPoseUnityValidation/Assets/Production/Story/Cards/FirstContactEngineering.dazstory" Link="FirstContactEngineering.dazstory" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../validation/DazPoseUnityValidation/Assets/Production/Story/Catalogs/kink-catalog.json" Link="kink-catalog.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../validation/DazPoseUnityValidation/Assets/Production/Story/Catalogs/equipment-catalog.json" Link="equipment-catalog.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

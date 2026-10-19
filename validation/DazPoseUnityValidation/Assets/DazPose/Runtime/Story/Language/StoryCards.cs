@@ -76,6 +76,19 @@ namespace DazPose.Story.Language {
  }
  public interface IStoryDirectorObserver {void ObserveDirector(DirectorSnapshot snapshot,CardExecutionContext context);}
  public interface ICardWeightContributor {double Multiplier(CardDefinition card,CardHistory history);}
+ public sealed class StoryCardSelectionCandidate {
+  public string Id {get;} public double FinalWeight {get;}
+  internal StoryCardSelectionCandidate(string id,double finalWeight) {Id=id;FinalWeight=finalWeight;}
+ }
+ public interface IStoryCardSelectionPolicy {string Select(IReadOnlyList<StoryCardSelectionCandidate> eligible,double draw,string forcedCardId);}
+ public sealed class CanonicalStoryCardSelectionPolicy : IStoryCardSelectionPolicy {
+  public string Select(IReadOnlyList<StoryCardSelectionCandidate> eligible,double draw,string forcedCardId) {
+   if(forcedCardId!=null) {var forced=eligible.SingleOrDefault(c=>c.Id==forcedCardId);if(forced==null)throw new InvalidOperationException("Cannot force card '"+forcedCardId+"': it is not an eligible positive-weight candidate.");return forced.Id;}
+   double sum=eligible.Sum(c=>c.FinalWeight);double remaining=draw*sum;var selected=eligible[eligible.Count-1];
+   foreach(var candidate in eligible) {remaining-=candidate.FinalWeight;if(remaining<0) {selected=candidate;break;}}
+   return selected.Id;
+  }
+ }
  public sealed class StoryDirector {
   readonly CompiledStoryProgram program;
   readonly Func<int,StoryData> evaluate;
@@ -86,14 +99,11 @@ namespace DazPose.Story.Language {
   public CardHistory History {get;}=new CardHistory();
   public DirectorSnapshot Snapshot {get;private set;}=new DirectorSnapshot();
   public readonly List<ICardWeightContributor> WeightContributors=new List<ICardWeightContributor>();
+  public IStoryCardSelectionPolicy SelectionPolicy {get;set;}=new CanonicalStoryCardSelectionPolicy();
   int selectionsWithoutProgress;
   public StoryDirector(CompiledStoryProgram program,Func<int,StoryData> evaluate,Func<string,StoryData> read,StorySessionRandom random,Action<string> trace,Func<CardDefinition,string> resourceIssue=null) {this.program=program;this.evaluate=evaluate;this.read=read;this.random=random;this.trace=trace;this.resourceIssue=resourceIssue;CardCatalog.Validate(program);}
-  public CardDefinition Select(CardSelectionRequest request) {
+  CardCandidate[] Candidates(CardSelectionRequest request,bool traceCandidates) {
    if(double.IsNaN(request.Intensity) || double.IsInfinity(request.Intensity) || request.Intensity<=0)throw new InvalidOperationException("Card intensity must be finite and positive.");
-   Snapshot=new DirectorSnapshot {Query=request.ToString(),Recent=History.Recent.ToArray()};
-   trace("Director query: "+request+"; phase "+request.Phase+"; completion "+request.Completion+"/"+request.CompletionTarget+"; intensity "+request.Intensity+".");
-   if(request.EquipmentRequested && request.EquipmentIds.Length==0) {Snapshot.Outcome="Optional equipment beat skipped: no prepared equipment.";trace(Snapshot.Outcome);return null;}
-   if(History.SelectionCount>=4096)throw new InvalidOperationException("Director stopped after 4096 selections; check progress and loop conditions.");
    var candidates=new List<CardCandidate>();
    foreach(var card in program.cards) {
     var candidate=new CardCandidate {Id=card.Id};candidates.Add(candidate);
@@ -123,16 +133,40 @@ namespace DazPose.Story.Language {
       candidate.Eligible=weight>0;candidate.FinalWeight=weight;if(weight==0)candidate.Reason="Final selection weight is zero.";
      }
     }
-    trace("Director considered "+candidate+".");
+    if(traceCandidates)trace("Director considered "+candidate+".");
    }
-   Snapshot.Candidates=candidates.ToArray();
+   return candidates.ToArray();
+  }
+  public DirectorSnapshot Inspect(CardSelectionRequest request) {
+   if(request==null)throw new ArgumentNullException(nameof(request));
+   var result=new DirectorSnapshot {Query=request.ToString(),Recent=History.Recent.ToArray()};
+   if(request.EquipmentRequested && request.EquipmentIds.Length==0) {result.Outcome="Optional equipment beat skipped: no prepared equipment.";return result;}
+   if(History.SelectionCount>=4096) {result.Outcome="Director stopped after 4096 selections; check progress and loop conditions.";return result;}
+   result.Candidates=Candidates(request,false);
+   var eligible=result.Candidates.Where(c=>c.Eligible).ToArray();
+   result.Outcome=eligible.Length==0 ? "No eligible positive-weight cards." : request.RequireProgress && !eligible.Any(c=>program.cards.Single(d=>d.Id==c.Id).Progress>0) ? "No eligible positive-progress card." : "Inspection only; no card selected.";
+   return result;
+  }
+  public CardDefinition Select(CardSelectionRequest request,string forcedCardId=null) {
+   if(request==null)throw new ArgumentNullException(nameof(request));
+   if(double.IsNaN(request.Intensity) || double.IsInfinity(request.Intensity) || request.Intensity<=0)throw new InvalidOperationException("Card intensity must be finite and positive.");
+   Snapshot=new DirectorSnapshot {Query=request.ToString(),Recent=History.Recent.ToArray()};
+   trace("Director query: "+request+"; phase "+request.Phase+"; completion "+request.Completion+"/"+request.CompletionTarget+"; intensity "+request.Intensity+".");
+   if(request.EquipmentRequested && request.EquipmentIds.Length==0) {Snapshot.Outcome="Optional equipment beat skipped: no prepared equipment.";trace(Snapshot.Outcome);return null;}
+   if(History.SelectionCount>=4096)throw new InvalidOperationException("Director stopped after 4096 selections; check progress and loop conditions.");
+   var candidates=Candidates(request,true).ToList();Snapshot.Candidates=candidates.ToArray();
    var eligible=candidates.Where(c=>c.Eligible).ToArray();
+   if(forcedCardId!=null && !eligible.Any(c=>c.Id==forcedCardId)) {
+    var rejected=candidates.SingleOrDefault(c=>c.Id==forcedCardId);Snapshot.Outcome="FORCED choice refused: card '"+forcedCardId+"' is not an eligible positive-weight candidate"+(rejected?.Reason==null ? "." : "; "+rejected.Reason);trace(Snapshot.Outcome);
+    throw new InvalidOperationException(Snapshot.Outcome);
+   }
    if(eligible.Length==0 || request.RequireProgress && !eligible.Any(c=>program.cards.Single(d=>d.Id==c.Id).Progress>0))
     throw new InvalidOperationException(request.Phase+" cannot advance: "+eligible.Length+" eligible cards"+(request.RequireProgress ? " with no eligible positive-progress path" : "")+" for "+request+"; completion "+request.Completion+"/"+request.CompletionTarget+".");
-   double sum=eligible.Sum(c=>c.FinalWeight);if(double.IsInfinity(sum) || sum<=0)throw new InvalidOperationException("Director selection weight total must be finite and positive.");double draw=random.Selection.NextDouble()*sum;var selected=eligible.Last();
-   foreach(var candidate in eligible) {draw-=candidate.FinalWeight;if(draw<0) {selected=candidate;break;}}
-   Snapshot.Selected=selected.Id;Snapshot.Outcome="Running selected card.";trace("Director selected "+selected.Id+".");
-   return program.cards.Single(c=>c.Id==selected.Id);
+   double sum=eligible.Sum(c=>c.FinalWeight);if(double.IsInfinity(sum) || sum<=0)throw new InvalidOperationException("Director selection weight total must be finite and positive.");double draw=random.Selection.NextDouble();string selectedId;
+   try {selectedId=SelectionPolicy.Select(Array.AsReadOnly(eligible.Select(c=>new StoryCardSelectionCandidate(c.Id,c.FinalWeight)).ToArray()),draw,forcedCardId);if(selectedId==null || !eligible.Any(c=>c.Id==selectedId))throw new InvalidOperationException("Selection policy returned a card outside the canonical eligible set.");}
+   catch(Exception error) {if(forcedCardId!=null){Snapshot.Outcome="FORCED choice refused: "+error.Message;trace(Snapshot.Outcome);}throw;}
+   Snapshot.Selected=selectedId;Snapshot.Outcome=forcedCardId==null ? "Running selected card." : "FORCED rehearsal choice; running selected card.";trace((forcedCardId==null ? "Director selected " : "Director FORCED ")+selectedId+".");
+   return program.cards.Single(c=>c.Id==selectedId);
   }
   public double Complete(CardDefinition card,double pacing) {
    if(double.IsNaN(pacing) || double.IsInfinity(pacing) || pacing<=0)throw new InvalidOperationException("Pacing multiplier must be finite and positive.");

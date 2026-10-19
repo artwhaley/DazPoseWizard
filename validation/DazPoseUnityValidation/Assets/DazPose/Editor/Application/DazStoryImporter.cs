@@ -13,9 +13,13 @@ namespace DazPose.Editor {
    string bindingPath=Path.ChangeExtension(context.assetPath,"bindings.asset").Replace('\\','/');
    try {
     context.DependsOnSourceAsset(bindingPath);
-    asset.content=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(bindingPath);
+    asset.content=SourceBindingReconciler.FindOwner(asset.sourceIdentity,bindingPath);
+    if(asset.content!=null)context.DependsOnSourceAsset(AssetDatabase.GetAssetPath(asset.content));
     if(asset.content==null) {asset.content=ScriptableObject.CreateInstance<StoryContentBindings>();asset.content.name="Content bindings";context.AddObjectToAsset("bindings",asset.content);}
-    asset.program=DazStoryCompiler.Compile(File.ReadAllText(context.assetPath),context.assetPath,asset.content.Symbols(),allowExternalCards:true);
+    var analysis=DazStoryCompiler.Analyze(File.ReadAllText(context.assetPath),context.assetPath,new StoryAnalysisOptions{SourceGuid=asset.sourceIdentity,AllowExternalCards=true});
+    if(!analysis.SyntaxValid)throw new StorySourceException(new StorySource(context.assetPath,1,1),string.Join("\n",analysis.SyntaxDiagnostics));
+    asset.program=analysis.Program;
+    SourceBindingReconciler.Schedule(context.assetPath,asset.sourceIdentity);
    } catch(Exception error) { asset.diagnostics=new[]{error.Message}; context.LogImportError(error.Message); }
    context.AddObjectToAsset("compiled",asset); context.SetMainObject(asset);
   }
@@ -27,7 +31,7 @@ namespace DazPose.Editor {
    if(GUILayout.Button("Open .dazstory source")) EditorUtility.OpenWithDefaultApp(Path.GetFullPath(AssetDatabase.GetAssetPath(asset)));
    string bindingPath=Path.ChangeExtension(AssetDatabase.GetAssetPath(asset),"bindings.asset").Replace('\\','/');
    if(!File.Exists(bindingPath) && GUILayout.Button("Create companion content bindings")) {
-    var content=UnityEngine.Object.Instantiate(asset.content);content.name=Path.GetFileNameWithoutExtension(bindingPath);
+    var content=UnityEngine.Object.Instantiate(asset.content);content.name=Path.GetFileNameWithoutExtension(bindingPath);content.ownerSourceGuid=asset.sourceIdentity;
     AssetDatabase.CreateAsset(content,bindingPath);AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));Selection.activeObject=content;return;
    }
    if(asset.content!=null && GUILayout.Button("Select content bindings")) Selection.activeObject=asset.content;

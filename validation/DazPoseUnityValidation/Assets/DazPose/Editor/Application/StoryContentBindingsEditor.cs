@@ -1,47 +1,36 @@
 using System;
 using System.Linq;
 using DazPose.Story;
-using DazPose.Story.Language;
 using UnityEditor;
 using UnityEngine;
 namespace DazPose.Editor {
  [CustomEditor(typeof(StoryContentBindings))]
  public sealed class StoryContentBindingsEditor : UnityEditor.Editor {
   public override void OnInspectorGUI() {
-   serializedObject.Update();
-   EditorGUILayout.LabelField("First Contact pose choices",EditorStyles.boldLabel);
-   EditorGUILayout.HelpBox("Import each choice as Pose in DazPoseTool. Bind its generated PerformerPose wrapper here; the raw .anim is not the pose binding.",MessageType.Info);
-   var poses=serializedObject.FindProperty("poses");
-   for(int i=0;i<poses.arraySize;i++) {
-    var row=poses.GetArrayElementAtIndex(i);
-    EditorGUILayout.PropertyField(row.FindPropertyRelative("value"),new GUIContent(row.FindPropertyRelative("id").stringValue));
-    using(new EditorGUI.DisabledScope(true))EditorGUILayout.PropertyField(row.FindPropertyRelative("posture"),new GUIContent("Expected posture"));
-   }
-   EditorGUILayout.Space();
-   foreach(string name in new[]{"gestures","shaders","motion","sceneSymbols"})EditorGUILayout.PropertyField(serializedObject.FindProperty(name),true);
-   serializedObject.ApplyModifiedProperties();
-   var content=(StoryContentBindings)target;
-   string path=AssetDatabase.GetAssetPath(content).Replace(".bindings.asset",".dazstory");
-   var source=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(path);
-   if(source==null || !source.IsCompiled)return;
-   EditorGUILayout.Space();EditorGUILayout.LabelField("Dialogue audio",EditorStyles.boldLabel);
-   EditorGUILayout.HelpBox("The transcript is authored in .dazstory. Editing it creates a new unbound dialogue entry; select its AudioClip explicitly. Generated IDs are handled automatically.",MessageType.Info);
-   if(GUILayout.Button("Refresh dialogue entries from source")) {
-    Undo.RecordObject(content,"Refresh source dialogue bindings");
-    foreach(var line in source.program.dialogue)if(!content.dialogue.Any(d=>d.id==line.id))
-     content.dialogue=content.dialogue.Concat(new[]{new StoryDialogueContent {id=line.id,transcript=line.transcript}}).ToArray();
-    EditorUtility.SetDirty(content);AssetDatabase.SaveAssets();GUIUtility.ExitGUI();
-   }
-   serializedObject.Update();var rows=serializedObject.FindProperty("dialogue");
-   foreach(var line in source.program.dialogue) {
-    int index=Array.FindIndex(content.dialogue,row=>row.id==line.id);
-    EditorGUILayout.LabelField(line.transcript,EditorStyles.wordWrappedLabel);
-    if(index<0) {EditorGUILayout.HelpBox("Refresh dialogue entries to bind this revised transcript.",MessageType.Warning);continue;}
-    var row=rows.GetArrayElementAtIndex(index);
+   var content=(StoryContentBindings)target;serializedObject.Update();
+   EditorGUILayout.LabelField("Story content bindings",EditorStyles.boldLabel);
+   EditorGUILayout.HelpBox("Source symbols are reconciled from .dazstory. Assign generated PerformerPose, gesture, shader, motion and dialogue assets here; retained rows no longer used by the source are preserved for recovery.",MessageType.Info);
+   foreach(string name in new[]{"poses","gestures","shaders","motion"})EditorGUILayout.PropertyField(serializedObject.FindProperty(name),true);
+   using(new EditorGUI.DisabledScope(true))EditorGUILayout.PropertyField(serializedObject.FindProperty("sceneSymbols"),true);
+   string sourcePath=null;
+   if(!string.IsNullOrEmpty(content.ownerSourceGuid))sourcePath=AssetDatabase.GUIDToAssetPath(content.ownerSourceGuid);
+   if(string.IsNullOrEmpty(sourcePath))sourcePath=AssetDatabase.GetAssetPath(content).Replace(".bindings.asset",".dazstory");
+   var compiled=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(sourcePath);
+   var currentIds=compiled!=null&&compiled.program!=null?compiled.program.dialogue.Select(d=>d.id).ToArray():Array.Empty<string>();
+   EditorGUILayout.Space();EditorGUILayout.LabelField("Dialogue AudioClip bindings",EditorStyles.boldLabel);
+   var rows=serializedObject.FindProperty("dialogue");
+   for(int i=0;i<rows.arraySize;i++) {
+    var row=rows.GetArrayElementAtIndex(i);string id=row.FindPropertyRelative("id").stringValue;
+    bool active=currentIds.Contains(id);EditorGUILayout.LabelField(active?"Current transcript":"Unused transcript (retained)",active?EditorStyles.boldLabel:EditorStyles.miniLabel);
+    EditorGUILayout.PropertyField(row.FindPropertyRelative("transcript"),new GUIContent("Transcript"));
     EditorGUILayout.PropertyField(row.FindPropertyRelative("clip"),new GUIContent("AudioClip"));
     EditorGUILayout.PropertyField(row.FindPropertyRelative("engineeringPlaceholder"),new GUIContent("Engineering placeholder"));
    }
    serializedObject.ApplyModifiedProperties();
+   if(compiled==null)EditorGUILayout.HelpBox("The source asset is not currently imported. Existing assignments are preserved.",MessageType.Warning);
+   if(!string.IsNullOrEmpty(sourcePath)&&System.IO.File.Exists(sourcePath)&&GUILayout.Button("Reconcile from source (recovery)")) {
+    SourceBindingReconciler.ReconcileAsset(sourcePath,AssetDatabase.AssetPathToGUID(sourcePath),true);GUIUtility.ExitGUI();
+   }
   }
  }
 }
