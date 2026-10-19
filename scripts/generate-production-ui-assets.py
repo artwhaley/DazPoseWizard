@@ -154,9 +154,9 @@ MonoBehaviour:
   fontShader: {fileID: 4800000, guid: fe393ace9b354375a9cb14cdbbc28be4, type: 3}
 """
 tp=UI/"UiTheme.asset";tp.write_text(theme,encoding="utf-8");meta(tp,"NativeFormatImporter")
-def ref(fid,g):return f"{{fileID: {fid}, guid: {g}, type: 3}}"
+def ref(fid,g,kind=3):return f"{{fileID: {fid}, guid: {g}, type: {kind}}}"
 mp={"modalShell":(modalView,"ModalShell.prefab"),"profilePanel":(10002,"ProfileCatalogPanel.prefab"),"interestRow":(10001,"InterestRow.prefab"),"equipmentRow":(10001,"EquipmentRow.prefab"),"clothingRow":(10001,"ClothingRow.prefab"),"sceneCard":(10001,"SceneCard.prefab"),"choiceButton":(10001,"ChoiceButton.prefab"),"mainMenu":(mainmenuView,"MainMenuScreen.prefab")}
-lines=["%YAML 1.1","%TAG !u! tag:unity3d.com,2011:","--- !u!114 &11400000","MonoBehaviour:","  m_ObjectHideFlags: 0","  m_CorrespondingSourceObject: {fileID: 0}","  m_PrefabInstance: {fileID: 0}","  m_PrefabAsset: {fileID: 0}","  m_Name: ProductionUi","  m_Script: {fileID: 11500000, guid: 12a4fedd685e411991ed4a3f524deb27, type: 3}","  theme: "+ref(11400000,g("Production/UI/UiTheme.asset"))]
+lines=["%YAML 1.1","%TAG !u! tag:unity3d.com,2011:","--- !u!114 &11400000","MonoBehaviour:","  m_ObjectHideFlags: 0","  m_CorrespondingSourceObject: {fileID: 0}","  m_PrefabInstance: {fileID: 0}","  m_PrefabAsset: {fileID: 0}","  m_Name: ProductionUi","  m_Script: {fileID: 11500000, guid: 12a4fedd685e411991ed4a3f524deb27, type: 3}","  theme: "+ref(11400000,g("Production/UI/UiTheme.asset"),2)]
 for field,(fid,file) in mp.items():lines.append(f"  {field}: "+ref(fid,g("Production/UI/"+file)))
 lines.append("  settings: "+ref(3376075008117195258,"f6e3324f4b8c40543bd8b925e9bf95d1"))
 lib=RES/"ProductionUi.asset";lib.write_text("\n".join(lines)+"\n",encoding="utf-8");meta(lib,"NativeFormatImporter")

@@ -8,7 +8,7 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_Name: ProductionUi
   m_Script: {fileID: 11500000, guid: 12a4fedd685e411991ed4a3f524deb27, type: 3}
-  theme: {fileID: 11400000, guid: b3278d014b0f597f9e31d69c089fceef, type: 3}
+  theme: {fileID: 11400000, guid: b3278d014b0f597f9e31d69c089fceef, type: 2}
   modalShell: {fileID: 10068, guid: ed79280bcb015d62913413eb411325ba, type: 3}
   profilePanel: {fileID: 10002, guid: bc495405ebe1598e811fcb7e07f13d8d, type: 3}
   interestRow: {fileID: 10001, guid: 48c9eb287f0a5c4bbab4bf219f96d286, type: 3}
