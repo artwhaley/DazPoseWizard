@@ -16,7 +16,7 @@ namespace DazPose.Editor {
     asset.content=SourceBindingReconciler.FindOwner(asset.sourceIdentity,bindingPath);
     if(asset.content!=null)context.DependsOnSourceAsset(AssetDatabase.GetAssetPath(asset.content));
     if(asset.content==null) {asset.content=ScriptableObject.CreateInstance<StoryContentBindings>();asset.content.name="Content bindings";context.AddObjectToAsset("bindings",asset.content);}
-    var analysis=DazStoryCompiler.Analyze(File.ReadAllText(context.assetPath),context.assetPath,new StoryAnalysisOptions{SourceGuid=asset.sourceIdentity,AllowExternalCards=true});
+    var analysis=DazStoryCompiler.Analyze(File.ReadAllText(context.assetPath,new System.Text.UTF8Encoding(false,true)),context.assetPath,new StoryAnalysisOptions{SourceGuid=asset.sourceIdentity,AllowExternalCards=true});
     if(!analysis.SyntaxValid)throw new StorySourceException(new StorySource(context.assetPath,1,1),string.Join("\n",analysis.SyntaxDiagnostics));
     asset.program=analysis.Program;
     SourceBindingReconciler.Schedule(context.assetPath,asset.sourceIdentity);
@@ -30,9 +30,9 @@ namespace DazPose.Editor {
    var asset=(CompiledStoryAsset)target;
    if(GUILayout.Button("Open .dazstory source")) EditorUtility.OpenWithDefaultApp(Path.GetFullPath(AssetDatabase.GetAssetPath(asset)));
    string bindingPath=Path.ChangeExtension(AssetDatabase.GetAssetPath(asset),"bindings.asset").Replace('\\','/');
-   if(!File.Exists(bindingPath) && GUILayout.Button("Create companion content bindings")) {
-    var content=UnityEngine.Object.Instantiate(asset.content);content.name=Path.GetFileNameWithoutExtension(bindingPath);content.ownerSourceGuid=asset.sourceIdentity;
-    AssetDatabase.CreateAsset(content,bindingPath);AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));Selection.activeObject=content;return;
+   if(asset.content==null && GUILayout.Button("Reconcile source bindings")) {
+    var content=SourceBindingReconciler.ReconcileAsset(AssetDatabase.GetAssetPath(asset),asset.sourceIdentity);
+    AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));Selection.activeObject=content;return;
    }
    if(asset.content!=null && GUILayout.Button("Select content bindings")) Selection.activeObject=asset.content;
    if(!asset.IsCompiled) { foreach(var message in asset.diagnostics) EditorGUILayout.HelpBox(message,MessageType.Error); return; }
