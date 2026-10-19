@@ -302,6 +302,7 @@ namespace DazPose.Editor.Studio
             if(GUILayout.Button("Stop audio preview"))StopAudio();
         }
         void StopAudio() {
+            if(audioEditor==null)return; // Do not stop another Inspector preview when this window owns no audio editor.
             var type=typeof(AudioImporter).Assembly.GetType("UnityEditor.AudioUtil");
             type?.GetMethod("StopAllPreviewClips",System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.Public)?.Invoke(null,null);
         }
