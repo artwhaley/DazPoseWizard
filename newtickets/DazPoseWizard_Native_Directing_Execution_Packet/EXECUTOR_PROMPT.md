@@ -1,0 +1,34 @@
+# Paste-ready executor instruction
+
+You are implementing a **major corrective refactor of DazPoseWizard's Scene Director Studio**, not a new editor app. Your task is to make edit-time directing work through Unity's **existing Scene view, Game view, Hierarchy, Inspector and transform gizmos**. The Game view must render the actual saved `PlayerView.MainCamera` at the selected script cue in Edit Mode, and saved Lara must be staged at the resolved pose/location/seat endpoint. The author must be able to adjust real stand, sit and camera target transforms in the Scene view and **see the shot update continuously in the Game view**. Pressing Play is **not** part of the staging loop.
+
+Repository: `https://github.com/artwhaley/DazPoseWizard`. Unity project: `validation/DazPoseUnityValidation`, Unity `6000.5.9f1`, HDRP. Pinned starting branch: `main`, SHA `4656eb56fe1cfa2201104e960b4d7e8dc41cb766`. Before editing, check current HEAD and working tree; reconcile newer edits rather than blindly resetting.
+
+Read **every top-level file in this packet**: `START_HERE.md`, `PRODUCT_CONTEXT.md`, `CODEBASE_EVIDENCE.md`, `ARCHITECTURAL_DECISION.md`, `CONTRACT.md`, `CUE_BEHAVIOR_MATRIX.md`, `TICKET_ORDER.md`, `MANUAL_GATE_PROTOCOL.md`, `AGENTS_MD_HANDOFF.md`, `REVIEW_RESOLUTIONS.md`, `ACCEPTANCE_MATRIX.md`, `UNITY_API_AND_RISK_NOTES.md`, `PACKAGE_MANIFEST.md`, `REVIEWER_BRIEF.md`, `REVIEWER_PROMPT.md` and this prompt. Read templates and each ticket as reached. Execute `tickets/N00` through `tickets/N11` **in order with mandatory pauses**. Keep a ticket log and evidence table. Architecture is locked; if a native constraint invalidates a choice, report blocker and ask rather than inventing a new viewport or requiring Play.
+
+### ABSOLUTE UNITY BAN AND REQUIRED PAUSES
+
+**YOU MUST NOT RUN OR CONTROL UNITY.** Not the Editor, GUI, headless/batch `-executeMethod`, automated EditMode tests invoked through Unity, Unity Hub, computer-use, Play mode, builds, player, hardware, or a shell command that launches any of those. Do not try to circumvent this with alternate executables or CI. Unity use belongs exclusively to Art. You may inspect repository YAML/code and run **non-Unity** .NET/source validators. You may write one-off **user-invoked** Editor-only menu diagnostics; never invoke them yourself.
+
+G1 after N01, G2 after N04, G3 after N05 and G4 during N10 are **blocking Art-operated native gates** (`MANUAL_GATE_PROTOCOL.md`). At each, **STOP** and say exactly: what source code is ready, isolated fixture path, Unity Editor version, menu command to click, short manual checklist, where report is written, how to return results, and what will happen on FAIL. Wait for Art's actual PASS evidence before starting the next dependent ticket. If Art does not respond, mark `WAITING ON ART`, native `NOT RUN`, overall `PARTIAL` and stop. **Never proceed merely because native tests are unavailable.** If a check fails, fix and re-request it, not substitute source inspection as PASS.
+
+Do not edit protected content, change source/binding assets as an incidental importer effect, or mutate the shared global card index during tests. A copied scene alone does not isolate them. Create an independent project test copy or explicitly ask Art for a separately authorized migration. Update only the active-execution reference at the **top** of `AGENTS.md` as instructed; keep its Unity prohibition. This packet's implementation authorization permits **local commits**, not push.
+
+### Non-negotiable architecture
+
+- Keep **canonical StoryMachine/StoryDirector/RehearsalSession** for all logic, branch eligibility, card visits, RNG and state. Visual stage consumes only executed commands and accumulates typed cue projection. Moving authored marks only restages the projection, never reruns random selection.
+- Keep global **tag-selected card pool**; no per-scene library lists, no source modifications to expose new cards.
+- Replace Studio's `ScenePreviewSession`/`PreviewRenderUtility` cloned world, mini viewport and orbit/drag controls with **native Edit Mode staging on the saved scene's actual Lara, prepared player body and actual PlayerView rig/camera**. The existing Unity Game window shows true production framing, lighting, materials and HDRP scene.
+- **Single preview lease with rigorous save safety**. Stop the stage's AnimationMode driver before restoring its property ledger; snapshot all property owners before sampling, including `[ExecuteAlways]` wardrobe scripts. Preview-only writes introduce no scene dirtiness; **Stop preserves unsaved authored mark changes and dirty state**, not an obsolete dirty baseline. Every newly staged property family triggers another Art-operated save/Undo check. Authored prefab overrides are allowed; preview-induced overrides are not.
+- Camera `Camera.StartAt` and persistent `Camera.Track(Lara)` must reproduce actual `PlayerView` behavior and aim at head-relative `laraFocus` **after** pose sampling. Seating has separate default `SitAt` and `PersistentSitPose`/seated-dissolve rules; the latter set yaw and align the **sampled hip position** to SeatAnchor, not only baked pelvis offsets. Standing `DissolveTo` resets to runtime `initialPose`.
+- Retain typed auto-bindings, the saved FirstContact choreography/content, player UI and all protected art. No auto Play/build/device output/hardware or user profile writes; no third-party install.
+
+### Review and test expectations
+
+Run managed and source-only compilation checks. **Art must perform every native Unity check** for Game view, pose, seat, save/Undo and teardown; they are mandatory for PASS. Never fabricate screenshots/results or advance on `NOT RUN`. Tests use an **isolated project** plus disposable saved scene; original scene/source/linked assets/global index remain protected. Old preview deletion happens only after prior Art gates pass. Do not push. See exact gating steps in `MANUAL_GATE_PROTOCOL.md`.
+
+### Definition of done
+
+Art can open FirstContact, Scene and Game views, click `SexyVamp`, and see real Lara at `stepforward`; drag standing target and see live Game shot; in Warmup step `SitAt(Lounger)` then `PersistentSitPose(Lounging)`; later in Main stage seated `DissolveTo` after a Director visit; drag SeatAnchor and see hip-corrected seated pose; use the actual camera for framing. Ctrl+S saves **authored marks including legitimate prefab overrides**, not preview-only modifications; Stop restores preview while preserving unsaved authored changes. Entire directing loop remains Edit Mode with no duplicate renderer. Deliver guide and complete **Art-provided** evidence; no Unity operation by executor.
+
+When reviewing/coding, prioritize **correctness and ease of the author's actual workflow** over polishing a lot of editor chrome. If the proposed change adds yet another custom visualization layer, pause and reject that approach.

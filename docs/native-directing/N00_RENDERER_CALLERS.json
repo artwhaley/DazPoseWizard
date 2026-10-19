@@ -1,0 +1,252 @@
+[
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 29,
+    "source": "        readonly ScenePreviewSession stage=new ScenePreviewSession();"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 65,
+    "source": "        void Release(){StopRehearsal();StopAudio();stage.Dispose();if(audioEditor!=null)DestroyImmediate(audioEditor);audioEditor=null;}"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 113,
+    "source": "            GUILayout.BeginArea(center);DrawStage();GUILayout.EndArea();"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 156,
+    "source": "        void DrawStage() {"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 159,
+    "source": "                if(GUILayout.Button(\"Build preview\"))Try(BuildPreview);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 160,
+    "source": "                if(GUILayout.Button(\"Frame Lara\"))stage.Frame(stage.Lara);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 161,
+    "source": "                stage.PlayerCamera=GUILayout.Toggle(stage.PlayerCamera,\"Player camera\",\"Button\");"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 165,
+    "source": "                if(next!=sampleTime){sampleTime=next;Try(()=>stage.Sample(sampledClip,sampleTime));}"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 169,
+    "source": "            bool handleEvent=editLocation&&stage.Ready&&Event.current.shift&&rect.Contains(Event.current.mousePosition);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 172,
+    "source": "                else if(stage.DragOnGround(Event.current.mousePosition,rect,ghostPosition,out var next))ghostPosition=next;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 176,
+    "source": "            stage.Draw(rect);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 177,
+    "source": "            if(editLocation&&stage.Ready) {"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 178,
+    "source": "                var point=stage.Project(ghostPosition,rect);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 180,
+    "source": "                if(viewportDrag&&stage.Lara!=null)stage.Lara.SetPositionAndRotation(ghostPosition,Quaternion.Euler(ghostRotation));"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 184,
+    "source": "        void BuildPreview() {"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 189,
+    "source": "            stage.Build(host,lara,AssetDatabase.LoadAssetAtPath<GameObject>(\"Assets/Production/Player/PlayerBody.prefab\"));"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 190,
+    "source": "            if(!stage.Ready)throw new InvalidOperationException(stage.Diagnostic??\"Preview could not be built.\");"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 256,
+    "source": "            if(value is PerformerPose pose&&GUILayout.Button(\"Preview pose\"))Try(()=>{sampledClip=pose.Clip;sampleTime=0;stage.Sample(sampledClip,0);});"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 257,
+    "source": "            if(value is PerformerGesture gesture&&GUILayout.Button(\"Preview gesture\"))Try(()=>{sampledClip=gesture.Clip;sampleTime=0;stage.Sample(sampledClip,0);});"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 258,
+    "source": "            if(value is PerformerMagicShaderProfile magic&&GUILayout.Button(\"Preview visual profile\"))Try(()=>stage.Magic(magic));"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 283,
+    "source": "                if(GUILayout.Button(\"Align to preview view\")){ghostPosition=stage.ViewPosition;ghostRotation=stage.ViewRotation.eulerAngles;}"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 286,
+    "source": "                if(stage.Lara==null)throw new InvalidOperationException(\"Build the preview first.\");"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 287,
+    "source": "                stage.Lara.SetPositionAndRotation(ghostPosition,Quaternion.Euler(ghostRotation));stage.Lara.gameObject.SetActive(true);stage.Frame(stage.Lara);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 291,
+    "source": "                if(GUILayout.Button(\"Frame mark\")){stage.Frame(stage.CloneFor(mark));Selection.activeObject=mark;}"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.cs",
+    "line": 303,
+    "source": "                    if(GUILayout.Button(\"Frame at seat pelvis (no pose)\"))Try(()=>stage.Arrival(row.seat.SeatAnchor));"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 49,
+    "source": "            BuildPreview();"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 95,
+    "source": "                if(GUILayout.Button(\"Stop\",EditorStyles.toolbarButton)){StopRehearsal();StopAudio();stage.Dispose();}"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 201,
+    "source": "                    stage.Arrival(host.RequireLocation(Arg(\"location\")).placement);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 202,
+    "source": "                    if(command.Verb==\"Lara.StartHiddenAt\"&&stage.Lara!=null)stage.Lara.gameObject.SetActive(false);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 208,
+    "source": "                        stage.SeatedArrival(destination.seat,pose.value.Clip);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 209,
+    "source": "                    }else stage.Arrival(destination.placement);break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 211,
+    "source": "                    if(stage.PlayerBody!=null){var mark=host.RequireLocation(Arg(\"location\")).placement;stage.PlayerBody.SetPositionAndRotation(mark.position,mark.rotation);stage.PlayerBody.gameObject.SetActive(false);}break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 212,
+    "source": "                case \"PlayerBody.DissolveIn\":if(stage.PlayerBody!=null)stage.PlayerBody.gameObject.SetActive(true);break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 213,
+    "source": "                case \"PlayerBody.DissolveOut\":if(stage.PlayerBody!=null)stage.PlayerBody.gameObject.SetActive(false);break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 214,
+    "source": "                case \"Lara.PersistentPose\":case \"Lara.PersistentSitPose\":stage.Sample(owner.Pose(Arg(\"pose\")).value.Clip,0);break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 215,
+    "source": "                case \"Lara.PlayOneShotGesture\":sampledClip=owner.Gesture(Arg(\"gesture\")).Clip;sampleTime=0;stage.Sample(sampledClip,0);break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 216,
+    "source": "                case \"Lara.MagicShader\":stage.Magic(owner.Shader(Arg(\"profile\")));break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 218,
+    "source": "                case \"Lara.SitAt\":stage.SeatedArrival(host.RequireLocation(Arg(\"location\")).seat);break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 220,
+    "source": "                    var placement=host.RequireLocation(Arg(\"location\")).placement;stage.PreviewCameraAt(placement.position,placement.rotation);break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Rehearsal.cs",
+    "line": 221,
+    "source": "                case \"Camera.Track\":if(Arg(\"performer\")!=\"Lara\")throw new InvalidOperationException(\"Camera tracking requires Lara.\");stage.TrackLara();break;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/ScenePreviewSession.cs",
+    "line": 12,
+    "source": "    public sealed class ScenePreviewSession : IDisposable"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/ScenePreviewSession.cs",
+    "line": 22,
+    "source": "        PreviewRenderUtility utility;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/ScenePreviewSession.cs",
+    "line": 78,
+    "source": "                utility=new PreviewRenderUtility();utility.camera.nearClipPlane=.01f;utility.camera.farClipPlane=1000;"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/StudioCorrectiveChecks.cs",
+    "line": 46,
+    "source": "    var stage=(ScenePreviewSession)typeof(SceneDirectorStudioWindow).GetField(\"stage\",Private).GetValue(window);"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/StudioCorrectiveChecks.cs",
+    "line": 47,
+    "source": "    stage.Build(null,mark,null);Require(stage.Ready,\"Transient preview failed to build.\");"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/StudioCorrectiveChecks.cs",
+    "line": 49,
+    "source": "    stamp=(string)capture.Invoke(window,null);stage.Lara.position=Vector3.right*3;stage.PreviewCameraAt(new Vector3(0,1,-4),Quaternion.identity);stage.TrackLara();stage.UpdateTrackedCamera();"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/StudioCorrectiveChecks.cs",
+    "line": 51,
+    "source": "    var rotation=stage.CameraRotation;stage.Lara.position=Vector3.left*2;stage.UpdateTrackedCamera();Require(Quaternion.Angle(rotation,stage.CameraRotation)>1,\"Tracking did not follow second movement.\");"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/StudioCorrectiveChecks.cs",
+    "line": 52,
+    "source": "    Require(stage.CameraPosition==new Vector3(0,1,-4),\"Tracking moved the authored camera origin.\");"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/StudioCorrectiveChecks.cs",
+    "line": 53,
+    "source": "    stage.PreviewCameraAt(Vector3.zero,Quaternion.identity);stage.Lara.position=Vector3.forward*4;stage.UpdateTrackedCamera();Require(Quaternion.Angle(stage.CameraRotation,Quaternion.identity)<.001f,\"StartAt did not disable tracking.\");"
+  },
+  {
+    "file": "Assets/DazPose/Editor/StoryStudio/StudioCorrectiveChecks.cs",
+    "line": 54,
+    "source": "    mark.transform.position=Vector3.up*2;typeof(SceneDirectorStudioWindow).GetMethod(\"RevisionChanged\",Private).Invoke(window,null);typeof(SceneDirectorStudioWindow).GetMethod(\"CheckRevision\",Private).Invoke(window,null);Require(!stage.Ready,\"Changed staging retained the old preview owner.\");"
+  }
+]

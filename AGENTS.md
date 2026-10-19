@@ -1,6 +1,10 @@
-# Active execution — Studio corrective sprint
+# Active execution — Native Directing correction (N00–N11)
 
-Execute `newtickets/DazPoseWizard_Studio_UI_Corrective_Execution_Packet/START_HERE.md` R00–R07 on main. Status/evidence: `docs/studio-corrective/EXECUTION_REPORT.md`. Local commits only; no push without fresh authority. No program/Unity launch, Play, builds, players, computer-use Unity or hardware. Source compilation and managed tests remain authorized. This packet supersedes the completed implementation queue below.
+The current corrective execution is `newtickets/DazPoseWizard_Native_Directing_Execution_Packet/START_HERE.md` and `EXECUTOR_PROMPT.md`, with mandatory `MANUAL_GATE_PROTOCOL.md`. Work on main. Earlier Studio corrective packet references are historical, not the active implementation. Status/evidence: `docs/native-directing/IMPLEMENTATION_REPORT.md`.
+
+ABSOLUTE: EXECUTOR MUST NOT RUN OR OPERATE UNITY, including Editor GUI, Unity Hub, CLI/batch/EditMode tests, `-executeMethod`, Play, builds, players, or computer-use. The executor implements and asks Art to open Unity/click diagnostic menus/compile/inspect at gates G1–G4. No automatic gate bypass. Source-only .NET tests/static checks remain allowed. No application launch or hardware output.
+
+Local implementation commits are authorized by execution of this packet. No push, merge, PR, or other remote write without separate explicit authorization. Preserve production art, bound source assets and global index. A copied scene alone does not protect shared assets.
 
 # Active execution — Phase 1 completion, Phase 2 UI, Phase 3 Studio
 

@@ -1,0 +1,44 @@
+[
+  {
+    "assembly": "DazPose.Runtime",
+    "exitCode": 0,
+    "sources": 216,
+    "input": "Library\\Bee\\artifacts\\1900b0aE.dag\\DazPose.Runtime.rsp"
+  },
+  {
+    "assembly": "DazPose.Content",
+    "exitCode": 0,
+    "sources": 2,
+    "input": "Library\\Bee\\artifacts\\1900b0aP.dag\\DazPose.Content.rsp"
+  },
+  {
+    "assembly": "DazPose.Examples",
+    "exitCode": 0,
+    "sources": 2,
+    "input": "Library\\Bee\\artifacts\\1900b0aP.dag\\DazPose.Examples.rsp"
+  },
+  {
+    "assembly": "DazPose.Presentation",
+    "exitCode": 0,
+    "sources": 19,
+    "input": "Library\\Bee\\artifacts\\1900b0aE.dag\\DazPose.Presentation.rsp"
+  },
+  {
+    "assembly": "DazPose.Editor",
+    "exitCode": 0,
+    "sources": 81,
+    "input": "Library\\Bee\\artifacts\\1900b0aE.dag\\DazPose.Editor.rsp"
+  },
+  {
+    "assembly": "DazPose.Validation",
+    "exitCode": 0,
+    "sources": 36,
+    "input": "Library\\Bee\\artifacts\\1900b0aE.dag\\DazPose.Validation.rsp"
+  },
+  {
+    "assembly": "DazPose.Validation.Editor",
+    "exitCode": 0,
+    "sources": 54,
+    "input": "Library\\Bee\\artifacts\\1900b0aE.dag\\DazPose.Validation.Editor.rsp"
+  }
+]

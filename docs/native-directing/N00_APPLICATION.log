@@ -1,0 +1,13 @@
+  DazPose.Core -> C:\Users\artwh\OneDrive\Documents\DazPoseWizard\src\DazPose.Core\bin\Debug\net10.0\DazPose.Core.dll
+
+  DazPose.App -> C:\Users\artwh\OneDrive\Documents\DazPoseWizard\src\DazPose.App\bin\Debug\net10.0\DazPose.App.dll
+
+  DazPose.Tests -> C:\Users\artwh\OneDrive\Documents\DazPoseWizard\tests\DazPose.Tests\bin\Debug\net10.0\DazPose.Tests.dll
+
+Test run for C:\Users\artwh\OneDrive\Documents\DazPoseWizard\tests\DazPose.Tests\bin\Debug\net10.0\DazPose.Tests.dll (.NETCoreApp,Version=v10.0)
+
+A total of 1 test files matched the specified pattern.
+
+
+
+Passed!  - Failed:     0, Passed:    69, Skipped:     0, Total:    69, Duration: 1 s - DazPose.Tests.dll (net10.0)

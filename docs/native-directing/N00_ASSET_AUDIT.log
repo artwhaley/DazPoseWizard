@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "issueCount": 0,
+  "output": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\docs\\p2-p3\\FINAL_ASSET_AUDIT.json",
+  "counts": {
+    "assets": 3727,
+    "guidCount": 4456,
+    "duplicateGuids": 0,
+    "missingMetas": 0,
+    "protectedFiles": 669,
+    "protectedUnchanged": 660,
+    "explicitRetirementExceptions": 34,
+    "currentSourceFilesHashed": 536,
+    "currentScenes": 15,
+    "productionUiPrefabs": 8
+  }
+}
