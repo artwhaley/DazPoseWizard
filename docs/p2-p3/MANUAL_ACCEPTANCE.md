@@ -13,3 +13,7 @@ The user is the tester. No program/Unity launch, Play, standalone build/player, 
 9. Confirm saved FirstContact and protected artwork remain unchanged absent an intentional author commit. Inspect the pending second-outfit toe appearance separately; no approval has been assumed.
 
 Source compilation, 183 managed tests and static asset audits are separate from the above native observations. Actual rendering, keyboard/focus, Unity import/fileID resolution, Undo/scene-dirty behavior and human appearance approval remain **NOT RUN / PENDING**.
+
+## October 19 Studio corrective appendix
+
+The original acceptance above remains historical/pending where indicated. The corrective sprint is prepared for user testing with 196 managed tests and seven source assemblies passing; native checks have not been run. See the [corrective report and five-minute Editor checklist](../studio-corrective/EXECUTION_REPORT.md#five-minute-editor-checklist) for deep catalog scroll/focus, one-visit decisions, source/global-card navigation, invalidation and continuous camera tracking. No new saved feature-test scene, Unity launch, Play or player build was used.

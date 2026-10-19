@@ -1,6 +1,6 @@
-# Active execution — Studio corrective sprint
+# Active execution â€” Studio corrective sprint
 
-Execute `newtickets/DazPoseWizard_Studio_UI_Corrective_Execution_Packet/START_HERE.md` R00–R07 on main. This corrective packet supersedes the completed implementation queue below. Status/evidence: `docs/studio-corrective/EXECUTION_REPORT.md`. Local coherent commits only; no push without fresh authority. No program/Unity launch, Play, builds, players, computer-use Unity or hardware. Source compilation and managed tests remain authorized.
+Execute `newtickets/DazPoseWizard_Studio_UI_Corrective_Execution_Packet/START_HERE.md` R00â€“R07 on main. Status/evidence: `docs/studio-corrective/EXECUTION_REPORT.md`. Local commits only; no push without fresh authority. No program/Unity launch, Play, builds, players, computer-use Unity or hardware. Source compilation and managed tests remain authorized. This packet supersedes the completed implementation queue below.
 
 # Active execution â€” Phase 1 completion, Phase 2 UI, Phase 3 Studio
 
