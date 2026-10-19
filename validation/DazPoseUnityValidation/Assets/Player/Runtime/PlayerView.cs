@@ -82,6 +82,7 @@ namespace DazPose.Player
             transform.position = position; RequireViewRig().rotation = rotation;
         }
         public Vector3 CurrentForwardDirection => viewRig != null ? viewRig.forward : transform.forward;
+        public Transform ConfiguredViewRig => viewRig;
         public Transform HeadTransform => headPose;
         public Camera MainCamera => mainCamera;
         public float DefaultMoveDuration { get => defaultMoveDuration; set => defaultMoveDuration = Mathf.Max(0f, value); }

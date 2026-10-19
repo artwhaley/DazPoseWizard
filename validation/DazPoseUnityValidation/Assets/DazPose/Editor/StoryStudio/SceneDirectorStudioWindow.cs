@@ -62,10 +62,10 @@ namespace DazPose.Editor.Studio
             EditorApplication.update-=Tick;AssemblyReloadEvents.beforeAssemblyReload-=Release;
             EditorSceneManager.activeSceneChangedInEditMode-=SceneChanged;SceneView.duringSceneGui-=DrawSceneHandles;Release();
         }
-        void Release(){StopRehearsal();StopAudio();stage.Dispose();if(audioEditor!=null)DestroyImmediate(audioEditor);audioEditor=null;}
-        void SceneChanged(Scene oldScene,Scene newScene){Release();host=null;editLocation=false;error="Scene changed. Select the saved scene host and rebuild the isolated preview.";Repaint();}
+        void Release(){nativeContext=null;StopRehearsal();StopAudio();stage.Dispose();if(audioEditor!=null)DestroyImmediate(audioEditor);audioEditor=null;}
+        void SceneChanged(Scene oldScene,Scene newScene){Release();host=null;editLocation=false;error="Scene changed. Select the saved scene host and reconnect native directing.";Repaint();}
         void Tick() {
-            CheckRevision();DrainRehearsal();
+            if(rehearsal!=null||stage.Ready){CheckRevision();DrainRehearsal();}
             if(source!=null) {
                 string path=AssetDatabase.GetAssetPath(source);
                 if(File.Exists(path)&&File.GetLastWriteTimeUtc(path)!=sourceWrite) {revisionDirty=true;CheckRevision();Repaint();}
@@ -87,7 +87,8 @@ namespace DazPose.Editor.Studio
                 if(selectedKey!=null)selectedRequirement=Array.FindIndex(Details.Requirements,r=>r.Id==selectedKey);
             }catch(Exception e){error=e.Message;}
         }
-        void OnGUI() {
+        // Retained until the gated N09 deletion; the native foundation never invokes this layout.
+        void DrawLegacyLayout() {
             using(new EditorGUILayout.HorizontalScope(EditorStyles.toolbar)) {
                 var next=(CompiledStoryAsset)EditorGUILayout.ObjectField(source,typeof(CompiledStoryAsset),false,GUILayout.MinWidth(120));
                 if(next!=source)SelectSource(next);

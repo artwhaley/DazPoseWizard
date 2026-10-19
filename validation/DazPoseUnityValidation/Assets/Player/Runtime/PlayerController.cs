@@ -18,6 +18,9 @@ namespace DazPose.Player
         [Obsolete("Use run.Toys for content and application Settings for connection.")]
         public ToyControlService Toys => DazPose.Game.GameApplication.EnsureStarted().Toys;
 
+        /// <summary>Configured reference without runtime discovery or caching writes.</summary>
+        public PlayerView ConfiguredView => view;
+
         public PlayerView View
         {
             get

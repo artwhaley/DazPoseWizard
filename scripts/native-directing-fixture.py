@@ -96,6 +96,10 @@ def sync_code():
         raise RuntimeError("Fixture identity differs")
     previous={r["path"]:r["sha256"] for r in marker["codeFiles"]}
     values=source_code()
+    # Detect independently added fixture scripts as well as edits to known ones.
+    existing={p.relative_to(FIXTURE).as_posix() for p in files(FIXTURE/"Assets") if code_file(p)}
+    extra=existing.difference(previous)
+    if extra:raise RuntimeError(f"Fixture contains independently added code; refuse synchronization: {sorted(extra)}")
     # Validate all destinations before making any changes.
     for path in sorted(set(previous)|set(values)):
         target=FIXTURE/path

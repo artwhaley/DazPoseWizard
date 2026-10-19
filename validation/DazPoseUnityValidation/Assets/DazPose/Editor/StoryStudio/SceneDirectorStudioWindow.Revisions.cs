@@ -48,7 +48,7 @@ namespace DazPose.Editor.Studio {
   }
   void SelectHost(StorySceneBindings value) {
    if(value==host)return;Release();host=value;selectedPc=-1;editLocation=false;sourceStamp=null;revisionDirty=true;
-   error="Scene host changed — rebuild rehearsal with Start / Reset.";
+   error="Scene host selected. Connect native directing to inspect its real scene references.";
   }
  }
 }
