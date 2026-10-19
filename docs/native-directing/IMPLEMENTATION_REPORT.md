@@ -1,6 +1,6 @@
 # Native directing execution report — October 19, 2026
 
-**Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766` (matches revised packet). **Overall:** PARTIAL. **Workflow:** G2 FAILED; repair delivered, WAITING ON ART (G2 retry). G1 is accepted. N02–N04 source delivery is ready; N05–N11 are held at the next mandatory native gate.
+**Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766` (matches revised packet). **Overall:** PARTIAL. **Workflow:** G2 PASS confirmed by Art after the v2 repair (`c8afbc2`). Next: N05 seating → mandatory G3. G1/G2 are accepted; G3/G4 remain pending.
 
 ## Ticket and manual gate ledger
 
@@ -8,15 +8,15 @@
 |---|---|---|---|
 | N00 | PASS | Inspector confirmation deferred to G1 | Baseline/protection fingerprints, saved-scene/content maps, writer audit, isolated physical project, 196 tests and seven source assemblies |
 | N01 | Implemented; seven assemblies compile | PASS — Art reported camera shift | NativeStageContext, minimal read-only runtime accessors, Studio foundation and user-invoked camera diagnostic; current code/meta sync verified |
-| N02 | Source implemented; managed restoration regressions pass | NOT RUN — provisional until G2/G3/G4 | Exclusive lease/driver, per-property restore, save/lifecycle callbacks, guarded editor writers |
-| N03 | Source implemented; extracted camera formula parity checked | NOT RUN — G2 required | Real PlayerView root/rig adapter, actual camera origin, post-sample focus |
-| N04 | Source implemented; seven assemblies compile | NOT RUN — G2 requested | Real Lara manual-graph sampling, standing/visibility/material adapter and G2 fixture |
-| N05–N11 | NOT STARTED | NOT RUN | G2/G3/G4 remain mandatory |
+| N02 | Source implemented; managed restoration regressions pass | G2 PASS — additional seat/material families remain provisional until G3/G4 | Exclusive lease/driver, per-property restore, save/lifecycle callbacks, guarded editor writers |
+| N03 | Source implemented; extracted camera formula parity checked | G2 PASS — Art reported | Real PlayerView root/rig adapter, actual camera origin, post-sample focus |
+| N04 | Source implemented; seven assemblies compile | G2 PASS — standing/camera; later material proof pending G4 | Real Lara manual-graph sampling, standing/visibility/material adapter and G2 fixture |
+| N05–N11 | NOT STARTED | NOT RUN | Next N05 → G3; N06–N10 → G4 |
 
 | Gate | Art action | Response / evidence | Native status | Dependency |
 |---|---|---|---|---|
 | G1 | G1_ART_HANDOFF.md, real camera Shift -> observe Game -> Restore -> observe -> Export | Art: "Pass… The camera shifted correctly. We're good to proceed… Continue." Screenshots explicitly declined; verbal PASS accepted. No exported restoration report supplied. | PASS — user reported | N02 |
-| G2 | G2_ART_HANDOFF.md: standing/camera/drag + normal and forced save + Undo/Stop/reopen | Art reported save resume, live mark drag and camera angle failure. Log causes identified and v2 source repair synchronized; no screenshots required | FAIL — repaired source / WAITING ON ART retry | N05 |
+| G2 | G2_ART_HANDOFF.md: standing/camera/drag + normal and forced save + Undo/Stop/reopen | Initial run failed and was repaired in c8afbc2. Art then reported: "Okay, success this time." Accepted as G2 PASS; no screenshots or exported native report supplied | PASS — user reported | N05 |
 | G3 | Default seating and persistent sampled-hip proof after N05 | Not requested yet | NOT RUN | N06 |
 | G4 | Full regression during N10 | Not requested yet | NOT RUN | N11 final acceptance |
 
@@ -62,3 +62,7 @@ Art reported G2 FAIL: Save did not resume, moving a mark dropped the pose, and c
 The v2 repair retains one sampling graph per lease across restaging/save, handles transient import without cancelling the watcher, scopes restoration callbacks, removes the unnecessary renderer setting write, distinguishes cosmetic YAML string normalization from real data changes, and starts in explicit camera-mark orientation with tracking separately labelled. All actor/material/override data checks remain. Existing edited fixture scene data is preserved; no original asset changes, Unity operation or remote publication by the executor. N02–N04 stay native-provisional and N05 remains held pending a successful G2 retry.
 
 Repair validation: **223 managed tests PASS** (90 Story, 24 Player, 40 Rehearsal, 69 Application), zero failures/skips; seven source assemblies compile; static asset/meta audit PASS with zero issues; all 7,211 protected originals unchanged. These are source/managed checks, not native Unity acceptance.
+
+## G2 acceptance after repair
+
+Art reported: "Okay, success this time. What's our next sprint > gate?" This supersedes the failed v1 gate disposition while preserving its evidence. G2 is accepted from the explicit user report for repaired v2 code c8afbc2; no new screenshots or repeat approval requested. No native diagnostic export was supplied, and no executor Unity operation occurred. The next implementation is N05 (default SitAt, persistent seated pose, seated dissolve and live seat/contact anchors), followed by mandatory Art-operated G3. N05 has not begun in this status-answer turn. G3/G4 still govern their additional property families.
