@@ -141,7 +141,7 @@ namespace DazPose.Editor.Studio
                         if(search.Length>0&&label.IndexOf(search,StringComparison.OrdinalIgnoreCase)<0)continue;
                         bool selected=selectedPc==pc;
                         if(GUILayout.Toggle(selected,label,"Button")&&!selected) {
-                            selectedPc=pc;selectedSource=instruction.source;selectedEntry=entry.name;
+                            selectedPc=pc;selectedSource=instruction.source;selectedEntry=entry.name;selectedRequirement=-1;selectedKey=null;editLocation=false;sampledClip=null;
                             detailManifest=instruction.source!=null&&File.Exists(instruction.source.file)?SourceBindingManifest.Analyze(instruction.source.file,instruction.source.unit):null;
                             var use=Details.Requirements.FirstOrDefault(r=>r.Occurrences.Any(o=>o.line==instruction.source?.line&&o.declaration==instruction.source?.declaration));
                             if(use!=null)SelectRequirement(Array.IndexOf(Details.Requirements,use));

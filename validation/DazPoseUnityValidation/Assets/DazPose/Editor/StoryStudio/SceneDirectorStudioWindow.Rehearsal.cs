@@ -96,7 +96,7 @@ namespace DazPose.Editor.Studio
                 showState=GUILayout.Toggle(showState,"State","ToolbarButton");
             }
             using(new EditorGUILayout.HorizontalScope()) {
-                scenario.seed=EditorGUILayout.IntField("Seed",scenario.seed,GUILayout.MinWidth(100));
+                int nextSeed=EditorGUILayout.IntField("Seed",scenario.seed,GUILayout.MinWidth(100));if(nextSeed!=scenario.seed){StopRehearsal();scenario.seed=nextSeed;}
                 clothingCount=EditorGUILayout.IntSlider("Initial clothing",clothingCount,0,6);
                 if(GUILayout.Button("Save scenario",GUILayout.Width(110)))Try(()=>{
                     string path=EditorUtility.SaveFilePanel("Save test-only rehearsal recipe","","rehearsal.json","json");
@@ -104,7 +104,7 @@ namespace DazPose.Editor.Studio
                 });
                 if(GUILayout.Button("Load scenario",GUILayout.Width(110)))Try(()=>{
                     string path=EditorUtility.OpenFilePanel("Load test-only rehearsal recipe","","json");
-                    if(!string.IsNullOrEmpty(path)){scenario=RehearsalSession.ImportScenarioJson(File.ReadAllText(path))??throw new InvalidOperationException("Invalid scenario.");clothingCount=scenario.initialClothing.Count(x=>x);}
+                    if(!string.IsNullOrEmpty(path)){var loaded=RehearsalSession.ImportScenarioJson(File.ReadAllText(path));StopRehearsal();scenario=loaded;clothingCount=scenario.initialClothing.Count(x=>x);}
                 });
             }
             if(GUILayout.Button("New scenario (clear recorded visit choices)")){StopRehearsal();scenario=new RehearsalScenario{seed=scenario.seed};}
