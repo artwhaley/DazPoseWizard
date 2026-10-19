@@ -54,7 +54,7 @@ namespace DazPose.Presentation
             };
             Filters(view,new[]{"All","Enabled","Disabled"}.Concat(entries.Select(d=>"Category: "+Category(d.displayCategory,d.themeTags)).Distinct().OrderBy(x=>x,StringComparer.Ordinal)).ToArray(),
                 value=>{filter=value;refresh(true);});
-            view.search.onValueChanged.AddListener(_=>refresh());refresh(false);
+            view.search.onValueChanged.AddListener(_=>refresh(true));refresh(true);
         }
         public static void Equipment(Transform body,IProfileEditDraft draft,EquipmentCatalog catalog)
         {
@@ -80,7 +80,7 @@ namespace DazPose.Presentation
             };
             Filters(view,new[]{"All","Owned","Unowned","Reward","Punishment"}.Concat(entries.Select(d=>"Category: "+Category(d.displayCategory,d.themeTags)).Distinct().OrderBy(x=>x,StringComparer.Ordinal)).ToArray(),
                 value=>{filter=value;refresh(true);});
-            view.search.onValueChanged.AddListener(_=>refresh());refresh(false);
+            view.search.onValueChanged.AddListener(_=>refresh(true));refresh(true);
         }
         public static void Clothing(Transform body,ClothingEditSession draft)
         {
