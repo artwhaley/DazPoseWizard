@@ -1,6 +1,6 @@
 # Native directing execution report — October 19, 2026
 
-**Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766` (matches revised packet). **Overall:** PARTIAL. **Workflow:** WAITING ON ART (G2). G1 is accepted. N02–N04 source delivery is ready; N05–N11 are held at the next mandatory native gate.
+**Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766` (matches revised packet). **Overall:** PARTIAL. **Workflow:** G2 FAILED; repair delivered, WAITING ON ART (G2 retry). G1 is accepted. N02–N04 source delivery is ready; N05–N11 are held at the next mandatory native gate.
 
 ## Ticket and manual gate ledger
 
@@ -16,7 +16,7 @@
 | Gate | Art action | Response / evidence | Native status | Dependency |
 |---|---|---|---|---|
 | G1 | G1_ART_HANDOFF.md, real camera Shift -> observe Game -> Restore -> observe -> Export | Art: "Pass… The camera shifted correctly. We're good to proceed… Continue." Screenshots explicitly declined; verbal PASS accepted. No exported restoration report supplied. | PASS — user reported | N02 |
-| G2 | G2_ART_HANDOFF.md: standing/camera/drag + normal and forced save + Undo/Stop/reopen | Source and synchronized fixture ready; no screenshots required per Art preference | NOT RUN / WAITING ON ART | N05 |
+| G2 | G2_ART_HANDOFF.md: standing/camera/drag + normal and forced save + Undo/Stop/reopen | Art reported save resume, live mark drag and camera angle failure. Log causes identified and v2 source repair synchronized; no screenshots required | FAIL — repaired source / WAITING ON ART retry | N05 |
 | G3 | Default seating and persistent sampled-hip proof after N05 | Not requested yet | NOT RUN | N06 |
 | G4 | Full regression during N10 | Not requested yet | NOT RUN | N11 final acceptance |
 
@@ -54,3 +54,11 @@ Exclusive NativePreviewLease + plain managed PreviewPropertyLedger restore basel
 NativeDirectingG2Window is an explicitly fixed FirstContact technical fixture, with actual source/binding verification, native mark selection/drag reapplication, endpoint/track choices, normal save observation, user-invoked forced SaveScene, clean save byte comparison, actor/prefab diffs and report export. It does not claim N06 full transport. No screenshots required. Save/Undo, sampled rendering, wardrobe/heel appearance, material/MPB and all Unity callback ordering remain native acceptance items. N02 remains provisional for each later property family as well.
 
 Final source-only compile: seven assemblies PASS. Managed checks: 212 PASS (90 Story, 24 Player, 29 Rehearsal including 16 new native-substrate/math checks, 69 Application); no failures/skips. Rehearsal test-only math shims do not establish native Unity behavior. Original assets/metas and user packet archival changes remain protected; fixture receives code-only updates. Implementation is locally committed on main; no push or Unity operation.
+
+## G2 native failure and repair
+
+Art reported G2 FAIL: Save did not resume, moving a mark dropped the pose, and camera-mark rotation did not affect the shot; Stop/reopen was not verifiable. G2_FAILURE_EVIDENCE.json and G2_FAILURE_AND_REPAIR.md preserve the observations and read-only Unity log evidence. The failure supersedes any source-ready implication of native correctness above.
+
+The v2 repair retains one sampling graph per lease across restaging/save, handles transient import without cancelling the watcher, scopes restoration callbacks, removes the unnecessary renderer setting write, distinguishes cosmetic YAML string normalization from real data changes, and starts in explicit camera-mark orientation with tracking separately labelled. All actor/material/override data checks remain. Existing edited fixture scene data is preserved; no original asset changes, Unity operation or remote publication by the executor. N02–N04 stay native-provisional and N05 remains held pending a successful G2 retry.
+
+Repair validation: **223 managed tests PASS** (90 Story, 24 Player, 40 Rehearsal, 69 Application), zero failures/skips; seven source assemblies compile; static asset/meta audit PASS with zero issues; all 7,211 protected originals unchanged. These are source/managed checks, not native Unity acceptance.

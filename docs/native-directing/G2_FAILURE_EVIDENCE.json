@@ -1,0 +1,110 @@
+{
+  "recordedUtc": "2026-10-19T18:39:02.853453+00:00",
+  "gate": "G2",
+  "nativeResult": "FAIL \u2014 Art reported",
+  "observations": {
+    "normalAndForcedSave": "shot did not return automatically",
+    "standingMarkDrag": "Lara returned to baseline instead of following; saving and restarting used the new mark",
+    "cameraMarkRotation": "no observed orientation change, including after restart",
+    "stopReopen": "not verifiable because preview was not staying active"
+  },
+  "logPath": ".dazposewizard\\native-directing\\G1Project\\Logs\\Editor.log",
+  "exceptionCounts": {
+    "InvalidOperationException: Clean forced save changed serialized scene bytes; baseline/saved YAML exported for review. Do not call G2 PASS.": 1,
+    "InvalidOperationException: Another PlayableGraph owns Lara's Animator. Stop that preview first.": 5,
+    "InvalidOperationException: Save this disposable scene with Ctrl+S before starting G2, so the clean-save comparison has a clean baseline.": 5
+  },
+  "exceptionEvidence": [
+    {
+      "message": "InvalidOperationException: Clean forced save changed serialized scene bytes; baseline/saved YAML exported for review. Do not call G2 PASS.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.ForceSave () [0x000f3] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:160 ",
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Guard (System.Action action) [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:195 ",
+        "UnityEngine.DebugLogHandler:Internal_LogException_Injected(Exception, IntPtr)"
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Another PlayableGraph owns Lara's Animator. Stop that preview first.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativePreviewLease.Sample (UnityEngine.AnimationClip clip) [0x00273] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativePreviewLease.cs:166 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage.Stage (DazPose.Editor.Studio.NativeStandingProjection p) [0x00068] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:44 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage+<>c__DisplayClass10_0.<Apply>b__0 () [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:35 "
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Save this disposable scene with Ctrl+S before starting G2, so the clean-save comparison has a clean baseline.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Start () [0x0026e] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:74 ",
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Guard (System.Action action) [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:195 ",
+        "UnityEngine.DebugLogHandler:Internal_LogException_Injected(Exception, IntPtr)"
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Save this disposable scene with Ctrl+S before starting G2, so the clean-save comparison has a clean baseline.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Start () [0x0026e] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:74 ",
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Guard (System.Action action) [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:195 ",
+        "UnityEngine.DebugLogHandler:Internal_LogException_Injected(Exception, IntPtr)"
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Another PlayableGraph owns Lara's Animator. Stop that preview first.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativePreviewLease.Sample (UnityEngine.AnimationClip clip) [0x00273] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativePreviewLease.cs:166 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage.Stage (DazPose.Editor.Studio.NativeStandingProjection p) [0x00068] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:44 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage+<>c__DisplayClass10_0.<Apply>b__0 () [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:35 "
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Another PlayableGraph owns Lara's Animator. Stop that preview first.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativePreviewLease.Sample (UnityEngine.AnimationClip clip) [0x00273] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativePreviewLease.cs:166 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage.Stage (DazPose.Editor.Studio.NativeStandingProjection p) [0x00068] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:44 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage+<>c__DisplayClass10_0.<Apply>b__0 () [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:35 "
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Another PlayableGraph owns Lara's Animator. Stop that preview first.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativePreviewLease.Sample (UnityEngine.AnimationClip clip) [0x00273] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativePreviewLease.cs:166 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage.Stage (DazPose.Editor.Studio.NativeStandingProjection p) [0x00068] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:44 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage+<>c__DisplayClass10_0.<Apply>b__0 () [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:35 "
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Another PlayableGraph owns Lara's Animator. Stop that preview first.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativePreviewLease.Sample (UnityEngine.AnimationClip clip) [0x00273] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativePreviewLease.cs:166 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage.Stage (DazPose.Editor.Studio.NativeStandingProjection p) [0x00068] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:44 ",
+        "  at DazPose.Editor.Studio.NativeSceneStage+<>c__DisplayClass10_0.<Apply>b__0 () [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeSceneStage.cs:35 "
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Save this disposable scene with Ctrl+S before starting G2, so the clean-save comparison has a clean baseline.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Start () [0x0026e] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:74 ",
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Guard (System.Action action) [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:195 ",
+        "UnityEngine.DebugLogHandler:Internal_LogException_Injected(Exception, IntPtr)"
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Save this disposable scene with Ctrl+S before starting G2, so the clean-save comparison has a clean baseline.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Start () [0x0026e] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:74 ",
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Guard (System.Action action) [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:195 ",
+        "UnityEngine.DebugLogHandler:Internal_LogException_Injected(Exception, IntPtr)"
+      ]
+    },
+    {
+      "message": "InvalidOperationException: Save this disposable scene with Ctrl+S before starting G2, so the clean-save comparison has a clean baseline.",
+      "stack": [
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Start () [0x0026e] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:74 ",
+        "  at DazPose.Editor.Studio.NativeDirectingG2Window.Guard (System.Action action) [0x00000] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\G1Project\\Assets\\DazPose\\Editor\\StoryStudio\\NativeDirectingG2Window.cs:195 ",
+        "UnityEngine.DebugLogHandler:Internal_LogException_Injected(Exception, IntPtr)"
+      ]
+    }
+  ],
+  "fixtureSceneSha256BeforeCodeSync": "69fcf1f820221125ce3a11a4a6b8a595974e87dc95d329b2a7ddc4f5587bcceb",
+  "fixtureScenePath": ".dazposewizard\\native-directing\\G1Project\\Assets\\__NativeDirectingFixtures\\G1_FirstContact.unity",
+  "unityOperatedByExecutor": false
+}

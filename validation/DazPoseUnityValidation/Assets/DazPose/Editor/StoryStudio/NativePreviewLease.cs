@@ -6,8 +6,6 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Animations;
-using UnityEngine.Playables;
 
 namespace DazPose.Editor.Studio
 {
@@ -17,20 +15,21 @@ namespace DazPose.Editor.Studio
         static NativePreviewLease active;
         readonly PreviewPropertyLedger ledger=new PreviewPropertyLedger();
         readonly AnimationModeDriver driver;
-        PlayableGraph samplingGraph;
+        readonly PreviewResourceOwner<NativePoseSampler> sampler=new PreviewResourceOwner<NativePoseSampler>();
         readonly string originalScenePath;
         readonly IDisposable writers;
         readonly HashSet<UnityEngine.Object> ownedObjects=new HashSet<UnityEngine.Object>();
         readonly List<MaterialPropertyBlock> propertyBlockBaseline=new List<MaterialPropertyBlock>();
         readonly List<Material> materials=new List<Material>();
         Action projection;
-        bool disposed, applying, staged, saveSuspended;
+        bool disposed, applying, restoring, staged, saveSuspended;
         int resumeTicks;
         double nextConflictCheck;
         public string Failure { get; private set; }
         public NativeStageContext Context { get; }
         public string Status { get; private set; }="Acquired";
         public bool IsStaged => staged;
+        public bool IsSaveSuspended => saveSuspended;
         public bool IsDisposed => disposed;
         public event Action Restored;
 
@@ -149,41 +148,36 @@ namespace DazPose.Editor.Studio
             }
             var root=Context.Lara.transform;
             Vector3 position=root.position,scale=root.localScale;Quaternion rotation=root.rotation;
-            var animator=Context.Lara.ConfiguredAnimator;
-            if(!animator.isActiveAndEnabled)throw new InvalidOperationException("Lara\'s saved Animator must already be active and enabled; native preview does not activate the actor.");
-            if(animator.hasBoundPlayables)throw new InvalidOperationException("Another PlayableGraph owns Lara's Animator. Stop that preview first.");
-            // Saved Lara intentionally has no RuntimeAnimatorController. SampleAnimationClip's controllerless
-            // Animator path is unsafe; use a private manual graph, as the runtime Generic rig does.
-            samplingGraph=PlayableGraph.Create("DazPose Native Preview Sampling");
-            samplingGraph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-            var playable=AnimationClipPlayable.Create(samplingGraph,clip);
-            playable.SetApplyFootIK(false);playable.SetApplyPlayableIK(false);playable.SetTime(0);
-            var output=AnimationPlayableOutput.Create(samplingGraph,"Lara pose",animator);output.SetSourcePlayable(playable);
-            samplingGraph.Play();
-            AnimationMode.BeginSampling();
-            try { AnimationMode.SamplePlayableGraph(samplingGraph,0,0); }
-            finally { AnimationMode.EndSampling();root.SetPositionAndRotation(position,rotation);root.localScale=scale; }
+            try { sampler.GetOrCreate(()=>new NativePoseSampler(Context.Lara.ConfiguredAnimator)).Sample(clip); }
+            finally { root.SetPositionAndRotation(position,rotation);root.localScale=scale; }
+
         }
         void RestoreBaseline()
         {
             if(!staged && !AnimationMode.InAnimationMode(driver))return;
-            ledger.PrepareRestore();
-            try { if(AnimationMode.InAnimationMode(driver))AnimationMode.StopAnimationMode(driver); }
-            finally
+            restoring=true;
+            try
             {
-                // AnimationMode always stops FIRST. The ledger handles non-animation properties and external edits.
-                try { if(samplingGraph.IsValid())samplingGraph.Destroy(); }
+                ledger.PrepareRestore();
+                try { if(AnimationMode.InAnimationMode(driver))AnimationMode.StopAnimationMode(driver); }
                 finally
                 {
-                    try { ledger.Restore(); }
+                    // AnimationMode always stops FIRST. The ledger handles non-animation properties and external edits.
+                    try { sampler.WithExisting(value=>value.Suspend()); }
                     finally
                     {
-                        staged=false;
-                        foreach(var material in materials)if(material!=null)UnityEngine.Object.DestroyImmediate(material);
-                        materials.Clear();Restored?.Invoke();
+                        try { ledger.Restore(); }
+                        finally
+                        {
+                            staged=false;
+                            foreach(var material in materials)if(material!=null)UnityEngine.Object.DestroyImmediate(material);
+                            materials.Clear();Restored?.Invoke();
+                        }
                     }
                 }
             }
+            finally { restoring=false; }
+
         }
         void SuspendForSave()
         {
@@ -224,7 +218,7 @@ namespace DazPose.Editor.Studio
         void UndoRedo() { if(!disposed && !saveSuspended && projection!=null)Apply(projection); }
         UndoPropertyModification[] AuthorModified(UndoPropertyModification[] changes)
         {
-            if(!applying && changes.Any(m=>ownedObjects.Contains(m.currentValue.target)))
+            if(!disposed && !applying && !restoring && !saveSuspended && changes.Any(m=>ownedObjects.Contains(m.currentValue.target)))
             {
                 // Authoring actor/bone fields while posed cannot be safely merged into AnimationMode's Undo snapshot.
                 // Restore only owned fields, retaining detected external values, then leave the edit to Unity.
@@ -243,16 +237,20 @@ namespace DazPose.Editor.Studio
             try { RestoreBaseline(); }
             finally
             {
-                writers.Dispose();if(driver!=null)UnityEngine.Object.DestroyImmediate(driver);
-                if(active==this)active=null;
-                AssemblyReloadEvents.beforeAssemblyReload-=Dispose;EditorApplication.quitting-=Dispose;
-                EditorApplication.playModeStateChanged-=PlayChanged;EditorApplication.update-=Update;
-                EditorSceneManager.sceneClosing-=SceneClosing;EditorSceneManager.activeSceneChangedInEditMode-=SceneChanged;
-                EditorSceneManager.sceneSaving-=SceneSaving;EditorSceneManager.sceneSaved-=SceneSaved;
-                Undo.undoRedoPerformed-=UndoRedo;Undo.postprocessModifications-=AuthorModified;
-                PrefabUtility.prefabInstanceApplying-=PrefabApplying;
-                Status=Failure ?? "Stopped; preview properties restored";
-                NativeStageContext.RefreshViews();
+                try { sampler.Dispose(); }
+                finally
+                {
+                    writers.Dispose();if(driver!=null)UnityEngine.Object.DestroyImmediate(driver);
+                    if(active==this)active=null;
+                    AssemblyReloadEvents.beforeAssemblyReload-=Dispose;EditorApplication.quitting-=Dispose;
+                    EditorApplication.playModeStateChanged-=PlayChanged;EditorApplication.update-=Update;
+                    EditorSceneManager.sceneClosing-=SceneClosing;EditorSceneManager.activeSceneChangedInEditMode-=SceneChanged;
+                    EditorSceneManager.sceneSaving-=SceneSaving;EditorSceneManager.sceneSaved-=SceneSaved;
+                    Undo.undoRedoPerformed-=UndoRedo;Undo.postprocessModifications-=AuthorModified;
+                    PrefabUtility.prefabInstanceApplying-=PrefabApplying;
+                    Status=Failure ?? "Stopped; preview properties restored";
+                    NativeStageContext.RefreshViews();
+                }
             }
         }
     }

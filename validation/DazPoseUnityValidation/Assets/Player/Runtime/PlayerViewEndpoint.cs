@@ -4,6 +4,8 @@ namespace DazPose.Player
     /// <summary>Exactly the finite/acquire/follow runtime aim calculation; contains no scene writes.</summary>
     public static class PlayerViewEndpoint
     {
+        public static Quaternion ProjectionRotation(bool trackLara,Quaternion anchorRotation,Vector3 target,Vector3 actualOrigin)
+            => trackLara?DesiredRotation(target,actualOrigin,anchorRotation):anchorRotation;
         public static Quaternion DesiredRotation(Vector3 worldTarget, Vector3 actualOrigin, Quaternion currentRigRotation)
         {
             Vector3 direction = worldTarget - actualOrigin;

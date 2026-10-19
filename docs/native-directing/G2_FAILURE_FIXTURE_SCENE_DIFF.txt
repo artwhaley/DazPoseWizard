@@ -1,0 +1,48 @@
+Display diff: trailing whitespace removed. Exact saved-scene SHA256 is in G2_FAILURE_EVIDENCE.json.
+--- Protected original FirstContact
++++ Art-edited disposable fixture at failure review
+@@ -10965,7 +10965,7 @@
+   program: {fileID: 0}
+   compiledSource: {fileID: -9164764017844610671, guid: 0617ee0beddae85448f0eefd1a7e3049, type: 3}
+   sequenceName: FirstContact
+-  stopBeforePhase: ''
++  stopBeforePhase:
+   useFixedSeed: 1
+   sessionSeed: 82017
+   pacingMultiplier: 1
+@@ -16490,6 +16490,10 @@
+     - target: {fileID: 6001443574911359252, guid: 91a9b9576df9bc249b23f61c5fa7038f, type: 3}
+       propertyPath: startHidden
+       value: 1
++      objectReference: {fileID: 0}
++    - target: {fileID: 6155713162590348731, guid: 91a9b9576df9bc249b23f61c5fa7038f, type: 3}
++      propertyPath: m_UpdateWhenOffscreen
++      value: 0
+       objectReference: {fileID: 0}
+     - target: {fileID: 7390636781918707674, guid: 91a9b9576df9bc249b23f61c5fa7038f, type: 3}
+       propertyPath: m_Name
+@@ -18026,7 +18030,7 @@
+   m_GameObject: {fileID: 1553734829}
+   serializedVersion: 2
+   m_LocalRotation: {x: -0, y: 0.3046689, z: -0, w: 0.9524583}
+-  m_LocalPosition: {x: 0.371647, y: 0, z: -2.9785175}
++  m_LocalPosition: {x: -0.668, y: 0, z: -2.238}
+   m_LocalScale: {x: 1, y: 1, z: 1}
+   m_ConstrainProportionsScale: 0
+   m_Children: []
+@@ -23823,13 +23827,13 @@
+   m_PrefabAsset: {fileID: 0}
+   m_GameObject: {fileID: 1997899377}
+   serializedVersion: 2
+-  m_LocalRotation: {x: 0.027425291, y: -0.93873113, z: -0.0018371617, w: 0.34355253}
++  m_LocalRotation: {x: -0.05078204, y: -0.16567904, z: -0.27807027, w: -0.94480085}
+   m_LocalPosition: {x: 2.42, y: 1.34, z: -0.14}
+   m_LocalScale: {x: 1, y: 1, z: 1}
+   m_ConstrainProportionsScale: 0
+   m_Children: []
+   m_Father: {fileID: 469817451}
+-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++  m_LocalEulerAnglesHint: {x: 0.219, y: -340.043, z: 32.839}
+ --- !u!1001 &8153883316773160517
+ PrefabInstance:
+   m_ObjectHideFlags: 0

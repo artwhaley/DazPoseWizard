@@ -1,0 +1,22 @@
+{
+  "exitCode": 0,
+  "summary": {
+    "status": "PASS",
+    "issueCount": 0,
+    "output": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\docs\\p2-p3\\FINAL_ASSET_AUDIT.json",
+    "counts": {
+      "assets": 3741,
+      "guidCount": 4470,
+      "duplicateGuids": 0,
+      "missingMetas": 0,
+      "protectedFiles": 669,
+      "protectedUnchanged": 660,
+      "explicitRetirementExceptions": 34,
+      "currentSourceFilesHashed": 550,
+      "currentScenes": 15,
+      "productionUiPrefabs": 8
+    }
+  },
+  "fullReport": ".dazposewizard\\native-directing\\G2-repair-asset-audit.json",
+  "fullReportSha256": "4b9e5fde9971a73be3da6b1f0debb95cddc2faed1326289994710b49c9075732"
+}

@@ -26,6 +26,8 @@ namespace DazPose.Editor.Studio
         readonly NativePreviewLease lease;
         public NativeStageContext Context=>lease.Context;
         public bool Ready=>!lease.IsDisposed;
+        public bool IsSaveSuspended=>lease.IsSaveSuspended;
+        public bool IsStaged=>lease.IsStaged;
         public string Status=>lease.Status;
         public string Failure=>lease.Failure;
         public NativeSceneStage(NativeStageContext context) { lease=new NativePreviewLease(context); }
@@ -54,7 +56,6 @@ namespace DazPose.Editor.Studio
                 // Endpoint dissolve requires no residual dissolve block. We never mutate or discard unknown MPB data.
                 EnsureSettledDissolve(renderer);
                 renderer.forceRenderingOff=hidden;
-                if(renderer is SkinnedMeshRenderer skin)skin.updateWhenOffscreen=true;
             }
             if(p.HideBody)foreach(var renderer in c.Body.GetComponentsInChildren<Renderer>(true))renderer.forceRenderingOff=true;
             if(p.Material!=null)
@@ -70,7 +71,7 @@ namespace DazPose.Editor.Studio
             }
             // PlayerView.ResetPerformanceView endpoint only: position lives on player, rotation on ViewRig.
             c.PlayerRoot.position=p.CameraMark.position;c.ViewRig.rotation=p.CameraMark.rotation;
-            if(p.TrackLara)c.ViewRig.rotation=PlayerViewEndpoint.DesiredRotation(c.Host.laraFocus.position,c.Camera.transform.position,c.ViewRig.rotation);
+            c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(p.TrackLara,p.CameraMark.rotation,c.Host.laraFocus.position,c.Camera.transform.position);
         }
         void RequireAnchor(Transform value,string label)
         {

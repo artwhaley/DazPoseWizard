@@ -44,3 +44,7 @@ N04_MANAGED_RESULTS.json and logs: Story 90, Player 24, Rehearsal 29, Applicatio
 N04_ASSET_AUDIT.json/log: source/meta/reference audit; historical p2-p3 report preserved. PROTECTED_CHECK.json: original protected files checked separately. G2_CODE_SYNC.json records the synchronized source fingerprint; fixture marker records the actual local revision. Art alone imports/compiles/checks the fixture in Unity. Native N02–N04 status stays provisional until G2 PASS, and later seating/material families require G3/G4.
 
 Snapshot reference comparison normalizes Editor JSON instance IDs to GlobalObjectIds so a legitimate scene reopen does not fabricate actor/reference differences. Transient references retain their distinct instance identity and cannot be confused with saved material assets.
+
+## G2 correction after Art's failed native run
+
+The preceding N02–N04 source-ready record did not establish native correctness. See G2_FAILURE_AND_REPAIR.md for Art's FAIL and log-confirmed causes. Current implementation retains/detaches its owned graph across reprojections/save (destroys at final lease end), no longer assigns updateWhenOffscreen, waits through transient import, and defaults the G2 camera to full authored mark rotation. Tracking is explicit. G2 uses narrow YAML normalization plus unchanged actor/prefab checks rather than raw byte identity alone. Native acceptance remains pending the v2 retry.

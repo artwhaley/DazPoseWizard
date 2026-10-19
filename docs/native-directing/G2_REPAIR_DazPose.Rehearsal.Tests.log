@@ -1,0 +1,5 @@
+  DazPose.Rehearsal.Tests -> C:\Users\artwh\OneDrive\Documents\DazPoseWizard\tests\DazPose.Rehearsal.Tests\bin\Debug\net10.0\DazPose.Rehearsal.Tests.dll
+Test run for C:\Users\artwh\OneDrive\Documents\DazPoseWizard\tests\DazPose.Rehearsal.Tests\bin\Debug\net10.0\DazPose.Rehearsal.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    40, Skipped:     0, Total:    40, Duration: 401 ms - DazPose.Rehearsal.Tests.dll (net10.0)
