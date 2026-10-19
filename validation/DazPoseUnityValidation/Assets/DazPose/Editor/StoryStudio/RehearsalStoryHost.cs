@@ -265,7 +265,7 @@ namespace DazPose.Editor {
    if(!activeActions.Contains(action))throw new InvalidOperationException("The current phase has no active action '"+action+"'.");
    pressedActions.Add(action);Trace(null,"Synthetic player press: "+action+".");
   }
-  public Task YieldAsync(CancellationToken cancellation){cancellation.ThrowIfCancellationRequested();return Task.CompletedTask;}
+  public async Task YieldAsync(CancellationToken cancellation){cancellation.ThrowIfCancellationRequested();await Task.Yield();cancellation.ThrowIfCancellationRequested();}
   public void CancelOperations(){cancelled=true;if(!lifetime.IsCancellationRequested)lifetime.Cancel();activeActions.Clear();}
   public void Trace(StorySource source,string message)=>TraceLine?.Invoke(source,message);
   public IDictionary<string,StoryData> SnapshotState()=>stateSnapshot();

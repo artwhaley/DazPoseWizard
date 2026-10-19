@@ -60,7 +60,7 @@ namespace DazPose.Editor {
   public Task Start() {
    ThrowIfDisposed();if(started)return RunTask;started=true;
    RunTask=Machine.RunAsync(sequence,cancellation.Token);
-   _=RunTask.ContinueWith(t=>{if(t.IsFaulted){var error=t.Exception?.GetBaseException();lock(sync)Failure=error;}},TaskScheduler.Default);
+   _=RunTask.ContinueWith(t=>{if(t.IsFaulted){var error=t.Exception?.GetBaseException();lock(sync)if(ReferenceEquals(RunTask,t))Failure=error;}},TaskScheduler.Default);
    return RunTask;
   }
   public void Continue(){ThrowIfDisposed();if(!started)_=Start();Controller.Continue();}
