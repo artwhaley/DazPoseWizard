@@ -108,9 +108,10 @@ namespace DazPose.Editor.Studio
                 });
             }
             if(GUILayout.Button("New scenario (clear recorded visit choices)")){StopRehearsal();scenario=new RehearsalScenario{seed=scenario.seed};}
-            if(rehearsal?.Controller.PendingWait!=null) {
-                EditorGUILayout.HelpBox("Waiting for a response at visit "+rehearsal.Controller.PendingWait.Visit.Encounter+". Choose an event to continue.",MessageType.Info);
-                foreach(var response in rehearsal.Controller.PendingWait.Events)if(GUILayout.Button("Respond: "+response.String))Try(()=>rehearsal.SetEventResponse(current.Source,current.ProgramCounter,response.String));
+            var pendingWait=rehearsal?.Controller.PendingWait;
+            if(pendingWait!=null) {
+                EditorGUILayout.HelpBox("Waiting for a response at visit "+pendingWait.Visit.Encounter+". Choose an event to continue.",MessageType.Info);
+                foreach(var response in pendingWait.Events)if(GUILayout.Button("Respond: "+response.String))Try(()=>rehearsal.SetEventResponse(pendingWait.Source,pendingWait.ProgramCounter,response.String));
             }
             if(current!=null) {
                 EditorGUILayout.LabelField(current.EntryKind+" "+current.EntryName+" · PC "+current.ProgramCounter+" · visit "+current.Visit.Encounter+" · before · "+current.Source,EditorStyles.miniLabel);
