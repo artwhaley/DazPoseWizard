@@ -174,14 +174,13 @@ namespace DazPose.Story {
 
     case "ui.showKinks":
 
-     await b.prompts.ShowKinkEditorAsync(c.Application.Profile,c.Catalogs.Kinks,c.Cancellation);
-
-     c.Contract.RefreshKinks(c.Application.Profile.Current); c.Log("Interests confirmed and saved: "+string.Join(", ",c.Contract.kinks.Select(k=>k.id+" frequency "+k.frequency+", sentiment "+k.sentiment))+"."); break;
-
-    case "ui.showEquipment": await b.prompts.ShowEquipmentEditorAsync(c.Application.Profile,c.Catalogs.Equipment,c.Cancellation); c.Log("Equipment confirmed and saved: "+string.Join(", ",c.Application.Profile.Current.equipment.Select(e=>e.id+": "+e.ownedAndWilling))+"."); break;
-
-    case "ui.showClothing": await b.prompts.ShowClothingEditorAsync(c.Session.world,c.Cancellation); c.Log("Clothing confirmed: "+c.Session.world.ClothingCount+" items worn"+(c.Session.world.ClothingCount==0 ? "." : ": "+c.Session.world.ClothingDescription+".")); break;
-
+     if((await b.prompts.ShowKinkEditorAsync(c.Application.Profile,c.Catalogs.Kinks,c.Cancellation)).Applied) {
+      c.Contract.RefreshKinks(c.Application.Profile.Current);c.Log("Interests applied.");
+     } else c.Log("Interests editor cancelled; previous choices retained.");break;
+    case "ui.showEquipment":
+     c.Log((await b.prompts.ShowEquipmentEditorAsync(c.Application.Profile,c.Catalogs.Equipment,c.Cancellation)).Applied ? "Equipment applied." : "Equipment editor cancelled; previous choices retained.");break;
+    case "ui.showClothing":
+     c.Log((await b.prompts.ShowClothingEditorAsync(c.Session.world,c.Cancellation)).Applied ? "Clothing applied." : "Clothing editor cancelled; previous choices retained.");break;
     case "session.calculateSubmissionScore": c.Application.Profile.CalculateSubmissionScore(c.Catalogs.Kinks); c.Log("Submission score calculated and saved: "+c.Application.Profile.Current.submissionScore+" out of 100."); break;
 
     case "session.selectPreparedEquipment":

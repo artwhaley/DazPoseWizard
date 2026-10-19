@@ -11,7 +11,8 @@
     "GUID:e0cd26848372d4e5c891c569017e11f1",
     "DazPose.Presentation",
     "Unity.ugui",
-    "DazPose.Content"
+    "DazPose.Content",
+    "Unity.TextMeshPro"
   ],
   "includePlatforms": [
     "Editor"

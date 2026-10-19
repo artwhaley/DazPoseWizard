@@ -1,0 +1,62 @@
+[
+  {
+    "type": "EquipmentRowView",
+    "guid": "eef954b5a69d41cba54827104baeb787",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/EquipmentRowView.cs"
+  },
+  {
+    "type": "InterestRowView",
+    "guid": "0b1c0d22de724303bd93e44d4c0cebcf",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/InterestRowView.cs"
+  },
+  {
+    "type": "LabeledToggleRowView",
+    "guid": "b19d962527854b03bc1690c7efcfb369",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/LabeledToggleRowView.cs"
+  },
+  {
+    "type": "ModalShellView",
+    "guid": "91fe0f5ecf7948918628bae0d500314d",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/ModalShellView.cs"
+  },
+  {
+    "type": "ProductionModalFactory",
+    "guid": "d69494b3a1234f25989498e241f840e3",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/ProductionModalFactory.cs"
+  },
+  {
+    "type": "ProductionUiLibrary",
+    "guid": "12a4fedd685e411991ed4a3f524deb27",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/ProductionUiLibrary.cs"
+  },
+  {
+    "type": "ProfileCatalogPanelView",
+    "guid": "43b73423783344dbaf6d0587aab52553",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/ProfileCatalogPanelView.cs"
+  },
+  {
+    "type": "RecycledListView",
+    "guid": "c78c1440346a4900ad39e7411ea43d1d",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/RecycledListView.cs"
+  },
+  {
+    "type": "SceneBrowserView",
+    "guid": "94bd888792ee4d2f931b0b00682a434c",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/SceneBrowserView.cs"
+  },
+  {
+    "type": "SceneCardView",
+    "guid": "37e6d005c3b145f88d074a383f2c440c",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/SceneCardView.cs"
+  },
+  {
+    "type": "ThemeGraphic",
+    "guid": "c5d8bb2123fb43448bf6b416d5543472",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/ThemeGraphic.cs"
+  },
+  {
+    "type": "UiTheme",
+    "guid": "7bd837806d254bc38ebf96685c62be02",
+    "path": "validation/DazPoseUnityValidation/Assets/DazPose/Presentation/UI/UiTheme.cs"
+  }
+]

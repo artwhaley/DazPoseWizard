@@ -40,3 +40,6 @@ validation/DazPoseUnityValidation/Assets/Generated/
 
 # Hand-authored managed story compiler/interpreter test project
 !tests/DazPose.Story.Tests/DazPose.Story.Tests.csproj
+
+# Hand-authored profile transaction test project
+!tests/DazPose.Player.Tests/DazPose.Player.Tests.csproj

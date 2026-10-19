@@ -126,15 +126,17 @@ namespace DazPose.Story {
      await run.Performer.SitAtAsync(seat);world.posture=PlayerPosture.Sitting;break;
     }
     case "Lara.PlayOneShotGesture":await run.Performer.GestureAsync(content.Gesture(Arg("gesture")));break;
-    case "Popup.Show":
-     Trace(command.Source,"Waiting for your "+Arg("panel")+" confirmation.");
+    case "Popup.Show": {
+     Trace(command.Source,"Waiting for your "+Arg("panel")+" choices.");
+     StoryPromptResult result;
      switch(Arg("panel")) {
-      case "Kinks":await scene.prompts.ShowKinkEditorAsync(context.Application.Profile,context.Catalogs.Kinks,cancellation);context.Contract.RefreshKinks(context.Application.Profile.Current);break;
-      case "Equipment":await scene.prompts.ShowEquipmentEditorAsync(context.Application.Profile,context.Catalogs.Equipment,cancellation);break;
-      case "Clothing":await scene.prompts.ShowClothingEditorAsync(world,cancellation);Trace(command.Source,"Clothing confirmed: "+world.ClothingCount+" items; "+world.ClothingDescription+".");break;
+      case "Kinks":result=await scene.prompts.ShowKinkEditorAsync(context.Application.Profile,context.Catalogs.Kinks,cancellation);if(result.Applied)context.Contract.RefreshKinks(context.Application.Profile.Current);break;
+      case "Equipment":result=await scene.prompts.ShowEquipmentEditorAsync(context.Application.Profile,context.Catalogs.Equipment,cancellation);break;
+      case "Clothing":result=await scene.prompts.ShowClothingEditorAsync(world,cancellation);break;
       default:throw new ArgumentException("Unknown popup panel.");
      }
-     Trace(command.Source,"You confirmed "+Arg("panel")+".");break;
+     Trace(command.Source,result.Applied ? "You applied "+Arg("panel")+"." : "You cancelled "+Arg("panel")+"; previous choices retained.");break;
+    }
     case "SubmissionScore.Calculate":context.Application.Profile.CalculateSubmissionScore(context.Catalogs.Kinks);context.Contract.RefreshKinks(context.Application.Profile.Current);Trace(command.Source,"Submission score is "+context.Application.Profile.Current.submissionScore+".");break;
     case "Session.SelectPreparedEquipment":
      double count=command.Require("count").Numeric;

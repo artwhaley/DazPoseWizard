@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using DazPose.Game;
 using DazPose.Presentation;
 using DazPose.Performer;
 using UnityEditor;
@@ -126,29 +127,22 @@ namespace DazPose.Editor {
     }
     PrefabUtility.SaveAsPrefabAsset(root,path); PrefabUtility.UnloadPrefabContents(root);
    }
-   var scene=EditorSceneManager.OpenScene("Assets/Production/Scenes/MainMenu.unity");
-   foreach(var scaler in GameSessionSceneSetup.InScene<CanvasScaler>(scene)) scaler.matchWidthOrHeight=1;
-   foreach(var settings in GameSessionSceneSetup.InScene<SettingsMenuController>(scene)) {
-    settings.FitToParentCanvas(); EditorUtility.SetDirty(settings.transform);
-    PrefabUtility.RecordPrefabInstancePropertyModifications(settings.transform);
-   }
-   EditorSceneManager.SaveScene(scene);
   }
   public static void BuildShell() {
-   EnsureAssets();
-   var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-   var go=Canvas("Main Menu",0); var panel=FullPanel(go);
-   Text("DazPose",panel,-380,-100,700,80,48); Text("Choose a scene",panel,-380,-194,700,44,24);
-   var list=Rect("Scene list",panel,0,-272,900,330);
-   var layout=list.gameObject.AddComponent<VerticalLayoutGroup>(); layout.spacing=14; layout.childForceExpandHeight=false;
-   var template=Button("Scene",list,0,0,900); template.gameObject.AddComponent<LayoutElement>().preferredHeight=58; template.gameObject.SetActive(false);
-   var settings=Settings(go.transform); var options=Button("Settings",panel,-160,-658,260); var quit=Button("Quit",panel,160,-658,260);
-   go.AddComponent<MainMenuController>().Configure(list,template,options,quit,settings);
-   EnsureEventSystem();
-   Directory.CreateDirectory("Assets/Production/Scenes");
-   EditorSceneManager.SaveScene(scene,"Assets/Production/Scenes/MainMenu.unity");
-   var catalog=AssetDatabase.LoadAssetAtPath<DazPose.Game.SceneCatalog>(ProductionApplicationSetup.CatalogPath);
-   EditorBuildSettings.scenes=GamePlayerBuild.ComputeScenes(catalog).Select(path=>new EditorBuildSettingsScene(path,true)).ToArray();
+   if(EditorApplication.isPlayingOrWillChangePlaymode) throw new System.InvalidOperationException("Validate the saved main menu in Edit Mode.");
+   const string scenePath="Assets/Production/Scenes/MainMenu.unity";
+   var library=AssetDatabase.LoadAssetAtPath<ProductionUiLibrary>("Assets/Resources/DazPose/ProductionUi.asset");
+   var template=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Production/UI/MainMenuScreen.prefab");
+   if(library==null || library.mainMenu==null || template==null) throw new System.InvalidOperationException("The ProductionUi library and MainMenuScreen template must be present.");
+   var scene=EditorSceneManager.GetSceneByPath(scenePath);
+   if(!scene.IsValid() || !scene.isLoaded) scene=EditorSceneManager.OpenScene(scenePath,OpenSceneMode.Additive);
+   var menus=GameSessionSceneSetup.InScene<MainMenuController>(scene);
+   if(menus.Length!=1 || menus[0].GetComponent<SceneBrowserView>()==null) throw new System.InvalidOperationException("MainMenu must contain exactly one wired MainMenuController and SceneBrowserView.");
+   if(GameSessionSceneSetup.InScene<EventSystem>(scene).Length!=1) throw new System.InvalidOperationException("MainMenu must preserve exactly one EventSystem.");
+   var catalog=AssetDatabase.LoadAssetAtPath<SceneCatalog>(ProductionApplicationSetup.CatalogPath);
+   var expected=GamePlayerBuild.ComputeScenes(catalog);
+   if(EditorBuildSettings.scenes.Length!=expected.Length || !EditorBuildSettings.scenes.Select(x=>x.path).SequenceEqual(expected))
+    throw new System.InvalidOperationException("Synchronize Editor Build Settings with the public scene catalog.");
   }
  }
 }

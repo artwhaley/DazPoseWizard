@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Using Include="Xunit" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfile.cs" Link="Runtime/PlayerProfile.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfileJson.cs" Link="Runtime/PlayerProfileJson.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfileService.cs" Link="Runtime/PlayerProfileService.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/PlayerProfileEditSession.cs" Link="Runtime/PlayerProfileEditSession.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/ClothingEditSession.cs" Link="Runtime/ClothingEditSession.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/ProfileData.cs" Link="Runtime/ProfileData.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/PlayerWorldState.cs" Link="Runtime/PlayerWorldState.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/KinkCatalog.cs" Link="Runtime/KinkCatalog.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/KinkDefinition.cs" Link="Runtime/KinkDefinition.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/EquipmentCatalog.cs" Link="Runtime/EquipmentCatalog.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/State/EquipmentDefinition.cs" Link="Runtime/EquipmentDefinition.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Content/StoryCatalogs.cs" Link="Runtime/StoryCatalogs.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Serialization/StoryArgument.cs" Link="Runtime/StoryArgument.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Serialization/StoryValue.cs" Link="Runtime/StoryValue.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/CatalogSearch.cs" Link="Production/CatalogSearch.cs" />
+</ItemGroup>
+</Project>

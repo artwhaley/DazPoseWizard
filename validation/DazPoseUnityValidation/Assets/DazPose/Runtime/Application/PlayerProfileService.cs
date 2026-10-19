@@ -1,4 +1,6 @@
 using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -6,9 +8,9 @@ using DazPose.Story;
 using UnityEngine;
 namespace DazPose.Game {
  public sealed class PlayerProfileService {
-  [Serializable] sealed class Header { public int version; }
   readonly string path;
   bool retainBadFile;
+  JObject preservedDocument=new JObject();
   public PlayerProfile Current { get; private set; }=new PlayerProfile();
   public string LastLoadDiagnostic { get; private set; }
   public string LastSaveDiagnostic { get; private set; }
@@ -18,15 +20,16 @@ namespace DazPose.Game {
    if(!File.Exists(path)) return;
    try {
     var json=File.ReadAllText(path);
-    if(JsonUtility.FromJson<Header>(json)?.version!=1) throw new InvalidDataException("Expected profile version 1.");
-    var profile=JsonUtility.FromJson<PlayerProfile>(json); Validate(profile); Current=profile;
+    var document=JObject.Parse(json);
+    if(document["version"]?.Type!=JTokenType.Integer || document["version"].Value<int>()!=1) throw new InvalidDataException("Expected profile version 1.");
+    var profile=PlayerProfileJson.Read(document); Validate(profile); Current=profile;preservedDocument=document;
    } catch(Exception error) {
     retainBadFile=true;
     LastLoadDiagnostic=path+": "+error.Message+"; defaults loaded in memory; original file retained.";
     Debug.LogWarning("Player profile fallback: "+LastLoadDiagnostic);
    }
   }
-  public static PlayerProfile Clone(PlayerProfile profile) => JsonUtility.FromJson<PlayerProfile>(JsonUtility.ToJson(profile));
+  public static PlayerProfile Clone(PlayerProfile profile) => PlayerProfileJson.Clone(profile);
   public void Update(Action<PlayerProfile> edit) { var next=Clone(Current); edit(next); Commit(next); }
   public void Commit(PlayerProfile next) {
    try {
@@ -34,11 +37,12 @@ namespace DazPose.Game {
     var detached=Clone(next);
     Directory.CreateDirectory(Path.GetDirectoryName(path));
     string temporary=path+".tmp";
-    File.WriteAllText(temporary,JsonUtility.ToJson(detached,true));
+    var document=PlayerProfileJson.Merge(preservedDocument,detached);
+    File.WriteAllText(temporary,document.ToString(Formatting.Indented));
     // A deliberate later commit keeps the malformed input as a recovery copy.
     if(File.Exists(path)) File.Replace(temporary,path,retainBadFile ? path+".corrupt-"+DateTime.UtcNow.ToString("yyyyMMddTHHmmssfff")+"-"+Guid.NewGuid().ToString("N") : null);
     else File.Move(temporary,path);
-    Current=detached; retainBadFile=false; LastSaveDiagnostic=null;
+    Current=detached;preservedDocument=document; retainBadFile=false; LastSaveDiagnostic=null;
    } catch(Exception error) {
     LastSaveDiagnostic=path+": "+error.Message; Debug.LogError("Player profile save failed: "+LastSaveDiagnostic); throw;
    }

@@ -11,12 +11,16 @@ namespace DazPose.Presentation {
   StoryPromptService prompts;
   CancellationTokenSource cancellation;
   void Awake() {
-   var interests=StoryUi.Button(transform,"Interests",()=>Open(true)); Place(interests,240);
-   var equipment=StoryUi.Button(transform,"Equipment",()=>Open(false)); Place(equipment,470);
+   var library=ProductionUiLibrary.Load();
+   AddProfileButton(library,"Interests",()=>Open(true),.56f,.75f);
+   AddProfileButton(library,"Equipment",()=>Open(false),.77f,.96f);
   }
-  static void Place(Button button,float x) {
-   var rect=(RectTransform)button.transform; rect.anchorMin=rect.anchorMax=new Vector2(.5f,1); rect.pivot=new Vector2(.5f,1);
-   rect.anchoredPosition=new Vector2(x,-28); rect.sizeDelta=new Vector2(210,46);
+  void AddProfileButton(ProductionUiLibrary library,string label,UnityEngine.Events.UnityAction action,float left,float right) {
+   var row=Instantiate(library.choiceButton,transform,false);library.Prepare(row);
+   row.GetComponentInChildren<TMPro.TMP_Text>(true).text=label;
+   var rect=(RectTransform)row.transform;rect.anchorMin=new Vector2(left,1);rect.anchorMax=new Vector2(right,1);
+   rect.pivot=new Vector2(.5f,1);rect.offsetMin=new Vector2(0,-74);rect.offsetMax=new Vector2(0,-28);
+   row.GetComponent<Button>().onClick.AddListener(action);row.SetActive(true);
   }
   void OnEnable() { cancellation=new CancellationTokenSource(); }
   async void Open(bool interests) {
