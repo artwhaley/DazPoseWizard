@@ -29,25 +29,24 @@ namespace DazPose.Editor.Studio {
    var catalog=Resources.Load<GlobalStoryCardCatalog>("DazPose/GlobalStoryCards");Asset(catalog);
    if(catalog!=null){text.Append(catalog.fingerprint);foreach(var published in catalog.sources??Array.Empty<CompiledStoryAsset>()){Asset(published);if(published!=null)Asset(published.content);}}
    if(host!=null) {
-    text.Append(host.GetEntityId().ToString()).Append('|').Append(AssetDatabase.AssetPathToGUID(host.gameObject.scene.path)).Append(string.IsNullOrEmpty(host.gameObject.scene.path)?"":AssetDatabase.GetAssetDependencyHash(host.gameObject.scene.path).ToString()).Append('|').Append(EditorJsonUtility.ToJson(host));
-    // Saved scene objects only: preview hierarchy changes cannot invalidate their own owner.
-    foreach(var root in host.gameObject.scene.GetRootGameObjects())foreach(var transform in root.GetComponentsInChildren<Transform>(true)) {
-     text.Append(transform.GetEntityId().ToString()).Append(':').Append(transform.localPosition.ToString("R")).Append(transform.localRotation.ToString("R")).Append(transform.localScale.ToString("R")).Append(transform.gameObject.activeSelf);
-     foreach(var component in transform.GetComponents<Component>())if(component!=null)text.Append(component.GetEntityId().ToString()).Append(':').Append(EditorUtility.GetDirtyCount(component));
-    }
+    text.Append(host.GetEntityId().ToString()).Append('|').Append(host.gameObject.scene.path).Append('|').Append(EditorJsonUtility.ToJson(host));
+    Asset(host.lara!=null?host.lara.InitialPose:null);
+    foreach(var location in host.locations??Array.Empty<StoryLocationBinding>())if(location?.seat!=null)Asset(location.seat.SeatingProfile);
+    // Spatial anchors and head-local focus are watched separately from logical revisions.
+
    }
    return StoryDialogue.IdFor(text.ToString());
   }
   void CheckRevision() {
    if(!revisionDirty)return;revisionDirty=false;
    string next=CaptureStamp();if(sourceStamp!=null&&sourceStamp!=next) {
-    Release();selectedPc=-1;selectedRequirement=-1;selectedKey=null;selectedSource=null;detailManifest=null;stagedResult=null;editLocation=false;
-    Refresh();error="Story or scene changed — rebuild rehearsal with Start / Reset.";
+    Release();selectedPc=-1;selectedRequirement=-1;selectedKey=null;selectedSource=null;detailManifest=null;stagedResult=null;
+    Refresh();error="Story or scene changed — restart directing.";
    }
    sourceStamp=next;
   }
   void SelectHost(StorySceneBindings value) {
-   if(value==host)return;Release();host=value;selectedPc=-1;editLocation=false;sourceStamp=null;revisionDirty=true;
+   if(value==host)return;Release();host=value;selectedPc=-1;sourceStamp=null;revisionDirty=true;
    error="Scene host selected. Connect native directing to inspect its real scene references.";
   }
  }

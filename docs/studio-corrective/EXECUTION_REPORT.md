@@ -1,3 +1,5 @@
+> Historical report. Native Scene/Game Studio replacement and current manual instructions are in `docs/native-directing/IMPLEMENTATION_REPORT.md` and `G4_ART_HANDOFF.md`. Old viewport/orbit checks below are historical.
+
 # Studio corrective execution — October 19
 
 **Source implementation delivered; ready for user-controlled manual Unity testing. Native acceptance remains PARTIAL.**

@@ -19,6 +19,7 @@ namespace DazPose.Editor {
   readonly StoryLinkedContent linked;
   readonly StorySceneBindings sceneBindings;
   readonly Action<StoryCommand> visualEffect;
+  readonly Func<StoryCommand,Task> asyncVisualEffect;
   readonly object sync=new object();
   readonly SynchronizationContext editorContext;
   readonly List<StoryInstructionSnapshot> history=new List<StoryInstructionSnapshot>();
@@ -43,10 +44,10 @@ namespace DazPose.Editor {
 
   public RehearsalSession(CompiledStoryProgram program,string sequence,PlayerProfile profile,KinkCatalog kinkCatalog,EquipmentCatalog equipmentCatalog,
    StoryContentBindings sourceBindings=null,StoryLinkedContent linkedContent=null,StorySceneBindings readOnlySceneBindings=null,
-   RehearsalScenario scenario=null,Action<StoryCommand> visualEffect=null) {
+   RehearsalScenario scenario=null,Action<StoryCommand> visualEffect=null,Func<StoryCommand,Task> asyncVisualEffect=null) {
    sourceProgram=linkedContent?.Program??program??throw new ArgumentNullException(nameof(program));this.sequence=sequence??throw new ArgumentNullException(nameof(sequence));
    if(profile==null)throw new ArgumentNullException(nameof(profile));initialProfile=PlayerProfileService.Clone(profile);kinks=kinkCatalog??throw new ArgumentNullException(nameof(kinkCatalog));equipment=equipmentCatalog??throw new ArgumentNullException(nameof(equipmentCatalog));
-   this.sourceBindings=sourceBindings;linked=linkedContent;sceneBindings=readOnlySceneBindings;this.visualEffect=visualEffect;editorContext=SynchronizationContext.Current;
+   this.sourceBindings=sourceBindings;linked=linkedContent;sceneBindings=readOnlySceneBindings;this.visualEffect=visualEffect;this.asyncVisualEffect=asyncVisualEffect;editorContext=SynchronizationContext.Current;
    Scenario=scenario?.Copy()??new RehearsalScenario();
    string fingerprint=StoryDialogue.IdFor(JsonUtility.ToJson(sourceProgram));
    if(Scenario.schemaVersion!=2||Scenario.reviewRequired||(!string.IsNullOrEmpty(Scenario.programFingerprint)&&Scenario.programFingerprint!=fingerprint))throw new InvalidOperationException("Scenario is legacy or belongs to a changed program. Review its choices and create a new visit-scoped scenario.");
@@ -54,7 +55,7 @@ namespace DazPose.Editor {
   }
   void Initialize() {
    lock(sync){history.Clear();nextReady=NewReady();ReadySnapshot=null;CompletedSnapshot=null;Failure=null;RunTask=null;started=false;}
-   cancellation=new CancellationTokenSource();Host=new RehearsalStoryHost(sourceProgram,initialProfile,kinks,equipment,Scenario.seed,sourceBindings,linked,sceneBindings,Scenario,visualEffect);
+   cancellation=new CancellationTokenSource();Host=new RehearsalStoryHost(sourceProgram,initialProfile,kinks,equipment,Scenario.seed,sourceBindings,linked,sceneBindings,Scenario,visualEffect);Host.AsyncVisualEffect=asyncVisualEffect;
    Controller=new StoryRehearsalController();Controller.InstructionReady+=OnInstructionReady;Controller.InstructionCompleted+=OnInstructionCompleted;Controller.BranchObserved+=OnBranch;Controller.WaitObserved+=OnWait;Controller.DirectorObserved+=OnDirector;
    foreach(var item in Scenario.branches??Array.Empty<RehearsalBranchChoice>())Controller.SetBranchOverride(item.key,item.condition);
    foreach(var item in Scenario.events??Array.Empty<RehearsalEventChoice>())Controller.SetEventResponse(item.key,new StoryData(item.eventId));
@@ -98,6 +99,18 @@ namespace DazPose.Editor {
     if(!more)throw new InvalidOperationException("Story completed before the selected instruction visit; choose another path or visit.");
    }
    throw new InvalidOperationException("Source navigation exceeded the scenario instruction budget. Choose a reachable visit or revise the path.");
+  }
+  public async Task<StoryInstructionSnapshot> RunBeforeSelectedAsync(string owner,string entryName,int pc,int encounter=1,CancellationToken token=default) {
+   if(encounter<1)throw new ArgumentOutOfRangeException(nameof(encounter));
+   await ResetAsync(false,token);_=Start();
+   for(int steps=0;steps<=Scenario.maxRunToSteps;steps++) {
+    var current=await ReadyOrFinished(token);
+    if(current==null)throw new InvalidOperationException("Selected instruction visit is unreachable on this scenario path.");
+    if(current.EntryName==entryName&&current.ProgramCounter==pc&&current.Visit.Encounter==encounter&&(current.Source?.unit??current.Source?.file??"")==owner)return current;
+    if(steps==Scenario.maxRunToSteps)break;
+    if(!await StepAsync(token))throw new InvalidOperationException("Story completed before the selected instruction visit.");
+   }
+   throw new InvalidOperationException("Source navigation exceeded the scenario instruction budget.");
   }
   public async Task BackAsync(CancellationToken token=default) {
    token.ThrowIfCancellationRequested();ThrowIfDisposed();int priorCount;lock(sync)priorCount=history.Count;

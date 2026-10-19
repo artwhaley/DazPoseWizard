@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 using DazPose.Game;
 using DazPose.Story;
 using DazPose.Story.Language;
@@ -29,23 +30,53 @@ namespace DazPose.Editor.Studio
         int clothingCount=6;
         string forceCard="";
         Exception previewFailure;
+        CancellationTokenSource visualCancellation;
+        int visualThread;
+        Task DispatchVisual(StoryCommand command,int owner) {
+            if(owner!=generation||visualCancellation==null)return Task.FromCanceled(new CancellationToken(true));
+            // StoryMachine resumes on Unity's captured editor context. Complete synchronous endpoint
+            // effects immediately so unawaited virtual pose/gesture calls release their channels.
+            if(Environment.CurrentManagedThreadId==visualThread){ApplyPreviewCommand(command);return Task.CompletedTask;}
+            var completion=new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var token=visualCancellation.Token;var registration=token.Register(()=>completion.TrySetCanceled());
+            rehearsalEvents.Enqueue(()=>{
+                if(owner!=generation||token.IsCancellationRequested){completion.TrySetCanceled();return;}
+                try{ApplyPreviewCommand(command);completion.TrySetResult(true);}
+                catch(Exception e){HaltVisual(e);completion.TrySetException(e);}
+                finally{registration.Dispose();}
+            });
+            return completion.Task;
+        }
+        void HaltVisual(Exception e) {
+            ObserveNative("failure",e.ToString());previewFailure=e;error="INCOMPLETE — "+e.Message;
+            continuousTransport=false;rehearsal?.Pause();stage?.Dispose();stage=null;nativeContext=null;
+            while(rehearsalEvents.TryDequeue(out _)){}
+            Repaint();
+        }
         void DrainRehearsal() {
             int budget=500;
             while(budget-->0&&rehearsalEvents.TryDequeue(out var action)) {
-                try{action();}catch(Exception e){previewFailure=e;error="Preview effect: "+e.GetBaseException().Message;}
+                try{action();}catch(Exception e){HaltVisual(e);break;}
+                if(previewFailure!=null)break;
             }
-            if(rehearsal!=null&&rehearsal.Failure!=null)error=rehearsal.Failure.Message;
+            if(rehearsal!=null&&rehearsal.Failure!=null&&previewFailure==null)HaltVisual(rehearsal.Failure);
             if(rehearsal!=null)Repaint();
         }
         void StopRehearsal() {
-            generation++;previewFailure=null;stagedResult=null;if(rehearsal!=null)scenario=rehearsal.Scenario.Copy();rehearsal?.Dispose();rehearsal=null;current=null;selection=null;inspection=null;branch=null;continuousTransport=false;transportBusy=false;
+            visualCancellation?.Cancel();visualCancellation?.Dispose();visualCancellation=null;
+            ObserveNative("stop");generation++;previewFailure=null;stagedResult=null;if(rehearsal!=null)scenario=rehearsal.Scenario.Copy();rehearsal?.Dispose();rehearsal=null;current=null;selection=null;inspection=null;branch=null;continuousTransport=false;transportBusy=false;
             while(rehearsalEvents.TryDequeue(out _)){}
         }
-        void StartRehearsal() {
+        void StartRehearsal() { StartRehearsalCore(true); }
+        void StartRehearsalCore(bool firstStep) {
+            try{StartNativeSession(firstStep);}catch{Release();throw;}
+        }
+        void StartNativeSession(bool firstStep) {
             if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Rehearsal is available only in Edit Mode.");
             if(source==null||!source.IsCompiled||content==null)throw new InvalidOperationException("Choose a valid imported story with reconciled bindings.");
             if(string.IsNullOrEmpty(sequence))throw new InvalidOperationException("Choose a sequence source, rather than a global-card-only file.");
-            revisionDirty=true;CheckRevision();StopRehearsal();trace.Clear();
+            if(host==null||source==null)ResolveNativeDefaults();
+            revisionDirty=true;CheckRevision();StopRehearsal();trace.Clear();directorSelections=0;nativeRestages=0;visualState=new RehearsalVisualState();visualCancellation=new CancellationTokenSource();visualThread=Environment.CurrentManagedThreadId;
             BuildPreview();
             if(StoryDialogue.IdFor(JsonUtility.ToJson(source.program))!=StoryDialogue.IdFor(JsonUtility.ToJson(manifest.Analysis.Program)))throw new InvalidOperationException("Source has changed since its compiled import. Let Unity refresh it before rebuilding rehearsal.");
             rehearsalContent=StoryLinkedContent.Create(source);
@@ -54,9 +85,7 @@ namespace DazPose.Editor.Studio
             // Defaults are isolated author test data. No persistentDataPath/profile file or GameApplication is read.
             var profile=scenario.initialProfile??new PlayerProfile();
             rehearsal=new RehearsalSession(rehearsalContent.Program,sequence,profile,catalogs.Kinks,catalogs.Equipment,
-                content,rehearsalContent,host,scenario,command=>rehearsalEvents.Enqueue(()=>{
-                    if(owner==generation)ApplyPreviewCommand(command);
-                }));
+                content,rehearsalContent,host,scenario,asyncVisualEffect:command=>DispatchVisual(command,owner));
             rehearsal.TraceLine+=(location,message)=>rehearsalEvents.Enqueue(()=>{
                 if(owner!=generation)return;trace.Add((location==null?"":location+" · ")+message);if(trace.Count>1500)trace.RemoveRange(0,trace.Count-1500);
             });
@@ -66,48 +95,43 @@ namespace DazPose.Editor.Studio
                     try{inspection=rehearsal.Machine.InspectDirector(snapshot);}catch(Exception e){trace.Add("Director inspection: "+e.Message);}
             });
             rehearsal.BranchObserved+=snapshot=>rehearsalEvents.Enqueue(()=>{if(owner==generation)branch=snapshot;});
-            rehearsal.DirectorObserved+=snapshot=>rehearsalEvents.Enqueue(()=>{if(owner==generation)selection=snapshot;});
+            rehearsal.DirectorObserved+=snapshot=>rehearsalEvents.Enqueue(()=>{if(owner==generation){selection=snapshot;directorSelections++;ObserveNative("director");}});
             _=rehearsal.Start();
+            var initialSession=rehearsal;if(firstStep)Transport(async()=>{await initialSession.StepAsync();await FlushPreviewEvents(owner);});
         }
         async void Transport(Func<Task> action) {
             if(transportBusy)return;int owner=generation;transportBusy=true;
             try{await action();}
             catch(OperationCanceledException){}
-            catch(Exception e){if(owner==generation)error=e.GetBaseException().Message;}
+            catch(Exception e){if(owner==generation)HaltVisual(e);}
             finally{if(owner==generation)transportBusy=false;Repaint();}
         }
         void DrawTransport() {
-            using(new EditorGUILayout.HorizontalScope(EditorStyles.toolbar)) {
-                var entries=manifest?.Analysis.Program?.entries.Where(e=>e.kind=="sequence").Select(e=>e.name).ToArray()??Array.Empty<string>();
-                if(entries.Length>0)sequence=entries[Mathf.Max(0,EditorGUILayout.Popup(Mathf.Max(0,Array.IndexOf(entries,sequence)),entries,GUILayout.Width(130)))];
-                if(GUILayout.Button("Start / Reset",EditorStyles.toolbarButton))Try(StartRehearsal);
-                using(new EditorGUI.DisabledScope(rehearsal==null||transportBusy)) {
-                    if(GUILayout.Button("Step",EditorStyles.toolbarButton))Transport(async()=>{await rehearsal.StepAsync();});
-                    if(GUILayout.Button("Continue",EditorStyles.toolbarButton)){continuousTransport=true;rehearsal.Continue();}
-                    if(GUILayout.Button("Pause",EditorStyles.toolbarButton)){continuousTransport=false;rehearsal.Pause();}
-                    if(GUILayout.Button("Back",EditorStyles.toolbarButton))BackRehearsal();
-                    if(GUILayout.Button("Run to selected (before)",EditorStyles.toolbarButton))Transport(async()=>{
-                        if(selectedPc<0||selectedEntry==null)throw new InvalidOperationException("Select a source instruction first.");
-                        await rehearsal.RunToPCAsync(selectedEntry,selectedPc);
-                        stagedResult="Before selected instruction · visit "+rehearsal.ReadySnapshot.Visit.Encounter;
-                    });
+            var entries=manifest?.Analysis.Program?.entries.Where(e=>e.kind=="sequence").Select(e=>e.name).ToArray()??Array.Empty<string>();
+            if(entries.Length>0){var nextEntry=entries[Mathf.Max(0,EditorGUILayout.Popup("Sequence",Mathf.Max(0,Array.IndexOf(entries,sequence)),entries))];if(nextEntry!=sequence){Release();sequence=nextEntry;}}
+            using(new EditorGUILayout.HorizontalScope()) {
+                if(GUILayout.Button("Start / Reset"))Try(StartRehearsal);
+                using(new EditorGUI.DisabledScope(rehearsal==null||transportBusy||previewFailure!=null)) {
+                    if(GUILayout.Button("Run")){continuousTransport=true;rehearsal.Continue();}
+                    if(GUILayout.Button("Pause")){continuousTransport=false;rehearsal.Pause();}
                 }
-                if(GUILayout.Button("Stop",EditorStyles.toolbarButton)){StopRehearsal();StopAudio();stage.Dispose();}
-                showState=GUILayout.Toggle(showState,"State","ToolbarButton");
+                if(GUILayout.Button("Stop"))Release();
+                showState=GUILayout.Toggle(showState,"State","Button");
             }
             using(new EditorGUILayout.HorizontalScope()) {
-                int nextSeed=EditorGUILayout.IntField("Seed",scenario.seed,GUILayout.MinWidth(100));if(nextSeed!=scenario.seed){StopRehearsal();scenario.seed=nextSeed;}
-                clothingCount=EditorGUILayout.IntSlider("Initial clothing",clothingCount,0,6);
+                int nextSeed=EditorGUILayout.IntField("Seed",scenario.seed,GUILayout.MinWidth(100));if(nextSeed!=scenario.seed){Release();scenario.seed=nextSeed;}
+
                 if(GUILayout.Button("Save scenario",GUILayout.Width(110)))Try(()=>{
                     string path=EditorUtility.SaveFilePanel("Save test-only rehearsal recipe","","rehearsal.json","json");
                     if(!string.IsNullOrEmpty(path))File.WriteAllText(path,rehearsal!=null?rehearsal.ExportScenarioJson():JsonUtility.ToJson(scenario,true));
                 });
                 if(GUILayout.Button("Load scenario",GUILayout.Width(110)))Try(()=>{
                     string path=EditorUtility.OpenFilePanel("Load test-only rehearsal recipe","","json");
-                    if(!string.IsNullOrEmpty(path)){var loaded=RehearsalSession.ImportScenarioJson(File.ReadAllText(path));StopRehearsal();scenario=loaded;clothingCount=scenario.initialClothing.Count(x=>x);}
+                    if(!string.IsNullOrEmpty(path)){var loaded=RehearsalSession.ImportScenarioJson(File.ReadAllText(path));Release();scenario=loaded;clothingCount=scenario.initialClothing.Count(x=>x);}
                 });
             }
-            if(GUILayout.Button("New scenario (clear recorded visit choices)")){StopRehearsal();scenario=new RehearsalScenario{seed=scenario.seed};}
+            int nextClothing=EditorGUILayout.IntSlider("Initial clothing",clothingCount,0,6);if(nextClothing!=clothingCount){Release();clothingCount=nextClothing;}
+            if(GUILayout.Button("New scenario (clear recorded visit choices)")){Release();scenario=new RehearsalScenario{seed=scenario.seed};}
             var pendingWait=rehearsal?.Controller.PendingWait;
             if(pendingWait!=null) {
                 EditorGUILayout.HelpBox("Waiting for a response at visit "+pendingWait.Visit.Encounter+". Choose an event to continue.",MessageType.Info);
@@ -115,7 +139,7 @@ namespace DazPose.Editor.Studio
             }
             if(current!=null) {
                 EditorGUILayout.LabelField(current.EntryKind+" "+current.EntryName+" · PC "+current.ProgramCounter+" · visit "+current.Visit.Encounter+" · before · "+current.Source,EditorStyles.miniLabel);
-                using(new EditorGUILayout.HorizontalScope()) {
+                using(new EditorGUILayout.VerticalScope()) {
                     if(current.Code==StoryCode.JumpFalse) {
                         EditorGUILayout.LabelField(current.Expression,GUILayout.MaxWidth(280));
                         if(GUILayout.Button("Force true"))rehearsal.SetBranchOverride(current.Source,current.ProgramCounter,true);
@@ -177,50 +201,28 @@ namespace DazPose.Editor.Studio
         }
         void BackRehearsal() {
             int advances=Math.Max(0,rehearsal.History.Count-2);
-            StopRehearsal();Try(StartRehearsal);if(rehearsal==null)return;
+            StopRehearsal();Try(()=>StartRehearsalCore(false));if(rehearsal==null)return;
             var session=rehearsal;int owner=generation;
             Transport(async()=>{if(advances>session.Scenario.maxRunToSteps)throw new InvalidOperationException("Back replay exceeds the scenario step budget.");for(int i=0;i<advances;i++)if(!await session.StepAsync())break;await FlushPreviewEvents(owner);});
         }
         void NavigateSelected() {
             if(selectedPc<0||selectedSource==null)return;
-            string owner=selectedSource.unit??selectedSource.file,entry=selectedEntry;int pc=selectedPc,visit=selectedVisit;
-            StopRehearsal();Try(StartRehearsal);if(rehearsal==null)return;
+            string owner=selectedSource.unit??selectedSource.file,entry=selectedEntry;int pc=selectedPc,visit=selectedVisit;bool after=stageAfter;
+            StopRehearsal();Try(()=>StartRehearsalCore(false));if(rehearsal==null)return;
             var session=rehearsal;int navigationGeneration=generation;
             Transport(async()=>{
-                var completed=await session.RunThroughSelectedAsync(owner,entry,pc,visit);
+                visualState=new RehearsalVisualState();
+                var completed=after?await session.RunThroughSelectedAsync(owner,entry,pc,visit):await session.RunBeforeSelectedAsync(owner,entry,pc,visit);
                 if(navigationGeneration!=generation)return;
                 // Logical effects precede instruction completion; flush them on the Editor thread.
-                await FlushPreviewEvents(navigationGeneration);stagedResult="After "+completed.Name+" · "+completed.Source+" · visit "+completed.Visit.Encounter;
+                await FlushPreviewEvents(navigationGeneration);stagedResult=(after?"After ":"Before ")+completed.Name+" · "+completed.Source+" · visit "+completed.Visit.Encounter;
             });
         }
         void ApplyPreviewCommand(StoryCommand command) {
-            string Arg(string name)=>command.Require(name).String;
-            var owner=rehearsalContent.ContentFor(command.Source);
-            switch(command.Verb) {
-                case "Lara.StartHiddenAt":case "Lara.DissolveIn":case "Lara.LocomoteTo":
-                    stage.Arrival(host.RequireLocation(Arg("location")).placement);
-                    if(command.Verb=="Lara.StartHiddenAt"&&stage.Lara!=null)stage.Lara.gameObject.SetActive(false);
-                    break;
-                case "Lara.DissolveTo":
-                    var destination=host.RequireLocation(Arg("location"));
-                    if(command.Arguments.ContainsKey("seated")){
-                        var pose=owner.Pose(Arg("seated"));if(pose.posture!=PlayerPosture.Sitting)throw new InvalidOperationException("Seated arrival requires Sitting pose metadata.");
-                        stage.SeatedArrival(destination.seat,pose.value.Clip);
-                    }else stage.Arrival(destination.placement);break;
-                case "PlayerBody.StartHiddenAt":
-                    if(stage.PlayerBody!=null){var mark=host.RequireLocation(Arg("location")).placement;stage.PlayerBody.SetPositionAndRotation(mark.position,mark.rotation);stage.PlayerBody.gameObject.SetActive(false);}break;
-                case "PlayerBody.DissolveIn":if(stage.PlayerBody!=null)stage.PlayerBody.gameObject.SetActive(true);break;
-                case "PlayerBody.DissolveOut":if(stage.PlayerBody!=null)stage.PlayerBody.gameObject.SetActive(false);break;
-                case "Lara.PersistentPose":case "Lara.PersistentSitPose":stage.Sample(owner.Pose(Arg("pose")).value.Clip,0);break;
-                case "Lara.PlayOneShotGesture":sampledClip=owner.Gesture(Arg("gesture")).Clip;sampleTime=0;stage.Sample(sampledClip,0);break;
-                case "Lara.MagicShader":stage.Magic(owner.Shader(Arg("profile")));break;
-                case "Lara.Say":DrawSpeechPreview(owner.Dialogue(Arg("text")));break;
-                case "Lara.SitAt":stage.SeatedArrival(host.RequireLocation(Arg("location")).seat);break;
-                case "Camera.StartAt":
-                    var placement=host.RequireLocation(Arg("location")).placement;stage.PreviewCameraAt(placement.position,placement.rotation);break;
-                case "Camera.Track":if(Arg("performer")!="Lara")throw new InvalidOperationException("Camera tracking requires Lara.");stage.TrackLara();break;
-                case "Lara.Grip":trace.Add("Grip is a logical contact indication; live solver animation requires the user's Unity play test.");break;
-            }
+            if(stage==null||!stage.Ready)throw new InvalidOperationException("Start directing before staging commands.");
+            var next=visualState.After(command);
+            stage.Apply(next,rehearsalContent);visualState=next;anchorStamp=CaptureAnchorStamp();ObserveNative("cue");
+            if(command.Verb=="Lara.Say")DrawSpeechPreview(rehearsalContent.ContentFor(command.Source).Dialogue(command.Require("text").String));
         }
         void DrawSpeechPreview(AudioClip clip) {
             // Playback is explicit via the contextual audio preview, not automatic during fast logical replay.

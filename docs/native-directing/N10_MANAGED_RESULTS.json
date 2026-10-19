@@ -1,0 +1,22 @@
+[
+  {
+    "project": "tests/DazPose.Story.Tests/DazPose.Story.Tests.csproj",
+    "exitCode": 0,
+    "output": "Test run for C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\tests\\DazPose.Story.Tests\\bin\\Debug\\net10.0\\DazPose.Story.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:    90, Skipped:     0, Total:    90, Duration: 177 ms - DazPose.Story.Tests.dll (net10.0)\n"
+  },
+  {
+    "project": "tests/DazPose.Player.Tests/DazPose.Player.Tests.csproj",
+    "exitCode": 0,
+    "output": "Test run for C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\tests\\DazPose.Player.Tests\\bin\\Debug\\net10.0\\DazPose.Player.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:    24, Skipped:     0, Total:    24, Duration: 477 ms - DazPose.Player.Tests.dll (net10.0)\n"
+  },
+  {
+    "project": "tests/DazPose.Rehearsal.Tests/DazPose.Rehearsal.Tests.csproj",
+    "exitCode": 0,
+    "output": "Test run for C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\tests\\DazPose.Rehearsal.Tests\\bin\\Debug\\net10.0\\DazPose.Rehearsal.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:    72, Skipped:     0, Total:    72, Duration: 562 ms - DazPose.Rehearsal.Tests.dll (net10.0)\n"
+  },
+  {
+    "project": "tests/DazPose.Tests/DazPose.Tests.csproj",
+    "exitCode": 0,
+    "output": "Test run for C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\tests\\DazPose.Tests\\bin\\Debug\\net10.0\\DazPose.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:    69, Skipped:     0, Total:    69, Duration: 1 s - DazPose.Tests.dll (net10.0)\n"
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "issues": [],
+  "counts": {
+    "assets": 3749,
+    "currentScenes": 15,
+    "currentSourceFilesHashed": 558,
+    "duplicateGuids": 0,
+    "explicitRetirementExceptions": 34,
+    "guidCount": 4478,
+    "missingMetas": 0,
+    "productionUiPrefabs": 8,
+    "protectedFiles": 669,
+    "protectedUnchanged": 660
+  },
+  "fullReport": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\.dazposewizard\\native-directing\\N10-asset-audit.json",
+  "fullSha256": "40e9c517c931bb44a55a29bc8c6c82deba8a444d318d3698059ae52999c8a398",
+  "unityInvoked": false
+}

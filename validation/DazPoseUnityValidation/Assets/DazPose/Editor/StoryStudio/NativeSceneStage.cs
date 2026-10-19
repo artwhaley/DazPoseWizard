@@ -53,16 +53,16 @@ namespace DazPose.Editor.Studio
             c.Lara.transform.SetPositionAndRotation(position,facing);
             Present(p.Endpoint==NativeStandingEndpoint.StartHidden,p.HideBody,p.Material,p.CameraMark,p.TrackLara);
         }
-        void Present(bool hidden,bool hideBody,PerformerMagicShaderProfile material,Transform cameraMark,bool trackLara)
+        void Present(bool? hidden,bool? hideBody,PerformerMagicShaderProfile material,Transform cameraMark,bool trackLara)
         {
             var c=Context;
             foreach(var renderer in c.Lara.GetComponentsInChildren<Renderer>(true))
             {
                 // Endpoint dissolve requires no residual dissolve block. We never mutate or discard unknown MPB data.
                 EnsureSettledDissolve(renderer);
-                renderer.forceRenderingOff=hidden;
+                if(hidden.HasValue)renderer.forceRenderingOff=hidden.Value;
             }
-            if(hideBody)foreach(var renderer in c.Body.GetComponentsInChildren<Renderer>(true))renderer.forceRenderingOff=true;
+            if(hideBody.HasValue)foreach(var renderer in c.Body.GetComponentsInChildren<Renderer>(true))renderer.forceRenderingOff=hideBody.Value;
             if(material!=null)
             {
                 material.ValidateConfiguration();
@@ -75,8 +75,8 @@ namespace DazPose.Editor.Studio
                     }
             }
             // PlayerView.ResetPerformanceView endpoint only: position lives on player, rotation on ViewRig.
-            c.PlayerRoot.position=cameraMark.position;c.ViewRig.rotation=cameraMark.rotation;
-            c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(trackLara,cameraMark.rotation,c.Host.laraFocus.position,c.Camera.transform.position);
+            if(cameraMark!=null){c.PlayerRoot.position=cameraMark.position;c.ViewRig.rotation=cameraMark.rotation;}
+            if(trackLara)c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(true,c.ViewRig.rotation,c.Host.laraFocus.position,c.Camera.transform.position);
         }
         void RequireAnchor(Transform value,string label)
         {

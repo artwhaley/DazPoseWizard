@@ -62,6 +62,8 @@ namespace DazPose.Editor.Studio
         {
             foreach(var t in root.GetComponentsInChildren<Transform>(true))
             {
+                // The head-child focus is an authored local offset, never sampled or preview-owned.
+                if(t==Context.Host.laraFocus)continue;
                 if(!ownedObjects.Add(t))continue;
                 ownedObjects.Add(t.gameObject);
                 string path=NativeStageContext.ObjectPath(t);

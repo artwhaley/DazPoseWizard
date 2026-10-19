@@ -1,0 +1,16 @@
+{
+  "scope": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Editor\\StoryStudio",
+  "matches": {
+    "ScenePreviewSession": [],
+    "PreviewRenderUtility": [],
+    "BeginPreview": [],
+    "stage.Draw": [],
+    "DragOnGround": [],
+    "stage.Project": [],
+    "Build preview": [],
+    "ghostPosition": [],
+    "orbit": []
+  },
+  "oldSourceAndMetaRemoved": true,
+  "productionContentChanged": false
+}

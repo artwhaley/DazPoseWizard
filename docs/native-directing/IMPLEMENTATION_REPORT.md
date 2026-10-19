@@ -1,6 +1,6 @@
 # Native directing execution report — October 19, 2026
 
-**Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766` (matches revised packet). **Overall:** PARTIAL. **Workflow:** WAITING ON ART (G3). G2 PASS confirmed after v2 repair c8afbc2. N05 source/diagnostic is delivered; N06–N11 are held pending G3. G1/G2 remain accepted; G3/G4 are pending.
+**Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766`. **Overall:** PARTIAL. **Workflow:** WAITING ON ART (G4). G1/G2/G3 accepted from Art’s reports. N06–N09 source is integrated into the actual Studio; N10 source/managed checks and G4 recorder/handoff are ready. N11 completion is blocked until G4 native acceptance. Local commits only; no push and no executor Unity operation.
 
 ## Ticket and manual gate ledger
 
@@ -11,15 +11,20 @@
 | N02 | Source implemented; managed restoration regressions pass | G2 PASS — additional seat/material families remain provisional until G3/G4 | Exclusive lease/driver, per-property restore, save/lifecycle callbacks, guarded editor writers |
 | N03 | Source implemented; extracted camera formula parity checked | G2 PASS — Art reported | Real PlayerView root/rig adapter, actual camera origin, post-sample focus |
 | N04 | Source implemented; seven assemblies compile | G2 PASS — standing/camera; later material proof pending G4 | Real Lara manual-graph sampling, standing/visibility/material adapter and G2 fixture |
-| N05 | Source implemented; managed geometry/oracle checks and seven source compiles pass | NOT RUN — G3 requested | Distinct baked default and sampled-hip seating adapters; G3 native save/contact proof |
-| N06–N11 | NOT STARTED | NOT RUN | G3 required before N06; G4 final regression remains mandatory |
+| N05 | Source implemented; managed geometry/oracle checks and seven source compiles pass | G3 PASS — Art reported, seat-focus label deferred | Distinct baked default and sampled-hip seating adapters; G3 native save/contact proof |
+| N06 | Implemented; cumulative intent / before-after exact replay / fail-fast managed tests PASS | WAITING ON ART G4 | RehearsalVisualState and actual-scene cumulative adapter; no second logic engine |
+| N07 | Native Studio cue/binding/scenario chrome implemented | WAITING ON ART G4 | Auto-resolution, source rows, native mark Select/Frame and head-local focus |
+| N08 | Canonical global card/branch transport retained; scratch test tooling prepared | WAITING ON ART G4 | Explicit isolated scratch global-card add/remove/index hash buttons |
+| N09 | Retired renderer and callers deleted; seven assemblies compile | WAITING ON ART G4 import/menu check | N09_RETIREMENT_AUDIT.json; zero old renderer source matches |
+| N10 | 255 managed tests PASS; seven source compiles PASS; static audit PASS | WAITING ON ART G4 | G4_ART_HANDOFF.md and opt-in actual-Studio evidence recorder |
+| N11 | HELD at G4 | NOT RUN | Final delivery/acceptance cannot be declared before Art’s G4 |
 
 | Gate | Art action | Response / evidence | Native status | Dependency |
 |---|---|---|---|---|
 | G1 | G1_ART_HANDOFF.md, real camera Shift -> observe Game -> Restore -> observe -> Export | Art: "Pass… The camera shifted correctly. We're good to proceed… Continue." Screenshots explicitly declined; verbal PASS accepted. No exported restoration report supplied. | PASS — user reported | N02 |
 | G2 | G2_ART_HANDOFF.md: standing/camera/drag + normal and forced save + Undo/Stop/reopen | Initial run failed and was repaired in c8afbc2. Art then reported: "Okay, success this time." Accepted as G2 PASS; no screenshots or exported native report supplied | PASS — user reported | N05 |
-| G3 | G3_ART_HANDOFF.md: A default CrossLegs, B persistent Lounging, C Main seated dissolve; live anchors, scale and save/Undo/Stop | Source-bound diagnostic and current code sync prepared; no screenshots required | NOT RUN / WAITING ON ART | N06 |
-| G4 | Full regression during N10 | Not requested yet | NOT RUN | N11 final acceptance |
+| G3 | G3_ART_HANDOFF.md: A default CrossLegs, B persistent Lounging, C Main seated dissolve; live anchors, scale and save/Undo/Stop | Art: “mostly works”; clarified shared focus/SeatAnchor and deferred label detail, explicitly authorized proceeding through G4. No screenshots/export supplied. | PASS — user reported | N06 |
+| G4 | G4_ART_HANDOFF.md: actual Studio full regression | Prepared actual Studio, user-invoked recording and isolated scratch global-card proof; screenshots not required | WAITING ON ART / NOT RUN | N11 final acceptance |
 
 ## Delivered source
 
@@ -77,3 +82,17 @@ G3 Seating Proof provides the three source-bound endpoints, native seat/approach
 See N05_SOURCE_NOTES.md, N05_SOURCE_ORACLE.json, N05_* evidence and G3_ART_HANDOFF.md. Source work stops here at G3; N06 transport has not begun. The user remains the Unity operator. No screenshots required, no launch/Play/build/player/hardware by the executor, local commits only and no push.
 
 Final N05 source evidence: **244 managed tests PASS** (90 Story, 24 Player, 61 Rehearsal including 21 new seating/scale/oracle checks, 69 Application), zero failures/skips. All seven standalone source assembly compiles PASS. Static asset audit: zero issues, duplicate GUIDs or missing metas. All 7,211 protected original files unchanged. Native sampling, visual contact and Unity save/Undo acceptance are pending Art G3.
+
+## G3 acceptance and runtime parity clarification
+
+Art reported seating “mostly works”, identified that Select seat focus selects the same Transform as SeatAnchor, and explicitly deferred that detail and authorized N06–N10 through G4. G3 is accepted from this user report; no exported report or screenshots supplied. The product must reproduce executed runtime camera commands exactly: StartAt clears tracking; Track(Lara) tracks the actual laraFocus after pose sampling. G3 diagnostic framing controls must never become product defaults. G4 must exercise the integrated authoring Studio, not fixed diagnostic endpoints.
+
+## N06–N10 integrated Studio ready — mandatory G4 pause
+
+The actual Scene Director Studio now stages ordered executed effects cumulatively on the saved Lara/body/PlayerView. Camera behavior follows script order exactly, including StartAt cancelling tracking and Track(Lara) aiming at the actual laraFocus after pose sampling; diagnostic camera toggles/defaults do not enter product staging. Scene/native handles re-resolve semantic marks without changing the logical scenario, Director/RNG or selected cue. Before/After, exact nth visits, Previous/Next, source-aware failure and global owner references use canonical rehearsal.
+
+The old cloned scene renderer, custom viewport/orbit/draft controls and splitters are removed. Binding reconciliation remains explicit authoring. Local head-focus offset is authored and excluded from preview ownership; all new focus/save/material/lifecycle behavior needs G4 native evidence. The G4 panel records actual Studio visits/saves and creates/removes a scratch tagged card only in the independent fixture on Art’s explicit button clicks. It supplies no alternate camera framing.
+
+Final standalone checks: **255 managed tests PASS** (Story 90, Player 24, Rehearsal 72, Application 69), zero failures/skips. Seven assemblies compile from source. Static asset audit PASS with zero duplicate GUIDs/missing metas/new unresolved script refs. **7,211 original protected files unchanged**. See N10_MANAGED_RESULTS.json/logs, N10_SOURCE_COMPILE.json, N10_ASSET_AUDIT.json, N09_RETIREMENT_AUDIT.json, N06_N10_SOURCE_NOTES.md and ACCEPTANCE_STATUS.md.
+
+Read G4_ART_HANDOFF.md for exact project/scene/menu/cue directions. No screenshots required. Native import/rendering, full cue/branch/global-card progression, focused asset/frame rules, save/Undo/overrides and lifecycle remain NOT RUN until Art reports them. N11 and overall completion remain held. No Unity launch/operation, Play/build/player/hardware or remote publication by executor.

@@ -41,18 +41,11 @@ namespace DazPose.Editor.Studio {
     var mark=new GameObject("Mark"){hideFlags=HideFlags.HideAndDontSave};SceneManager.MoveGameObjectToScene(mark,previewScene);host.locations=new[]{new StoryLocationBinding{id="Mark",placement=mark.transform}};
     window=ScriptableObject.CreateInstance<SceneDirectorStudioWindow>();window.hideFlags=HideFlags.HideAndDontSave;
     typeof(SceneDirectorStudioWindow).GetField("host",Private).SetValue(window,host);var capture=typeof(SceneDirectorStudioWindow).GetMethod("CaptureStamp",Private);
-    string stamp=(string)capture.Invoke(window,null);mark.transform.position=Vector3.one;Require(stamp!=(string)capture.Invoke(window,null),"Saved-mark staging revision did not change the source stamp.");
-    typeof(SceneDirectorStudioWindow).GetMethod("CheckRevision",Private).Invoke(window,null);
-    var stage=(ScenePreviewSession)typeof(SceneDirectorStudioWindow).GetField("stage",Private).GetValue(window);
-    stage.Build(null,mark,null);Require(stage.Ready,"Transient preview failed to build.");
-    // Preview transforms and camera drafts must not affect the authored-host stamp.
-    stamp=(string)capture.Invoke(window,null);stage.Lara.position=Vector3.right*3;stage.PreviewCameraAt(new Vector3(0,1,-4),Quaternion.identity);stage.TrackLara();stage.UpdateTrackedCamera();
-    Require(stamp==(string)capture.Invoke(window,null),"Preview-only movement invalidated authored data.");
-    var rotation=stage.CameraRotation;stage.Lara.position=Vector3.left*2;stage.UpdateTrackedCamera();Require(Quaternion.Angle(rotation,stage.CameraRotation)>1,"Tracking did not follow second movement.");
-    Require(stage.CameraPosition==new Vector3(0,1,-4),"Tracking moved the authored camera origin.");
-    stage.PreviewCameraAt(Vector3.zero,Quaternion.identity);stage.Lara.position=Vector3.forward*4;stage.UpdateTrackedCamera();Require(Quaternion.Angle(stage.CameraRotation,Quaternion.identity)<.001f,"StartAt did not disable tracking.");
-    mark.transform.position=Vector3.up*2;typeof(SceneDirectorStudioWindow).GetMethod("RevisionChanged",Private).Invoke(window,null);typeof(SceneDirectorStudioWindow).GetMethod("CheckRevision",Private).Invoke(window,null);Require(!stage.Ready,"Changed staging retained the old preview owner.");
-    Debug.Log("Studio corrective native checks PASS: ownership/no-op/move/conflicts/syntax, staging invalidation, preview isolation and camera tracking. UI keyboard/rendering and full authored scene remain manual checks.");
+    string stamp=(string)capture.Invoke(window,null);mark.transform.position=Vector3.one;
+    Require(stamp==(string)capture.Invoke(window,null),"Spatial mark edit changed logical source revision.");
+    host.locations[0].id="Other";
+    Require(stamp!=(string)capture.Invoke(window,null),"Binding change did not invalidate logical source revision.");
+    Debug.Log("Studio corrective native checks PASS: ownership/no-op/move/conflicts/syntax, logical/spatial revision separation. Integrated native scene/camera/save checks belong to G4. UI keyboard/rendering and full authored scene remain manual checks.");
    } finally {if(window!=null)UnityEngine.Object.DestroyImmediate(window);EditorSceneManager.ClosePreviewScene(previewScene);AssetDatabase.DeleteAsset(folder);}
   }
  }

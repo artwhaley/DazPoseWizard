@@ -191,20 +191,20 @@ namespace DazPose.Editor {
       if(!locationSeats.TryGetValue(Owner(command.Source)+"|"+alias,out bool hasSeat)||!hasSeat)throw new StorySourceException(command.Source,"The selected Location requires its PerformerSeat binding.");
       if(command.Verb=="Lara.SitAt")Session.world.posture=PlayerPosture.Sitting;
      }
-     Stage(command);break;
+     await Stage(command);break;
     }
-    case "PlayerBody.DissolveIn":case "PlayerBody.DissolveOut":RequireReady(command.Source,StoryBindingKind.PlayerBody,"PlayerBody");Stage(command);break;
-    case "Lara.StartIdle":Session.world.posture=PlayerPosture.Standing;Stage(command);break;
+    case "PlayerBody.DissolveIn":case "PlayerBody.DissolveOut":RequireReady(command.Source,StoryBindingKind.PlayerBody,"PlayerBody");await Stage(command);break;
+    case "Lara.StartIdle":Session.world.posture=PlayerPosture.Standing;await Stage(command);break;
     case "Lara.PersistentPose":case "Lara.PersistentSitPose": {
      string id=Arg("pose");var binding=RequireBinding(command.Source,StoryBindingKind.Pose,id);if(!binding.ready)throw new StorySourceException(command.Source,binding.issue);
-     if(command.Verb=="Lara.PersistentSitPose"&&binding.posture!=PlayerPosture.Sitting)throw new StorySourceException(command.Source,"PersistentSitPose requires Sitting posture metadata.");Session.world.posture=binding.posture;Stage(command);break;
+     if(command.Verb=="Lara.PersistentSitPose"&&binding.posture!=PlayerPosture.Sitting)throw new StorySourceException(command.Source,"PersistentSitPose requires Sitting posture metadata.");Session.world.posture=binding.posture;await Stage(command);break;
     }
     case "Lara.Say": {
      string transcript=Arg("text"),id=StoryDialogue.IdFor(transcript),dialogueKey=DialogueKey(command.Source,id);if(dialogueIssues.TryGetValue(dialogueKey,out var issue))throw new StorySourceException(command.Source,issue);if(!dialogueBindings.Contains(dialogueKey))throw new StorySourceException(command.Source,"No source-owned AudioClip assignment snapshot exists for this transcript.");
-     Stage(command);Trace(command.Source,"Audio preview is virtual; real speech playback is not started.");break;
+     await Stage(command);Trace(command.Source,"Audio preview is virtual; real speech playback is not started.");break;
     }
     case "Lara.MagicShader":case "Lara.PlayOneShotGesture": {
-     var kind=command.Verb=="Lara.MagicShader"?StoryBindingKind.MagicShaderProfile:StoryBindingKind.Gesture;string alias=Arg(kind==StoryBindingKind.Gesture?"gesture":"profile");var binding=RequireBinding(command.Source,kind,alias);if(!binding.ready)throw new StorySourceException(command.Source,binding.issue);Stage(command);break;
+     var kind=command.Verb=="Lara.MagicShader"?StoryBindingKind.MagicShaderProfile:StoryBindingKind.Gesture;string alias=Arg(kind==StoryBindingKind.Gesture?"gesture":"profile");var binding=RequireBinding(command.Source,kind,alias);if(!binding.ready)throw new StorySourceException(command.Source,binding.issue);await Stage(command);break;
     }
     case "SubmissionScore.Calculate":Profile.submissionScore=PlayerProfileService.CalculateSubmissionScore(Profile,kinkCatalog);Contract.RefreshKinks(Profile);Trace(command.Source,"Calculated canonical submission score on the detached rehearsal profile: "+Profile.submissionScore+".");break;
     case "Session.SelectPreparedEquipment": {
@@ -219,7 +219,7 @@ namespace DazPose.Editor {
     case "World.Clothing.Clear":foreach(string slot in PlayerWorldState.ClothingSlots)Session.world.SetClothing(slot,false);Trace(command.Source,"Virtual clothing state cleared.");break;
     case "MotionDriver.PlayFunscript": {
      string id=Arg("program");var binding=RequireBinding(command.Source,StoryBindingKind.Funscript,id);if(!binding.ready)throw new StorySourceException(command.Source,binding.issue);bool loop=command.Arguments.TryGetValue("loop",out var loopValue)&&loopValue.Boolean;
-     Stage(command);Trace(command.Source,"Motion curve is preview-only; no playback driver or device output is started (loop="+loop+"). Natural-end event can be selected in the rehearsal scenario.");break;
+     await Stage(command);Trace(command.Source,"Motion curve is preview-only; no playback driver or device output is started (loop="+loop+"). Natural-end event can be selected in the rehearsal scenario.");break;
     }
     case "MotionDriver.Stop":Trace(command.Source,"Virtual motion driver stopped; no hardware output was started.");break;
     case "UI.ShowAction":activeActions.Add(Arg("action"));Trace(command.Source,"Virtual action shown: "+Arg("action")+" — "+Arg("label")+".");break;
@@ -248,7 +248,8 @@ namespace DazPose.Editor {
    if(bindingIssues.TryGetValue(key,out var issue))return new ContentRow{ready=false,issue=issue};
    throw new StorySourceException(source,"No source-owned "+kind+" assignment snapshot exists for '"+alias+"'.");
   }
-  void Stage(StoryCommand command) {if(VisualEffect==null){Trace(command.Source,"logical only; real playback required for this visual effect.");return;}VisualEffect(Copy(command));Trace(command.Source,"Queued isolated preview effect: "+command.Verb+" (no authored scene object was changed).");}
+  public Func<StoryCommand,Task> AsyncVisualEffect {get;set;}
+  async Task Stage(StoryCommand command) {if(AsyncVisualEffect!=null){await AsyncVisualEffect(Copy(command));return;}if(VisualEffect==null){Trace(command.Source,"logical only; real playback required for this visual effect.");return;}VisualEffect(Copy(command));Trace(command.Source,"Queued isolated preview effect: "+command.Verb+" (no authored scene object was changed).");}
   static StoryCommand Copy(StoryCommand source) {var copy=new StoryCommand{Visit=source.Visit,Verb=source.Verb,Awaited=source.Awaited,Source=source.Source==null?null:new StorySource(source.Source.file,source.Source.line,source.Source.column,source.Source.declaration){unit=source.Source.unit}};foreach(var p in source.Arguments)copy.Arguments[p.Key]=p.Value.Kind==StoryDataKind.List?new StoryData(p.Value.Items.ToArray()):p.Value;return copy;}
   void HandlePopup(string panel,StorySource source) {
    switch(panel) {

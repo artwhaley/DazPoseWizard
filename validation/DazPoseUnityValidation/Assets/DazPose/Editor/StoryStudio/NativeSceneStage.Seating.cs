@@ -10,9 +10,9 @@ namespace DazPose.Editor.Studio
             if(projection==null)throw new ArgumentNullException(nameof(projection));
             LastSeating=null;lease.Apply(()=>StageSeated(projection));
         }
-        void StageSeated(NativeSeatedProjection p)
+        void StageSeated(NativeSeatedProjection p,bool present=true)
         {
-            RequireAnchor(p.CameraMark,"Camera.StartAt placement");
+            if(present)RequireAnchor(p.CameraMark,"Camera.StartAt placement");
             if(p.Seat==null)throw new InvalidOperationException("Assign Lounger's PerformerSeat.");
             RequireAnchor(p.Seat.SeatAnchor,"Lounger.SeatAnchor");
             RequireAnchor(p.Seat.ApproachAnchor,"Lounger.ApproachAnchor");
@@ -43,7 +43,7 @@ namespace DazPose.Editor.Studio
                 facingDisagreementDegrees=Quaternion.Angle(frame.ApproachYaw,frame.SeatYaw),warning=frame.Warning,liveHipAligned=frame.AlignHip,
                 rule=frame.AlignHip?"PerformerSeating.AnchorPersistentPose: sampled hip world correction":"PerformerSeating.BeginSitStart landing root + default baked rest (no persistent hip correction)"};
             NativeSeatingMath.RequireContact(LastSeating.expectedHipResidualMeters,LastSeating.toleranceMeters,p.Command.ToString());
-            Present(false,p.HideBody,null,p.CameraMark,p.TrackLara);
+            if(present)Present(false,p.HideBody,null,p.CameraMark,p.TrackLara);
         }
     }
 }
