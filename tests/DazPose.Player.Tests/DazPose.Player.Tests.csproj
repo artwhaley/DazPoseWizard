@@ -26,5 +26,6 @@
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Serialization/StoryArgument.cs" Link="Runtime/StoryArgument.cs" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Serialization/StoryValue.cs" Link="Runtime/StoryValue.cs" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/CatalogSearch.cs" Link="Production/CatalogSearch.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Application/CatalogViewportAnchor.cs" Link="Production/CatalogViewportAnchor.cs" />
 </ItemGroup>
 </Project>

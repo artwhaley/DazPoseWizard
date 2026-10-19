@@ -35,32 +35,32 @@ namespace DazPose.Presentation
         public static void Interests(Transform body,IProfileEditDraft draft,KinkCatalog catalog)
         {
             var view=Panel(body);var entries=catalog.entries??Array.Empty<KinkDefinition>();
-            string filter="All";int[] visible=Array.Empty<int>();
-            Action refresh=null;
-            refresh=()=>{
-                visible=CatalogSearch.Find(entries,view.search.text,
+            string filter="All";
+            Action<bool> refresh=null;
+            refresh=resetScroll=>{
+                var visible=CatalogSearch.Find(entries,view.search.text,
                     d=>Text(d.id,d.displayName,d.description,d.themeTags,new[]{Category(d.displayCategory,d.themeTags)}),
                     d=>d.displayName,d=>d.id,d=>filter=="All" ||
                         (filter=="Enabled"&&draft.GetKink(d.id).frequency!=KinkFrequency.No) ||
                         (filter=="Disabled"&&draft.GetKink(d.id).frequency==KinkFrequency.No) ||
                         filter=="Category: "+Category(d.displayCategory,d.themeTags));
                 view.summary.text=visible.Length+" of "+entries.Length+" interests · NO disables selection; sentiment is retained.";
-                view.list.SetItems(visible.Length,ProductionUiLibrary.Load().interestRow,(i,row)=>{
+                view.list.SetCatalogItems(visible.Select(i=>entries[i].id).ToArray(),ProductionUiLibrary.Load().interestRow,(i,row)=>{
                     var definition=entries[visible[i]];
                     row.GetComponent<InterestRowView>().Bind(definition,draft.GetKink(definition.id),
-                        value=>{draft.SetFrequency(definition.id,value);refresh();},
+                        value=>{draft.SetFrequency(definition.id,value);refresh(false);},
                         value=>draft.SetSentiment(definition.id,value));
-                });
+                },resetScroll);
             };
             Filters(view,new[]{"All","Enabled","Disabled"}.Concat(entries.Select(d=>"Category: "+Category(d.displayCategory,d.themeTags)).Distinct().OrderBy(x=>x,StringComparer.Ordinal)).ToArray(),
-                value=>{filter=value;refresh();});
-            view.search.onValueChanged.AddListener(_=>refresh());refresh();
+                value=>{filter=value;refresh(true);});
+            view.search.onValueChanged.AddListener(_=>refresh());refresh(false);
         }
         public static void Equipment(Transform body,IProfileEditDraft draft,EquipmentCatalog catalog)
         {
             var view=Panel(body);var entries=catalog.entries??Array.Empty<EquipmentDefinition>();string filter="All";
-            Action refresh=null;
-            refresh=()=>{
+            Action<bool> refresh=null;
+            refresh=resetScroll=>{
                 var visible=CatalogSearch.Find(entries,view.search.text,
                     d=>Text(d.id,d.displayName,d.description,d.identityTags,d.themeTags,new[]{Category(d.displayCategory,d.themeTags)}),
                     d=>d.displayName,d=>d.id,d=>{
@@ -70,17 +70,17 @@ namespace DazPose.Presentation
                             filter=="Category: "+Category(d.displayCategory,d.themeTags);
                     });
                 view.summary.text=visible.Length+" of "+entries.Length+" items · Reward and punishment are independent.";
-                view.list.SetItems(visible.Length,ProductionUiLibrary.Load().equipmentRow,(i,row)=>{
+                view.list.SetCatalogItems(visible.Select(i=>entries[i].id).ToArray(),ProductionUiLibrary.Load().equipmentRow,(i,row)=>{
                     var definition=entries[visible[i]];
                     row.GetComponent<EquipmentRowView>().Bind(definition,draft.GetEquipment(definition.id),
-                        value=>{draft.SetEquipmentOwnedAndWilling(definition.id,value);refresh();},
-                        value=>{draft.SetReward(definition.id,value);refresh();},
-                        value=>{draft.SetPunishment(definition.id,value);refresh();});
-                });
+                        value=>{draft.SetEquipmentOwnedAndWilling(definition.id,value);refresh(false);},
+                        value=>{draft.SetReward(definition.id,value);refresh(false);},
+                        value=>{draft.SetPunishment(definition.id,value);refresh(false);});
+                },resetScroll);
             };
             Filters(view,new[]{"All","Owned","Unowned","Reward","Punishment"}.Concat(entries.Select(d=>"Category: "+Category(d.displayCategory,d.themeTags)).Distinct().OrderBy(x=>x,StringComparer.Ordinal)).ToArray(),
-                value=>{filter=value;refresh();});
-            view.search.onValueChanged.AddListener(_=>refresh());refresh();
+                value=>{filter=value;refresh(true);});
+            view.search.onValueChanged.AddListener(_=>refresh());refresh(false);
         }
         public static void Clothing(Transform body,ClothingEditSession draft)
         {
