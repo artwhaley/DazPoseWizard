@@ -6,32 +6,165 @@
   "branch": "main",
   "status": "IN_PROGRESS",
   "executionAuthorized": true,
-  "authorization": {"evidence":"Art said Continue after the execution packet was prepared.","date":"2026-10-20"},
-  "currentTicket": "Gate A handoff",
+  "authorization": {
+    "evidence": "Art said Continue after the execution packet was prepared.",
+    "date": "2026-10-20"
+  },
+  "currentTicket": "Gate A corrected candidate retry",
   "nextTicket": "W04 after Gate A PASS",
   "tickets": [
-    {"id":"W00","status":"COMPLETE","dependencies":[],"evidence":["evidence/baseline.json","WRITER_COVERAGE.md"]},
-    {"id":"W01","status":"COMPLETE","dependencies":["W00"],"evidence":["evidence/checks.json"]},
-    {"id":"W02","status":"SOURCE_READY","dependencies":["W01"],"evidence":["evidence/checks.json"],"nativeGate":"A"},
-    {"id":"W03","status":"SOURCE_READY","dependencies":["W02_SOURCE_READY"],"evidence":["evidence/checks.json"],"nativeGate":"A"},
-    {"id":"W04","status":"NOT_STARTED","dependencies":["A_PASS"],"evidence":[]},
-    {"id":"W05","status":"NOT_STARTED","dependencies":["W04"],"evidence":[]},
-    {"id":"W06","status":"NOT_STARTED","dependencies":["W05"],"evidence":[]},
-    {"id":"W07","status":"NOT_STARTED","dependencies":["W06"],"evidence":[],"nativeGate":"B"},
-    {"id":"W08","status":"NOT_STARTED","dependencies":["B_PASS"],"evidence":[],"nativeGate":"C"},
-    {"id":"W09","status":"NOT_STARTED","dependencies":["C_PASS"],"evidence":[],"nativeGate":"D"}
+    {
+      "id": "W00",
+      "status": "COMPLETE",
+      "dependencies": [],
+      "evidence": [
+        "evidence/baseline.json",
+        "WRITER_COVERAGE.md"
+      ]
+    },
+    {
+      "id": "W01",
+      "status": "COMPLETE",
+      "dependencies": [
+        "W00"
+      ],
+      "evidence": [
+        "evidence/checks.json"
+      ]
+    },
+    {
+      "id": "W02",
+      "status": "SOURCE_READY",
+      "dependencies": [
+        "W01"
+      ],
+      "evidence": [
+        "evidence/checks.json"
+      ],
+      "nativeGate": "A"
+    },
+    {
+      "id": "W03",
+      "status": "SOURCE_READY",
+      "dependencies": [
+        "W02_SOURCE_READY"
+      ],
+      "evidence": [
+        "evidence/checks.json"
+      ],
+      "nativeGate": "A"
+    },
+    {
+      "id": "W04",
+      "status": "NOT_STARTED",
+      "dependencies": [
+        "A_PASS"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "W05",
+      "status": "NOT_STARTED",
+      "dependencies": [
+        "W04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "W06",
+      "status": "NOT_STARTED",
+      "dependencies": [
+        "W05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "W07",
+      "status": "NOT_STARTED",
+      "dependencies": [
+        "W06"
+      ],
+      "evidence": [],
+      "nativeGate": "B"
+    },
+    {
+      "id": "W08",
+      "status": "NOT_STARTED",
+      "dependencies": [
+        "B_PASS"
+      ],
+      "evidence": [],
+      "nativeGate": "C"
+    },
+    {
+      "id": "W09",
+      "status": "NOT_STARTED",
+      "dependencies": [
+        "C_PASS"
+      ],
+      "evidence": [],
+      "nativeGate": "D"
+    }
   ],
   "gates": {
-    "A":{"status":"WAITING_ON_ART","revision":"cb22e10","nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":["All native prefab generation, fitting, hair/layer visualization, and second-actor ownership cases."],"invalidations":[]},
-    "B":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]},
-    "C":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]},
-    "D":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]}
+    "A": {
+      "status": "WAITING_ON_ART",
+      "revision": "fc31fe9",
+      "nativeEvidence": null,
+      "artResponse": "FAIL at cb22e10: Prepare corrected candidate stopped because first-outfit role strings were assumed to be literal 'dress' and 'panties'. No candidate assets were created.",
+      "acceptedCases": [],
+      "notRunCases": [
+        "All native prefab generation, fitting, hair/layer visualization, and second-actor ownership cases."
+      ],
+      "invalidations": [
+        {
+          "revision": "cb22e10",
+          "case": "Prepare corrected candidate",
+          "reason": "Implementation required literal role labels instead of using the source IDs and garment meanings recorded in W00.",
+          "resolutionRevision": "fc31fe9",
+          "status": "RETRY_REQUIRED"
+        }
+      ]
+    },
+    "B": {
+      "status": "NOT_READY",
+      "revision": null,
+      "nativeEvidence": null,
+      "artResponse": null,
+      "acceptedCases": [],
+      "notRunCases": [],
+      "invalidations": []
+    },
+    "C": {
+      "status": "NOT_READY",
+      "revision": null,
+      "nativeEvidence": null,
+      "artResponse": null,
+      "acceptedCases": [],
+      "notRunCases": [],
+      "invalidations": []
+    },
+    "D": {
+      "status": "NOT_READY",
+      "revision": null,
+      "nativeEvidence": null,
+      "artResponse": null,
+      "acceptedCases": [],
+      "notRunCases": [],
+      "invalidations": []
+    }
   },
-  "implementationChecks": {"status":"PASS","reason":"W00–W03 source checks passed; Gate A native behavior remains Art-operated and unrun.","evidence":["evidence/checks.json"]},
-  "oldReleasedGeneration":"70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb",
-  "newReleasedGeneration":null,
-  "productionAppearanceAdvanced":false,
-  "nativeOperationByExecutor":false,
-  "remoteWrite":false,
-  "blockers":[]
+  "implementationChecks": {
+    "status": "PASS",
+    "reason": "Corrected Gate A source compiles and pure wardrobe checks pass; native Gate A remains Art-operated and pending retry.",
+    "evidence": [
+      "evidence/checks.json"
+    ]
+  },
+  "oldReleasedGeneration": "70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb",
+  "newReleasedGeneration": null,
+  "productionAppearanceAdvanced": false,
+  "nativeOperationByExecutor": false,
+  "remoteWrite": false,
+  "blockers": []
 }

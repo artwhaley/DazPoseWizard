@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "ticket": "W02/W03 SOURCE_READY",
-  "capturedUtc": "2026-10-20T08:41:26.868481Z",
+  "capturedUtc": "2026-10-20T16:43:05Z",
   "baselineRevision": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
   "branch": "main",
   "protectedBaselineEntries": 42,
@@ -91,7 +91,7 @@
         "CacheBoundsUnpinnedResourcesAndNeverEvictsActiveOrPinnedEntries",
         "NestedPinsReleaseIndependentlyAndDisposeResourcesOnce"
       ],
-      "note": "Entrance snapshot pin integration is sequenced in W06; transaction active/rollback behavior remains source-compiled."
+      "note": "Active and rollback resources are retained by active-owner policy; nested scoped snapshot pins are exposed by PerformerWardrobe.PinSelectionResources and the cache pin lifecycle passes pure tests. Native scope behavior is pending Gate A / later card gate."
     },
     {
       "id": "AP12",
@@ -117,6 +117,15 @@
         "DazPose.Validation",
         "DazPose.Validation.Editor"
       ]
+    },
+    {
+      "id": "GateA-candidate-resolution-repair",
+      "command": "python scripts/check-unity-source.py; dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore --nologo --verbosity quiet",
+      "exitCode": 0,
+      "sourceAssemblies": 7,
+      "wardrobeTestsPassed": 15,
+      "wardrobeTestsFailed": 0,
+      "note": "Gate A candidate now resolves dress and panties using the W00 stable source IDs (PeekaBoo_16572 and CharlenesCloset_Panty_1981), not unverified role labels. Native Gate A must be retried by Art."
     }
   ],
   "omissions": [
@@ -135,7 +144,7 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeCorrectedCandidateBuilder.cs",
-      "sha256": "7a57e5057721e28e912287d9f2ecf46edb9b72fe592eb0e9be448bb1d2ff2d44"
+      "sha256": "b01d81626ee3f4cc37d46eb084714e15fac8e0d3714d2aaa2a85bd091b8032df"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeProtectedCardsFixtureBuilder.cs",
@@ -205,5 +214,12 @@
     ],
     "results": "15 wardrobe tests passed; all seven source assemblies passed",
     "executedAfterFinalW02W03SourceEdit": true
+  },
+  "gateARepair": {
+    "failedAttemptRevision": "cb22e10",
+    "failure": "Prepare corrected candidate rejected first-outfit because imported role labels did not match literal dress and panties.",
+    "correctedSourceRevision": "fc31fe9",
+    "sourceHash": "b01d81626ee3f4cc37d46eb084714e15fac8e0d3714d2aaa2a85bd091b8032df",
+    "nativeRetryStatus": "WAITING_ON_ART"
   }
 }
