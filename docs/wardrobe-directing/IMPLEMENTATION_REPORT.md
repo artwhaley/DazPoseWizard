@@ -2,7 +2,7 @@
 
 ## Current status
 
-**W00–W03 are source-ready; Gate A is WAITING_ON_ART.** Art authorized implementation by saying “Continue” on October 20, 2026. Work remains on `main`, based on `110e2b4aef1422f0739cb8ca4d370cb4792c1ec2`. No Unity/native gate has run. W04–W09 have not started because Gate A has not passed.
+**W00–W03 are source-ready; Gate A is WAITING_ON_ART.** Art authorized implementation by saying “Continue” on October 20, 2026. Work remains on `main`; W02/W03 source handoff commit is `24a08df`. No Unity/native gate has run. W04–W09 have not started because Gate A has not passed.
 
 Entry: [START_HERE](../../newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/START_HERE.md).
 Design: [IMPLEMENTATION_PLAN](IMPLEMENTATION_PLAN.md).
