@@ -36,6 +36,7 @@ namespace DazPose.Performer
             ? 0f : Mathf.Repeat(ActiveTime / _activeMotion.DurationSeconds, 1f);
         public float LocomotionWeight => _ownershipWeight;
         public bool HoldArrivalPose { get; set; }
+        internal bool PresentationTransitioning=>_ownershipElapsed<_ownershipDuration;
 
         public PerformerBodySourceMixer(Animator animator, PlayableGraph graph, Playable poseSource,
             PerformerLocomotionProfile profile)

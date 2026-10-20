@@ -40,7 +40,15 @@ namespace DazPose.Editor {
   }
  }
  /// <summary>Pure virtual execution host for the canonical interpreter. It never owns a GameApplication or output service.</summary>
- public sealed class RehearsalStoryHost : IStoryExecutionHost,IStoryRehearsalStateReader,IStoryDirectorObserver,IStoryPhaseObserver,IStoryCardEligibility {
+ public sealed class RehearsalStoryHost : IStoryExecutionHost,IStoryRehearsalStateReader,IStoryDirectorObserver,IStoryPhaseObserver,IStoryCardEligibility,IStoryCardPresentationHost {
+  readonly Dictionary<string,StoryCommand> presentationControls=new Dictionary<string,StoryCommand>(StringComparer.Ordinal);
+  sealed class RecordedCardScope : IStoryCardPresentationScope {
+   readonly RehearsalStoryHost host;readonly Dictionary<string,StoryCommand> controls;readonly PlayerPosture posture;readonly HashSet<string> actions;bool returned,disposed;
+   public RecordedCardScope(RehearsalStoryHost host){this.host=host;controls=host.presentationControls.ToDictionary(p=>p.Key,p=>Copy(p.Value));posture=host.Session.world.posture;actions=new HashSet<string>(host.activeActions,StringComparer.Ordinal);}
+   public Task ReturnAsync(CancellationToken cancellation){if(returned||disposed)throw new InvalidOperationException("Duplicate rehearsal card return.");cancellation.ThrowIfCancellationRequested();returned=true;host.presentationControls.Clear();foreach(var row in controls)host.presentationControls.Add(row.Key,row.Value);host.Session.world.posture=posture;host.activeActions.RemoveWhere(id=>!actions.Contains(id));host.Trace(null,"Recording host restored card entrance presentation controls; no native animation was claimed.");return Task.CompletedTask;}
+   public void Dispose(){disposed=true;}
+  }
+  public Task<IStoryCardPresentationScope> EnterCardAsync(CardPresentationRequest request,CancellationToken cancellation){cancellation.ThrowIfCancellationRequested();return Task.FromResult<IStoryCardPresentationScope>(new RecordedCardScope(this));}
   sealed class ContentRow { public PlayerPosture posture=PlayerPosture.Standing;public bool ready;public string issue; }
   readonly Dictionary<string,ContentRow> bindings=new Dictionary<string,ContentRow>(StringComparer.Ordinal);
   readonly Dictionary<string,string> bindingIssues=new Dictionary<string,string>(StringComparer.Ordinal);
@@ -258,7 +266,7 @@ namespace DazPose.Editor {
    throw new StorySourceException(source,"No source-owned "+kind+" assignment snapshot exists for '"+alias+"'.");
   }
   public Func<StoryCommand,Task> AsyncVisualEffect {get;set;}
-  async Task Stage(StoryCommand command) {if(AsyncVisualEffect!=null){await AsyncVisualEffect(Copy(command));return;}if(VisualEffect==null){Trace(command.Source,"logical only; real playback required for this visual effect.");return;}VisualEffect(Copy(command));Trace(command.Source,"Queued isolated preview effect: "+command.Verb+" (no authored scene object was changed).");}
+  async Task Stage(StoryCommand command) {presentationControls[command.Verb]=Copy(command);if(AsyncVisualEffect!=null){await AsyncVisualEffect(Copy(command));return;}if(VisualEffect==null){Trace(command.Source,"logical only; real playback required for this visual effect.");return;}VisualEffect(Copy(command));Trace(command.Source,"Queued isolated preview effect: "+command.Verb+" (no authored scene object was changed).");}
   static StoryCommand Copy(StoryCommand source) {var copy=new StoryCommand{Visit=source.Visit,Verb=source.Verb,Awaited=source.Awaited,Source=source.Source==null?null:new StorySource(source.Source.file,source.Source.line,source.Source.column,source.Source.declaration){unit=source.Source.unit}};foreach(var p in source.Arguments)copy.Arguments[p.Key]=p.Value.Kind==StoryDataKind.List?new StoryData(p.Value.Items.ToArray()):p.Value;return copy;}
   void HandlePopup(string panel,StorySource source) {
    switch(panel) {

@@ -24,7 +24,9 @@ namespace DazPose.Performer {
    writers[resource]=cleanup;
   }
   public void BeginReturn() {if(State!=PerformanceScopeState.Open)throw new InvalidOperationException("Card scope may return exactly once.");Cancellation.ThrowIfCancellationRequested();State=PerformanceScopeState.Returning;}
-  public void ReleaseWriters() {var owned=writers.Values.Reverse().ToArray();writers.Clear();Exception first=null;foreach(var cleanup in owned)try{cleanup();}catch(Exception error){if(first==null)first=error;}if(first!=null)throw first;}
+  public void Forget(string resource){writers.Remove(resource);}
+  public void ReleaseWriters() => ReleaseWritersExcept(_=>false);
+  public void ReleaseWritersExcept(Func<string,bool> keep) {var keys=writers.Keys.Where(k=>!keep(k)).ToArray();var owned=keys.Select(k=>writers[k]).Reverse().ToArray();foreach(var key in keys)writers.Remove(key);Exception first=null;foreach(var cleanup in owned)try{cleanup();}catch(Exception error){if(first==null)first=error;}if(first!=null)throw first;}
   public void AdoptInto(PerformanceOperationScope parent) {
    if(State!=PerformanceScopeState.Returning || !ReferenceEquals(Parent,parent))throw new InvalidOperationException("Only returning children can transfer ownership to their parent.");
    Cancellation.ThrowIfCancellationRequested();parent.Cancellation.ThrowIfCancellationRequested();

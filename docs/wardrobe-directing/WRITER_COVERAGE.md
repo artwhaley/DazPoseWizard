@@ -49,3 +49,20 @@ No source-level finite global barrier, immutable entrance snapshot, card return 
 ## W06 source checkpoint - October 20
 
 Typed immutable records and capture seams now exist in PerformancePresentationSnapshot.cs, SuccubusPerformer.PresentationSnapshot.cs and the PlayerView/PlayerBodyPresence snapshot partials. PerformancePresentationService validates captured references/release/fit and compares domains; it does not yet execute restoration. PerformanceRun scopes capture operation owners, bound active collections, retain root services and isolate UI/motion ownership. Four pure tests cover scope cleanup/adoption/cancellation decisions. All baseline table return/animation/native acceptance rows remain incomplete until W06/W07 finish; no full-state gate is claimed from this checkpoint.
+
+
+## W06/W07 implementation closure - October 20
+
+The baseline rows above are historical findings. Runtime return seams now exist:
+
+| Writers | Capture / restore owner | Evidence |
+| --- | --- | --- |
+| Base pose, seat/overlay/anchor, arrival hold | SuccubusPerformer.PresentationSnapshot, PerformerSeating/Layer, PerformerLocomotion and BodySourceMixer | Typed controls; existing native endpoints; .5 second blends |
+| Actor placement/visibility and wardrobe/fit | PerformancePresentationService.Restore, PerformerWardrobe snapshot preparation/recall | Conceal once, exact frame/selection, reveal once; hidden stays hidden |
+| Expression/gaze/material/aura | Native performer sub-runtimes and exact profile/target records | Changed control replacement without default snap; unchanged ownership retained |
+| Grip/follow and driver | Native grip restore, scoped writer adoption, parent driver checks | Live source/generation retained; no rewind/output replay |
+| Original male body and camera | PlayerBodyPresence/PlayerView snapshot partials | Full quaternion, fixed or original track rule; body local frame handled under player root |
+| UI/actions/signals and finite operations | PerformanceRun scope; PerformanceStoryHost; StoryMachine card boundary | Child cancellation; parent services retained; finite settlement before return |
+| Posture mirror | CardPresentationScope callback | Presentation-derived mirror only |
+
+Managed scope/interpreter checks pass. Native endpoint behavior remains pending Gate B. Studio appearance proxies/summary integration remain W08 and are not complete.

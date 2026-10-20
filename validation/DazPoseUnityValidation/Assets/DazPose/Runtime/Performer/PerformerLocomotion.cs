@@ -1133,6 +1133,15 @@ namespace DazPose.Performer
             _settlingTransformActive = false;
         }
 
+        internal PerformerArrivalSnapshot CapturePresentation()=>new PerformerArrivalSnapshot(_holdArrivalPose,_holdSeatingApproachPose,(_holdArrivalPose||_holdSeatingApproachPose)&&_body.LocomotionWeight>.001f?_body.ActiveMotion:null,(_holdArrivalPose||_holdSeatingApproachPose)&&_body.LocomotionWeight>.001f?_body.ActivePhase:0);
+        internal bool PresentationTransitioning=>_body.PresentationTransitioning;
+        internal void RestorePresentation(PerformerArrivalSnapshot snapshot){
+            if(_request!=null)throw new InvalidOperationException("Arrival return requires settled locomotion.");
+            _heldRequest=null;_settlingTransformActive=false;_state=PerformerLocomotionState.Idle;_motion=null;_motionTime=0;
+            _holdArrivalPose=snapshot?.Arrival==true;_holdSeatingApproachPose=snapshot?.Approach==true;_body.HoldArrivalPose=_holdArrivalPose||_holdSeatingApproachPose;
+            if(_body.HoldArrivalPose && snapshot.Motion!=null){_motion=snapshot.Motion;_motionTime=snapshot.Phase*_motion.DurationSeconds;_body.BeginMotion(_motion,snapshot.Phase,.5f);_body.SetActiveTime(_motionTime);_body.SetOwnership(true,.5f);if(_holdArrivalPose)_heldRequest=new Request{Position=_actor.position,Facing=_actor.forward,HasFacing=true};}
+            else _body.SetOwnership(false,.5f);
+        }
         private bool _holdArrivalPose;
         private bool _holdSeatingApproachPose;
 

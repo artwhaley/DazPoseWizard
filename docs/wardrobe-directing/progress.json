@@ -10,8 +10,8 @@
     "evidence": "Art said Continue after the execution packet was prepared.",
     "date": "2026-10-20"
   },
-  "currentTicket": "W06 - snapshots and scoped ownership",
-  "nextTicket": "W07 after W06",
+  "currentTicket": "W07 - WAITING_ON_ART Gate B",
+  "nextTicket": "W08 after Art accepts Gate B",
   "tickets": [
     {
       "id": "W00",
@@ -82,21 +82,25 @@
     },
     {
       "id": "W06",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "dependencies": [
         "W05"
       ],
       "evidence": [
-        "evidence/w06-foundation-checks.json"
+        "evidence/w06-foundation-checks.json",
+        "evidence/w06-w07-checks.json"
       ]
     },
     {
       "id": "W07",
-      "status": "NOT_STARTED",
+      "status": "WAITING_ON_ART",
       "dependencies": [
         "W06"
       ],
-      "evidence": [],
+      "evidence": [
+        "evidence/w06-w07-checks.json",
+        "GATE_B_HANDOFF.md"
+      ],
       "nativeGate": "B"
     },
     {
@@ -161,12 +165,14 @@
       ]
     },
     "B": {
-      "status": "NOT_READY",
-      "revision": null,
+      "status": "WAITING_ON_ART",
+      "revision": "See local commit: Implement protected card return and deliver Gate B",
       "nativeEvidence": null,
       "artResponse": null,
       "acceptedCases": [],
-      "notRunCases": [],
+      "notRunCases": [
+        "All Gate B native cases: Art has not operated this source revision."
+      ],
       "invalidations": []
     },
     "C": {
@@ -190,11 +196,9 @@
   },
   "implementationChecks": {
     "status": "PASS",
-    "reason": "Current source checkpoint: 98 story, 93 rehearsal, 22 wardrobe/scope checks and seven source assemblies pass. W06 is incomplete; native B-D remain not ready.",
+    "reason": "108 story + 93 rehearsal + 25 wardrobe/scope managed checks pass; seven source assemblies compile. Gate B native behavior is pending Art.",
     "evidence": [
-      "evidence/gate-a-retirement.json",
-      "evidence/gate-a-native.json",
-      "evidence/checks.json"
+      "evidence/w06-w07-checks.json"
     ]
   },
   "oldReleasedGeneration": "70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb",

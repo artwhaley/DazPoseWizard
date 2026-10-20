@@ -260,9 +260,24 @@ namespace DazPose.Performer
         }
 
         private Transform _persistentHip;
+        internal void RestorePresentation(PerformerSeatSnapshot snapshot,bool structural,float seconds) {
+            if(structural) {
+                Cancel();
+                if(snapshot==null || snapshot.State==PerformerSeatingState.Standing)return;
+                _currentSeat=snapshot.Seat;_currentProfile=snapshot.Profile;_currentStyle=snapshot.Style;
+                _approachPosition=snapshot.ApproachPosition;_approachRotation=snapshot.ApproachRotation;_seatPosition=snapshot.SeatPosition;_seatRotation=snapshot.SeatRotation;
+                _layer.PrepareProfile(_currentProfile);
+                _motion=snapshot.Style==PerformerSeatedStyle.CrossLegs?_currentProfile.CrossLegsLoop:_currentProfile.SitStart;
+                _motionTime=snapshot.Style==PerformerSeatedStyle.CrossLegs?0:_motion.DurationSeconds;_motionEntryTime=_motionTime;
+                _layer.BeginMotion(_motion,snapshot.Style==PerformerSeatedStyle.CrossLegs?0:1,seconds);_layer.SetActiveTime(_motionTime);
+                _state=snapshot.State;_layer.SetOwnership(true,seconds,true);
+            }
+            if(snapshot==null || snapshot.Overlay==null){_layer.ClearPersistentPose(seconds);_persistentHip=null;}
+            else {SetPersistentPose(snapshot.Overlay,PoseTransition.Smooth(seconds));if(!snapshot.Anchored)_persistentHip=null;}
+        }
         internal PerformerSeatSnapshot CapturePresentation() => new PerformerSeatSnapshot(_currentSeat,_currentProfile,_currentStyle,_state,_layer.PersistentPose,_approachPosition,_approachRotation,_seatPosition,_seatRotation,_persistentHip!=null);
         public bool HasPersistentPose=>_layer.HasPersistentPose;
-        public bool PersistentPoseSettled => _layer.PersistentPoseSettled;
+        public bool PersistentPoseSettled => _layer.PersistentPoseSettled && _layer.MotionBlendProgress>=1f;
         public void SetPersistentPose(PerformerPose pose,PoseTransition transition)
         {
             if(_state!=PerformerSeatingState.BasicSeated && _state!=PerformerSeatingState.CrossLegsSeated)throw new InvalidOperationException("PersistentSitPose requires stable seat ownership.");

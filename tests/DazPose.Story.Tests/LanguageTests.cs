@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace DazPose.Story.Tests;
 public sealed class LanguageTests {
- sealed class Host : IStoryExecutionHost {
+ sealed class Host : IStoryCardPresentationHost,IStoryExecutionHost {
+  public readonly DazPose.Tests.RecordingCardPresentation Presentation=new();
+  public Task<IStoryCardPresentationScope> EnterCardAsync(CardPresentationRequest request,CancellationToken cancellation)=>Presentation.EnterAsync(request,cancellation);
   public readonly Dictionary<string,StoryData> State=new() { ["Session.Mood"]=new StoryData(50d),["World.Posture"]=new StoryData("Standing"),["World.Ankles"]=new StoryData("Free") };
   public readonly List<string> Calls=new(),TraceLines=new();
   public readonly Random Random=new(42);

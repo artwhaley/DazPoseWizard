@@ -11,6 +11,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <Using Include="Xunit" />
+    <Compile Include="../Support/RecordingCardPresentation.cs" Link="RecordingCardPresentation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PoseSamplingConventions.cs" Link="Native/PoseSamplingConventions.cs" />

@@ -225,6 +225,9 @@ namespace DazPose.Performer
         private bool _isAcquired;
         private bool _disposed;
         private int _intentionGeneration;
+        private float _presentationBlendRemaining;
+        internal void BeginPresentationBlend(float seconds){_presentationBlendRemaining=Mathf.Max(0,seconds);}
+        float PresentationResponse(float response,float dt){return _presentationBlendRemaining>0 && dt>0 ? -Mathf.Log(Mathf.Max(.000001f,1-Mathf.Clamp01(dt/_presentationBlendRemaining)))/dt : response;}
 
         public Playable OutputPlayable => _gazePlayable;
         public bool IsAvailable { get; private set; }
@@ -350,13 +353,15 @@ namespace DazPose.Performer
             {
                 _effectiveInput = CreateEffectiveInput(_lastResolvedTarget);
                 if (_settings.GazeEnabled)
-                    _gazeWeight = SmoothScalar(_gazeWeight, 0f, _settings.ReleaseResponse, deltaTime);
+                    _gazeWeight = SmoothScalar(_gazeWeight, 0f, PresentationResponse(_settings.ReleaseResponse,deltaTime), deltaTime);
+                _presentationBlendRemaining=Mathf.Max(0,_presentationBlendRemaining-deltaTime);
                 UpdateJobData();
                 return;
             }
 
             if (!_settings.GazeEnabled)
             {
+                _presentationBlendRemaining=Mathf.Max(0,_presentationBlendRemaining-deltaTime);
                 _isAcquired = false;
                 _effectiveInput = CreateEffectiveInput(_lastResolvedTarget);
                 UpdateJobData();
@@ -380,20 +385,20 @@ namespace DazPose.Performer
                 _semanticHeadAimDirection);
 
             _headAimDirection = SmoothDirection(_headAimDirection, rawHeadDirection,
-                _settings.HeadResponse, deltaTime, _head.up);
+                PresentationResponse(_settings.HeadResponse,deltaTime), deltaTime, _head.up);
             _leftEyeAimDirection = SmoothDirection(_leftEyeAimDirection, rawLeftDirection,
-                _settings.EyeResponse, deltaTime, _leftEye.up);
+                PresentationResponse(_settings.EyeResponse,deltaTime), deltaTime, _leftEye.up);
             _rightEyeAimDirection = SmoothDirection(_rightEyeAimDirection, rawRightDirection,
-                _settings.EyeResponse, deltaTime, _rightEye.up);
+                PresentationResponse(_settings.EyeResponse,deltaTime), deltaTime, _rightEye.up);
             _semanticHeadAimDirection = SmoothDirection(_semanticHeadAimDirection,
-                rawSemanticHeadDirection, _settings.HeadResponse, deltaTime, _head.up);
+                rawSemanticHeadDirection, PresentationResponse(_settings.HeadResponse,deltaTime), deltaTime, _head.up);
             _semanticLeftEyeAimDirection = SmoothDirection(_semanticLeftEyeAimDirection,
-                rawSemanticLeftDirection, _settings.EyeResponse, deltaTime, _leftEye.up);
+                rawSemanticLeftDirection, PresentationResponse(_settings.EyeResponse,deltaTime), deltaTime, _leftEye.up);
             _semanticRightEyeAimDirection = SmoothDirection(_semanticRightEyeAimDirection,
-                rawSemanticRightDirection, _settings.EyeResponse, deltaTime, _rightEye.up);
+                rawSemanticRightDirection, PresentationResponse(_settings.EyeResponse,deltaTime), deltaTime, _rightEye.up);
 
             var acquireResponse = Mathf.Max(_settings.HeadResponse, _settings.EyeResponse);
-            _gazeWeight = SmoothScalar(_gazeWeight, 1f, acquireResponse, deltaTime);
+            _gazeWeight = SmoothScalar(_gazeWeight, 1f, PresentationResponse(acquireResponse,deltaTime), deltaTime);
 
             var tolerance = Mathf.Max(0.1f, _settings.AcquireToleranceDegrees);
             var error = Mathf.Max(
@@ -405,6 +410,7 @@ namespace DazPose.Performer
             if (_isAcquired && _intention.Waiters.Count > 0)
                 CompleteWaiters(_intention, GazeCompletion.Acquired);
 
+            _presentationBlendRemaining=Mathf.Max(0,_presentationBlendRemaining-deltaTime);
             UpdateJobData();
         }
 

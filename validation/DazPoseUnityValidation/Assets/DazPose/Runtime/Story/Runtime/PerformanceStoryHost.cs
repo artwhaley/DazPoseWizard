@@ -7,7 +7,7 @@ using DazPose.Story.Language;
 using UnityEngine;
 namespace DazPose.Story {
  // Unity adapter only. All choreography and branches come from the compiled authored source.
- public sealed class PerformanceStoryHost : IStoryExecutionHost,IStoryDirectorObserver,IStoryPhaseObserver,IStoryCardEligibility {
+ public sealed class PerformanceStoryHost : IStoryExecutionHost,IStoryDirectorObserver,IStoryPhaseObserver,IStoryCardEligibility,IStoryCardPresentationHost {
   readonly StoryRuntimeContext context;
   readonly StoryContentBindings content;
   readonly StoryLinkedContent linked;
@@ -19,6 +19,13 @@ namespace DazPose.Story {
   public PerformanceStoryHost(StoryRuntimeContext context,StoryContentBindings content,StoryLinkedContent linked=null) {
    this.context=context;this.content=content;this.linked=linked;phaseLifetime=CancellationTokenSource.CreateLinkedTokenSource(context.Cancellation);
    context.Run.RegisterPersistentCleanup(()=> {phaseLifetime.Cancel();context.Bindings.prompts.ClearActions();if(motionEnded!=null && context.Run.PlaybackDriver!=null)context.Run.PlaybackDriver.Ended-=motionEnded;},context.Run.RootScope,"story-phase-services");
+  }
+  public event Action<CardPresentationObservation> CardPresentationObserved;
+  public event Action<string> CardReturnCheckpoint;
+  public Task<IStoryCardPresentationScope> EnterCardAsync(CardPresentationRequest request,CancellationToken cancellation) {
+   var presentation=new PerformancePresentationService(context.Run,()=>context.Session.world.posture);
+   presentation.Trace=phase=>Trace(request.CardSource,"Card return: "+phase+".");presentation.Checkpoint=phase=>CardReturnCheckpoint?.Invoke(phase);
+   return CardPresentationScope.EnterAsync(context.Run,presentation,request,cancellation,value=>context.Session.world.posture=value,observation=>CardPresentationObserved?.Invoke(observation));
   }
   public string ResourceIssue(CardDefinition card)=>linked?.ResourceIssue(card,context.Bindings);
   public void ObserveDirector(DirectorSnapshot snapshot,CardExecutionContext card) {context.Snapshot.SetDirector(snapshot,card);}

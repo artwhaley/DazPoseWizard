@@ -1,0 +1,25 @@
+sequence Direct { play Disruptive; Session.Mood += 1 }
+sequence Explicit { await Director.Execute(Disruptive); Session.Mood += 1 }
+sequence Draw { await Director.DrawAndExecute(tags: [Warmup]); Session.Mood += 1 }
+card Outer {
+    await Lara.DissolveTo(GateOuter, seconds: 500ms)
+    await Lara.PersistentPose(ChangedPose)
+    play Disruptive
+    wait 200ms
+}
+sequence Nested { play Outer; Session.Mood += 1 }
+sequence PersistentDemo {
+    await Lara.SetOutfit(ChangedOutfit)
+    await Lara.ClearHair()
+    await Lara.DissolveTo(GateShift, seconds: 500ms)
+    await Lara.PersistentPose(ChangedPose)
+    await Lara.MagicShader(ChangedShader)
+    wait 2s
+}
+sequence Persistent { play PersistentDemo; Session.Mood += 1 }
+card SequenceContainer { play PersistentDemo }
+sequence Contained { play SequenceContainer; Session.Mood += 1 }
+card NoChange { }
+sequence Unchanged { play NoChange; Session.Mood += 1 }
+card ParentClock { wait 2s }
+sequence Motion { play ParentClock; Session.Mood += 1 }

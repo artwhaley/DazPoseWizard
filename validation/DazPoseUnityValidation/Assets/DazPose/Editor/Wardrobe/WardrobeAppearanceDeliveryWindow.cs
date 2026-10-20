@@ -40,6 +40,8 @@ namespace DazPose.UnityValidation
                 using (new EditorGUI.DisabledScope(EditorApplication.isPlayingOrWillChangePlaymode || catalog == null || !catalog.IsReleased || canonicalOwner == null))
                     if (GUILayout.Button("Generate / reuse visual assets")) Run(Generate);
             }
+            EditorGUILayout.Space();EditorGUILayout.LabelField("Current acceptance: Gate B",EditorStyles.boldLabel);
+            using(new EditorGUI.DisabledScope(EditorApplication.isPlayingOrWillChangePlaymode))if(GUILayout.Button("Create / open Gate B scene"))Run(()=>report=CardReturnGateBuilder.CreateOrOpen());
             scroll = EditorGUILayout.BeginScrollView(scroll);
             EditorGUILayout.TextArea(report, GUILayout.ExpandHeight(true));
             EditorGUILayout.EndScrollView();

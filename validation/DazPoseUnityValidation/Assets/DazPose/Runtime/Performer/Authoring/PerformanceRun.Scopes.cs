@@ -14,9 +14,10 @@ namespace DazPose.Performer {
     ThrowIfStopped();cancellation.ThrowIfCancellationRequested();Task[] pending;
     lock(gate)pending=operations.Where(o=>!o.Settled && IsPresentation(o.Verb) && o.Owner.Contains(owner)).Select(o=>o.Completion.Task).ToArray();
     if(pending.Length==0) {
-     bool actorBusy=actor.IsTransitioning||actor.IsLocomoting||actor.IsTeleporting||actor.IsDissolving||actor.IsExpressionTransitioning||actor.IsPerforming||actor.IsPresentationSeatingTransitioning||(actor.CurrentWardrobe?.IsChanging??false);
+     bool actorBusy=actor.IsTransitioning||actor.IsLocomoting||actor.IsTeleporting||actor.IsDissolving||actor.IsExpressionTransitioning||actor.IsPerforming||actor.IsPresentationSeatingTransitioning||actor.IsPresentationMotionTransitioning||actor.IsGesturing||(actor.CurrentWardrobe?.IsChanging??false);
      bool viewBusy=player!=null && (player.View.IsMoving||player.View.IsLooking||player.View.IsAcquiringTrack);
-     if(!actorBusy && !viewBusy)return;
+     bool bodyBusy=player!=null && player.BodyPresence!=null && (player.BodyPresence.VisibilityState==DazPose.Player.PlayerBodyVisibilityState.DissolvingIn || player.BodyPresence.VisibilityState==DazPose.Player.PlayerBodyVisibilityState.DissolvingOut);
+     if(!actorBusy && !viewBusy && !bodyBusy)return;
      await UnityEngine.Awaitable.NextFrameAsync();continue;
     }
     await AwaitScopeTasks(pending,cancellation);
@@ -25,6 +26,7 @@ namespace DazPose.Performer {
   static string PresentationResource(string verb) {
    switch(verb) {
     case "Pose":return "body-pose";
+    case "WalkTo":case "TurnTo":case "ArrivalHold":return "arrival";
     case "PersistentSitPose":return "seated-pose";
     case "Expression":return "expression";
     case "LookAt":return "gaze";

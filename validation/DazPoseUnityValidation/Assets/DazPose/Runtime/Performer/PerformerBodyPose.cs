@@ -124,6 +124,13 @@ namespace DazPose.Performer
             _graph.Evaluate(0f);
         }
 
+        internal void SetNeutralPose(PoseTransition transition) {
+            ThrowIfDisposed();transition.Validate();var current=CaptureEvaluatedBaseState();DesiredPose=null;_transitionCancelled=false;
+            _activeTransition=transition;_elapsedSeconds=0;TransitionProgress=0;_isTransitioning=transition.Duration>0;
+            CopyStateToNative(current,_sourceTransforms,_sourceBlendShapes);CopyStateToNative(_neutralState,_targetTransforms,_targetBlendShapes);
+            SetMixerWeights(0);SetTrajectoryProgress(0);if(!_isTransitioning)CompleteTransition();_graph.Evaluate(0);
+        }
+
         public void CancelTransition()
         {
             if (_disposed || !_isTransitioning) return;

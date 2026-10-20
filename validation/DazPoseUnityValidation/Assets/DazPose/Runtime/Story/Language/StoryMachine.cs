@@ -34,6 +34,7 @@ namespace DazPose.Story.Language {
   readonly Dictionary<string,int> visits=new Dictionary<string,int>(StringComparer.Ordinal);
   StoryInstructionSnapshot lastPausedSnapshot; StoryInstruction lastPausedInstruction; Dictionary<string,StoryData> lastPausedLocals;
   public StoryDirector Director {get;}
+  public int RetainedChildTaskCount=>children.Count;
   public CardExecutionContext CardContext {get;private set;}
   string stopBeforePhase;
   public string ReachedCheckpoint {get;private set;}
@@ -239,12 +240,21 @@ namespace DazPose.Story.Language {
   }
   async Task ExecuteCard(CardDefinition card,double intensity,bool selected,StorySource callSite=null) {
    if(host is IStoryCardEligibility eligibility) {string issue=eligibility.ResourceIssue(card);if(issue!=null)throw new StorySourceException(callSite ?? card.Source,issue);}
-   var previous=CardContext;
-   CardContext=new CardExecutionContext {CardId=card.Id,Phase=ReadOptional("Session.Phase",new StoryData("Setup")).String,SessionSeed=random.Seed,Random=random,IntensityMultiplier=intensity,InvocationNumber=++cardInvocation,PreparedEquipment=ReadOptional("Session.PreparedEquipment",new StoryData(Array.Empty<string>())).Items,ActiveEquipment=ReadOptional("Session.ActiveEquipment",new StoryData(Array.Empty<string>())).Items};
-   PublishDirector();host.Trace(card.Source,"Enter card "+card.Id+"; invocation "+CardContext.InvocationNumber+"; intensity "+intensity+".");
-   try {await Entry(program.RequireEntry(card.ProgramEntry,"card"),0);Check();host.Trace(card.Source,"Card body completed: "+card.Id+".");}
-   finally {CardContext=previous;PublishDirector();}
+   if(!(host is IStoryCardPresentationHost presentation))throw new StorySourceException(callSite??card.Source,"Card execution requires an IStoryCardPresentationHost entrance/return implementation.");
+   int invocation=++cardInvocation;var previous=CardContext;IStoryCardPresentationScope scope=null;Exception bodyFailure=null;
+   try {
+    scope=await presentation.EnterCardAsync(new CardPresentationRequest(string.IsNullOrEmpty(card.OriginUnit)?card.Id:card.OriginUnit+"::"+(card.LocalId??card.Id),invocation,entryFrames.Count(f=>f.EntryKind=="card")+1,card.Source,callSite),lifetime.Token);
+    Check();if(scope==null)throw new StorySourceException(callSite??card.Source,"Card presentation host returned no entrance scope.");
+    CardContext=new CardExecutionContext {CardId=card.Id,Phase=ReadOptional("Session.Phase",new StoryData("Setup")).String,SessionSeed=random.Seed,Random=random,IntensityMultiplier=intensity,InvocationNumber=invocation,PreparedEquipment=ReadOptional("Session.PreparedEquipment",new StoryData(Array.Empty<string>())).Items,ActiveEquipment=ReadOptional("Session.ActiveEquipment",new StoryData(Array.Empty<string>())).Items};
+    PublishDirector();host.Trace(card.Source,"Enter card "+card.Id+"; invocation "+invocation+"; intensity "+intensity+".");
+    await Entry(program.RequireEntry(card.ProgramEntry,"card"),0);Check();
+    await scope.ReturnAsync(lifetime.Token);Check();
+    host.Trace(card.Source,"Card body completed: "+card.Id+"; entrance presentation returned and verified.");
+   }
+   catch(Exception error){bodyFailure=error;throw;}
+   finally {try{scope?.Dispose();}catch(Exception cleanup) when(bodyFailure!=null){host.Trace(card.Source,"Card scope disposal after terminal failure: "+cleanup.Message);}finally{CardContext=previous;PublishDirector();}}
   }
+
   StoryData Evaluate(int index,Dictionary<string,StoryData> locals) {
    var stack=new Stack<StoryData>(); var atoms=program.expressions[index].atoms;
    for(int pc=0;pc<atoms.Length;pc++) {

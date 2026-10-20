@@ -29,9 +29,13 @@ namespace DazPose.Story {
   }
   public static StoryLinkedContent Create(CompiledStoryProgram root,StoryContentBindings rootContent,string rootId="scene") {
    if(rootContent==null)throw new InvalidOperationException("Assign typed story content bindings.");
-   var catalog=GlobalStoryCardCatalog.Require();
+   return Create(root,rootContent,GlobalStoryCardCatalog.Require().sources,rootId);
+  }
+  public static StoryLinkedContent Create(CompiledStoryProgram root,StoryContentBindings rootContent,IEnumerable<CompiledStoryAsset> sources,string rootId="scene") {
+   if(rootContent==null)throw new InvalidOperationException("Assign typed story content bindings.");
+   root.RequireCurrentVersion();
    var units=new List<StoryLinkUnit>();var bindings=new Dictionary<string,StoryContentBindings>(StringComparer.Ordinal) {{rootId,rootContent}};
-   foreach(var asset in catalog.sources) {
+   foreach(var asset in sources??Array.Empty<CompiledStoryAsset>()) {
     if(asset==null || !asset.IsCompiled || asset.content==null || string.IsNullOrEmpty(asset.sourceIdentity))
      throw new InvalidOperationException("The generated global card index contains an invalid source. Reimport/reindex published content.");
     if(bindings.ContainsKey(asset.sourceIdentity))throw new InvalidOperationException("Duplicate story source identity: "+asset.sourceIdentity);

@@ -35,6 +35,7 @@ namespace DazPose.Performer
 
         public Playable OutputPlayable => _layers;
         public float MotionWeight => _motionWeight;
+        internal bool PresentationTransitioning=>_variantBlendElapsed<_variantBlendDuration || !Mathf.Approximately(_motionWeight,_ownershipTargetWeight);
         public int ActiveVariantIndex => _activeVariantIndex;
         public string ActiveVariantName => _variants[_activeVariantIndex].DisplayName;
         public float SampledPosition01 { get; private set; }

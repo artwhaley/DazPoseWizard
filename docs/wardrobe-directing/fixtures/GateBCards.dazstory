@@ -1,0 +1,11 @@
+card Disruptive
+tags [Warmup]
+progress 10
+{
+    await Lara.SetOutfit(ChangedOutfit)
+    await Lara.ClearHair()
+    await Lara.DissolveTo(GateShift, seconds: 500ms)
+    await Lara.PersistentPose(ChangedPose)
+    await Lara.MagicShader(ChangedShader)
+    wait 2s
+}

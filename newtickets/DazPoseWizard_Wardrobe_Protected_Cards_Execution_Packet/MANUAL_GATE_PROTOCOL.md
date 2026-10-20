@@ -31,7 +31,7 @@ Subsequent gates use one currently needed diagnostic composition at a time, then
 
 ## Gate B — Protected cards and smooth restoration
 
-Entry: W04–W07 source-ready; Gate A accepted. New saved diagnostic scene and runner built via implemented **Create Gate B scene** / **Open Gate B scene** window controls.
+Entry: W04–W07 source-ready; Gate A accepted. Saved diagnostic scene and runner created by Art via **DazPose > Wardrobe > Appearance Delivery > Create / open Gate B scene**. Executor must not operate Unity. See `docs/wardrobe-directing/GATE_B_HANDOFF.md` for the short all-cases route: run the suite, one interactive Stop during Outgoing, then Write report.
 
 ### Art's exact actions
 

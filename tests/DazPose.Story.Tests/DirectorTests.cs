@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace DazPose.Story.Tests;
 public sealed class DirectorTests {
- internal class Host : IStoryExecutionHost,IStoryDirectorObserver,IStoryPhaseObserver {
+ internal class Host : IStoryCardPresentationHost,IStoryExecutionHost,IStoryDirectorObserver,IStoryPhaseObserver {
+  public readonly DazPose.Tests.RecordingCardPresentation Presentation=new();
+  public Task<IStoryCardPresentationScope> EnterCardAsync(CardPresentationRequest request,CancellationToken cancellation)=>Presentation.EnterAsync(request,cancellation);
   public readonly Dictionary<string,StoryData> State=new() {
    ["Session.Mood"]=new(50d),["Session.Phase"]=new("Setup"),["Session.PhaseCompletion"]=new(0d),["Session.IntensityMultiplier"]=new(1d),["Contract.PacingMultiplier"]=new(1d),
    ["World.Posture"]=new("Standing"),["World.Hands"]=new("Free"),["World.Ankles"]=new("Free"),["World.Oral"]=new("Free"),["World.Anal"]=new("Free"),["World.Genital"]=new("Free"),

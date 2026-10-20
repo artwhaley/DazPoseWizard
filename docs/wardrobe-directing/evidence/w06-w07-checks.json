@@ -1,0 +1,529 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-20",
+  "classification": "Source compilation and pure managed checks only; no Unity operation or native acceptance",
+  "checks": {
+    "story": {
+      "passed": 108
+    },
+    "rehearsal": {
+      "passed": 93
+    },
+    "wardrobeScope": {
+      "passed": 25
+    },
+    "sourceAssemblies": {
+      "passed": 7
+    },
+    "dialogues": {
+      "unchanged": 19
+    },
+    "placeholderAudioUnchanged": true,
+    "newCsSidecarMetas": true,
+    "duplicateAssetMetaGuids": []
+  },
+  "commands": [
+    "python scripts/check-unity-source.py",
+    "dotnet test tests/DazPose.Story.Tests/DazPose.Story.Tests.csproj --no-restore --nologo --verbosity quiet",
+    "dotnet test tests/DazPose.Rehearsal.Tests/DazPose.Rehearsal.Tests.csproj --no-restore --nologo --verbosity quiet",
+    "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore --nologo --verbosity quiet"
+  ],
+  "nativeGateB": "NOT_RUN_BY_EXECUTOR",
+  "remoteWrite": false,
+  "productionAppearanceAdvanced": false,
+  "protectedFileAudit": [
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Environments/VoidEnvironment.unity",
+      "baselineSha256": "b01ce9894f508ce35e288be1730244a6fcd2d4dda1a470f657308d490072900f",
+      "currentSha256": "b01ce9894f508ce35e288be1730244a6fcd2d4dda1a470f657308d490072900f",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Environments/VoidEnvironment.unity.meta",
+      "baselineSha256": "0d6ed339932f6014bbd0023f2d8d3b413618326f9f7114f8e0244368df01a8b7",
+      "currentSha256": "0d6ed339932f6014bbd0023f2d8d3b413618326f9f7114f8e0244368df01a8b7",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Performers/Lara.prefab",
+      "baselineSha256": "0fd83904d9b1985c40f8841f25211b88507dda83dbd0f7571ba4d2e26e49cb06",
+      "currentSha256": "6d295dd43f29a6947a60bffdcf42c966ee15c293dd70f715a42140004e51cbd8",
+      "unchanged": false,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Performers/Lara.prefab.meta",
+      "baselineSha256": "79f6a5819aae9738414b9f693518b79312003c43317e207c16789deb5d01d3d8",
+      "currentSha256": "79f6a5819aae9738414b9f693518b79312003c43317e207c16789deb5d01d3d8",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Player/PlayerBody.prefab",
+      "baselineSha256": "2c13b812b5cb3a153242083c14d9a73de19f974cda2573f9211586ba43349ff5",
+      "currentSha256": "2c13b812b5cb3a153242083c14d9a73de19f974cda2573f9211586ba43349ff5",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Player/PlayerBody.prefab.meta",
+      "baselineSha256": "876d2e7fc145d6c55684900e0b9c095c026ed88ef616f9091cd3a9fa0d012052",
+      "currentSha256": "876d2e7fc145d6c55684900e0b9c095c026ed88ef616f9091cd3a9fa0d012052",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Scenes/FirstContact.unity",
+      "baselineSha256": "3aba29a644fd0027bf4d6a58e350e61e329bf5d74c25eb6051b03c37dfa51dc0",
+      "currentSha256": "3aba29a644fd0027bf4d6a58e350e61e329bf5d74c25eb6051b03c37dfa51dc0",
+      "unchanged": true,
+      "relocated": true
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Scenes/FirstContact.unity.meta",
+      "baselineSha256": "38208e8c69dfc2734f4b2e750817c5910b5f2869d4b303cc51a567aa0e3da131",
+      "currentSha256": "38208e8c69dfc2734f4b2e750817c5910b5f2869d4b303cc51a567aa0e3da131",
+      "unchanged": true,
+      "relocated": true
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/FirstContactMarks.prefab",
+      "baselineSha256": "b7a8d7d6a095be37d43eafe7cec799283ceb36752f3de5b993c576ca2e32a27e",
+      "currentSha256": "b7a8d7d6a095be37d43eafe7cec799283ceb36752f3de5b993c576ca2e32a27e",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/FirstContactMarks.prefab.meta",
+      "baselineSha256": "55a093279ae14c7541005f7956371c85b0ed6346f428f0b3e513f4455f789d23",
+      "currentSha256": "55a093279ae14c7541005f7956371c85b0ed6346f428f0b3e513f4455f789d23",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.bindings.asset",
+      "baselineSha256": "272edbfafeb2b44c039a8e4a4500813375e84698f1f086fafa890303846b762b",
+      "currentSha256": "0a433a73189b3569a185c7aafe25427ba8118b551fa594125fbf5d6015102bd7",
+      "unchanged": false,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.bindings.asset.meta",
+      "baselineSha256": "b9a00ac8c16d24563effb5559af538a89e27dd0ae0a5198cb3074e05675fb95b",
+      "currentSha256": "b9a00ac8c16d24563effb5559af538a89e27dd0ae0a5198cb3074e05675fb95b",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+      "baselineSha256": "9a4213b08f0234e6627c40fee004a1ff98cd474cf28aae6c082c1c937985f924",
+      "currentSha256": "5e5db37cd152947d91c99a4170509eb94c9e926554543ec7d385d4f282436056",
+      "unchanged": false,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory.meta",
+      "baselineSha256": "530b66b83c6aae4805a522a860f89a40e398b43c05405998ffae46ccb0683de5",
+      "currentSha256": "530b66b83c6aae4805a522a860f89a40e398b43c05405998ffae46ccb0683de5",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dialogue-map.json",
+      "baselineSha256": "768506f16081d8f60d704d63f024a235952ff38525545aaadedcf1224a391517",
+      "currentSha256": "768506f16081d8f60d704d63f024a235952ff38525545aaadedcf1224a391517",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dialogue-map.json.meta",
+      "baselineSha256": "2f2d68d0f1ba5a80a45fa234076a7e4b0c86183caa3f0a27ae25dc161b0753a3",
+      "currentSha256": "2f2d68d0f1ba5a80a45fa234076a7e4b0c86183caa3f0a27ae25dc161b0753a3",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Resources/DazPose/GlobalStoryCards.asset",
+      "baselineSha256": "e744222da6a5d98490dc4f6f808afc2efaa80b863e11103ca4afa8ff13ce8fa8",
+      "currentSha256": "f0b4d629ad5bd5b2518ec5a22e143b1f17a3f45ce287f116e82d8f840ae5b7b1",
+      "unchanged": false,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Resources/DazPose/GlobalStoryCards.asset.meta",
+      "baselineSha256": "ecf66a0e9752cbebfc5bde24b8c3937534b99c2ddf0f6a97cefe58f650318b68",
+      "currentSha256": "ecf66a0e9752cbebfc5bde24b8c3937534b99c2ddf0f6a97cefe58f650318b68",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb.meta",
+      "baselineSha256": "d5cdccccf99599fbe8a5694c93a629a68ac820a9b4e3827f132a6241f55fc126",
+      "currentSha256": "d5cdccccf99599fbe8a5694c93a629a68ac820a9b4e3827f132a6241f55fc126",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets.meta",
+      "baselineSha256": "7bb0b17bd964e2e62f96d70f90757a2fc6c054e7b2833d1021e9d97b1f622528",
+      "currentSha256": "7bb0b17bd964e2e62f96d70f90757a2fc6c054e7b2833d1021e9d97b1f622528",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit.meta",
+      "baselineSha256": "632622dfee46004457531b0e5c16454541b1abeed94b120aeeaea38287ba20e8",
+      "currentSha256": "632622dfee46004457531b0e5c16454541b1abeed94b120aeeaea38287ba20e8",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit/Preset.asset",
+      "baselineSha256": "5759694b03ffbceb658caf68b9dab3640d191057a4255e19d9f9eb5e8368e950",
+      "currentSha256": "5759694b03ffbceb658caf68b9dab3640d191057a4255e19d9f9eb5e8368e950",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit/Preset.asset.meta",
+      "baselineSha256": "d2e0551d6f2990b0aae18537847443757fb4c3a8c16c0a89be1fb28d7770d91f",
+      "currentSha256": "d2e0551d6f2990b0aae18537847443757fb4c3a8c16c0a89be1fb28d7770d91f",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit.meta",
+      "baselineSha256": "b06ec7150e8b559d3a7198d37deed1659510db1f02d816d77c2e34af887ee7d0",
+      "currentSha256": "b06ec7150e8b559d3a7198d37deed1659510db1f02d816d77c2e34af887ee7d0",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit/Preset.asset",
+      "baselineSha256": "55972da5850b0fd0d4a56b398f6c9f45710dad05ea8c81c26a260c2818ad3a3d",
+      "currentSha256": "55972da5850b0fd0d4a56b398f6c9f45710dad05ea8c81c26a260c2818ad3a3d",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit/Preset.asset.meta",
+      "baselineSha256": "8949439510a1300341407444bb0181b20e5e266b7d656eb075be920f6e6b2a5e",
+      "currentSha256": "8949439510a1300341407444bb0181b20e5e266b7d656eb075be920f6e6b2a5e",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit.meta",
+      "baselineSha256": "7da45d55b368591fbd3b762bb17d93b163e178486750489c1c55c7c2f5af66ea",
+      "currentSha256": "7da45d55b368591fbd3b762bb17d93b163e178486750489c1c55c7c2f5af66ea",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit/Preset.asset",
+      "baselineSha256": "83bafc73be7c12801e27b62244f4f7581c926573d6b34e4b7921b23cbb7b9e7f",
+      "currentSha256": "83bafc73be7c12801e27b62244f4f7581c926573d6b34e4b7921b23cbb7b9e7f",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit/Preset.asset.meta",
+      "baselineSha256": "433d248ff0aafed4c1c58f73d1a65d5e4f248116dead40f170de16dcbaabf9e9",
+      "currentSha256": "433d248ff0aafed4c1c58f73d1a65d5e4f248116dead40f170de16dcbaabf9e9",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553.meta",
+      "baselineSha256": "34d5b44b459fccd96d1d30cb2d8db569fe6fb9595a8fa0393f8728cd29811d07",
+      "currentSha256": "34d5b44b459fccd96d1d30cb2d8db569fe6fb9595a8fa0393f8728cd29811d07",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets.meta",
+      "baselineSha256": "6ae8a6796719428a3d50606422b933f577744e68fdb732f0de410889f082c48c",
+      "currentSha256": "6ae8a6796719428a3d50606422b933f577744e68fdb732f0de410889f082c48c",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit.meta",
+      "baselineSha256": "d327fd2bba5138d3aa70f0b1af4657fa5bee3fae6c8f1dbab252141680919cc3",
+      "currentSha256": "d327fd2bba5138d3aa70f0b1af4657fa5bee3fae6c8f1dbab252141680919cc3",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit/Preset.asset",
+      "baselineSha256": "eeeda77f0ad2f5043416a4df3c71b8ec4f5dd84cdf57f683cde7ce83a9c27965",
+      "currentSha256": "eeeda77f0ad2f5043416a4df3c71b8ec4f5dd84cdf57f683cde7ce83a9c27965",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit/Preset.asset.meta",
+      "baselineSha256": "4306bc999d307eb0f8a1f4c396dfa774bba6910898c8d5bf2b147e1fe33547e9",
+      "currentSha256": "4306bc999d307eb0f8a1f4c396dfa774bba6910898c8d5bf2b147e1fe33547e9",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit.meta",
+      "baselineSha256": "dab2c0dc874439c84205c6fde018fa2f6d8143c8daf37b8012521d5ffe23a0d9",
+      "currentSha256": "dab2c0dc874439c84205c6fde018fa2f6d8143c8daf37b8012521d5ffe23a0d9",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit/Preset.asset",
+      "baselineSha256": "d87524619c062fcaf50b0759653f5190e5c293791b8848b4a963ea3adeafbb32",
+      "currentSha256": "d87524619c062fcaf50b0759653f5190e5c293791b8848b4a963ea3adeafbb32",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit/Preset.asset.meta",
+      "baselineSha256": "baa59c4bff90348ac5cbf671b012526c6f34443f4ba19b896f2290b97defba96",
+      "currentSha256": "baa59c4bff90348ac5cbf671b012526c6f34443f4ba19b896f2290b97defba96",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit.meta",
+      "baselineSha256": "8f1d183d28bf36a4fa576cb317d00bde996065951b38574b1a6777e60406e554",
+      "currentSha256": "8f1d183d28bf36a4fa576cb317d00bde996065951b38574b1a6777e60406e554",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit/Preset.asset",
+      "baselineSha256": "910dc59f84e42e704201fb9a47ba936c7c908cc285d200ed09dfb4842d306bdd",
+      "currentSha256": "910dc59f84e42e704201fb9a47ba936c7c908cc285d200ed09dfb4842d306bdd",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit/Preset.asset.meta",
+      "baselineSha256": "604e4974a8ce88a5ff0b83d6b1c11d81d68ab9dc9a3e885d136df3ea180ce4f8",
+      "currentSha256": "604e4974a8ce88a5ff0b83d6b1c11d81d68ab9dc9a3e885d136df3ea180ce4f8",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/WardrobeCatalog.asset",
+      "baselineSha256": "e301c3fb8668f7e5c042e36f06eac27ffadbe8758652104476acc12042ebbe5c",
+      "currentSha256": "e301c3fb8668f7e5c042e36f06eac27ffadbe8758652104476acc12042ebbe5c",
+      "unchanged": true,
+      "relocated": false
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/WardrobeConfiguration.asset",
+      "baselineSha256": "9b3fd745043d7c7ccd4334b85cc1fbaea7620c953a5b9777c9b49e3b97b7237d",
+      "currentSha256": "9b3fd745043d7c7ccd4334b85cc1fbaea7620c953a5b9777c9b49e3b97b7237d",
+      "unchanged": true,
+      "relocated": false
+    }
+  ],
+  "protectedDifferencesExplanation": [
+    "FirstContact scene/metas relocated with GUID preserved by earlier accepted correction.",
+    "FirstContact source changed only card Intro to sequence Intro in W04; all 19 transcript identities and audio remain.",
+    "Existing Lara serialization, production bindings owner/empty wardrobe rows and global catalog fingerprint refresh remain unstaged; source membership unchanged."
+  ],
+  "sourceFiles": [
+    {
+      "path": "docs/wardrobe-directing/IMPLEMENTATION_REPORT.md",
+      "sha256": "6580cc595a81cf7ed226c35f44adefcb8810f3743480d60a52008f766868f28a"
+    },
+    {
+      "path": "docs/wardrobe-directing/WRITER_COVERAGE.md",
+      "sha256": "c1411a8221d5def23dffcd05e737ada7e0e55bdd7ff6bc917cd9637b7ab7b053"
+    },
+    {
+      "path": "docs/wardrobe-directing/progress.json",
+      "sha256": "9a876845c6a33a783072167b451c63b7da62c6ed1efee4877db6cd1bc9782b60"
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/MANUAL_GATE_PROTOCOL.md",
+      "sha256": "1b1d21b035b5f6e9732c8775b4a9a27e527ef6a0b9dab5409ad084b696c87bb3"
+    },
+    {
+      "path": "tests/DazPose.Rehearsal.Tests/DazPose.Rehearsal.Tests.csproj",
+      "sha256": "504aeac101f0f20969b58bd8f1a5434fd3796d0350debe45dbf38ed93f8f0443"
+    },
+    {
+      "path": "tests/DazPose.Story.Tests/DazPose.Story.Tests.csproj",
+      "sha256": "65fc52b45095d06f6533fa3245db32b2d8ccbf0cc305e35017581529ffd47b67"
+    },
+    {
+      "path": "tests/DazPose.Story.Tests/DirectorTests.cs",
+      "sha256": "4a2b373a98aba24856a53f6b12fdae0fec04560ba3b2971910f8f54edfbd6795"
+    },
+    {
+      "path": "tests/DazPose.Story.Tests/LanguageTests.cs",
+      "sha256": "6a0623d1f651a102953e3826a6d62c8c1db2cfbfb991e8cea0b9ed5659e67c77"
+    },
+    {
+      "path": "tests/DazPose.Story.Tests/RehearsalTests.cs",
+      "sha256": "75ab736dc7a76573c402874fdbaf683c46d8e5b5212b36572a0b251a1905f7e5"
+    },
+    {
+      "path": "tests/DazPose.Wardrobe.Tests/PerformanceScopeTests.cs",
+      "sha256": "75a57930c40c9a6495b54927a8fefabd8476d18cc0d1ab2bd3d78dc357aff768"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/RehearsalStoryHost.cs",
+      "sha256": "7cc520c375cce33ae3d55feea7a42a0b2fe50f7778cfda83888ad991164c0d1f"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs",
+      "sha256": "3bf8fd36d84042841c62efd84609e70c3352b017258a2b76fd3e4dd6f5c20e39"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceOperationScope.cs",
+      "sha256": "a383b6384f2fec9cf5ed84cdfc6512986d70a319fb79e7f82f2f11945f92c853"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformancePresentationService.cs",
+      "sha256": "169905ca417a36dfa93835fce0e8d7f431ba013b9fd99b133416d444cd4e0e38"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformancePresentationSnapshot.cs",
+      "sha256": "f01395c81bfb0821887bdba0461edb962395ad37febf40b823166a39dccd39c7"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceRun.Scopes.cs",
+      "sha256": "c28f4d37cd0637e47365e265f4fd396b4991bb4448a4ac807afc0fbb6387ba96"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceRun.cs",
+      "sha256": "e22edd0604e1100e5c7b2104670240b8facfbff6d5c07e8b3541d78b7218c0fb"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerBodyPose.cs",
+      "sha256": "ad02fb53a3d49f3145216eab5dc6760dfc01e6450044eea81a96675fea6436cd"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerBodySourceMixer.cs",
+      "sha256": "2dfea85251c24b726ac99f7c9cc1e3b038450d53fd6f71d4efce8eb9611a622a"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerGaze.cs",
+      "sha256": "481352ae38cf9366e85d1341628d679d7ede7f706a55eba02350797658d90203"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerLocomotion.cs",
+      "sha256": "963a4ba8162be0252b66330e02cdde4a1861745cd84d0ebc34a9eb0ebe7875a0"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerMotionLayer.cs",
+      "sha256": "f4901488863adf89317d774b3b9722ef7008de44be642b9b787cb979873f75cb"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeating.cs",
+      "sha256": "fb762c8eee79b2e1f5a7c9e84371090c32b13701fecc415022a3c34883d256b7"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerSeatingLayer.cs",
+      "sha256": "57bacf44dd348c441e2a44e8247010ce3428dc24a8e1ed54c563f70a384f46e1"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.PresentationSnapshot.cs",
+      "sha256": "bcda845ebd79d954f4e688725f7535a9f19c808aef4aff605540cfe97fd4aaf6"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryMachine.cs",
+      "sha256": "4564459c0eef225a4379ff294a93cea2a8e2adf79949404c9ac72d7b78dcc376"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/GlobalStoryCardCatalog.cs",
+      "sha256": "02d06339334810491fe1588ac53759317f3c09521587311ff2dce72c92f5826b"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/PerformanceStoryHost.cs",
+      "sha256": "3ea69c4284e0f264118d6c51766c68598423defa723264f587c266eccb39cf09"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerBodyPresence.PresentationSnapshot.cs",
+      "sha256": "69ea475675e6c43062646ac661d416922ba165f107bfc6bcd219ef6ae25b6ec6"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.PresentationSnapshot.cs",
+      "sha256": "4c50fc8a432f5072c1a77996b447349b18ec099ad3dd51a26caee8fb02e4484c"
+    },
+    {
+      "path": "docs/wardrobe-directing/GATE_B_HANDOFF.md",
+      "sha256": "ad484f139723b37fc349ded5fd90fcb1c5806cb9f0ece3eaa4c945f0e9ddcf0b"
+    },
+    {
+      "path": "docs/wardrobe-directing/fixtures/GateBCards.dazstory",
+      "sha256": "76791d30210506dc01b398161eb26b24c1d96158623daf7a22b356330b1e3ecd"
+    },
+    {
+      "path": "docs/wardrobe-directing/fixtures/GateBRoot.dazstory",
+      "sha256": "0b3e49d1bfb97bdd7db995d1b6f87a837d78d149ecd9494880c8d787eac8ee0b"
+    },
+    {
+      "path": "tests/DazPose.Story.Tests/CardBoundaryTests.cs",
+      "sha256": "06b68316e1f5f24fab5e28c2e55cb317a6337d97e5009912a9c705ec977c0aef"
+    },
+    {
+      "path": "tests/Support/RecordingCardPresentation.cs",
+      "sha256": "7f05784c4642f89a0ba812966c1c19b41d0e3a8aa9652cfb98b3ca42d16b9815"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/CardReturnGateBuilder.cs",
+      "sha256": "4a8b2350df2c1a039972ba52c50f353299a8d5e383cc8d15a799c47fca10f9c6"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/CardReturnGateBuilder.cs.meta",
+      "sha256": "1325bb4a8b95b64a7831e77914cca3adaefbeaf7f6d5c49e3031d00a680a593b"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/CardPresentationObservation.cs",
+      "sha256": "620598189f5a6631df72ae4cffa5330ef8b30ff30168faaa232f60a790141bf4"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/CardPresentationObservation.cs.meta",
+      "sha256": "f5e2d9eb3c176af78d08714fef482e5a7addf56fe4487c1d45c8d91fd56b912a"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/CardPresentationScope.cs",
+      "sha256": "aab8b96bfb04049dd0572496cdfe9925b54ee3750183bcd1c57ebb20b32147b2"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/CardPresentationScope.cs.meta",
+      "sha256": "c20d8b93509a0f25b4bc8da3405c50a7dc7f9a5b3533862ed3c36d204ddb1152"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformancePresentationService.Restore.cs",
+      "sha256": "62946d03bee0a98db899745f480d2bf8acf475c694b980b3089f536fb25fec82"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformancePresentationService.Restore.cs.meta",
+      "sha256": "49285d7bef90cbad701c5ca75418951efceeb9acddd6adac52234e5eb67cb2da"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryCardPresentation.cs",
+      "sha256": "f4b91c14c5f289f6ea920c758b985af4cc574cce7fad6495ef2a215f17ecf66c"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Language/StoryCardPresentation.cs.meta",
+      "sha256": "74382139e8ac4adede9a8e0b7970d0317989bb6d3a3e34eb91892f411aadb852"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards.meta",
+      "sha256": "3887197de2e76e02fb164d19ef3d6ddc70e8c8bb7b63fe2f781fcd6f8bf3739a"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/CardReturnGateRunner.cs",
+      "sha256": "4f8af2baa003e931a67fbce6311fe363ec565d9a8eb69e4eb2b998c88f708506"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/CardReturnGateRunner.cs.meta",
+      "sha256": "b33270ddc6cef44ce26166708423294a6a903d630b46a6361236759fdb2e8bc4"
+    }
+  ]
+}

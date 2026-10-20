@@ -34,14 +34,20 @@ namespace DazPose.Performer {
   public bool Active {get;} public IGripTarget Target {get;} public float Position {get;} public bool FollowMotion {get;} public MotionDriver Driver {get;}
   public PerformerGripSnapshot(bool active,IGripTarget target,float position,bool follow,MotionDriver driver){Active=active;Target=target;Position=position;FollowMotion=follow;Driver=driver;}
  }
+ internal sealed class PerformerArrivalSnapshot {
+  public bool Arrival {get;} public bool Approach {get;} public PerformerLocomotionMotion Motion {get;} public float Phase {get;}
+  public PerformerArrivalSnapshot(bool arrival,bool approach,PerformerLocomotionMotion motion,float phase){Arrival=arrival;Approach=approach;Motion=motion;Phase=phase;}
+ }
  internal sealed class PerformerPresentationSnapshot {
+  public PerformerArrivalSnapshot Arrival {get;}
   public SuccubusPerformer Actor {get;} public PresentationFrame Frame {get;} public PerformerPose DesiredPose {get;} public PerformerPose SettledPose {get;}
   public PerformerSeatSnapshot Seating {get;} public bool Hidden {get;} public WardrobeSelection Wardrobe {get;}
   public WardrobeCatalog Catalog {get;} public WardrobeConfiguration Configuration {get;} public WardrobeFitState Fit {get;}
+  public MotionDriver MotionSource {get;} public bool MotionRunning {get;} public long MotionGeneration {get;} public int MotionVariant {get;}
   public PerformerMagicShaderProfile Material {get;} public PerformerExpression Expression {get;} public float ExpressionIntensity {get;}
   public PerformerGazeSnapshot Gaze {get;} public PerformerAura Aura {get;} public Transform AuraTarget {get;} public PerformerGripSnapshot Grip {get;}
   public PerformerPresentationSnapshot(SuccubusPerformer actor,PerformerPose desired,PerformerPose settled,PerformerSeatSnapshot seat,bool hidden,WardrobeSelection wardrobe,PerformerMagicShaderProfile material,PerformerExpression expression,float intensity,PerformerGazeSnapshot gaze,PerformerAura aura,Transform auraTarget,PerformerGripSnapshot grip) {
-   Actor=actor;var owner=actor.GetComponent<PerformerWardrobe>();Catalog=owner?.Catalog;Configuration=owner?.Configuration;Fit=owner?.CurrentFit;Frame=new PresentationFrame(actor.transform);DesiredPose=desired;SettledPose=settled;Seating=seat;Hidden=hidden;Wardrobe=wardrobe;Material=material;Expression=expression;ExpressionIntensity=intensity;Gaze=gaze;Aura=aura;AuraTarget=auraTarget;Grip=grip;
+   Actor=actor;Arrival=actor.CaptureArrivalPresentation();MotionSource=actor.MotionSource;MotionRunning=MotionSource!=null && MotionSource.IsRunning;MotionGeneration=MotionSource!=null?MotionSource.CommandGeneration:0;MotionVariant=actor.PresentationMotionVariant;var owner=actor.GetComponent<PerformerWardrobe>();Catalog=owner?.Catalog;Configuration=owner?.Configuration;Fit=owner?.CurrentFit;Frame=new PresentationFrame(actor.transform);DesiredPose=desired;SettledPose=settled;Seating=seat;Hidden=hidden;Wardrobe=wardrobe;Material=material;Expression=expression;ExpressionIntensity=intensity;Gaze=gaze;Aura=aura;AuraTarget=auraTarget;Grip=grip;
   }
  }
  internal sealed class PlayerBodyPresentationSnapshot {

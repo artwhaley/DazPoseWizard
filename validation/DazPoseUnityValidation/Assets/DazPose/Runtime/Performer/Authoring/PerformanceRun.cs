@@ -55,6 +55,7 @@ namespace DazPose.Performer
         public bool HasPlayer => player != null && player.isActiveAndEnabled;
         [Obsolete("Toy availability belongs to Settings; author output is unconditional.")]
         public bool HasToys => toys != null && toys.isActiveAndEnabled;
+        public bool HasOutputAuthority => toys!=null;
         public bool IsStopped => stopped;
         public PerformanceCommandException Failure => failure;
 
@@ -67,20 +68,20 @@ namespace DazPose.Performer
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void CaptureMainThread() => mainThreadId = Thread.CurrentThread.ManagedThreadId;
 
-        private PerformanceRun(PerformanceSceneBindings sceneBindings)
+        private PerformanceRun(PerformanceSceneBindings sceneBindings,bool allowToyOutput)
         {
             CurrentScope=RootScope;
             bindings = sceneBindings;
             actor = sceneBindings.Performer;
             player = sceneBindings.Player;
-            toys = DazPose.Game.GameApplication.Current != null ? DazPose.Game.GameApplication.Current.Toys : sceneBindings.Toys;
+            toys = !allowToyOutput ? null : DazPose.Game.GameApplication.Current != null ? DazPose.Game.GameApplication.Current.Toys : sceneBindings.Toys;
             playback = sceneBindings.Playback;
             Performer = new ScopedPerformer(this, actor);
             scopedPlayer = player != null ? new ScopedPlayer(this, player) : null;
             scopedToys = new ScopedToys(this, toys);
         }
 
-        public static PerformanceRun Begin(PerformanceSceneBindings sceneBindings)
+        public static PerformanceRun Begin(PerformanceSceneBindings sceneBindings,bool allowToyOutput=true)
         {
             if (sceneBindings == null) throw new PerformanceCommandException("scene", "Begin", "MissingBindings", "Assign the PerformanceSceneBindings component.");
             if (!Application.isPlaying) throw new PerformanceCommandException("scene", "Begin", "NotPlaying", "PerformanceRun.Begin requires Play Mode.");
@@ -90,7 +91,7 @@ namespace DazPose.Performer
                 throw new PerformanceCommandException("scene", "Begin", "MissingActor", "Assign the bound actor before beginning the performance.");
 
             if(!sceneBindings.Performer.isActiveAndEnabled) throw new PerformanceCommandException(sceneBindings.Performer.name,"Begin","InactiveActor","Enable the bound actor before starting.");
-            return new PerformanceRun(sceneBindings);
+            return new PerformanceRun(sceneBindings,allowToyOutput);
         }
 
         public Awaitable Delay(float seconds)
@@ -229,7 +230,7 @@ namespace DazPose.Performer
                 if (success != null && success(result))
                 {
                     operation.Cancel = captureOwnership?.Invoke() ?? operation.Cancel;
-                    operation.Owner.Register(PresentationResource(operation.Verb),operation.Cancel);
+                    if(captureOwnership!=null)operation.Owner.Register(PresentationResource(operation.Verb),operation.Cancel);
                     completion.TrySetResult(result);
                 }
                 else
