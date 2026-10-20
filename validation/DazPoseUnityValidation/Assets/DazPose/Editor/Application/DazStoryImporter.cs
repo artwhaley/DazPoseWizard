@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 namespace DazPose.Editor {
- [ScriptedImporter(2,"dazstory")]
+ [ScriptedImporter(3,"dazstory")]
  public sealed class DazStoryImporter : ScriptedImporter {
   public override void OnImportAsset(AssetImportContext context) {
    var asset=ScriptableObject.CreateInstance<CompiledStoryAsset>(); asset.name=Path.GetFileNameWithoutExtension(context.assetPath);asset.sourceIdentity=AssetDatabase.AssetPathToGUID(context.assetPath);

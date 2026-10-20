@@ -41,7 +41,7 @@ namespace DazPose.Editor.Studio {
   }
   StoryAuthoringNode Target(StoryAuthoringNode n){
    string name=n.Kind=="play"?n.Name:n.Literals.TryGetValue("card",out var c)?c:null;
-   var local=declarations.Values.Where(d=>d.Kind=="card"&&d.Source.unit==n.Source.unit&&d.Name==name).ToArray();
+   var local=declarations.Values.Where(d=>(d.Kind=="card"||(n.Kind=="play"&&d.Kind=="sequence"))&&d.Source.unit==n.Source.unit&&d.Name==name).ToArray();
    var global=declarations.Values.Where(d=>d.Kind=="card"&&d.Source.unit!=root&&d.Tags.Count>0&&d.Name==name).ToArray();
    var matches=local.Concat(global).Distinct().ToArray();return matches.Length==1?matches[0]:null;
   }

@@ -7,7 +7,7 @@ setup FirstContact
 }
 
 
-card Intro
+sequence Intro
 {
     await Lara.DissolveIn(lara_start)
 

@@ -1,0 +1,12 @@
+{
+  "ticket": "W04",
+  "storyTests": 95,
+  "rehearsalTests": 93,
+  "sourceAssemblies": 7,
+  "programVersion": 2,
+  "importerVersion": 3,
+  "firstContactOnlyChange": "card Intro -> sequence Intro",
+  "transcriptsUnchanged": true,
+  "sceneRoot": "FirstContact",
+  "nativeOperation": false
+}

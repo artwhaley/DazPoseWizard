@@ -25,7 +25,8 @@ namespace DazPose.Story.Language {
   readonly TaskCompletionSource<Exception> failure=new TaskCompletionSource<Exception>();
   readonly TaskCompletionSource<bool> cancelled=new TaskCompletionSource<bool>();
   CancellationTokenSource lifetime;
-  int executed,cardDepth;
+  int executed,entryDepth;
+  int cardInvocation;
   double? completionTarget;
   readonly StorySessionRandom random;
   readonly IStoryRehearsalObserver rehearsalObserver;
@@ -38,6 +39,7 @@ namespace DazPose.Story.Language {
   public string ReachedCheckpoint {get;private set;}
   sealed class CheckpointReached : Exception { }
   public StoryMachine(CompiledStoryProgram program,IStoryExecutionHost host,StorySessionRandom random=null,IStoryRehearsalObserver rehearsalObserver=null) {
+   program.RequireCurrentVersion();
    this.program=program;this.host=host;this.random=random ?? new StorySessionRandom(0);this.rehearsalObserver=rehearsalObserver;
    Director=new StoryDirector(program,index=>Evaluate(index,new Dictionary<string,StoryData>(StringComparer.Ordinal)),Read,this.random,message=>host.Trace(null,message),host is IStoryCardEligibility eligibility ? new Func<CardDefinition,string>(eligibility.ResourceIssue) : null);
   }
@@ -76,7 +78,8 @@ namespace DazPose.Story.Language {
    await task;
   }
   async Task Entry(StoryEntry entry,int depth) {
-   if(depth>128) throw new InvalidOperationException("Recursive card calls exceeded 128 active entries.");
+   if(entryDepth>=128) throw new InvalidOperationException("Recursive playable calls exceeded 128 active entries.");
+   entryDepth++;
    var locals=new Dictionary<string,StoryData>(StringComparer.Ordinal); var repeats=new Dictionary<int,int>();
    var scopeChildren=new List<Task>();var loops=new Dictionary<int,double>();var outerTarget=completionTarget;
    entryFrames.Add(new StoryCallFrameSnapshot(entry.name,entry.kind,CardContext?.CardId,CardContext?.InvocationNumber ?? 0));
@@ -118,7 +121,13 @@ namespace DazPose.Story.Language {
        repeats[instruction.loop]=(int)count; if(count==0) pc=instruction.jump-1; break;
       }
       case StoryCode.RepeatEnd: if(--repeats[instruction.loop]>0) pc=instruction.jump-1; else repeats.Remove(instruction.loop);break;
-      case StoryCode.Play:host.Trace(instruction.source,"Play card "+instruction.name+"."); await ExecuteCard(StoryProgramLinker.ResolveCard(program,instruction.name,instruction.source?.unit,instruction.source),ReadOptional("Session.IntensityMultiplier",new StoryData(1d)).Numeric,false,instruction.source);break;
+      case StoryCode.Play: {
+       var playable=StoryProgramLinker.ResolvePlayable(program,instruction.name,instruction.source?.unit,instruction.source);
+       host.Trace(instruction.source,"Play "+playable.Kind+" "+instruction.name+".");
+       if(playable.Card!=null)await ExecuteCard(playable.Card,ReadOptional("Session.IntensityMultiplier",new StoryData(1d)).Numeric,false,instruction.source);
+       else await Entry(playable.Entry,0);
+       break;
+      }
       case StoryCode.EnterPhase:if(instruction.name==stopBeforePhase)throw new CheckpointReached();host.Write("Session.Phase",new StoryData(instruction.name)); host.Write("Session.PhaseCompletion",new StoryData(0d)); host.Trace(instruction.source,"Enter phase "+instruction.name+" at zero completion.");break;
       case StoryCode.LeavePhase:if(host is IStoryPhaseObserver phaseObserver)phaseObserver.LeavePhase(instruction.name);host.Trace(instruction.source,"Leave phase "+instruction.name+".");break;
       case StoryCode.WaitAny: {
@@ -142,7 +151,7 @@ namespace DazPose.Story.Language {
     catch(Exception error) { throw new StorySourceException(instruction.source,error.Message,error); }
    }
    await AwaitOwned(Task.WhenAll(scopeChildren.ToArray()));completionTarget=outerTarget;
-   } finally {entryFrames.RemoveAt(entryFrames.Count-1);}
+   } finally {entryFrames.RemoveAt(entryFrames.Count-1);entryDepth--;}
   }
   Task Start(StoryCommand command,List<Task> scopeChildren) {
    var contract=StoryVocabulary.Require(command.Verb,command.Source);
@@ -230,12 +239,11 @@ namespace DazPose.Story.Language {
   }
   async Task ExecuteCard(CardDefinition card,double intensity,bool selected,StorySource callSite=null) {
    if(host is IStoryCardEligibility eligibility) {string issue=eligibility.ResourceIssue(card);if(issue!=null)throw new StorySourceException(callSite ?? card.Source,issue);}
-   if(++cardDepth>128)throw new InvalidOperationException("Card recursion exceeded 128 active entries.");
    var previous=CardContext;
-   CardContext=new CardExecutionContext {CardId=card.Id,Phase=ReadOptional("Session.Phase",new StoryData("Setup")).String,SessionSeed=random.Seed,Random=random,IntensityMultiplier=intensity,InvocationNumber=Director.History.For(card.Id).TimesUsed+1,PreparedEquipment=ReadOptional("Session.PreparedEquipment",new StoryData(Array.Empty<string>())).Items,ActiveEquipment=ReadOptional("Session.ActiveEquipment",new StoryData(Array.Empty<string>())).Items};
+   CardContext=new CardExecutionContext {CardId=card.Id,Phase=ReadOptional("Session.Phase",new StoryData("Setup")).String,SessionSeed=random.Seed,Random=random,IntensityMultiplier=intensity,InvocationNumber=++cardInvocation,PreparedEquipment=ReadOptional("Session.PreparedEquipment",new StoryData(Array.Empty<string>())).Items,ActiveEquipment=ReadOptional("Session.ActiveEquipment",new StoryData(Array.Empty<string>())).Items};
    PublishDirector();host.Trace(card.Source,"Enter card "+card.Id+"; invocation "+CardContext.InvocationNumber+"; intensity "+intensity+".");
-   try {await Entry(program.RequireEntry(card.ProgramEntry,"card"),cardDepth);Check();host.Trace(card.Source,"Card body completed: "+card.Id+".");}
-   finally {CardContext=previous;cardDepth--;PublishDirector();}
+   try {await Entry(program.RequireEntry(card.ProgramEntry,"card"),0);Check();host.Trace(card.Source,"Card body completed: "+card.Id+".");}
+   finally {CardContext=previous;PublishDirector();}
   }
   StoryData Evaluate(int index,Dictionary<string,StoryData> locals) {
    var stack=new Stack<StoryData>(); var atoms=program.expressions[index].atoms;

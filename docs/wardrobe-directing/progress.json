@@ -10,8 +10,8 @@
     "evidence": "Art said Continue after the execution packet was prepared.",
     "date": "2026-10-20"
   },
-  "currentTicket": "W04 \u2014 playable sequences",
-  "nextTicket": "W05 after W04",
+  "currentTicket": "W05 - typed wardrobe vocabulary",
+  "nextTicket": "W06 after W05",
   "tickets": [
     {
       "id": "W00",
@@ -62,11 +62,13 @@
     },
     {
       "id": "W04",
-      "status": "NOT_STARTED",
+      "status": "COMPLETE",
       "dependencies": [
         "A_PASS"
       ],
-      "evidence": []
+      "evidence": [
+        "evidence/w04-checks.json"
+      ]
     },
     {
       "id": "W05",

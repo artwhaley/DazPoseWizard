@@ -45,7 +45,7 @@ namespace DazPose.Story {
   public string[] Diagnostics(CompiledStoryProgram view,StorySceneBindings scene=null) {
    var errors=new List<string>();
    foreach(var owner in content) {
-    var local=new CompiledStoryProgram {bindings=view.bindings.Where(b=>b.source?.unit==owner.Key).ToArray(),
+    var local=new CompiledStoryProgram {version=view.version,bindings=view.bindings.Where(b=>b.source?.unit==owner.Key).ToArray(),
      dialogue=view.dialogue.Where(d=>d.source?.unit==owner.Key).ToArray()};
     errors.AddRange(owner.Value.Diagnostics(local,scene));
    }

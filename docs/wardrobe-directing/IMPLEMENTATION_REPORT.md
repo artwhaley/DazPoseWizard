@@ -54,3 +54,8 @@ Packet structure, relative links, ticket/gate/check references and initial progr
 ## October 20 - First Contact scene location corrected
 
 Moved FirstContact.unity and its meta from Assets/Production/Scenes to Assets/Scenes. Scene and meta bytes, GUID, authored contents and bindings are unchanged. Updated the scene catalog, build settings, source helpers and maintenance scripts. New Performance Scene now defaults to Assets/Scenes. Earlier evidence paths remain historical. Unity was not operated.
+
+
+## W04 - playable sequences
+
+Implemented kind-aware local sequence/card and public-card resolution, cross-kind collision rejection, shared 128-entry recursion bound, run-local unique card invocation numbers, source-aware dependency/window traversal and Studio helper-sequence summaries. Importer is version 3; executable program version 2 is required for runtime/linking and retained by filtered views. Intro is a sequence; byte comparison proves this is the only FirstContact source change, preserving all transcripts. Saved root remains FirstContact. Checks: 95 story, 93 rehearsal, seven source assemblies passed (existing rehearsal CS0649 warning). No native operation.

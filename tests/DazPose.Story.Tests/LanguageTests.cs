@@ -89,7 +89,7 @@ public sealed class LanguageTests {
   Assert.Equal(new[]{"Warmup","Main","Climax","Resolution"},program.instructions.Where(i=>i.code==StoryCode.EnterPhase).Select(i=>i.name));
   Assert.Contains(program.instructions,i=>i.code==StoryCode.WaitAny);
   Assert.Contains(program.dialogue,d=>d.transcript.Contains("(giggles)"));
-  var intro=program.RequireEntry("Intro","card");
+  var intro=program.RequireEntry("Intro","sequence");
   Assert.DoesNotContain(program.instructions.Skip(intro.start).Take(intro.end-intro.start),i=>i.name=="Lara.SitAt" || i.name=="Camera.MoveTo");
  } [Theory] [InlineData(0,true,55,false)][InlineData(2,false,50,false)][InlineData(4,true,50,true)]
  public async Task ActualIntroAndNegotiationReachWarmupInAllClothingBranches(int clothes,bool equipment,int mood,bool disapproval) {

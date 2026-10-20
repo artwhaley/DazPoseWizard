@@ -55,7 +55,9 @@ namespace DazPose.Story.Language {
   }
  }
  [Serializable] public sealed class CompiledStoryProgram {
-  public int version=1;
+  public const int CurrentVersion=2;
+  public int version=CurrentVersion;
+  public void RequireCurrentVersion() { if(version!=CurrentVersion)throw new InvalidOperationException("Stale compiled story program version "+version+"; reimport the .dazstory source (expected "+CurrentVersion+")."); }
   public string name;
   public bool linked;
   public StoryInstruction[] instructions=Array.Empty<StoryInstruction>();

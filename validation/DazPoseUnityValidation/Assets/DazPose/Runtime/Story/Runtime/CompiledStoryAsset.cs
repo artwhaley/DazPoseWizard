@@ -6,6 +6,6 @@ namespace DazPose.Story {
   public CompiledStoryProgram program;
   public StoryContentBindings content;
   public string[] diagnostics=System.Array.Empty<string>();
-  public bool IsCompiled => program!=null && diagnostics.Length==0;
+  public bool IsCompiled => program!=null && program.version==CompiledStoryProgram.CurrentVersion && diagnostics.Length==0;
  }
 }

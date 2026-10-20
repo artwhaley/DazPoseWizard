@@ -42,8 +42,10 @@ namespace DazPose.Story.Language {
      }
      Emit(declaration.body); Add(StoryCode.Return,declaration.token); entry.end=instructions.Count; entries.Add(entry);
     }
+    foreach(var group in entries.Where(e=>e.kind=="card" || e.kind=="sequence").GroupBy(e=>e.name))
+     if(group.Count()>1)throw new InvalidOperationException("Ambiguous playable declaration '"+group.Key+"' in "+file+": card and sequence collide.");
     foreach(var instruction in instructions.Where(i=>i.code==StoryCode.Play))
-     if(!allowExternalCards && !entries.Any(e=>e.kind=="card" && e.name==instruction.name)) throw new StorySourceException(instruction.source,"Unknown card declaration '"+instruction.name+"'.");
+     if(!allowExternalCards && !entries.Any(e=>(e.kind=="card" || e.kind=="sequence") && e.name==instruction.name)) throw new StorySourceException(instruction.source,"Unknown playable declaration '"+instruction.name+"'.");
     foreach(var instruction in instructions.Where(i=>i.code==StoryCode.Call && i.name=="Director.Execute")) {
      var argument=instruction.arguments.Single(a=>a.name=="card");var atoms=expressions[argument.expression].atoms;
      if(atoms.Length==1 && (atoms[0].code==StoryAtomCode.Symbol || atoms[0].code==StoryAtomCode.String) && !allowExternalCards && !cards.Any(c=>c.Id==atoms[0].text))throw new StorySourceException(instruction.source,"Unknown explicit card '"+atoms[0].text+"'.");
