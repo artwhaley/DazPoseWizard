@@ -22,20 +22,20 @@ namespace DazPose.Editor.Studio {
    public SaveObservation[] saves;public bool forcedCleanEquivalent,stopDirtyPreserved,scratchDiscovered,scratchRemoved;
   }
   static readonly string[] Cases={
-   "Actual Intro: hidden / dissolve / SexyVamp / GlowyWireframe / Regular / standing Lounger",
-   "Actual Warmup: default SitAt then PersistentSitPose; Main seated dissolve after Director; standing return",
-   "Camera follows authored StartAt / Track command order; actual Game shot; head-local focus edit",
-   "Live stand / SeatAnchor / camera / parent-chair edits; ApproachAnchor independent; no drift",
-   "Nonvisual dialogue / UI / waits and global card return preserve composition",
-   "Director eligible/ineligible reasons; force a later encounter once; Back / seed replay reproduce it",
-   "Awaited gesture leaves base pose; non-awaited launch explicitly labelled; male body reveal/hide",
-   "Ctrl+S clean and forced clean save; dirty stand / camera / chair overrides saved; Undo / Redo / reopen",
-   "Stop with unsaved mark retains dirty edit; Stop / close / source swap restore preview",
-   "Manual compile / reload / scene close restore; Animation Window interference refuses safely",
-   "Invalid camera / seat / content blocks at offending cue; later movement / Director cannot hide error",
-   "Wardrobe / heel / blendshape / material settings restored on Save / Stop / reopen",
-   "Both simulated climax responses (ICame and MotionDriver.Ended then ICame) reach Resolution without output",
-   "Scratch tagged card discovered by existing scene; its seated pose stages; removal restores index"
+   "Direct early/late cue selection including Resolution Sassy: responsive without story traversal",
+   "Dialogue with identical visual state: zero additional pose samples or lease rebuilds",
+   "Rapid source selections: final row/inspector/shot match; no stale callbacks",
+   "Standing/seated pose replacement: same marks/camera; Undo/Redo; sparse pose baseline",
+   "Release-only Move/Rotate: smooth handles, correct release shot; optional Live drag",
+   "StartAt authored full rotation; Track actual Lara focus after pose; no invented aim",
+   "Default SitAt baked root and custom seated hip alignment; Approach independent",
+   "Skipped conditional/loop: no variables/choices/RNG/waits; local uncertainty visible",
+   "Dynamic global cards selectable/editable; missing incoming fields labelled; explicit assignments resolve",
+   "Ctrl+S and forced clean save resume newest shot; no preview fields serialized",
+   "Unsaved authored mark survives Stop; saved marks/assignments survive reopen",
+   "Close/source/scene/reload restore baseline; ownership conflicts stop safely",
+   "Wardrobe/heels/blendshapes/materials and prefab overrides preserved",
+   "Scratch card discovered, ambiguity visible, direct cue editing; removal restores isolated index"
   };
   [SerializeField] bool[] confirmed=new bool[14];
   NativeStageContext context;[SerializeField] NativeDirectingFixture.FixtureIdentity fixture;
@@ -60,7 +60,7 @@ namespace DazPose.Editor.Studio {
    folder=null;indexBefore=indexAdded=indexRemoved=null;scratchDiscovered=scratchRemoved=false;
    baseline=NativeDirectingG1Window.Capture(context);baselineText=File.ReadAllText(context.Scene.path);
    saves.Clear();visits.Clear();failure=null;cleanEquivalent=false;dirtyPreserved=false;forcedClean=0;confirmed=new bool[Cases.Length];
-   Persist();SceneDirectorStudioWindow.Open();status="G4 recording actual Studio. Start directing there, then click source cues. This panel never chooses framing.";
+   Persist();SceneDirectorStudioWindow.Open();status="G4 recording actual Studio. Click source cues there. This panel never chooses framing.";
   }
   void Observed(NativeStudioObservation value) {
    if(baseline==null)return;
@@ -96,7 +96,7 @@ namespace DazPose.Editor.Studio {
    }catch(Exception e){failure=e.ToString();Persist();}
   }
   void ForceSave() {
-   NativeDirectingFixture.Require();if(baseline==null||Studio==null||!Studio.IsDirecting)throw new InvalidOperationException("Begin G4, then Start directing in Studio first.");
+   NativeDirectingFixture.Require();if(baseline==null||Studio==null||!Studio.IsDirecting)throw new InvalidOperationException("Begin G4, then select a source cue in Studio first.");
    bool clean=!context.Scene.isDirty;
    if(!EditorSceneManager.SaveScene(context.Scene))throw new InvalidOperationException("Disposable save cancelled or failed.");
    if(clean&&forcedClean==0){forcedClean++;cleanEquivalent=NativeSceneSaveComparison.Equivalent(baselineText,File.ReadAllText(context.Scene.path));
@@ -112,7 +112,7 @@ namespace DazPose.Editor.Studio {
    fixture=NativeDirectingFixture.Require();if(baseline==null)throw new InvalidOperationException("Begin G4 first.");
    if(File.Exists(Scratch))throw new InvalidOperationException("Scratch already exists; inspect/remove that fixture card first.");
    Stop();indexBefore=NativeDirectingFixture.HashFile(Index);
-   File.WriteAllText(Scratch,"card NativeG4Scratch\ntags [Warmup]\nprogress 20\nweight 1\nrepeat unlimited\ncooldown 1\nrequires World.Posture == Sitting\n{\n await Lara.PersistentSitPose(G4ScratchPose)\n}\n");
+   File.WriteAllText(Scratch,"card NativeG4Scratch\ntags [Warmup]\nprogress 20\nweight 1\nrepeat unlimited\ncooldown 1\nrequires World.Posture == Sitting\n{\n await Lara.SitAt(Lounger)\n await Lara.PersistentSitPose(G4ScratchPose)\n if Session.Mood > 0 { await Lara.PersistentSitPose(G4ScratchPose) }\n wait 1s\n await Lara.SitAt(Lounger)\n await Lara.PersistentSitPose(G4ScratchPose)\n}\n");
    AssetDatabase.ImportAsset(Scratch,ImportAssetOptions.ForceSynchronousImport);
    var bindings=SourceBindingReconciler.ReconcileAsset(Scratch,AssetDatabase.AssetPathToGUID(Scratch));
    var sequence=context.Scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<StoryProgramSequence>(true)).Single(s=>s.Bindings==context.Host);
@@ -120,7 +120,7 @@ namespace DazPose.Editor.Studio {
    EditorUtility.SetDirty(bindings);AssetDatabase.SaveAssetIfDirty(bindings);AssetDatabase.ImportAsset(Scratch,ImportAssetOptions.ForceSynchronousImport);
    GlobalStoryCardIndexBuilder.Reindex();indexAdded=NativeDirectingFixture.HashFile(Index);
    scratchDiscovered=Resources.Load<GlobalStoryCardCatalog>("DazPose/GlobalStoryCards").sources.Any(s=>AssetDatabase.GetAssetPath(s)==Scratch);
-   Persist();status="Scratch globally published. In Studio restart; pause at a Warmup Director call, inspect candidates and force NativeG4Scratch for this encounter. Scene membership is unchanged.";
+   Persist();status="Scratch globally published. In Studio select NativeG4Scratch directly in the cue list. SitAt establishes its seat; the wait after the skipped condition warns about ambiguous pose/placement; the following SitAt and pose resolve it.";
   }
   void RemoveScratch() {
    NativeDirectingFixture.Require();Stop();if(indexBefore==null)throw new InvalidOperationException("No scratch baseline recorded in this recording. Preserve files and report before manual cleanup.");
@@ -146,7 +146,7 @@ namespace DazPose.Editor.Studio {
     exception=failure,cases=Cases,confirmed=Cases.Where((_,i)=>confirmed[i]).ToArray(),baseline=baseline,current=now,differences=differences,visits=visits.ToArray(),saves=saves.ToArray(),forcedCleanEquivalent=cleanEquivalent,stopDirtyPreserved=dirtyPreserved,
     indexBeforeScratch=indexBefore,indexWithScratch=indexAdded,indexAfterRemoval=indexRemoved,scratchDiscovered=scratchDiscovered,scratchRemoved=scratchRemoved};
    File.WriteAllText(Path.Combine(folder,"report.json"),JsonUtility.ToJson(report,true));
-   File.WriteAllText(Path.Combine(folder,"report.txt"),"G4 "+result+"\nActual Studio, no diagnostic framing overrides. Art operates Unity.\nSource: "+fixture.sourceRevision+"\nCode SHA256: "+fixture.codeHash+"\nStopped/restored: "+stopped+"/"+restored+"\nClean forced save: "+cleanEquivalent+"; saves: "+saves.Count+"\nUnsaved dirty edit preserved: "+dirtyPreserved+"\nConfirmed: "+confirmed.Count(x=>x)+"/"+Cases.Length+"\nScratch discovered / removed index restored: "+scratchDiscovered+" / "+scratchRemoved+"\nException: "+failure+"\n\n"+string.Join("\n",Cases.Select((c,i)=>(confirmed[i]?"PASS (Art): ":"NOT RUN: ")+c))+"\n\nExact snapshots, visits, camera composition, scenario and differences: report.json\n");
+   File.WriteAllText(Path.Combine(folder,"report.txt"),"G4 "+result+"\nActual Studio, no diagnostic framing overrides. Art operates Unity.\nSource: "+fixture.sourceRevision+"\nCode SHA256: "+fixture.codeHash+"\nStopped/restored: "+stopped+"/"+restored+"\nClean forced save: "+cleanEquivalent+"; saves: "+saves.Count+"\nUnsaved dirty edit preserved: "+dirtyPreserved+"\nConfirmed: "+confirmed.Count(x=>x)+"/"+Cases.Length+"\nScratch discovered / removed index restored: "+scratchDiscovered+" / "+scratchRemoved+"\nException: "+failure+"\n\n"+string.Join("\n",Cases.Select((c,i)=>(confirmed[i]?"PASS (Art): ":"NOT RUN: ")+c))+"\n\nExact snapshots, visits, camera composition, visual index timings and differences: report.json\n");
    File.WriteAllText(Path.Combine(folder,"current-scene.unity.txt"),File.ReadAllText(context.Scene.path));
   }
   void Guard(Action action){try{action();}catch(Exception e){status=e.Message;Debug.LogException(e);}Repaint();}

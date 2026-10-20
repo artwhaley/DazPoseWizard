@@ -1,3 +1,5 @@
+> Current correction: responsive visual authoring A00–A06, `docs/visual-authoring/IMPLEMENTATION_REPORT.md`. G4 remains unaccepted. Prior canonical navigation acceptance requirements below are historical.
+
 # Native directing acceptance status
 
 Overall PARTIAL / WAITING ON ART G4 retry. Art rejected the integrated Studio interface; the cue-first correction is source-checked but has not been accepted. Historical G1–G3 user reports remain accepted. No screenshots required. Every remaining mandatory native case is requested by G4_ART_HANDOFF.md and the G4 panel; none is inferred from managed output.

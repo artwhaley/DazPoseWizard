@@ -1,0 +1,10 @@
+{
+  "duplicateGuids": {},
+  "missingSourceMetas": [],
+  "authoringTraversalViolations": [],
+  "retired": [
+    "SceneDirectorStudioWindow.Rehearsal.cs",
+    "NativeSceneStage.Cumulative.cs",
+    "RehearsalVisualState.cs"
+  ]
+}

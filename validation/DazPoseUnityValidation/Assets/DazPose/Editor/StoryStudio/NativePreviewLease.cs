@@ -33,6 +33,7 @@ namespace DazPose.Editor.Studio
         public bool IsSaveSuspended => saveSuspended;
         public bool IsDisposed => disposed;
         public event Action Restored;
+        internal void DesiredProjection(Action value)=>projection=value;
 
         public NativePreviewLease(NativeStageContext context)
         {
@@ -68,7 +69,7 @@ namespace DazPose.Editor.Studio
                 if(!ownedObjects.Add(t))continue;
                 ownedObjects.Add(t.gameObject);
                 string path=NativeStageContext.ObjectPath(t);
-                string group=t==Context.Lara.transform||t==Context.Body.transform||t==Context.PlayerRoot||t==Context.ViewRig?"spatial":null;
+                string group=t==Context.Lara.transform||t==Context.Body.transform||t==Context.PlayerRoot||t==Context.ViewRig?"spatial":"pose";
                 ledger.Capture(path+".position",()=>t.localPosition,v=>{if(t!=null)t.localPosition=v;},group:group);
                 ledger.Capture(path+".rotation",()=>t.localRotation,v=>{if(t!=null)t.localRotation=v;},group:group);
                 ledger.Capture(path+".scale",()=>t.localScale,v=>{if(t!=null)t.localScale=v;},group:group);
@@ -79,8 +80,8 @@ namespace DazPose.Editor.Studio
             {
                 if(!ownedObjects.Add(renderer))continue;
                 string path=NativeStageContext.ObjectPath(renderer.transform);
-                ledger.Capture(path+".enabled",()=>renderer.enabled,v=>{if(renderer!=null)renderer.enabled=v;});
-                ledger.Capture(path+".forceRenderingOff",()=>renderer.forceRenderingOff,v=>{if(renderer!=null)renderer.forceRenderingOff=v;});
+                ledger.Capture(path+".enabled",()=>renderer.enabled,v=>{if(renderer!=null)renderer.enabled=v;},group:"presentation");
+                ledger.Capture(path+".forceRenderingOff",()=>renderer.forceRenderingOff,v=>{if(renderer!=null)renderer.forceRenderingOff=v;},group:"presentation");
                 var refs=renderer.sharedMaterials;
                 for(int i=0;i<refs.Length;i++)
                 {
@@ -88,7 +89,7 @@ namespace DazPose.Editor.Studio
                     ledger.Capture(path+".material["+slot+"]",()=>renderer.sharedMaterials.ElementAtOrDefault(slot),v=>{
                         if(renderer==null)return;var now=renderer.sharedMaterials;
                         if(slot<now.Length){now[slot]=v;renderer.sharedMaterials=now;}
-                    });
+                    },group:"presentation");
                     var perSlot=new MaterialPropertyBlock();renderer.GetPropertyBlock(perSlot,slot);propertyBlockBaseline.Add(perSlot);
                 }
                 var global=new MaterialPropertyBlock();renderer.GetPropertyBlock(global);propertyBlockBaseline.Add(global);
@@ -101,7 +102,7 @@ namespace DazPose.Editor.Studio
                     {
                         int index=i;float original=skin.GetBlendShapeWeight(index);
                         ledger.Capture(path+".blend["+i+"]",()=>skin!=null && skin.sharedMesh==mesh?skin.GetBlendShapeWeight(index):original,
-                            v=>{if(skin!=null && skin.sharedMesh==mesh)skin.SetBlendShapeWeight(index,v);});
+                            v=>{if(skin!=null && skin.sharedMesh==mesh)skin.SetBlendShapeWeight(index,v);},group:"pose");
                     }
                 }
             }
@@ -122,7 +123,7 @@ namespace DazPose.Editor.Studio
             try
             {
                 RestoreBaseline();
-                NativeStageContext.Resolve(Context.Host);
+                NativeStageContext.Resolve(Context.Host,Context.ValidateAllLocations);
                 if(AnimationMode.InAnimationMode())throw new InvalidOperationException("Another animation owner interrupted native directing.");
                 AnimationMode.StartAnimationMode(driver);
                 if(!AnimationMode.InAnimationMode(driver))throw new InvalidOperationException("Could not acquire this preview's AnimationModeDriver.");
@@ -147,6 +148,23 @@ namespace DazPose.Editor.Studio
             catch(Exception error){Failure=error.Message;Dispose();throw;}
             finally{applying=false;}
         }
+        // Deltas retain the graph and independent groups; desired full projection is updated first.
+        internal void ApplyAuthoringDelta(Action complete,Action update,bool pose,bool presentation) {
+            projection=complete;
+            if(saveSuspended)return;
+            if(!staged){Apply(complete);return;}
+            if(disposed||!AnimationMode.InAnimationMode(driver))throw new InvalidOperationException("Preview ownership interrupted.");
+            if(applying)throw new InvalidOperationException("Reentrant authoring projection.");
+            var conflicts=ledger.Conflicts();if(conflicts.Length!=0)throw new InvalidOperationException("External preview edit preserved: "+string.Join(", ",conflicts.Take(6)));
+            applying=true;
+            try {
+                if(pose){sampler.WithExisting(s=>s.Suspend());ledger.PrepareRestore("pose");ledger.Restore("pose");}
+                if(presentation){ledger.PrepareRestore("presentation");ledger.Restore("presentation");}
+                try{update();}finally{ledger.RecordApplied();}
+                NativeStageContext.RefreshViews();
+            }catch(Exception e){Failure=e.Message;Dispose();throw;}
+            finally{applying=false;}
+        }
         // SaveAssetIfDirty on this exact source-binding asset cannot serialize scene preview properties.
         // All ordinary saves, scene saves and prefab operations still use the full suspension boundary.
         static string bindingSavePath;
@@ -169,13 +187,18 @@ namespace DazPose.Editor.Studio
             finally { root.SetPositionAndRotation(position,rotation);root.localScale=scale; }
 
         }
-        internal string[] ClipProperties(AnimationClip clip){
-            ValidateClip(clip);
-            return AnimationUtility.GetCurveBindings(clip).Select(b=>b.type.FullName+"|"+b.path+"|"+b.propertyName).ToArray();
+        internal void ResetPoseToBaseline(){
+            if(!applying)throw new InvalidOperationException("Pose reset requires owned projection.");
+            sampler.WithExisting(value=>value.Suspend());ledger.Restore("pose");
         }
+        readonly Dictionary<AnimationClip,int> validatedClips=new Dictionary<AnimationClip,int>();
+        internal void InvalidateClipValidation()=>validatedClips.Clear();
         internal void ValidateClip(AnimationClip clip)
         {
             if(clip==null)throw new InvalidOperationException("Assign a real PerformerPose clip; no neutral fallback is synthesized.");
+            int revision=EditorUtility.GetDirtyCount(clip);
+            if(validatedClips.TryGetValue(clip,out var seen)&&seen==revision)return;
+            if(clip.empty||clip.legacy)throw new InvalidOperationException("Assign a prepared nonempty Generic pose clip.");
             if(AnimationUtility.GetObjectReferenceCurveBindings(clip).Length!=0)
                 throw new InvalidOperationException("INCOMPLETE: object-reference animation curves require a separate property adapter.");
             foreach(var binding in AnimationUtility.GetCurveBindings(clip))
@@ -187,6 +210,7 @@ namespace DazPose.Editor.Studio
                 if(target==Context.Host.laraFocus || Context.Host.locations.Any(l=>l.placement==target || l.focus!=null && l.focus==target))
                     throw new InvalidOperationException("Pose clip targets an authored anchor; sampling refused.");
             }
+            if(validatedClips.Count>=64)validatedClips.Clear();validatedClips[clip]=revision;
         }
         void RestoreBaseline()
         {

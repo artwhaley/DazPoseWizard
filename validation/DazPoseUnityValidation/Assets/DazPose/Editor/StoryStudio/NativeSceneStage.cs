@@ -30,7 +30,7 @@ namespace DazPose.Editor.Studio
         public bool IsStaged=>lease.IsStaged;
         public string Status=>lease.Status;
         public string Failure=>lease.Failure;
-        public NativeSceneStage(NativeStageContext context) { lease=new NativePreviewLease(context); }
+        public NativeSceneStage(NativeStageContext context) { lease=new NativePreviewLease(context);CaptureAuthoringBaseline(); }
         public void Apply(NativeStandingProjection projection)
         {
             if(projection==null)throw new ArgumentNullException(nameof(projection));

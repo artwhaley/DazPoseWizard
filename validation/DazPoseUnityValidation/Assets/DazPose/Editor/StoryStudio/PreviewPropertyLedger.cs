@@ -37,12 +37,12 @@ namespace DazPose.Editor.Studio
         public void RecordApplied(string group=null) { foreach(var entry in entries)if(group==null||entry.Group==group)entry.Applied(); }
         public string[] Conflicts(string group=null)
         { var result=new List<string>();foreach(var e in entries) if((group==null||e.Group==group)&&e.Conflict)result.Add(e.Name);return result.ToArray(); }
-        public void PrepareRestore() { foreach(var e in entries)e.Prepare(); }
-        public void Restore()
+        public void PrepareRestore(string group=null) { foreach(var e in entries)if(group==null||e.Group==group)e.Prepare(); }
+        public void Restore(string group=null)
         {
             // Try every property even if an object was deleted or a setter failed.
             List<Exception> errors=null;
-            foreach(var e in entries) try { e.Restore(); } catch(Exception error) { (errors ??= new List<Exception>()).Add(new InvalidOperationException(e.Name,error)); }
+            foreach(var e in entries) if(group==null||e.Group==group)try { e.Restore(); } catch(Exception error) { (errors ??= new List<Exception>()).Add(new InvalidOperationException(e.Name,error)); }
             if(errors!=null)throw new AggregateException("Native preview restoration errors",errors);
         }
     }

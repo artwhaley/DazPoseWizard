@@ -13,7 +13,10 @@
     <Using Include="Xunit" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/RehearsalVisualState.cs" Link="Native/RehearsalVisualState.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PoseSamplingConventions.cs" Link="Native/PoseSamplingConventions.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/AuthoringSelectionQueue.cs" Link="Native/AuthoringSelectionQueue.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/AuthoringVisualState.cs" Link="Native/AuthoringVisualState.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/AuthoringCueIndex.cs" Link="Native/AuthoringCueIndex.cs" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/NativeSeatingMath.cs" Link="Native/NativeSeatingMath.cs" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/NativeSeatingSourceOracle.cs" Link="Native/NativeSeatingSourceOracle.cs" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/PreviewResourceOwner.cs" Link="Native/PreviewResourceOwner.cs" />

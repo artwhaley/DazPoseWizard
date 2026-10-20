@@ -62,6 +62,7 @@ namespace DazPose.Story.Language {
   public string kind,name;
   public StoryToken token;
   public bool awaited,add;
+  public StoryToken end;
   public StoryAstExpression expression;
   public readonly List<StoryAstArgument> arguments=new List<StoryAstArgument>();
   public readonly List<StoryAstNode> body=new List<StoryAstNode>(),otherwise=new List<StoryAstNode>();
@@ -130,7 +131,8 @@ namespace DazPose.Story.Language {
    Expect("}"); return output;
   }
   List<StoryAstNode> Body() { Lines(); return Current.text=="{" ? Block() : new List<StoryAstNode>{Statement()}; }
-  StoryAstNode Statement() {
+  StoryAstNode Statement() {var node=StatementCore();node.end=Current;return node;}
+  StoryAstNode StatementCore() {
    var start=Current; string word=start.text;
    if(Match("if")) {
     var node=new StoryAstNode {kind="if",token=start,expression=Expression()}; node.body.AddRange(Body()); Lines();

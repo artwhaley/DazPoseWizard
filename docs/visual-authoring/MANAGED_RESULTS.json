@@ -1,0 +1,16 @@
+[
+  {
+    "suite": "DazPose.Rehearsal.Tests",
+    "exitCode": 0,
+    "passed": 93,
+    "failed": 0,
+    "skipped": 0
+  },
+  {
+    "suite": "DazPose.Story.Tests",
+    "exitCode": 0,
+    "passed": 90,
+    "failed": 0,
+    "skipped": 0
+  }
+]

@@ -21,7 +21,7 @@ namespace DazPose.Editor.Studio {
   void BuildPreview() {
    if(host==null||source==null)ResolveNativeDefaults();
    if(nativeSequence!=null&&(nativeSequence.Bindings!=host||nativeSequence.CompiledSource!=source))throw new InvalidOperationException("Saved story sequence, source and host disagree. Select matching references.");
-   var resolved=NativeStageContext.Resolve(host);
+   var resolved=NativeStageContext.Resolve(host,false);
    if(stage!=null&&(stage.Context.Lara!=resolved.Lara||stage.Context.Body!=resolved.Body||stage.Context.PlayerRoot!=resolved.PlayerRoot||stage.Context.ViewRig!=resolved.ViewRig||stage.Context.Camera!=resolved.Camera)){stage.Dispose();stage=null;}
    if(stage==null||!stage.Ready){stage?.Dispose();nativeContext=resolved;stage=new NativeSceneStage(nativeContext);anchorStamp=null;}
   }
@@ -36,24 +36,17 @@ namespace DazPose.Editor.Studio {
    var text=new StringBuilder();
    var seen=new System.Collections.Generic.HashSet<Transform>();
    void Mark(Transform t){if(t!=null&&seen.Add(t))text.Append(t.GetEntityId().ToString()).Append(t.localToWorldMatrix.ToString("R"));}
-   foreach(var effect in visualState.Effects) {
-    switch(effect.Kind){
-     case VisualIntentKind.Hidden:case VisualIntentKind.DissolveIn:case VisualIntentKind.Move:case VisualIntentKind.DissolveStanding:case VisualIntentKind.BodyHidden:case VisualIntentKind.CameraStart:Mark(host.RequireLocation(effect.Symbol).placement);break;
-     case VisualIntentKind.Sit:case VisualIntentKind.DissolveSeated:
-      var seat=host.RequireLocation(effect.Symbol).seat;
-      if(seat!=null){Mark(seat.SeatAnchor);Mark(seat.ApproachAnchor);text.Append(EditorJsonUtility.ToJson(seat));}break;
-    }
-   }
+   foreach(var dependency in activeDependencies){if(dependency is Transform transform){if(transform!=host.laraFocus)Mark(transform);}else if(dependency is DazPose.Performer.PerformerSeat seat){Mark(seat.SeatAnchor);Mark(seat.ApproachAnchor);}}
    foreach(var root in new[]{nativeContext.Lara.transform,nativeContext.Body.transform,nativeContext.PlayerRoot})Mark(root.parent);
    var focus=host.laraFocus;if(focus!=null)text.Append(focus.localPosition.ToString("R")).Append(focus.localRotation.ToString("R")).Append(focus.localScale.ToString("R"));
    return text.ToString();
   }
   void PollNativeAnchors() {
-   if(stage==null||deferPresentation)return;
-   if(!stage.Ready){string message=stage.Failure??stage.Status;StopRehearsal();stage.Dispose();stage=null;nativeContext=null;error=message;return;}
+   if(stage==null||projectionPending||indexStale)return;
+   if(!stage.Ready){string message=stage.Failure??stage.Status;stage.Dispose();stage=null;nativeContext=null;error=message;return;}
    if(stage.IsSaveSuspended||EditorApplication.isUpdating||EditorApplication.isCompiling||EditorApplication.timeSinceStartup<nextAnchorPoll)return;
    nextAnchorPoll=EditorApplication.timeSinceStartup+.04;
-   try{string next=CaptureAnchorStamp();if(next!=anchorStamp){stage.Reanchor();anchorStamp=next;nativeRestages++;ObserveNative("reanchor");Repaint();}}
+   try{string next=CaptureAnchorStamp();if(next!=anchorStamp){stage.ReanchorAuthoring();anchorStamp=next;ObserveNative("reanchor");Repaint();}}
    catch(Exception e){HaltVisual(e);}
   }
   void OnGUI() => DrawAuthoringWindow();

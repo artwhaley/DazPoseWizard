@@ -1,68 +1,55 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using DazPose.Story;
-using DazPose.Story.Language;
+using DazPose.Performer;
 using UnityEditor;
 using UnityEngine;
 namespace DazPose.Editor.Studio {
  public sealed partial class SceneDirectorStudioWindow {
-  string sourceStamp,logicalStamp;
-  bool revisionDirty=true;
-  void PlayStateChanged(PlayModeStateChange state){if(state==PlayModeStateChange.ExitingEditMode)Release();}
-  void ClosedScene(UnityEngine.SceneManagement.Scene scene){if(host==null||host.gameObject.scene==scene){Release();sourceStamp=null;revisionDirty=true;}}
+  bool revisionDirty=true;string hostStamp,geometryStamp,materialStamp;
+  void PlayStateChanged(PlayModeStateChange state){if(state==PlayModeStateChange.ExitingEditMode){Release();CancelIndex();}}
+  void ClosedScene(UnityEngine.SceneManagement.Scene scene){if(host==null||host.gameObject.scene==scene){Release();CancelIndex();}}
   void RevisionChanged()=>revisionDirty=true;
-  UndoPropertyModification[] Modified(UndoPropertyModification[] changes){
-   // Gizmo drags are handled by the spatial watcher. Do not hash the entire asset graph per mouse move.
-   if(changes.Any(change=>!(change.currentValue.target is Transform)))revisionDirty=true;
-   return changes;
+  UndoPropertyModification[] Modified(UndoPropertyModification[] changes){if(changes.Any(c=>!(c.currentValue.target is Transform)))revisionDirty=true;return changes;}
+  // Lightweight identity comparison retained for explicit diagnostic callers; no asset graph traversal.
+  string CaptureStamp()=>host==null?"":host.GetEntityId()+"/"+host.lara?.GetEntityId()+"/"+host.playerBody?.GetEntityId()+"/"+string.Join(";",(host.locations??Array.Empty<StoryLocationBinding>()).Where(l=>l!=null).Select(l=>l.id+":"+l.placement?.GetEntityId()+":"+l.seat?.GetEntityId()));
+  string ObjectRevision(UnityEngine.Object o)=>o==null?"null":o.GetEntityId()+":"+EditorUtility.GetDirtyCount(o);
+  string GeometryStamp()=>string.Join(";",activeDependencies.Where(o=>o is AnimationClip||o is PerformerPose||o is PerformerSeat||o!=null&&o.GetType().Name.Contains("SeatingProfile")).Select(ObjectRevision));
+  string MaterialStamp()=>string.Join(";",activeDependencies.Where(o=>o is PerformerMagicShaderProfile||o is Material).Select(ObjectRevision));
+  void RememberDependencies(){dependenciesStamp=DependencyStamp();geometryStamp=GeometryStamp();materialStamp=MaterialStamp();hostStamp=CaptureStamp();}
+  bool sourceImportsPending;
+  void ImportedAssets(string[] paths){
+   if(authorCatalog==null)return;
+   if(paths.Any(p=>authorCatalog.Units.Any(u=>u.Path==p&&(!File.Exists(p)||File.GetLastWriteTimeUtc(p)!=u.Write)))){sourceImportsPending=true;revisionDirty=true;return;}
+   if(paths.Contains("Assets/Resources/DazPose/GlobalStoryCards.asset"))revisionDirty=true;
+   var changed=activeDependencies.Where(o=>o!=null&&paths.Contains(AssetDatabase.GetAssetPath(o))).ToArray();
+   if(changed.Length==0)return;
+   if(changed.Any(o=>o is AnimationClip||o is PerformerPose||o.GetType().Name.Contains("SeatingProfile")))poseRevision++;
+   if(changed.Any(o=>o is PerformerMagicShaderProfile||o is Material))presentationRevision++;
+   RefreshOwnerReferences();if(stage!=null)RequestProjection();revisionDirty=true;
   }
-  string CaptureStamp() {
-   var text=new StringBuilder();
-   void Asset(UnityEngine.Object asset) {
-    if(asset==null){text.Append("null;");return;}
-    string path=AssetDatabase.GetAssetPath(asset);text.Append(AssetDatabase.AssetPathToGUID(path)).Append('|').Append(AssetDatabase.GetAssetDependencyHash(path)).Append('|').Append(EditorJsonUtility.ToJson(asset)).Append(';');
-    // Unsaved pose/audio assignments must count before an asset save/import event.
-    foreach(string dependency in AssetDatabase.GetDependencies(path,true)) {
-     var value=AssetDatabase.LoadMainAssetAtPath(dependency);if(value!=null)text.Append(dependency).Append(':').Append(EditorUtility.GetDirtyCount(value)).Append(';');
-    }
+  void CheckRevision(){
+   if(indexTask!=null||source==null||authorCatalog==null)return;
+   bool changedEvent=revisionDirty;
+   if(!changedEvent&&EditorApplication.timeSinceStartup<nextRevisionPoll)return;
+   nextRevisionPoll=EditorApplication.timeSinceStartup+1;revisionDirty=false;
+   if(sourceImportsPending){sourceImportsPending=false;BeginAuthoringIndex();return;}
+   if(authorCatalog.Units.Any(u=>!File.Exists(u.Path)||File.GetLastWriteTimeUtc(u.Path)!=u.Write)){BeginAuthoringIndex();return;}
+   if(changedEvent){
+    var catalog=Resources.Load<GlobalStoryCardCatalog>("DazPose/GlobalStoryCards");
+    var published=(catalog?.sources??Array.Empty<CompiledStoryAsset>()).Where(a=>a!=source).ToArray();
+    if(!published.OrderBy(a=>a!=null?a.GetEntityId().ToString():"").SequenceEqual(authorCatalog.Units.Where(u=>u.Asset!=source).Select(u=>u.Asset).OrderBy(a=>a.GetEntityId().ToString()))){BeginAuthoringIndex();return;}
    }
-   Asset(source);Asset(content);
-   if(source!=null){string path=AssetDatabase.GetAssetPath(source);if(File.Exists(path))text.Append(StoryDialogue.IdFor(File.ReadAllText(path)));}
-   var catalog=Resources.Load<GlobalStoryCardCatalog>("DazPose/GlobalStoryCards");Asset(catalog);
-   if(catalog!=null){text.Append(catalog.fingerprint);foreach(var published in catalog.sources??Array.Empty<CompiledStoryAsset>()){Asset(published);if(published!=null)Asset(published.content);}}
-   if(host!=null) {
-    text.Append(host.GetEntityId().ToString()).Append('|').Append(host.gameObject.scene.path).Append('|').Append(EditorJsonUtility.ToJson(host));
-    Asset(host.lara!=null?host.lara.InitialPose:null);
-    foreach(var location in host.locations??Array.Empty<StoryLocationBinding>())if(location?.seat!=null)Asset(location.seat.SeatingProfile);
-    // Spatial anchors and head-local focus are watched separately from logical revisions.
-
-   }
-   return StoryDialogue.IdFor(text.ToString());
+   if(stage==null)return;
+   string nextHost=CaptureStamp();bool changedHost=hostStamp!=null&&nextHost!=hostStamp;hostStamp=nextHost;
+   if(!changedEvent&&!changedHost)return;
+   string nextGeometry=GeometryStamp();
+   string nextMaterial=MaterialStamp();
+   if(geometryStamp!=null&&geometryStamp!=nextGeometry)poseRevision++;if(materialStamp!=null&&materialStamp!=nextMaterial)presentationRevision++;
+   geometryStamp=nextGeometry;materialStamp=nextMaterial;
+   string next=DependencyStamp();if(changedHost||dependenciesStamp!=next){RefreshOwnerReferences();RequestProjection();}
   }
-  string CaptureLogicStamp(){
-   var text=new StringBuilder();
-   void Program(CompiledStoryAsset asset){
-    if(asset==null){text.Append("null;");return;}
-    text.Append(asset.sourceIdentity).Append(JsonUtility.ToJson(asset.program));
-    string path=AssetDatabase.GetAssetPath(asset);if(File.Exists(path))text.Append(File.ReadAllText(path));
-   }
-   Program(source);var catalog=Resources.Load<GlobalStoryCardCatalog>("DazPose/GlobalStoryCards");
-   if(catalog!=null)foreach(var asset in catalog.sources??Array.Empty<CompiledStoryAsset>())Program(asset);
-   if(host!=null)text.Append(host.GetEntityId().ToString()).Append(host.gameObject.scene.path).Append(EditorJsonUtility.ToJson(host));
-   return StoryDialogue.IdFor(text.ToString());
-  }
-  void CheckRevision() {
-   if(!revisionDirty||refreshCueQueued||bindingRefreshQueued)return;revisionDirty=false;
-   string next=CaptureStamp();if(sourceStamp!=null&&sourceStamp!=next) {
-    if(logicalStamp==CaptureLogicStamp()&&stage!=null&&stage.Ready&&previewFailure==null)QueueBindingRefresh();else QueueCueRefresh();return;
-   }
-   sourceStamp=next;logicalStamp=CaptureLogicStamp();
-  }
-  void SelectHost(StorySceneBindings value) {
-   if(value==host)return;Release();host=value;selectedPc=-1;sourceStamp=null;revisionDirty=true;
-   error="Scene host selected. Connect native directing to inspect its real scene references.";
-  }
+  void SelectHost(StorySceneBindings value){if(value==host)return;Release();host=value;hostStamp=null;revisionDirty=true;error=null;}
  }
 }

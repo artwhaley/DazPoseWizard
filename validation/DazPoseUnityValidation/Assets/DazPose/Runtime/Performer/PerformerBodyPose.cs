@@ -21,7 +21,7 @@ namespace DazPose.Performer
 
     internal sealed class PerformerBodyPose : IDisposable
     {
-        private const float StaticPoseSampleTimeSeconds = 0.5f;
+        private const float StaticPoseSampleTimeSeconds = PoseSamplingConventions.StandingSeconds;
 
         private readonly Animator _animator;
         private readonly PlayableGraph _graph;

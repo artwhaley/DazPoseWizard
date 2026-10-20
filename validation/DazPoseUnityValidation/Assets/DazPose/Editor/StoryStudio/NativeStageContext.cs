@@ -19,18 +19,19 @@ namespace DazPose.Editor.Studio
         public PlayerController Player { get; }
         public PlayerView View { get; }
         public Transform PlayerRoot => View.transform;
-        public Transform ViewRig => View.ConfiguredViewRig;
-        public Transform HeadPose => View.HeadTransform;
-        public Camera Camera => View.MainCamera;
-        public SuccubusPerformer Lara => Host.lara;
-        public PlayerBodyPresence Body => Host.playerBody;
+        public Transform ViewRig {get;}
+        public Transform HeadPose {get;}
+        public Camera Camera {get;}
+        public SuccubusPerformer Lara {get;}
+        public PlayerBodyPresence Body {get;}
+        public bool ValidateAllLocations {get;}
 
-        NativeStageContext(StorySceneBindings host, PerformanceSceneBindings performance)
+        NativeStageContext(StorySceneBindings host, PerformanceSceneBindings performance,bool validateAllLocations)
         {
             Host = host;
             Performance = performance;
             Player = performance.Player;
-            View = Player.ConfiguredView;
+            View = Player.ConfiguredView;Lara=host.lara;Body=host.playerBody;ViewRig=View.ConfiguredViewRig;HeadPose=View.HeadTransform;Camera=View.MainCamera;ValidateAllLocations=validateAllLocations;
         }
 
         public static StorySceneBindings FindHost()
@@ -45,7 +46,7 @@ namespace DazPose.Editor.Studio
             return hosts[0];
         }
 
-        public static NativeStageContext Resolve(StorySceneBindings host)
+        public static NativeStageContext Resolve(StorySceneBindings host,bool validateAllLocations=true)
         {
             RequireEditMode();
             if (host == null) throw new InvalidOperationException("Assign the saved scene's StorySceneBindings host.");
@@ -62,7 +63,7 @@ namespace DazPose.Editor.Studio
             var performance = host.GetComponent<PerformanceSceneBindings>();
             Same(performance, "StorySceneBindings/PerformanceSceneBindings");
             Same(host.lara, "StorySceneBindings.lara");
-            Same(host.laraFocus, "StorySceneBindings.laraFocus");
+            if(validateAllLocations||host.laraFocus!=null)Same(host.laraFocus, "StorySceneBindings.laraFocus");
             Same(host.playerBody, "StorySceneBindings.playerBody");
             Same(performance.Player, "PerformanceSceneBindings.Player");
             if (performance.Performer != host.lara)
@@ -86,7 +87,7 @@ namespace DazPose.Editor.Studio
             var locations = host.locations ?? Array.Empty<StoryLocationBinding>();
             if (locations.Any(l => l == null || string.IsNullOrWhiteSpace(l.id)) || locations.GroupBy(l => l.id, StringComparer.Ordinal).Any(g => g.Count() != 1))
                 throw new InvalidOperationException("Scene locations require unique, nonempty IDs and non-null rows.");
-            foreach (var location in locations)
+            if(validateAllLocations)foreach (var location in locations)
             {
                 Same(location.placement, "Location '" + location.id + "'.placement");
                 if (location.focus != null) Same(location.focus, "Location '" + location.id + "'.focus");
@@ -95,7 +96,7 @@ namespace DazPose.Editor.Studio
                 Same(location.seat.ApproachAnchor, "Location '" + location.id + "'.seat.ApproachAnchor");
                 Same(location.seat.SeatAnchor, "Location '" + location.id + "'.seat.SeatAnchor");
             }
-            return new NativeStageContext(host, performance);
+            return new NativeStageContext(host, performance,validateAllLocations);
         }
 
         public static void RequireEditMode()
@@ -118,7 +119,7 @@ namespace DazPose.Editor.Studio
         {
             EditorApplication.QueuePlayerLoopUpdate();
             SceneView.RepaintAll();
-            foreach (var window in Resources.FindObjectsOfTypeAll<EditorWindow>()) window.Repaint();
+            foreach (var window in Resources.FindObjectsOfTypeAll<EditorWindow>().Where(w=>w.GetType().Name=="GameView")) window.Repaint();
         }
     }
 }

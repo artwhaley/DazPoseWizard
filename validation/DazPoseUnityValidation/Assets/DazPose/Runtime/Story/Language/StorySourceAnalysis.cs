@@ -15,6 +15,7 @@ namespace DazPose.Story.Language {
  }
  public sealed class StorySourceAnalysis {
   public CompiledStoryProgram Program;
+  public IReadOnlyList<StoryAuthoringNode> Authoring=Array.Empty<StoryAuthoringNode>();
   public StoryBindingRequirement[] Requirements=Array.Empty<StoryBindingRequirement>();
   public string[] SyntaxDiagnostics=Array.Empty<string>();
   public string[] UnresolvedAssignments=Array.Empty<string>();
@@ -30,6 +31,7 @@ namespace DazPose.Story.Language {
    try {
     var ast=new StoryParser(source ?? "",path ?? "<source>").Parse();
     result.Program=new Builder(path ?? "<source>",null,options.AllowExternalCards).Compile(ast);
+    result.Authoring=Array.AsReadOnly(StoryAuthoringStructure.Export(ast,path ?? "<source>",owner,source ?? "",result.Program));
     var byKey=new Dictionary<string,StoryBindingRequirement>(StringComparer.Ordinal);
     bool collision=false;
     var aliasKinds=new Dictionary<string,StoryBindingKind>(StringComparer.Ordinal);

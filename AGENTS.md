@@ -1,3 +1,9 @@
+# Active execution — Responsive visual authoring (A00–A06)
+
+Execute `newtickets/DazPoseWizard_Visual_Authoring_Execution_Packet/START_HERE.md`, `BUILD_PLAN.md`, and `CHECKS_AND_ACCEPTANCE.md` on main. Art authorized execution October 19. Studio authoring uses static visual cue state, skips story logic and reports ambiguity; canonical rehearsal navigation requirements below are superseded for this editor. Play runtime is unchanged. Status: `docs/visual-authoring/IMPLEMENTATION_REPORT.md`.
+
+ABSOLUTE: never launch or operate Unity/Hub/GUI/CLI/batch/tests/Play/builds/players/computer-use or hardware. Art performs native G4; no gate bypass or screenshots required. Pure managed/source checks allowed. Coherent local commits authorized; no push/remote writes. Preserve production assets, GUIDs, global index and fixture edits; code-only fixture synchronization. No subagents without explicit authorization.
+
 # Active execution — Native Directing correction (N00–N11)
 
 The current corrective execution is `newtickets/DazPoseWizard_Native_Directing_Execution_Packet/START_HERE.md` and `EXECUTOR_PROMPT.md`, with mandatory `MANUAL_GATE_PROTOCOL.md`. Work on main. Earlier Studio corrective packet references are historical, not the active implementation. Status/evidence: `docs/native-directing/IMPLEMENTATION_REPORT.md`.

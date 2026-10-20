@@ -18,16 +18,13 @@ namespace DazPose.Editor.Studio
         [SerializeField] StorySceneBindings host;
         SourceBindingManifest manifest;
         StoryContentBindings content;
-        StoryLinkedContent flowContent;
         SourceBindingManifest detailManifest;
         StorySource selectedSource;
         string selectedEntry;
-        int selectedVisit=1;
-        string stagedResult;
         SourceBindingManifest Details=>inspectorManifest??detailManifest??manifest;
-        StoryContentBindings DetailContent=>inspectorOwner!=null?ContentForInspector(inspectorOwner):selectedSource!=null&&flowContent!=null?flowContent.ContentFor(selectedSource):content;
+        StoryContentBindings DetailContent=>inspectorOwner!=null?ContentForInspector(inspectorOwner):selectedSource!=null?ContentForInspector(selectedSource):content;
         NativeSceneStage stage;
-        RehearsalVisualState visualState=new RehearsalVisualState();
+        AuthoringVisualState visualState=new AuthoringVisualState();
         Vector2 flowScroll,detailScroll;
         string search="",error,sequence;
         int selectedPc=-1,selectedRequirement=-1;
@@ -35,7 +32,7 @@ namespace DazPose.Editor.Studio
         UnityEditor.Editor audioEditor;
         AudioClip audioClip;
 
-        DateTime sourceWrite;
+
         [MenuItem("DazPose/Story/Scene Director Studio")]
         public static void Open() {
             var window=GetWindow<SceneDirectorStudioWindow>();
@@ -45,6 +42,7 @@ namespace DazPose.Editor.Studio
         }
         void OnEnable() {
             titleContent=new GUIContent("Scene Director Studio");minSize=new Vector2(640,420);
+            StudioAssetChanges.Changed+=ImportedAssets;
             EditorApplication.projectChanged+=RevisionChanged;EditorApplication.hierarchyChanged+=RevisionChanged;Undo.undoRedoPerformed+=RevisionChanged;Undo.postprocessModifications+=Modified;
             EditorApplication.playModeStateChanged+=PlayStateChanged;EditorSceneManager.sceneClosed+=ClosedScene;
             EditorApplication.update+=Tick;AssemblyReloadEvents.beforeAssemblyReload+=Release;
@@ -53,38 +51,24 @@ namespace DazPose.Editor.Studio
             else EditorApplication.delayCall+=AutoResolve;
         }
         void OnDisable() {
+            StudioAssetChanges.Changed-=ImportedAssets;
             EditorApplication.projectChanged-=RevisionChanged;EditorApplication.hierarchyChanged-=RevisionChanged;Undo.undoRedoPerformed-=RevisionChanged;Undo.postprocessModifications-=Modified;
             EditorApplication.playModeStateChanged-=PlayStateChanged;EditorSceneManager.sceneClosed-=ClosedScene;
             EditorApplication.update-=Tick;AssemblyReloadEvents.beforeAssemblyReload-=Release;
-            EditorSceneManager.activeSceneChangedInEditMode-=SceneChanged;Release();
+            EditorSceneManager.activeSceneChangedInEditMode-=SceneChanged;Release();CancelIndex();
         }
-        void Release(){presentedKey=null;nativeContext=null;StopRehearsal();StopAudio();stage?.Dispose();stage=null;if(audioEditor!=null)DestroyImmediate(audioEditor);audioEditor=null;}
-        void SceneChanged(Scene oldScene,Scene newScene){Release();host=null;error="Scene changed. Select the saved scene host and reconnect native directing.";Repaint();}
-        void Tick() {
+        void Release(){projectionQueue.Cancel();nativeContext=null;StopAudio();stage?.Dispose();stage=null;if(audioEditor!=null)DestroyImmediate(audioEditor);audioEditor=null;ObserveNative("stop");}
+        void SceneChanged(Scene oldScene,Scene newScene){Release();CancelIndex();host=null;error="Scene changed. Choose Find open scene to reconnect.";Repaint();}
+        void Tick(){
+            CompleteIndex();
             if(NativePreviewInteraction.IsDragging){if(updateWhileDragging)PollNativeAnchors();return;}
-            if(rehearsal!=null||stage!=null){CheckRevision();DrainRehearsal();PollNativeAnchors();}
-            if(source!=null) {
-                string path=AssetDatabase.GetAssetPath(source);
-                if(File.Exists(path)&&File.GetLastWriteTimeUtc(path)!=sourceWrite) {revisionDirty=true;CheckRevision();Repaint();}
-            }
+            if(EditorApplication.isCompiling||EditorApplication.isUpdating||stage?.IsSaveSuspended==true)return;
+            CheckRevision();
+            if(projectionPending)ProjectSelected();
+            PollNativeAnchors();
         }
-        void SelectSource(CompiledStoryAsset value){Release();sourceStamp=null;revisionDirty=true;source=value;selectedSource=null;detailManifest=null;stagedResult=null;selectedPc=selectedRequirement=-1;selectedKey=null;Refresh();}
-        void Refresh() {
-            cueLines.Clear();cueManifests.Clear();
-            manifest=null;content=null;flowContent=null;detailManifest=null;error=null;
-            if(source==null)return;
-            try {
-                string path=AssetDatabase.GetAssetPath(source);
-                if(!path.EndsWith(".dazstory",StringComparison.OrdinalIgnoreCase))throw new InvalidOperationException("Choose an imported .dazstory source.");
-                sourceWrite=File.GetLastWriteTimeUtc(path);
-                manifest=SourceBindingManifest.Analyze(path,AssetDatabase.AssetPathToGUID(path));
-                content=SourceBindingReconciler.FindOwner(manifest.SourceGuid,SourceBindingReconciler.CompanionPath(path));
-                try{if(source.IsCompiled&&content!=null)flowContent=StoryLinkedContent.Create(source);}catch(Exception e){error="Linked flow: "+e.Message;}
-                var sequences=manifest.Analysis.Program?.entries.Where(e=>e.kind=="sequence").Select(e=>e.name).ToArray()??Array.Empty<string>();
-                if(!sequences.Contains(sequence))sequence=sequences.FirstOrDefault();
-                if(selectedKey!=null)selectedRequirement=Array.FindIndex(Details.Requirements,r=>r.Id==selectedKey);
-            }catch(Exception e){error=e.Message;}
-        }
+        void SelectSource(CompiledStoryAsset value){Release();CancelIndex();source=value;selectedSource=null;detailManifest=null;selectedPc=selectedRequirement=-1;selectedKey=null;selectedCue=null;Refresh();}
+        void Refresh()=>BeginAuthoringIndex();
         void SelectRequirement(int index) {
             selectedRequirement=index;selectedKey=Details.Requirements[index].Id;StopAudio();
 
