@@ -28,6 +28,8 @@ namespace DazPose.Performer {
    bool conceal=relocate || plan.Has(PresentationDomain.Wardrobe);
    bool restoreGrip=plan.Has(PresentationDomain.Grip) || conceal && p.Grip?.Active==true;
    bool restoreView=plan.Has(PresentationDomain.View) || relocate && entrance.View.Tracking;
+   bool actorDissolve=(conceal || p.Hidden) && !actor.IsHidden || !p.Hidden && (actor.IsHidden || conceal);
+   bool temporaryRegular=actorDissolve && actor.MaterialMode!=PerformerMaterialMode.Regular;
    Guard(owner,cancellation,"Prepared");
    // Settled control writers are replaced through their subsystem, so stale cleanup must not snap
    // their visible value to a default before its requested half-second blend starts.
@@ -37,6 +39,10 @@ namespace DazPose.Performer {
    if(restoreGrip && actor.IsGripping)actor.CancelGrip();
    if(restoreView)view.FreezePresentationOrientation();
    Guard(owner,cancellation,"WritersReleased");
+   if(temporaryRegular){
+    Guard(owner,cancellation,"DissolveMaterialPrepare");owner.Forget("material");
+    actor.GetComponent<PerformerMagicShaderPresentation>().RestoreRegular();
+   }
    if(plan.Has(PresentationDomain.Motion)) {
     Guard(owner,cancellation,"MotionRestore");if(p.MotionVariant>=0 && actor.PresentationMotionVariant!=p.MotionVariant)actor.SetMotionVariant(p.MotionVariant,.5f);
     while(actor.IsPresentationMotionTransitioning){run.ThrowIfActive();cancellation.ThrowIfCancellationRequested();await Awaitable.NextFrameAsync(owner.Cancellation);}
@@ -61,10 +67,6 @@ namespace DazPose.Performer {
    if(plan.Has(PresentationDomain.Arrival)){Guard(owner,cancellation,"ArrivalPoseBlend");await run.Execute("ArrivalHold",()=>actor.RestoreArrivalPresentationAsync(p.Arrival,owner.Cancellation),result=>result==PoseCompletion.Settled,result=>result.ToString(),captureCancellation:()=>actor.CaptureCancellation(PerformanceCommand.Movement),captureOwnership:()=>actor.CapturePersistentCancellation(PerformanceCommand.Movement));Guard(owner,cancellation,"ArrivalPoseSettled");}
    if(plan.Has(PresentationDomain.Expression)) {Guard(owner,cancellation,"ExpressionBlend");await run.Performer.ExpressionAsync(p.Expression,p.ExpressionIntensity,.5f);Guard(owner,cancellation,"ExpressionSettled");}
    if(relocate || plan.Has(PresentationDomain.Pose) || plan.Has(PresentationDomain.Seat))actor.EvaluatePresentationEndpoint(p,relocate);
-   if(plan.Has(PresentationDomain.Material)) {
-    Guard(owner,cancellation,"MaterialRestore");var material=actor.GetComponent<PerformerMagicShaderPresentation>();
-    if(p.Material!=null)await run.Performer.MagicShaderAsync(p.Material);else if(material!=null){material.RestoreRegular();owner.Register("material",material.CaptureRestoration());}
-   }
    if(plan.Has(PresentationDomain.Gaze)){Guard(owner,cancellation,"GazeBlend");await run.Execute("LookAt",()=>actor.RestoreGazePresentationAsync(p.Gaze,owner.Cancellation),result=>result==GazeCompletion.Acquired,result=>result.ToString(),captureCancellation:()=>actor.CaptureCancellation(PerformanceCommand.Gaze),captureOwnership:()=>actor.CapturePersistentCancellation(PerformanceCommand.Gaze));Guard(owner,cancellation,"GazeSettled");}
    if(plan.Has(PresentationDomain.Aura)){Guard(owner,cancellation,"AuraRestore");if(p.Aura==null)run.Performer.ClearAura();else run.Performer.Aura(p.Aura,p.AuraTarget);}
    if(restoreView) {
@@ -78,6 +80,12 @@ namespace DazPose.Performer {
    if(!p.Hidden && actor.IsHidden){Guard(owner,cancellation,"RevealLara");await run.Performer.DissolveInAsync(.25f);Guard(owner,cancellation,"LaraRevealed");}
 
    if(!entrance.Body.Hidden && body.IsStablyHidden){Guard(owner,cancellation,"RevealBody");await run.Player.DissolveBodyInAsync(.25f);Guard(owner,cancellation,"BodyRevealed");}
+   // Both conceal and reveal require regular surfaces. Reassert the captured profile afterwards,
+   // including a wireframe entrance; Stop before this point must not perform a later restoration.
+   if(plan.Has(PresentationDomain.Material) || temporaryRegular) {
+    Guard(owner,cancellation,"MaterialRestore");var material=actor.GetComponent<PerformerMagicShaderPresentation>();
+    if(p.Material!=null)await run.Performer.MagicShaderAsync(p.Material);else if(material!=null){material.RestoreRegular();owner.Register("material",material.CaptureRestoration());}
+   }
    Guard(owner,cancellation,"Verify");var verified=Verify(entrance);if(!verified.Succeeded)throw new InvalidOperationException("Card presentation return verification failed: "+verified.Differences);
    if(!view.PresentationTrackAcquired(entrance.View))throw new InvalidOperationException("Card camera return did not acquire its captured tracking endpoint.");
    Guard(owner,cancellation,"Verified");

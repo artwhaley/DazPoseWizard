@@ -48,7 +48,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
    scroll.x=0;
    scroll=GUILayout.BeginScrollView(scroll,false,true,GUIStyle.none,GUI.skin.verticalScrollbar);
    GUILayout.BeginVertical(GUILayout.Width(ContentWidth));
-   Label("Card Return Gate - one Lara / original player body");Label(status);
+   Label("Card Return Gate - one Lara / original player body");Label("Direct card: opening normal look -> changed outfit/wireframe -> opening look restored. Ending in wireframe is a failure.");Label(status);
    GUI.enabled=!busy;
    posture=GUILayout.SelectionGrid(posture,new[]{"Standing","Default seated","Persistent seated"},1,wrappedButton,GUILayout.Width(ContentWidth));
    camera=GUILayout.SelectionGrid(camera,new[]{"Fixed (pitch + roll)","Track Lara"},1,wrappedButton,GUILayout.Width(ContentWidth));
@@ -71,7 +71,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
   async Task StopMatrix(){foreach(string phase in new[]{"BodyHold","BodySettled","Prepared","ConcealLara","LaraConcealed","WardrobeCommit","RelocationCommit","PoseBlend","RevealLara","ViewBlend","Verify","Verified"}){lifetime.Token.ThrowIfCancellationRequested();await Case("stop-"+phase,"Direct",0,0,false,phase);}}
   async Task FaultMatrix(){foreach(string fault in new[]{"body","target","fit","return"}){lifetime.Token.ThrowIfCancellationRequested();await Case("fault-"+fault,"Explicit",0,1,false,null,fault);}}
   async Task PrepareEntry(PerformanceRun run,int posture,int camera,bool hidden,CancellationToken token){
-   var actor=scene.lara;actor.ResetPerformance(entranceMark.position,entranceMark.rotation);performance.Player.View.ResetPerformanceView(cameraMark.position,cameraMark.rotation);
+   var actor=scene.lara;actor.GetComponent<PerformerMagicShaderPresentation>()?.RestoreRegular();actor.ResetPerformance(entranceMark.position,entranceMark.rotation);performance.Player.View.ResetPerformanceView(cameraMark.position,cameraMark.rotation);
    performance.Player.BodyPresence.StartHiddenAt(scene.RequireLocation("player_start").placement);await run.Performer.SetOutfitAsync(openingOutfit,WardrobeTransition.Cut);await run.Performer.SetHairAsync(openingHair.StableKey,WardrobeTransition.Cut);
    if(actor.IsHidden)await run.Performer.DissolveInAsync(.25f);if(posture>0){await run.Performer.SitAtAsync(seat,seat.DefaultStyle);if(posture==2)await run.Performer.PersistentSitPoseAsync(seatedPose);}
    if(entranceAura!=null)run.Performer.Aura(entranceAura,actor.transform);
@@ -156,7 +156,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
      await Wait(2,token);
     }
     result.status="PASS";
-   }catch(Exception error){result.status="FAIL";result.error=error.ToString();status=result.error;}
+   }catch(Exception error){result.status="FAIL";result.error=error.ToString();status=result.error;Debug.LogError("Gate B failed "+result.id+": "+result.error,this);}
    finally{RestoreFaultFit();if(disposableTarget!=null)Destroy(disposableTarget.gameObject);disposableTarget=null;context?.Dispose();run.Dispose();performance.Playback?.StopMotion();active=null;current=null;}
    if(result.status=="FAIL")throw new InvalidOperationException("Gate B stopped at failed case "+result.id+".");
   }

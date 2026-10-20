@@ -210,6 +210,13 @@
           "reason": "Narrow panel plus unconstrained IMGUI scroll content pushed button text offscreen.",
           "resolution": "Restore wider responsive panel; fixed child widths, wrapped left-aligned text, no horizontal scroll, one-column camera choices.",
           "status": "RETRY_REQUIRED"
+        },
+        {
+          "revision": "43caed2",
+          "case": "Direct card smooth return",
+          "reason": "Native log: DissolveOut requires MagicShader(Regular) before a dissolve. Return left Lara in outgoing wireframe.",
+          "resolution": "Prepare regular surfaces before actor dissolves; restore exact entrance profile after reveal. Explicit direct-card expectation in panel.",
+          "status": "RETRY_REQUIRED"
         }
       ]
     },

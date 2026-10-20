@@ -126,3 +126,10 @@ The fixture reserves the right-hand viewport for the scene and constrains contro
 ### Gate B controls width repair
 
 Art reported button text off the right edge after the viewport correction. The narrow IMGUI scroll view allowed unwrapped status/report/error labels to determine an oversized content width. Restored the panel's 570-pixel maximum (responsive to window width), constrained every child to the actual content width, wrapped and left-aligned labels/buttons, calculated button heights for wrapped text, removed horizontal scrolling and used one-column camera choices. Results show concise case/status labels; full failures remain in the report. Tracking and the separate camera viewport remain enabled. Seven source assemblies compile; native UI readability remains Art-operated. No scene or production asset change, no Unity operation.
+
+
+### Gate B wireframe return / dissolve ordering repair
+
+Art observed dissolves/outfit changes ending in wireframe and asked what was expected. Current log identifies Direct returning with `DissolveOut requires MagicShader(Regular) before a dissolve`; the on-disk report was still the earlier pose-layout report. The wireframe is the intentional outgoing state for a disruptive card, not its normal returned state. Sequences may retain it; terminal fault/Stop cases intentionally do not animate recovery.
+
+Return now switches effect surfaces to regular before required actor dissolves and restores the exact captured material profile after all conceal/reveal work. This also supports a captured effect-mode entrance without attempting a reveal through an effect shader. Guards remain before material commits; no recovery is placed in finally. No-change cards do not touch material owners. The runner resets regular surfaces as entry setup for the next independent case and displays the ordinary direct-card expectation persistently. Full failures also log once per failed case. Seven source assemblies compile; native retry remains pending.
