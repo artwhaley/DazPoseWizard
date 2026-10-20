@@ -196,6 +196,13 @@
           "resolution": "Stable renderer/name pose slot layout; current mesh indices resolved by name; wardrobe-added fit shapes remain wardrobe owned. Neutral pose transition completion corrected. Suite stops first unexpected failure.",
           "status": "RETRY_REQUIRED",
           "evidence": "evidence/gate-b-native-20261020-pose-layout-failure.json"
+        },
+        {
+          "revision": "848a93f",
+          "case": "Manual visual return",
+          "reason": "Lara out of camera view during verification; fixture default used unaimed fixed camera and outgoing camera reset disabled tracking.",
+          "resolution": "Track Lara default and ordinary suite cases; reinstate Track after outgoing camera move; aim fixed-mode checks once; reserve separate camera viewport beside controls.",
+          "status": "RETRY_REQUIRED"
         }
       ]
     },

@@ -23,14 +23,20 @@ namespace DazPose.Validation.WardrobeProtectedCards {
   [Serializable] public sealed class Result {public string id,status,error,entry,posture,camera,stopAt,fault;public bool hidden,trailing,driverRetained,outputAuthority,interactiveStopped;public double progress;public List<string> phases=new List<string>();public List<Stamp> timings=new List<Stamp>();public List<CardPresentationObservation> observations=new List<CardPresentationObservation>();}
   [Serializable] sealed class Report {public int schemaVersion=1;public string gate="B",revision,scenePath,sceneGuid,generation,timestampUtc;public string[] requiredCases;public List<Result> cases;public bool toyOutputAllowed=false;public string nativeResult;}
   public string sceneGuid;string runningFingerprint;
+  float PanelWidth=>Mathf.Min(360,Screen.width*.34f);
   void Awake(){runningFingerprint=CurrentFingerprint();}
+  void ConfigureGateViewport(){var camera=performance.Player.MainCamera;float edge=(PanelWidth+24)/Mathf.Max(1,Screen.width);camera.rect=new Rect(edge,0,1-edge,1);}
+  async Task AimGateCamera(PerformanceRun run,int mode){
+   if(mode==1){run.Player.Track(scene.laraFocus,.25f);await Wait(.3f,lifetime.Token);}
+   else{await run.Player.LookAtAsync(scene.laraFocus,0f);performance.Player.MainCamera.transform.Rotate(0,0,13,Space.Self);}
+  }
   readonly List<Result> results=new List<Result>();
-  bool busy;string status="Start with Run direct card. Watch the changed look/place/camera return to its entrance. If PASS, run all technical checks. A FAIL stops the suite; write report.";int posture,camera;bool hidden;Vector2 scroll;
+  bool busy;string status="Start with Run direct card. Watch the changed look/place/camera return to its entrance. If PASS, run all technical checks. A FAIL stops the suite; write report.";int posture;int camera=1;bool hidden;Vector2 scroll;
   PerformanceRun active;CancellationTokenSource lifetime;Result current;Transform disposableTarget;string invalidFitJson;WardrobeFitState invalidFit;
   void OnDisable(){StopCurrent();RestoreFaultFit();}
   void StopCurrent(){lifetime?.Cancel();active?.Stop();}
   void InteractiveStop(){if(current!=null){current.id="interactive-stop";current.interactiveStopped=true;current.stopAt="InteractiveStop";}active?.Stop();}
-  void OnGUI(){GUILayout.BeginArea(new Rect(12,12,570,Mathf.Max(280,Screen.height-24)),GUI.skin.box);scroll=GUILayout.BeginScrollView(scroll);
+  void OnGUI(){GUILayout.BeginArea(new Rect(12,12,PanelWidth,Mathf.Max(280,Screen.height-24)),GUI.skin.box);scroll=GUILayout.BeginScrollView(scroll);
    GUILayout.Label("Card Return Gate — one Lara / original player body");GUILayout.Label(status,GUI.skin.box);
    GUI.enabled=!busy;posture=GUILayout.SelectionGrid(posture,new[]{"Standing","Default seated","Persistent seated"},1);camera=GUILayout.SelectionGrid(camera,new[]{"Fixed (pitch + roll)","Track Lara"},2);hidden=GUILayout.Toggle(hidden,"Hidden entrance (must remain hidden on return)");
    Button("Run all Gate B technical checks",AllCases);
@@ -40,7 +46,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
    if(GUILayout.Button("Write report"))WriteReport();GUI.enabled=busy;if(GUILayout.Button("Stop current run"))InteractiveStop();GUI.enabled=true;GUILayout.Label("Report: docs/wardrobe-directing/evidence/gate-b-native.json");foreach(var result in results.TakeLast(8))GUILayout.Label(result.id+": "+result.status+(result.error==null?"":" — "+result.error));GUILayout.EndScrollView();GUILayout.EndArea();}
   void Button(string label,Func<Task> action){if(GUILayout.Button(label))StartCase(action);}
   async void StartCase(Func<Task> action){if(busy)return;busy=true;lifetime=new CancellationTokenSource();try{await action();status="Finished. Inspect the case result, then choose the next check.";}catch(Exception error){status=error.Message+" Write report and send the failed case label; do not continue testing.";}finally{busy=false;lifetime.Dispose();lifetime=null;}}
-  async Task AllCases(){await Case("direct","Direct",0,0,false);await Case("explicit","Explicit",0,0,false);await Case("draw","Draw",0,0,false);await Case("nested","Nested",0,0,false);await Case("persistent","Persistent",0,0,false);await Case("contained","Contained",0,0,false);await Case("unchanged","Unchanged",0,0,false);await Case("parent-motion","Motion",0,1,false);await Combinations();await StopMatrix();await FaultMatrix();}
+  async Task AllCases(){await Case("direct","Direct",0,1,false);await Case("explicit","Explicit",0,1,false);await Case("draw","Draw",0,1,false);await Case("nested","Nested",0,1,false);await Case("persistent","Persistent",0,1,false);await Case("contained","Contained",0,1,false);await Case("unchanged","Unchanged",0,1,false);await Case("parent-motion","Motion",0,1,false);await Combinations();await StopMatrix();await FaultMatrix();}
   async Task Combinations(){for(int p=0;p<3;p++)for(int c=0;c<2;c++){lifetime.Token.ThrowIfCancellationRequested();await Case("combination-"+p+"-"+c,"Direct",p,c,false);}await Case("hidden-fixed","Direct",0,0,true);await Case("hidden-track","Direct",0,1,true);}
   async Task StopMatrix(){foreach(string phase in new[]{"BodyHold","BodySettled","Prepared","ConcealLara","LaraConcealed","WardrobeCommit","RelocationCommit","PoseBlend","RevealLara","ViewBlend","Verify","Verified"}){lifetime.Token.ThrowIfCancellationRequested();await Case("stop-"+phase,"Direct",0,0,false,phase);}}
   async Task FaultMatrix(){foreach(string fault in new[]{"body","target","fit","return"}){lifetime.Token.ThrowIfCancellationRequested();await Case("fault-"+fault,"Explicit",0,1,false,null,fault);}}
@@ -51,7 +57,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
    if(entranceAura!=null)run.Performer.Aura(entranceAura,actor.transform);
    await run.Performer.LookAtAsync(actor.transform.position+actor.transform.forward*3+Vector3.up*1.6f);
    if(!hidden)await run.Player.DissolveBodyInAsync(.25f);else await run.Performer.DissolveOutAsync(.25f);
-   if(camera==1)run.Player.Track(scene.laraFocus,.5f);
+   ConfigureGateViewport();await AimGateCamera(run,camera);
    await Wait(2,token);
   }
   async Task Case(string id,string entry,int posture,int camera,bool hidden,string stopAt=null,string fault=null){
@@ -100,6 +106,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
      }
      if(!disruptive)return;
      performance.Player.View.ResetPerformanceView(shiftCamera.position,shiftCamera.rotation);
+     await AimGateCamera(run,camera);
      if(scene.playerBody.IsStablyHidden)await run.Player.DissolveBodyInAsync(.25f);else await run.Player.DissolveBodyOutAsync(.25f);
      await run.Performer.ExpressionAsync(changedExpression,.35f,.25f);await run.Performer.LookAtAsync(scene.lara.transform.position+scene.lara.transform.forward*3+Vector3.up*1.6f+scene.lara.transform.right*.5f);run.Performer.ClearAura();
      status=id+" — outgoing state, held for two seconds before return.";
