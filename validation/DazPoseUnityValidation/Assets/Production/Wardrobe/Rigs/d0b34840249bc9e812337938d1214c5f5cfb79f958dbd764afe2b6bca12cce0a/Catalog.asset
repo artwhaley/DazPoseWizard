@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95f2483e4b1527541b7d582e9f03bf28, type: 3}
+  m_Name: Catalog
+  m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.WardrobeCatalog
+  schemaVersion: 1
+  releasedGenerationId: d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a
+  compiledConfigurationHash: 
+  authoringConfiguration: {fileID: 0}
+  needsCompile: 0
+  presets:
+  - {fileID: 11400000, guid: 7abf22ce9a65b6345aea72b435997874, type: 2}
+  - {fileID: 11400000, guid: 1d7aa978854005b41a350a2584ecba1e, type: 2}
+  - {fileID: 11400000, guid: fddbd607ed695c0478755c9e27f2dd23, type: 2}

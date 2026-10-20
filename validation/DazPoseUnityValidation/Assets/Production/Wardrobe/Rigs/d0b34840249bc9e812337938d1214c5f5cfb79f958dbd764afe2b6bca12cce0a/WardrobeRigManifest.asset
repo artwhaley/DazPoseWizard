@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56854181a8f84be2940a81c32a4a8453, type: 3}
+  m_Name: WardrobeRigManifest
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.WardrobeRigManifest
+  schemaVersion: 1
+  generationId: d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a
+  catalogIdentity: d3c56ec76b7dc1944b963ffa2cc77338
+  characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
+  clothing:
+  - presetId: first-outfit
+    prefab: {fileID: 603099749399749624, guid: 8269df7c789af0f44bf8b90f796bcdfb, type: 3}
+  - presetId: second-outfit
+    prefab: {fileID: 6984672424091279535, guid: 444ca22045b4925418812a662d27b5c4, type: 3}
+  - presetId: third-outfit
+    prefab: {fileID: 4924330698684569102, guid: caae55d8498285d4ba9f0353ff521937, type: 3}
+  hair:
+  - stableHairKey: first-outfit/EmikoHair_59875
+    prefab: {fileID: 8316028112347980728, guid: 2e4f29142bbc233409f3afa93ea764cd, type: 3}

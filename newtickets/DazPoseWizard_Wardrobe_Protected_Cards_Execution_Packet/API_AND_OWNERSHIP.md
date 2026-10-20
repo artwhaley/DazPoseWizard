@@ -1,5 +1,7 @@
 # API and ownership decisions
 
+October 20 delivery scope correction: Art accepted the single-Lara appearance gate and waived the duplicate-Lara fixture. Section 8's Gate A creation/correction controls and saved Gate A scene are retired historical delivery details, not production wardrobe requirements. Do not recreate them. Future outfit/hair authoring uses shared import/catalog/fitting/switching services; no per-outfit test scene. Keep only the current required diagnostic composition and retire it after acceptance. The latest AGENTS.md/progress.json record controls continuation from W04.
+
 These names and responsibilities are fixed for the executor. Ordinary private helper names and splitting a large class into partials may vary. If a public signature must change for an evidenced source constraint, record the exact reason and equivalent contract in the report; do not silently choose a different architecture.
 
 Path abbreviations: `A=validation/DazPoseUnityValidation/Assets`, `P=A/DazPose/Runtime/Performer`, `L=A/DazPose/Runtime/Story/Language`, `S=A/DazPose/Editor/StoryStudio`, `E=A/DazPose/Editor/Wardrobe`. Keep current assembly definitions; the Language layer has no Unity dependency.

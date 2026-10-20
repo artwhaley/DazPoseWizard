@@ -6,7 +6,6 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWorkflow.cs" Link="Editor/WardrobeAppearanceDeliveryWorkflow.cs" />
     <None Update="Fixtures/GateAReleaseInputs.json" CopyToOutputDirectory="PreserveNewest" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="xunit" Version="2.9.3" />

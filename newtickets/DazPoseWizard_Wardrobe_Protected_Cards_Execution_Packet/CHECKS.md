@@ -1,5 +1,7 @@
 # Required implementation checks and evidence
 
+October 20 scope correction from Art: Gate A is accepted for the single Lara. Native duplicate-Lara/second-owner and disposal checks are waived and their fixture is retired. Do not recreate those user checks or require them for future imports. Keep pure data/bone ownership checks in the implementation. See the latest AGENTS.md entry and progress.json; historical check rows below do not override that direction.
+
 These are execution requirements, not checks already run. This documentation-only packet pass does not add/run implementation tests. On explicit packet execution, add the checks with the corresponding tickets and record actual outputs. No Unity/native process may be run by the executor.
 
 ## Commands and evidence

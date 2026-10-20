@@ -1,0 +1,198 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &189674032829532789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8473087867811919381}
+  - component: {fileID: 8316028112347980728}
+  m_Layer: 0
+  m_Name: EmikoHair_59875
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8473087867811919381
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189674032829532789}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5485470765338972294}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8316028112347980728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189674032829532789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec20be08aa0745f08e4e1dfd708d5776, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.WardrobeAttachmentDescriptor
+  schemaVersion: 1
+  attachmentRole: 1
+  generationId: d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a
+  characterSignature: df7b4fcdc5103dc343589d58b99a2fd5bcd817e87a2828a678b6c30451af0eda
+  stableKey: first-outfit/EmikoHair_59875
+  presetId: first-outfit
+  sourceIdentity: 7abf22ce9a65b6345aea72b435997874
+  contentHash: 0c4095393c03cd688c7d9da00c3bfa4f49ace10afc2f4d8e483af9a8210a0295
+  parts:
+  - stablePieceId: EmikoHair_59875
+    stableKey: first-outfit/EmikoHair_59875
+    role: hair
+    rootBoneName: hip
+    renderer: {fileID: 3012135902484223403}
+    layer: 0
+    coverageChannel: -1
+    shell: 0
+    requiresBentFootPose: 0
+    boneNames:
+    - lEar
+    - rEar
+    - EmikoHair_59875::leftpiggy
+    - EmikoHair_59875::rightpiggy
+    - head
+    - lShldrBend
+    - rShldrBend
+    - neckUpper
+    - lCollar
+    - rCollar
+    - neckLower
+    - chestUpper
+    - chestLower
+    - abdomenUpper
+    - abdomenLower
+    - hip
+    localBones:
+    - name: EmikoHair_59875::leftpiggy
+      parent: head
+      position: {x: -0.11248514, y: 0.050040722, z: -0.006678557}
+      scale: {x: 1, y: 1, z: 1}
+      rotation: {x: 1.3877788e-17, y: -8.6736174e-19, z: -7.589415e-18, w: 1}
+    - name: EmikoHair_59875::rightpiggy
+      parent: head
+      position: {x: 0.117155135, y: 0.04650855, z: -0.009414231}
+      scale: {x: 1, y: 1, z: 1}
+      rotation: {x: 6.938894e-18, y: 8.6736174e-19, z: -2.7105054e-18, w: 1}
+--- !u!1 &5538737273795048164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5485470765338972294}
+  - component: {fileID: 3012135902484223403}
+  m_Layer: 0
+  m_Name: EmikoHair_59875
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5485470765338972294
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5538737273795048164}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8473087867811919381}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &3012135902484223403
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5538737273795048164}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 81cdd579c6760ec46b0d479201545b35, type: 2}
+  - {fileID: 2100000, guid: f660973e525c6004988296bbddc86da1, type: 2}
+  - {fileID: 2100000, guid: 7a61fdc9d10ff9649b6b0f74621e128f, type: 2}
+  - {fileID: 2100000, guid: 8fe2465db3b9f3f4380b1af113b436ff, type: 2}
+  - {fileID: 2100000, guid: 86ee654c5ad55ea48a3cc298c2c27818, type: 2}
+  - {fileID: 2100000, guid: da3a635965c8b9f4c852ed69fc947779, type: 2}
+  - {fileID: 2100000, guid: 1bfbe2b7eaae23e4db66286b87d4f6c4, type: 2}
+  - {fileID: 2100000, guid: 1d3dae47617ae6a45a5e71af4991da0c, type: 2}
+  - {fileID: 2100000, guid: 2c0dbedd9089b67409be54594b888e87, type: 2}
+  - {fileID: 2100000, guid: 2d7eabcbfd4150f43a6541eda37814ee, type: 2}
+  - {fileID: 2100000, guid: 5118b73c120f98c429e1c98f70e74320, type: 2}
+  - {fileID: 2100000, guid: 5105f86e611960e4390a882ea001b349, type: 2}
+  - {fileID: 2100000, guid: e071f5d59fd02cb408a754ce1664a615, type: 2}
+  - {fileID: 2100000, guid: 7d0ed2840403d294fb1019fa1dbb134a, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: 4300000, guid: c904743fd1d4b76469a79f7ce0c612aa, type: 2}
+  m_Bones: []
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 0}
+  m_AABB:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_DirtyAABB: 1

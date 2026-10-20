@@ -21,28 +21,13 @@ Record gate evidence in progress.json and implementation report. Art can reply `
 
 If scripts fail to compile in Unity: Art reports the first Console error; executor repairs source and hands back that gate. Do not tell Art to enter Play with compile errors. If Art's current scene has unsaved changes, the delivery window uses normal Unity save prompts and never discards them or overwrites an existing authored diagnostic composition.
 
-## Gate A — Reusable assets and correct layer fitting
+## Gate A - Accepted and retired
 
-Entry: W00–W02 source-ready and W03 tooling ready. No production reference advance.
+Art accepted the single Lara's clothes, independent hair and layers on October 20. Art explicitly waived the second-Lara/duplicate-owner requirement; do not request that check again. The historical native report is preserved with its fixture false failures, and Art's acceptance is recorded separately in progress.json. Gate A requires no more user action.
 
-### Art's exact actions
+Its disposable scene, unused draft presets and one-use source runner/builders have been removed. The corrected released catalog/configuration retain their GUIDs under `Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/`; the released fits, clothing/hair prefabs and manifest remain reusable production data. The Appearance Delivery window now only inspects/generates visual assets for any released catalog; adding outfits/hair does not involve diagnostic scenes.
 
-1. Open the main project and wait for script compilation to finish.
-2. Open **DazPose > Wardrobe > Appearance Delivery**. Production Lara's configured catalog/configuration/body load automatically. Any matching diagnostic draft or published corrected release is recovered from saved assets, including after compilation or reopening the window.
-3. Click **Prepare / resume Gate A** once. It recovers/prepares the candidate, skips publication when already published, generates/reuses matching prefabs, then creates/reuses the saved diagnostic scene. A partial older candidate or scene is preserved; a fresh versioned diagnostic output is created when needed. The completed release is never deleted or republished as a workaround. Individual actions remain under **Individual steps (diagnostics)**.
-4. Wait for **Gate A setup complete**, then click **Open Gate A scene**. The base path is `Assets/__WardrobeProtectedCards/Scenes/GateA_Appearance.unity`; the report/button use the actual versioned path if an older scene was preserved. If setup fails, provide the first named stage/error in the delivery report; press the same resume button after its source repair.
-5. Open that scene using the result button; enter Play yourself. The saved **Appearance Gate** panel appears automatically. No hierarchy selection is needed.
-6. Click **Set Emiko hair**, then **Dress outfit 1**. Inspect Lara: hair, dress and panties; body/environment retain accepted appearance.
-7. Click **Remove one layer**: dress disappears, panties remain. Click again: panties disappear, hair remains. Click again: displayed `Already naked — no change`. Click **Add one layer** twice: panties then dress return; third click says `Fully dressed — no change`.
-8. The current three-outfit release contains only Emiko hair. Click **Toggle Emiko / no hair** to clear it, then **Dress outfit 1**: Lara stays without hair. Click **Set Emiko hair**, then **Dress outfit 1**: Emiko stays. Click **Clear hair**, verify clothes remain, then **Set Emiko hair** to restore it. If future input contains multiple released hairstyles, the toggle becomes **Set next released hair**. Native switching between two distinct hair assets remains NOT_RUN while only one exists; clear/set, clothing retention and owner isolation must still pass. No invented hairstyle/import is required for this gate.
-9. Click **Exercise second actor**. The second diagnostic Lara uses a clean saved inactive template, not a copy of the first actor's live cached renderers. It receives a different hair selection (Emiko versus none when only one style exists) and clothing layer state, while the first stays unchanged. It remains visible for inspection. Click **Remove second actor**; the panel verifies its actor, attachment and skeleton instances were disposed. Two actors share immutable assets and retain separate skeleton instances.
-10. Click **Write report**, exit Play yourself. The panel reports `docs/wardrobe-directing/evidence/gate-a-native.json`. Its technical result remains incomplete unless all required layer/hair/owner/disposal cases ran; Art's visual approval is separate. Reply A PASS or the first failed visible/technical case.
-
-### Required runner evidence
-
-Real selected outfit/hair/layer/visible garment IDs, correct intermediate fit, generation/rig refs, current meshes/effect/footwear refs, skeleton/local-bone owner IDs for both actors, attachment/instance disposal counts. It cannot pass fitting by mask numbers alone. Report actual generated prefab paths/GUIDs and old/new release IDs. Original immutable release and production refs must be unchanged at this gate.
-
-Exit: appearance technically correct plus Art's visual approval of this bounded first-outfit workflow. Previous second-outfit toe observation is not silently certified here. Mark W02/W03 complete; proceed W04.
+Subsequent gates use one currently needed diagnostic composition at a time, then retire that scene and one-use setup after acceptance. Never require a second Lara. PlayerBody and Lara remain the actual two distinct scene participants. Preserve reusable production assets and immutable releases when removing temporary compositions.
 
 ## Gate B — Protected cards and smooth restoration
 

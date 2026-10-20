@@ -1,0 +1,36 @@
+{
+  "sourceRevision": "1752dc2",
+  "authority": "Art accepted single-Lara appearance and explicitly removed the second-actor requirement; requested cleanup on October 20, 2026.",
+  "filesToRemove": [
+    "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards/Candidates/CorrectedFirstOutfit/Presets/first-outfit.asset",
+    "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards/Candidates/CorrectedFirstOutfit/Presets/second-outfit.asset",
+    "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards/Candidates/CorrectedFirstOutfit/Presets/third-outfit.asset",
+    "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards/Scenes/GateA_Appearance.unity",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeCorrectedCandidateBuilder.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWorkflow.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeProtectedCardsFixtureBuilder.cs",
+    "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/AppearanceGateRunner.cs"
+  ],
+  "externalReferencesToRemovedAssets": [],
+  "moveWithGuidPreserved": [
+    {
+      "from": "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards/Candidates/CorrectedFirstOutfit/Catalog.asset",
+      "to": "validation/DazPoseUnityValidation/Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/Catalog.asset",
+      "sha256": "0e7bd48c58f36f2b40e2d55ffc565ae2e4f9d1888a1dc4867cedd805e2976de8",
+      "metaSha256": "874279e46dbd8b2f220c70d7491f2615dcb1fe76b897493ecddcc3a90fd525a1"
+    },
+    {
+      "from": "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards/Candidates/CorrectedFirstOutfit/Configuration.asset",
+      "to": "validation/DazPoseUnityValidation/Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/Configuration.asset",
+      "sha256": "c49ffce978fa8df6a8d8ef56633360c3371ef0235394109b219d8b5cccc42fcc",
+      "metaSha256": "9fda04098b3815de16a7028ea102601da7958530599f5b1697e739dd28c51f6c"
+    }
+  ],
+  "retained": "Published generation d0b34840..., all released fit/mesh/material/preset data, four generated clothing/hair prefabs, rig manifest and existing production wardrobe pipeline.",
+  "completedUtc": "2026-10-20T17:23:26.603004+00:00",
+  "status": "COMPLETE",
+  "removedTemporarySceneCount": 1,
+  "removedUnusedDraftPresetCount": 3,
+  "retiredOneUseSourceFiles": 4,
+  "identitiesPreserved": true
+}

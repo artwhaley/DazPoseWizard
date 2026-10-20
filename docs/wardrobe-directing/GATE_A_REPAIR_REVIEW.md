@@ -1,5 +1,7 @@
 # Gate A delivery repair and complete path review
 
+Historical repair record. Art subsequently accepted the single-Lara appearance and waived the duplicate-Lara test. Gate A fixture/setup has been retired; its retry instructions below are historical. See progress.json and evidence/gate-a-retirement.json for current status.
+
 Source revision: `13492a7`, on `main`. Gate A remains **WAITING_ON_ART**. No Unity process, native test, Play, player, build or hardware operation was run by the executor.
 
 ## Reported error and saved inputs

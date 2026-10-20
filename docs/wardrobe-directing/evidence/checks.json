@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "ticket": "W02/W03 SOURCE_READY",
-  "capturedUtc": "2026-10-20T17:08:40.945910+00:00",
+  "ticket": "W02/W03 COMPLETE - Gate A accepted; fixture retired",
+  "capturedUtc": "2026-10-20T17:25:19.786286+00:00",
   "baselineRevision": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
   "branch": "main",
   "protectedBaselineEntries": 42,
@@ -152,30 +152,38 @@
         "../GATE_A_REPAIR_REVIEW.md"
       ],
       "coverage": "25 wardrobe tests including 7 recovery/workflow cases and 3 real-release data cases; 90 story and 93 rehearsal tests; 7 source assemblies; 24 actual released pieces through production bone planner; saved fit metadata for masks 0/2/6 verified. Native instance generation/rendering remains Art-operated."
+    },
+    {
+      "id": "GateA-retirement",
+      "status": "PASS",
+      "commands": [
+        "python scripts/check-unity-source.py",
+        "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore --nologo --verbosity quiet"
+      ],
+      "sourceAssembliesPassed": 7,
+      "wardrobeTestsPassed": 18,
+      "externalAssetReferencesToRetiredAssets": 0,
+      "note": "Seven tests specific to the retired fixture workflow were removed with that workflow. Production selection/cache/bone-plan checks and real-release metadata checks remain. Gate A visual acceptance is Art's explicit direction, not inferred from test output."
     }
   ],
   "omissions": [
-    "Native prefab creation, saved-scene serialization and rendering await Art Gate A retry.",
-    "The actual released catalog contains only Emiko hair: native clear/set and ownership cases are delivered; swapping two different hairstyle assets remains NOT_RUN because no second exists.",
-    "Protected-card cases remain sequenced after Gate A."
+    "Native duplicate-Lara check waived by Art and removed.",
+    "Distinct hairstyle asset swapping remains unobserved with only Emiko released; no extra art/test work required by Art.",
+    "Card-return/Studio/First Contact integration remain W04-W09 work."
   ],
   "nativeOperationsByExecutor": false,
   "sourceHashes": [
     {
       "path": "tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj",
-      "sha256": "57609caa228d38ebdfb8d4db8d899424355ca98ed5b6c365893435c620314b08"
+      "sha256": "b05ce6eefbe3e8c9e460bf5ca898a3177b11a016569a8236b782e25a96b8ada2"
     },
     {
       "path": "tests/DazPose.Wardrobe.Tests/Fixtures/GateAReleaseInputs.json",
       "sha256": "8de9cfd1e3ec15e49442874079de2ffcb1e3efb9998650d8357ef4f209fbabf2"
     },
     {
-      "path": "tests/DazPose.Wardrobe.Tests/WardrobeDeliveryWorkflowTests.cs",
-      "sha256": "a80990c230c165000bdaea75b4362fd1057be46bad66f17f2c8c533dac98a084"
-    },
-    {
       "path": "tests/DazPose.Wardrobe.Tests/WardrobeGateAReleaseDataTests.cs",
-      "sha256": "2389d3f2174b4b8415f23da710433810c820cb1def734dfad418db9cc75da4df"
+      "sha256": "3afe54eb15f74c2d432011a932392dbc7b774914dbcaa3534c0371ac7b14429e"
     },
     {
       "path": "tests/DazPose.Wardrobe.Tests/WardrobeSelectionTests.cs",
@@ -187,19 +195,7 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs",
-      "sha256": "271854e83f5f76809e426ba1493ac31d826f9e165880c2d31efec8bef723f075"
-    },
-    {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWorkflow.cs",
-      "sha256": "e4d4beb6837b733dcbbd5e032cd5540750015e988cdb4fad53749c0ab9ad690b"
-    },
-    {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeCorrectedCandidateBuilder.cs",
-      "sha256": "9b85608cfdb60dc25e72e168fa6c4c92649c1394b921aa02112259a7d8c18937"
-    },
-    {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeProtectedCardsFixtureBuilder.cs",
-      "sha256": "fbc32ec343a37b26885e843dfef3340b84864c1732f742574dc927c60dd5b9f1"
+      "sha256": "e048c725b491a1f75a217831c2fda6f6c59d6fcddc6def76ca80d5280cc561b7"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeRigAssetBuilder.cs",
@@ -248,16 +244,11 @@
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigManifestRules.cs",
       "sha256": "32bc5743cf6eaf30afbbac5e32bb8a91af8d62d8d0f535da7731004b7631f417"
-    },
-    {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/AppearanceGateRunner.cs",
-      "sha256": "18d2f183c0c3a065d5463dc75bf864f25765ea1f797cb18bd91ba477908b1bd4"
     }
   ],
   "verificationBatch": {
-    "evidence": "gate-a-managed-checks.json",
-    "results": "25 wardrobe + 90 story + 93 rehearsal passed; all seven source assemblies passed",
-    "executedAfterFinalW02W03SourceEdit": true
+    "results": "18 current wardrobe tests and seven source assemblies passed after fixture retirement. Story/rehearsal sources unchanged in this cleanup.",
+    "nativeOperationsByExecutor": false
   },
   "gateARepair": {
     "failedAttemptRevision": "cb22e10",
@@ -277,5 +268,27 @@
     "nativeRetryStatus": "WAITING_ON_ART"
   },
   "protectedMismatchDisposition": "Lara.prefab default rigBinding:null serialization was present before this repair; untouched and excluded from commits.",
-  "sourceRevision": "13492a7"
+  "sourceRevision": "13492a7",
+  "retiredSourceHashes": [
+    {
+      "path": "tests/DazPose.Wardrobe.Tests/WardrobeDeliveryWorkflowTests.cs",
+      "sha256": "a80990c230c165000bdaea75b4362fd1057be46bad66f17f2c8c533dac98a084"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWorkflow.cs",
+      "sha256": "e4d4beb6837b733dcbbd5e032cd5540750015e988cdb4fad53749c0ab9ad690b"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeCorrectedCandidateBuilder.cs",
+      "sha256": "9b85608cfdb60dc25e72e168fa6c4c92649c1394b921aa02112259a7d8c18937"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeProtectedCardsFixtureBuilder.cs",
+      "sha256": "fbc32ec343a37b26885e843dfef3340b84864c1732f742574dc927c60dd5b9f1"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/AppearanceGateRunner.cs",
+      "sha256": "18d2f183c0c3a065d5463dc75bf864f25765ea1f797cb18bd91ba477908b1bd4"
+    }
+  ]
 }

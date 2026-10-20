@@ -1,5 +1,7 @@
 # Reusable wardrobe and protected cards — execution packet
 
+**October 20 update:** Art accepted Gate A's single-Lara appearance behavior and waived the second-actor check. Gate A's disposable scene/setup has been retired; its published wardrobe assets are retained. Continue at W04. Diagnostic compositions are temporary acceptance tools, never part of importing/adding outfits or hair; retire each after acceptance rather than accumulating scenes. The latest AGENTS.md entry and progress.json govern this scope update.
+
 Prepared October 19, 2026 against `main` at `110e2b4`. Art authorized this packet's execution by saying “Continue” on October 20, 2026. W00 is underway; implementation and native acceptance remain separate statuses.
 
 ## Read in this order

@@ -1,0 +1,440 @@
+{
+    "gate": "A",
+    "result": "failed_or_incomplete",
+    "previousGeneration": "70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb",
+    "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+    "catalogPath": "Assets/__WardrobeProtectedCards/Candidates/CorrectedFirstOutfit/Catalog.asset",
+    "manifestPath": "Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/WardrobeRigManifest.asset",
+    "manifestGuid": "eca1796c01f9e0d4199a89426f259e7d",
+    "rigAssets": "Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/Clothing/first-outfit.prefab=8269df7c789af0f44bf8b90f796bcdfb;Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/Clothing/second-outfit.prefab=444ca22045b4925418812a662d27b5c4;Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/Clothing/third-outfit.prefab=caae55d8498285d4ba9f0353ff521937;Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/Hair/first-outfit/EmikoHair_59875.prefab=2e4f29142bbc233409f3afa93ea764cd",
+    "error": "Missing successful cases: hairPreserved:none, independentOwners, secondActorDisposed",
+    "startedUtc": "2026-10-20T17:12:57.9131625Z",
+    "completedUtc": "2026-10-20T17:15:42.1628268Z",
+    "hairCoverage": "One released hair asset. Native independence covers Emiko/none, clear/set, clothing retention and two owners. Switching between two distinct hair assets is NOT_RUN: no second released hairstyle exists.",
+    "actor": "Lara",
+    "outfit": "first-outfit",
+    "hair": "first-outfit/EmikoHair_59875",
+    "visibleGarments": "CharlenesCloset_Panty_1981",
+    "bodyMesh": "Body (Release d0b34840)",
+    "visibleAttachmentMeshes": "first-outfit=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840),first-outfit/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+    "footwear": "barefoot",
+    "visibleAttachmentCount": 2,
+    "secondActorsCreated": 3,
+    "secondActorsDisposed": 0,
+    "secondActorAttachmentsDisposed": 0,
+    "assertions": [
+        {
+            "name": "setHair:first-outfit/EmikoHair_59875",
+            "detail": "Applied: hair=first-outfit/EmikoHair_59875; outfit/layers preserved=True; rendered=; hairRenderers=1; fitMask=0; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "dress:first-outfit",
+            "detail": "Applied: outfit=first-outfit; visible=6/6; garments=CharlenesCloset_Panty_1981,PeekaBoo_16572; hair preserved=True; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=1; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "hairPreserved:first-outfit/EmikoHair_59875",
+            "detail": "Dress preserves the selected hair: first-outfit/EmikoHair_59875; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=1; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "remove:6->2",
+            "detail": "Applied: None; remaining=CharlenesCloset_Panty_1981; rendered=CharlenesCloset_Panty_1981; hairRenderers=1; fitMask=2; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "add:2->6",
+            "detail": "Applied: None; garments=CharlenesCloset_Panty_1981,PeekaBoo_16572; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=1; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "remove:6->2",
+            "detail": "Applied: None; remaining=CharlenesCloset_Panty_1981; rendered=CharlenesCloset_Panty_1981; hairRenderers=1; fitMask=2; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "remove:2->0",
+            "detail": "Applied: None; remaining=; rendered=; hairRenderers=1; fitMask=0; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "setHair:none",
+            "detail": "Applied: hair=none; outfit/layers preserved=True; rendered=; hairRenderers=0; fitMask=0; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "add:0->2",
+            "detail": "Applied: None; garments=CharlenesCloset_Panty_1981; rendered=CharlenesCloset_Panty_1981; hairRenderers=0; fitMask=2; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "add:2->6",
+            "detail": "Applied: None; garments=CharlenesCloset_Panty_1981,PeekaBoo_16572; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=0; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "add:6->6",
+            "detail": "NoChange: FullyDressed; garments=CharlenesCloset_Panty_1981,PeekaBoo_16572; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=0; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "setHair:first-outfit/EmikoHair_59875",
+            "detail": "Applied: hair=first-outfit/EmikoHair_59875; outfit/layers preserved=True; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=1; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "setHair:none",
+            "detail": "Applied: hair=none; outfit/layers preserved=True; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=0; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "setHair:first-outfit/EmikoHair_59875",
+            "detail": "Applied: hair=first-outfit/EmikoHair_59875; outfit/layers preserved=True; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=1; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "setHair:none",
+            "detail": "Applied: hair=none; outfit/layers preserved=True; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=0; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "setHair:first-outfit/EmikoHair_59875",
+            "detail": "Applied: hair=first-outfit/EmikoHair_59875; outfit/layers preserved=True; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=1; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "setHair:first-outfit/EmikoHair_59875",
+            "detail": "NoChange: hair=first-outfit/EmikoHair_59875; outfit/layers preserved=True",
+            "passed": false
+        },
+        {
+            "name": "independentOwners",
+            "detail": "System.InvalidOperationException: Second actor alternate hair failed: NoChange / \r\n  at DazPose.Validation.WardrobeProtectedCards.AppearanceGateRunner.ExerciseSecondActor () [0x0051d] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Validation\\WardrobeProtectedCards\\AppearanceGateRunner.cs:196 ",
+            "passed": false
+        },
+        {
+            "name": "remove:6->2",
+            "detail": "Applied: None; remaining=CharlenesCloset_Panty_1981; rendered=CharlenesCloset_Panty_1981; hairRenderers=1; fitMask=2; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "remove:2->0",
+            "detail": "Applied: None; remaining=; rendered=; hairRenderers=1; fitMask=0; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "remove:0->0",
+            "detail": "NoChange: AlreadyNaked; remaining=; rendered=; hairRenderers=1; fitMask=0; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "remove:0->0",
+            "detail": "NoChange: AlreadyNaked; remaining=; rendered=; hairRenderers=1; fitMask=0; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "add:0->2",
+            "detail": "Applied: None; garments=CharlenesCloset_Panty_1981; rendered=CharlenesCloset_Panty_1981; hairRenderers=1; fitMask=2; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "add:2->6",
+            "detail": "Applied: None; garments=CharlenesCloset_Panty_1981,PeekaBoo_16572; rendered=CharlenesCloset_Panty_1981,PeekaBoo_16572; hairRenderers=1; fitMask=6; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "independentOwners",
+            "detail": "System.InvalidOperationException: Second actor alternate hair failed: NoChange / \r\n  at DazPose.Validation.WardrobeProtectedCards.AppearanceGateRunner.ExerciseSecondActor () [0x0051d] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Validation\\WardrobeProtectedCards\\AppearanceGateRunner.cs:196 ",
+            "passed": false
+        },
+        {
+            "name": "remove:6->2",
+            "detail": "Applied: None; remaining=CharlenesCloset_Panty_1981; rendered=CharlenesCloset_Panty_1981; hairRenderers=1; fitMask=2; bonesOwned=True",
+            "passed": true
+        },
+        {
+            "name": "independentOwners",
+            "detail": "System.InvalidOperationException: Second actor alternate hair failed: NoChange / \r\n  at DazPose.Validation.WardrobeProtectedCards.AppearanceGateRunner.ExerciseSecondActor () [0x0051d] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Validation\\WardrobeProtectedCards\\AppearanceGateRunner.cs:196 ",
+            "passed": false
+        }
+    ],
+    "observations": [
+        {
+            "operation": "Lara",
+            "outfit": "",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "",
+            "fit": "Mask-0",
+            "bodyMesh": "Lara body with graft and facial morphs (Release d0b34840)",
+            "attachments": "first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 0,
+            "attachmentInstances": 1
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981",
+            "fit": "Mask-2",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 2,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981",
+            "fit": "Mask-2",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 2,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "",
+            "fit": "Mask-0",
+            "bodyMesh": "Lara body with graft and facial morphs (Release d0b34840)",
+            "attachments": "first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 0,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "none",
+            "visibleGarments": "",
+            "fit": "Mask-0",
+            "bodyMesh": "Lara body with graft and facial morphs (Release d0b34840)",
+            "attachments": "",
+            "boneOwners": "",
+            "mask": 0,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "none",
+            "visibleGarments": "CharlenesCloset_Panty_1981",
+            "fit": "Mask-2",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330",
+            "mask": 2,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "none",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "none",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "none",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "none",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981",
+            "fit": "Mask-2",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 2,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "",
+            "fit": "Mask-0",
+            "bodyMesh": "Lara body with graft and facial morphs (Release d0b34840)",
+            "attachments": "first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 0,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "",
+            "fit": "Mask-0",
+            "bodyMesh": "Lara body with graft and facial morphs (Release d0b34840)",
+            "attachments": "first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 0,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "",
+            "fit": "Mask-0",
+            "bodyMesh": "Lara body with graft and facial morphs (Release d0b34840)",
+            "attachments": "first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 0,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981",
+            "fit": "Mask-2",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 2,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981,PeekaBoo_16572",
+            "fit": "Mask-6",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/PeekaBoo_16572=PeekaBoo_16572 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;PeekaBoo_16572=568105589213730192,568105589213730302,568105589213729874,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213729782,568105589213729778,568105589213730318,568105589213729770,568105589213729706,568105589213730322,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 6,
+            "attachmentInstances": 2
+        },
+        {
+            "operation": "Lara",
+            "outfit": "first-outfit",
+            "hair": "first-outfit/EmikoHair_59875",
+            "visibleGarments": "CharlenesCloset_Panty_1981",
+            "fit": "Mask-2",
+            "bodyMesh": "Body (Release d0b34840)",
+            "attachments": "first-outfit/CharlenesCloset_Panty_1981=CharlenesCloset_Panty_1981 on canonical Lara (Release 70b0e228) (Release d0b34840);first-outfit/EmikoHair_59875/EmikoHair_59875=EmikoHair_59875 on canonical Lara (Release 70b0e228) (Release d0b34840)",
+            "boneOwners": "CharlenesCloset_Panty_1981=568105589213729766,568105589213729702,568105589213729770,568105589213729706,568105589213729774,568105589213730326,568105589213730330;EmikoHair_59875=568105589213730200,568105589213730092,568105589213726990,568105589213726986,568105584918864768,568105589213730306,568105589213729878,568105589213730206,568105589213730310,568105589213729882,568105589213730210,568105589213730314,568105589213730318,568105589213730322,568105589213730326,568105589213730330",
+            "mask": 2,
+            "attachmentInstances": 2
+        }
+    ]
+}

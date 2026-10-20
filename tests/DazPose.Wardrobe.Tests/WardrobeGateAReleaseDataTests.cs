@@ -1,6 +1,5 @@
 using System.Text.Json;
 using DazPose.Performer;
-using DazPose.UnityValidation;
 
 namespace DazPose.Wardrobe.Tests;
 
@@ -68,10 +67,10 @@ public sealed class WardrobeGateAReleaseDataTests
     }
 
     [Fact]
-    public void ActualPublishedGenerationRecoversAndHairControlsUseOnlyReleasedAssets()
+    public void ActualPublishedGenerationHasTheExpectedHairAndValidatedFits()
     {
         var input = Load();
-        Assert.True(WardrobeAppearanceDeliveryWorkflow.CanRecover(true, input.Generation, input.Generation, false));
+        Assert.Equal("d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a", input.Generation);
         var hairs = input.Packages.SelectMany(package => package.Pieces.Where(piece => piece.Role == "hair")
             .Select(piece => package.Preset + "/" + piece.Id)).ToArray();
         Assert.Equal(new[] { "first-outfit/EmikoHair_59875" }, hairs);

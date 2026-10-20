@@ -1,3 +1,7 @@
+# Latest October 20 direction — Gate A accepted; single Lara; retire fixtures
+
+Art accepted Gate A's first-Lara clothing/hair/layer behavior and explicitly waived the second-Lara test. Do not recreate or require that test. Continue the wardrobe/protected-cards stack from W04. Keep the existing wardrobe command/controller/catalog/import pipeline; fixture setup is not part of adding outfits or hair. Retire each accepted gate's disposable scene and one-use setup code; preserve reusable production assets and their GUIDs. Keep at most the currently needed native gate composition, then remove it after acceptance. No Unity operation, hardware, subagents or remote writes; the existing absolute boundaries remain in force. Status: `docs/wardrobe-directing/progress.json`.
+
 # Active wardrobe and protected cards execution — W00–W09
 
 The user authorized execution of `newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/START_HERE.md` on October 20. Follow its ticket order and native gates. Current status and evidence: `docs/wardrobe-directing/IMPLEMENTATION_REPORT.md` and `progress.json`.
