@@ -58,11 +58,14 @@ namespace DazPose.Performer
                     !WardrobeRigManifestRules.MatchesIdentity(generationId, characterSignature, entry.prefab.GenerationId, entry.prefab.CharacterSignature, out error) ||
                     entry.prefab.PresetId != entry.presetId || !entry.prefab.Validate(out error))
                 { error = "Invalid or duplicate clothing prefab row: " + (entry?.presetId ?? "<null>") + (error == null ? string.Empty : " / " + error); return false; }
-                var preset = catalog.Presets.First(p => p.PresetId == entry.presetId);
+                var preset = catalog.Presets.FirstOrDefault(p => p.PresetId == entry.presetId);
+                if (preset == null) { error = "Rig manifest contains an unknown clothing preset: " + entry.presetId; return false; }
                 var expected = preset.Package.pieces.Where(p => !string.Equals(p.role, "hair", StringComparison.OrdinalIgnoreCase)).Select(p => p.id);
                 var actual = entry.prefab.Parts.Select(p => p.stablePieceId);
                 if (!WardrobeRigManifestRules.HasExactUniqueKeys(expected, actual, out error) || entry.prefab.Parts.Any(p => string.Equals(p.role, "hair", StringComparison.OrdinalIgnoreCase)))
                 { error = "Clothing prefab must contain each non-hair package piece exactly once: " + entry.presetId; return false; }
+                if (entry.prefab.Parts.Any(part => !preset.Parts.Any(source => source.sourcePieceId == part.stablePieceId && source.layer == part.layer)))
+                { error = "Clothing prefab layers differ from its released preset: " + entry.presetId; return false; }
             }
             var hairKeys = new HashSet<string>(StringComparer.Ordinal);
             foreach (var entry in hair ?? Array.Empty<HairEntry>())

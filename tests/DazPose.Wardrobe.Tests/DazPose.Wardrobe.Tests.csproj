@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWorkflow.cs" Link="Editor/WardrobeAppearanceDeliveryWorkflow.cs" />
+    <None Update="Fixtures/GateAReleaseInputs.json" CopyToOutputDirectory="PreserveNewest" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <Using Include="Xunit" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeHairAction.cs" Link="Runtime/WardrobeHairAction.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeLayerState.cs" Link="Runtime/WardrobeLayerState.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeSelection.cs" Link="Runtime/WardrobeSelection.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeSelectionResolver.cs" Link="Runtime/WardrobeSelectionResolver.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeSelectionPreparer.cs" Link="Runtime/WardrobeSelectionPreparer.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAtomicCommit.cs" Link="Runtime/WardrobeAtomicCommit.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeLeaseCache.cs" Link="Runtime/WardrobeLeaseCache.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeBoneBindingPlan.cs" Link="Runtime/WardrobeBoneBindingPlan.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigManifestRules.cs" Link="Runtime/WardrobeRigManifestRules.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigAssetIdentity.cs" Link="Runtime/WardrobeRigAssetIdentity.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAttachmentRole.cs" Link="Runtime/WardrobeAttachmentRole.cs" />
+  </ItemGroup>
+</Project>

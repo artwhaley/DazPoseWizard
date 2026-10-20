@@ -46,3 +46,6 @@ validation/DazPoseUnityValidation/Assets/Generated/
 
 # Hand-authored isolated rehearsal test project
 !tests/DazPose.Rehearsal.Tests/DazPose.Rehearsal.Tests.csproj
+
+# Hand-authored pure wardrobe selection, binding-plan and delivery workflow checks
+!tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj

@@ -85,6 +85,7 @@ namespace DazPose.Performer
         public string BindingDiagnostic => _bindingError;
         public bool IsRuntimeInitialized => _initialized;
         public WardrobeRigBinding RigBinding => rigBinding;
+        public WardrobeFitState CurrentFit => _currentFit;
 
         /// <summary>Pins the exact prepared attachment leases represented by a captured selection until its scope ends.</summary>
         public IDisposable PinSelectionResources(WardrobeSelection selection)
@@ -287,6 +288,7 @@ namespace DazPose.Performer
             }
             catch (Exception exception)
             {
+                _bindingError = exception.Message;
                 DisposeAttachmentLeases();
                 Debug.LogException(exception, this);
                 Debug.LogError("Performer wardrobe initialization failed; no outfit commands are accepted.", this);
@@ -645,6 +647,8 @@ namespace DazPose.Performer
             var priorVisible = _inventory.Select(p => p.inventory.visible).ToArray();
             int priorConfigurationRevision = _lastConfigurationRevision;
             var anatomy = performer != null ? performer.GetComponent<LaraAnatomyControls>() : null;
+            using var priorClothingPin = priorClothingLease != null && priorPreset != null ? _clothingCache.Pin(priorPreset.PresetId) : null;
+            using var priorHairPin = priorHairLease != null && !string.IsNullOrEmpty(priorHair) ? _hairCache.Pin(priorHair) : null;
             try
             {
                 WardrobeAtomicCommit.Execute(new[]
@@ -714,6 +718,10 @@ namespace DazPose.Performer
             {
                 var bound = (_activeClothingLease?.Pieces ?? Array.Empty<LaraWardrobe.Piece>())
                     .Concat(_activeHairLease?.Pieces ?? Array.Empty<LaraWardrobe.Piece>()).ToArray();
+                // Cached resources remain alive for reuse, but only the current selection renders.
+                if (rendererBinder != null)
+                    foreach (var previous in rendererBinder.Pieces.Where(previous => previous != null && !bound.Contains(previous)))
+                    { previous.visible = false; if (previous.renderer != null) previous.renderer.enabled = false; }
                 foreach (var piece in bound)
                     piece.visible = piece.persistentHair
                         ? string.Equals(piece.stableKey, hairKey, StringComparison.Ordinal)

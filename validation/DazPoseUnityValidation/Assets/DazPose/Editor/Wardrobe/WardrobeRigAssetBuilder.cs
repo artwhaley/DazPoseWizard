@@ -65,6 +65,9 @@ namespace DazPose.UnityValidation
             foreach (var plan in plans)
             foreach (var piece in plan.pieces)
             {
+                if (piece.mesh == null || piece.boneNames == null || piece.boneNames.Length != piece.mesh.bindposes.Length ||
+                    piece.materials == null || piece.materials.Length != piece.mesh.subMeshCount || piece.materials.Any(material => material == null))
+                    return Fail(result, "Prefab mesh/material/bind-pose input is invalid: " + plan.key + "/" + piece.id);
                 var locals = (piece.localBones ?? Array.Empty<WardrobeOutfitDefinition.LocalBone>())
                     .Select(x => new WardrobeLocalBoneFact(x.name, x.parent)).ToArray();
                 if (!WardrobeBoneBindingPlan.TryCreate(canonicalBoneNames,
@@ -79,13 +82,16 @@ namespace DazPose.UnityValidation
                 var existing = AssetDatabase.LoadAssetAtPath<GameObject>(plan.path);
                 if (existing == null) continue;
                 plan.existing = existing.GetComponent<WardrobeAttachmentDescriptor>();
-                if (plan.existing == null || !WardrobeRigAssetIdentity.MayReuseExisting(plan.existing.ContentHash, plan.contentHash))
+                if (plan.existing == null || !plan.existing.Validate(out _) ||
+                    !WardrobeRigAssetIdentity.MayReuseExisting(plan.existing.ContentHash, plan.contentHash))
                     return Fail(result, "Existing generated output differs and will not be overwritten: " + plan.path +
                         ". Generate a versioned derivative or inspect ownership before changing it.");
             }
             var priorManifest = AssetDatabase.LoadAssetAtPath<WardrobeRigManifest>(manifestPath);
             if (AssetDatabase.LoadMainAssetAtPath(manifestPath) != null && priorManifest == null)
                 return Fail(result, "Existing manifest path is occupied by an incompatible asset: " + manifestPath);
+            if (priorManifest != null && !priorManifest.Validate(catalog, out string existingError))
+                return Fail(result, "Existing rig manifest is invalid; retained for inspection: " + existingError);
 
             try
             {

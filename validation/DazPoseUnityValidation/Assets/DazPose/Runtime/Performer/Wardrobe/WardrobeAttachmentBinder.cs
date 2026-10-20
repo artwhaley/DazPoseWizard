@@ -46,7 +46,10 @@ namespace DazPose.Performer
             try
             {
                 Transform parent = attachmentRoot != null ? attachmentRoot : body.transform;
-                instance = UnityEngine.Object.Instantiate(prefabDescriptor.gameObject, parent, false);
+                // Package meshes and bind poses are expressed in the canonical body's frame.
+                // Starting under the body preserves that frame even when the actor root is offset/scaled.
+                instance = UnityEngine.Object.Instantiate(prefabDescriptor.gameObject, body.transform, false);
+                if (parent != body.transform) instance.transform.SetParent(parent, true);
                 instance.name = prefabDescriptor.StableKey;
                 var descriptor = instance.GetComponent<WardrobeAttachmentDescriptor>();
                 if (descriptor == null || !descriptor.Validate(out error)) throw new InvalidOperationException(error ?? "Instantiated wardrobe prefab lost its descriptor.");
@@ -142,7 +145,7 @@ namespace DazPose.Performer
             WardrobeRigManifest manifest)
         {
             string error = null;
-            if (owner == null || body == null || owner.gameObject != body.GetComponentInParent<PerformerWardrobe>()?.gameObject)
+            if (owner == null || body == null || owner.Body != body || !body.transform.IsChildOf(owner.transform))
                 throw new InvalidOperationException("Wardrobe owner and body renderer must belong to the same actor.");
             if (manifest == null || !manifest.Validate(owner.Catalog, out error))
                 throw new InvalidOperationException(error ?? "Wardrobe rig manifest is missing.");
