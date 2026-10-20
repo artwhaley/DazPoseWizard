@@ -17,5 +17,5 @@ MonoBehaviour:
   - id: c3bbf40d9a2949ffac3e068b552ed71c
     title: First Contact
     description: Meet Lara and play the complete authored session.
-    scenePath: Assets/Production/Scenes/FirstContact.unity
+    scenePath: Assets/Scenes/FirstContact.unity
     enabled: 1

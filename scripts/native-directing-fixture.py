@@ -70,7 +70,7 @@ def prepare():
             copy_physical(p,FIXTURE/p.relative_to(SOURCE))
             count+=1
         print(f"Copied {name}: {count} files",flush=True)
-    original=SOURCE/"Assets/Production/Scenes/FirstContact.unity"
+    original=SOURCE/"Assets/Scenes/FirstContact.unity"
     copy_physical(original,FIXTURE/SCENE)
     meta=f"fileFormatVersion: 2\nguid: {uuid.uuid4().hex}\nDefaultImporter:\n  externalObjects: {{}}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n"
     (FIXTURE/(SCENE+".meta")).write_text(meta,encoding="utf-8")

@@ -78,7 +78,7 @@ def main():
     fcok=fcok and all(x["present"] and x.get("assetExists") for k,rows in bindings.items() if k!="sceneLocations" for x in rows)
     if not fcok: errors.append({"issue":"FirstContact frozen source/transcript/binding check failed"})
     frozen_files={}
-    for relative in (FC,"Assets/Production/Story/Programs/FirstContact.bindings.asset","Assets/Production/Scenes/FirstContact.unity","Assets/Production/Story/Cards/FirstContactEngineering.dazstory","Assets/Production/Story/Cards/FirstContactEngineering.bindings.asset"):
+    for relative in (FC,"Assets/Production/Story/Programs/FirstContact.bindings.asset","Assets/Scenes/FirstContact.unity","Assets/Production/Story/Cards/FirstContactEngineering.dazstory","Assets/Production/Story/Cards/FirstContactEngineering.bindings.asset"):
         current=(project/relative).read_bytes()
         old=git_blob(repo,BASELINE,"validation/DazPoseUnityValidation/"+relative)
         frozen_files[relative]={"sha256":sha(current),"byteIdenticalToBaseline":current==old}

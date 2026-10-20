@@ -11,7 +11,7 @@ namespace DazPose.Editor {
  public static class DazPoseProductionMenu {
   [MenuItem("DazPose/Scene/New Performance Scene...")] static void NewScene() {
    if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-   string path=EditorUtility.SaveFilePanelInProject("New Performance Scene","NewPerformance","unity","Choose a new scene path","Assets/Production/Scenes");
+   string path=EditorUtility.SaveFilePanelInProject("New Performance Scene","NewPerformance","unity","Choose a new scene path","Assets/Scenes");
    if(!string.IsNullOrEmpty(path)) GameSessionSceneSetup.CopyEnvironment(path);
   }
   [MenuItem("DazPose/Scene/Initialize Game Session")] public static void Initialize() => GameSessionSceneSetup.Initialize();

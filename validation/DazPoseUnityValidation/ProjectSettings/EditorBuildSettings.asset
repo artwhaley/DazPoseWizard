@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Production/Scenes/MainMenu.unity
     guid: 7b0ea0678e2a15044a1a6fad410ec264
   - enabled: 1
-    path: Assets/Production/Scenes/FirstContact.unity
+    path: Assets/Scenes/FirstContact.unity
     guid: 4fd2d2bc3572c1744a590a23e4e117c9
   m_configObjects: {}

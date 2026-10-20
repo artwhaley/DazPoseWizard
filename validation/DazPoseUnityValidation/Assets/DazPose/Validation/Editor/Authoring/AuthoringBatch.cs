@@ -13,7 +13,7 @@ namespace DazPose.Editor
     {
         static double deadline;
         static bool entered;
-        const string FirstContact = "Assets/Production/Scenes/FirstContact.unity";
+        const string FirstContact = "Assets/Scenes/FirstContact.unity";
         const string Showcase = "Assets/Examples/Scenes/AuthoringShowcase.unity";
 
         public static void PlayFirstContact() => PlaySaved(FirstContact, "FirstContact");

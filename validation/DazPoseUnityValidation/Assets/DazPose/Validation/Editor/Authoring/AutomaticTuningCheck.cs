@@ -20,7 +20,7 @@ namespace DazPose.Editor {
    backup=File.Exists(file) ? File.ReadAllText(file) : null;
    SessionState.SetString("DazPose.AutoTuning.Backup",backup ?? "");
    SessionState.SetBool("DazPose.AutoTuning.HadFile",backup!=null);
-   EditorSceneManager.OpenScene("Assets/Production/Scenes/FirstContact.unity");
+   EditorSceneManager.OpenScene("Assets/Scenes/FirstContact.unity");
    SessionState.SetBool("DazPose.AutoTuning.Check",true);
    deadline=EditorApplication.timeSinceStartup+60;
    EditorApplication.update+=Observe;

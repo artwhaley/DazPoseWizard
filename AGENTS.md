@@ -1,3 +1,7 @@
+# Scene location correction - October 20
+
+User-facing performance scenes belong in `Assets/Scenes`. First Contact is `Assets/Scenes/FirstContact.unity`; preserve its contents and GUID when organizing it. New Performance Scene defaults to this folder.
+
 # Latest October 20 direction — Gate A accepted; single Lara; retire fixtures
 
 Art accepted Gate A's first-Lara clothing/hair/layer behavior and explicitly waived the second-Lara test. Do not recreate or require that test. Continue the wardrobe/protected-cards stack from W04. Keep the existing wardrobe command/controller/catalog/import pipeline; fixture setup is not part of adding outfits or hair. Retire each accepted gate's disposable scene and one-use setup code; preserve reusable production assets and their GUIDs. Keep at most the currently needed native gate composition, then remove it after acceptance. No Unity operation, hardware, subagents or remote writes; the existing absolute boundaries remain in force. Status: `docs/wardrobe-directing/progress.json`.

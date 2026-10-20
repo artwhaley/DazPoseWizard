@@ -13,7 +13,7 @@ namespace DazPose.Editor
     public static class AuthoringContentComposer
     {
         public const string ShowcaseScenePath = "Assets/Examples/Scenes/AuthoringShowcase.unity";
-        public const string FirstContactScenePath = "Assets/Production/Scenes/FirstContact.unity";
+        public const string FirstContactScenePath = "Assets/Scenes/FirstContact.unity";
         public const string PublicCatalogPath = "Assets/Production/Application/SceneCatalog.asset";
 
         // Retained for existing validation callers. This method only inspects saved scenes;
