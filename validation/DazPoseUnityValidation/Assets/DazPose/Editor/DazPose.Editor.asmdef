@@ -7,6 +7,7 @@
     "GUID:e0cd26848372d4e5c891c569017e11f1",
     "GUID:f49e99254b924e90b979a734d998d99d",
     "DazPose.Presentation",
+    "DazPose.Validation",
     "Unity.ugui",
     "DazPose.Content"
   ],

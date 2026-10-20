@@ -10,7 +10,9 @@ namespace DazPose.Performer
         [Serializable] public sealed class Piece
         {
             public string name;
+            public string stableKey;
             public SkinnedMeshRenderer renderer;
+            public int layer;
             public bool shell;
             public bool visible = true;
             public bool persistentHair;

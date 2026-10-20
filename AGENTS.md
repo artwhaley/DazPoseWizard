@@ -1,3 +1,9 @@
+# Active wardrobe and protected cards execution — W00–W09
+
+The user authorized execution of `newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/START_HERE.md` on October 20. Follow its ticket order and native gates. Current status and evidence: `docs/wardrobe-directing/IMPLEMENTATION_REPORT.md` and `progress.json`.
+
+ABSOLUTE: never launch or operate Unity, Hub, GUI/CLI/batch, Play, builds, players, computer-use or hardware. Art performs Gates A–D. Source compilation and pure managed checks are allowed. Local implementation commits are authorized; no push, PR, merge or remote write. Preserve production assets, GUIDs, released generations, global index and unrelated fixture edits. Do not stage pre-existing unrelated ticket archive moves/deletions or `.codex-remote-attachments`. No subagents without explicit authority.
+
 # Active execution — Responsive visual authoring (A00–A06)
 
 Execute `newtickets/DazPoseWizard_Visual_Authoring_Execution_Packet/START_HERE.md`, `BUILD_PLAN.md`, and `CHECKS_AND_ACCEPTANCE.md` on main. Art authorized execution October 19. Studio authoring uses static visual cue state, skips story logic and reports ambiguity; canonical rehearsal navigation requirements below are superseded for this editor. Play runtime is unchanged. Status: `docs/visual-authoring/IMPLEMENTATION_REPORT.md`.

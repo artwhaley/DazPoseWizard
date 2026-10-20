@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "ticket": "W01",
-  "capturedUtc": "2026-10-20T08:12:00.9923585Z",
+  "ticket": "W02/W03 SOURCE_READY",
+  "capturedUtc": "2026-10-20T08:39:44.841534Z",
   "baselineRevision": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
   "branch": "main",
   "protectedBaselineEntries": 42,
@@ -58,6 +58,65 @@
         "DazPose.Validation.Editor"
       ],
       "elapsedSeconds": 7.0489093
+    },
+    {
+      "id": "AP09",
+      "command": "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore",
+      "exitCode": 0,
+      "passed": 1,
+      "failed": 0,
+      "coverage": [
+        "RigManifestRulesRejectDuplicateMissingUnexpectedAndWrongGenerationRows"
+      ],
+      "note": "Generated manifest/native asset behavior remains Gate A."
+    },
+    {
+      "id": "AP10",
+      "command": "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore",
+      "exitCode": 0,
+      "passed": 2,
+      "failed": 0,
+      "coverage": [
+        "BinderBonePlannerRejectsAmbiguousMissingAndCyclicMapsBeforeBinding",
+        "BinderBonePlannerReturnsIndependentLocalOrdersForSeparateAttachments"
+      ]
+    },
+    {
+      "id": "AP11",
+      "command": "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore",
+      "exitCode": 0,
+      "passed": 2,
+      "failed": 0,
+      "coverage": [
+        "CacheBoundsUnpinnedResourcesAndNeverEvictsActiveOrPinnedEntries",
+        "NestedPinsReleaseIndependentlyAndDisposeResourcesOnce"
+      ],
+      "note": "Entrance snapshot pin integration is sequenced in W06; transaction active/rollback behavior remains source-compiled."
+    },
+    {
+      "id": "AP12",
+      "command": "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore",
+      "exitCode": 0,
+      "passed": 1,
+      "failed": 0,
+      "coverage": [
+        "RigAssetIdentityPathsAndHashesAreDeterministicAndRefuseMismatchedReuse"
+      ],
+      "note": "Unity AssetDatabase idempotence is Art-operated at Gate A."
+    },
+    {
+      "id": "source-compile-W02-W03",
+      "command": "python scripts/check-unity-source.py",
+      "exitCode": 0,
+      "assemblies": [
+        "DazPose.Runtime",
+        "DazPose.Content",
+        "DazPose.Examples",
+        "DazPose.Presentation",
+        "DazPose.Editor",
+        "DazPose.Validation",
+        "DazPose.Validation.Editor"
+      ]
     }
   ],
   "omissions": [
@@ -67,49 +126,84 @@
   "nativeOperationsByExecutor": false,
   "sourceHashes": [
     {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeSelection.cs",
-      "sha256": "dd40e9ae282ab99d75256826d1a92ca877abaeb7ee62e3860b3ef30c3b34475f"
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/DazPose.Editor.asmdef",
+      "sha256": "ac8111747c6bcbe05b913f1832d7a20c6b97e83f7b9f4ebfdcd4f4e9de1476ad"
     },
     {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeSelectionResolver.cs",
-      "sha256": "0ab883b6da49d0dab3b4ecf3d9e9a460c6f60ebaf87ff171911d9819e806b767"
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs",
+      "sha256": "f1dcfe10cd368d160182e8dea4985d6434ffe5c0743cf8f8b6105b2aca62ad0d"
     },
     {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeSelectionPreparer.cs",
-      "sha256": "c3e33fa01f52a7a77ca251cb8849b651004b83db46a5ce020fc2c8220e65530b"
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeCorrectedCandidateBuilder.cs",
+      "sha256": "7a57e5057721e28e912287d9f2ecf46edb9b72fe592eb0e9be448bb1d2ff2d44"
     },
     {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAtomicCommit.cs",
-      "sha256": "c89ebd18d36643c712305e4e6dc4418ada4f791cd26433d180fedd1d2f236b65"
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeProtectedCardsFixtureBuilder.cs",
+      "sha256": "e5933384cb39c49f53cbf81e8c6307922daf03d7be7e95801f6f740d72a8494b"
     },
     {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeHairAction.cs",
-      "sha256": "ba8a745219f410e9b4e825c5161dc89b90fb865b8811c49f93b4a7ead9a24c5d"
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeRigAssetBuilder.cs",
+      "sha256": "fec64d8fc30d28c7af13de225149e7b028d0d6bf6a91831f525a597705fe669c"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
+      "sha256": "a40b8253be0c606a6904439b58c4ae8d03843a38ee79da071802db9a3bd67787"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/PerformerWardrobe.cs",
-      "sha256": "81bef3487f73c7897402f4f2a6277410d568620e5259ff28428fe97404b607a2"
+      "sha256": "d2e318f3868c474a2a745553b4eb5aa9b4be365fc9ca351a231659eecf3efb0d"
     },
     {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobePreset.cs",
-      "sha256": "ff35d1dba176a6d1ca712b46726edc02763b55d39587a74f5133012b256122b2"
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAttachmentBinder.cs",
+      "sha256": "1b1dae26b1aacf109b5e5bd9d7170a71f90e62e7d2e096fc097ea11bf10aa7e0"
     },
     {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/SuccubusPerformer.cs",
-      "sha256": "6c9c2fa082fe1904a201bf98fae8590802ddcda36027855c234e27eb92e1b8f4"
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAttachmentDescriptor.cs",
+      "sha256": "cd5ccb35c9f666baaaa0072968c412f4c81aa2ea47a9c66bdac465e93b2964cc"
     },
     {
-      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/ScopedPerformer.cs",
-      "sha256": "31f52f4e12dbe82ad1175d477cdbb887f5aa4df9d113e4c9a0767bedb3f336cc"
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAttachmentRole.cs",
+      "sha256": "9d79576903981f35bd01108402c282a845e0816719af05f00c58dbb4a528ca88"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeBoneBindingPlan.cs",
+      "sha256": "7b125bccd4dbcd18e1def67b558ffa7169a74762efc0d60fa9feb2490d4b70c7"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeLeaseCache.cs",
+      "sha256": "e2ee178ebe182035e3982897e40a4e727fc07f1f919235148af0ae250a42635a"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigAssetIdentity.cs",
+      "sha256": "22f7a315ca9dd3c8c97ef879f0b7d88e2236f53480699e37dac09ea02fe92c8f"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigBinding.cs",
+      "sha256": "61700b5a86fe44a7cdd9b9fc2050232fd644351be175acb6a91a31cfe941f406"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigManifest.cs",
+      "sha256": "c6b63203084e345cfc952aa832457df253dd3ca15f7b77cbbd0da5d695217d52"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigManifestRules.cs",
+      "sha256": "32bc5743cf6eaf30afbbac5e32bb8a91af8d62d8d0f535da7731004b7631f417"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/AppearanceGateRunner.cs",
+      "sha256": "361916db9fe38c37a744a29fb347a8a27b0f34eb5d44af0a90b0aacb8b8f4e90"
+    },
+    {
+      "path": "tests/DazPose.Wardrobe.Tests/WardrobeSelectionTests.cs",
+      "sha256": "394834ca7eb669b558a6b5ffa3e9b94e02309669f8db34e1923c4c98661a79d2"
     }
   ],
   "verificationBatch": {
     "commands": [
-      "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore",
+      "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore --nologo --verbosity quiet",
       "python scripts/check-unity-source.py"
     ],
-    "elapsedSeconds": 8.8,
-    "results": "wardrobe 9 passed; source compile 7/7 assemblies passed",
-    "executedAfterFinalW01SourceEdit": true
+    "results": "15 wardrobe tests passed; all seven source assemblies passed",
+    "executedAfterFinalW02W03SourceEdit": true
   }
 }

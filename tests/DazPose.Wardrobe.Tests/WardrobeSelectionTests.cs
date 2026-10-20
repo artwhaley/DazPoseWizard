@@ -146,4 +146,91 @@ public sealed class WardrobeSelectionTests
             Assert.Equal(Enumerable.Range(0, failureStage + 1).Reverse(), rollbackOrder);
         }
     }
+
+    [Fact]
+    public void CacheBoundsUnpinnedResourcesAndNeverEvictsActiveOrPinnedEntries()
+    {
+        var disposed = new List<string>();
+        using var cache = new WardrobeLeaseCache<string>(2, disposed.Add);
+        cache.GetOrCreate("a", () => "a"); cache.SetActive("a");
+        cache.GetOrCreate("b", () => "b"); cache.GetOrCreate("c", () => "c");
+        using (cache.Pin("b"))
+        {
+            cache.GetOrCreate("d", () => "d");
+            Assert.True(cache.TryGet("b", out _));
+            cache.GetOrCreate("e", () => "e");
+            Assert.True(cache.TryGet("b", out _));
+            Assert.True(cache.TryGet("a", out _));
+            Assert.Equal(2, cache.UnpinnedCount);
+        }
+        Assert.Equal(2, cache.UnpinnedCount);
+        Assert.Contains("c", disposed);
+    }
+
+    [Fact]
+    public void NestedPinsReleaseIndependentlyAndDisposeResourcesOnce()
+    {
+        var disposed = new List<string>();
+        var cache = new WardrobeLeaseCache<string>(1, disposed.Add);
+        cache.GetOrCreate("snapshot", () => "snapshot");
+        var outer = cache.Pin("snapshot");
+        var inner = cache.Pin("snapshot");
+        outer.Dispose();
+        Assert.True(cache.TryGet("snapshot", out _));
+        inner.Dispose();
+        cache.SetActive(null);
+        cache.Dispose(); cache.Dispose();
+        Assert.Equal(new[] { "snapshot" }, disposed);
+    }
+
+    [Fact]
+    public void BinderBonePlannerRejectsAmbiguousMissingAndCyclicMapsBeforeBinding()
+    {
+        Assert.False(WardrobeBoneBindingPlan.TryCreate(["root", "root"], ["root"], "root", [], out _, out _));
+        Assert.False(WardrobeBoneBindingPlan.TryCreate(["root"], ["missing"], "root", [], out _, out _));
+        Assert.False(WardrobeBoneBindingPlan.TryCreate(["root"], ["root"], "missing", [], out _, out _));
+        Assert.False(WardrobeBoneBindingPlan.TryCreate(["root"], ["root"], "root",
+            [new("left", "right"), new("right", "left")], out _, out _));
+        Assert.False(WardrobeBoneBindingPlan.TryCreate(["root"], ["root"], "root",
+            [new("root", "root")], out _, out _));
+    }
+
+    [Fact]
+    public void BinderBonePlannerReturnsIndependentLocalOrdersForSeparateAttachments()
+    {
+        var locals = new[] { new WardrobeLocalBoneFact("finger", "hand"), new WardrobeLocalBoneFact("hand", "root") };
+        Assert.True(WardrobeBoneBindingPlan.TryCreate(["root"], ["root", "finger"], "root", locals, out var first, out _));
+        Assert.True(WardrobeBoneBindingPlan.TryCreate(["root"], ["root", "finger"], "root", locals, out var second, out _));
+        Assert.Equal(new[] { "hand", "finger" }, first);
+        Assert.Equal(first, second);
+        Assert.NotSame(first, second);
+    }
+
+    [Fact]
+    public void RigManifestRulesRejectDuplicateMissingUnexpectedAndWrongGenerationRows()
+    {
+        Assert.True(WardrobeRigManifestRules.HasExactUniqueKeys(["first", "second"], ["second", "first"], out _));
+        Assert.False(WardrobeRigManifestRules.HasExactUniqueKeys(["first", "first"], ["first"], out _));
+        Assert.False(WardrobeRigManifestRules.HasExactUniqueKeys(["first", "second"], ["first"], out _));
+        Assert.False(WardrobeRigManifestRules.HasExactUniqueKeys(["first"], ["first", "unexpected"], out _));
+        Assert.True(WardrobeRigManifestRules.MatchesIdentity("generation", "signature", "generation", "signature", out _));
+        Assert.False(WardrobeRigManifestRules.MatchesIdentity("generation", "signature", "old", "signature", out _));
+        Assert.False(WardrobeRigManifestRules.MatchesIdentity("generation", "signature", "generation", "other", out _));
+    }
+
+    [Fact]
+    public void RigAssetIdentityPathsAndHashesAreDeterministicAndRefuseMismatchedReuse()
+    {
+        const string root = "Assets/Production/Wardrobe/Rigs/generation";
+        Assert.Equal(root + "/Clothing/first-outfit.prefab",
+            WardrobeRigAssetIdentity.PrefabPath(root, WardrobeAttachmentRole.Clothing, "first-outfit"));
+        Assert.Equal(root + "/Hair/first-outfit/EmikoHair_59875.prefab",
+            WardrobeRigAssetIdentity.PrefabPath(root, WardrobeAttachmentRole.Hair, "first-outfit/EmikoHair_59875"));
+        var first = WardrobeRigAssetIdentity.ContentHash("g", "first-outfit", WardrobeAttachmentRole.Clothing, "first-outfit", ["mesh-guid", "bone-a"]);
+        var repeat = WardrobeRigAssetIdentity.ContentHash("g", "first-outfit", WardrobeAttachmentRole.Clothing, "first-outfit", ["mesh-guid", "bone-a"]);
+        var changed = WardrobeRigAssetIdentity.ContentHash("g", "first-outfit", WardrobeAttachmentRole.Clothing, "first-outfit", ["mesh-guid", "bone-b"]);
+        Assert.Equal(first, repeat);
+        Assert.True(WardrobeRigAssetIdentity.MayReuseExisting(first, repeat));
+        Assert.False(WardrobeRigAssetIdentity.MayReuseExisting(first, changed));
+    }
 }

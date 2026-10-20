@@ -54,6 +54,11 @@ namespace DazPose.Performer
         private readonly Dictionary<string, RuntimePiece> _pieces = new Dictionary<string, RuntimePiece>(StringComparer.Ordinal);
         private RuntimePiece[] _inventory = Array.Empty<RuntimePiece>();
         private WardrobePreset _selectedPreset;
+        [SerializeField] private WardrobeRigBinding rigBinding;
+        private readonly List<WardrobeAttachmentLease> _attachmentLeases = new List<WardrobeAttachmentLease>();
+        private readonly WardrobeLeaseCache<WardrobeAttachmentLease> _clothingCache = new WardrobeLeaseCache<WardrobeAttachmentLease>(2, lease => lease.Dispose());
+        private readonly WardrobeLeaseCache<WardrobeAttachmentLease> _hairCache = new WardrobeLeaseCache<WardrobeAttachmentLease>(2, lease => lease.Dispose());
+        private WardrobeAttachmentLease _activeClothingLease, _activeHairLease;
         private WardrobeFitState _currentFit;
         private int _layerCeiling = -1;
         private string _currentHairKey;
@@ -79,6 +84,40 @@ namespace DazPose.Performer
         public bool AllowsCandidatePreview => allowCandidatePreview;
         public string BindingDiagnostic => _bindingError;
         public bool IsRuntimeInitialized => _initialized;
+        public WardrobeRigBinding RigBinding => rigBinding;
+
+        /// <summary>Pins the exact prepared attachment leases represented by a captured selection until its scope ends.</summary>
+        public IDisposable PinSelectionResources(WardrobeSelection selection)
+        {
+            if (!_initialized) throw new InvalidOperationException("Wardrobe resources cannot be pinned before this performer initializes.");
+            if (selection == null) throw new ArgumentNullException(nameof(selection));
+            if (!string.Equals(selection.GenerationId, SelectionGenerationId(), StringComparison.Ordinal))
+                throw new InvalidOperationException("Wardrobe snapshot generation no longer matches its performer owner.");
+            // Legacy synthesized attachments live for the owner lifetime and are never cache-evicted.
+            if (rigBinding == null) return new WardrobeResourcePin(new List<IDisposable>());
+            var pins = new List<IDisposable>(2);
+            try
+            {
+                if (!selection.IsUnclothed) pins.Add(_clothingCache.Pin(selection.PresetId));
+                if (!string.IsNullOrEmpty(selection.HairKey)) pins.Add(_hairCache.Pin(selection.HairKey));
+                return new WardrobeResourcePin(pins);
+            }
+            catch { for (int i = pins.Count - 1; i >= 0; --i) pins[i].Dispose(); throw; }
+        }
+
+        public IDisposable PinCurrentSelectionResources() => PinSelectionResources(CaptureSelection());
+
+        private sealed class WardrobeResourcePin : IDisposable
+        {
+            private List<IDisposable> pins;
+            public WardrobeResourcePin(List<IDisposable> ownedPins) { pins = ownedPins; }
+            public void Dispose()
+            {
+                var owned = pins; pins = null;
+                if (owned == null) return;
+                for (int i = owned.Count - 1; i >= 0; --i) owned[i]?.Dispose();
+            }
+        }
 
         public static bool TryValidateConfigurationBinding(WardrobeCatalog sourceCatalog, WardrobeConfiguration sourceConfiguration, out string error)
         {
@@ -191,9 +230,7 @@ namespace DazPose.Performer
 
         private void OnDestroy()
         {
-            foreach (var item in _inventory)
-                if (item.inventory.renderer != null) Destroy(item.inventory.renderer.gameObject);
-            _pieces.Clear();
+            DisposeAttachmentLeases();
         }
 
         private SkinnedMeshRenderer FindBody()
@@ -216,6 +253,7 @@ namespace DazPose.Performer
             if (body == null || body.sharedMesh == null)
             { Debug.LogError("Performer wardrobe has no canonical body renderer.", this); return; }
             if (performer == null) performer = GetComponent<SuccubusPerformer>();
+            if (rigBinding == null) rigBinding = GetComponent<WardrobeRigBinding>();
             try
             {
                 _resolved.Clear();
@@ -229,7 +267,12 @@ namespace DazPose.Performer
                         return;
                     }
                 }
-                BuildPieceInventory();
+                if (rigBinding != null && rigBinding.Manifest != null)
+                {
+                    WardrobeAttachmentBinder.ValidateOwner(this, body, rigBinding.Manifest);
+                    BuildRigPieceInventory();
+                }
+                else BuildPieceInventory();
                 _selectionFacts = BuildSelectionFacts();
                 _hairKeys = BuildHairKeys().ToArray();
                 rendererBinder ??= gameObject.AddComponent<LaraWardrobe>();
@@ -244,6 +287,7 @@ namespace DazPose.Performer
             }
             catch (Exception exception)
             {
+                DisposeAttachmentLeases();
                 Debug.LogException(exception, this);
                 Debug.LogError("Performer wardrobe initialization failed; no outfit commands are accepted.", this);
             }
@@ -280,59 +324,79 @@ namespace DazPose.Performer
                 }
             }
 
+            _pieces.Clear();
             var newInventory = new List<RuntimePiece>();
             foreach (var preset in sourcePresets)
+            {
+                WardrobeAttachmentLease lease = WardrobeAttachmentBinder.BindLegacyPreset(preset, body, body.transform, SelectionGenerationId());
+                _attachmentLeases.Add(lease);
+                var boundPieces = lease.Pieces.ToDictionary(piece => piece.name, StringComparer.Ordinal);
+                foreach (var definition in preset.Package.pieces)
+                {
+                    string key = preset.PresetId + "/" + definition.id;
+                    if (_pieces.ContainsKey(key)) throw new InvalidOperationException("Duplicate stable wardrobe piece ID: " + key);
+                    if (!boundPieces.TryGetValue(key, out var inventoryPiece))
+                        throw new InvalidOperationException("Shared wardrobe binder omitted package piece: " + key);
+                    var materials = (Material[])inventoryPiece.renderer.sharedMaterials.Clone();
+                    var materialOpacities = Enumerable.Repeat(-1f, materials.Length).ToArray();
+                    if (ConfigurationApplies())
+                    foreach (var materialOverride in _resolved[preset.PresetId].MaterialOverrides.Where(m => m.sourcePieceId == definition.id))
+                    {
+                        if (!int.TryParse(materialOverride.materialSlotId, out int slot) || slot < 0 || slot >= materials.Length)
+                            throw new InvalidOperationException("Material override must name a valid material slot index: " + key + "/" + materialOverride.materialSlotId);
+                        if (materialOverride.material != null) materials[slot] = materialOverride.material;
+                        if (materialOverride.opacityOverride) materialOpacities[slot] = materialOverride.opacity;
+                    }
+                    inventoryPiece.renderer.sharedMaterials = materials;
+                    inventoryPiece.materialOpacities = materialOpacities;
+                    bool hair = string.Equals(definition.role, "hair", StringComparison.OrdinalIgnoreCase);
+                    var record = new RuntimePiece
+                    {
+                        key = key, sourceId = definition.id, preset = preset,
+                        definition = definition, layer = ResolveLayer(preset, definition.id), hair = hair,
+                        requiresBentFootPose = definition.requiresBentFootPose ||
+                            string.Equals(definition.role, "footwear", StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(definition.role, "hosiery", StringComparison.OrdinalIgnoreCase),
+                        inventory = inventoryPiece
+                    };
+                    _pieces.Add(key, record); newInventory.Add(record);
+                }
+            }
+            _inventory = newInventory.ToArray();
+        }
+
+        private void BuildRigPieceInventory()
+        {
+            _pieces.Clear();
+            foreach (var preset in catalog.Presets)
             foreach (var definition in preset.Package.pieces)
             {
                 string key = preset.PresetId + "/" + definition.id;
                 if (_pieces.ContainsKey(key)) throw new InvalidOperationException("Duplicate stable wardrobe piece ID: " + key);
-                var bones = new Dictionary<string, Transform>(canonicalBones, StringComparer.Ordinal);
-                foreach (var local in definition.localBones ?? Array.Empty<WardrobeOutfitDefinition.LocalBone>())
-                {
-                    if (!bones.TryGetValue(local.parent, out var parent)) throw new InvalidOperationException("Could not resolve accessory bone parent " + local.parent);
-                    var node = new GameObject(local.name).transform;
-                    node.SetParent(parent, false);
-                    node.localPosition = local.position; node.localRotation = local.rotation; node.localScale = local.scale;
-                    bones.Add(local.name, node);
-                }
-                var nodeObject = new GameObject("Wardrobe " + key);
-                nodeObject.transform.SetParent(body.transform, false);
-                var renderer = nodeObject.AddComponent<SkinnedMeshRenderer>();
-                renderer.sharedMesh = definition.mesh;
-                var materials = (Material[])definition.materials.Clone();
-                var materialOpacities = Enumerable.Repeat(-1f, materials.Length).ToArray();
-                if (ConfigurationApplies())
-                foreach (var materialOverride in _resolved[preset.PresetId].MaterialOverrides.Where(m => m.sourcePieceId == definition.id))
-                {
-                    if (!int.TryParse(materialOverride.materialSlotId, out int slot) || slot < 0 || slot >= materials.Length)
-                        throw new InvalidOperationException("Material override must name a valid material slot index: " + key + "/" + materialOverride.materialSlotId);
-                    if (materialOverride.material != null) materials[slot] = materialOverride.material;
-                    if (materialOverride.opacityOverride) materialOpacities[slot] = materialOverride.opacity;
-                }
-                renderer.sharedMaterials = materials;
-                renderer.rootBone = body.rootBone;
-                renderer.bones = (definition.boneNames ?? Array.Empty<string>()).Select(name => bones[name]).ToArray();
-                renderer.renderingLayerMask = body.renderingLayerMask;
-                renderer.updateWhenOffscreen = true;
-                renderer.allowOcclusionWhenDynamic = false;
-                renderer.enabled = false;
                 bool hair = string.Equals(definition.role, "hair", StringComparison.OrdinalIgnoreCase);
-                int layer = ResolveLayer(preset, definition.id);
                 var record = new RuntimePiece
                 {
-                    key = key, sourceId = definition.id, preset = preset,
-                    definition = definition, layer = layer, hair = hair,
+                    key = key, sourceId = definition.id, preset = preset, definition = definition,
+                    layer = ResolveLayer(preset, definition.id), hair = hair,
                     requiresBentFootPose = definition.requiresBentFootPose ||
                         string.Equals(definition.role, "footwear", StringComparison.OrdinalIgnoreCase) ||
                         string.Equals(definition.role, "hosiery", StringComparison.OrdinalIgnoreCase),
-                    inventory = new LaraWardrobe.Piece
-                    { name = key, renderer = renderer, shell = definition.shell, visible = false,
-                        persistentHair = hair, coverageChannel = definition.coverageChannel,
-                        materialOpacities = materialOpacities }
+                    inventory = null
                 };
-                _pieces.Add(key, record); newInventory.Add(record);
+                _pieces.Add(key, record);
             }
-            _inventory = newInventory.ToArray();
+            _inventory = Array.Empty<RuntimePiece>();
+            _activeClothingLease = null; _activeHairLease = null;
+        }
+
+        private void DisposeAttachmentLeases()
+        {
+            foreach (var lease in _attachmentLeases) lease?.Dispose();
+            _attachmentLeases.Clear();
+            _clothingCache.Dispose(); _hairCache.Dispose();
+            _activeClothingLease = null; _activeHairLease = null;
+            _pieces.Clear();
+            _inventory = Array.Empty<RuntimePiece>();
         }
 
         private int ResolveLayer(WardrobePreset preset, string pieceId)
@@ -555,10 +619,27 @@ namespace DazPose.Performer
                 return Failure(before, WardrobeFailureCode.EffectRebindFailed,
                     "The active dissolve owns the performer's effect profile; retry the wardrobe change after it settles.");
 
+            WardrobeAttachmentLease targetClothingLease = null, targetHairLease = null;
+            if (rigBinding != null && rigBinding.Manifest != null)
+            {
+                try
+                {
+                    if (target.Preset != null)
+                        targetClothingLease = _clothingCache.GetOrCreate(target.Preset.PresetId,
+                            () => rigBinding.BindClothing(this, body, target.Preset.PresetId));
+                    if (!string.IsNullOrEmpty(target.HairKey))
+                        targetHairLease = _hairCache.GetOrCreate(target.HairKey,
+                            () => rigBinding.BindHair(this, body, target.HairKey));
+                }
+                catch (Exception error)
+                { return Failure(before, WardrobeFailureCode.MissingAsset, "Wardrobe attachment preparation failed before mutation: " + error.Message); }
+            }
+
             var priorPreset = _selectedPreset;
             var priorFit = _currentFit;
             int priorCeiling = _layerCeiling;
             string priorHair = _currentHairKey;
+            WardrobeAttachmentLease priorClothingLease = _activeClothingLease, priorHairLease = _activeHairLease;
             Mesh priorMesh = body.sharedMesh;
             var weights = CaptureMorphs();
             var priorVisible = _inventory.Select(p => p.inventory.visible).ToArray();
@@ -593,12 +674,24 @@ namespace DazPose.Performer
                     new WardrobeAtomicCommit.Step("selection and visibility", () => {
                         _selectedPreset = target.Preset; _layerCeiling = target.Ceiling; _currentHairKey = target.HairKey;
                         _currentFit = targetFit;
+                        if (rigBinding != null && rigBinding.Manifest != null)
+                        {
+                            _activeClothingLease = targetClothingLease; _activeHairLease = targetHairLease;
+                            _clothingCache.SetActive(target.Preset != null ? target.Preset.PresetId : null);
+                            _hairCache.SetActive(string.IsNullOrEmpty(target.HairKey) ? null : target.HairKey);
+                        }
                         ApplyRendererVisibility(target.Visible, target.Preset, target.HairKey);
                         _lastConfigurationRevision = target.Preset == null ? 0 : catalog.IsReleased ? target.Preset.ConfigurationRevision :
                             (_resolved.TryGetValue(target.Preset.PresetId, out var snapshot) ? snapshot.ConfigurationRevision : target.Preset.ConfigurationRevision);
                         WardrobeChanged?.Invoke(BuildState(false));
                     }, () => {
                         _selectedPreset = priorPreset; _currentFit = priorFit; _layerCeiling = priorCeiling; _currentHairKey = priorHair;
+                        if (rigBinding != null && rigBinding.Manifest != null)
+                        {
+                            _activeClothingLease = priorClothingLease; _activeHairLease = priorHairLease;
+                            _clothingCache.SetActive(priorPreset != null ? priorPreset.PresetId : null);
+                            _hairCache.SetActive(string.IsNullOrEmpty(priorHair) ? null : priorHair);
+                        }
                         _lastConfigurationRevision = priorConfigurationRevision;
                         for (int i = 0; i < _inventory.Length && i < priorVisible.Length; ++i)
                         { var piece = _inventory[i]; piece.inventory.visible = priorVisible[i]; _inventory[i] = piece; }
@@ -617,6 +710,18 @@ namespace DazPose.Performer
 
         private void ApplyRendererVisibility(int visibleMask, WardrobePreset preset, string hairKey)
         {
+            if (rigBinding != null && rigBinding.Manifest != null)
+            {
+                var bound = (_activeClothingLease?.Pieces ?? Array.Empty<LaraWardrobe.Piece>())
+                    .Concat(_activeHairLease?.Pieces ?? Array.Empty<LaraWardrobe.Piece>()).ToArray();
+                foreach (var piece in bound)
+                    piece.visible = piece.persistentHair
+                        ? string.Equals(piece.stableKey, hairKey, StringComparison.Ordinal)
+                        : preset != null && string.Equals(piece.stableKey, preset.PresetId, StringComparison.Ordinal) &&
+                            (visibleMask & (1 << piece.layer)) != 0;
+                if (rendererBinder != null) { rendererBinder.Configure(body, bound); rendererBinder.Apply(); }
+                return;
+            }
             foreach (var piece in _inventory)
             {
                 bool show = piece.hair ? piece.key == hairKey :
