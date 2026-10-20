@@ -9,6 +9,7 @@ namespace DazPose.Editor.Studio {
   [SerializeField] StoryProgramSequence nativeSequence;
   NativeStageContext nativeContext;
   bool stageAfter=true;
+  [SerializeField] bool updateWhileDragging;
   string anchorStamp;
   double nextAnchorPoll;
   void AutoResolve(){if(this!=null&&host==null)try{ResolveNativeDefaults();}catch(Exception e){error=e.Message;}}
@@ -20,7 +21,9 @@ namespace DazPose.Editor.Studio {
   void BuildPreview() {
    if(host==null||source==null)ResolveNativeDefaults();
    if(nativeSequence!=null&&(nativeSequence.Bindings!=host||nativeSequence.CompiledSource!=source))throw new InvalidOperationException("Saved story sequence, source and host disagree. Select matching references.");
-   if(stage==null||!stage.Ready){stage?.Dispose();nativeContext=NativeStageContext.Resolve(host);stage=new NativeSceneStage(nativeContext);anchorStamp=null;}
+   var resolved=NativeStageContext.Resolve(host);
+   if(stage!=null&&(stage.Context.Lara!=resolved.Lara||stage.Context.Body!=resolved.Body||stage.Context.PlayerRoot!=resolved.PlayerRoot||stage.Context.ViewRig!=resolved.ViewRig||stage.Context.Camera!=resolved.Camera)){stage.Dispose();stage=null;}
+   if(stage==null||!stage.Ready){stage?.Dispose();nativeContext=resolved;stage=new NativeSceneStage(nativeContext);anchorStamp=null;}
   }
   void NativeMarkButton(string label,Transform mark) {
    if(mark==null)return;
@@ -50,7 +53,7 @@ namespace DazPose.Editor.Studio {
    if(!stage.Ready){string message=stage.Failure??stage.Status;StopRehearsal();stage.Dispose();stage=null;nativeContext=null;error=message;return;}
    if(stage.IsSaveSuspended||EditorApplication.isUpdating||EditorApplication.isCompiling||EditorApplication.timeSinceStartup<nextAnchorPoll)return;
    nextAnchorPoll=EditorApplication.timeSinceStartup+.04;
-   try{string next=CaptureAnchorStamp();if(next!=anchorStamp){stage.Apply(visualState,rehearsalContent);anchorStamp=next;nativeRestages++;ObserveNative("reanchor");Repaint();}}
+   try{string next=CaptureAnchorStamp();if(next!=anchorStamp){stage.Reanchor();anchorStamp=next;nativeRestages++;ObserveNative("reanchor");Repaint();}}
    catch(Exception e){HaltVisual(e);}
   }
   void OnGUI() => DrawAuthoringWindow();

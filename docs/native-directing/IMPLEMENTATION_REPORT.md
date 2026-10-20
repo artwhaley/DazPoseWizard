@@ -1,5 +1,15 @@
 # Native directing execution report — October 19, 2026
 
+## Current G4 performance correction — awaiting Art
+
+After the cue-first correction, Art reported severe mark-drag latency and pose drops resetting/rebuilding the composition. The hot path was still full baseline restoration plus cumulative sampling on every mark edit, while binding assignment queued full logical refresh.
+
+The revised spatial path retains the sampled skeleton, native preview lease, material instances and canonical history. It updates only actor/body root placement and the actual PlayerRoot/ViewRig; persistent seating reuses the sampled local hip, default seating retains its baked root rule, and tracking aims after placement. Scoped ownership records keep final Stop/save restoration correct without treating unrelated bone edits as preview writes. Default **Live drag off** defers the shot update until handle release; Live drag on uses the same incremental placement path. Expensive revision/ledger checks and idle Studio repaints no longer run throughout Scene handle drags.
+
+Pose binding replacements with unchanged readiness/posture now refresh the current projection and binding readiness snapshot without resetting the interpreter/seed/history or disposing the preview lease. Only the exact explicitly saved typed-binding asset can bypass scene-preview suspension; ordinary scene/asset/prefab saves retain the restoration boundary. Logical/metadata changes still invalidate canonical execution. Queued refreshes respect explicit Stop. Full projections skip overwritten samples only when later curve coverage proves their properties redundant, retaining sparse-pose and sampled-seat dependencies. Added native projection/sample counters and elapsed time to G4 observations.
+
+All seven standalone source assemblies compile and all 80 pure managed rehearsal tests pass, with zero failures/skips. Evidence is recorded in G4_PERFORMANCE_SOURCE_COMPILE.json and G4_PERFORMANCE_MANAGED_TESTS.log. All 7,211 protected originals are unchanged. The user remains the sole Unity operator; visual smoothness, no intermediate reset, native sparse sampling, save/Undo and seat/camera parity require the short retry at the top of G4_ART_HANDOFF.md. G4 remains unaccepted; N11 held. No push or protected content changes.
+
 ## Current G4 disposition — interface rejected, correction awaiting Art
 
 Art rejected the integrated G4 Studio on October 19: the tabbed interface, centered unwrapped cues, disconnected binding workflow, exposed interpreter terminology and navigation lag were unacceptable. **G4 is not accepted; N11 remains held.** The earlier “ready” section below is historical delivery, not acceptance.

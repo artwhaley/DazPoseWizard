@@ -26,6 +26,7 @@ namespace DazPose.Editor.Studio {
    using(new EditorGUILayout.HorizontalScope(EditorStyles.toolbar)){
     GUILayout.Label(source!=null?source.name:"Scene Director",EditorStyles.boldLabel);
     GUILayout.FlexibleSpace();
+    updateWhileDragging=GUILayout.Toggle(updateWhileDragging,new GUIContent("Live drag","Off: update the shot when the Scene handle is released. On: update placement while dragging."),EditorStyles.toolbarButton);
     GUILayout.Label(transportBusy?"Finding cue…":stage!=null&&stage.Ready?"Live preview":"Edit Mode",EditorStyles.miniLabel);
     using(new EditorGUI.DisabledScope(stage==null&&rehearsal==null))if(GUILayout.Button("Stop preview",EditorStyles.toolbarButton))Release();
     showConnection=GUILayout.Toggle(showConnection,"Scene / script",EditorStyles.toolbarButton);
@@ -216,19 +217,34 @@ namespace DazPose.Editor.Studio {
     var info=Details;Try(()=>{SourceBindingReconciler.ReconcileAsset(info.SourcePath,info.SourceGuid);QueueCueRefresh();});
    }
   }
-  void QueueCueRefresh(){
-   if(refreshCueQueued)return;refreshCueQueued=true;
+  bool bindingRefreshQueued;
+  void QueueBindingRefresh(){
+   if(bindingRefreshQueued)return;bindingRefreshQueued=true;int expectedGeneration=generation;
    EditorApplication.delayCall+=()=>{
-    if(this==null)return;refreshCueQueued=false;
+    if(this==null)return;bindingRefreshQueued=false;if(expectedGeneration!=generation)return;
+    if(EditorApplication.isCompiling||EditorApplication.isUpdating||transportBusy||stage?.IsSaveSuspended==true){QueueBindingRefresh();return;}
+    try{
+     if(stage!=null&&stage.Ready&&rehearsal!=null&&previewFailure==null&&logicalStamp==CaptureLogicStamp()&&rehearsal.Host.RefreshPresentationBindings()){
+      // ContentFor keeps the actual source-owned asset reference. No new interpreter, seed or lease.
+      stage.Apply(visualState,rehearsalContent);presentedKey=visualState.PresentationKey;anchorStamp=CaptureAnchorStamp();
+      sourceStamp=CaptureStamp();logicalStamp=CaptureLogicStamp();revisionDirty=false;error=null;ObserveNative("binding");Repaint();
+     }else QueueCueRefresh();
+    }catch(Exception e){HaltVisual(e);}
+   };
+  }
+  void QueueCueRefresh(){
+   if(refreshCueQueued)return;refreshCueQueued=true;int expectedGeneration=generation;
+   EditorApplication.delayCall+=()=>{
+    if(this==null)return;refreshCueQueued=false;if(expectedGeneration!=generation)return;
     if(EditorApplication.isCompiling||EditorApplication.isUpdating){QueueCueRefresh();return;}
     var owner=selectedSource;string entry=selectedEntry;int visit=selectedVisit;bool resume=owner!=null;
-    Release();sourceStamp=null;revisionDirty=true;Refresh();
+    StopRehearsal();sourceStamp=null;revisionDirty=true;Refresh();
     if(resume){
      selectedPc=Array.FindIndex(CueProgram?.instructions??Array.Empty<StoryInstruction>(),i=>i.source?.file==owner.file&&i.source?.line==owner.line&&i.source?.declaration==owner.declaration);
      selectedSource=selectedPc>=0?CueProgram.instructions[selectedPc].source:null;selectedEntry=entry;selectedVisit=visit;
      detailManifest=selectedSource!=null?ManifestFor(selectedSource):null;
-     if(selectedPc>=0)NavigateSelected();
-    }
+     if(selectedPc>=0)NavigateSelected();else Release();
+    }else Release();
     Repaint();
    };
   }

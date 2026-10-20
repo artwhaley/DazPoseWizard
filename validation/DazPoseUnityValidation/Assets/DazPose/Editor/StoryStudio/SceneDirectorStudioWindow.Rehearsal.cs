@@ -56,13 +56,13 @@ namespace DazPose.Editor.Studio
             Repaint();
         }
         void DrainRehearsal() {
-            int budget=500;
+            int budget=500;bool changed=false;
             while(budget-->0&&rehearsalEvents.TryDequeue(out var action)) {
-                try{action();}catch(Exception e){HaltVisual(e);break;}
+                changed=true;try{action();}catch(Exception e){HaltVisual(e);break;}
                 if(previewFailure!=null)break;
             }
             if(rehearsal!=null&&rehearsal.Failure!=null&&previewFailure==null)HaltVisual(rehearsal.Failure);
-            if(rehearsal!=null)Repaint();
+            if(changed)Repaint();
         }
         void StopRehearsal() {
             visualCancellation?.Cancel();visualCancellation?.Dispose();visualCancellation=null;
@@ -212,7 +212,7 @@ namespace DazPose.Editor.Studio
             string owner=selectedSource.unit??selectedSource.file,entry=selectedEntry;int pc=selectedPc,visit=selectedVisit;bool after=stageAfter;
             error=null;
             // Keep the actual scene lease and sampling graph alive across logical navigation.
-            if(rehearsal==null){Try(()=>StartRehearsalCore(false));if(rehearsal==null)return;}
+            if(rehearsal==null||stage==null||!stage.Ready||previewFailure!=null){Try(()=>StartRehearsalCore(false));if(rehearsal==null)return;}
             var session=rehearsal;int navigationGeneration=generation;
             Transport(async()=>{
                 bool Match(StoryInstructionSnapshot item)=>item!=null&&item.EntryName==entry&&item.ProgramCounter==pc&&item.Visit.Encounter==visit&&(item.Source?.unit??item.Source?.file??"")==owner;

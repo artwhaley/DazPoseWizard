@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 namespace DazPose.Editor.Studio {
  public sealed partial class SceneDirectorStudioWindow {
-  string sourceStamp;
+  string sourceStamp,logicalStamp;
   bool revisionDirty=true;
   void PlayStateChanged(PlayModeStateChange state){if(state==PlayModeStateChange.ExitingEditMode)Release();}
   void ClosedScene(UnityEngine.SceneManagement.Scene scene){if(host==null||host.gameObject.scene==scene){Release();sourceStamp=null;revisionDirty=true;}}
@@ -41,12 +41,24 @@ namespace DazPose.Editor.Studio {
    }
    return StoryDialogue.IdFor(text.ToString());
   }
-  void CheckRevision() {
-   if(!revisionDirty||refreshCueQueued)return;revisionDirty=false;
-   string next=CaptureStamp();if(sourceStamp!=null&&sourceStamp!=next) {
-    QueueCueRefresh();return;
+  string CaptureLogicStamp(){
+   var text=new StringBuilder();
+   void Program(CompiledStoryAsset asset){
+    if(asset==null){text.Append("null;");return;}
+    text.Append(asset.sourceIdentity).Append(JsonUtility.ToJson(asset.program));
+    string path=AssetDatabase.GetAssetPath(asset);if(File.Exists(path))text.Append(File.ReadAllText(path));
    }
-   sourceStamp=next;
+   Program(source);var catalog=Resources.Load<GlobalStoryCardCatalog>("DazPose/GlobalStoryCards");
+   if(catalog!=null)foreach(var asset in catalog.sources??Array.Empty<CompiledStoryAsset>())Program(asset);
+   if(host!=null)text.Append(host.GetEntityId().ToString()).Append(host.gameObject.scene.path).Append(EditorJsonUtility.ToJson(host));
+   return StoryDialogue.IdFor(text.ToString());
+  }
+  void CheckRevision() {
+   if(!revisionDirty||refreshCueQueued||bindingRefreshQueued)return;revisionDirty=false;
+   string next=CaptureStamp();if(sourceStamp!=null&&sourceStamp!=next) {
+    if(logicalStamp==CaptureLogicStamp()&&stage!=null&&stage.Ready&&previewFailure==null)QueueBindingRefresh();else QueueCueRefresh();return;
+   }
+   sourceStamp=next;logicalStamp=CaptureLogicStamp();
   }
   void SelectHost(StorySceneBindings value) {
    if(value==host)return;Release();host=value;selectedPc=-1;sourceStamp=null;revisionDirty=true;

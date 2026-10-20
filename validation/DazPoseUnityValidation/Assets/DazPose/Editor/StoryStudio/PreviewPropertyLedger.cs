@@ -5,15 +5,16 @@ namespace DazPose.Editor.Studio
     /// <summary>Plain managed property ownership. Capture before sampling; restore only writes made by this lease.</summary>
     public sealed class PreviewPropertyLedger
     {
-        interface IEntry { string Name { get; } bool Conflict { get; } void Applied(); void Prepare(); void Restore(); }
+        interface IEntry { string Name { get; } string Group {get;} bool Conflict { get; } void Applied(); void Prepare(); void Restore(); }
         sealed class Entry<T> : IEntry
         {
             readonly Func<T> get; readonly Action<T> set; readonly Func<T,T,bool> equal;
             T baseline, applied, restore; bool owned;
             public string Name { get; }
+            public string Group { get; }
             public bool Conflict { get { try { return owned && !equal(get(),applied); } catch { return true; } } }
-            public Entry(string name, Func<T> read, Action<T> write, Func<T,T,bool> compare)
-            { Name=name;get=read;set=write;equal=compare;baseline=applied=restore=get(); }
+            public Entry(string name, Func<T> read, Action<T> write, Func<T,T,bool> compare,string group)
+            { Name=name;Group=group;get=read;set=write;equal=compare;baseline=applied=restore=get(); }
             public void Applied() { try { applied=get();owned=!equal(applied,baseline); } catch { owned=true; } }
             public void Prepare()
             {
@@ -31,11 +32,11 @@ namespace DazPose.Editor.Studio
             }
         }
         readonly List<IEntry> entries=new List<IEntry>();
-        public void Capture<T>(string name,Func<T> read,Action<T> write,Func<T,T,bool> compare=null)
-            => entries.Add(new Entry<T>(name,read,write,compare ?? EqualityComparer<T>.Default.Equals));
-        public void RecordApplied() { foreach(var entry in entries) entry.Applied(); }
-        public string[] Conflicts()
-        { var result=new List<string>();foreach(var e in entries) if(e.Conflict)result.Add(e.Name);return result.ToArray(); }
+        public void Capture<T>(string name,Func<T> read,Action<T> write,Func<T,T,bool> compare=null,string group=null)
+            => entries.Add(new Entry<T>(name,read,write,compare ?? EqualityComparer<T>.Default.Equals,group));
+        public void RecordApplied(string group=null) { foreach(var entry in entries)if(group==null||entry.Group==group)entry.Applied(); }
+        public string[] Conflicts(string group=null)
+        { var result=new List<string>();foreach(var e in entries) if((group==null||e.Group==group)&&e.Conflict)result.Add(e.Name);return result.ToArray(); }
         public void PrepareRestore() { foreach(var e in entries)e.Prepare(); }
         public void Restore()
         {

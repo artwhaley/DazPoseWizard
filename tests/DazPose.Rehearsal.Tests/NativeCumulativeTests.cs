@@ -105,4 +105,54 @@ public sealed class NativeCumulativeTests {
   Assert.Equal(53,host.Session.mood);
  }
 
+ static VisualIntent[] PlanEffects(params VisualIntentKind[] kinds)=>kinds.Select(k=>new VisualIntent(k,"Mark","Pose",Command("plan"))).ToArray();
+ [Fact] public void SettledProjectionSkipsOverwrittenFullPosesButKeepsSparseDependencies(){
+  var effects=PlanEffects(VisualIntentKind.Idle,VisualIntentKind.Pose,VisualIntentKind.Pose);
+  var full=new[]{"hip","arm","hand"};
+  var complete=new NativeProjectionPlan(effects,new[]{full,full,full});
+  Assert.False(complete.SamplesPose(0));Assert.False(complete.SamplesPose(1));Assert.True(complete.SamplesPose(2));
+  var sparse=new NativeProjectionPlan(effects,new[]{full,full,new[]{"hand"}});
+  Assert.False(sparse.SamplesPose(0));Assert.True(sparse.SamplesPose(1));Assert.True(sparse.SamplesPose(2));
+ }
+ [Fact] public void SeatRootKeepsItsOwnHipDependenciesEvenWhenLaterPoseOverwritesBones(){
+  var effects=PlanEffects(VisualIntentKind.Idle,VisualIntentKind.SitPose,VisualIntentKind.Move,VisualIntentKind.Pose);
+  var plan=new NativeProjectionPlan(effects,new[]{new[]{"leg"},new[]{"hip"},null,new[]{"leg","hip"}});
+  Assert.Equal(1,plan.RootBaseIndex);Assert.Equal(2,plan.MoveIndex);
+  Assert.True(plan.SamplesPose(0));Assert.True(plan.SamplesPose(1));Assert.True(plan.SamplesPose(3));
+ }
+ [Fact] public void LatestAbsoluteRootAndFinalMoveAreIndependentOfRetainedPose(){
+  var effects=PlanEffects(VisualIntentKind.Hidden,VisualIntentKind.Move,VisualIntentKind.Sit,VisualIntentKind.Pose,VisualIntentKind.Move,VisualIntentKind.Move);
+  var plan=new NativeProjectionPlan(effects);
+  Assert.Equal(2,plan.RootBaseIndex);Assert.Equal(5,plan.MoveIndex);Assert.Equal(3,plan.PoseIndex);
+  var dissolved=new NativeProjectionPlan(effects.Concat(PlanEffects(VisualIntentKind.DissolveStanding)).ToArray());
+  Assert.Equal(6,dissolved.RootBaseIndex);Assert.Equal(-1,dissolved.MoveIndex);Assert.Equal(6,dissolved.PoseIndex);
+ }
+ [Fact] public void SpatialLedgerUpdatesDoNotReadOrAdoptUnrelatedBoneEdits(){
+  int root=1,bone=2,boneReads=0;var ledger=new PreviewPropertyLedger();
+  ledger.Capture("root",()=>root,v=>root=v,group:"spatial");
+  ledger.Capture("bone",()=>{boneReads++;return bone;},v=>bone=v);
+  root=10;bone=20;ledger.RecordApplied();boneReads=0;
+  root=11;bone=99;ledger.RecordApplied("spatial");
+  Assert.Empty(ledger.Conflicts("spatial"));Assert.Equal(0,boneReads);
+  Assert.Equal(new[]{"bone"},ledger.Conflicts());
+  ledger.PrepareRestore();ledger.Restore();Assert.Equal(1,root);Assert.Equal(99,bone);
+ }
+ [Fact] public async Task PoseReplacementKeepsTheSessionVisitStateAndRandomStream(){
+  var program=DazStoryCompiler.Compile("sequence FirstContact {\nawait Lara.PersistentPose(A)\nSession.Mood += 1\nawait Lara.PersistentPose(A)\n}","Swap.dazstory");
+  var fixture=RehearsalTestSupport.Bindings(program);var effects=new List<string>();
+  using var session=new RehearsalSession(program,"FirstContact",RehearsalTestSupport.Profile(),RehearsalTestSupport.Kinks,RehearsalTestSupport.Equipment,fixture.Content,null,fixture.Scene,visualEffect:c=>effects.Add(c.Verb));
+  int first=Array.FindIndex(program.instructions,i=>i.name=="Lara.PersistentPose");
+  int last=Array.FindLastIndex(program.instructions,i=>i.name=="Lara.PersistentPose");
+  string owner=program.instructions[first].source.unit??program.instructions[first].source.file;
+  await session.RunThroughSelectedAsync(owner,"FirstContact",first);
+  var host=session.Host;var randoms=host.Randoms;var before=session.ReadySnapshot;int history=session.History.Count;
+  fixture.Content.poses["A"].value=new DazPose.Performer.PerformerPose{Clip=new object()};
+  Assert.True(host.RefreshPresentationBindings());
+  Assert.Same(host,session.Host);Assert.Same(randoms,host.Randoms);Assert.Same(before,session.ReadySnapshot);Assert.Equal(history,session.History.Count);Assert.Single(effects);
+  await session.RunThroughSelectedAsync(owner,"FirstContact",last,restart:false);
+  Assert.Equal(51,host.Session.mood);Assert.Equal(2,effects.Count);
+  fixture.Content.poses["A"].posture=DazPose.Story.PlayerPosture.Sitting;
+  Assert.False(host.RefreshPresentationBindings());
+ }
+
 }

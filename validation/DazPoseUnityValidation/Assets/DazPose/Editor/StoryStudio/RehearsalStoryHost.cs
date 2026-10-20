@@ -54,6 +54,7 @@ namespace DazPose.Editor {
   readonly KinkCatalog kinkCatalog;
   readonly EquipmentCatalog equipmentCatalog;
   readonly StoryLinkedContent linked;
+  readonly StoryContentBindings rootBindings;
   readonly CompiledStoryProgram canonicalProgram;
   readonly StorySceneBindings sceneBindings;
   readonly CancellationTokenSource lifetime=new CancellationTokenSource();
@@ -80,8 +81,16 @@ namespace DazPose.Editor {
    Profile=PlayerProfileService.Clone(this.scenario.initialProfile??sourceProfile);random=new StorySessionRandom(seed);
    Contract=new SessionContract {sessionId="rehearsal-"+seed.ToString(System.Globalization.CultureInfo.InvariantCulture),randomSeed=seed,pacingMultiplier=this.scenario.pacingMultiplier};Contract.RefreshKinks(Profile);
    ApplyClothing(this.scenario.initialClothing);pressedActions=new HashSet<string>(this.scenario.pressedActions??Array.Empty<string>(),StringComparer.Ordinal);
-   SnapshotLinkedContent(sourceBindings);
+   rootBindings=sourceBindings;SnapshotLinkedContent(sourceBindings);
    Trace(null,"Rehearsal host created from a detached PlayerProfile clone; profile persistence, live session services and hardware output are disabled.");
+  }
+  // Asset replacements with identical readiness/posture do not invalidate executed story state.
+  public bool RefreshPresentationBindings() {
+   string Fingerprint()=>string.Join(";",bindings.OrderBy(x=>x.Key,StringComparer.Ordinal).Select(x=>x.Key+"="+x.Value.ready+":"+x.Value.posture))+"|"+
+    string.Join(";",locationSeats.OrderBy(x=>x.Key,StringComparer.Ordinal).Select(x=>x.Key+"="+x.Value))+"|"+string.Join(";",dialogueIssues.Keys.OrderBy(x=>x,StringComparer.Ordinal));
+   string before=Fingerprint();
+   bindings.Clear();bindingIssues.Clear();dialogueIssues.Clear();dialogueBindings.Clear();locationSeats.Clear();
+   SnapshotLinkedContent(rootBindings);return before==Fingerprint();
   }
   static string Owner(StorySource source)=>source?.unit??"";
   static string UseKey(StorySource source,StoryBindingKind kind,string alias)=>Owner(source)+"|"+kind+"|"+alias;

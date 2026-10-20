@@ -1,13 +1,28 @@
 using System;
+using System.Collections.Generic;
+using DazPose.Player;
 using DazPose.Performer;
 using DazPose.Story;
 using UnityEngine;
 namespace DazPose.Editor.Studio {
  public sealed partial class NativeSceneStage {
+  readonly List<Action> spatialUpdates=new List<Action>();
+  public int FullProjectionCount {get;private set;}
+  public int SpatialProjectionCount {get;private set;}
+  public int PoseSampleCount=>lease.SampleCount;
+  public double LastProjectionMilliseconds {get;private set;}
+  public void Reanchor(){
+   if(spatialUpdates.Count==0)return;
+   var timer=System.Diagnostics.Stopwatch.StartNew();
+   try{lease.ApplySpatial(()=>{foreach(var update in spatialUpdates)update();});SpatialProjectionCount++;}
+   finally{LastProjectionMilliseconds=timer.Elapsed.TotalMilliseconds;}
+  }
   public string Composition {get;private set;}
   public void Apply(RehearsalVisualState state,StoryLinkedContent content) {
    if(state==null||content==null)throw new ArgumentNullException();
-   lease.Apply(()=>StageCumulative(state,content));
+   var timer=System.Diagnostics.Stopwatch.StartNew();
+   try{lease.Apply(()=>StageCumulative(state,content));lease.SpatialUndo=Reanchor;}
+   finally{LastProjectionMilliseconds=timer.Elapsed.TotalMilliseconds;}
   }
   // Read-only validation is acknowledged for every executed command even during fast navigation.
   // The actual native projection is applied once at the selected endpoint.
@@ -38,13 +53,37 @@ namespace DazPose.Editor.Studio {
     }
    }catch(Exception error){throw new InvalidOperationException(effect.Source+" · "+effect.Kind+": "+error.Message,error);}
   }
+  string[][] SampleProperties(RehearsalVisualState state,StoryLinkedContent content){
+   var properties=new string[state.Effects.Count][];PerformerSeat seat=null;
+   var cache=new Dictionary<AnimationClip,string[]>();
+   for(int i=0;i<state.Effects.Count;i++){
+    var effect=state.Effects[i];var owner=content.ContentFor(effect.Source);AnimationClip clip=null;
+    switch(effect.Kind){
+     case VisualIntentKind.Idle:case VisualIntentKind.DissolveStanding:clip=Context.Lara.InitialPose?.Clip;break;
+     case VisualIntentKind.Pose:clip=owner.Pose(effect.Pose).value.Clip;break;
+     case VisualIntentKind.Sit:case VisualIntentKind.DissolveSeated:
+      seat=Context.Host.RequireLocation(effect.Symbol).seat;goto case VisualIntentKind.SitPose;
+     case VisualIntentKind.SitPose:
+      var pose=effect.Pose==null?null:owner.Pose(effect.Pose);
+      var command=effect.Kind==VisualIntentKind.Sit?NativeSeatCommand.DefaultSitAt:effect.Kind==VisualIntentKind.SitPose?NativeSeatCommand.PersistentSitPose:NativeSeatCommand.SeatedDissolve;
+      clip=NativeSeatEndpoint.Resolve(Context,new NativeSeatedProjection(seat,null,command,pose?.value,pose?.posture??PlayerPosture.Sitting,false)).Clip;break;
+    }
+    if(clip!=null){if(!cache.TryGetValue(clip,out var keys)){keys=lease.ClipProperties(clip);cache.Add(clip,keys);}properties[i]=keys;}
+   }
+   return properties;
+  }
   void StageCumulative(RehearsalVisualState state,StoryLinkedContent content) {
-   LastSeating=null;
+   LastSeating=null;FullProjectionCount++;spatialUpdates.Clear();
+   var plan=new NativeProjectionPlan(state.Effects,SampleProperties(state,content));
    var c=Context;var actor=c.Lara.transform;
+   var baselinePosition=actor.localPosition;var baselineRotation=actor.localRotation;
+   spatialUpdates.Add(()=>{actor.localPosition=baselinePosition;actor.localRotation=baselineRotation;});
+   void Place(Action action){action();spatialUpdates.Add(action);}
    bool? hidden=null,bodyHidden=null;Transform camera=null;bool track=false;
    PerformerMagicShaderProfile material=null;PerformerSeat seat=null;
    string poseName="saved baseline",locationName="saved baseline",cameraName="saved baseline";
-   foreach(var effect in state.Effects) {
+   for(int index=0;index<state.Effects.Count;index++) {
+    var effect=state.Effects[index];
     try {
      var owner=content.ContentFor(effect.Source);
      Transform Mark(){var mark=c.Host.RequireLocation(effect.Symbol).placement;RequireAnchor(mark,effect.Symbol);return mark;}
@@ -52,28 +91,49 @@ namespace DazPose.Editor.Studio {
      void Seated(NativeSeatCommand command,string poseSymbol) {
       if(seat==null)throw new InvalidOperationException("PersistentSitPose needs an executed SitAt/seated destination first.");
       var pose=poseSymbol==null?null:owner.Pose(poseSymbol);
-      StageSeated(new NativeSeatedProjection(seat,null,command,pose?.value,pose?.posture??PlayerPosture.Sitting,false),false);
+      var projection=new NativeSeatedProjection(seat,null,command,pose?.value,pose?.posture??PlayerPosture.Sitting,false);
+      StageSeated(projection,false);
+      // Retain the local hip of this sampled endpoint even if a later cue replaces the pose.
+      var frame=NativeSeatEndpoint.Resolve(c,projection);var retainedSeat=seat;
+      var hipLocal=actor.InverseTransformPoint(frame.Hip.position);
+      var bakedOffset=frame.Profile.SitStart.PelvisOffsetAt(1);bool align=frame.AlignHip;
+      var observation=LastSeating;
+      var defaultOffset=align?Vector3.zero:frame.DefaultMotion.PelvisOffsetAt(seat.DefaultStyle==PerformerSeatedStyle.Basic?1:0);
+      spatialUpdates.Add(()=>{
+       RequireAnchor(retainedSeat.SeatAnchor,"Seat position");
+       if(!retainedSeat.TryCaptureFrames(out var approach,out var approachYaw,out var position,out var yaw,out var reason))throw new InvalidOperationException(reason);
+       NativeSeatingMath.RequireUsableScale(actor.lossyScale,"Lara");
+       actor.rotation=yaw;
+       actor.position=align?position-actor.TransformVector(hipLocal):NativeSeatingMath.BakedRoot(position,actor.rotation,actor.lossyScale,bakedOffset);
+       observation.actorRoot=actor.position;observation.actorRotation=actor.rotation;observation.actorWorldScale=actor.lossyScale;
+       observation.seat=position;observation.approach=approach;observation.hip=actor.TransformPoint(hipLocal);
+       observation.expectedHip=align?position:actor.TransformPoint(defaultOffset);
+       observation.hipToSeatMeters=NativeSeatingMath.Error(position,observation.hip);
+       observation.expectedHipResidualMeters=NativeSeatingMath.Error(observation.expectedHip,observation.hip);
+       observation.facingDisagreementDegrees=Quaternion.Angle(approachYaw,yaw);
+       NativeSeatingMath.RequireContact(observation.expectedHipResidualMeters,observation.toleranceMeters,observation.command);
+      });
       poseName=poseSymbol??"default "+seat.DefaultStyle;
      }
      switch(effect.Kind) {
       case VisualIntentKind.Hidden:case VisualIntentKind.DissolveIn: {
-       var mark=Mark();actor.SetPositionAndRotation(mark.position,mark.rotation);hidden=effect.Kind==VisualIntentKind.Hidden;seat=null;locationName=effect.Symbol;break;
+       var mark=Mark();if(index==plan.RootBaseIndex)Place(()=>actor.SetPositionAndRotation(mark.position,mark.rotation));hidden=effect.Kind==VisualIntentKind.Hidden;seat=null;locationName=effect.Symbol;break;
       }
-      case VisualIntentKind.Idle:SampleInitial();break;
+      case VisualIntentKind.Idle:if(plan.SamplesPose(index))SampleInitial();break;
       case VisualIntentKind.Move: {
-       var mark=Mark();var position=mark.position;position.y=actor.position.y;actor.SetPositionAndRotation(position,NativeStandingRules.Facing(mark.rotation,mark.forward,true));seat=null;LastSeating=null;locationName=effect.Symbol;break;
+       var mark=Mark();if(index==plan.MoveIndex)Place(()=>{var position=mark.position;position.y=actor.position.y;actor.SetPositionAndRotation(position,NativeStandingRules.Facing(mark.rotation,mark.forward,true));});seat=null;LastSeating=null;locationName=effect.Symbol;break;
       }
       case VisualIntentKind.DissolveStanding: {
-       var mark=Mark();SampleInitial();actor.SetPositionAndRotation(mark.position,NativeStandingRules.Facing(mark.rotation,mark.forward,true));hidden=false;seat=null;LastSeating=null;locationName=effect.Symbol;break;
+       var mark=Mark();if(plan.SamplesPose(index))SampleInitial();if(index==plan.RootBaseIndex)Place(()=>actor.SetPositionAndRotation(mark.position,NativeStandingRules.Facing(mark.rotation,mark.forward,true)));hidden=false;seat=null;LastSeating=null;locationName=effect.Symbol;break;
       }
       case VisualIntentKind.Sit:case VisualIntentKind.DissolveSeated:
        seat=c.Host.RequireLocation(effect.Symbol).seat;locationName=effect.Symbol;
-       Seated(effect.Kind==VisualIntentKind.Sit?NativeSeatCommand.DefaultSitAt:NativeSeatCommand.SeatedDissolve,effect.Pose);hidden=false;break;
-      case VisualIntentKind.SitPose:Seated(NativeSeatCommand.PersistentSitPose,effect.Pose);break;
-      case VisualIntentKind.Pose:lease.Sample(owner.Pose(effect.Pose).value.Clip);poseName=effect.Pose;break;
+       if(plan.SamplesPose(index))Seated(effect.Kind==VisualIntentKind.Sit?NativeSeatCommand.DefaultSitAt:NativeSeatCommand.SeatedDissolve,effect.Pose);hidden=false;break;
+      case VisualIntentKind.SitPose:if(plan.SamplesPose(index))Seated(NativeSeatCommand.PersistentSitPose,effect.Pose);break;
+      case VisualIntentKind.Pose:if(plan.SamplesPose(index)){lease.Sample(owner.Pose(effect.Pose).value.Clip);poseName=effect.Pose;}break;
       case VisualIntentKind.Material:material=owner.Shader(effect.Symbol);material.ValidateConfiguration();break;
       case VisualIntentKind.BodyHidden: {
-       var mark=Mark();c.Body.transform.SetPositionAndRotation(mark.position,mark.rotation);bodyHidden=true;break;
+       var mark=Mark();Place(()=>c.Body.transform.SetPositionAndRotation(mark.position,mark.rotation));bodyHidden=true;break;
       }
       case VisualIntentKind.BodyShow:bodyHidden=false;break;
       case VisualIntentKind.BodyHide:bodyHidden=true;break;
@@ -89,6 +149,11 @@ namespace DazPose.Editor.Studio {
    }
    // Aim once, after ALL pose/root operations. No diagnostic framing defaults enter this path.
    Present(hidden,bodyHidden,material,camera,track);
+   var cameraMark=camera;bool trackLara=track;
+   spatialUpdates.Add(()=>{
+    if(cameraMark!=null){RequireAnchor(cameraMark,"Camera placement");c.PlayerRoot.position=cameraMark.position;c.ViewRig.rotation=cameraMark.rotation;}
+    if(trackLara)c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(true,c.ViewRig.rotation,c.Host.laraFocus.position,c.Camera.transform.position);
+   });
    Composition="Lara: "+locationName+" / "+poseName+" · camera: "+cameraName+(track?" / Track(Lara)":" / authored rotation")+" · body: "+(bodyHidden.HasValue?(bodyHidden.Value?"hidden":"visible"):"saved baseline");
   }
  }

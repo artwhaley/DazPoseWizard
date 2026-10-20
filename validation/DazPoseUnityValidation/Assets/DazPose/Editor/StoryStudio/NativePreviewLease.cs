@@ -25,6 +25,7 @@ namespace DazPose.Editor.Studio
         bool disposed, applying, restoring, staged, saveSuspended;
         int resumeTicks;
         double nextConflictCheck;
+        internal int SampleCount {get;private set;}
         public string Failure { get; private set; }
         public NativeStageContext Context { get; }
         public string Status { get; private set; }="Acquired";
@@ -67,9 +68,10 @@ namespace DazPose.Editor.Studio
                 if(!ownedObjects.Add(t))continue;
                 ownedObjects.Add(t.gameObject);
                 string path=NativeStageContext.ObjectPath(t);
-                ledger.Capture(path+".position",()=>t.localPosition,v=>{if(t!=null)t.localPosition=v;});
-                ledger.Capture(path+".rotation",()=>t.localRotation,v=>{if(t!=null)t.localRotation=v;});
-                ledger.Capture(path+".scale",()=>t.localScale,v=>{if(t!=null)t.localScale=v;});
+                string group=t==Context.Lara.transform||t==Context.Body.transform||t==Context.PlayerRoot||t==Context.ViewRig?"spatial":null;
+                ledger.Capture(path+".position",()=>t.localPosition,v=>{if(t!=null)t.localPosition=v;},group:group);
+                ledger.Capture(path+".rotation",()=>t.localRotation,v=>{if(t!=null)t.localRotation=v;},group:group);
+                ledger.Capture(path+".scale",()=>t.localScale,v=>{if(t!=null)t.localScale=v;},group:group);
                 // Active state is observed but never deliberately changed. Clip active curves are rejected.
                 ledger.Capture(path+".active",()=>t.gameObject.activeSelf,v=>{if(t!=null && t.gameObject.activeSelf!=v)t.gameObject.SetActive(v);});
             }
@@ -133,6 +135,25 @@ namespace DazPose.Editor.Studio
             catch(Exception error) { Failure=error.Message;Dispose();throw; }
             finally { applying=false; }
         }
+        // Spatial edits keep AnimationMode, the sampled skeleton, materials and all baselines alive.
+        internal void ApplySpatial(Action update) {
+            if(disposed)throw new ObjectDisposedException(nameof(NativePreviewLease));
+            if(saveSuspended)return;
+            if(!staged||!AnimationMode.InAnimationMode(driver))throw new InvalidOperationException("The sampled shot is no longer active.");
+            if(applying)throw new InvalidOperationException("Reentrant native spatial update refused.");
+            if(ledger.Conflicts("spatial").Length!=0)throw new InvalidOperationException("A preview root was edited outside the directing controls.");
+            applying=true;
+            try{try{update();}finally{ledger.RecordApplied("spatial");}NativeStageContext.RefreshViews();}
+            catch(Exception error){Failure=error.Message;Dispose();throw;}
+            finally{applying=false;}
+        }
+        // SaveAssetIfDirty on this exact source-binding asset cannot serialize scene preview properties.
+        // All ordinary saves, scene saves and prefab operations still use the full suspension boundary.
+        static string bindingSavePath;
+        internal static void SaveBindings(DazPose.Story.StoryContentBindings content){
+            string prior=bindingSavePath;bindingSavePath=AssetDatabase.GetAssetPath(content);
+            try{AssetDatabase.SaveAssetIfDirty(content);}finally{bindingSavePath=prior;}
+        }
         internal Material MaterialFor(Renderer renderer,int slot,Material source) {
             var key=(renderer,slot,source);
             if(!materials.TryGetValue(key,out var clone)||clone==null){clone=new Material(source){hideFlags=HideFlags.HideAndDontSave};materials[key]=clone;}
@@ -144,9 +165,13 @@ namespace DazPose.Editor.Studio
             ValidateClip(clip);
             var root=Context.Lara.transform;
             Vector3 position=root.position,scale=root.localScale;Quaternion rotation=root.rotation;
-            try { sampler.GetOrCreate(()=>new NativePoseSampler(Context.Lara.ConfiguredAnimator)).Sample(clip,seconds); }
+            try { sampler.GetOrCreate(()=>new NativePoseSampler(Context.Lara.ConfiguredAnimator)).Sample(clip,seconds);SampleCount++; }
             finally { root.SetPositionAndRotation(position,rotation);root.localScale=scale; }
 
+        }
+        internal string[] ClipProperties(AnimationClip clip){
+            ValidateClip(clip);
+            return AnimationUtility.GetCurveBindings(clip).Select(b=>b.type.FullName+"|"+b.path+"|"+b.propertyName).ToArray();
         }
         internal void ValidateClip(AnimationClip clip)
         {
@@ -198,8 +223,8 @@ namespace DazPose.Editor.Studio
         }
         internal static string[] BeforeAssetSave(string[] paths)
         {
-            // Asset saves may include prefab Apply/Save As; suspend for ALL paths. Never filter normal saves.
-            active?.SuspendForSave();return paths;
+            // Only a scoped, exact typed-binding asset save avoids suspension. All normal/prefab saves suspend.
+            if(string.IsNullOrEmpty(bindingSavePath)||paths.Any(path=>path!=bindingSavePath))active?.SuspendForSave();return paths;
         }
         void SceneSaving(Scene scene,string path) { SuspendForSave(); }
         void SceneSaved(Scene scene) { if(saveSuspended)resumeTicks=2; }
@@ -211,7 +236,7 @@ namespace DazPose.Editor.Studio
                 if(EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode || Context.Host==null
                     || Context.Scene!=SceneManager.GetActiveScene() || Context.Scene.path!=originalScenePath || PrefabStageUtility.GetCurrentPrefabStage()!=null)
                 {Dispose();return;}
-                if(staged && EditorApplication.timeSinceStartup>=nextConflictCheck)
+                if(staged && !NativePreviewInteraction.IsDragging && EditorApplication.timeSinceStartup>=nextConflictCheck)
                 {
                     nextConflictCheck=EditorApplication.timeSinceStartup+.1;
                     var conflicts=ledger.Conflicts();
@@ -226,7 +251,10 @@ namespace DazPose.Editor.Studio
             }
             catch(Exception error){Failure=error.Message;Dispose();Debug.LogException(error);}
         }
-        void UndoRedo() { if(!disposed && !saveSuspended && projection!=null)Apply(projection); }
+        void UndoRedo() { if(!disposed && !saveSuspended && projection!=null){
+            if(SpatialUndo!=null)SpatialUndo();else Apply(projection);
+        } }
+        internal Action SpatialUndo;
         UndoPropertyModification[] AuthorModified(UndoPropertyModification[] changes)
         {
             if(!disposed && !applying && !restoring && !saveSuspended && changes.Any(m=>ownedObjects.Contains(m.currentValue.target)))

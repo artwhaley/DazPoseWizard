@@ -2,6 +2,19 @@
 
 Status: **WAITING ON ART**. Art rejected the first integrated Studio because its interface did not support the requested workflow. This correction is source-checked, not native-accepted. G1–G3 remain historical user acceptance. No screenshots required. Executor never runs Unity.
 
+## Current retry — mark editing and pose replacement performance
+
+Art reported the cue inspector is closer, but mark movement/rotation stalls and pose replacement resets the composition. The performance correction passes source/managed checks and awaits native retry; G4 remains unaccepted.
+
+In the same isolated project and saved scene below, after the code imports:
+
+1. Open Studio and select Intro's **SexyVamp** cue. Leave the new toolbar **Live drag** toggle **off** initially. Select **stepforward** from the cue inspector. Move it with **W**, rotate it with **E**, and release the handle. The handle should move smoothly; the real Lara/camera shot updates at release while retaining the pose. Try **camera_start** the same way.
+2. Turn **Live drag** **on** to try placement updates during dragging. This path updates only the retained roots/camera; it samples no poses and replays no story. If HDRP rendering still makes dragging heavy, leave it off and use release updates.
+3. Drop another valid **PerformerPose** into **SexyVamp**, keeping its existing **World posture** metadata. The same selected cue, actor/body marks, camera rules, scenario/history and seed must remain. The replacement is sampled and restaged in one update; actors/camera must not visibly reset to the saved baseline or march through setup. Undo/Redo the assignment and repeat. Changing posture/readiness or script logic may require canonical reevaluation, but the preview lease is retained whenever the scene roles still match.
+4. At **PersistentSitPose(Lounging)**, replace a seated pose and move/rotate the seat position. Verify the hip still follows the seat. Check the separate default **SitAt(Lounger)** endpoint too. Ctrl+S/Stop must still restore temporary properties and preserve authored edits.
+
+If recording with the G4 diagnostic panel, each observation now includes `fullProjections`, `spatialProjections`, `poseSamples` and `lastProjectionMilliseconds`. Mark edits should increase spatial projections without increasing full projections/pose samples. Pose replacement may increase full projection/sample counts, with unchanged history/Director state. These are diagnostic counters, not an executor claim of native speed. No screenshots required.
+
 ## First, try one actual authoring pass
 
 Use Unity **6000.5.9f1**, the existing isolated project:

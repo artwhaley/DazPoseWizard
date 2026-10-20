@@ -61,6 +61,7 @@ namespace DazPose.Editor.Studio
         void Release(){presentedKey=null;nativeContext=null;StopRehearsal();StopAudio();stage?.Dispose();stage=null;if(audioEditor!=null)DestroyImmediate(audioEditor);audioEditor=null;}
         void SceneChanged(Scene oldScene,Scene newScene){Release();host=null;error="Scene changed. Select the saved scene host and reconnect native directing.";Repaint();}
         void Tick() {
+            if(NativePreviewInteraction.IsDragging){if(updateWhileDragging)PollNativeAnchors();return;}
             if(rehearsal!=null||stage!=null){CheckRevision();DrainRehearsal();PollNativeAnchors();}
             if(source!=null) {
                 string path=AssetDatabase.GetAssetPath(source);
@@ -126,7 +127,7 @@ namespace DazPose.Editor.Studio
                 EditorGUILayout.PropertyField(row.FindPropertyRelative("posture"),new GUIContent("World posture"));
                 EditorGUILayout.LabelField("Shared pose slot: "+r.Alias+" · "+r.Occurrences.Length+" cue(s) in this source",EditorStyles.wordWrappedMiniLabel);
             }
-            if(serialized.ApplyModifiedProperties()){AssetDatabase.SaveAssetIfDirty(content);QueueCueRefresh();}
+            if(serialized.ApplyModifiedProperties()){NativePreviewLease.SaveBindings(content);QueueBindingRefresh();}
             var value=Value(r);
             if(value==null){EditorGUILayout.HelpBox("Unbound. Drag the requested asset type from Project.",MessageType.Warning);return;}
             if(value is AudioClip audio)DrawAudio(audio);

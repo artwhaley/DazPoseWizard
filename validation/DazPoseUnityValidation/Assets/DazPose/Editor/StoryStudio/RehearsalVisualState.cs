@@ -12,6 +12,36 @@ namespace DazPose.Editor.Studio {
   public bool Awaited {get;}
   public VisualIntent(VisualIntentKind kind,string symbol,string pose,StoryCommand command){Kind=kind;Symbol=symbol;Pose=pose;Source=command.Source;Visit=command.Visit;Awaited=command.Awaited;}
  }
+ /// <summary>Backward dependency slice for a settled shot; no interpreter or branch evaluation.</summary>
+ public sealed class NativeProjectionPlan {
+  readonly HashSet<int> samples=new HashSet<int>();
+  public int PoseIndex {get;private set;}=-1;
+  public int RootBaseIndex {get;private set;}=-1;
+  public int MoveIndex {get;private set;}=-1;
+  public NativeProjectionPlan(IReadOnlyList<VisualIntent> effects,IReadOnlyList<string[]> properties=null){
+   for(int i=0;i<effects.Count;i++){
+    var kind=effects[i].Kind;
+    if(kind==VisualIntentKind.Idle||kind==VisualIntentKind.Pose||kind==VisualIntentKind.DissolveStanding||kind==VisualIntentKind.Sit||kind==VisualIntentKind.SitPose||kind==VisualIntentKind.DissolveSeated)PoseIndex=i;
+    if(kind==VisualIntentKind.Hidden||kind==VisualIntentKind.DissolveIn||kind==VisualIntentKind.DissolveStanding||kind==VisualIntentKind.Sit||kind==VisualIntentKind.SitPose||kind==VisualIntentKind.DissolveSeated){RootBaseIndex=i;MoveIndex=-1;}
+    else if(kind==VisualIntentKind.Move)MoveIndex=i;
+   }
+   var covered=new HashSet<string>(StringComparer.Ordinal);
+   for(int i=effects.Count-1;i>=0;i--){
+    var kind=effects[i].Kind;
+    bool seat=kind==VisualIntentKind.Sit||kind==VisualIntentKind.SitPose||kind==VisualIntentKind.DissolveSeated;
+    bool pose=seat||kind==VisualIntentKind.Idle||kind==VisualIntentKind.Pose||kind==VisualIntentKind.DissolveStanding;
+    if(!pose)continue;
+    // A seat that establishes later root height consumes its own sampled hip BEFORE later poses.
+    if(seat&&i==RootBaseIndex)covered.Clear();
+    var keys=properties==null?null:properties[i];
+    bool needed=keys==null||i==PoseIndex||seat&&i==RootBaseIndex;
+    if(keys!=null)foreach(var key in keys)if(!covered.Contains(key))needed=true;
+    if(needed){samples.Add(i);if(seat)covered.Clear();}
+    if(keys!=null)foreach(var key in keys)covered.Add(key);
+   }
+  }
+  public bool SamplesPose(int index)=>samples.Contains(index);
+ }
  /// <summary>Ordered executed visual intent only. No parsing, condition evaluation, card selection or RNG.</summary>
  public sealed class RehearsalVisualState {
   readonly List<VisualIntent> effects;
