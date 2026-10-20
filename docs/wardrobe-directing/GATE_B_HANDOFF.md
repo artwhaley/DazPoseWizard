@@ -10,3 +10,10 @@ The source is ready. Art operates Unity; native acceptance is pending. This temp
 6. Click **Write report**, then exit Play. Report location: `docs/wardrobe-directing/evidence/gate-b-native.json`. Reply **B PASS** if the ordinary returns looked correct and report is PASS, or give the failed case label and what happened. No screenshots needed.
 
 All managed checks passing does not establish native success. W08 starts after Art accepts Gate B. The fixture scene and one-use setup/runner will be retired after acceptance; production wardrobe assets/GUIDs remain.
+
+
+## Retry after the pose-layout failure
+
+Exit Play and let compilation finish. The existing saved Gate B scene can be reused. Enter fresh Play, choose Standing / Fixed, then click Run direct card first. It holds the entrance for two seconds, changes Lara's outfit/hair/pose/location and the camera, holds that outgoing state for two seconds, then returns. Check that the opening clothes/hair, pose/place and camera return; the panel should say Finished and direct: PASS. If FAIL, click Write report and stop.
+
+If direct passes, run all technical checks. The suite now stops at the first unexpected FAIL. Write report even if it stops. If the suite passes, run direct once more and press Stop current run during its outgoing-state hold, then Write report. Tell us whether the ordinary return looked correct as well as any failed label.

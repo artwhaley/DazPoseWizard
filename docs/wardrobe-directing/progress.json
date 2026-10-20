@@ -167,8 +167,8 @@
     "B": {
       "status": "WAITING_ON_ART",
       "revision": "See local commit: Implement protected card return and deliver Gate B",
-      "nativeEvidence": null,
-      "artResponse": "No UI when entering Play; Gate B not accepted.",
+      "nativeEvidence": "evidence/gate-b-native-20261020-pose-layout-failure.json",
+      "artResponse": "Art ran all technical checks and wrote report; no visual acceptance given. Report has 32 failed cases from pose snapshot layout failure; interactive Stop unrun.",
       "acceptedCases": [],
       "notRunCases": [
         "All Gate B native cases: Art has not operated this source revision."
@@ -188,6 +188,14 @@
           "reason": "Save prompt persisted builder host-disable changes and Unity empty-field normalization; byte identity check rejected retry. Scene has no runner.",
           "resolution": "Preserve scene and meta to verified content-addressed recovery outside Assets before rebuilding only disposable Gate B scene.",
           "status": "RETRY_REQUIRED"
+        },
+        {
+          "revision": "d965002",
+          "case": "All technical checks",
+          "reason": "32/32 cases FAIL. First wardrobe switch changes mesh morph count; subsequent pose sampling restores an older fixed-size snapshot with live mesh count, causing IndexOutOfRangeException and cascading setup failures.",
+          "resolution": "Stable renderer/name pose slot layout; current mesh indices resolved by name; wardrobe-added fit shapes remain wardrobe owned. Neutral pose transition completion corrected. Suite stops first unexpected failure.",
+          "status": "RETRY_REQUIRED",
+          "evidence": "evidence/gate-b-native-20261020-pose-layout-failure.json"
         }
       ]
     },

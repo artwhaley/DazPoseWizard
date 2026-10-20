@@ -27,6 +27,9 @@ namespace DazPose.Performer
         private readonly PlayableGraph _graph;
         private readonly Transform[] _transforms;
         private readonly SkinnedMeshRenderer[] _blendShapeRenderers;
+        // Pose graph slots retain renderer/name identity across wardrobe mesh replacements.
+        // Fit-only morphs added by wardrobe are owned by wardrobe, not new pose graph slots.
+        private readonly (SkinnedMeshRenderer Renderer, string Name)[] _blendShapeBindings;
         private readonly PerformerPoseSnapshot _neutralState;
         private readonly bool _animateActorRoot;
 
@@ -70,6 +73,12 @@ namespace DazPose.Performer
             _animateActorRoot = animateActorRoot;
             _transforms = animator.GetComponentsInChildren<Transform>(true);
             _blendShapeRenderers = animator.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            var bindings = new List<(SkinnedMeshRenderer Renderer, string Name)>();
+            foreach(var renderer in _blendShapeRenderers)
+                if(renderer != null && renderer.sharedMesh != null)
+                    for(int index=0;index<renderer.sharedMesh.blendShapeCount;index++)
+                        bindings.Add((renderer,renderer.sharedMesh.GetBlendShapeName(index)));
+            _blendShapeBindings=bindings.ToArray();
             _neutralState = neutralState ?? CaptureLiveState();
             if (_neutralState.Transforms.Length != _transforms.Length
                 || _neutralState.BlendShapes.Length != CountBlendShapes())
@@ -179,15 +188,11 @@ namespace DazPose.Performer
 
         public int GetBlendShapeStreamIndex(SkinnedMeshRenderer renderer, int shapeIndex)
         {
-            var streamIndex = 0;
-            foreach (var candidate in _blendShapeRenderers)
-            {
-                var mesh = candidate == null ? null : candidate.sharedMesh;
-                if (mesh == null) continue;
-                if (candidate == renderer)
-                    return shapeIndex >= 0 && shapeIndex < mesh.blendShapeCount ? streamIndex + shapeIndex : -1;
-                streamIndex += mesh.blendShapeCount;
-            }
+            var mesh=renderer==null?null:renderer.sharedMesh;
+            if(mesh==null||shapeIndex<0||shapeIndex>=mesh.blendShapeCount)return -1;
+            string name=mesh.GetBlendShapeName(shapeIndex);
+            for(int index=0;index<_blendShapeBindings.Length;index++)
+                if(_blendShapeBindings[index].Renderer==renderer&&_blendShapeBindings[index].Name==name)return index;
             return -1;
         }
 
@@ -232,26 +237,14 @@ namespace DazPose.Performer
                 _transformHandles[index] = _animator.BindStreamTransform(_transforms[index]);
             }
 
-            var handleIndex = 0;
-            foreach (var renderer in _blendShapeRenderers)
+            for(int index=0;index<_blendShapeBindings.Length;index++)
             {
-                var mesh = renderer == null ? null : renderer.sharedMesh;
-                if (mesh == null) continue;
-                for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
-                {
-                    var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
-                    var shapeName = mesh.GetBlendShapeName(shapeIndex);
-                    if (PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, shapeName))
-                    {
-                        // An unbound handle is skipped by each BodyPose job. SALSA remains the only
-                        // graph/runtime writer for this exact renderer/name pair.
-                        _blendShapeHandles[handleIndex++] = default;
-                        continue;
-                    }
-                    var propertyName = "blendShape." + mesh.GetBlendShapeName(shapeIndex);
-                    _blendShapeHandles[handleIndex++] = _animator.BindStreamProperty(
-                        renderer.transform, typeof(SkinnedMeshRenderer), propertyName);
-                }
+                var binding=_blendShapeBindings[index];
+                if(binding.Renderer==null)continue;
+                var rendererPath=PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform,binding.Renderer.transform);
+                if(PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath,binding.Name))continue;
+                _blendShapeHandles[index]=_animator.BindStreamProperty(binding.Renderer.transform,
+                    typeof(SkinnedMeshRenderer),"blendShape."+binding.Name);
             }
 
             var neutral = CaptureLiveState();
@@ -312,7 +305,6 @@ namespace DazPose.Performer
 
         private void CompleteTransition()
         {
-            if (DesiredPose == null) return;
             CopyNativeState(_targetTransforms, _targetBlendShapes, _sourceTransforms, _sourceBlendShapes);
             SetMixerWeights(0f);
             SetTrajectoryProgress(1f);
@@ -381,19 +373,15 @@ namespace DazPose.Performer
                 };
             }
 
-            var blendShapeIndex = 0;
-            foreach (var renderer in _blendShapeRenderers)
+            for(int index=0;index<_blendShapeBindings.Length;index++)
             {
-                var mesh = renderer == null ? null : renderer.sharedMesh;
-                if (mesh == null) continue;
-                for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
-                {
-                    var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
-                    var shapeName = mesh.GetBlendShapeName(shapeIndex);
-                    snapshot.BlendShapes[blendShapeIndex++] = PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, shapeName)
-                        ? PerformerLipSyncMorphCatalog.RestUnityWeight
-                        : renderer.GetBlendShapeWeight(shapeIndex);
-                }
+                var binding=_blendShapeBindings[index];
+                var renderer=binding.Renderer;var mesh=renderer==null?null:renderer.sharedMesh;
+                int shape=mesh==null?-1:mesh.GetBlendShapeIndex(binding.Name);
+                if(shape<0)continue;
+                var path=PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform,renderer.transform);
+                snapshot.BlendShapes[index]=PerformerLipSyncMorphCatalog.IsOwnedBinding(path,binding.Name)
+                    ? PerformerLipSyncMorphCatalog.RestUnityWeight:renderer.GetBlendShapeWeight(shape);
             }
             return snapshot;
         }
@@ -420,20 +408,7 @@ namespace DazPose.Performer
                 transform.localScale = state.LocalScale;
             }
 
-            var blendShapeIndex = 0;
-            foreach (var renderer in _blendShapeRenderers)
-            {
-                var mesh = renderer == null ? null : renderer.sharedMesh;
-                if (mesh == null) continue;
-                for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
-                {
-                    var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
-                    var shapeName = mesh.GetBlendShapeName(shapeIndex);
-                    var weight = _neutralState.BlendShapes[blendShapeIndex++];
-                    if (!PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, shapeName))
-                        renderer.SetBlendShapeWeight(shapeIndex, weight);
-                }
-            }
+            RestoreBlendShapes(_neutralState);
         }
 
         private void RestoreState(PerformerPoseSnapshot snapshot)
@@ -448,20 +423,20 @@ namespace DazPose.Performer
                 transform.localRotation = state.LocalRotation;
                 transform.localScale = state.LocalScale;
             }
+            RestoreBlendShapes(snapshot);
+        }
 
-            var blendShapeIndex = 0;
-            foreach (var renderer in _blendShapeRenderers)
+        private void RestoreBlendShapes(PerformerPoseSnapshot snapshot)
+        {
+            for(int index=0;index<_blendShapeBindings.Length;index++)
             {
-                var mesh = renderer == null ? null : renderer.sharedMesh;
-                if (mesh == null) continue;
-                for (var shapeIndex = 0; shapeIndex < mesh.blendShapeCount; shapeIndex++)
-                {
-                    var rendererPath = PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform, renderer.transform);
-                    var shapeName = mesh.GetBlendShapeName(shapeIndex);
-                    var weight = snapshot.BlendShapes[blendShapeIndex++];
-                    if (!PerformerLipSyncMorphCatalog.IsOwnedBinding(rendererPath, shapeName))
-                        renderer.SetBlendShapeWeight(shapeIndex, weight);
-                }
+                var binding=_blendShapeBindings[index];
+                var renderer=binding.Renderer;var mesh=renderer==null?null:renderer.sharedMesh;
+                int shape=mesh==null?-1:mesh.GetBlendShapeIndex(binding.Name);
+                if(shape<0)continue;
+                var path=PerformerLipSyncMorphCatalog.GetRelativePath(_animator.transform,renderer.transform);
+                if(!PerformerLipSyncMorphCatalog.IsOwnedBinding(path,binding.Name))
+                    renderer.SetBlendShapeWeight(shape,snapshot.BlendShapes[index]);
             }
         }
 
@@ -512,16 +487,7 @@ namespace DazPose.Performer
                 destinationBlendShapes[index] = sourceBlendShapes[index];
         }
 
-        private int CountBlendShapes()
-        {
-            var count = 0;
-            foreach (var renderer in _blendShapeRenderers)
-            {
-                if (renderer != null && renderer.sharedMesh != null)
-                    count += renderer.sharedMesh.blendShapeCount;
-            }
-            return count;
-        }
+        private int CountBlendShapes() => _blendShapeBindings.Length;
 
         private void ThrowIfDisposed()
         {

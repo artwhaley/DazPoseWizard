@@ -1,0 +1,25 @@
+{
+  "classification": "Source/managed checks; native retry pending Art",
+  "nativeReportSha256": "5ea70b8926f4822746cfc473cdae5e68ea360a5b1ab2bc7c9fbdfe1f0429fb0b",
+  "nativeReportCases": {
+    "FAIL": 32,
+    "PASS": 0
+  },
+  "sourceAssembliesPassed": 7,
+  "managedPassed": {
+    "story": 108,
+    "rehearsal": 93,
+    "wardrobeScope": 25
+  },
+  "changedSources": [
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/PerformerBodyPose.cs",
+      "sha256": "cdfb0cca462aec7b28c6fbb2916b28179a8f91a13d7afa8c25daa85f268e7d32"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/CardReturnGateRunner.cs",
+      "sha256": "b6217ef30d575769281f42c280f0088aab596ea622d03cfa7a214ad66ddd7b38"
+    }
+  ],
+  "executorUnityOperation": false
+}

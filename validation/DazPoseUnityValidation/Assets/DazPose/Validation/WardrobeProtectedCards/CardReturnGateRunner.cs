@@ -25,7 +25,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
   public string sceneGuid;string runningFingerprint;
   void Awake(){runningFingerprint=CurrentFingerprint();}
   readonly List<Result> results=new List<Result>();
-  bool busy;string status="Choose an entry posture/camera, then run a labelled case. No case runs automatically.";int posture,camera;bool hidden;Vector2 scroll;
+  bool busy;string status="Start with Run direct card. Watch the changed look/place/camera return to its entrance. If PASS, run all technical checks. A FAIL stops the suite; write report.";int posture,camera;bool hidden;Vector2 scroll;
   PerformanceRun active;CancellationTokenSource lifetime;Result current;Transform disposableTarget;string invalidFitJson;WardrobeFitState invalidFit;
   void OnDisable(){StopCurrent();RestoreFaultFit();}
   void StopCurrent(){lifetime?.Cancel();active?.Stop();}
@@ -39,7 +39,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
    Button("Run parent motion ownership",()=>Case("parent-motion","Motion",0,1,false));Button("Run Stop checkpoints",StopMatrix);Button("Run fault cases",FaultMatrix);Button("Run remaining combinations",Combinations);
    if(GUILayout.Button("Write report"))WriteReport();GUI.enabled=busy;if(GUILayout.Button("Stop current run"))InteractiveStop();GUI.enabled=true;GUILayout.Label("Report: docs/wardrobe-directing/evidence/gate-b-native.json");foreach(var result in results.TakeLast(8))GUILayout.Label(result.id+": "+result.status+(result.error==null?"":" — "+result.error));GUILayout.EndScrollView();GUILayout.EndArea();}
   void Button(string label,Func<Task> action){if(GUILayout.Button(label))StartCase(action);}
-  async void StartCase(Func<Task> action){if(busy)return;busy=true;lifetime=new CancellationTokenSource();try{await action();status="Finished. Inspect the case result, then choose the next check.";}catch(Exception error){status=error.ToString();}finally{busy=false;lifetime.Dispose();lifetime=null;}}
+  async void StartCase(Func<Task> action){if(busy)return;busy=true;lifetime=new CancellationTokenSource();try{await action();status="Finished. Inspect the case result, then choose the next check.";}catch(Exception error){status=error.Message+" Write report and send the failed case label; do not continue testing.";}finally{busy=false;lifetime.Dispose();lifetime=null;}}
   async Task AllCases(){await Case("direct","Direct",0,0,false);await Case("explicit","Explicit",0,0,false);await Case("draw","Draw",0,0,false);await Case("nested","Nested",0,0,false);await Case("persistent","Persistent",0,0,false);await Case("contained","Contained",0,0,false);await Case("unchanged","Unchanged",0,0,false);await Case("parent-motion","Motion",0,1,false);await Combinations();await StopMatrix();await FaultMatrix();}
   async Task Combinations(){for(int p=0;p<3;p++)for(int c=0;c<2;c++){lifetime.Token.ThrowIfCancellationRequested();await Case("combination-"+p+"-"+c,"Direct",p,c,false);}await Case("hidden-fixed","Direct",0,0,true);await Case("hidden-track","Direct",0,1,true);}
   async Task StopMatrix(){foreach(string phase in new[]{"BodyHold","BodySettled","Prepared","ConcealLara","LaraConcealed","WardrobeCommit","RelocationCommit","PoseBlend","RevealLara","ViewBlend","Verify","Verified"}){lifetime.Token.ThrowIfCancellationRequested();await Case("stop-"+phase,"Direct",0,0,false,phase);}}
@@ -131,6 +131,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
     result.status="PASS";
    }catch(Exception error){result.status="FAIL";result.error=error.ToString();status=result.error;}
    finally{RestoreFaultFit();if(disposableTarget!=null)Destroy(disposableTarget.gameObject);disposableTarget=null;context?.Dispose();run.Dispose();performance.Playback?.StopMotion();active=null;current=null;}
+   if(result.status=="FAIL")throw new InvalidOperationException("Gate B stopped at failed case "+result.id+".");
   }
   void RestoreFaultFit(){if(invalidFit!=null && invalidFitJson!=null)JsonUtility.FromJsonOverwrite(invalidFitJson,invalidFit);invalidFit=null;invalidFitJson=null;}
   static async Task Wait(float seconds,CancellationToken token){float elapsed=0;while(elapsed<seconds){token.ThrowIfCancellationRequested();await Awaitable.NextFrameAsync(token);elapsed+=Mathf.Max(0,Time.deltaTime);}}
