@@ -22,7 +22,7 @@
     {"id":"W09","status":"NOT_STARTED","dependencies":["C_PASS"],"evidence":[],"nativeGate":"D"}
   ],
   "gates": {
-    "A":{"status":"WAITING_ON_ART","revision":"24a08df","nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":["All native prefab generation, fitting, hair/layer visualization, and second-actor ownership cases."],"invalidations":[]},
+    "A":{"status":"WAITING_ON_ART","revision":"cb22e10","nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":["All native prefab generation, fitting, hair/layer visualization, and second-actor ownership cases."],"invalidations":[]},
     "B":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]},
     "C":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]},
     "D":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]}

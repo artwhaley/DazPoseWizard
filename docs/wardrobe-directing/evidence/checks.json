@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "ticket": "W02/W03 SOURCE_READY",
-  "capturedUtc": "2026-10-20T08:39:44.841534Z",
+  "capturedUtc": "2026-10-20T08:41:26.868481Z",
   "baselineRevision": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
   "branch": "main",
   "protectedBaselineEntries": 42,
@@ -131,7 +131,7 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs",
-      "sha256": "f1dcfe10cd368d160182e8dea4985d6434ffe5c0743cf8f8b6105b2aca62ad0d"
+      "sha256": "959180edf877afa4b0d504b17c0c03980b6b447519f3d8acbaba68e37a57add6"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeCorrectedCandidateBuilder.cs",
@@ -139,7 +139,7 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeProtectedCardsFixtureBuilder.cs",
-      "sha256": "e5933384cb39c49f53cbf81e8c6307922daf03d7be7e95801f6f740d72a8494b"
+      "sha256": "25c71feeff72e4d11f16101b8a34bb1a31cb74d6cddc2eb1aa29c1eae221c93e"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeRigAssetBuilder.cs",
@@ -191,7 +191,7 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/AppearanceGateRunner.cs",
-      "sha256": "361916db9fe38c37a744a29fb347a8a27b0f34eb5d44af0a90b0aacb8b8f4e90"
+      "sha256": "502eeed2f650c46760ccc4d3f43fc8053950139801737fc9897084bd6eb371ab"
     },
     {
       "path": "tests/DazPose.Wardrobe.Tests/WardrobeSelectionTests.cs",
