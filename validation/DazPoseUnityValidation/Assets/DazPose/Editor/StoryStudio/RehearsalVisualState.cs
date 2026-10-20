@@ -16,6 +16,9 @@ namespace DazPose.Editor.Studio {
  public sealed class RehearsalVisualState {
   readonly List<VisualIntent> effects;
   public IReadOnlyList<VisualIntent> Effects=>effects.AsReadOnly();
+  // Only operations that can change the settled native shot participate. Source owner matters
+  // for source-local pose/material aliases; visit/line do not change their visual meaning.
+  public string PresentationKey {get;private set;}="";
   public string Observation {get;private set;}
   public string CameraAnchor {get;private set;}
   public bool TrackLara {get;private set;}
@@ -26,7 +29,7 @@ namespace DazPose.Editor.Studio {
   public bool? BodyHidden {get;private set;}
   public string Material {get;private set;}
   public RehearsalVisualState(){effects=new List<VisualIntent>();}
-  RehearsalVisualState(RehearsalVisualState other){effects=new List<VisualIntent>(other.effects);Observation=other.Observation;CameraAnchor=other.CameraAnchor;TrackLara=other.TrackLara;ActorLocation=other.ActorLocation;PersistentPose=other.PersistentPose;Seated=other.Seated;ActorHidden=other.ActorHidden;BodyHidden=other.BodyHidden;Material=other.Material;}
+  RehearsalVisualState(RehearsalVisualState other){effects=new List<VisualIntent>(other.effects);PresentationKey=other.PresentationKey;Observation=other.Observation;CameraAnchor=other.CameraAnchor;TrackLara=other.TrackLara;ActorLocation=other.ActorLocation;PersistentPose=other.PersistentPose;Seated=other.Seated;ActorHidden=other.ActorHidden;BodyHidden=other.BodyHidden;Material=other.Material;}
   public RehearsalVisualState After(StoryCommand command) {
    var next=new RehearsalVisualState(this);string symbol=null,pose=null;VisualIntentKind kind;
    string Arg(string name)=>command.Require(name).String;
@@ -67,7 +70,13 @@ namespace DazPose.Editor.Studio {
     case VisualIntentKind.BodyShow:next.BodyHidden=false;break;
     case VisualIntentKind.Material:next.Material=symbol;break;
    }
-   next.effects.Add(new VisualIntent(kind,symbol,pose,command));return next;
+   next.effects.Add(new VisualIntent(kind,symbol,pose,command));
+   if(kind!=VisualIntentKind.Speech&&kind!=VisualIntentKind.Gesture&&kind!=VisualIntentKind.Grip&&kind!=VisualIntentKind.Motion){
+    string owner=command.Source?.unit??command.Source?.file??"";
+    string Part(string value)=>(value??"").Length+":"+(value??"");
+    next.PresentationKey+=((int)kind)+"|"+Part(owner)+Part(symbol)+Part(pose)+";";
+   }
+   return next;
   }
  }
 }

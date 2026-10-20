@@ -1,57 +1,52 @@
-# G4 — actual Scene Director Studio
+# G4 retry — cue authoring interface
 
-Status: WAITING ON ART. This is the integrated authoring Studio, not G2/G3 fixed shots. G1–G3 are accepted from Art’s reports. No executor Unity operation. No screenshots required.
+Status: **WAITING ON ART**. Art rejected the first integrated Studio because its interface did not support the requested workflow. This correction is source-checked, not native-accepted. G1–G3 remain historical user acceptance. No screenshots required. Executor never runs Unity.
 
-## Open exactly this
+## First, try one actual authoring pass
 
-- Unity 6000.5.9f1 project: `C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/native-directing/G1Project`
-- Saved scene: `Assets/__NativeDirectingFixtures/G1_FirstContact.unity` (the same scene you used at G3).
-- Stop the G3 preview first. Preserve/save any chair/mark edits you intend to keep. Let code finish importing/compiling. Keep Unity’s ordinary Scene and Game tabs visible. Stay in Edit Mode.
-- Open **DazPose > Story > Native Directing Diagnostics > G4 Full Regression Export**. Click **1. Begin G4 — capture baseline, open Studio**. This requires a saved, clean disposable scene and no other preview owner.
-- In **Scene Director Studio**, click **Start directing**. It finds Game Session and FirstContact automatically; **Find scene/source** retries. The separate G4 panel records evidence. Neither panel chooses a nicer camera angle.
+Use Unity **6000.5.9f1**, the existing isolated project:
 
-## 1. Actual source cues and camera
+`C:/Users/artwh/OneDrive/Documents/DazPoseWizard/.dazposewizard/native-directing/G1Project`
 
-In Studio’s **Cues** tab, type into the search field and click the actual source row. **After cue** is the normal setting; a click replays the same canonical seed/scenario through that exact owner/entry/PC/visit. Clear search to see the surrounding source. **Previous/Next** step canonical instructions. The displayed next instruction is before its execution; the selected-result message identifies the selected after/before result.
+Open its saved scene **Assets/__NativeDirectingFixtures/G1_FirstContact.unity**. Preserve existing fixture edits. Let Unity finish importing the synchronized code. Keep **Scene** and **Game** visible, in Edit Mode. Stop any G2/G3 diagnostic preview.
 
-Check these in order:
+1. Open **DazPose > Story > Scene Director Studio**. The window should show **Script cues** on the left and the selected cue's inspector on the right. It finds the saved scene/script automatically; **Scene / script > Find open scene** reconnects if needed. There is no Start directing step.
+2. In the left search box, type **SexyVamp**, then click **await Lara.PersistentPose(SexyVamp)** under **Intro**. Leave **After this cue** selected. Lara should appear at `stepforward`, in the assigned pose, with the script's tracking camera. Clear search to see the entire cue list.
+3. On the right, the **SexyVamp** block is the pose slot. Drag a generated **PerformerPose** asset from Unity's Project window onto the large assignment field. The same cue should refresh automatically. This edits the named source-owned binding; other uses of SexyVamp in that same source share it. Use Undo if this was only a trial.
+4. In the same right panel, find **stepforward — Performer position · carried into this cue**. Click **Select stepforward**, then drag its Move arrows in the Scene view. Lara should follow while retaining the pose. **Frame** locates the mark in Scene view. Press **E** to rotate a selected mark. Undo/Redo should restage the same cue.
+5. Still in that panel, find **camera_start — Camera position · carried into this cue**. Select it and move it to reframe the shot. Because this cue follows Camera.Track(Lara), camera aim follows Lara's actual head target. The contextual **Camera aim** block selects that target's local offset. To inspect camera_start's own authored rotation, click **Camera.StartAt(camera_start)** in setup instead; tracking has not yet executed there.
+6. Use **Next cue** / **Previous cue**, or click a different row on the left. No Bindings tab is involved. A following dialogue cue should retain the shot and expose its dialogue audio plus the pose/marks already in effect. Try the Warmup **SitAt(Lounger)** and **PersistentSitPose(Lounging)** cues: their inspector exposes **Lounger**, the seat, seat position and approach position. Drag the pose into the Lounging field and select/move the seat position from that panel.
 
-1. Search `DissolveIn(lara_start)` and click the Intro row. Then `SexyVamp` and click **Intro’s** `await Lara.PersistentPose(SexyVamp)` row. Lara must be at stepforward in that pose. The source already executed Camera.Track(Lara), so the real Game camera tracks her actual head-relative focus.
-2. Search `GlowyWireframe`, click Intro’s MagicShader row, then select Intro’s `MagicShader(Regular)` row. Inspect both looks. Select the following Say row: the shot and pose must persist.
-3. Search `DissolveTo(Lounger)` and choose Intro’s row **without seated:**. This is standing and resets to configured InitialPose. Then search `SitAt(Lounger)` for Warmup’s default CrossLegs endpoint; choose `PersistentSitPose(Lounging)` for the distinct hip-corrected pose.
-4. Search `DissolveTo(Lounger, seated: Lounging)` for Main’s later seated endpoint. Canonical replay includes the preceding Director visits. Search `DissolveTo(MainPosition1)` for the later standing return. The G3 focus-selection label is not part of these camera rules.
-5. Search `PlayerBody.DissolveIn` / `PlayerBody.DissolveOut` for male-body visibility (later unresolved response may require the Scenario tab below). Search `PlayOneShotGesture`: awaited completion shows the base pose; non-awaited launch is explicitly labelled and does not invent a static terminal gesture pose. Dynamic grip is disclosed as intent, not a solved contact animation.
+For a missing placement, its block has **Create <name> mark**, which creates an ordinary scene Transform at the Scene view pivot and binds/selects it. Alternatively drag an existing Hierarchy Transform into **Scene mark**. A bound seat exposes separate **Seat position** and **Approach position** object fields, select/frame buttons and create buttons if an anchor is missing. Assign an existing chair's PerformerSeat in **Seat / chair**; seat profile creation/baking remains the content workflow.
 
-To edit: **Bindings** tab > Locations filter > choose `stepforward`, `Lounger` or `camera_start` > **Select placement**, **Select SeatAnchor**, **Select ApproachAnchor**, or **Select chair**. Use Unity W/E/R handles or Inspector. The shot must follow during dragging. ApproachAnchor alone must not shift settled Lara. **Select Lara camera focus (head-local offset)** selects the actual Track(Lara) target; its local edit is authored. Mark dragging must keep the current cue/card history; it does not replay the Director.
+**Stop preview** restores preview-owned actor/camera/material properties while retaining authored binding/mark edits. Normal **Ctrl+S** saves authored changes with temporary preview properties restored during serialization, then resumes the shot. Pose binding assets are saved on assignment and remain Undoable. This full interaction still needs Art's native check.
 
-For the authored camera rotation alone, select setup’s `Camera.StartAt(camera_start)` row: Track has not executed yet. For tracking, select Intro’s `Camera.Track(Lara)` row. The difference comes from script order. There is no product camera-mode override.
+If this interface still prevents the single-pass workflow, report the cue and action; G4 stays failed. No screenshots needed.
 
-## 2. Save and Undo
+## Context and path choices
 
-Before moving any marks in this G4 recording, stage a pose and GlowyWireframe, press normal Ctrl+S, then click G4’s **Force SaveScene — disposable scene only**. The forced clean save must preserve semantic scene data, restore temporary actor/material/camera state during serialization, and resume the same preview shot afterward.
+The left list includes setup, sequence and linked card source cues. Compiler-only return/jump bookkeeping is hidden. Lines wrap and align left; drag the vertical divider to resize the sidebar. Search matches both section name and cue text.
 
-Then move stand/camera/seat marks, including a chair prefab override. Ctrl+S; Undo/Redo; verify the live shot. Stop and reopen the same scene. Only authored mark/focus/override edits should remain, not Lara’s preview pose/materials/body visibility/camera placement. Start again, move a mark **without saving**, then click G4’s **Stop Studio — preserve unsaved authored mark**: the mark must remain moved and the scene must remain dirty.
+**Before this cue / After this cue** selects the desired endpoint. Navigation uses the canonical story, including its actual branches and Director rules. Unreachable alternatives are reported; no invented pose/camera is substituted.
 
-## 3. Director and response paths
+On a **Before** branch cue, the inspector exposes condition choices. On a **Before** Director call, it exposes eligible card choices. Selecting a candidate records that occurrence's preview choice; use **After this cue** to execute it. When navigation waits for a response, response buttons appear in the inspector. **Stop preview** also cancels a waiting traversal.
 
-Studio **Scenario / Director** exposes seed, initial clothing, scenario load/save, detached state, pending responses, candidate reasons and per-encounter Force buttons. Click an actual Warmup Director row with **Before cue**, or pause/Next until that call is ready. Force an eligible card for that encounter; Next enters its actual source commands. Inspect a later encounter, force once, replay/Back and confirm choices reproduce. Card return and dialogue must retain the scene composition. Re-anchor and confirm seed/history/selection counts remain unchanged in the report.
+**Preview path options** contains **Loop occurrence** and **Random seed** for alternate paths. **Advanced playback / diagnostics** retains scenario load/save, initial clothing, reset, run/pause, state and trace for full regression; these are optional controls outside the everyday cue/binding workflow. Random cards that are not on the chosen path require a corresponding eligible card choice. The Studio never bypasses eligibility or changes production RNG rules.
 
-For global discovery: G4 **Add isolated scratch global card** stops Studio and publishes a disposable Warmup card in this isolated project only. Restart Studio; pause at a Warmup Director call and Force `NativeG4Scratch` from candidates. Its actual PersistentSitPose must stage in the saved scene. Then G4 **Remove scratch and check isolated index baseline**. It must report the isolated index hash restored. No scene membership or original source is edited.
+## Remaining G4 regression, after the authoring workflow is usable
 
-For climax responses, **New scenario** resets choices. Run or stage toward the wait; choose **Respond: UI.Pressed:ICame** for one path. In another new scenario choose **Respond: MotionDriver.Ended**, then **Simulate ICame** at the subsequent UI.WaitFor. Missing responses pause with choices; no hardware or real prompt is involved. Continue to Resolution. Do not treat an unreachable branch as successfully staged.
+Open **DazPose > Story > Native Directing Diagnostics > G4 Full Regression Export**. Stop Studio preview, save intended authored changes, then click **1. Begin G4 — capture baseline, open Studio** in the clean disposable scene. This begins evidence recording; select cues in the actual Studio as above.
 
-## 4. Lifecycle and negative checks (same disposable project)
+- Check Intro's **GlowyWireframe**, following **Regular**, and dialogue persistence. Check standing **DissolveTo(Lounger)** resets InitialPose, Warmup default **SitAt(Lounger)**, its separately hip-corrected **PersistentSitPose(Lounging)**, Main's later **DissolveTo(Lounger, seated: Lounging)** after Director visits, then **DissolveTo(MainPosition1)**. Confirm actual PlayerBody visibility, gesture disclosures and grip intent without hardware output.
+- Before changing marks in the recording, stage a pose/material, press Ctrl+S, then click **Force SaveScene — disposable scene only** in G4. Preview must resume. Move/save/Undo stand, camera and seat marks, including chair prefab overrides. Stop/reopen: only authored changes should persist. Make an unsaved mark edit and use **Stop Studio — preserve unsaved authored mark**: the edit and dirty state must survive.
+- On a Warmup Director call choose **Before this cue**, choose an eligible card in the inspector, then **After this cue**. Revisit/replay and confirm the same occurrence choices. Re-anchoring must not redraw cards or change the seed/history.
+- For global discovery, G4 **Add isolated scratch global card** stops preview and creates a scratch card only in this isolated project. Preview a Warmup Director call before execution, choose `NativeG4Scratch`, then execute it. Finish with **Remove scratch and check isolated index baseline**. No original content/index changes.
+- For climax paths use advanced **New scenario** as needed. Navigate toward the wait; choose `UI.Pressed:ICame`, or in another scenario `MotionDriver.Ended` then the subsequent `ICame` response. Continue to Resolution. Unreachable paths remain explicit failures, not accepted previews.
+- Stop/close Studio, switch source/scene, reopen, and manually trigger compilation/reload. Baselines must restore. Animation Window ownership must be respected. Temporarily clear a seat/camera/pose binding in this disposable project, verify an explicit error, then Undo. Missing native input validation occurs at the offending command; failures discovered only by actual native sampling remain endpoint failures and block acceptance.
+- Inspect wardrobe, heels, blendshapes and materials after Stop/save/reopen. Retained preview materials must be detached from scene serialization and destroyed on final Stop. No Play is required for this gate.
 
-Stop/close Studio; swap source; reopen it; close/reopen scene; manually trigger script compilation/domain reload. Preview properties must restore. G4 recording/journal survives reload. Animation Window preview must cause Studio to refuse acquisition rather than steal the animation owner. Unity Play is not required for G4; any separate Play/timing/grip trial belongs to Art.
-
-For missing-link checks, Stop Studio first. Select **Game Session** in Hierarchy and its **StorySceneBindings** Inspector: temporarily clear **Lounger’s Seat**; attempt its seating cue and verify an explicit failure. Undo that deliberate edit before restarting. Similarly test an unassigned camera placement and a pose binding in the disposable project, then Undo. Errors must stop transport at the offending source/visit, not disappear behind a later movement/Director. Do not save broken bindings. The managed suite independently covers invalid visual followed by valid movement and Director with zero later effects.
-
-Inspect wardrobe/heels/blendshapes and material refs after save/Stop/reopen; authored settings must survive. This is native acceptance, not established by source tests.
-
-## 5. Return results
-
-In G4 tick only the checks you actually observed. Stop Studio, then **Export G4 report**. The report folder is shown with **Show report folder**:
+Tick only the checks actually observed in G4, Stop Studio, then **Export G4 report**. **Show report folder** opens:
 
 `<G1Project>/Temp/NativeDirectingDiagnostics/G4_<timestamp>/report.txt`
 
-`report.json` contains snapshots/differences, exact source visits, scenario, director counts, re-anchor observations and saves. `visits.jsonl` preserves cue evidence incrementally. No screenshots required. Reply PASS / FAIL / BLOCKED; on failure give the source cue, action and Console message. A partial export remains useful; unobserved cases remain NOT RUN. A failed G4 blocks completion until repaired.
+`report.json` / `visits.jsonl` retain source/visit, scenario, re-anchor and save evidence. Return PASS / FAIL / BLOCKED and the failing cue/action/Console message if applicable. N11 remains blocked until actual G4 acceptance.

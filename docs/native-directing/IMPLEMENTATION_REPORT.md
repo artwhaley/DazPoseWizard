@@ -1,5 +1,16 @@
 # Native directing execution report — October 19, 2026
 
+## Current G4 disposition — interface rejected, correction awaiting Art
+
+Art rejected the integrated G4 Studio on October 19: the tabbed interface, centered unwrapped cues, disconnected binding workflow, exposed interpreter terminology and navigation lag were unacceptable. **G4 is not accepted; N11 remains held.** The earlier “ready” section below is historical delivery, not acceptance.
+
+The correction replaces the main window with a resizable, wrapped, left-aligned cue sidebar and a contextual inspector. Direct source-owned pose/audio/material/motion slots and scene mark assignment/creation/select/frame controls appear alongside inherited pose, performer, camera and body marks at the executed moment. Seat/approach anchors can be assigned/created there. Binding edits and Undo preserve the selected cue and refresh its preview. No permanent focus button or Cues/Bindings/Scenario tabs; tracking target controls are conditional on camera context, path options folded away.
+
+Navigation keeps the native lease/graph, advances the existing canonical session for forward cues, rebuilds logical history only when necessary for backward/repeated navigation, validates native inputs per executed effect, and applies the selected native endpoint once. Dialogue/gesture-only changes reuse the unchanged settled shot. Owned material instances survive restaging/save suspension but are detached before serialization and destroyed on Stop. Script text/manifests are cached for repaint; transform gizmo edits avoid whole-asset-graph revision hashing. Actual speed, layout, save safety and responsiveness still require Art's native retry.
+
+Source-only evidence: all seven assemblies compile; 75 pure managed rehearsal tests pass, including new forward-navigation/state retention, exact repeated-occurrence and presentation-key checks. See G4_UI_SOURCE_COMPILE.json and G4_UI_MANAGED_TESTS.log. Original protected files remain unchanged. No Unity operation, remote write or modification of preexisting packet archival work. G4_ART_HANDOFF.md now starts with one concrete pose/mark/camera authoring pass.
+
+
 **Branch:** main. **Recovery baseline:** `4656eb56fe1cfa2201104e960b4d7e8dc41cb766`. **Overall:** PARTIAL. **Workflow:** WAITING ON ART (G4). G1/G2/G3 accepted from Art’s reports. N06–N09 source is integrated into the actual Studio; N10 source/managed checks and G4 recorder/handoff are ready. N11 completion is blocked until G4 native acceptance. Local commits only; no push and no executor Unity operation.
 
 ## Ticket and manual gate ledger

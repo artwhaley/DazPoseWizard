@@ -67,4 +67,42 @@ public sealed class NativeCumulativeTests {
   session.Continue();await session.RunTask;
   Assert.Contains(state.Effects,e=>e.Kind==VisualIntentKind.Sit);Assert.Contains(state.Effects,e=>e.Kind==VisualIntentKind.DissolveSeated);Assert.Contains(state.Effects,e=>e.Kind==VisualIntentKind.BodyShow);Assert.Contains(state.Effects,e=>e.Kind==VisualIntentKind.Motion);Assert.Equal("Resolution",session.Host.Session.phase);
  }
+ [Fact] public void DialogueAndGestureDoNotInvalidateSettledShotButPoseOwnerDoes() {
+  var posed=new RehearsalVisualState().After(Command("Lara.PersistentPose",true,("pose","Base")));
+  var said=posed.After(Command("Lara.Say",true,("text","Hello"))).After(Command("Lara.PlayOneShotGesture",true,("gesture","Wave")));
+  Assert.Equal(posed.PresentationKey,said.PresentationKey);
+  var other=Command("Lara.PersistentPose",true,("pose","Base"));other.Source.unit="other-card";
+  Assert.NotEqual(posed.PresentationKey,new RehearsalVisualState().After(other).PresentationKey);
+  Assert.NotEqual(posed.PresentationKey,posed.After(Command("Camera.StartAt",false,("location","Cam"))).PresentationKey);
+ }
+ [Fact] public async Task ForwardCueNavigationRetainsCanonicalStateAndDoesNotReplayPriorEffects() {
+  var program=DazStoryCompiler.Compile("sequence FirstContact {\nawait Lara.PersistentPose(A)\nSession.Mood += 1\nawait Lara.Say(\"hello\")\nawait Lara.PersistentPose(B)\n}","Forward.dazstory");
+  var fixture=RehearsalTestSupport.Bindings(program);var commands=new List<string>();
+  using var session=new RehearsalSession(program,"FirstContact",RehearsalTestSupport.Profile(),RehearsalTestSupport.Kinks,RehearsalTestSupport.Equipment,fixture.Content,null,fixture.Scene,visualEffect:c=>commands.Add(c.Verb));
+  int first=Array.FindIndex(program.instructions,i=>i.name=="Lara.PersistentPose");
+  int last=Array.FindLastIndex(program.instructions,i=>i.name=="Lara.PersistentPose");
+  string owner=program.instructions[first].source.unit??program.instructions[first].source.file;
+  await session.RunThroughSelectedAsync(owner,"FirstContact",first);
+  var host=session.Host;
+  await session.RunBeforeSelectedAsync(owner,"FirstContact",last,restart:false);
+  Assert.Same(host,session.Host);Assert.Equal(51,session.Host.Session.mood);
+  Assert.Equal(new[]{"Lara.PersistentPose","Lara.Say"},commands);
+  await session.RunThroughSelectedAsync(owner,"FirstContact",last,restart:false);
+  Assert.Same(host,session.Host);Assert.Equal(3,commands.Count);
+  await session.RunThroughSelectedAsync(owner,"FirstContact",first);
+  Assert.NotSame(host,session.Host);Assert.Equal(50,session.Host.Session.mood);Assert.Equal(4,commands.Count);
+ }
+ [Fact] public async Task ForwardNavigationPreservesExactRepeatedOccurrence() {
+  var program=DazStoryCompiler.Compile("sequence FirstContact {\nrepeat 3 {\nSession.Mood += 1\n}\n}","ForwardVisits.dazstory");
+  using var session=RehearsalTestSupport.Session(program);
+  int pc=Array.FindIndex(program.instructions,i=>i.name=="Session.Mood");
+  string owner=program.instructions[pc].source.unit??program.instructions[pc].source.file;
+  await session.RunThroughSelectedAsync(owner,"FirstContact",pc,1);
+  var host=session.Host;
+  var third=await session.RunBeforeSelectedAsync(owner,"FirstContact",pc,3,restart:false);
+  Assert.Same(host,session.Host);Assert.Equal(3,third.Visit.Encounter);Assert.Equal(52,host.Session.mood);
+  await session.RunThroughSelectedAsync(owner,"FirstContact",pc,3,restart:false);
+  Assert.Equal(53,host.Session.mood);
+ }
+
 }

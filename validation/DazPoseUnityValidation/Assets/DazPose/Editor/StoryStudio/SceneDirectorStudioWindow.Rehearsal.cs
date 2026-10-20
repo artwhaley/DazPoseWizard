@@ -25,6 +25,8 @@ namespace DazPose.Editor.Studio
         StoryDirectorSelectionSnapshot selection;
         DirectorSnapshot inspection;
         bool continuousTransport;
+        bool deferPresentation;
+        string presentedKey;
         int generation;
         bool transportBusy,showState;
         int clothingCount=6;
@@ -64,7 +66,7 @@ namespace DazPose.Editor.Studio
         }
         void StopRehearsal() {
             visualCancellation?.Cancel();visualCancellation?.Dispose();visualCancellation=null;
-            ObserveNative("stop");generation++;previewFailure=null;stagedResult=null;if(rehearsal!=null)scenario=rehearsal.Scenario.Copy();rehearsal?.Dispose();rehearsal=null;current=null;selection=null;inspection=null;branch=null;continuousTransport=false;transportBusy=false;
+            ObserveNative("stop");generation++;deferPresentation=false;previewFailure=null;stagedResult=null;if(rehearsal!=null)scenario=rehearsal.Scenario.Copy();rehearsal?.Dispose();rehearsal=null;current=null;selection=null;inspection=null;branch=null;continuousTransport=false;transportBusy=false;
             while(rehearsalEvents.TryDequeue(out _)){}
         }
         void StartRehearsal() { StartRehearsalCore(true); }
@@ -79,7 +81,7 @@ namespace DazPose.Editor.Studio
             revisionDirty=true;CheckRevision();StopRehearsal();trace.Clear();directorSelections=0;nativeRestages=0;visualState=new RehearsalVisualState();visualCancellation=new CancellationTokenSource();visualThread=Environment.CurrentManagedThreadId;
             BuildPreview();
             if(StoryDialogue.IdFor(JsonUtility.ToJson(source.program))!=StoryDialogue.IdFor(JsonUtility.ToJson(manifest.Analysis.Program)))throw new InvalidOperationException("Source has changed since its compiled import. Let Unity refresh it before rebuilding rehearsal.");
-            rehearsalContent=StoryLinkedContent.Create(source);
+            rehearsalContent=flowContent??StoryLinkedContent.Create(source);
             var catalogs=StoryCatalogs.Load();int owner=generation;
             scenario.initialClothing=Enumerable.Range(0,PlayerWorldState.ClothingSlots.Length).Select(i=>i<clothingCount).ToArray();
             // Defaults are isolated author test data. No persistentDataPath/profile file or GameApplication is read.
@@ -206,27 +208,46 @@ namespace DazPose.Editor.Studio
             Transport(async()=>{if(advances>session.Scenario.maxRunToSteps)throw new InvalidOperationException("Back replay exceeds the scenario step budget.");for(int i=0;i<advances;i++)if(!await session.StepAsync())break;await FlushPreviewEvents(owner);});
         }
         void NavigateSelected() {
-            if(selectedPc<0||selectedSource==null)return;
+            if(selectedPc<0||selectedSource==null||transportBusy)return;
             string owner=selectedSource.unit??selectedSource.file,entry=selectedEntry;int pc=selectedPc,visit=selectedVisit;bool after=stageAfter;
-            StopRehearsal();Try(()=>StartRehearsalCore(false));if(rehearsal==null)return;
+            error=null;
+            // Keep the actual scene lease and sampling graph alive across logical navigation.
+            if(rehearsal==null){Try(()=>StartRehearsalCore(false));if(rehearsal==null)return;}
             var session=rehearsal;int navigationGeneration=generation;
             Transport(async()=>{
-                visualState=new RehearsalVisualState();
-                var completed=after?await session.RunThroughSelectedAsync(owner,entry,pc,visit):await session.RunBeforeSelectedAsync(owner,entry,pc,visit);
-                if(navigationGeneration!=generation)return;
-                // Logical effects precede instruction completion; flush them on the Editor thread.
-                await FlushPreviewEvents(navigationGeneration);stagedResult=(after?"After ":"Before ")+completed.Name+" · "+completed.Source+" · visit "+completed.Visit.Encounter;
+                bool Match(StoryInstructionSnapshot item)=>item!=null&&item.EntryName==entry&&item.ProgramCounter==pc&&item.Visit.Encounter==visit&&(item.Source?.unit??item.Source?.file??"")==owner;
+                var history=session.History;
+                bool restart=Match(session.CompletedSnapshot)||history.Take(Math.Max(0,history.Count-1)).Any(Match)||session.RunTask?.IsCompleted==true;
+                deferPresentation=true;if(restart)visualState=new RehearsalVisualState();
+                try{
+                    var completed=after?await session.RunThroughSelectedAsync(owner,entry,pc,visit,restart:restart):await session.RunBeforeSelectedAsync(owner,entry,pc,visit,restart:restart);
+                    if(navigationGeneration!=generation)return;
+                    await FlushPreviewEvents(navigationGeneration);
+                    PresentCurrentCue();
+                    stagedResult=(after?"After ":"Before ")+completed.Name+" · "+completed.Source+" · visit "+completed.Visit.Encounter;
+                    ObserveNative("cue");
+                }finally{if(navigationGeneration==generation)deferPresentation=false;}
             });
         }
+        void PresentCurrentCue(){
+            if(stage==null||!stage.Ready)throw new InvalidOperationException("Preview stopped. Select a cue to reconnect.");
+            string nextAnchor=CaptureAnchorStamp();
+            // Dialogue, waits and other nonvisual changes leave the native shot untouched.
+            if(presentedKey!=visualState.PresentationKey||anchorStamp!=nextAnchor||!stage.IsStaged){
+                stage.Apply(visualState,rehearsalContent);presentedKey=visualState.PresentationKey;anchorStamp=nextAnchor;
+            }
+        }
         void ApplyPreviewCommand(StoryCommand command) {
-            if(stage==null||!stage.Ready)throw new InvalidOperationException("Start directing before staging commands.");
+            if(stage==null||!stage.Ready)throw new InvalidOperationException("Select a cue to connect the scene preview.");
             var next=visualState.After(command);
-            stage.Apply(next,rehearsalContent);visualState=next;anchorStamp=CaptureAnchorStamp();ObserveNative("cue");
+            if(deferPresentation)stage.ValidateIntent(next,rehearsalContent);
+            visualState=next;
+            if(!deferPresentation){PresentCurrentCue();ObserveNative("cue");}
             if(command.Verb=="Lara.Say")DrawSpeechPreview(rehearsalContent.ContentFor(command.Source).Dialogue(command.Require("text").String));
         }
         void DrawSpeechPreview(AudioClip clip) {
             // Playback is explicit via the contextual audio preview, not automatic during fast logical replay.
-            audioClip=clip;trace.Add("Speech preview available: "+clip.name+" · select its Audio requirement to hear it.");
+            audioClip=clip;trace.Add("Speech preview available: "+clip.name+" · use this cue’s Dialogue audio control to hear it.");
         }
     }
 }

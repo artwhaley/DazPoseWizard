@@ -85,10 +85,10 @@ namespace DazPose.Editor {
     if(!await StepAsync(token))throw new InvalidOperationException("The story completed before reaching the requested source instruction.");
    }
   }
-  public async Task<StoryInstructionSnapshot> RunThroughSelectedAsync(string owner,string entryName,int pc,int encounter=1,CancellationToken token=default) {
+  public async Task<StoryInstructionSnapshot> RunThroughSelectedAsync(string owner,string entryName,int pc,int encounter=1,CancellationToken token=default,bool restart=true) {
    if(encounter<1)throw new ArgumentOutOfRangeException(nameof(encounter));token.ThrowIfCancellationRequested();
    if(!sourceProgram.entries.Any(e=>e.name==entryName&&pc>=e.start&&pc<e.end)||pc<0||pc>=sourceProgram.instructions.Length||(sourceProgram.instructions[pc].source?.unit??sourceProgram.instructions[pc].source?.file??"")!=owner)throw new InvalidOperationException("Selected source owner/entry is no longer in the linked program.");
-   await ResetAsync(false,token);_=Start();string chosen=null;
+   if(restart)await ResetAsync(false,token);_=Start();string chosen=null;
    for(int steps=0;steps<=Scenario.maxRunToSteps;steps++) {
     var current=await ReadyOrFinished(token);
     if(chosen!=null&&CompletedSnapshot?.Visit.Key==chosen)return CompletedSnapshot;
@@ -100,9 +100,9 @@ namespace DazPose.Editor {
    }
    throw new InvalidOperationException("Source navigation exceeded the scenario instruction budget. Choose a reachable visit or revise the path.");
   }
-  public async Task<StoryInstructionSnapshot> RunBeforeSelectedAsync(string owner,string entryName,int pc,int encounter=1,CancellationToken token=default) {
+  public async Task<StoryInstructionSnapshot> RunBeforeSelectedAsync(string owner,string entryName,int pc,int encounter=1,CancellationToken token=default,bool restart=true) {
    if(encounter<1)throw new ArgumentOutOfRangeException(nameof(encounter));
-   await ResetAsync(false,token);_=Start();
+   if(restart)await ResetAsync(false,token);_=Start();
    for(int steps=0;steps<=Scenario.maxRunToSteps;steps++) {
     var current=await ReadyOrFinished(token);
     if(current==null)throw new InvalidOperationException("Selected instruction visit is unreachable on this scenario path.");

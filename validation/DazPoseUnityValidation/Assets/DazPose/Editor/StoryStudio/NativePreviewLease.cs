@@ -20,7 +20,7 @@ namespace DazPose.Editor.Studio
         readonly IDisposable writers;
         readonly HashSet<UnityEngine.Object> ownedObjects=new HashSet<UnityEngine.Object>();
         readonly List<MaterialPropertyBlock> propertyBlockBaseline=new List<MaterialPropertyBlock>();
-        readonly List<Material> materials=new List<Material>();
+        readonly Dictionary<(Renderer renderer,int slot,Material source),Material> materials=new Dictionary<(Renderer,int,Material),Material>();
         Action projection;
         bool disposed, applying, restoring, staged, saveSuspended;
         int resumeTicks;
@@ -133,10 +133,23 @@ namespace DazPose.Editor.Studio
             catch(Exception error) { Failure=error.Message;Dispose();throw; }
             finally { applying=false; }
         }
-        internal void Own(Material material) { materials.Add(material); }
+        internal Material MaterialFor(Renderer renderer,int slot,Material source) {
+            var key=(renderer,slot,source);
+            if(!materials.TryGetValue(key,out var clone)||clone==null){clone=new Material(source){hideFlags=HideFlags.HideAndDontSave};materials[key]=clone;}
+            return clone;
+        }
         public void Sample(AnimationClip clip,float seconds=0)
         {
             if(!applying || !AnimationMode.InAnimationMode(driver))throw new InvalidOperationException("Sampling requires this active lease.");
+            ValidateClip(clip);
+            var root=Context.Lara.transform;
+            Vector3 position=root.position,scale=root.localScale;Quaternion rotation=root.rotation;
+            try { sampler.GetOrCreate(()=>new NativePoseSampler(Context.Lara.ConfiguredAnimator)).Sample(clip,seconds); }
+            finally { root.SetPositionAndRotation(position,rotation);root.localScale=scale; }
+
+        }
+        internal void ValidateClip(AnimationClip clip)
+        {
             if(clip==null)throw new InvalidOperationException("Assign a real PerformerPose clip; no neutral fallback is synthesized.");
             if(AnimationUtility.GetObjectReferenceCurveBindings(clip).Length!=0)
                 throw new InvalidOperationException("INCOMPLETE: object-reference animation curves require a separate property adapter.");
@@ -149,11 +162,6 @@ namespace DazPose.Editor.Studio
                 if(target==Context.Host.laraFocus || Context.Host.locations.Any(l=>l.placement==target || l.focus!=null && l.focus==target))
                     throw new InvalidOperationException("Pose clip targets an authored anchor; sampling refused.");
             }
-            var root=Context.Lara.transform;
-            Vector3 position=root.position,scale=root.localScale;Quaternion rotation=root.rotation;
-            try { sampler.GetOrCreate(()=>new NativePoseSampler(Context.Lara.ConfiguredAnimator)).Sample(clip,seconds); }
-            finally { root.SetPositionAndRotation(position,rotation);root.localScale=scale; }
-
         }
         void RestoreBaseline()
         {
@@ -173,8 +181,8 @@ namespace DazPose.Editor.Studio
                         finally
                         {
                             staged=false;
-                            foreach(var material in materials)if(material!=null)UnityEngine.Object.DestroyImmediate(material);
-                            materials.Clear();Restored?.Invoke();
+                            // Detached by ledger restoration. Keep owned instances for the next cue/save resume.
+                            Restored?.Invoke();
                         }
                     }
                 }
@@ -243,7 +251,8 @@ namespace DazPose.Editor.Studio
                 try { sampler.Dispose(); }
                 finally
                 {
-                    writers.Dispose();if(driver!=null)UnityEngine.Object.DestroyImmediate(driver);
+                    foreach(var material in materials.Values)if(material!=null)UnityEngine.Object.DestroyImmediate(material);
+                    materials.Clear();writers.Dispose();if(driver!=null)UnityEngine.Object.DestroyImmediate(driver);
                     if(active==this)active=null;
                     AssemblyReloadEvents.beforeAssemblyReload-=Dispose;EditorApplication.quitting-=Dispose;
                     EditorApplication.playModeStateChanged-=PlayChanged;EditorApplication.update-=Update;

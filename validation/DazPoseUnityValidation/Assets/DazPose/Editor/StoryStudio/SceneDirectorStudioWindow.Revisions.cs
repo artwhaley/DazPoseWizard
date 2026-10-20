@@ -13,7 +13,11 @@ namespace DazPose.Editor.Studio {
   void PlayStateChanged(PlayModeStateChange state){if(state==PlayModeStateChange.ExitingEditMode)Release();}
   void ClosedScene(UnityEngine.SceneManagement.Scene scene){if(host==null||host.gameObject.scene==scene){Release();sourceStamp=null;revisionDirty=true;}}
   void RevisionChanged()=>revisionDirty=true;
-  UndoPropertyModification[] Modified(UndoPropertyModification[] changes){revisionDirty=true;return changes;}
+  UndoPropertyModification[] Modified(UndoPropertyModification[] changes){
+   // Gizmo drags are handled by the spatial watcher. Do not hash the entire asset graph per mouse move.
+   if(changes.Any(change=>!(change.currentValue.target is Transform)))revisionDirty=true;
+   return changes;
+  }
   string CaptureStamp() {
    var text=new StringBuilder();
    void Asset(UnityEngine.Object asset) {
@@ -38,10 +42,9 @@ namespace DazPose.Editor.Studio {
    return StoryDialogue.IdFor(text.ToString());
   }
   void CheckRevision() {
-   if(!revisionDirty)return;revisionDirty=false;
+   if(!revisionDirty||refreshCueQueued)return;revisionDirty=false;
    string next=CaptureStamp();if(sourceStamp!=null&&sourceStamp!=next) {
-    Release();selectedPc=-1;selectedRequirement=-1;selectedKey=null;selectedSource=null;detailManifest=null;stagedResult=null;
-    Refresh();error="Story or scene changed — restart directing.";
+    QueueCueRefresh();return;
    }
    sourceStamp=next;
   }

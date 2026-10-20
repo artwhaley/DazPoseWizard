@@ -70,7 +70,7 @@ namespace DazPose.Editor.Studio
                     foreach(var renderer in c.Lara.GetComponentsInChildren<Renderer>(true).Where(r=>r.enabled && r.gameObject.activeInHierarchy && (r is MeshRenderer || r is SkinnedMeshRenderer)))
                     {
                         var refs=renderer.sharedMaterials;
-                        for(int i=0;i<refs.Length;i++){var clone=new Material(material.wireframeMaterial){hideFlags=HideFlags.HideAndDontSave};lease.Own(clone);refs[i]=clone;}
+                        for(int i=0;i<refs.Length;i++)refs[i]=lease.MaterialFor(renderer,i,material.wireframeMaterial);
                         renderer.sharedMaterials=refs;
                     }
             }

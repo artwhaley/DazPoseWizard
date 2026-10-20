@@ -9,6 +9,35 @@ namespace DazPose.Editor.Studio {
    if(state==null||content==null)throw new ArgumentNullException();
    lease.Apply(()=>StageCumulative(state,content));
   }
+  // Read-only validation is acknowledged for every executed command even during fast navigation.
+  // The actual native projection is applied once at the selected endpoint.
+  public void ValidateIntent(RehearsalVisualState state,StoryLinkedContent content) {
+   if(state.Effects.Count==0)return;
+   var effect=state.Effects[state.Effects.Count-1];var c=Context;
+   try {
+    var owner=content.ContentFor(effect.Source);
+    switch(effect.Kind){
+     case VisualIntentKind.Hidden:case VisualIntentKind.DissolveIn:case VisualIntentKind.Move:case VisualIntentKind.BodyHidden:case VisualIntentKind.CameraStart:
+      RequireAnchor(c.Host.RequireLocation(effect.Symbol).placement,effect.Symbol);break;
+     case VisualIntentKind.DissolveStanding:
+      RequireAnchor(c.Host.RequireLocation(effect.Symbol).placement,effect.Symbol);
+      lease.ValidateClip(c.Lara.InitialPose?.Clip);break;
+     case VisualIntentKind.Idle:lease.ValidateClip(c.Lara.InitialPose?.Clip);break;
+     case VisualIntentKind.Pose:lease.ValidateClip(owner.Pose(effect.Pose).value.Clip);break;
+     case VisualIntentKind.Sit:case VisualIntentKind.SitPose:case VisualIntentKind.DissolveSeated:
+      var seat=c.Host.RequireLocation(state.ActorLocation).seat;
+      if(seat==null)throw new InvalidOperationException("Assign the seat for "+state.ActorLocation+".");
+      RequireAnchor(seat.SeatAnchor,"Seat position");RequireAnchor(seat.ApproachAnchor,"Approach position");
+      var pose=effect.Pose==null?null:owner.Pose(effect.Pose);
+      var command=effect.Kind==VisualIntentKind.Sit?NativeSeatCommand.DefaultSitAt:effect.Kind==VisualIntentKind.SitPose?NativeSeatCommand.PersistentSitPose:NativeSeatCommand.SeatedDissolve;
+      var frame=NativeSeatEndpoint.Resolve(c,new NativeSeatedProjection(seat,null,command,pose?.value,pose?.posture??PlayerPosture.Sitting,false));
+      lease.ValidateClip(frame.Clip);break;
+     case VisualIntentKind.Material:owner.Shader(effect.Symbol).ValidateConfiguration();break;
+     case VisualIntentKind.Gesture:owner.Gesture(effect.Symbol);break;
+     case VisualIntentKind.Speech:owner.Dialogue(effect.Symbol);break;
+    }
+   }catch(Exception error){throw new InvalidOperationException(effect.Source+" · "+effect.Kind+": "+error.Message,error);}
+  }
   void StageCumulative(RehearsalVisualState state,StoryLinkedContent content) {
    LastSeating=null;
    var c=Context;var actor=c.Lara.transform;
