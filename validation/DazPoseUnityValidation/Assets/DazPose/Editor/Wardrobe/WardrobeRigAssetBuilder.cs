@@ -27,7 +27,7 @@ namespace DazPose.UnityValidation
             public WardrobeAttachmentDescriptor existing;
         }
 
-        public static Result Generate(WardrobeCatalog catalog, SkinnedMeshRenderer canonicalBody)
+        public static Result Generate(WardrobeCatalog catalog, PerformerWardrobe canonicalOwner, SkinnedMeshRenderer canonicalBody)
         {
             var result = new Result();
             if (catalog == null || canonicalBody == null || canonicalBody.sharedMesh == null)
@@ -35,8 +35,10 @@ namespace DazPose.UnityValidation
             if (!catalog.IsReleased) return Fail(result, "Rig prefabs can only be generated from a validated immutable release.");
             if (!catalog.Validate(out string catalogError))
                 return Fail(result, "Rig prefabs can only be generated from a validated immutable release. " + catalogError);
-            if (canonicalBody.GetComponentInParent<PerformerWardrobe>() == null)
-                return Fail(result, "Canonical body renderer must belong to a configured performer with PerformerWardrobe.");
+            if (canonicalOwner == null)
+                return Fail(result, "Select Lara's configured PerformerWardrobe as the canonical owner.");
+            if (canonicalOwner.Body != canonicalBody)
+                return Fail(result, "Canonical Performer's body reference does not match the selected canonical body renderer.");
             string signature = catalog.Presets.First().CharacterSignature;
             if (catalog.Presets.Any(p => p.CharacterSignature != signature)) return Fail(result, "Catalog presets do not share one character signature.");
 

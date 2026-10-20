@@ -12,6 +12,7 @@ namespace DazPose.UnityValidation
         [SerializeField] private WardrobeCatalog productionCatalog;
         [SerializeField] private WardrobeConfiguration configuration;
         [SerializeField] private WardrobeConfiguration productionConfiguration;
+        [SerializeField] private PerformerWardrobe canonicalOwner;
         [SerializeField] private SkinnedMeshRenderer canonicalBody;
         [SerializeField] private WardrobeRigManifest manifest;
         [SerializeField] private string gateScenePath;
@@ -31,6 +32,7 @@ namespace DazPose.UnityValidation
         {
             var lara = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Production/Performers/Lara.prefab");
             var wardrobe = lara != null ? lara.GetComponentInChildren<PerformerWardrobe>(true) : null;
+            if (canonicalOwner == null) canonicalOwner = wardrobe;
             if (productionCatalog == null && wardrobe != null) productionCatalog = wardrobe.Catalog;
             if (productionConfiguration == null && wardrobe != null) productionConfiguration = wardrobe.Configuration;
             if (catalog == null) catalog = productionCatalog;
@@ -48,12 +50,14 @@ namespace DazPose.UnityValidation
         {
             EditorGUILayout.LabelField("Wardrobe Appearance Delivery", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox("Production Lara's released catalog and matching configuration load by default. Diagnostic candidate/release outputs are isolated; this window never advances Lara's production references or changes First Contact automatically.", MessageType.Info);
-            if (productionCatalog == null || productionConfiguration == null || canonicalBody == null)
+            if (productionCatalog == null || productionConfiguration == null || canonicalOwner == null || canonicalBody == null)
                 EditorGUILayout.HelpBox("Production input missing: " + (productionCatalog == null ? "Assets/Production/Performers/Lara.prefab → PerformerWardrobe.catalog; " : string.Empty) +
                     (productionConfiguration == null ? "Assets/Production/Performers/Lara.prefab → PerformerWardrobe.configuration; " : string.Empty) +
+                    (canonicalOwner == null ? "Assets/Production/Performers/Lara.prefab → configured PerformerWardrobe owner; " : string.Empty) +
                     (canonicalBody == null ? "Lara canonical body SkinnedMeshRenderer." : string.Empty), MessageType.Error);
             EditorGUILayout.LabelField("Production Lara Catalog", AssetDatabase.GetAssetPath(productionCatalog));
             EditorGUILayout.LabelField("Production Lara Configuration", AssetDatabase.GetAssetPath(productionConfiguration));
+            EditorGUILayout.LabelField("Canonical Performer", canonicalOwner != null ? canonicalOwner.name : "missing");
             catalog = (WardrobeCatalog)EditorGUILayout.ObjectField("Staged Catalog", catalog, typeof(WardrobeCatalog), false);
             configuration = (WardrobeConfiguration)EditorGUILayout.ObjectField("Staged Configuration", configuration, typeof(WardrobeConfiguration), false);
             canonicalBody = (SkinnedMeshRenderer)EditorGUILayout.ObjectField("Canonical Lara Body", canonicalBody, typeof(SkinnedMeshRenderer), true);
@@ -74,7 +78,7 @@ namespace DazPose.UnityValidation
             }
             using (new EditorGUILayout.HorizontalScope())
             {
-                using (new EditorGUI.DisabledScope(!IsStagedRelease))
+                using (new EditorGUI.DisabledScope(!IsStagedRelease || canonicalOwner == null))
                     if (GUILayout.Button("Generate reusable prefabs", GUILayout.Height(28))) GeneratePrefabs();
                 using (new EditorGUI.DisabledScope(!IsStagedRelease || manifest == null))
                     if (GUILayout.Button("Create Gate A scene", GUILayout.Height(28))) CreateGateAScene();
@@ -113,7 +117,7 @@ namespace DazPose.UnityValidation
 
         private void GeneratePrefabs()
         {
-            var result = WardrobeRigAssetBuilder.Generate(catalog, canonicalBody);
+            var result = WardrobeRigAssetBuilder.Generate(catalog, canonicalOwner, canonicalBody);
             var lines = new System.Text.StringBuilder();
             lines.AppendLine(result.succeeded ? "Reusable wardrobe prefabs are ready for native inspection." : "Prefab generation stopped.");
             lines.AppendLine("Root: " + result.root); lines.AppendLine("Manifest: " + result.manifestPath);
