@@ -181,6 +181,13 @@
           "resolution": "Reload companion bindings by path immediately before each mutation/save; reload story objects after companion saves and scene open. Explicit readiness validation/dialog and bounded retry of unchanged copy retained.",
           "status": "RETRY_REQUIRED",
           "confirmedError": "The object of type DazPose.Story.StoryContentBindings has been destroyed but you are still trying to access it. Parameter name: target"
+        },
+        {
+          "revision": "2107c63",
+          "case": "Retry saved partial Gate B scene",
+          "reason": "Save prompt persisted builder host-disable changes and Unity empty-field normalization; byte identity check rejected retry. Scene has no runner.",
+          "resolution": "Preserve scene and meta to verified content-addressed recovery outside Assets before rebuilding only disposable Gate B scene.",
+          "status": "RETRY_REQUIRED"
         }
       ]
     },

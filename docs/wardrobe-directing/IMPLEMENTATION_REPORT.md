@@ -98,3 +98,10 @@ Preparation now reloads source/diagnostic assets after OpenScene (which can unlo
 ### Gate B confirmed destroyed-bindings error
 
 Art supplied the preparation message: StoryContentBindings was destroyed but still accessed (target). The builder retained companion objects across WriteSource/ImportAsset as well as OpenScene. Import can recreate companions; the following SetDirty call then receives a destroyed target. Replaced retained companion mutation with path-based UpdateContent: load current object, mutate, mark/save immediately, never reuse after save/import. Story assets are reloaded after changed-pose companion saves before attaching the saved runner. Existing scene-open reload remains. All seven source assemblies compile. Native retry and Gate B acceptance remain pending; no Unity operation was performed by executor.
+
+
+### Gate B retry repair - saved partial scene
+
+Art hit the byte-identity preservation rejection. Read-only comparison with FirstContact shows only builder-owned host enabled/playOnStart changes plus Unity's empty stopBeforePhase serialization normalization. The partial scene still has no runner. The normal save prompt can persist builder changes, so byte equality was the wrong retry criterion.
+
+The builder now preserves the exact interrupted diagnostic scene AND meta in a content-addressed `.dazposewizard/wardrobe-gate-recovery/` folder outside Assets, verifies its bytes, then retires/rebuilds only the disposable Gate B composition. Backup failures stop before removal. An existing complete runner still opens normally. No production asset is replaced, no additional diagnostic scene is added under Assets, and no Unity operation was performed by executor. Seven source assemblies compile. Native Gate B remains pending Art.

@@ -28,12 +28,13 @@ namespace DazPose.UnityValidation {
    if(File.Exists(ScenePath)){
     var existing=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);var saved=GameSessionSceneSetup.InScene<CardReturnGateRunner>(existing).SingleOrDefault();
     if(saved!=null&&saved.setupVersion==CardReturnGateRunner.SetupVersion){ValidateRunner(saved);return "GATE B READY. Opened the saved scene with its active Card Return Gate runner. Enter Play; the controls appear in Game view.";}
-    // Retry only the byte-identical, untouched copy from our interrupted preparation.
-    // Authored or saved partial compositions stay protected.
-    string receipt=Root+"/scene-copy.sha256";
-    if(!File.Exists(receipt)||File.ReadAllText(receipt)!=FileHash(ScenePath))throw new InvalidOperationException("Existing Gate B composition was edited or has no preparation receipt; preserved: "+ScenePath);
+    // A failed setup can dirty the copy; Unity's normal save prompt may persist those changes.
+    // Preserve the exact scene and meta outside Assets before replacing this disposable composition.
+    string recovery=PreserveInterruptedComposition();
     EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-    if(!AssetDatabase.DeleteAsset(ScenePath))throw new IOException("Could not retire unchanged interrupted Gate B copy.");
+    if(!AssetDatabase.DeleteAsset(ScenePath))throw new IOException("Could not retire interrupted Gate B copy. Backup: "+recovery);
+    Debug.Log("Gate B: preserved interrupted composition before retry: "+recovery);
+
    }
    stage="checking released assets";
    var released=AssetDatabase.LoadAssetAtPath<WardrobeCatalog>(Released+"/Catalog.asset");var manifest=AssetDatabase.LoadAssetAtPath<WardrobeRigManifest>(Released+"/WardrobeRigManifest.asset");
@@ -100,6 +101,23 @@ namespace DazPose.UnityValidation {
    foreach(var component in new Component[]{actor,wardrobe,binding,performance,story}){PrefabUtility.RecordPrefabInstancePropertyModifications(component);EditorUtility.SetDirty(component);}EditorUtility.SetDirty(runner);EditorSceneManager.MarkSceneDirty(scene);if(!EditorSceneManager.SaveScene(scene))throw new IOException("Could not save Gate B.");AssetDatabase.SaveAssets();
    scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);ValidateRunner(GameSessionSceneSetup.InScene<CardReturnGateRunner>(scene).Single());
    return "GATE B READY. Gate B is saved and open. Enter Play yourself; use the Card Return Gate panel. Production assets were not modified.";
+  }
+  static string PreserveInterruptedComposition(){
+   string repository=Path.GetFullPath(Path.Combine(Application.dataPath,"../../.."));
+   using var hash=SHA256.Create();
+   byte[] identity=File.ReadAllBytes(ScenePath).Concat(File.Exists(ScenePath+".meta")?File.ReadAllBytes(ScenePath+".meta"):Array.Empty<byte>()).ToArray();
+   string digest=BitConverter.ToString(hash.ComputeHash(identity)).Replace("-","").ToLowerInvariant();
+   string folder=Path.Combine(repository,".dazposewizard","wardrobe-gate-recovery",digest);
+   Directory.CreateDirectory(folder);
+   PreserveFile(ScenePath,Path.Combine(folder,"GateB_ProtectedCards.unity"));
+   if(File.Exists(ScenePath+".meta"))PreserveFile(ScenePath+".meta",Path.Combine(folder,"GateB_ProtectedCards.unity.meta"));
+   // Re-read the archive before the caller may remove the Unity asset.
+   if(FileHash(ScenePath)!=FileHash(Path.Combine(folder,"GateB_ProtectedCards.unity")))throw new IOException("Gate B recovery verification failed; original preserved.");
+   return folder;
+  }
+  static void PreserveFile(string source,string target){
+   if(File.Exists(target)){if(FileHash(source)!=FileHash(target))throw new IOException("Different recovery content already exists; original preserved: "+target);}
+   else File.Copy(source,target,false);
   }
   static void ValidateRunner(CardReturnGateRunner runner){
    if(runner==null||!runner.enabled||!runner.gameObject.activeInHierarchy||runner.performance==null||runner.scene==null||runner.root==null||runner.cards==null||runner.openingOutfit==null||runner.openingHair==null||runner.seatedPose==null||runner.changedExpression==null||runner.entranceAura==null||runner.entranceMark==null||runner.cameraMark==null||runner.shiftCamera==null||runner.seat==null||runner.replacementMotion==null)
