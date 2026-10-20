@@ -41,10 +41,25 @@ namespace DazPose.UnityValidation
                     if (GUILayout.Button("Generate / reuse visual assets")) Run(Generate);
             }
             EditorGUILayout.Space();EditorGUILayout.LabelField("Current acceptance: Gate B",EditorStyles.boldLabel);
-            using(new EditorGUI.DisabledScope(EditorApplication.isPlayingOrWillChangePlaymode))if(GUILayout.Button("Create / open Gate B scene"))Run(()=>report=CardReturnGateBuilder.CreateOrOpen());
+            using(new EditorGUI.DisabledScope(EditorApplication.isPlayingOrWillChangePlaymode))if(GUILayout.Button("Create / open Gate B scene"))PrepareGateB();
             scroll = EditorGUILayout.BeginScrollView(scroll);
             EditorGUILayout.TextArea(report, GUILayout.ExpandHeight(true));
             EditorGUILayout.EndScrollView();
+        }
+        private void PrepareGateB()
+        {
+            try
+            {
+                report = CardReturnGateBuilder.CreateOrOpen();
+                EditorUtility.DisplayDialog("Gate B preparation", report, "OK");
+            }
+            catch (Exception error)
+            {
+                report = "GATE B IS NOT READY. Do not enter Play.\n" + error;
+                Debug.LogException(error);
+                EditorUtility.DisplayDialog("Gate B preparation failed", report, "OK");
+            }
+            Repaint();
         }
         private void Run(Action action)
         { try { action(); } catch (Exception error) { report = error.Message; } Repaint(); }

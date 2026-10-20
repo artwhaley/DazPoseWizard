@@ -16,13 +16,18 @@ namespace DazPose.UnityValidation {
   public const string Root="Assets/__WardrobeProtectedCards/GateB";
   public const string ScenePath="Assets/__WardrobeProtectedCards/Scenes/GateB_ProtectedCards.unity";
   const string Released="Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a";
+  static string stage;
   public static string CreateOrOpen() {
+   stage="opening / validating existing composition";
+   try{return Prepare();}
+   catch(Exception error){throw new InvalidOperationException("Gate B stopped while "+stage+". The scene is not ready for Play.\n"+error.Message,error);}
+  }
+  static string Prepare() {
    if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Exit Play before preparing Gate B.");
    if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return "Cancelled by scene save prompt.";
    if(File.Exists(ScenePath)){
     var existing=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);var saved=GameSessionSceneSetup.InScene<CardReturnGateRunner>(existing).SingleOrDefault();
-    if(saved!=null&&saved.setupVersion==CardReturnGateRunner.SetupVersion&&saved.performance!=null&&saved.root!=null&&saved.cards!=null)
-     return "Opened saved Gate B. Enter Play yourself; its Card Return Gate panel contains the labelled checks.";
+    if(saved!=null&&saved.setupVersion==CardReturnGateRunner.SetupVersion){ValidateRunner(saved);return "GATE B READY. Opened the saved scene with its active Card Return Gate runner. Enter Play; the controls appear in Game view.";}
     // Retry only the byte-identical, untouched copy from our interrupted preparation.
     // Authored or saved partial compositions stay protected.
     string receipt=Root+"/scene-copy.sha256";
@@ -30,12 +35,14 @@ namespace DazPose.UnityValidation {
     EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
     if(!AssetDatabase.DeleteAsset(ScenePath))throw new IOException("Could not retire unchanged interrupted Gate B copy.");
    }
+   stage="checking released assets";
    var released=AssetDatabase.LoadAssetAtPath<WardrobeCatalog>(Released+"/Catalog.asset");var manifest=AssetDatabase.LoadAssetAtPath<WardrobeRigManifest>(Released+"/WardrobeRigManifest.asset");
    string reason=null;if(released==null||manifest==null||!manifest.Validate(released,out reason))throw new InvalidOperationException("Accepted release/manifest is unavailable: "+reason);
    var source=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>("Assets/Production/Story/Programs/FirstContact.dazstory");
    if(source==null||!source.IsCompiled||source.content==null)throw new InvalidOperationException("Reimport FirstContact.dazstory before creating Gate B.");
    var expression=Find<PerformerExpression>("t:PerformerExpression");var aura=AssetDatabase.LoadAssetAtPath<PerformerAura>("Assets/Production/Content/Magic/Auras/Aura_VioletSerenity.asset");var motion=Find<FunscriptMotionProgram>("t:FunscriptMotionProgram");
    if(expression==null||aura==null||motion==null||!aura.IsReady(out reason))throw new InvalidOperationException("Gate B needs existing expression, aura and engineering motion assets: "+reason);
+   stage="preparing isolated diagnostic assets";
    Ensure(Root);Ensure("Assets/__WardrobeProtectedCards/Scenes");Ensure(Root+"/Fits");Ensure(Root+"/Presets");
    var diagnostic=Clone(released,Root+"/Catalog.asset");var presets=released.Presets.Select(p=>{
     var copy=Clone(p,Root+"/Presets/"+p.PresetId+".asset");var fits=p.FitStates.Select(f=>Clone(f,Root+"/Fits/"+p.PresetId+"-"+f.VisibleMask+".asset")).ToArray();copy.SetGeneratedFitStates(fits);EditorUtility.SetDirty(copy);return copy;
@@ -47,18 +54,33 @@ namespace DazPose.UnityValidation {
    content.ownerSourceGuid=AssetDatabase.AssetPathToGUID(Root+"/Root.dazstory");publishedContent.ownerSourceGuid=AssetDatabase.AssetPathToGUID(Root+"/Cards.dazstory");EditorUtility.SetDirty(content);EditorUtility.SetDirty(publishedContent);AssetDatabase.SaveAssets();
    AssetDatabase.ImportAsset(Root+"/Root.dazstory",ImportAssetOptions.ForceUpdate);AssetDatabase.ImportAsset(Root+"/Cards.dazstory",ImportAssetOptions.ForceUpdate);
    var root=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Root.dazstory");var cards=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Cards.dazstory");if(!root.IsCompiled||!cards.IsCompiled)throw new InvalidOperationException(root.CompilationIssue+"\n"+cards.CompilationIssue);
+   stage="copying First Contact";
    if(!AssetDatabase.CopyAsset("Assets/Scenes/FirstContact.unity",ScenePath))throw new IOException("Could not copy First Contact into Gate B.");
    File.WriteAllText(Root+"/scene-copy.sha256",FileHash(ScenePath));
    var scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
+   stage="checking copied scene bindings";
+   // OpenScene can unload assets held only in local managed variables; reload all preparation inputs.
+   source=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>("Assets/Production/Story/Programs/FirstContact.dazstory");
+   diagnostic=AssetDatabase.LoadAssetAtPath<WardrobeCatalog>(Root+"/Catalog.asset");
+   manifest=AssetDatabase.LoadAssetAtPath<WardrobeRigManifest>(Released+"/WardrobeRigManifest.asset");
+   content=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(Root+"/Root.bindings.asset");
+   publishedContent=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(Root+"/Cards.bindings.asset");
+   root=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Root.dazstory");cards=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Cards.dazstory");
+   expression=Find<PerformerExpression>("t:PerformerExpression");aura=AssetDatabase.LoadAssetAtPath<PerformerAura>("Assets/Production/Content/Magic/Auras/Aura_VioletSerenity.asset");motion=Find<FunscriptMotionProgram>("t:FunscriptMotionProgram");
    foreach(var host in GameSessionSceneSetup.InScene<PerformanceHost>(scene)){host.PlayOnStart=false;host.enabled=false;EditorUtility.SetDirty(host);}
    var performance=GameSessionSceneSetup.InScene<PerformanceSceneBindings>(scene).Single();var story=GameSessionSceneSetup.InScene<StorySceneBindings>(scene).Single();var actor=performance.Performer;var wardrobe=actor.GetComponent<PerformerWardrobe>();
-   if(wardrobe==null||wardrobe.Body==null||performance.Player?.BodyPresence==null||performance.Playback==null)throw new InvalidOperationException("Copied scene needs Lara's configured body, original PlayerBodyPresence and local MotionDriver.");
+   if(wardrobe==null)throw new InvalidOperationException("Bound Lara has no PerformerWardrobe component.");
+   if(wardrobe.Body==null)throw new InvalidOperationException("Bound Lara PerformerWardrobe.Body is missing.");
+   if(performance.Player?.BodyPresence==null)throw new InvalidOperationException("PerformanceSceneBindings.Player.BodyPresence is missing.");
+   if(performance.Playback==null)throw new InvalidOperationException("PerformanceSceneBindings.Playback is missing.");
    var changed=source.content.poses.FirstOrDefault(p=>p.value!=null && p.value!=actor.InitialPose && p.posture==PlayerPosture.Standing);if(changed==null)throw new InvalidOperationException("Gate B needs an existing pose distinct from the entrance pose.");
    content.poses[0].value=changed.value;publishedContent.poses[0].value=changed.value;EditorUtility.SetDirty(content);EditorUtility.SetDirty(publishedContent);
+   stage="configuring copied Lara wardrobe and rig";
    actor.ConfigureInitialState(actor.InitialPose,actor.InitialExpression,actor.InitialExpressionIntensity,false);actor.gameObject.SetActive(true);wardrobe.ConfigureBinding(diagnostic,null,wardrobe.Body,actor);
    var binding=actor.GetComponent<WardrobeRigBinding>()??actor.gameObject.AddComponent<WardrobeRigBinding>();binding.Configure(manifest,Child(wardrobe.Body.transform,"GateB clothing"),Child(wardrobe.Body.transform,"GateB hair"));
    var serialized=new SerializedObject(wardrobe);serialized.FindProperty("rigBinding").objectReferenceValue=binding;serialized.ApplyModifiedPropertiesWithoutUndo();
    serialized=new SerializedObject(actor);serialized.FindProperty("motionDriver").objectReferenceValue=performance.Playback;serialized.ApplyModifiedPropertiesWithoutUndo();
+   stage="creating marks and saved runner";
    var entrance=Mark("Gate B entrance",story.RequireLocation("lara_start").placement.position,story.RequireLocation("lara_start").placement.rotation);
    var camera=Mark("Gate B fixed camera (pitch and roll)",story.RequireLocation("camera_start").placement.position,story.RequireLocation("camera_start").placement.rotation*Quaternion.Euler(7,0,13));
    var cameraShift=Mark("Gate B outgoing camera",camera.position+new Vector3(.5f,.15f,-.35f),camera.rotation*Quaternion.Euler(-12,24,-20));
@@ -66,10 +88,16 @@ namespace DazPose.UnityValidation {
    story.locations=story.locations.Concat(new[]{new StoryLocationBinding{id="GateShift",placement=shift},new StoryLocationBinding{id="GateOuter",placement=outer}}).ToArray();
    var runner=new GameObject("Card Return Gate").AddComponent<CardReturnGateRunner>();runner.setupVersion=CardReturnGateRunner.SetupVersion;runner.performance=performance;runner.scene=story;runner.root=root;runner.cards=cards;runner.openingOutfit=diagnostic.Presets.Single(p=>p.PresetId=="first-outfit");runner.openingHair=manifest.Hair.First().prefab;runner.seatedPose=source.content.Pose("Lounging").value;runner.changedExpression=expression;runner.entranceAura=aura;runner.entranceMark=entrance;runner.cameraMark=camera;runner.shiftCamera=cameraShift;runner.seat=story.RequireLocation("Lounger").seat;runner.replacementMotion=motion;
    if(runner.seat==null||runner.seatedPose==null)throw new InvalidOperationException("Copied Lounger seat / Lounging pose is missing.");
+   stage="saving and verifying complete composition";
+   ValidateRunner(runner);
    runner.sceneGuid=AssetDatabase.AssetPathToGUID(ScenePath);runner.sourceFingerprint=Fingerprint(repository);
    foreach(var component in new Component[]{actor,wardrobe,binding,performance,story}){PrefabUtility.RecordPrefabInstancePropertyModifications(component);EditorUtility.SetDirty(component);}EditorUtility.SetDirty(runner);EditorSceneManager.MarkSceneDirty(scene);if(!EditorSceneManager.SaveScene(scene))throw new IOException("Could not save Gate B.");AssetDatabase.SaveAssets();
-   scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);if(GameSessionSceneSetup.InScene<CardReturnGateRunner>(scene).Single().root==null)throw new InvalidOperationException("Gate B failed saved-reference verification.");
-   return "Gate B is saved and open. Enter Play yourself; use the Card Return Gate panel. Production assets were not modified.";
+   scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);ValidateRunner(GameSessionSceneSetup.InScene<CardReturnGateRunner>(scene).Single());
+   return "GATE B READY. Gate B is saved and open. Enter Play yourself; use the Card Return Gate panel. Production assets were not modified.";
+  }
+  static void ValidateRunner(CardReturnGateRunner runner){
+   if(runner==null||!runner.enabled||!runner.gameObject.activeInHierarchy||runner.performance==null||runner.scene==null||runner.root==null||runner.cards==null||runner.openingOutfit==null||runner.openingHair==null||runner.seatedPose==null||runner.changedExpression==null||runner.entranceAura==null||runner.entranceMark==null||runner.cameraMark==null||runner.shiftCamera==null||runner.seat==null||runner.replacementMotion==null)
+    throw new InvalidOperationException("The active saved Card Return Gate runner has missing references.");
   }
   static StoryContentBindings Content(StoryContentBindings source,WardrobeCatalog catalog,WardrobeRigManifest manifest,string path){
    var content=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(path);if(content!=null)return content;

@@ -168,12 +168,20 @@
       "status": "WAITING_ON_ART",
       "revision": "See local commit: Implement protected card return and deliver Gate B",
       "nativeEvidence": null,
-      "artResponse": null,
+      "artResponse": "No UI when entering Play; Gate B not accepted.",
       "acceptedCases": [],
       "notRunCases": [
         "All Gate B native cases: Art has not operated this source revision."
       ],
-      "invalidations": []
+      "invalidations": [
+        {
+          "revision": "a1cbdad",
+          "case": "Create / open Gate B scene",
+          "reason": "Art entered Play with no controls. Source inspection confirms saved diagnostic scene is an unchanged First Contact copy with no CardReturnGateRunner. Setup did not reach runner/save completion; previous window hid the exception in its report text.",
+          "resolution": "Retry recognizes untouched copy; preparation now reloads assets after scene open, validates all runner references, reports stage/full exception and requires explicit GATE B READY dialog before Play.",
+          "status": "RETRY_REQUIRED"
+        }
+      ]
     },
     "C": {
       "status": "NOT_READY",
