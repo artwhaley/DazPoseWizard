@@ -13,17 +13,19 @@ namespace DazPose.Performer {
   }
   readonly List<Surface> surfaces=new List<Surface>();
   PerformerMagicShaderProfile active;
+  internal PerformerMagicShaderProfile CurrentProfile=>active;
   int generation,refreshDepth;
   public bool IsRefreshing => refreshDepth>0;
   public PerformerMaterialMode Mode => active==null || IsRefreshing ? PerformerMaterialMode.Regular : active.mode;
   public void Apply(PerformerMagicShaderProfile profile) {
    if(profile==null) throw new ArgumentNullException(nameof(profile)); profile.ValidateConfiguration();
    RestoreRegular();
-   if(profile.mode==PerformerMaterialMode.Regular) return;
    active=profile;
+   if(profile.mode==PerformerMaterialMode.Regular) return;
    try { ApplyCurrentRenderers(); } catch { RestoreRegular(); throw; }
   }
   void ApplyCurrentRenderers() {
+   if(active==null || active.mode==PerformerMaterialMode.Regular)return;
    foreach(var renderer in GetComponentsInChildren<Renderer>(true).Where(r=>r.enabled && r.gameObject.activeInHierarchy && (r is SkinnedMeshRenderer || r is MeshRenderer))) {
     var normal=renderer.sharedMaterials;
     var effect=normal.Select(_=>new Material(active.wireframeMaterial) { name="Lara wireframe (runtime)",hideFlags=HideFlags.DontSave }).ToArray();

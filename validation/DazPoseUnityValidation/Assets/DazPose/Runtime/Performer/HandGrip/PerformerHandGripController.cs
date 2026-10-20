@@ -53,6 +53,7 @@ namespace DazPose.Performer.HandGrip
         public string FailureDetails { get; private set; }
         public GripReachPlan ReachPlan { get; private set; }
         public bool RequiredLocomotion { get; private set; }
+        internal PerformerGripSnapshot CapturePresentation()=>new PerformerGripSnapshot(IsGripping,_target,_position,_followMotion,_driver);
         public IGripTarget Target => _target;
         public HandGripRigProfile Profile => profile;
         public bool IsAvailable => _arm != null && _layer != null;

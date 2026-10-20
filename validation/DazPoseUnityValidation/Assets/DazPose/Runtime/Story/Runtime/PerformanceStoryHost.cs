@@ -18,7 +18,7 @@ namespace DazPose.Story {
   Action<long> motionEnded;
   public PerformanceStoryHost(StoryRuntimeContext context,StoryContentBindings content,StoryLinkedContent linked=null) {
    this.context=context;this.content=content;this.linked=linked;phaseLifetime=CancellationTokenSource.CreateLinkedTokenSource(context.Cancellation);
-   context.Run.RegisterPersistentCleanup(()=> {phaseLifetime.Cancel();context.Bindings.prompts.ClearActions();if(motionEnded!=null && context.Run.PlaybackDriver!=null)context.Run.PlaybackDriver.Ended-=motionEnded;});
+   context.Run.RegisterPersistentCleanup(()=> {phaseLifetime.Cancel();context.Bindings.prompts.ClearActions();if(motionEnded!=null && context.Run.PlaybackDriver!=null)context.Run.PlaybackDriver.Ended-=motionEnded;},context.Run.RootScope,"story-phase-services");
   }
   public string ResourceIssue(CardDefinition card)=>linked?.ResourceIssue(card,context.Bindings);
   public void ObserveDirector(DirectorSnapshot snapshot,CardExecutionContext card) {context.Snapshot.SetDirector(snapshot,card);}
@@ -176,9 +176,10 @@ namespace DazPose.Story {
     case "MotionDriver.Stop":run.StopPlayback();break;
     case "UI.ShowAction": {
      string action=Arg("action");int invocation=phaseInvocation;var ownedSignals=signals;
-     scene.prompts.ShowAction(action,Arg("label"),()=> {if(invocation!=phaseInvocation || context.Cancellation.IsCancellationRequested)return;Trace(command.Source,"You pressed "+action+".");context.Events.Emit(action);ownedSignals.Emit("UI.Pressed:"+action);});break;
+     var owner=run.CurrentScope;var actionLease=scene.prompts.ShowOwnedAction(action,Arg("label"),()=> {if(invocation!=phaseInvocation || context.Cancellation.IsCancellationRequested)return;Trace(command.Source,"You pressed "+action+".");context.Events.Emit(action);ownedSignals.Emit("UI.Pressed:"+action);},owner.Id);
+     run.RegisterPersistentCleanup(actionLease.Dispose,owner,"action:"+action);break;
     }
-    case "UI.HideAction":scene.prompts.HideAction(Arg("action"));break;
+    case "UI.HideAction":scene.prompts.HideOwnedAction(Arg("action"),run.CurrentScope.Id);break;
     case "UI.WaitFor":await WaitAnyAsync(new[]{new StoryData("UI.Pressed:"+Arg("action"))},cancellation);break;
     case "Equipment.Activate": {
      string id=Arg("equipment");context.Catalogs.Equipment.Require(id);
@@ -194,7 +195,7 @@ namespace DazPose.Story {
   public async Task<StoryData> WaitAnyAsync(StoryData[] events,CancellationToken cancellation) {
    string[] ids=events.Select(e=>e.String).ToArray();
    foreach(string id in ids)if(id!="MotionDriver.Ended" && !id.StartsWith("UI.Pressed:",StringComparison.Ordinal))throw new ArgumentException("Unknown story event "+id);
-   using(var linked=CancellationTokenSource.CreateLinkedTokenSource(cancellation,phaseLifetime.Token)) {
+   using(var linked=CancellationTokenSource.CreateLinkedTokenSource(cancellation,phaseLifetime.Token,context.Run.CurrentScope.Cancellation)) {
     var hub=signals;var wait=hub.WaitAnyAsync(ids,linked.Token);
     // Latch only a press from this current action scope, never an older phase.
     foreach(string id in ids)if(id.StartsWith("UI.Pressed:",StringComparison.Ordinal) && context.Bindings.prompts.ActionWasPressed(id.Substring(11)))hub.Emit(id);

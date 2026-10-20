@@ -482,7 +482,7 @@ namespace DazPose.Performer
             (!string.IsNullOrWhiteSpace(catalog.ReleasedGenerationId) ? catalog.ReleasedGenerationId :
                 !string.IsNullOrWhiteSpace(catalog.CompiledConfigurationHash) ? catalog.CompiledConfigurationHash : "candidate");
 
-        private WardrobeSelection CaptureSelection() => new WardrobeSelection(SelectionGenerationId(),
+        internal WardrobeSelection CaptureSelection() => new WardrobeSelection(SelectionGenerationId(),
             _selectedPreset == null ? string.Empty : _selectedPreset.PresetId, _layerCeiling, _currentHairKey);
 
         private IReadOnlyList<WardrobePresetSelectionFacts> BuildSelectionFacts()

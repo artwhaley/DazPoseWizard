@@ -23,7 +23,8 @@ namespace DazPose.Story {
   readonly Dictionary<string,StoryContentBindings> content;
   StoryLinkedContent(CompiledStoryProgram program,StoryContentBindings root,Dictionary<string,StoryContentBindings> content) {Program=program;RootContent=root;this.content=content;}
   public static StoryLinkedContent Create(CompiledStoryAsset root) {
-   if(root==null || !root.IsCompiled)throw new InvalidOperationException("Assign a compiled story source with no import diagnostics.");
+   if(root==null)throw new InvalidOperationException("Assign a compiled story source.");
+   if(!root.IsCompiled)throw new InvalidOperationException(root.CompilationIssue);
    return Create(root.program,root.content,string.IsNullOrEmpty(root.sourceIdentity) ? "scene" : root.sourceIdentity);
   }
   public static StoryLinkedContent Create(CompiledStoryProgram root,StoryContentBindings rootContent,string rootId="scene") {

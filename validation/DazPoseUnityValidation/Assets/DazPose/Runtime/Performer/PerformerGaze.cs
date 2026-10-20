@@ -228,6 +228,7 @@ namespace DazPose.Performer
 
         public Playable OutputPlayable => _gazePlayable;
         public bool IsAvailable { get; private set; }
+        internal PerformerGazeSnapshot CapturePresentation() => new PerformerGazeSnapshot(_intention!=null,_intention!=null && _intention.FollowsTransform,_intention?.Transform,_intention==null ? default : _intention.WorldPosition,_settings);
         public bool HasGazeTarget => _intention != null;
         public bool IsGazeAcquired => _isAcquired;
         public float GazeWeight => _gazeWeight;

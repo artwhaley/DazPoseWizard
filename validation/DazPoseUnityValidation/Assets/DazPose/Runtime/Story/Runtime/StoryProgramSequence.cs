@@ -32,7 +32,7 @@ namespace DazPose.Story {
   public void Configure(CompiledStoryAsset source,StorySceneBindings bindings,string entry="FirstContact") {compiledSource=source;program=null;storyBindings=bindings;sequenceName=entry;}
   public override async Awaitable ExecuteAsync(PerformanceRun run) {
    if(compiledSource!=null) {
-    if(!compiledSource.IsCompiled) throw new InvalidOperationException(string.Join("\n",compiledSource.diagnostics));
+    if(!compiledSource.IsCompiled) throw new InvalidOperationException(compiledSource.CompilationIssue);
     var linked=StoryLinkedContent.Create(compiledSource);
     string[] missing=linked.MandatoryDiagnostics(storyBindings,sequenceName,stopBeforePhase);
     if(missing.Length>0) throw new InvalidOperationException("First Contact content bindings require attention:\n"+string.Join("\n",missing));

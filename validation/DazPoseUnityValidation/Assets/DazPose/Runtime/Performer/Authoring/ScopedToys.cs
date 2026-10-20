@@ -30,12 +30,12 @@ namespace DazPose.Performer
             {
                 command();
                 if (capability.HasValue)
-                    RegisterCleanup(service.CaptureOutputCancellation(capability.Value, channel));
+                    RegisterCleanup(service.CaptureOutputCancellation(capability.Value, channel),"toy:"+capability.Value+":"+channel);
             }
             catch { } // Intiface delivery and toy-only argument errors do not affect choreography.
         }
 
-        private void RegisterCleanup(Action cleanup) => run.RegisterPersistentCleanup(() => { try { cleanup?.Invoke(); } catch { } });
+        private void RegisterCleanup(Action cleanup,string resource) => run.RegisterPersistentCleanup(() => { try { cleanup?.Invoke(); } catch { } },resource:resource);
 
         public void Vibrate(float level, int? channel = null) =>
             Submit(() => { if (channel.HasValue) service.Vibrate(level, channel.Value); else service.Vibrate(level); },
@@ -59,7 +59,7 @@ namespace DazPose.Performer
             Submit(() =>
             {
                 service.Follow(driver);
-                RegisterCleanup(service.CapturePlaybackCancellation());
+                RegisterCleanup(service.CapturePlaybackCancellation(),"toy-follow");
             });
         }
         public void StopFollowing() => Submit(service.StopFollowing);

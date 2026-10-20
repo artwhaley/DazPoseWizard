@@ -57,14 +57,14 @@ namespace DazPose.Performer
         {
             run.ThrowIfActive();
             actor.LookAt(target);
-            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Gaze));
+            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Gaze),"gaze");
         }
 
         public void LookAt(Vector3 worldPosition)
         {
             run.ThrowIfActive();
             actor.LookAt(worldPosition);
-            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Gaze));
+            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Gaze),"gaze");
         }
 
         public void ClearGaze()
@@ -79,7 +79,7 @@ namespace DazPose.Performer
         {
             run.ThrowIfActive();
             actor.Expression(expression, intensity, blendTime);
-            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Expression));
+            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Expression),"expression");
         }
 
         public void ClearExpression()
@@ -208,7 +208,7 @@ namespace DazPose.Performer
         {
             run.ThrowIfActive();
             actor.Aura(aura, target);
-            run.RegisterPersistentOwnership(() => actor.CaptureAuraCancellation());
+            run.RegisterPersistentOwnership(() => actor.CaptureAuraCancellation(),"aura");
         }
 
         public void ClearAura()
@@ -231,14 +231,14 @@ namespace DazPose.Performer
         {
             run.ThrowIfActive();
             actor.HoldGrip(position01);
-            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Grip));
+            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Grip),"grip");
         }
 
         public void FollowGripMotion()
         {
             run.ThrowIfActive();
             actor.FollowGripMotion();
-            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Grip));
+            run.RegisterPersistentOwnership(() => actor.CapturePersistentCancellation(PerformanceCommand.Grip),"grip");
         }
 
         public void ReleaseGrip()

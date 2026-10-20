@@ -31,7 +31,7 @@ namespace DazPose.Story {
    Snapshot=new StoryRuntimeSnapshot(story,Contract,Session);
    Events=new StoryEventHub(e=> { Snapshot.SetEvent(e); Log("Event received: "+e.Id+"; value: "+e.Value); });
    Values=new StoryValueAccessor(this);
-   run.RegisterPersistentCleanup(Cancel);
+   run.RegisterPersistentCleanup(Cancel,run.RootScope,"story-context");
   }
   public void Log(string message) => UnityEngine.Debug.Log("[Story "+storyId+"] "+message,Bindings);
   public void CheckAuthority() { cancellation.Token.ThrowIfCancellationRequested(); Run.ThrowIfActive(); }

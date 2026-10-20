@@ -5,7 +5,7 @@ namespace DazPose.Player
 {
     /// <summary>Independent, latest-wins world-position and view-orientation channels.</summary>
     [DisallowMultipleComponent]
-    public sealed class PlayerView : MonoBehaviour
+    public sealed partial class PlayerView : MonoBehaviour
     {
         private enum OrientationMode { FiniteLook, TrackAcquire, Tracking }
 

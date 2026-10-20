@@ -22,5 +22,6 @@
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigManifestRules.cs" Link="Runtime/WardrobeRigManifestRules.cs" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigAssetIdentity.cs" Link="Runtime/WardrobeRigAssetIdentity.cs" />
     <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAttachmentRole.cs" Link="Runtime/WardrobeAttachmentRole.cs" />
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceOperationScope.cs" Link="Runtime/PerformanceOperationScope.cs" />
   </ItemGroup>
 </Project>

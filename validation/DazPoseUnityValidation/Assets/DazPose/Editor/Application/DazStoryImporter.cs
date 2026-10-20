@@ -39,7 +39,7 @@ namespace DazPose.Editor {
     AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));Selection.activeObject=content;return;
    }
    if(asset.content!=null && GUILayout.Button("Select content bindings")) Selection.activeObject=asset.content;
-   if(!asset.IsCompiled) { foreach(var message in asset.diagnostics) EditorGUILayout.HelpBox(message,MessageType.Error); return; }
+   if(!asset.IsCompiled) { EditorGUILayout.HelpBox(asset.CompilationIssue,MessageType.Error); return; }
    EditorGUILayout.LabelField("Compiled instructions",asset.program.instructions.Length.ToString());
    EditorGUILayout.LabelField("Dialogue bindings",asset.program.dialogue.Length.ToString());
    foreach(var message in asset.content.Diagnostics(asset.program)) EditorGUILayout.HelpBox(message,MessageType.Warning);

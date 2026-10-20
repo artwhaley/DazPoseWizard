@@ -24,7 +24,7 @@ namespace DazPose.Player {
  }
  [DisallowMultipleComponent]
  [DefaultExecutionOrder(-70)]
- public sealed class PlayerBodyPresence : MonoBehaviour {
+ public sealed partial class PlayerBodyPresence : MonoBehaviour {
   [SerializeField] PlayerBodyDissolvePart[] parts=Array.Empty<PlayerBodyDissolvePart>();
   [SerializeField] bool startHidden=true;
   PerformerDissolve driver;

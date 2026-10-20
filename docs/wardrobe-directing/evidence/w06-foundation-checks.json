@@ -1,0 +1,32 @@
+{
+  "ticket": "W06",
+  "status": "IN_PROGRESS",
+  "sourceCheck": "All seven assemblies PASS",
+  "managedChecks": {
+    "story": 98,
+    "rehearsal": 93,
+    "wardrobeAndScope": 22
+  },
+  "scopeTests": [
+    "Child cleanup leaves parent and superseded registrations alone",
+    "Returned generation transferred once; parent cancellation owns it",
+    "Captured delayed owner preserved; 1000 replacements retain one handle",
+    "Parent cancellation invalidates child adoption"
+  ],
+  "scopeCoverage": "Partial RT03/RT04/RT05/RT06/RT09 decisions; native restore/animation is not exercised",
+  "sourceHashes": {
+    "validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Performer\\Authoring\\PerformanceRun.cs": "d0a6686f043e99a90814e4950d5017d41562e17dd437dc8f9c1a254a9e444b93",
+    "validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Performer\\Authoring\\PerformanceRun.Scopes.cs": "eed4a60f161c40b3ad8f57cea56307eaec5ffc15f1c3697e6ed9534fa87f64cf",
+    "validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Performer\\Authoring\\PerformanceOperationScope.cs": "cd08eff3423949253184ba9f73d99c013006f545e29e64ac965c4c7f8a6145fb",
+    "validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Performer\\Authoring\\PerformancePresentationSnapshot.cs": "8405fb10689bdc716a7fecab891f85d277c8af8e22d552d6e4f49dcc1e9c0391",
+    "validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Performer\\Authoring\\PerformancePresentationService.cs": "6f463b98145bcf287f977a7f6cf680f89b56db457fa34b17eb373305e943ad4b"
+  },
+  "remaining": [
+    "Native CardPresentationScope entrance/barrier/pins and failure lifecycle bridge",
+    "Exact endpoint restore APIs and coordinated choreography (W07)",
+    "Production protocol and native Gate B composition/report",
+    "Additional parent driver/adoption and return cancellation checks"
+  ],
+  "nativeOperation": false,
+  "protectedCompletionEnabled": false
+}

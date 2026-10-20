@@ -82,11 +82,13 @@
     },
     {
       "id": "W06",
-      "status": "NOT_STARTED",
+      "status": "IN_PROGRESS",
       "dependencies": [
         "W05"
       ],
-      "evidence": []
+      "evidence": [
+        "evidence/w06-foundation-checks.json"
+      ]
     },
     {
       "id": "W07",
@@ -188,7 +190,7 @@
   },
   "implementationChecks": {
     "status": "PASS",
-    "reason": "Gate A accepted by Art; accepted fixture retired with asset identities preserved. Seven source assemblies and 18 current wardrobe tests pass after cleanup.",
+    "reason": "Current source checkpoint: 98 story, 93 rehearsal, 22 wardrobe/scope checks and seven source assemblies pass. W06 is incomplete; native B-D remain not ready.",
     "evidence": [
       "evidence/gate-a-retirement.json",
       "evidence/gate-a-native.json",

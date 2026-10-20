@@ -14,6 +14,7 @@ namespace DazPose.Performer
         private PerformerPose _customAsset;
         private float _customWeight, _customFromWeight, _customElapsed, _customDuration, _customBlend=1;
         private AnimationCurve _customCurve;
+        internal PerformerPose PersistentPose => _customAsset;
         public bool HasPersistentPose => _customAsset != null;
         public bool PersistentPoseSettled => _customElapsed >= _customDuration;
 

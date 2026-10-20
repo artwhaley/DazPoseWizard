@@ -52,14 +52,14 @@ namespace DazPose.Performer
         {
             run.ThrowIfActive();
             player.Track(target);
-            run.RegisterPersistentCleanup(player.View.CaptureOrientationCancellation());
+            run.RegisterPersistentCleanup(player.View.CaptureOrientationCancellation(),resource:"view-orientation");
         }
 
         public void Track(Transform target, float acquireDuration)
         {
             run.ThrowIfActive();
             player.Track(target, acquireDuration);
-            run.RegisterPersistentCleanup(player.View.CaptureOrientationCancellation());
+            run.RegisterPersistentCleanup(player.View.CaptureOrientationCancellation(),resource:"view-orientation");
         }
 
         public void StartAt(Transform location) {

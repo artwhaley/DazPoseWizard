@@ -11,11 +11,13 @@ using UnityEngine;
 namespace DazPose.Performer
 {
     /// <summary>Owns one authored performance and the exact operations it accepted.</summary>
-    public sealed class PerformanceRun : IDisposable
+    public sealed partial class PerformanceRun : IDisposable
     {
         private sealed class Operation
         {
             public string Verb;
+            public PerformanceOperationScope Owner;
+            public readonly System.Threading.Tasks.TaskCompletionSource<bool> Completion = new System.Threading.Tasks.TaskCompletionSource<bool>();
             public Action Cancel;
             public Action Stop;
             public bool Settled;
@@ -29,7 +31,10 @@ namespace DazPose.Performer
         private readonly ToyControlService toys;
         private readonly MotionDriver playback;
         private readonly List<Operation> operations = new List<Operation>();
-        private readonly List<Action> persistentCleanups = new List<Action>();
+        internal PerformanceOperationScope RootScope {get;} = new PerformanceOperationScope(0,null,0);
+        internal PerformanceOperationScope CurrentScope {get;private set;}
+        long nextScopeId;
+        PerformanceOperationScope playbackOwner;
         private readonly object gate = new object();
         private bool stopped;
         private bool disposed;
@@ -64,6 +69,7 @@ namespace DazPose.Performer
 
         private PerformanceRun(PerformanceSceneBindings sceneBindings)
         {
+            CurrentScope=RootScope;
             bindings = sceneBindings;
             actor = sceneBindings.Performer;
             player = sceneBindings.Player;
@@ -105,6 +111,7 @@ namespace DazPose.Performer
                 throw new PerformanceCommandException(actor.name, "StartPlayback", "AlreadyRunning",
                     "The bound playback driver is already running; use Follow to consume an external clock.");
 
+            playbackOwner=CurrentScope;
             playback.FunscriptProgram = program;
             playback.Loop = loop;
             playback.SourceMode = MotionSourceMode.Funscript;
@@ -113,7 +120,7 @@ namespace DazPose.Performer
             RegisterPersistentCleanup(() =>
             {
                 if (playback != null && playback.CommandGeneration == generation) playback.StopMotion();
-            });
+            },resource:"motion-driver");
         }
 
         public void StopPlayback()
@@ -122,6 +129,8 @@ namespace DazPose.Performer
             if (playback == null)
                 throw new PerformanceCommandException(actor.name, "StopPlayback", "MissingBinding",
                     "Assign the explicit scene playback MotionDriver before stopping playback.");
+            if(playback.IsRunning && CurrentScope!=RootScope && !ReferenceEquals(playbackOwner,CurrentScope))
+                throw new PerformanceCommandException(actor.name,"StopPlayback","ParentMotionOwned","A card cannot stop its parent-owned live motion driver.");
             playback.StopMotion();
         }
 
@@ -156,8 +165,8 @@ namespace DazPose.Performer
                     operation.Stop?.Invoke();
                     operation.Settled = true;
                 }
-                cleanup = persistentCleanups.AsEnumerable().Reverse().ToArray();
-                persistentCleanups.Clear();
+                cleanup = new Action[]{CloseScopes};
+                operations.Clear();
             }
             foreach (Action action in cleanup)
             {
@@ -181,7 +190,7 @@ namespace DazPose.Performer
         {
             ThrowIfStopped();
             var completion = new AwaitableCompletionSource<T>();
-            var operation = new Operation { Verb = verb ?? "command" };
+            var operation = new Operation { Verb = verb ?? "command", Owner=CurrentScope };
             lock (gate) operations.Add(operation);
             try
             {
@@ -199,6 +208,7 @@ namespace DazPose.Performer
                 RecordFailure(commandFailure);
                 completion.TrySetException(commandFailure);
                 StopAfterFailure(operation);
+                lock(gate)operations.Remove(operation);operation.Completion.TrySetResult(true);
             }
             return completion.Awaitable;
         }
@@ -219,6 +229,7 @@ namespace DazPose.Performer
                 if (success != null && success(result))
                 {
                     operation.Cancel = captureOwnership?.Invoke() ?? operation.Cancel;
+                    operation.Owner.Register(PresentationResource(operation.Verb),operation.Cancel);
                     completion.TrySetResult(result);
                 }
                 else
@@ -250,25 +261,21 @@ namespace DazPose.Performer
                 }
                 operation.Settled = true;
             }
+            finally {
+                lock(gate) {
+                    operations.Remove(operation);
+                    operation.Completion.TrySetResult(true);
+                }
+            }
         }
 
-        internal void RegisterPersistentCleanup(Action cleanup)
+        internal void RegisterPersistentCleanup(Action cleanup, PerformanceOperationScope owner=null,string resource=null)
         {
-            if (cleanup == null) return;
-            bool runNow;
-            lock (gate)
-            {
-                runNow = stopped;
-                if (!runNow) persistentCleanups.Add(cleanup);
-            }
-            if (runNow)
-            {
-                try { cleanup(); }
-                catch (Exception exception) { Debug.LogWarning(actor.name + "/persistent cleanup: " + exception.Message, actor); }
-            }
+            if(cleanup==null)return;
+            lock(gate) (owner??CurrentScope).Register(resource??throw new ArgumentException("An explicit cleanup resource is required.",nameof(resource)),cleanup);
         }
 
-        internal void RegisterPersistentOwnership(Func<Action> capture)
+        internal void RegisterPersistentOwnership(Func<Action> capture,string resource)
         {
             if (capture == null) return;
             Action cleanup = null;
@@ -277,7 +284,7 @@ namespace DazPose.Performer
             {
                 Debug.LogWarning(actor.name + "/persistent ownership capture: " + exception.Message, actor);
             }
-            RegisterPersistentCleanup(cleanup);
+            RegisterPersistentCleanup(cleanup,resource:resource);
         }
 
         private void StopAfterFailure(Operation failed)
@@ -295,8 +302,8 @@ namespace DazPose.Performer
                     operation.Stop?.Invoke();
                     operation.Settled = true;
                 }
-                cleanup = persistentCleanups.AsEnumerable().Reverse().ToArray();
-                persistentCleanups.Clear();
+                cleanup = new Action[]{CloseScopes};
+                operations.Clear();
             }
             foreach (Action action in cleanup)
             {

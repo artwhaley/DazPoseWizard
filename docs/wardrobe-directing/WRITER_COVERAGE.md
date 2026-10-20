@@ -44,3 +44,8 @@ This table records the current source seam and baseline gaps. **There is no full
 | Native preview renderer/bones/blendshapes/material blocks | `NativePreviewLease`; preview sampler; `LaraWardrobe`; `FootwearPoseDriver`; `NativePreviewWriterGuard` | owned proxy and attachment set, sampled body/pose values by stable blendshape name, effective visible renderer set | current lease tracks scene-preview mutations; appearance proxy projection and source-MPB read-only guarantee are not implemented. W08 owns this. | AU07–AU11 |
 
 No source-level finite global barrier, immutable entrance snapshot, card return or sequence/card kind dispatch was found at this baseline. These are explicit W04–W08 deliverables, not preexisting capabilities.
+
+
+## W06 source checkpoint - October 20
+
+Typed immutable records and capture seams now exist in PerformancePresentationSnapshot.cs, SuccubusPerformer.PresentationSnapshot.cs and the PlayerView/PlayerBodyPresence snapshot partials. PerformancePresentationService validates captured references/release/fit and compares domains; it does not yet execute restoration. PerformanceRun scopes capture operation owners, bound active collections, retain root services and isolate UI/motion ownership. Four pure tests cover scope cleanup/adoption/cancellation decisions. All baseline table return/animation/native acceptance rows remain incomplete until W06/W07 finish; no full-state gate is claimed from this checkpoint.

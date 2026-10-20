@@ -161,6 +161,8 @@ namespace DazPose.Story.Language {
     throw new StorySourceException(command.Source,"Runtime conflict: "+command.Verb+" needs "+key+" while "+active.verb+" from "+active.source+" is still running. Await it before starting this command.");
    var lease=new Lease {source=command.Source,verb=command.Verb}; foreach(string key in required) channels.Add(key,lease);
    host.Trace(command.Source,"Begin: "+StoryCommandDescription.Describe(command)+(command.Awaited ? "; wait for completion." : contract.instant ? "." : "; continue concurrently."));
+   children.RemoveAll(completed=>{if(!completed.IsCompleted)return false;if(completed.IsFaulted){var observed=completed.Exception;}return true;});
+   scopeChildren.RemoveAll(completed=>completed.IsCompleted);
    var task=Observe(command,required,lease); children.Add(task);scopeChildren.Add(task);return task;
   }
   async Task Observe(StoryCommand command,string[] required,Lease lease) {

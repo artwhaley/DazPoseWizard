@@ -260,6 +260,7 @@ namespace DazPose.Performer
         }
 
         private Transform _persistentHip;
+        internal PerformerSeatSnapshot CapturePresentation() => new PerformerSeatSnapshot(_currentSeat,_currentProfile,_currentStyle,_state,_layer.PersistentPose,_approachPosition,_approachRotation,_seatPosition,_seatRotation,_persistentHip!=null);
         public bool HasPersistentPose=>_layer.HasPersistentPose;
         public bool PersistentPoseSettled => _layer.PersistentPoseSettled;
         public void SetPersistentPose(PerformerPose pose,PoseTransition transition)
