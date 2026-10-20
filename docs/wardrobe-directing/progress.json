@@ -217,6 +217,13 @@
           "reason": "Native log: DissolveOut requires MagicShader(Regular) before a dissolve. Return left Lara in outgoing wireframe.",
           "resolution": "Prepare regular surfaces before actor dissolves; restore exact entrance profile after reveal. Explicit direct-card expectation in panel.",
           "status": "RETRY_REQUIRED"
+        },
+        {
+          "revision": "a57b834",
+          "case": "Direct card retry still wireframe",
+          "reason": "Runtime DLL 17:30 predates repair source/commit 17:36; 17:37 report phases omit new dissolve material preparation. Unity had not compiled the repair.",
+          "resolution": "Non-inlined loaded runtime version check, disabled stale cases, report runtime version+MVID, explicit Assets > Refresh instruction.",
+          "status": "RETRY_REQUIRED"
         }
       ]
     },

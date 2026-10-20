@@ -21,11 +21,13 @@ namespace DazPose.Validation.WardrobeProtectedCards {
   public Transform entranceMark,cameraMark,shiftCamera;public PerformerSeat seat;
   [Serializable] public sealed class Stamp {public string phase;public float seconds;}
   [Serializable] public sealed class Result {public string id,status,error,entry,posture,camera,stopAt,fault;public bool hidden,trailing,driverRetained,outputAuthority,interactiveStopped;public double progress;public List<string> phases=new List<string>();public List<Stamp> timings=new List<Stamp>();public List<CardPresentationObservation> observations=new List<CardPresentationObservation>();}
-  [Serializable] sealed class Report {public int schemaVersion=1;public string gate="B",revision,scenePath,sceneGuid,generation,timestampUtc;public string[] requiredCases;public List<Result> cases;public bool toyOutputAllowed=false;public string nativeResult;}
+  [Serializable] sealed class Report {public int schemaVersion=1;public string gate="B",revision,scenePath,sceneGuid,generation,timestampUtc;public string[] requiredCases;public List<Result> cases;public bool toyOutputAllowed=false;public string nativeResult,runtimeBuild,runtimeAssemblyId;}
   public string sceneGuid;string runningFingerprint;
   float PanelWidth=>Mathf.Min(570,Screen.width*.45f);
   float ContentWidth=>Mathf.Max(80,PanelWidth-38);
   GUIStyle wrappedLabel,wrappedButton,wrappedToggle;
+  const string ExpectedRuntimeBuild="W07-return-material-order-v2";
+  string RuntimeBuild=>typeof(PerformanceRun).GetProperty("CardReturnImplementationVersion")?.GetValue(null) as string ?? "STALE (missing return repair)";
   void Awake(){runningFingerprint=CurrentFingerprint();}
   void ConfigureGateViewport(){var camera=performance.Player.MainCamera;float edge=(PanelWidth+24)/Mathf.Max(1,Screen.width);camera.rect=new Rect(edge,0,1-edge,1);}
   async Task AimGateCamera(PerformanceRun run,int mode){
@@ -33,7 +35,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
    else{await run.Player.LookAtAsync(scene.laraFocus,0f);performance.Player.MainCamera.transform.Rotate(0,0,13,Space.Self);}
   }
   readonly List<Result> results=new List<Result>();
-  bool busy;string status="Start with Run direct card. Watch the changed look/place/camera return to its entrance. If PASS, run all technical checks. A FAIL stops the suite; write report.";int posture;int camera=1;bool hidden;Vector2 scroll;
+  bool busy;string status="Exit Play and use Assets > Refresh after source updates. Start with Run direct card. Watch the changed look/place/camera return to its entrance. If PASS, run all technical checks. A FAIL stops the suite; write report.";int posture;int camera=1;bool hidden;Vector2 scroll;
   PerformanceRun active;CancellationTokenSource lifetime;Result current;Transform disposableTarget;string invalidFitJson;WardrobeFitState invalidFit;
   void OnDisable(){StopCurrent();RestoreFaultFit();}
   void StopCurrent(){lifetime?.Cancel();active?.Stop();}
@@ -48,8 +50,8 @@ namespace DazPose.Validation.WardrobeProtectedCards {
    scroll.x=0;
    scroll=GUILayout.BeginScrollView(scroll,false,true,GUIStyle.none,GUI.skin.verticalScrollbar);
    GUILayout.BeginVertical(GUILayout.Width(ContentWidth));
-   Label("Card Return Gate - one Lara / original player body");Label("Direct card: opening normal look -> changed outfit/wireframe -> opening look restored. Ending in wireframe is a failure.");Label(status);
-   GUI.enabled=!busy;
+   Label("Card Return Gate - one Lara / original player body");Label("Runtime: "+RuntimeBuild);Label("Direct card: opening normal look -> changed outfit/wireframe -> opening look restored. Ending in wireframe is a failure.");Label(status);
+   GUI.enabled=!busy&&RuntimeBuild==ExpectedRuntimeBuild;
    posture=GUILayout.SelectionGrid(posture,new[]{"Standing","Default seated","Persistent seated"},1,wrappedButton,GUILayout.Width(ContentWidth));
    camera=GUILayout.SelectionGrid(camera,new[]{"Fixed (pitch + roll)","Track Lara"},1,wrappedButton,GUILayout.Width(ContentWidth));
    hidden=GUILayout.Toggle(hidden,"Hidden entrance (must remain hidden on return)",wrappedToggle,GUILayout.Width(ContentWidth));
@@ -65,7 +67,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
   void Label(string text)=>GUILayout.Label(text,wrappedLabel,GUILayout.Width(ContentWidth));
   bool Press(string text)=>GUILayout.Button(text,wrappedButton,GUILayout.Width(ContentWidth),GUILayout.Height(Mathf.Max(32,wrappedButton.CalcHeight(new GUIContent(text),ContentWidth))));
   void Button(string label,Func<Task> action){if(Press(label))StartCase(action);}
-  async void StartCase(Func<Task> action){if(busy)return;busy=true;lifetime=new CancellationTokenSource();try{await action();status="Finished. Inspect the case result, then choose the next check.";}catch(Exception error){status=error.Message+" Write report and send the failed case label; do not continue testing.";}finally{busy=false;lifetime.Dispose();lifetime=null;}}
+  async void StartCase(Func<Task> action){if(busy)return;if(RuntimeBuild!=ExpectedRuntimeBuild){status="Stale runtime. Exit Play, use Assets > Refresh, wait for compilation, then enter Play again.";return;}busy=true;lifetime=new CancellationTokenSource();try{await action();status="Finished. Inspect the case result, then choose the next check.";}catch(Exception error){status=error.Message+" Write report and send the failed case label; do not continue testing.";}finally{busy=false;lifetime.Dispose();lifetime=null;}}
   async Task AllCases(){await Case("direct","Direct",0,1,false);await Case("explicit","Explicit",0,1,false);await Case("draw","Draw",0,1,false);await Case("nested","Nested",0,1,false);await Case("persistent","Persistent",0,1,false);await Case("contained","Contained",0,1,false);await Case("unchanged","Unchanged",0,1,false);await Case("parent-motion","Motion",0,1,false);await Combinations();await StopMatrix();await FaultMatrix();}
   async Task Combinations(){for(int p=0;p<3;p++)for(int c=0;c<2;c++){lifetime.Token.ThrowIfCancellationRequested();await Case("combination-"+p+"-"+c,"Direct",p,c,false);}await Case("hidden-fixed","Direct",0,0,true);await Case("hidden-track","Direct",0,1,true);}
   async Task StopMatrix(){foreach(string phase in new[]{"BodyHold","BodySettled","Prepared","ConcealLara","LaraConcealed","WardrobeCommit","RelocationCommit","PoseBlend","RevealLara","ViewBlend","Verify","Verified"}){lifetime.Token.ThrowIfCancellationRequested();await Case("stop-"+phase,"Direct",0,0,false,phase);}}
@@ -164,7 +166,7 @@ namespace DazPose.Validation.WardrobeProtectedCards {
   static async Task Wait(float seconds,CancellationToken token){float elapsed=0;while(elapsed<seconds){token.ThrowIfCancellationRequested();await Awaitable.NextFrameAsync(token);elapsed+=Mathf.Max(0,Time.deltaTime);}}
   static string CurrentFingerprint(){string folder=Path.GetFullPath(Path.Combine(Application.dataPath,"DazPose"));using(var hash=SHA256.Create()){string data=string.Join("\n",Directory.GetFiles(folder,"*.cs",SearchOption.AllDirectories).OrderBy(p=>p,StringComparer.Ordinal).Select(f=>Convert.ToBase64String(hash.ComputeHash(File.ReadAllBytes(f)))));return BitConverter.ToString(hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(data))).Replace("-","").ToLowerInvariant();}}
   void WriteReport(){var required=new[]{"direct","explicit","draw","nested","persistent","contained","unchanged","parent-motion","interactive-stop","hidden-fixed","hidden-track"}.Concat(Enumerable.Range(0,3).SelectMany(p=>Enumerable.Range(0,2).Select(c=>"combination-"+p+"-"+c))).Concat(new[]{"body","target","fit","return"}.Select(f=>"fault-"+f)).Concat(new[]{"BodyHold","BodySettled","Prepared","ConcealLara","LaraConcealed","WardrobeCommit","RelocationCommit","PoseBlend","RevealLara","ViewBlend","Verify","Verified"}.Select(p=>"stop-"+p)).ToArray();
-   var report=new Report{revision=runningFingerprint,scenePath=gameObject.scene.path,sceneGuid=sceneGuid,generation=openingHair.GenerationId,timestampUtc=DateTime.UtcNow.ToString("O"),requiredCases=required,cases=results,toyOutputAllowed=results.Any(r=>r.outputAuthority),nativeResult=required.All(id=>results.LastOrDefault(r=>r.id==id)?.status=="PASS")?"PASS":"INCOMPLETE_OR_FAILED"};
+   var report=new Report{revision=runningFingerprint,runtimeBuild=RuntimeBuild,runtimeAssemblyId=typeof(PerformanceRun).Assembly.ManifestModule.ModuleVersionId.ToString(),scenePath=gameObject.scene.path,sceneGuid=sceneGuid,generation=openingHair.GenerationId,timestampUtc=DateTime.UtcNow.ToString("O"),requiredCases=required,cases=results,toyOutputAllowed=results.Any(r=>r.outputAuthority),nativeResult=RuntimeBuild==ExpectedRuntimeBuild&&required.All(id=>results.LastOrDefault(r=>r.id==id)?.status=="PASS")?"PASS":"INCOMPLETE_OR_FAILED"};
    string path=Path.GetFullPath(Path.Combine(Application.dataPath,"../../../docs/wardrobe-directing/evidence/gate-b-native.json"));Directory.CreateDirectory(Path.GetDirectoryName(path));File.WriteAllText(path,JsonUtility.ToJson(report,true));status="Wrote "+path+" — "+report.nativeResult;
   }
   sealed class GateHost : IStoryExecutionHost,IStoryCardPresentationHost,IStoryCardEligibility,IStoryDirectorObserver,IStoryPhaseObserver {

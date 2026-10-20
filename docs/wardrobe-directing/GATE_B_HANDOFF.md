@@ -22,3 +22,8 @@ If direct passes, run all technical checks. The suite now stops at the first une
 ## Camera visibility correction
 
 Gate B now defaults to Track Lara. Normal direct/explicit/drawn/nested/sequence/no-change suite cases use the existing tracking command. After the outgoing camera relocation the fixture turns tracking back on. Controls occupy a separate strip to the left of the camera viewport. Fixed-mode combination checks remain distinct and aim once at Lara with a deliberate camera roll before capture; the return service restores the captured state without an observation override. Existing saved Gate B scene is reusable; exit Play, allow compilation, then fresh Play / Run direct card.
+
+
+## Confirm the repair is compiled before another native run
+
+Exit Play. Use Unity's **Assets > Refresh**, then wait for compilation to finish. Enter Play. The panel must show **Runtime: W07-return-material-order-v2**. If it says STALE or the runtime line is absent, do not run a case: Unity has not loaded the repaired assemblies. The current report separates disk-source fingerprint from the loaded runtime version and assembly identity.
