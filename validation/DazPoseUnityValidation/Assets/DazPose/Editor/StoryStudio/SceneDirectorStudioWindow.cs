@@ -82,6 +82,8 @@ namespace DazPose.Editor.Studio
                 case StoryBindingKind.Pose:return content.poses.FirstOrDefault(d=>d.id==r.Alias)?.value;
                 case StoryBindingKind.Gesture:return content.gestures.FirstOrDefault(d=>d.id==r.Alias)?.value;
                 case StoryBindingKind.MagicShaderProfile:return content.shaders.FirstOrDefault(d=>d.id==r.Alias)?.value;
+                case StoryBindingKind.WardrobePreset:return content.wardrobe.FirstOrDefault(d=>d.id==r.Alias)?.value;
+                case StoryBindingKind.Hair:return content.hair.FirstOrDefault(d=>d.id==r.Alias)?.value;
                 case StoryBindingKind.Funscript:return content.motion.FirstOrDefault(d=>d.id==r.Alias)?.value;
                 case StoryBindingKind.Performer:return host?.lara;
                 case StoryBindingKind.PlayerBody:return host?.playerBody;
@@ -98,7 +100,7 @@ namespace DazPose.Editor.Studio
                 return;
             }
             if(content==null){DrawCreateBindingRows();return;}
-            string array=r.IsDialogue?"dialogue":r.Kind==StoryBindingKind.Pose?"poses":r.Kind==StoryBindingKind.Gesture?"gestures":r.Kind==StoryBindingKind.MagicShaderProfile?"shaders":"motion";
+            string array=r.IsDialogue?"dialogue":r.Kind==StoryBindingKind.Pose?"poses":r.Kind==StoryBindingKind.Gesture?"gestures":r.Kind==StoryBindingKind.MagicShaderProfile?"shaders":r.Kind==StoryBindingKind.WardrobePreset?"wardrobe":r.Kind==StoryBindingKind.Hair?"hair":"motion";
             var serialized=new SerializedObject(content);serialized.Update();var rows=serialized.FindProperty(array);SerializedProperty row=null;
             string id=r.IsDialogue?StoryDialogue.IdFor(r.Transcript):r.Alias;
             for(int i=0;i<rows.arraySize;i++){var candidate=rows.GetArrayElementAtIndex(i);if(candidate.FindPropertyRelative("id").stringValue==id){row=candidate;break;}}
@@ -106,7 +108,19 @@ namespace DazPose.Editor.Studio
             if(r.IsDialogue)EditorGUILayout.HelpBox(r.Transcript,MessageType.Info);
             var property=row.FindPropertyRelative(r.IsDialogue?"clip":"value");
             EditorGUILayout.LabelField(r.Kind==StoryBindingKind.Pose?"Drop a PerformerPose from Project here":"Drag an asset from Project",EditorStyles.wordWrappedMiniLabel);
-            EditorGUILayout.PropertyField(property,GUIContent.none,GUILayout.Height(r.Kind==StoryBindingKind.Pose?40:22));
+            if(r.Kind==StoryBindingKind.Hair) {
+                var assigned=(GameObject)EditorGUILayout.ObjectField("Hair prefab",property.objectReferenceValue,typeof(GameObject),false);
+                if(assigned!=property.objectReferenceValue)Try(()=>{
+                    if(assigned!=null) {
+                        var d=assigned.GetComponent<WardrobeAttachmentDescriptor>();
+                        if(!PrefabUtility.IsPartOfPrefabAsset(assigned)||assigned.transform.parent!=null||d==null||d.AttachmentRole!=WardrobeAttachmentRole.Hair)throw new InvalidOperationException("Drop a generated Hair prefab root from Project.");
+                        if(!d.Validate(out var issue))throw new InvalidOperationException(issue);
+                        var rig=host?.lara?.GetComponent<PerformerWardrobe>()?.RigBinding?.Manifest;
+                        if(rig!=null && (d.GenerationId!=rig.GenerationId||d.CharacterSignature!=rig.CharacterSignature||!rig.TryGetHair(d.StableKey,out var expected)||expected!=d))throw new InvalidOperationException("Hair does not match this actor's manifest/generation/signature.");
+                    }
+                    property.objectReferenceValue=assigned;
+                });
+            } else EditorGUILayout.PropertyField(property,GUIContent.none,GUILayout.Height(r.Kind==StoryBindingKind.Pose?40:22));
             if(r.Kind==StoryBindingKind.Pose) {
                 EditorGUILayout.PropertyField(row.FindPropertyRelative("posture"),new GUIContent("World posture"));
                 EditorGUILayout.LabelField("Shared pose slot: "+r.Alias+" · "+r.Occurrences.Length+" cue(s) in this source",EditorStyles.wordWrappedMiniLabel);

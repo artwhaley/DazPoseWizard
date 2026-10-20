@@ -8,6 +8,11 @@ namespace DazPose.Story.Language {
     case "Lara.StartHiddenAt":return "Place Lara hidden at "+Arg("location");
     case "PlayerBody.StartHiddenAt":return "Place the prepared male player body hidden at "+Arg("location");
     case "Camera.StartAt":return "Place the camera at "+Arg("location");
+    case "Lara.SetOutfit":return "Dress Lara in "+Arg("outfit")+" while keeping her hair";
+    case "Lara.SetHair":return "Set Lara's hair to "+Arg("hair");
+    case "Lara.ClearHair":return "Remove Lara's hair";
+    case "Lara.Outfit.RemoveOneLayer":return "Remove Lara's outermost visible clothing layer";
+    case "Lara.Outfit.AddOneLayer":return "Restore Lara's next clothing layer";
     case "Lara.StartIdle":return "Use Lara's configured normal idle state";
     case "Lara.DissolveIn":return "Reveal Lara at "+Arg("location");
     case "Lara.DissolveTo":return "Dissolve Lara to "+Arg("location");

@@ -57,6 +57,7 @@ namespace DazPose.Story {
   }
   public string ResourceIssue(CardDefinition card,StorySceneBindings scene) {
    foreach(var use in StoryProgramReachability.ForCard(Program,card).bindings) {
+    if(use.kind==StoryBindingKind.WardrobePreset || use.kind==StoryBindingKind.Hair) {try {ContentFor(use.source).ValidateAppearance(use,scene);}catch(Exception error){return use.source+"\n"+error.Message;}continue;}
     if(use.kind!=StoryBindingKind.Location && use.kind!=StoryBindingKind.Performer && use.kind!=StoryBindingKind.PlayerBody && use.kind!=StoryBindingKind.ContactTarget)continue;
     try {scene.ValidateSymbol(use);}
     catch(Exception error) {return use.source+"\nUnavailable scene resource '"+use.symbol+"': "+error.Message;}

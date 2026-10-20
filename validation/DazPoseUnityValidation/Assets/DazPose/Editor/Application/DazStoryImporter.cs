@@ -14,7 +14,11 @@ namespace DazPose.Editor {
    try {
     context.DependsOnSourceAsset(bindingPath);
     asset.content=SourceBindingReconciler.FindOwner(asset.sourceIdentity,bindingPath);
-    if(asset.content!=null)context.DependsOnSourceAsset(AssetDatabase.GetAssetPath(asset.content));
+    if(asset.content!=null) {
+     context.DependsOnSourceAsset(AssetDatabase.GetAssetPath(asset.content));
+     foreach(var row in asset.content.wardrobe)if(row.value!=null)context.DependsOnSourceAsset(AssetDatabase.GetAssetPath(row.value));
+     foreach(var row in asset.content.hair)if(row.value!=null)context.DependsOnSourceAsset(AssetDatabase.GetAssetPath(row.value));
+    }
     if(asset.content==null) {asset.content=ScriptableObject.CreateInstance<StoryContentBindings>();asset.content.name="Content bindings";context.AddObjectToAsset("bindings",asset.content);}
     var analysis=DazStoryCompiler.Analyze(File.ReadAllText(context.assetPath,new System.Text.UTF8Encoding(false,true)),context.assetPath,new StoryAnalysisOptions{SourceGuid=asset.sourceIdentity,AllowExternalCards=true});
     if(!analysis.SyntaxValid)throw new StorySourceException(new StorySource(context.assetPath,1,1),string.Join("\n",analysis.SyntaxDiagnostics));

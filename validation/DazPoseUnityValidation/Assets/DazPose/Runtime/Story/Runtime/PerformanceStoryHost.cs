@@ -89,6 +89,7 @@ namespace DazPose.Story {
    throw new ArgumentException("Unknown value function '"+name+"'.");
   }
   string[] Tags(string id) {var item=context.Catalogs.Equipment.Require(id);return item.identityTags.Concat(item.themeTags).Distinct(StringComparer.Ordinal).ToArray();}
+  static WardrobeTransition AppearanceTransition(StorySceneBindings scene)=>scene.lara.IsHidden ? WardrobeTransition.Cut : WardrobeTransition.Dissolve(.25f,.25f);
   public async Task<StoryData> InvokeAsync(StoryCommand command,CancellationToken cancellation) {
    cancellation.ThrowIfCancellationRequested(); context.CheckAuthority();
    var content=linked?.ContentFor(command.Source) ?? this.content;
@@ -96,6 +97,15 @@ namespace DazPose.Story {
    string Arg(string name)=>command.Require(name).String;
    StoryLocationBinding Location()=>scene.RequireLocation(Arg("location"));
    switch(command.Verb) {
+    case "Lara.SetOutfit":
+     content.ValidateAppearance(new StoryBindingUse {kind=StoryBindingKind.WardrobePreset,symbol=Arg("outfit"),source=command.Source},scene);
+     await run.Performer.SetOutfitAsync(content.Wardrobe(Arg("outfit")),AppearanceTransition(scene));break;
+    case "Lara.SetHair":
+     content.ValidateAppearance(new StoryBindingUse {kind=StoryBindingKind.Hair,symbol=Arg("hair"),source=command.Source},scene);
+     await run.Performer.SetHairAsync(content.Hair(Arg("hair")).StableKey,AppearanceTransition(scene));break;
+    case "Lara.ClearHair":await run.Performer.SetHairAsync(string.Empty,AppearanceTransition(scene));break;
+    case "Lara.Outfit.RemoveOneLayer":await run.Performer.TryRemoveLayerAsync(AppearanceTransition(scene));break;
+    case "Lara.Outfit.AddOneLayer":await run.Performer.TryAddLayerAsync(AppearanceTransition(scene));break;
     case "Lara.StartHiddenAt":run.Performer.StartHiddenAt(Location().placement);break;
     case "PlayerBody.StartHiddenAt":run.Player.StartBodyHiddenAt(Location().placement);break;
     case "Camera.StartAt":run.Player.StartAt(Location().placement);break;

@@ -1,0 +1,16 @@
+{
+  "ticket": "W05",
+  "storyTests": 98,
+  "rehearsalTests": 93,
+  "wardrobeTests": 18,
+  "sourceAssemblies": 7,
+  "commands": [
+    "Lara.SetOutfit",
+    "Lara.SetHair",
+    "Lara.ClearHair",
+    "Lara.Outfit.RemoveOneLayer",
+    "Lara.Outfit.AddOneLayer"
+  ],
+  "nativeOperation": false,
+  "nativeAssignmentAndRendering": "Pending Gates B/C/D; no production startup assignment advanced"
+}

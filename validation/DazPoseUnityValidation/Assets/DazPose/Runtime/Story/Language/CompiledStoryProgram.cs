@@ -8,7 +8,7 @@ namespace DazPose.Story.Language {
  // Storage-independent executable data. No Unity objects, parser nodes, or nested instructions.
  public enum StoryCode { Call, Store, Jump, JumpFalse, RepeatBegin, RepeatEnd, Play, EnterPhase, LeavePhase, Return, WaitAny }
  public enum StoryAtomCode { Number, String, Bool, Symbol, Read, Add, Subtract, Multiply, Divide, Range, Negate, Not, Equal, NotEqual, Less, LessEqual, Greater, GreaterEqual, AndSkip, OrSkip, Function, List }
- public enum StoryBindingKind { Location, Pose, Gesture, MagicShaderProfile, Performer, PlayerBody, ContactTarget, Funscript }
+ public enum StoryBindingKind { Location, Pose, Gesture, MagicShaderProfile, Performer, PlayerBody, ContactTarget, Funscript, WardrobePreset=8, Hair=9 }
  [Serializable] public sealed class StorySource {
   public string file, declaration, unit;
   public int line,column;
@@ -95,6 +95,8 @@ namespace DazPose.Story.Language {
  }
  public sealed class StoryVerb {
   public string name,channel;
+  public string[] requiredChannels=Array.Empty<string>();
+  public string[] RequiredChannels => (requiredChannels!=null && requiredChannels.Length>0 ? requiredChannels : name!=null && name.StartsWith("Lara.Dissolve",StringComparison.Ordinal) ? new[]{"Body","Visual"} : channel==null ? Array.Empty<string>() : new[]{channel}).Distinct(StringComparer.Ordinal).ToArray();
   public bool canRunUnawaited,instant,setupOnly;
   public string[] parameters;
   public int required;
@@ -107,6 +109,12 @@ namespace DazPose.Story.Language {
    var result=new Dictionary<string,StoryVerb>(StringComparer.Ordinal);
    Action<string,string,int,bool,bool,string,bool> add=(name,args,required,instant,unawaited,channel,setup)=>result.Add(name,new StoryVerb { name=name,parameters=args.Length==0 ? Array.Empty<string>() : args.Split(','),required=required,instant=instant,canRunUnawaited=unawaited,channel=channel,setupOnly=setup });
    Action<string,string,StoryBindingKind> bind=(name,arg,kind)=>result[name].bindingParameters.Add(arg,kind);
+   add("Lara.SetOutfit","outfit",1,false,false,null,false); bind("Lara.SetOutfit","outfit",StoryBindingKind.WardrobePreset);
+   add("Lara.SetHair","hair",1,false,false,null,false); bind("Lara.SetHair","hair",StoryBindingKind.Hair);
+   add("Lara.ClearHair","",0,false,false,null,false);
+   add("Lara.Outfit.RemoveOneLayer","",0,false,false,null,false);
+   add("Lara.Outfit.AddOneLayer","",0,false,false,null,false);
+   foreach(string name in new[]{"Lara.SetOutfit","Lara.SetHair","Lara.ClearHair","Lara.Outfit.RemoveOneLayer","Lara.Outfit.AddOneLayer"})result[name].requiredChannels=new[]{"Body","Visual","Wardrobe"};
    add("Lara.StartHiddenAt","location",1,true,true,null,true); bind("Lara.StartHiddenAt","location",StoryBindingKind.Location);
    add("PlayerBody.StartHiddenAt","location",1,true,true,null,true); bind("PlayerBody.StartHiddenAt","location",StoryBindingKind.Location);
    add("Camera.StartAt","location",1,true,true,null,true); bind("Camera.StartAt","location",StoryBindingKind.Location);

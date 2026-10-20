@@ -10,7 +10,7 @@ namespace DazPose.Editor {
    var content=(StoryContentBindings)target;serializedObject.Update();
    EditorGUILayout.LabelField("Story content bindings",EditorStyles.boldLabel);
    EditorGUILayout.HelpBox("Source symbols are reconciled from .dazstory. Assign generated PerformerPose, gesture, shader, motion and dialogue assets here; retained rows no longer used by the source are preserved for recovery.",MessageType.Info);
-   foreach(string name in new[]{"poses","gestures","shaders","motion"})EditorGUILayout.PropertyField(serializedObject.FindProperty(name),true);
+   foreach(string name in new[]{"poses","gestures","shaders","motion","wardrobe","hair"})EditorGUILayout.PropertyField(serializedObject.FindProperty(name),true);
    using(new EditorGUI.DisabledScope(true))EditorGUILayout.PropertyField(serializedObject.FindProperty("sceneSymbols"),true);
    string sourcePath=null;
    if(!string.IsNullOrEmpty(content.ownerSourceGuid))sourcePath=AssetDatabase.GUIDToAssetPath(content.ownerSourceGuid);

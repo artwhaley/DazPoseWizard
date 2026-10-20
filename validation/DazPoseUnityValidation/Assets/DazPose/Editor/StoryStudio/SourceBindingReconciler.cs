@@ -58,26 +58,28 @@ namespace DazPose.Editor {
     System.Collections.Generic.Dictionary<string,StoryBindingKind> symbols;
     try {symbols=content.Symbols();var ids=new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
      foreach(var row in content.dialogue)if(row==null||string.IsNullOrEmpty(row.id)||!ids.Add(row.id)||row.id!=StoryDialogue.IdFor(row.transcript))throw new InvalidOperationException("Duplicate, empty or corrupted dialogue row.");
-     if(content.sceneSymbols.Any(row=>row.kind==StoryBindingKind.Pose||row.kind==StoryBindingKind.Gesture||row.kind==StoryBindingKind.MagicShaderProfile||row.kind==StoryBindingKind.Funscript))throw new InvalidOperationException("Content alias is stored in the scene symbol array.");
+     if(content.sceneSymbols.Any(row=>row.kind==StoryBindingKind.Pose||row.kind==StoryBindingKind.Gesture||row.kind==StoryBindingKind.MagicShaderProfile||row.kind==StoryBindingKind.Funscript||row.kind==StoryBindingKind.WardrobePreset||row.kind==StoryBindingKind.Hair))throw new InvalidOperationException("Content alias is stored in the scene symbol array.");
     }catch(Exception e){throw new InvalidOperationException("Invalid bindings; reconciliation made no changes: "+e.Message,e);}
     foreach(var pair in required)if(symbols.TryGetValue(pair.Key,out var stored)&&stored!=pair.Value)throw new InvalidOperationException("Existing alias '"+pair.Key+"' has type "+stored+" but source requires "+pair.Value+".");
    }
    if(content==null) { content=ScriptableObject.CreateInstance<StoryContentBindings>();content.name=Path.GetFileNameWithoutExtension(adjacent);AssetDatabase.CreateAsset(content,adjacent);created=true; }
    bool changed=created||content.ownerSourceGuid!=sourceGuid;
-   var scene=content.sceneSymbols.ToList();var poses=content.poses.ToList();var gestures=content.gestures.ToList();var shaders=content.shaders.ToList();var motion=content.motion.ToList();var dialogue=content.dialogue.ToList();
+   var scene=content.sceneSymbols.ToList();var poses=content.poses.ToList();var gestures=content.gestures.ToList();var shaders=content.shaders.ToList();var wardrobe=content.wardrobe.ToList();var hair=content.hair.ToList();var motion=content.motion.ToList();var dialogue=content.dialogue.ToList();
    foreach(var requirement in analysis.Requirements) {
     if(requirement.IsDialogue) {string id=StoryDialogue.IdFor(requirement.Transcript);int i=dialogue.FindIndex(x=>x.id==id);if(i<0){dialogue.Add(new StoryDialogueContent{id=id,transcript=requirement.Transcript});changed=true;}else if(dialogue[i].transcript!=requirement.Transcript){throw new InvalidOperationException("Transcript hash collision or corrupted dialogue row: "+id);}continue;}
     string alias=requirement.Alias;switch(requirement.Kind.Value) {
      case StoryBindingKind.Pose: if(!poses.Any(x=>x.id==alias)){poses.Add(new StoryPoseContent{id=alias});changed=true;}break;
      case StoryBindingKind.Gesture: if(!gestures.Any(x=>x.id==alias)){gestures.Add(new StoryGestureContent{id=alias});changed=true;}break;
      case StoryBindingKind.MagicShaderProfile: if(!shaders.Any(x=>x.id==alias)){shaders.Add(new StoryShaderContent{id=alias});changed=true;}break;
+     case StoryBindingKind.WardrobePreset: if(!wardrobe.Any(x=>x.id==alias)){wardrobe.Add(new StoryWardrobeContent{id=alias});changed=true;}break;
+     case StoryBindingKind.Hair: if(!hair.Any(x=>x.id==alias)){hair.Add(new StoryHairContent{id=alias});changed=true;}break;
      case StoryBindingKind.Funscript: if(!motion.Any(x=>x.id==alias)){motion.Add(new StoryMotionContent{id=alias});changed=true;}break;
      default: var existing=scene.FirstOrDefault(x=>x.id==alias);if(existing==null){scene.Add(new StorySceneSymbol{id=alias,kind=requirement.Kind.Value});changed=true;}else if(existing.kind!=requirement.Kind.Value)throw new InvalidOperationException("Existing scene symbol '"+alias+"' has type "+existing.kind+" but source requires "+requirement.Kind+".");break;
     }
    }
    if(!changed)return content;
    if(recordUndo&&!created)Undo.RecordObject(content,"Reconcile story source bindings");
-   content.ownerSourceGuid=sourceGuid;content.sceneSymbols=scene.ToArray();content.poses=poses.ToArray();content.gestures=gestures.ToArray();content.shaders=shaders.ToArray();content.motion=motion.ToArray();content.dialogue=dialogue.ToArray();
+   content.ownerSourceGuid=sourceGuid;content.sceneSymbols=scene.ToArray();content.poses=poses.ToArray();content.gestures=gestures.ToArray();content.shaders=shaders.ToArray();content.wardrobe=wardrobe.ToArray();content.hair=hair.ToArray();content.motion=motion.ToArray();content.dialogue=dialogue.ToArray();
    EditorUtility.SetDirty(content);AssetDatabase.SaveAssetIfDirty(content);return content;
   }
  }

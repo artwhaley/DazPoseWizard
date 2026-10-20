@@ -10,8 +10,8 @@
     "evidence": "Art said Continue after the execution packet was prepared.",
     "date": "2026-10-20"
   },
-  "currentTicket": "W05 - typed wardrobe vocabulary",
-  "nextTicket": "W06 after W05",
+  "currentTicket": "W06 - snapshots and scoped ownership",
+  "nextTicket": "W07 after W06",
   "tickets": [
     {
       "id": "W00",
@@ -72,11 +72,13 @@
     },
     {
       "id": "W05",
-      "status": "NOT_STARTED",
+      "status": "COMPLETE",
       "dependencies": [
         "W04"
       ],
-      "evidence": []
+      "evidence": [
+        "evidence/w05-checks.json"
+      ]
     },
     {
       "id": "W06",

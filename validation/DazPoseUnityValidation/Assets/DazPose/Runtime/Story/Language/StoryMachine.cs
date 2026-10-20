@@ -156,9 +156,7 @@ namespace DazPose.Story.Language {
   Task Start(StoryCommand command,List<Task> scopeChildren) {
    var contract=StoryVocabulary.Require(command.Verb,command.Source);
    if(!command.Awaited && !contract.instant && !contract.canRunUnawaited)throw new StorySourceException(command.Source,command.Verb+" requires await; this runtime contract also applies to programs created by other frontends.");
-   string channel=contract.channel;
-   // Dissolve also needs normal material ownership. Speech and an accepted pose/gesture may overlap.
-   var required=command.Verb.StartsWith("Lara.Dissolve",StringComparison.Ordinal) ? new[]{"Body","Visual"} : channel==null ? Array.Empty<string>() : new[]{channel};
+   var required=contract.RequiredChannels;
    foreach(string key in required) if(channels.TryGetValue(key,out var active))
     throw new StorySourceException(command.Source,"Runtime conflict: "+command.Verb+" needs "+key+" while "+active.verb+" from "+active.source+" is still running. Await it before starting this command.");
    var lease=new Lease {source=command.Source,verb=command.Verb}; foreach(string key in required) channels.Add(key,lease);
