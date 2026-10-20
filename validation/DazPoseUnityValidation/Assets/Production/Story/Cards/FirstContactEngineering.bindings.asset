@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c62833deeaf42624c802e0168c88dd06, type: 3}
   m_Name: FirstContactEngineering.bindings
   m_EditorClassIdentifier: DazPose.Runtime::DazPose.Story.StoryContentBindings
+  ownerSourceGuid: 922cab6bc405d8b429cbbcd2d0b62f93
   sceneSymbols:
   - id: lara_start
     kind: 0
@@ -60,6 +61,8 @@ MonoBehaviour:
     value: {fileID: 11400000, guid: 5e0dd2ed6734a6b4e8a520647e0c19a2, type: 2}
   - id: Regular
     value: {fileID: 11400000, guid: 731a624e17a6ce7498532d7c50beadf0, type: 2}
+  wardrobe: []
+  hair: []
   motion:
   - id: Finisher1
     value: {fileID: -2686810026668816932, guid: dbb95529f0dba6c45a53651fe200b3e8, type: 3}

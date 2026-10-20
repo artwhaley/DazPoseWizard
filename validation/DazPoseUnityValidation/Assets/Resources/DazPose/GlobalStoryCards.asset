@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d5ec55325a4be5a38ff53be5a251c4, type: 3}
   m_Name: GlobalStoryCards
   m_EditorClassIdentifier: DazPose.Runtime::DazPose.Story.GlobalStoryCardCatalog
-  fingerprint: e3ad5bcfde7d9f03e56a811a93cae7ee35cdaa59015259e7e6a2ffa58e2d4fd5
+  fingerprint: 6a911cc7bd8c4db85deed3a418f67030613f8d9f305708b1831a1a7fdbc9e621
   sources:
   - {fileID: -9164764017844610671, guid: 922cab6bc405d8b429cbbcd2d0b62f93, type: 3}
   diagnostics: []
