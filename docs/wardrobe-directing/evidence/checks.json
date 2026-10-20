@@ -1,11 +1,17 @@
 {
   "schemaVersion": 1,
   "ticket": "W02/W03 SOURCE_READY",
-  "capturedUtc": "2026-10-20T17:06:00Z",
+  "capturedUtc": "2026-10-20T17:08:40.945910+00:00",
   "baselineRevision": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
   "branch": "main",
   "protectedBaselineEntries": 42,
-  "protectedMismatches": [],
+  "protectedMismatches": [
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Performers/Lara.prefab",
+      "baseline": "0fd83904d9b1985c40f8841f25211b88507dda83dbd0f7571ba4d2e26e49cb06",
+      "actual": "6d295dd43f29a6947a60bffdcf42c966ee15c293dd70f715a42140004e51cbd8"
+    }
+  ],
   "checks": [
     {
       "id": "AP01-AP07",
@@ -135,33 +141,69 @@
       "wardrobeTestsPassed": 15,
       "wardrobeTestsFailed": 0,
       "note": "Delivery window passes Lara\u2019s explicitly resolved PerformerWardrobe into the prefab generator. Generator verifies that owner.Body is exactly the selected canonical renderer; Unity hierarchy GetComponentInParent lookup is no longer used."
+    },
+    {
+      "id": "GateA-complete-delivery-source-audit",
+      "sourceRevision": "13492a7",
+      "status": "PASS",
+      "evidence": [
+        "gate-a-managed-checks.json",
+        "gate-a-delivery-audit.json",
+        "../GATE_A_REPAIR_REVIEW.md"
+      ],
+      "coverage": "25 wardrobe tests including 7 recovery/workflow cases and 3 real-release data cases; 90 story and 93 rehearsal tests; 7 source assemblies; 24 actual released pieces through production bone planner; saved fit metadata for masks 0/2/6 verified. Native instance generation/rendering remains Art-operated."
     }
   ],
   "omissions": [
-    "Native fitting, appearance projection and renderer behavior require Art-operated Gate A.",
-    "Card return A/B coverage is not applicable until W07 Gate B."
+    "Native prefab creation, saved-scene serialization and rendering await Art Gate A retry.",
+    "The actual released catalog contains only Emiko hair: native clear/set and ownership cases are delivered; swapping two different hairstyle assets remains NOT_RUN because no second exists.",
+    "Protected-card cases remain sequenced after Gate A."
   ],
   "nativeOperationsByExecutor": false,
   "sourceHashes": [
+    {
+      "path": "tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj",
+      "sha256": "57609caa228d38ebdfb8d4db8d899424355ca98ed5b6c365893435c620314b08"
+    },
+    {
+      "path": "tests/DazPose.Wardrobe.Tests/Fixtures/GateAReleaseInputs.json",
+      "sha256": "8de9cfd1e3ec15e49442874079de2ffcb1e3efb9998650d8357ef4f209fbabf2"
+    },
+    {
+      "path": "tests/DazPose.Wardrobe.Tests/WardrobeDeliveryWorkflowTests.cs",
+      "sha256": "a80990c230c165000bdaea75b4362fd1057be46bad66f17f2c8c533dac98a084"
+    },
+    {
+      "path": "tests/DazPose.Wardrobe.Tests/WardrobeGateAReleaseDataTests.cs",
+      "sha256": "2389d3f2174b4b8415f23da710433810c820cb1def734dfad418db9cc75da4df"
+    },
+    {
+      "path": "tests/DazPose.Wardrobe.Tests/WardrobeSelectionTests.cs",
+      "sha256": "394834ca7eb669b558a6b5ffa3e9b94e02309669f8db34e1923c4c98661a79d2"
+    },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/DazPose.Editor.asmdef",
       "sha256": "ac8111747c6bcbe05b913f1832d7a20c6b97e83f7b9f4ebfdcd4f4e9de1476ad"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs",
-      "sha256": "50979252b2cfd19d0bac5d27882a96e2cbe65a992e893c16146f5af0700a046c"
+      "sha256": "271854e83f5f76809e426ba1493ac31d826f9e165880c2d31efec8bef723f075"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWorkflow.cs",
+      "sha256": "e4d4beb6837b733dcbbd5e032cd5540750015e988cdb4fad53749c0ab9ad690b"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeCorrectedCandidateBuilder.cs",
-      "sha256": "b01d81626ee3f4cc37d46eb084714e15fac8e0d3714d2aaa2a85bd091b8032df"
+      "sha256": "9b85608cfdb60dc25e72e168fa6c4c92649c1394b921aa02112259a7d8c18937"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeProtectedCardsFixtureBuilder.cs",
-      "sha256": "25c71feeff72e4d11f16101b8a34bb1a31cb74d6cddc2eb1aa29c1eae221c93e"
+      "sha256": "fbc32ec343a37b26885e843dfef3340b84864c1732f742574dc927c60dd5b9f1"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeRigAssetBuilder.cs",
-      "sha256": "9b7e52920d9086bb0cdf9358a34302943459cd1d9c9853bc7e7aef89cc988be1"
+      "sha256": "472f933e4e5e9ccefc84eed599f57417acf12be50350d543758a8949f0ac4e19"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
@@ -169,11 +211,11 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/PerformerWardrobe.cs",
-      "sha256": "d2e318f3868c474a2a745553b4eb5aa9b4be365fc9ca351a231659eecf3efb0d"
+      "sha256": "4c5e47658861e88fdde290dd9724531d1d955bf0cf8635bd6a975c85179c1832"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAttachmentBinder.cs",
-      "sha256": "1b1dae26b1aacf109b5e5bd9d7170a71f90e62e7d2e096fc097ea11bf10aa7e0"
+      "sha256": "5527d3a9cf8e0305158d6ae3f135def68ea1dee1d3f23dd5bfe8b14d5724ef3b"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAttachmentDescriptor.cs",
@@ -201,7 +243,7 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigManifest.cs",
-      "sha256": "c6b63203084e345cfc952aa832457df253dd3ca15f7b77cbbd0da5d695217d52"
+      "sha256": "1b407b0da3d89bfc403f74a5f10013ee10b48c1f802983363c441ab0a217a889"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeRigManifestRules.cs",
@@ -209,19 +251,12 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Validation/WardrobeProtectedCards/AppearanceGateRunner.cs",
-      "sha256": "502eeed2f650c46760ccc4d3f43fc8053950139801737fc9897084bd6eb371ab"
-    },
-    {
-      "path": "tests/DazPose.Wardrobe.Tests/WardrobeSelectionTests.cs",
-      "sha256": "394834ca7eb669b558a6b5ffa3e9b94e02309669f8db34e1923c4c98661a79d2"
+      "sha256": "18d2f183c0c3a065d5463dc75bf864f25765ea1f797cb18bd91ba477908b1bd4"
     }
   ],
   "verificationBatch": {
-    "commands": [
-      "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore --nologo --verbosity quiet",
-      "python scripts/check-unity-source.py"
-    ],
-    "results": "15 wardrobe tests passed; all seven source assemblies passed",
+    "evidence": "gate-a-managed-checks.json",
+    "results": "25 wardrobe + 90 story + 93 rehearsal passed; all seven source assemblies passed",
     "executedAfterFinalW02W03SourceEdit": true
   },
   "gateARepair": {
@@ -240,5 +275,7 @@
       "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs": "50979252b2cfd19d0bac5d27882a96e2cbe65a992e893c16146f5af0700a046c"
     },
     "nativeRetryStatus": "WAITING_ON_ART"
-  }
+  },
+  "protectedMismatchDisposition": "Lara.prefab default rigBinding:null serialization was present before this repair; untouched and excluded from commits.",
+  "sourceRevision": "13492a7"
 }

@@ -1,0 +1,117 @@
+{
+  "classification": "SOURCE_AND_SAVED_ASSET_INSPECTION_ONLY; no Unity invocation or native visual approval",
+  "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+  "publishedCatalog": "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards/Candidates/CorrectedFirstOutfit/Catalog.asset",
+  "publishedConfigurationMatches": true,
+  "canonicalBoneCount": 173,
+  "releasedPieceCount": 24,
+  "releasedHairKeys": [
+    "first-outfit/EmikoHair_59875"
+  ],
+  "fitMetadata": [
+    {
+      "preset": "first-outfit",
+      "mask": 0,
+      "status": 1,
+      "garments": [],
+      "bodyGuid": "6cc6204635632ce43bdb52d2c33e897e"
+    },
+    {
+      "preset": "first-outfit",
+      "mask": 2,
+      "status": 1,
+      "garments": [
+        "CharlenesCloset_Panty_1981"
+      ],
+      "bodyGuid": "90d170e97b52f724f965be3e124823df"
+    },
+    {
+      "preset": "first-outfit",
+      "mask": 6,
+      "status": 1,
+      "garments": [
+        "CharlenesCloset_Panty_1981",
+        "PeekaBoo_16572"
+      ],
+      "bodyGuid": "dfe06dd720c72594ba65ace46bca632e"
+    },
+    {
+      "preset": "second-outfit",
+      "mask": 0,
+      "status": 1,
+      "garments": [],
+      "bodyGuid": "6cc6204635632ce43bdb52d2c33e897e"
+    },
+    {
+      "preset": "second-outfit",
+      "mask": 1,
+      "status": 1,
+      "garments": [
+        "ArmStrapL_G8F_1050",
+        "ArmStrapR_G8F_1050",
+        "BraTop_G8F_7446",
+        "ChokerRing_G8F_312",
+        "Corset Laces_1152",
+        "Garter_G8F_7018",
+        "NewUnderwear_G8F_5197",
+        "SleeveL_G8F_2373",
+        "SleeveR_G8F_2373",
+        "Stocking L G8F_6421",
+        "Stocking R G8F_6421",
+        "Umbra Bra Top Gloss Shell",
+        "Umbra Sleeve L Gloss Shell",
+        "Umbra Sleeve R Gloiss Shell",
+        "Umbra Stocking L Gloss Shell",
+        "Umbra Stocking R Gloss Shell",
+        "shoe_6146"
+      ],
+      "bodyGuid": "43e3f99b8ba823d4bb9d4c00dd14d9ba"
+    },
+    {
+      "preset": "third-outfit",
+      "mask": 0,
+      "status": 1,
+      "garments": [],
+      "bodyGuid": "6cc6204635632ce43bdb52d2c33e897e"
+    },
+    {
+      "preset": "third-outfit",
+      "mask": 1,
+      "status": 1,
+      "garments": [
+        "Apron_6708",
+        "Stockings_5340",
+        "dress_7510",
+        "shoe_12520"
+      ],
+      "bodyGuid": "34c98e4c4f73e7545ab1dc114c15bf0c"
+    }
+  ],
+  "inputFixture": "tests/DazPose.Wardrobe.Tests/Fixtures/GateAReleaseInputs.json",
+  "inputFixtureSha256": "8de9cfd1e3ec15e49442874079de2ffcb1e3efb9998650d8357ef4f209fbabf2",
+  "protectedCompared": 42,
+  "protectedMismatches": [
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Performers/Lara.prefab",
+      "baseline": "0fd83904d9b1985c40f8841f25211b88507dda83dbd0f7571ba4d2e26e49cb06",
+      "actual": "6d295dd43f29a6947a60bffdcf42c966ee15c293dd70f715a42140004e51cbd8"
+    }
+  ],
+  "protectedMismatchDisposition": "Lara.prefab default rigBinding:null serialization was present before this repair; untouched and excluded from commits.",
+  "duplicateMetaGuids": {},
+  "metaCount": 4732,
+  "generatedTrees": [
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+      "files": 10,
+      "sha256": "3b07a0d237da2481a31aaead418ddd3dc0c3fb3c1877559cdfa2dcafafaa34f1"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/WardrobeRuntime/Generations/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+      "files": 333,
+      "sha256": "567aeb5e5ffea9b5339cb2ead59982ce22241a03bbcde7f76c9dbd544b7c650e"
+    }
+  ],
+  "capturedUtc": "2026-10-20T17:08:40.945910+00:00",
+  "sourceRevision": "13492a7"
+}

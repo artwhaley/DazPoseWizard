@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "13492a7",
+  "capturedUtc": "2026-10-20T17:08:40.945910+00:00",
+  "classification": "Pure managed and source compilation only; no Unity process or native visual acceptance",
+  "nativeOperationsByExecutor": false,
+  "results": [
+    {
+      "id": "wardrobe",
+      "command": "dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore --nologo --verbosity quiet",
+      "exitCode": 0,
+      "elapsedSeconds": 1.074397,
+      "output": "Test run for C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\tests\\DazPose.Wardrobe.Tests\\bin\\Debug\\net10.0\\DazPose.Wardrobe.Tests.dll (.NETCoreApp,Version=v10.0)\r\nA total of 1 test files matched the specified pattern.\r\n\r\nPassed!  - Failed:     0, Passed:    25, Skipped:     0, Total:    25, Duration: 92 ms - DazPose.Wardrobe.Tests.dll (net10.0)\r\n"
+    },
+    {
+      "id": "story",
+      "command": "dotnet test tests/DazPose.Story.Tests/DazPose.Story.Tests.csproj --no-restore --nologo --verbosity quiet",
+      "exitCode": 0,
+      "elapsedSeconds": 1.9934707,
+      "output": "Test run for C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\tests\\DazPose.Story.Tests\\bin\\Debug\\net10.0\\DazPose.Story.Tests.dll (.NETCoreApp,Version=v10.0)\r\nA total of 1 test files matched the specified pattern.\r\n\r\nPassed!  - Failed:     0, Passed:    90, Skipped:     0, Total:    90, Duration: 138 ms - DazPose.Story.Tests.dll (net10.0)\r\n"
+    },
+    {
+      "id": "rehearsal",
+      "command": "dotnet test tests/DazPose.Rehearsal.Tests/DazPose.Rehearsal.Tests.csproj --no-restore --nologo --verbosity quiet",
+      "exitCode": 0,
+      "elapsedSeconds": 2.8895142,
+      "output": "C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Story\\Content\\StoryCatalogs.cs(21,51): warning CS0649: Field 'CatalogValidation.Header.version' is never assigned to, and will always have its default value 0 [C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\tests\\DazPose.Rehearsal.Tests\\DazPose.Rehearsal.Tests.csproj]\r\nTest run for C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\tests\\DazPose.Rehearsal.Tests\\bin\\Debug\\net10.0\\DazPose.Rehearsal.Tests.dll (.NETCoreApp,Version=v10.0)\r\nA total of 1 test files matched the specified pattern.\r\n\r\nPassed!  - Failed:     0, Passed:    93, Skipped:     0, Total:    93, Duration: 571 ms - DazPose.Rehearsal.Tests.dll (net10.0)\r\n"
+    },
+    {
+      "id": "source",
+      "command": "python scripts/check-unity-source.py",
+      "exitCode": 0,
+      "elapsedSeconds": 7.4514151,
+      "output": "DazPose.Runtime: PASS\r\nDazPose.Content: PASS\r\nDazPose.Examples: PASS\r\nDazPose.Presentation: PASS\r\nDazPose.Validation: PASS\r\nDazPose.Editor: PASS\r\nDazPose.Validation.Editor: PASS\r\n"
+    }
+  ]
+}
