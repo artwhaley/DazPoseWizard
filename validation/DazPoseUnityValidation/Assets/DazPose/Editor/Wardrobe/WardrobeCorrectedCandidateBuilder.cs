@@ -11,6 +11,10 @@ namespace DazPose.UnityValidation
     public static class WardrobeCorrectedCandidateBuilder
     {
         public const string CandidateRoot = "Assets/__WardrobeProtectedCards/Candidates/CorrectedFirstOutfit";
+        // The W00 source audit records these stable IDs and garment meanings. Imported role labels
+        // are recipe vocabulary and are not guaranteed to use the user-facing garment names.
+        private const string FirstOutfitDressId = "PeekaBoo_16572";
+        private const string FirstOutfitPantiesId = "CharlenesCloset_Panty_1981";
         public sealed class Result { public WardrobeCatalog catalog; public WardrobeConfiguration configuration; public string message; }
         public static Result Prepare(WardrobeCatalog released, WardrobeConfiguration releasedConfiguration)
         {
@@ -30,12 +34,10 @@ namespace DazPose.UnityValidation
             if (sourcePresets.Length != 3) throw new InvalidDataException("Production wardrobe catalog must retain exactly three preset entries; found " + sourcePresets.Length + ".");
             var sourceFirst = sourcePresets.SingleOrDefault(x => x.PresetId == "first-outfit");
             if (sourceFirst == null || sourceFirst.Package == null) throw new InvalidDataException("Production wardrobe catalog does not contain required preset/package first-outfit.");
-            var sourceDress = sourceFirst.Package.pieces.SingleOrDefault(x => string.Equals(x.role, "dress", StringComparison.OrdinalIgnoreCase));
-            var sourcePanties = sourceFirst.Package.pieces.SingleOrDefault(x => string.Equals(x.role, "panties", StringComparison.OrdinalIgnoreCase));
-            if (sourceDress == null || sourcePanties == null) throw new InvalidDataException("first-outfit must identify exactly one dress and one panties garment by role.");
-            if (!releasedConfiguration.Assignments.Any(x => x.presetId == "first-outfit" && x.sourcePieceId == sourceDress.id) ||
-                !releasedConfiguration.Assignments.Any(x => x.presetId == "first-outfit" && x.sourcePieceId == sourcePanties.id))
-                throw new InvalidDataException("Production configuration is missing the first-outfit dress or panties assignment.");
+            var sourceDress = RequirePiece(sourceFirst, FirstOutfitDressId, "dress");
+            var sourcePanties = RequirePiece(sourceFirst, FirstOutfitPantiesId, "panties");
+            RequireSingleAssignment(releasedConfiguration, sourceDress.id, "dress");
+            RequireSingleAssignment(releasedConfiguration, sourcePanties.id, "panties");
             EnsureFolder(CandidateRoot + "/Presets");
             var presets = released.Presets.Select(source =>
             {
@@ -64,7 +66,7 @@ namespace DazPose.UnityValidation
             catalog.SetCompiledConfigurationHash(string.Empty);
             AssetDatabase.CreateAsset(config, CandidateRoot + "/Configuration.asset");
             AssetDatabase.SaveAssets();
-            return new Result { catalog = catalog, configuration = config, message = "Forked all " + presets.Length + " production presets; changed only first-outfit dress=2 and panties=1." };
+            return new Result { catalog = catalog, configuration = config, message = "Forked all " + presets.Length + " production presets; changed only first-outfit dress (" + sourceDress.id + ")=2 and panties (" + sourcePanties.id + ")=1." };
         }
         private static bool IsCorrect(WardrobeCatalog catalog, WardrobeConfiguration config)
         {
@@ -72,9 +74,37 @@ namespace DazPose.UnityValidation
             var rows = config.Assignments.Where(x => x.presetId == "first-outfit").ToArray();
             var preset = catalog.Presets.SingleOrDefault(x => x.PresetId == "first-outfit");
             if (preset == null) return false;
-            var dress = preset.Package.pieces.SingleOrDefault(x => string.Equals(x.role, "dress", StringComparison.OrdinalIgnoreCase));
-            var panties = preset.Package.pieces.SingleOrDefault(x => string.Equals(x.role, "panties", StringComparison.OrdinalIgnoreCase));
-            return dress != null && panties != null && rows.Any(x => x.sourcePieceId == dress.id && x.layer == 2) && rows.Any(x => x.sourcePieceId == panties.id && x.layer == 1);
+            var dress = FindPiece(preset, FirstOutfitDressId);
+            var panties = FindPiece(preset, FirstOutfitPantiesId);
+            return dress != null && panties != null &&
+                rows.Count(x => x.sourcePieceId == dress.id && x.layer == 2) == 1 &&
+                rows.Count(x => x.sourcePieceId == panties.id && x.layer == 1) == 1;
+        }
+        private static WardrobeOutfitDefinition.Piece RequirePiece(WardrobePreset preset, string pieceId, string meaning)
+        {
+            var matches = (preset.Package.pieces ?? Array.Empty<WardrobeOutfitDefinition.Piece>())
+                .Where(piece => piece != null && string.Equals(piece.id, pieceId, StringComparison.Ordinal)).ToArray();
+            if (matches.Length != 1)
+            {
+                string available = string.Join(", ", (preset.Package.pieces ?? Array.Empty<WardrobeOutfitDefinition.Piece>())
+                    .Where(piece => piece != null).Select(piece => piece.id + " [role=" + piece.role + "]"));
+                throw new InvalidDataException("first-outfit expected exactly one " + meaning + " with stable source ID '" + pieceId + "'; found " + matches.Length + ". Available pieces: " + available);
+            }
+            if (string.Equals(matches[0].role, "hair", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("first-outfit source ID '" + pieceId + "' is classified as hair, but the W00 baseline records it as " + meaning + ".");
+            return matches[0];
+        }
+        private static WardrobeOutfitDefinition.Piece FindPiece(WardrobePreset preset, string pieceId)
+        {
+            if (preset == null || preset.Package == null || preset.Package.pieces == null) return null;
+            var matches = preset.Package.pieces.Where(piece => piece != null && piece.id == pieceId).ToArray();
+            return matches.Length == 1 ? matches[0] : null;
+        }
+        private static void RequireSingleAssignment(WardrobeConfiguration config, string pieceId, string meaning)
+        {
+            int count = config.Assignments.Count(row => row.presetId == "first-outfit" && row.sourcePieceId == pieceId);
+            if (count != 1)
+                throw new InvalidDataException("Production configuration must contain exactly one first-outfit " + meaning + " assignment for '" + pieceId + "'; found " + count + ".");
         }
         private static void EnsureFolder(string path)
         {
