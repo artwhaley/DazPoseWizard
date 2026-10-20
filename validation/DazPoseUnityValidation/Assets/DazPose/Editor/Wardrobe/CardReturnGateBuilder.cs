@@ -48,10 +48,13 @@ namespace DazPose.UnityValidation {
     var copy=Clone(p,Root+"/Presets/"+p.PresetId+".asset");var fits=p.FitStates.Select(f=>Clone(f,Root+"/Fits/"+p.PresetId+"-"+f.VisibleMask+".asset")).ToArray();copy.SetGeneratedFitStates(fits);EditorUtility.SetDirty(copy);return copy;
    }).ToArray();
    var catalogObject=new SerializedObject(diagnostic);catalogObject.Update();var rows=catalogObject.FindProperty("presets");rows.arraySize=presets.Length;for(int i=0;i<presets.Length;i++)rows.GetArrayElementAtIndex(i).objectReferenceValue=presets[i];catalogObject.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(diagnostic);
-   var content=Content(source.content,diagnostic,manifest,Root+"/Root.bindings.asset");var publishedContent=Content(source.content,diagnostic,manifest,Root+"/Cards.bindings.asset");
+   Content(source.content,diagnostic,manifest,Root+"/Root.bindings.asset");Content(source.content,diagnostic,manifest,Root+"/Cards.bindings.asset");
    string repository=Path.GetFullPath(Path.Combine(Application.dataPath,"../../.."));
    WriteSource(repository,"GateBRoot.dazstory",Root+"/Root.dazstory");WriteSource(repository,"GateBCards.dazstory",Root+"/Cards.dazstory");
-   content.ownerSourceGuid=AssetDatabase.AssetPathToGUID(Root+"/Root.dazstory");publishedContent.ownerSourceGuid=AssetDatabase.AssetPathToGUID(Root+"/Cards.dazstory");EditorUtility.SetDirty(content);EditorUtility.SetDirty(publishedContent);AssetDatabase.SaveAssets();
+   // Importing a story can recreate its companion binding asset. Never reuse the pre-import object.
+   UpdateContent(Root+"/Root.bindings.asset",value=>value.ownerSourceGuid=AssetDatabase.AssetPathToGUID(Root+"/Root.dazstory"));
+   UpdateContent(Root+"/Cards.bindings.asset",value=>value.ownerSourceGuid=AssetDatabase.AssetPathToGUID(Root+"/Cards.dazstory"));
+   AssetDatabase.SaveAssets();
    AssetDatabase.ImportAsset(Root+"/Root.dazstory",ImportAssetOptions.ForceUpdate);AssetDatabase.ImportAsset(Root+"/Cards.dazstory",ImportAssetOptions.ForceUpdate);
    var root=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Root.dazstory");var cards=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Cards.dazstory");if(!root.IsCompiled||!cards.IsCompiled)throw new InvalidOperationException(root.CompilationIssue+"\n"+cards.CompilationIssue);
    stage="copying First Contact";
@@ -63,8 +66,6 @@ namespace DazPose.UnityValidation {
    source=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>("Assets/Production/Story/Programs/FirstContact.dazstory");
    diagnostic=AssetDatabase.LoadAssetAtPath<WardrobeCatalog>(Root+"/Catalog.asset");
    manifest=AssetDatabase.LoadAssetAtPath<WardrobeRigManifest>(Released+"/WardrobeRigManifest.asset");
-   content=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(Root+"/Root.bindings.asset");
-   publishedContent=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(Root+"/Cards.bindings.asset");
    root=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Root.dazstory");cards=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Cards.dazstory");
    expression=Find<PerformerExpression>("t:PerformerExpression");aura=AssetDatabase.LoadAssetAtPath<PerformerAura>("Assets/Production/Content/Magic/Auras/Aura_VioletSerenity.asset");motion=Find<FunscriptMotionProgram>("t:FunscriptMotionProgram");
    foreach(var host in GameSessionSceneSetup.InScene<PerformanceHost>(scene)){host.PlayOnStart=false;host.enabled=false;EditorUtility.SetDirty(host);}
@@ -74,7 +75,12 @@ namespace DazPose.UnityValidation {
    if(performance.Player?.BodyPresence==null)throw new InvalidOperationException("PerformanceSceneBindings.Player.BodyPresence is missing.");
    if(performance.Playback==null)throw new InvalidOperationException("PerformanceSceneBindings.Playback is missing.");
    var changed=source.content.poses.FirstOrDefault(p=>p.value!=null && p.value!=actor.InitialPose && p.posture==PlayerPosture.Standing);if(changed==null)throw new InvalidOperationException("Gate B needs an existing pose distinct from the entrance pose.");
-   content.poses[0].value=changed.value;publishedContent.poses[0].value=changed.value;EditorUtility.SetDirty(content);EditorUtility.SetDirty(publishedContent);
+   var changedPose=changed.value;
+   UpdateContent(Root+"/Root.bindings.asset",value=>value.poses[0].value=changedPose);
+   UpdateContent(Root+"/Cards.bindings.asset",value=>value.poses[0].value=changedPose);
+   // Saving either companion can reimport its story; load the current imported objects afterwards.
+   root=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Root.dazstory");cards=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>(Root+"/Cards.dazstory");
+   source=AssetDatabase.LoadAssetAtPath<CompiledStoryAsset>("Assets/Production/Story/Programs/FirstContact.dazstory");
    stage="configuring copied Lara wardrobe and rig";
    actor.ConfigureInitialState(actor.InitialPose,actor.InitialExpression,actor.InitialExpressionIntensity,false);actor.gameObject.SetActive(true);wardrobe.ConfigureBinding(diagnostic,null,wardrobe.Body,actor);
    var binding=actor.GetComponent<WardrobeRigBinding>()??actor.gameObject.AddComponent<WardrobeRigBinding>();binding.Configure(manifest,Child(wardrobe.Body.transform,"GateB clothing"),Child(wardrobe.Body.transform,"GateB hair"));
@@ -98,6 +104,11 @@ namespace DazPose.UnityValidation {
   static void ValidateRunner(CardReturnGateRunner runner){
    if(runner==null||!runner.enabled||!runner.gameObject.activeInHierarchy||runner.performance==null||runner.scene==null||runner.root==null||runner.cards==null||runner.openingOutfit==null||runner.openingHair==null||runner.seatedPose==null||runner.changedExpression==null||runner.entranceAura==null||runner.entranceMark==null||runner.cameraMark==null||runner.shiftCamera==null||runner.seat==null||runner.replacementMotion==null)
     throw new InvalidOperationException("The active saved Card Return Gate runner has missing references.");
+  }
+  static void UpdateContent(string path,Action<StoryContentBindings> update){
+   var current=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(path);
+   if(current==null)throw new InvalidOperationException("Missing current companion bindings: "+path);
+   update(current);EditorUtility.SetDirty(current);AssetDatabase.SaveAssetIfDirty(current);
   }
   static StoryContentBindings Content(StoryContentBindings source,WardrobeCatalog catalog,WardrobeRigManifest manifest,string path){
    var content=AssetDatabase.LoadAssetAtPath<StoryContentBindings>(path);if(content!=null)return content;

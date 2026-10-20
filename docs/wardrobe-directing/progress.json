@@ -178,8 +178,9 @@
           "revision": "a1cbdad",
           "case": "Create / open Gate B scene",
           "reason": "Art entered Play with no controls. Source inspection confirms saved diagnostic scene is an unchanged First Contact copy with no CardReturnGateRunner. Setup did not reach runner/save completion; previous window hid the exception in its report text.",
-          "resolution": "Retry recognizes untouched copy; preparation now reloads assets after scene open, validates all runner references, reports stage/full exception and requires explicit GATE B READY dialog before Play.",
-          "status": "RETRY_REQUIRED"
+          "resolution": "Reload companion bindings by path immediately before each mutation/save; reload story objects after companion saves and scene open. Explicit readiness validation/dialog and bounded retry of unchanged copy retained.",
+          "status": "RETRY_REQUIRED",
+          "confirmedError": "The object of type DazPose.Story.StoryContentBindings has been destroyed but you are still trying to access it. Parameter name: target"
         }
       ]
     },
