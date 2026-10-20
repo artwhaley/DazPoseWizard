@@ -1,3 +1,11 @@
+# Current authoring disposition — October 19
+
+Art: “Okay. I think that worked.” Practical visual-authoring check accepted by user report; ready to start FirstContact authoring in the main project. Code is already there on main. Main project directions: `docs/story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md`; scope/content differences: `docs/visual-authoring/PRODUCTION_HANDOFF.md`.
+
+No individual extended native cases or diagnostic exports are inferred from that report. The detailed old matrix below is historical and includes superseded rehearsal requirements; it is not a request to repeat scenario/RNG/Director checks in the authoring editor. Extended save/Undo/reload/material observations remain unverified where Art has not specifically reported them. Full technical certification is not claimed.
+
+## Historical delivery matrix
+
 > Current correction: responsive visual authoring A00–A06, `docs/visual-authoring/IMPLEMENTATION_REPORT.md`. G4 remains unaccepted. Prior canonical navigation acceptance requirements below are historical.
 
 # Native directing acceptance status

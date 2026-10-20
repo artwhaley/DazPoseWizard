@@ -1,3 +1,5 @@
+> October 19 update: Art reported the practical check worked. Proceed to the main-project guide at `docs/story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md`. Directions below are retained for targeted regressions; extended cases are not individually certified by this report.
+
 # G4 — responsive visual authoring
 
 Status: **WAITING ON ART after source delivery**. G4 remains unaccepted. This replaces the old runtime-rehearsal navigation checks. Art operates Unity; no screenshots required.

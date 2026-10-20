@@ -1,3 +1,5 @@
+> October 19 author update: practical check worked; main-project authoring handoff is delivered. Read `docs/visual-authoring/IMPLEMENTATION_REPORT.md` for the exact acceptance scope. Earlier WAITING sections below are historical source-delivery records; extended native cases are not individually certified.
+
 # Current correction — responsive visual authoring
 
 Art rejected runtime traversal for Studio authoring and authorized A00–A06. A00–A05 source delivery is recorded in `docs/visual-authoring/IMPLEMENTATION_REPORT.md`; G4 remains WAITING ON ART. The native handoff is `G4_ART_HANDOFF.md`. Historical canonical rehearsal requirements/results below do not govern current cue navigation. No Unity operations or remote writes.

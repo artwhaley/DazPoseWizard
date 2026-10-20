@@ -1,6 +1,6 @@
 # Responsive visual authoring — execution handoff
 
-Status: **executed through A05 source delivery; WAITING ON ART for native G4**. Art authorized execution on October 19, 2026. Evidence: `docs/visual-authoring/IMPLEMENTATION_REPORT.md`. Native acceptance and A06 remain pending.
+Status: **practical authoring workflow accepted by Art; main-project handoff delivered**. Art reported the requested check worked on October 19. Evidence and exact acceptance scope: `docs/visual-authoring/IMPLEMENTATION_REPORT.md`. Extended native cases remain unverified where not individually reported; blanket G4/N11 certification is not claimed.
 
 Inspected baseline: `main`, `e36a6d2ee7255d91c61a690a264f37617596f7af`.
 Compare actual HEAD and working tree before executing; preserve newer changes.

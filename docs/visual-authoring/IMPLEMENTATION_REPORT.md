@@ -1,3 +1,9 @@
+# Practical authoring check accepted — main project handoff
+
+October 19, Art reported: “Okay. I think that worked.” Recorded as user acceptance of the requested practical authoring check and readiness to begin FirstContact authoring in the main project. This is not an invented per-case export or blanket claim for the extended save/reload/material/sparse-pose matrix; cases not individually reported remain unverified. No further executor Unity operation is authorized.
+
+The implementation already lives in `validation/DazPoseUnityValidation` on main; the fixture received a code-only copy. No reverse code merge or fixture-content overwrite is required. See `PRODUCTION_HANDOFF.md` and `docs/story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md`. A06/N11 author directions are delivered; extended native evidence remains limited as described here. Historical source-delivery status below is retained.
+
 # Responsive visual authoring — source delivered, G4 waiting on Art
 
 Art authorized A00–A06 on October 19, 2026. Implementation baseline: main `e36a6d2ee7255d91c61a690a264f37617596f7af`. Current source identity is recorded in the isolated fixture marker and G4_CODE_SYNC.json. No Unity operation or remote write occurred. A00–A05 source work is delivered; native G4 and A06/N11 acceptance remain pending.
