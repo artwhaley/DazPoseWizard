@@ -26,7 +26,7 @@ namespace DazPose.Performer
             string property = Property(material, out bool scalar);
             if (property == null) return false;
             if (scalar) block.SetFloat(property, Mathf.Clamp01(opacity));
-            else { var color = material.GetColor(property); color.a = Mathf.Clamp01(opacity); block.SetColor(property, color); }
+            else { var color = block.HasProperty(Shader.PropertyToID(property)) ? block.GetColor(property) : material.GetColor(property); color.a = Mathf.Clamp01(opacity); block.SetColor(property, color); }
             return true;
         }
         private static string Property(Material material, out bool scalar)

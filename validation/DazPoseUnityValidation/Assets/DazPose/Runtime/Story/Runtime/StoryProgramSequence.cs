@@ -29,6 +29,7 @@ namespace DazPose.Story {
    active.CheckAuthority(); active.Events.Emit(eventId,value);
   }
   public void Configure(TextAsset source,StorySceneBindings bindings) {program=source;compiledSource=null;storyBindings=bindings;}
+  public string EntrySequence=>sequenceName;
   public void Configure(CompiledStoryAsset source,StorySceneBindings bindings,string entry="FirstContact") {compiledSource=source;program=null;storyBindings=bindings;sequenceName=entry;}
   public override async Awaitable ExecuteAsync(PerformanceRun run) {
    if(compiledSource!=null) {

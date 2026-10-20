@@ -75,7 +75,7 @@ namespace DazPose.Editor.Studio {
     if(selectedCue==null){GUILayout.Label("Choose a cue",sectionStyle);EditorGUILayout.HelpBox(error??"Click a cue to edit its pose, performer marks and camera. Scene and Game show the resolved visual state.",MessageType.Info);return;}
     GUILayout.Label(selectedEntry,EditorStyles.boldLabel);GUILayout.Label(CueText(selectedCue),EditorStyles.wordWrappedLabel);
     using(new EditorGUILayout.HorizontalScope()){if(GUILayout.Button("← Previous cue"))AdjacentCue(-1);if(GUILayout.Button("Next cue →"))AdjacentCue(1);}
-    using(new EditorGUILayout.HorizontalScope()){int side=GUILayout.Toolbar(stageAfter?1:0,new[]{"Before this cue","After this cue"});if((side==1)!=stageAfter){stageAfter=side==1;RequestProjection();}if(GUILayout.Button("Preview",GUILayout.Width(70)))RequestProjection();}
+    using(new EditorGUILayout.HorizontalScope()){int side=GUILayout.Toolbar(stageAfter?1:0,new[]{"Before this cue","After this cue"});if((side==1)!=stageAfter){stageAfter=side==1;RequestProjection();}if(GUILayout.Button("Preview",GUILayout.Width(70))){presentationRevision++;RequestProjection();}}
     if(indexStale)EditorGUILayout.HelpBox("Script is updating. These controls show the previous source until indexing completes.",MessageType.Warning);
     if(!string.IsNullOrEmpty(selectedCue.Block))EditorGUILayout.HelpBox(selectedCue.Block+". Local editing context only; this block is skipped for following cues.",MessageType.Info);
     if(error!=null)EditorGUILayout.HelpBox(error,MessageType.Warning);
@@ -83,11 +83,15 @@ namespace DazPose.Editor.Studio {
     foreach(var warning in state.Diagnostics)EditorGUILayout.HelpBox(warning,MessageType.Warning);
     if(stage!=null){foreach(var warning in stage.AuthoringWarnings.Except(state.Diagnostics))EditorGUILayout.HelpBox(warning,MessageType.Warning);EditorGUILayout.LabelField(stage.Composition??"",EditorStyles.wordWrappedMiniLabel);}
     var shown=new HashSet<string>(StringComparer.Ordinal);bool seated=selectedCue.Node.Name=="Lara.SitAt"||selectedCue.Node.Literals.ContainsKey("seated");
-    foreach(var r in directRequirements[selectedCue.Node.Id])DrawCueBinding(r,selectedSource,"This cue",shown,seated);
+    foreach(var r in directRequirements.TryGetValue(selectedCue.Node.Id,out var requirements)?requirements:Array.Empty<StoryBindingRequirement>())DrawCueBinding(r,selectedSource,"This cue",shown,seated);
     void Inherited(AuthoringValue v,StoryBindingKind kind,string label,bool seat=false){if(v?.IsKnown!=true||v.Symbol==null)return;var r=ManifestFor(v.Source)?.Requirements.FirstOrDefault(x=>x.Kind==kind&&x.Alias==v.Symbol);if(r!=null)DrawCueBinding(r,v.Source,label,shown,seat);}
     var placement=state[AuthoringField.Placement];Inherited(placement,StoryBindingKind.Location,"Performer position · carried into this cue",placement.Op=="sit"||placement.Op=="seatpose");
     Inherited(placement.Parent,StoryBindingKind.Location,"Position height inherited from this mark",placement.Parent?.Op=="sit"||placement.Parent?.Op=="seatpose");
     Inherited(state[AuthoringField.Pose],StoryBindingKind.Pose,"Pose · carried into this cue");Inherited(state[AuthoringField.Camera],StoryBindingKind.Location,"Camera position · carried into this cue");Inherited(state[AuthoringField.BodyPlacement],StoryBindingKind.Location,"Player body position");
+    Inherited(state[AuthoringField.Outfit],StoryBindingKind.WardrobePreset,"Outfit - carried into this cue");
+    Inherited(state[AuthoringField.Hair],StoryBindingKind.Hair,"Hair - carried into this cue");
+    if(selectedCue.Node.Name=="Lara.Outfit.RemoveOneLayer"||selectedCue.Node.Name=="Lara.Outfit.AddOneLayer")
+     EditorGUILayout.HelpBox("Remove takes the highest visible populated layer; Add restores the lowest hidden layer. Already naked / fully dressed leaves the look unchanged.",MessageType.Info);
     if(state[AuthoringField.Tracking].Op=="true"){GUILayout.Label("Camera aim",EditorStyles.boldLabel);NativeMarkButton("tracking target offset",host?.laraFocus);}
     if(selectedCue.Node.Name=="Lara.PlayOneShotGesture"||selectedCue.Node.Name=="Lara.Grip"||selectedCue.Node.Name=="MotionDriver.PlayFunscript")EditorGUILayout.HelpBox("Bindings can be edited here. Transient gesture, dynamic contact and timed motion require the later Play check; the retained base pose is shown.",MessageType.Info);
     if(GUILayout.Button("Open this line in script editor",EditorStyles.linkLabel))OpenLine(selectedSource);

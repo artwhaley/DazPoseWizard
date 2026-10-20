@@ -23,6 +23,8 @@ internal static class RehearsalTestSupport {
     case StoryBindingKind.Gesture:bindings.gestures[use.symbol]=new PerformerGesture();break;
     case StoryBindingKind.MagicShaderProfile:bindings.shaders[use.symbol]=new PerformerMagicShaderProfile();break;
     case StoryBindingKind.Funscript:bindings.motion[use.symbol]=new FunscriptMotionProgram();break;
+    case StoryBindingKind.WardrobePreset:bindings.wardrobe[use.symbol]=new object();break;
+    case StoryBindingKind.Hair:bindings.hair[use.symbol]=new object();break;
     case StoryBindingKind.Location:locations.Add(use.symbol);break;
    }
   }

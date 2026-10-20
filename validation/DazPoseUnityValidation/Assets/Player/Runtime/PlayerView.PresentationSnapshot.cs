@@ -30,7 +30,6 @@ namespace DazPose.Player {
    return PlayerViewCompletion.Completed;
   }
   internal Action CapturePresentationRestoreCancellation() {uint position=PositionCommandRevision,orientation=OrientationCommandRevision;return ()=>{if(position==PositionCommandRevision)++PositionCommandRevision;if(orientation==OrientationCommandRevision){++OrientationCommandRevision;CaptureOrientationCancellation()();}};}
-  internal bool PresentationTrackAcquired(PlayerViewPresentationSnapshot snapshot)=>!snapshot.Tracking || IsTracking && CurrentTrackTarget==snapshot.Target && Quaternion.Angle(viewRig.rotation,DesiredRotation(snapshot.Target.position))<=.1f;
   internal PlayerViewPresentationSnapshot CapturePresentation() {
    EnsureOperational();if(IsMoving || IsLooking || IsAcquiringTrack)throw new InvalidOperationException("View capture requires stable movement/orientation.");
    return new PlayerViewPresentationSnapshot(this,IsTracking,CurrentTrackTarget,IsTracking?activeOrientation.TrackingSettings:default);

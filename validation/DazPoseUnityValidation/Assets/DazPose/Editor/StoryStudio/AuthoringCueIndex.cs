@@ -29,12 +29,12 @@ namespace DazPose.Editor.Studio {
    var entry=this.declarations.Values.FirstOrDefault(d=>d.Source.unit==root&&d.Kind=="sequence"&&d.Name==sequence);
    var baseline=new AuthoringVisualState();Context(setup,baseline);Context(entry,setup==null?baseline:summaries[setup.Id].Output.Substitute(baseline));
    // Each field can only lose precision at joins. A bounded worklist propagates explicit call contexts.
-   int budget=Math.Max(1024,this.declarations.Count*128);
+   int budget=Math.Max(1024,this.declarations.Count*(AuthoringVisualState.FieldCount+1)*16);
    while(pending.Count>0&&budget-->0){token.ThrowIfCancellationRequested();string id=pending.Dequeue();foreach(var call in summaries[id].Calls)Context(call.target,call.input.Substitute(contexts[id]));}
    bool exhausted=pending.Count>0;
    var rows=new List<AuthoringCueState>();
    foreach(var d in this.declarations.Values){
-    var context=contexts.TryGetValue(d.Id,out var known)&&!exhausted?known:baseline.Unknown(255,d.Source,exhausted?"Card context work limit reached":"Card has no unique explicit incoming context");
+    var context=contexts.TryGetValue(d.Id,out var known)&&!exhausted?known:baseline.Unknown(AuthoringVisualState.AllMask,d.Source,exhausted?"Card context work limit reached":"Card has no unique explicit incoming context");
     foreach(var c in summaries[d.Id].Cues){var cue=new AuthoringCueState(c.Node,c.Declaration,c.Block,c.Before.Substitute(context),c.After.Substitute(context));rows.Add(cue);lookup.Add(c.Node.Id,cue);}
    }
    Cues=rows.AsReadOnly();BuildMilliseconds=timer.Elapsed.TotalMilliseconds;
@@ -46,24 +46,20 @@ namespace DazPose.Editor.Studio {
    var matches=local.Concat(global).Distinct().ToArray();return matches.Length==1?matches[0]:null;
   }
   bool IsCall(StoryAuthoringNode n)=>n.Kind=="play"||n.Name=="Director.Execute";
-  int DynamicMask(StoryAuthoringNode n,int depth){
-   if(!catalogComplete)return 255;
-   string[] tags=n.Literals.TryGetValue("tags",out var t)?t.Split('\u001f'):Array.Empty<string>();int mask=0;
-   foreach(var d in declarations.Values.Where(d=>d.Kind=="card"&&d.Source.unit!=root&&d.Tags.Count>0&&tags.All(d.Tags.Contains)))mask|=OutputMask(Build(d,depth+1).Output);
-   return mask;
-  }
+  // Every dynamically selected card protects its entrance state; no candidate history is replayed.
+  int DynamicMask(StoryAuthoringNode n,int depth)=>0;
   int Mask(IEnumerable<StoryAuthoringNode> nodes,int depth){
-   if(depth>48)return 255;int mask=0;
+   if(depth>48)return AuthoringVisualState.AllMask;int mask=0;
    foreach(var n in nodes){token.ThrowIfCancellationRequested();mask|=AuthoringVisualReducer.Writes(n);
-    if(IsCall(n)){var target=Target(n);mask|=target==null?255:OutputMask(Build(target,depth+1).Output);}
+    if(IsCall(n)){var target=Target(n);mask|=target==null?AuthoringVisualState.AllMask:OutputMask(Build(target,depth+1).Output);}
     if(n.Name=="Director.DrawAndExecute")mask|=DynamicMask(n,depth+1);
     mask|=Mask(n.Body,depth+1)|Mask(n.Otherwise,depth+1);
    }return mask;
   }
-  static int OutputMask(AuthoringVisualState output){int mask=0;for(int i=0;i<8;i++)if(output[(AuthoringField)i].Knowledge!=AuthoringKnowledge.Input)mask|=1<<i;return mask;}
+  static int OutputMask(AuthoringVisualState output){int mask=0;for(int i=0;i<AuthoringVisualState.FieldCount;i++)if(output[(AuthoringField)i].Knowledge!=AuthoringKnowledge.Input)mask|=1<<i;return mask;}
   Summary Build(StoryAuthoringNode d,int depth){
    if(summaries.TryGetValue(d.Id,out var existing))return existing;
-   if(depth>48||!building.Add(d.Id))return new Summary{Declaration=d,Output=new AuthoringVisualState().Unknown(255,d.Source,"Recursive/deep card call")};
+   if(depth>48||!building.Add(d.Id))return new Summary{Declaration=d,Output=new AuthoringVisualState().Unknown(AuthoringVisualState.AllMask,d.Source,"Recursive/deep card call")};
    var result=new Summary{Declaration=d};
    AuthoringVisualState Walk(IEnumerable<StoryAuthoringNode> nodes,AuthoringVisualState state,string block){
     foreach(var n in nodes){token.ThrowIfCancellationRequested();StatementsAnalyzed++;var before=state;
@@ -77,14 +73,19 @@ namespace DazPose.Editor.Studio {
       Walk(n.Body,before,"Inside skipped "+n.Kind);Walk(n.Otherwise,before,"Inside skipped else");continue;
      }
      if(IsCall(n)){
-      var target=Target(n);if(target==null)state=state.Unknown(255,n.Source,"Unknown/dynamic/ambiguous card call");
+      var target=Target(n);if(target==null){if(n.Kind=="play")state=state.Unknown(AuthoringVisualState.AllMask,n.Source,"Unknown/dynamic/ambiguous playable call");}
       else{result.Calls.Add((target,before));state=Build(target,depth+1).Output.Substitute(state);}
      }else if(n.Name=="Director.DrawAndExecute")state=state.Unknown(DynamicMask(n,depth+1),n.Source,"Dynamic Director card may change visual state");
      else state=AuthoringVisualReducer.Apply(state,n);
      result.Cues.Add(new AuthoringCueState(n,d.Name,block,before,state));
     }return state;
    }
-   result.Output=Walk(d.Body,new AuthoringVisualState(true),"");building.Remove(d.Id);summaries[d.Id]=result;return result;
+   var incoming=new AuthoringVisualState(true);var outgoing=Walk(d.Body,incoming,"");
+   if(d.Kind=="card"){
+    var row=new StoryAuthoringNode(d.Id+"/return","return","Return to card entrance",d.Source,new Dictionary<string,string>(),Array.Empty<StoryAuthoringNode>(),Array.Empty<StoryAuthoringNode>(),text:"Return to card entrance");
+    result.Cues.Add(new AuthoringCueState(row,d.Name,"",outgoing,incoming));result.Output=incoming;
+   }else result.Output=outgoing;
+   building.Remove(d.Id);summaries[d.Id]=result;return result;
   }
  }
 }

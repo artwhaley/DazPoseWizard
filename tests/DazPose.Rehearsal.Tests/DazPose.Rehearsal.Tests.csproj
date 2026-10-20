@@ -50,4 +50,7 @@
     <Content Include="../../validation/DazPoseUnityValidation/Assets/Production/Story/Catalogs/kink-catalog.json" Link="kink-catalog.json" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../validation/DazPoseUnityValidation/Assets/Production/Story/Catalogs/equipment-catalog.json" Link="equipment-catalog.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeLayerState.cs" Link="Native/WardrobeLayerState.cs" />
+  </ItemGroup>
 </Project>

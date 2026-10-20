@@ -125,6 +125,8 @@ namespace DazPose.Editor {
      case StoryBindingKind.Pose:var pose=content.Pose(use.symbol);row.posture=pose.posture;row.ready=pose.value!=null&&pose.value.Clip!=null;if(!row.ready)issue="Assign the generated PerformerPose wrapper and clip.";break;
      case StoryBindingKind.Gesture:var gesture=content.Gesture(use.symbol);string reason=null;row.ready=gesture!=null&&gesture.IsReady(out reason);if(!row.ready)issue="Gesture binding is incomplete: "+(reason??"not assigned.");break;
      case StoryBindingKind.MagicShaderProfile:content.Shader(use.symbol).ValidateConfiguration();row.ready=true;break;
+     case StoryBindingKind.WardrobePreset:row.ready=content.Wardrobe(use.symbol)!=null;break;
+     case StoryBindingKind.Hair:row.ready=content.Hair(use.symbol)!=null;break;
      case StoryBindingKind.Funscript:row.ready=content.Motion(use.symbol)!=null;if(!row.ready)issue="Assign the imported FunscriptMotionProgram.";break;
      case StoryBindingKind.Location:
       if(sceneBindings==null)issue="No read-only saved-scene resource context was supplied for Location '"+use.symbol+"'.";
@@ -211,6 +213,9 @@ namespace DazPose.Editor {
      await Stage(command);break;
     }
     case "PlayerBody.DissolveIn":case "PlayerBody.DissolveOut":RequireReady(command.Source,StoryBindingKind.PlayerBody,"PlayerBody");await Stage(command);break;
+    case "Lara.SetOutfit":RequireReady(command.Source,StoryBindingKind.WardrobePreset,Arg("outfit"));await Stage(command);break;
+    case "Lara.SetHair":RequireReady(command.Source,StoryBindingKind.Hair,Arg("hair"));await Stage(command);break;
+    case "Lara.ClearHair":case "Lara.Outfit.RemoveOneLayer":case "Lara.Outfit.AddOneLayer":await Stage(command);break;
     case "Lara.StartIdle":Session.world.posture=PlayerPosture.Standing;await Stage(command);break;
     case "Lara.PersistentPose":case "Lara.PersistentSitPose": {
      string id=Arg("pose");var binding=RequireBinding(command.Source,StoryBindingKind.Pose,id);if(!binding.ready)throw new StorySourceException(command.Source,binding.issue);

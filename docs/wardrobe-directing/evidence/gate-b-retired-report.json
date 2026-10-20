@@ -1,0 +1,4351 @@
+{
+    "schemaVersion": 1,
+    "gate": "B",
+    "revision": "912e25a07092656704876b5ac4953563ac4174c20188ad1879a9e9d614e7921e",
+    "scenePath": "Assets/__WardrobeProtectedCards/Scenes/GateB_ProtectedCards.unity",
+    "sceneGuid": "f11d424b9c117914798538273f6ad94d",
+    "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+    "timestampUtc": "2026-10-20T22:47:58.6376253Z",
+    "requiredCases": [
+        "direct",
+        "explicit",
+        "draw",
+        "nested",
+        "persistent",
+        "contained",
+        "unchanged",
+        "parent-motion",
+        "interactive-stop",
+        "hidden-fixed",
+        "hidden-track",
+        "combination-0-0",
+        "combination-0-1",
+        "combination-1-0",
+        "combination-1-1",
+        "combination-2-0",
+        "combination-2-1",
+        "fault-body",
+        "fault-target",
+        "fault-fit",
+        "fault-return",
+        "stop-BodyHold",
+        "stop-BodySettled",
+        "stop-Prepared",
+        "stop-ConcealLara",
+        "stop-LaraConcealed",
+        "stop-WardrobeCommit",
+        "stop-RelocationCommit",
+        "stop-PoseBlend",
+        "stop-RevealLara",
+        "stop-ViewBlend",
+        "stop-Verify",
+        "stop-Verified"
+    ],
+    "cases": [
+        {
+            "id": "direct",
+            "status": "PASS",
+            "error": "",
+            "entry": "Direct",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "PoseBlend",
+                "PoseSettled",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 18.664749145507814
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 18.674116134643556
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 18.675390243530275
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 18.675798416137697
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 18.676319122314454
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 18.919981002807618
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 18.920183181762697
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 18.928340911865236
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 18.92850112915039
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 18.928802490234376
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 18.9290828704834
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 18.929447174072267
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 19.454736709594728
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 19.455039978027345
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 19.988832473754884
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 19.989412307739259
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 20.523540496826173
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 20.52379035949707
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 20.524295806884767
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 21.024158477783204
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 21.02433204650879
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 21.281904220581056
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 21.282094955444337
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 21.57506561279297
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 21.57527732849121
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 21.57555389404297
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 21.57892417907715
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05314704775810242,
+                            "y": -0.672623872756958,
+                            "z": -0.04853925108909607,
+                            "w": 0.7364757061004639
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 5,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.049814920872449878,
+                            "y": -0.5197082757949829,
+                            "z": -0.030373968183994294,
+                            "w": 0.8523492813110352
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 1.1180340051651,
+                    "laraRotationError": 30.00000762939453,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 2.908792495727539,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05302716791629791,
+                            "y": -0.6725196838378906,
+                            "z": -0.04841489717364311,
+                            "w": 0.7365877032279968
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "explicit",
+            "status": "PASS",
+            "error": "",
+            "entry": "Explicit",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 10.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "PoseBlend",
+                "PoseSettled",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 32.5578727722168
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 32.561397552490237
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 32.561885833740237
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 32.5623664855957
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 32.56284713745117
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 32.83342742919922
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 32.83362579345703
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 32.84124755859375
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 32.841407775878909
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 32.84156036376953
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 32.84170150756836
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 32.841854095458987
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 33.35057830810547
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 33.350826263427737
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 33.884891510009769
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 33.885311126708987
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 34.41948318481445
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 34.41967010498047
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 34.42008590698242
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 34.96272659301758
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 34.96299362182617
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 35.24700927734375
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 35.247257232666019
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 35.523014068603519
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 35.523231506347659
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 35.52341079711914
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 35.52588653564453
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05310014262795448,
+                            "y": -0.6727427244186401,
+                            "z": -0.04851178079843521,
+                            "w": 0.7363723516464233
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 5,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.0498829185962677,
+                            "y": -0.5199472904205322,
+                            "z": -0.03043483942747116,
+                            "w": 0.8521973490715027
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 1.1180340051651,
+                    "laraRotationError": 30.00000762939453,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 2.965198516845703,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05313517153263092,
+                            "y": -0.6724337339401245,
+                            "z": -0.048503030091524127,
+                            "w": 0.7366525530815125
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "draw",
+            "status": "PASS",
+            "error": "",
+            "entry": "Draw",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 10.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "PoseBlend",
+                "PoseSettled",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 46.419532775878909
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 46.423011779785159
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 46.423492431640628
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 46.42398452758789
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 46.424461364746097
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 46.695045471191409
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 46.69520568847656
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 46.703800201416019
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 46.703956604003909
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 46.70410919189453
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 46.704254150390628
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 46.70439910888672
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 47.21236801147461
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 47.21259689331055
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 47.746803283691409
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 47.74721145629883
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 48.28119659423828
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 48.281402587890628
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 48.28175354003906
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 48.815673828125
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 48.815834045410159
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 49.10893630981445
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 49.10930252075195
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 49.40224838256836
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 49.40253448486328
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 49.402774810791019
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 49.405189514160159
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.053142745047807696,
+                            "y": -0.672547459602356,
+                            "z": -0.0485251247882843,
+                            "w": 0.7365467548370361
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 5,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.0498715303838253,
+                            "y": -0.5195674896240234,
+                            "z": -0.030397329479455949,
+                            "w": 0.8524309396743774
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 1.1180340051651,
+                    "laraRotationError": 30.00000762939453,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 2.982776641845703,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.053156547248363498,
+                            "y": -0.6728199124336243,
+                            "z": -0.048574063926935199,
+                            "w": 0.7362937331199646
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "nested",
+            "status": "PASS",
+            "error": "",
+            "entry": "Nested",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify",
+                "Verified",
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "ConcealLara",
+                "LaraConcealed",
+                "RelocationCommit",
+                "Relocated",
+                "PoseBlend",
+                "PoseSettled",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 60.87435531616211
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 60.87806701660156
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 60.87864685058594
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 60.87911605834961
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 60.87959671020508
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 61.16709899902344
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 61.1675910949707
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 61.17539596557617
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 61.1755485534668
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 61.175697326660159
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 61.17584991455078
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 61.17599868774414
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 61.63243865966797
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 61.63282775878906
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 62.13249588012695
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 62.13265609741211
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 62.13310623168945
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 62.66695022583008
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 62.66721725463867
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 62.96000671386719
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 62.96016311645508
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 63.2531852722168
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 63.25342559814453
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 63.25361633300781
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 63.256107330322269
+                },
+                {
+                    "phase": "BodySettled",
+                    "seconds": 63.46017837524414
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 63.463233947753909
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 63.4637336730957
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 63.46418380737305
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 63.77043151855469
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 63.770591735839847
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 63.77080154418945
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 63.770973205566409
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 64.30498504638672
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 64.30542755126953
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 64.83939361572266
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 64.83961486816406
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 65.15074920654297
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 65.15109252929688
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 65.15377807617188
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::Outer",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.0531434491276741,
+                            "y": -0.6725517511367798,
+                            "z": -0.0485263392329216,
+                            "w": 0.7365427017211914
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Entrance",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "",
+                    "invocation": 2,
+                    "scope": 2,
+                    "parentScope": 1,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": -0.699999988079071,
+                            "y": 0.0,
+                            "z": 0.4000000059604645
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": -0.2164396196603775,
+                            "z": 0.0,
+                            "w": 0.976296067237854
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.04787701740860939,
+                            "y": -0.6353681683540344,
+                            "z": -0.03952787443995476,
+                            "w": 0.7697094678878784
+                        },
+                        "hipPosition": {
+                            "x": -0.7087813019752502,
+                            "y": 1.1078858375549317,
+                            "z": 0.4188379943370819
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 2,
+                    "scope": 2,
+                    "parentScope": 1,
+                    "writers": 5,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.04988590627908707,
+                            "y": -0.5198467373847961,
+                            "z": -0.030428582802414895,
+                            "w": 0.8522587418556213
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 1.7029386758804322,
+                    "laraRotationError": 54.9999885559082,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 2,
+                    "scope": 2,
+                    "parentScope": 1,
+                    "writers": 0,
+                    "seconds": 2.3787384033203127,
+                    "state": {
+                        "laraPosition": {
+                            "x": -0.699999988079071,
+                            "y": 0.0,
+                            "z": 0.4000000059604645
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": -0.2164396196603775,
+                            "z": 0.0,
+                            "w": 0.976296067237854
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.04896213486790657,
+                            "y": -0.6358031034469605,
+                            "z": -0.04046924039721489,
+                            "w": 0.7692330479621887
+                        },
+                        "hipPosition": {
+                            "x": -0.7087813019752502,
+                            "y": 1.1081827878952027,
+                            "z": 0.4188380241394043
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::Outer",
+                    "changedDomains": "Placement, Pose",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 6,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": -0.699999988079071,
+                            "y": 0.0,
+                            "z": 0.4000000059604645
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": -0.2164396196603775,
+                            "z": 0.0,
+                            "w": 0.976296067237854
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.0489550419151783,
+                            "y": -0.6357796788215637,
+                            "z": -0.04046083241701126,
+                            "w": 0.7692531943321228
+                        },
+                        "hipPosition": {
+                            "x": -0.7087813019752502,
+                            "y": 1.1081827878952027,
+                            "z": 0.4188380241394043
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.8062257766723633,
+                    "laraRotationError": 24.999967575073243,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::Outer",
+                    "changedDomains": "Placement, Pose",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 1.6912307739257813,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.0531449057161808,
+                            "y": -0.6724478602409363,
+                            "z": -0.04851387068629265,
+                            "w": 0.7366383075714111
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "persistent",
+            "status": "PASS",
+            "error": "",
+            "entry": "Persistent",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [],
+            "timings": [],
+            "observations": []
+        },
+        {
+            "id": "contained",
+            "status": "PASS",
+            "error": "",
+            "entry": "Contained",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "PoseBlend",
+                "PoseSettled",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 87.59768676757813
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 87.6011734008789
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 87.60169982910156
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 87.60221862792969
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 87.6027603149414
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 87.89077758789063
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 87.89096069335938
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 87.89875030517578
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 87.89891815185547
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 87.89907836914063
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 87.89923095703125
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 87.8993911743164
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 88.425048828125
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 88.42523193359375
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 88.95951080322266
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 88.95997619628906
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 89.49401092529297
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 89.49423217773438
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 89.49471282958985
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 90.02848052978516
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 90.02873229980469
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 90.31187438964844
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 90.31209564208985
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 90.56295013427735
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 90.56326293945313
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 90.56360626220703
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 90.56625366210938
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::SequenceContainer",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05315065756440163,
+                            "y": -0.6726912260055542,
+                            "z": -0.0485515221953392,
+                            "w": 0.7364131808280945
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::SequenceContainer",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 5,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.04993047937750816,
+                            "y": -0.5197980999946594,
+                            "z": -0.03045198693871498,
+                            "w": 0.8522849082946777
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 1.1180340051651,
+                    "laraRotationError": 30.00000762939453,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::SequenceContainer",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 2.9657363891601564,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05325629562139511,
+                            "y": -0.6726850867271423,
+                            "z": -0.048648130148649219,
+                            "w": 0.7364047765731812
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "unchanged",
+            "status": "PASS",
+            "error": "",
+            "entry": "Unchanged",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 95.391845703125
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 95.39452362060547
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 95.39485168457031
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 95.39517211914063
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 95.39757537841797
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::NoChange",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05319035425782204,
+                            "y": -0.6724560260772705,
+                            "z": -0.04855683818459511,
+                            "w": 0.7366247773170471
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::NoChange",
+                    "changedDomains": "None",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05319035425782204,
+                            "y": -0.6724560260772705,
+                            "z": -0.04855683818459511,
+                            "w": 0.7366247773170471
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::NoChange",
+                    "changedDomains": "None",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0034332275390625,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05319035425782204,
+                            "y": -0.6724560260772705,
+                            "z": -0.04855683818459511,
+                            "w": 0.7366247773170471
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 0
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "parent-motion",
+            "status": "PASS",
+            "error": "",
+            "entry": "Motion",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": true,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 111.54656982421875
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 111.54988098144531
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 111.55035400390625
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 111.55078887939453
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 111.55330657958985
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::ParentClock",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.23596829175949098,
+                            "y": 0.0,
+                            "z": -0.9934384822845459
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.754494845867157,
+                            "z": 0.0,
+                            "w": -0.6563059687614441
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.038338303565979007,
+                            "y": -0.8186996579170227,
+                            "z": -0.05503774806857109,
+                            "w": 0.5702910423278809
+                        },
+                        "hipPosition": {
+                            "x": 0.21539026498794557,
+                            "y": 1.0429478883743287,
+                            "z": -0.9963164329528809
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.5,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": true,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 2
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::ParentClock",
+                    "changedDomains": "None",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.23596829175949098,
+                            "y": 0.0,
+                            "z": -0.9934384822845459
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.754494845867157,
+                            "z": 0.0,
+                            "w": -0.6563059687614441
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.03811722993850708,
+                            "y": -0.8187112212181091,
+                            "z": -0.054718416184186938,
+                            "w": 0.5703200101852417
+                        },
+                        "hipPosition": {
+                            "x": 0.21539026498794557,
+                            "y": 1.0429478883743287,
+                            "z": -0.9963164329528809
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.779880166053772,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": true,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 2
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "49fa0a87a4ad01d4786250ff3c56d156::ParentClock",
+                    "changedDomains": "None",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.00397491455078125,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.23596829175949098,
+                            "y": 0.0,
+                            "z": -0.9934384822845459
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.754494845867157,
+                            "z": 0.0,
+                            "w": -0.6563059687614441
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.03811722993850708,
+                            "y": -0.8187112212181091,
+                            "z": -0.054718416184186938,
+                            "w": 0.5703200101852417
+                        },
+                        "hipPosition": {
+                            "x": 0.21539026498794557,
+                            "y": 1.0429478883743287,
+                            "z": -0.9963164329528809
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.779880166053772,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": true,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 2
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "combination-0-0",
+            "status": "PASS",
+            "error": "",
+            "entry": "Direct",
+            "posture": "0",
+            "camera": "0",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "PoseBlend",
+                "PoseSettled",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 121.80406951904297
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 121.8075942993164
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 121.80804443359375
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 121.80847930908203
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 121.8089599609375
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 122.09679412841797
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 122.09706115722656
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 122.10985565185547
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 122.11003112792969
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 122.11018371582031
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 122.11033630371094
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 122.11048126220703
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 122.63115692138672
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 122.6313705444336
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 123.16572570800781
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 123.16612243652344
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 123.70018005371094
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 123.70037078857422
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 123.7008056640625
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 124.23466491699219
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 124.23487854003906
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 124.4931640625
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 124.49336242675781
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 124.76919555664063
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 124.76947784423828
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 124.76970672607422
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 124.77224731445313
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05303332582116127,
+                            "y": -0.672529935836792,
+                            "z": -0.04842192679643631,
+                            "w": 0.7365773916244507
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": false,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.0,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 4,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.0582299642264843,
+                            "y": -0.5202027559280396,
+                            "z": -0.03558200225234032,
+                            "w": 0.8513121008872986
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": false,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.0,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 1.1180340051651,
+                    "laraRotationError": 30.00000762939453,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 21.944026947021486
+                },
+                {
+                    "phase": "Returned",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 2.9652328491210939,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05303332582116127,
+                            "y": -0.672529935836792,
+                            "z": -0.04842192679643631,
+                            "w": 0.7365773916244507
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": false,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.0,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "combination-0-1",
+            "status": "PASS",
+            "error": "",
+            "entry": "Direct",
+            "posture": "0",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "PoseBlend",
+                "PoseSettled",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 135.6217498779297
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 135.6251220703125
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 135.6256103515625
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 135.6260528564453
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 135.62661743164063
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 135.8896484375
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 135.88986206054688
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 135.89764404296876
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 135.89781188964845
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 135.89796447753907
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 135.89810180664063
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 135.89825439453126
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 136.40679931640626
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 136.4070281982422
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 136.9411163330078
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 136.9415283203125
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 137.47555541992188
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 137.4757537841797
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 137.47618103027345
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 137.97557067871095
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 137.97586059570313
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 138.23435974121095
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 138.2345733642578
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 138.4951171875
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 138.49530029296876
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 138.49546813964845
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 138.49794006347657
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05321246758103371,
+                            "y": -0.67270827293396,
+                            "z": -0.04861079528927803,
+                            "w": 0.7363892197608948
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 5,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.04989224672317505,
+                            "y": -0.5197676420211792,
+                            "z": -0.030426107347011567,
+                            "w": 0.8523066639900208
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 1.1180340051651,
+                    "laraRotationError": 30.00000762939453,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Returned",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 2.8734588623046877,
+                    "state": {
+                        "laraPosition": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.05315001308917999,
+                            "y": -0.6726280450820923,
+                            "z": -0.048542529344558719,
+                            "w": 0.7364714741706848
+                        },
+                        "hipPosition": {
+                            "x": 3.449273435762734e-7,
+                            "y": 1.0429478883743287,
+                            "z": 0.020778311416506769
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "regular",
+                        "gaze": "(0.00, 1.60, 3.00)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "combination-1-0",
+            "status": "PASS",
+            "error": "",
+            "entry": "Direct",
+            "posture": "1",
+            "camera": "0",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": true,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "PoseBlend",
+                "PoseSettled",
+                "SeatedPoseBlend",
+                "SeatedPoseSettled",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify",
+                "Verified"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 169.6476593017578
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 169.6512908935547
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 169.65176391601563
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 169.65232849121095
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 169.6529083251953
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 169.90602111816407
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 169.9061737060547
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 169.9136505126953
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 169.913818359375
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 169.91445922851563
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 169.91461181640626
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 169.91476440429688
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 170.4060516357422
+                },
+                {
+                    "phase": "SeatedPoseBlend",
+                    "seconds": 170.4063720703125
+                },
+                {
+                    "phase": "SeatedPoseSettled",
+                    "seconds": 170.40878295898438
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 170.40895080566407
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 170.9403839111328
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 170.9407958984375
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 171.44053649902345
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 171.44076538085938
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 171.44122314453126
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 171.9747772216797
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 171.97494506835938
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 172.26805114746095
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 172.2682342529297
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 172.526611328125
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 172.5268096923828
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 172.52700805664063
+                },
+                {
+                    "phase": "Verified",
+                    "seconds": 172.5296630859375
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 4.499807834625244,
+                            "y": -0.3361290693283081,
+                            "z": 1.788608193397522
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0,
+                            "w": 0.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": 0.06762977689504624,
+                            "y": 0.40145498514175417,
+                            "z": -0.029740918427705766,
+                            "w": 0.9128941297531128
+                        },
+                        "hipPosition": {
+                            "x": 4.497556209564209,
+                            "y": 0.25839465856552126,
+                            "z": 1.9412004947662354
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": false,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "Validated Lounge Chair",
+                        "style": "CrossLegs",
+                        "shader": "regular",
+                        "gaze": "(4.50, 1.26, -1.21)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.0,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Seat, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 4,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.055734869092702869,
+                            "y": -0.5180884003639221,
+                            "z": -0.03385825827717781,
+                            "w": 0.8528374433517456
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": false,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.0,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 3.7446160316467287,
+                    "laraRotationError": 150.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 110.80625915527344
+                },
+                {
+                    "phase": "Returned",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Seat, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 2.87896728515625,
+                    "state": {
+                        "laraPosition": {
+                            "x": 4.499807834625244,
+                            "y": -0.3361290693283081,
+                            "z": 1.788608193397522
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0,
+                            "w": 0.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": 0.06762977689504624,
+                            "y": 0.40145498514175417,
+                            "z": -0.029740920290350915,
+                            "w": 0.9128941297531128
+                        },
+                        "hipPosition": {
+                            "x": 4.506141662597656,
+                            "y": 0.2612193822860718,
+                            "z": 1.926743745803833
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": false,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "Validated Lounge Chair",
+                        "style": "CrossLegs",
+                        "shader": "regular",
+                        "gaze": "(4.50, 1.26, -1.21)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.0,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        },
+        {
+            "id": "combination-1-1",
+            "status": "FAIL",
+            "error": "DazPose.Story.Language.StorySourceException: Assets/__WardrobeProtectedCards/GateB/Root.dazstory:1:19 (sequence Direct)\nCard camera return did not acquire its captured tracking endpoint. ---> System.InvalidOperationException: Card camera return did not acquire its captured tracking endpoint.\r\n  at DazPose.Performer.PerformancePresentationService.RestoreAsync (DazPose.Performer.PresentationReturnPlan plan, DazPose.Performer.PerformanceOperationScope owner, System.Threading.CancellationToken cancellation) [0x01573] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Performer\\Authoring\\PerformancePresentationService.Restore.cs:90 \r\n  at DazPose.Performer.CardPresentationScope.ReturnAsync (System.Threading.CancellationToken cancellation) [0x00239] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Performer\\Authoring\\CardPresentationScope.cs:25 \r\n  at DazPose.Story.Language.StoryMachine.ExecuteCard (DazPose.Story.Language.CardDefinition card, System.Double intensity, System.Boolean selected, DazPose.Story.Language.StorySource callSite) [0x0045a] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Story\\Language\\StoryMachine.cs:254 \r\n  at DazPose.Story.Language.StoryMachine.Entry (DazPose.Story.Language.StoryEntry entry, System.Int32 depth) [0x00956] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Story\\Language\\StoryMachine.cs:128 \r\n   --- End of inner exception stack trace ---\r\n  at DazPose.Story.Language.StoryMachine.Entry (DazPose.Story.Language.StoryEntry entry, System.Int32 depth) [0x00e33] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Story\\Language\\StoryMachine.cs:152 \r\n  at DazPose.Story.Language.StoryMachine.RunAsync (System.String sequence, System.Threading.CancellationToken cancellation, System.String stopBeforePhase) [0x00389] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Story\\Language\\StoryMachine.cs:66 \r\n  at DazPose.Story.Language.StoryMachine.RunAsync (System.String sequence, System.Threading.CancellationToken cancellation, System.String stopBeforePhase) [0x00416] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Runtime\\Story\\Language\\StoryMachine.cs:70 \r\n  at DazPose.Validation.WardrobeProtectedCards.CardReturnGateRunner.Case (System.String id, System.String entry, System.Int32 posture, System.Int32 camera, System.Boolean hidden, System.String stopAt, System.String fault) [0x00799] in C:\\Users\\artwh\\OneDrive\\Documents\\DazPoseWizard\\validation\\DazPoseUnityValidation\\Assets\\DazPose\\Validation\\WardrobeProtectedCards\\CardReturnGateRunner.cs:143 ",
+            "entry": "Direct",
+            "posture": "1",
+            "camera": "1",
+            "stopAt": "",
+            "fault": "",
+            "hidden": false,
+            "trailing": false,
+            "driverRetained": false,
+            "outputAuthority": false,
+            "interactiveStopped": false,
+            "progress": 0.0,
+            "phases": [
+                "BodySettled",
+                "Prepared",
+                "WritersReleased",
+                "DissolveMaterialPrepare",
+                "ConcealLara",
+                "LaraConcealed",
+                "WardrobeCommit",
+                "WardrobeCommitted",
+                "RelocationCommit",
+                "Relocated",
+                "BodyRelocationCommit",
+                "PoseBlend",
+                "PoseSettled",
+                "SeatedPoseBlend",
+                "SeatedPoseSettled",
+                "ExpressionBlend",
+                "ExpressionSettled",
+                "GazeBlend",
+                "GazeSettled",
+                "AuraRestore",
+                "ViewBlend",
+                "ViewSettled",
+                "RevealLara",
+                "LaraRevealed",
+                "RevealBody",
+                "BodyRevealed",
+                "MaterialRestore",
+                "Verify"
+            ],
+            "timings": [
+                {
+                    "phase": "BodySettled",
+                    "seconds": 203.54351806640626
+                },
+                {
+                    "phase": "Prepared",
+                    "seconds": 203.54714965820313
+                },
+                {
+                    "phase": "WritersReleased",
+                    "seconds": 203.54762268066407
+                },
+                {
+                    "phase": "DissolveMaterialPrepare",
+                    "seconds": 203.54806518554688
+                },
+                {
+                    "phase": "ConcealLara",
+                    "seconds": 203.54856872558595
+                },
+                {
+                    "phase": "LaraConcealed",
+                    "seconds": 203.80186462402345
+                },
+                {
+                    "phase": "WardrobeCommit",
+                    "seconds": 203.80206298828126
+                },
+                {
+                    "phase": "WardrobeCommitted",
+                    "seconds": 203.8096160888672
+                },
+                {
+                    "phase": "RelocationCommit",
+                    "seconds": 203.80978393554688
+                },
+                {
+                    "phase": "Relocated",
+                    "seconds": 203.80996704101563
+                },
+                {
+                    "phase": "BodyRelocationCommit",
+                    "seconds": 203.8101806640625
+                },
+                {
+                    "phase": "PoseBlend",
+                    "seconds": 203.8103485107422
+                },
+                {
+                    "phase": "PoseSettled",
+                    "seconds": 204.33636474609376
+                },
+                {
+                    "phase": "SeatedPoseBlend",
+                    "seconds": 204.3365936279297
+                },
+                {
+                    "phase": "SeatedPoseSettled",
+                    "seconds": 204.33682250976563
+                },
+                {
+                    "phase": "ExpressionBlend",
+                    "seconds": 204.3370361328125
+                },
+                {
+                    "phase": "ExpressionSettled",
+                    "seconds": 204.87075805664063
+                },
+                {
+                    "phase": "GazeBlend",
+                    "seconds": 204.87110900878907
+                },
+                {
+                    "phase": "GazeSettled",
+                    "seconds": 205.40521240234376
+                },
+                {
+                    "phase": "AuraRestore",
+                    "seconds": 205.40550231933595
+                },
+                {
+                    "phase": "ViewBlend",
+                    "seconds": 205.4060821533203
+                },
+                {
+                    "phase": "ViewSettled",
+                    "seconds": 205.93971252441407
+                },
+                {
+                    "phase": "RevealLara",
+                    "seconds": 205.9400177001953
+                },
+                {
+                    "phase": "LaraRevealed",
+                    "seconds": 206.20587158203126
+                },
+                {
+                    "phase": "RevealBody",
+                    "seconds": 206.2061767578125
+                },
+                {
+                    "phase": "BodyRevealed",
+                    "seconds": 206.49908447265626
+                },
+                {
+                    "phase": "MaterialRestore",
+                    "seconds": 206.499267578125
+                },
+                {
+                    "phase": "Verify",
+                    "seconds": 206.49949645996095
+                }
+            ],
+            "observations": [
+                {
+                    "phase": "Entrance",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 0,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 4.499807834625244,
+                            "y": -0.3361290693283081,
+                            "z": 1.788608193397522
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.4200000762939455,
+                            "y": 1.340000033378601,
+                            "z": -0.14000000059604646
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0,
+                            "w": 0.0
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": 0.017627689987421037,
+                            "y": 0.40922731161117556,
+                            "z": -0.007915148511528969,
+                            "w": 0.9122278690338135
+                        },
+                        "hipPosition": {
+                            "x": 4.501314163208008,
+                            "y": 0.2596292495727539,
+                            "z": 1.9384838342666627
+                        },
+                        "hidden": false,
+                        "bodyHidden": false,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "first-outfit",
+                        "hair": "first-outfit/EmikoHair_59875",
+                        "seat": "Validated Lounge Chair",
+                        "style": "CrossLegs",
+                        "shader": "regular",
+                        "gaze": "(4.50, 1.26, -1.21)",
+                        "aura": "Aura_VioletSerenity",
+                        "pose": "568105584918841912",
+                        "overlay": "",
+                        "fit": "568105589213714284",
+                        "expression": "",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.0,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 0.0,
+                    "laraRotationError": 0.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                },
+                {
+                    "phase": "Outgoing",
+                    "card": "ab20e3a482fcebd4083cd23a159c5eee::Disruptive",
+                    "changedDomains": "Placement, Seat, Pose, Wardrobe, Material, Expression, Gaze, Aura, PlayerBody, View",
+                    "invocation": 1,
+                    "scope": 1,
+                    "parentScope": 0,
+                    "writers": 5,
+                    "seconds": 0.0,
+                    "state": {
+                        "laraPosition": {
+                            "x": 1.0,
+                            "y": 0.0,
+                            "z": 0.5
+                        },
+                        "bodyPosition": {
+                            "x": 0.0,
+                            "y": 1.172132968902588,
+                            "z": 0.0
+                        },
+                        "playerPosition": {
+                            "x": 2.9200000762939455,
+                            "y": 1.4900000095367432,
+                            "z": -0.49000000953674319
+                        },
+                        "laraRotation": {
+                            "x": 0.0,
+                            "y": 0.2588190734386444,
+                            "z": 0.0,
+                            "w": 0.9659258127212524
+                        },
+                        "bodyRotation": {
+                            "x": -0.7071068286895752,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.7071068286895752
+                        },
+                        "viewRotation": {
+                            "x": -0.04986411705613136,
+                            "y": -0.5194281339645386,
+                            "z": -0.030381597578525544,
+                            "w": 0.8525168895721436
+                        },
+                        "hipPosition": {
+                            "x": 1.0103944540023804,
+                            "y": 1.1577746868133546,
+                            "z": 0.5179982781410217
+                        },
+                        "hidden": false,
+                        "bodyHidden": true,
+                        "tracking": true,
+                        "generation": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+                        "outfit": "second-outfit",
+                        "hair": "",
+                        "seat": "none",
+                        "style": "Basic",
+                        "shader": "GlowyWireframe",
+                        "gaze": "(2.93, 1.60, 2.85)",
+                        "aura": "none",
+                        "pose": "568105584918844396",
+                        "overlay": "",
+                        "fit": "568105589213714228",
+                        "expression": "568105584918845674",
+                        "trackTarget": "568105584918869098",
+                        "gripTarget": "568105584918869010",
+                        "intensity": 0.3499999940395355,
+                        "gripPosition": 0.8229302167892456,
+                        "trackingResponse": 0.20000000298023225,
+                        "gripActive": false,
+                        "gripFollowsMotion": true,
+                        "driverGeneration": 3
+                    },
+                    "laraPositionError": 3.7446160316467287,
+                    "laraRotationError": 150.0,
+                    "bodyPositionError": 0.0,
+                    "cameraRotationError": 0.0
+                }
+            ]
+        }
+    ],
+    "toyOutputAllowed": false,
+    "nativeResult": "INCOMPLETE_OR_FAILED",
+    "runtimeBuild": "W07-return-material-order-v2",
+    "runtimeAssemblyId": "1b175de5-fba3-4645-8734-6c9f6d073be2"
+}

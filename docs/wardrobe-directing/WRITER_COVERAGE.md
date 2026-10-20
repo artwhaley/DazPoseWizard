@@ -66,3 +66,8 @@ The baseline rows above are historical findings. Runtime return seams now exist:
 | Posture mirror | CardPresentationScope callback | Presentation-derived mirror only |
 
 Managed scope/interpreter checks pass. Native endpoint behavior remains pending Gate B. Studio appearance proxies/summary integration remain W08 and are not complete.
+
+
+## Production Studio wardrobe delivery
+
+Earlier W08-incomplete statements are historical. NativeWardrobeProjection owns transient effective body/attachment renderers, shared-bone binding, stable-name morph transfer and proxy-only MPB/coverage/opacity writes. NativePreviewLease hides surfaces before serialization and disposes them on exit. NativePreviewWriterGuard suppresses original anatomy/wardrobe/footwear writers; shared LaraHeelReview endpoint math supplies static footwear support. Original visibility and real pose-bone writes remain ledger-owned. Mark drags reuse prepared appearance. Static authoring includes outfit/hair/layers and protected-card identity summaries. Source/managed checks pass; actual new native Studio/save behavior remains unobserved. Art superseded disposable Gate C with actual Studio use.

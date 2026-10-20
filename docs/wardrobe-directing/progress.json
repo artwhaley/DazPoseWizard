@@ -4,14 +4,19 @@
   "preparedDate": "2026-10-19",
   "sourceBaseline": "110e2b4",
   "branch": "main",
-  "status": "IN_PROGRESS",
+  "status": "DELIVERED_NATIVE_USE_PENDING",
   "executionAuthorized": true,
   "authorization": {
     "evidence": "Art said Continue after the execution packet was prepared.",
-    "date": "2026-10-20"
+    "date": "2026-10-20",
+    "latestDirection": {
+      "date": "2026-10-20",
+      "evidence": "Art: FINISH THE WARDROBE WORK. INTEGRATE IT WITH THE STUDIO AND THEN USE THE CORRECT VOCABULARY TO ADD IT TO THE FIRST CONTACT SCRIPT. GET BACK TO WORKING ON FIRST CONTACT WITH THIS MOSTLY INTACT.",
+      "effect": "Supersedes the remaining diagnostic gate chain as a blocker to production wardrobe delivery. No further disposable gate scenes or camera matrix demanded. No Unity operation or remote writes authorized."
+    }
   },
-  "currentTicket": "W07 - WAITING_ON_ART Gate B",
-  "nextTicket": "W08 after Art accepts Gate B",
+  "currentTicket": "Wardrobe Studio + First Contact delivery implemented",
+  "nextTicket": "Use the actual First Contact scene; repair production issues if observed",
   "tickets": [
     {
       "id": "W00",
@@ -93,33 +98,42 @@
     },
     {
       "id": "W07",
-      "status": "WAITING_ON_ART",
+      "status": "IMPLEMENTED_PARTIAL_NATIVE_ACCEPTANCE",
       "dependencies": [
         "W06"
       ],
       "evidence": [
         "evidence/w06-w07-checks.json",
-        "GATE_B_HANDOFF.md"
+        "GATE_B_HANDOFF.md",
+        "evidence/gate-b-retired-report.json"
       ],
       "nativeGate": "B"
     },
     {
       "id": "W08",
-      "status": "NOT_STARTED",
+      "status": "IMPLEMENTED",
       "dependencies": [
         "B_PASS"
       ],
-      "evidence": [],
-      "nativeGate": "C"
+      "evidence": [
+        "evidence/wardrobe-production-delivery.json",
+        "FIRST_CONTACT_WARDROBE.md"
+      ],
+      "nativeGate": "C",
+      "acceptance": "Production Studio/First Contact use pending; original disposable gate superseded by latest user direction."
     },
     {
       "id": "W09",
-      "status": "NOT_STARTED",
+      "status": "IMPLEMENTED",
       "dependencies": [
         "C_PASS"
       ],
-      "evidence": [],
-      "nativeGate": "D"
+      "evidence": [
+        "evidence/wardrobe-production-delivery.json",
+        "FIRST_CONTACT_WARDROBE.md"
+      ],
+      "nativeGate": "D",
+      "acceptance": "Production Studio/First Contact use pending; original disposable gate superseded by latest user direction."
     }
   ],
   "gates": {
@@ -165,11 +179,15 @@
       ]
     },
     "B": {
-      "status": "WAITING_ON_ART",
+      "status": "PARTIAL_ACCEPTANCE_SUPERSEDED",
       "revision": "See local commit: Implement protected card return and deliver Gate B",
-      "nativeEvidence": "evidence/gate-b-native-20261020-pose-layout-failure.json",
-      "artResponse": "Art ran all technical checks and wrote report; no visual acceptance given. Report has 32 failed cases from pose snapshot layout failure; interactive Stop unrun.",
-      "acceptedCases": [],
+      "nativeEvidence": "evidence/gate-b-retired-report.json",
+      "artResponse": "Art accepted ordinary direct wardrobe return and reported interactive Stop passed. The full suite passed 11 cases then failed default-seated tracking. Art rejected that failure as a blocker to wardrobe and explicitly directed production Studio/First Contact completion.",
+      "acceptedCases": [
+        "Native report PASS: direct, explicit, draw, nested, persistent, contained, unchanged, parent-motion, standing/fixed, standing/tracking, default seated/fixed.",
+        "Art accepted direct visual return.",
+        "Interactive Stop PASS reported by Art; not present in the last saved JSON report."
+      ],
       "notRunCases": [
         "All Gate B native cases: Art has not operated this source revision."
       ],
@@ -228,7 +246,7 @@
       ]
     },
     "C": {
-      "status": "NOT_READY",
+      "status": "SUPERSEDED_BY_PRODUCTION_STUDIO_USE",
       "revision": null,
       "nativeEvidence": null,
       "artResponse": null,
@@ -237,7 +255,7 @@
       "invalidations": []
     },
     "D": {
-      "status": "NOT_READY",
+      "status": "PENDING_REAL_FIRST_CONTACT_USE",
       "revision": null,
       "nativeEvidence": null,
       "artResponse": null,
@@ -248,14 +266,14 @@
   },
   "implementationChecks": {
     "status": "PASS",
-    "reason": "108 story + 93 rehearsal + 25 wardrobe/scope managed checks pass; seven source assemblies compile. Gate B native behavior is pending Art.",
+    "reason": "108 story + 98 rehearsal/visual-authoring + 25 wardrobe managed checks pass; all seven source assemblies compile. Actual new Studio appearance and First Contact native use not operated by executor.",
     "evidence": [
-      "evidence/w06-w07-checks.json"
+      "evidence/wardrobe-production-delivery.json"
     ]
   },
   "oldReleasedGeneration": "70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb",
   "newReleasedGeneration": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
-  "productionAppearanceAdvanced": false,
+  "productionAppearanceAdvanced": true,
   "nativeOperationByExecutor": false,
   "remoteWrite": false,
   "blockers": [],
@@ -265,5 +283,5 @@
   },
   "acceptedReleasedCatalog": "Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/Catalog.asset",
   "acceptedReleasedConfiguration": "Assets/Production/Wardrobe/Rigs/d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a/Configuration.asset",
-  "fixturePolicy": "No second Lara. One currently needed saved gate composition maximum; retire it after acceptance. Fixture scene/setup is not part of wardrobe import/catalog authoring."
+  "fixturePolicy": "No duplicate Lara or new disposable gates. Gate B source/setup/scene retired with byte-verified copies outside Assets. Existing reusable wardrobe pipeline and released assets retained."
 }

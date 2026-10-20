@@ -15,6 +15,7 @@ namespace DazPose.Editor.Studio
         static NativePreviewLease active;
         readonly PreviewPropertyLedger ledger=new PreviewPropertyLedger();
         readonly AnimationModeDriver driver;
+        internal NativeWardrobeProjection Wardrobe {get;}
         readonly PreviewResourceOwner<NativePoseSampler> sampler=new PreviewResourceOwner<NativePoseSampler>();
         readonly string originalScenePath;
         readonly IDisposable writers;
@@ -43,6 +44,7 @@ namespace DazPose.Editor.Studio
             if(AnimationMode.InAnimationMode())throw new InvalidOperationException("Close Animation Window/Timeline preview before directing.");
             Context=context ?? throw new ArgumentNullException(nameof(context));
             originalScenePath=context.Scene.path;
+            Wardrobe=new NativeWardrobeProjection(context);Restored+=Wardrobe.Hide;
             // Snapshot BEFORE any writer suppression or pose sample. The body is included even when not staged.
             Capture(context.Lara.transform);Capture(context.Body.transform);Capture(context.PlayerRoot);
             driver=ScriptableObject.CreateInstance<AnimationModeDriver>();driver.hideFlags=HideFlags.HideAndDontSave;
@@ -144,7 +146,7 @@ namespace DazPose.Editor.Studio
             if(applying)throw new InvalidOperationException("Reentrant native spatial update refused.");
             if(ledger.Conflicts("spatial").Length!=0)throw new InvalidOperationException("A preview root was edited outside the directing controls.");
             applying=true;
-            try{try{update();}finally{ledger.RecordApplied("spatial");}NativeStageContext.RefreshViews();}
+            try{try{update();}finally{ledger.RecordApplied("spatial");ledger.RecordApplied("pose");}NativeStageContext.RefreshViews();}
             catch(Exception error){Failure=error.Message;Dispose();throw;}
             finally{applying=false;}
         }
@@ -300,7 +302,7 @@ namespace DazPose.Editor.Studio
             try { RestoreBaseline(); }
             finally
             {
-                try { sampler.Dispose(); }
+                try { Wardrobe.Dispose();sampler.Dispose(); }
                 finally
                 {
                     foreach(var material in materials.Values)if(material!=null)UnityEngine.Object.DestroyImmediate(material);

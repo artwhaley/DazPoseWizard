@@ -111,7 +111,7 @@ public sealed class LanguageTests {
   Assert.Equal(disapproval,host.Calls.Contains("Lara.PlayOneShotGesture"));
   Assert.Equal(equipment,host.Calls.Contains("Popup.ShowNeededEquipment"));
   Assert.Equal(10,commands.Count(c=>c.Verb=="Lara.Say"));
-  Assert.Equal(new[]{"Lara.StartHiddenAt","PlayerBody.StartHiddenAt","Camera.StartAt","Lara.StartIdle","Lara.DissolveIn","Camera.Track"},host.Calls.Take(6));
+  Assert.Equal(new[]{"Lara.StartHiddenAt","PlayerBody.StartHiddenAt","Camera.StartAt","Lara.StartIdle","Lara.SetOutfit","Lara.SetHair","Lara.DissolveIn","Camera.Track"},host.Calls.Take(8));
   Assert.DoesNotContain("Lara.SitAt",host.Calls);Assert.DoesNotContain("Camera.MoveTo",host.Calls);
   if(disapproval)Assert.Equal("shoes",commands.Single(c=>c.Verb=="Popup.RemoveClothingItem").Require("item").String);
  } [Fact] public void PreviewValidationIncludesAllSetupBranchesAndExcludesLaterContent() {

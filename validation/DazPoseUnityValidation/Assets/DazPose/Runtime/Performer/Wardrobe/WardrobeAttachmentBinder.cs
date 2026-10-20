@@ -14,6 +14,12 @@ namespace DazPose.Performer
         internal WardrobeAttachmentLease(GameObject root, LaraWardrobe.Piece[] boundPieces, GameObject[] ownedLocalBones)
         { instance = root; pieces = boundPieces ?? Array.Empty<LaraWardrobe.Piece>(); localBones = ownedLocalBones ?? Array.Empty<GameObject>(); }
         public LaraWardrobe.Piece[] Pieces => pieces.ToArray();
+#if UNITY_EDITOR
+        public void MarkTransient(){
+            if(instance!=null)foreach(var node in instance.GetComponentsInChildren<Transform>(true))node.gameObject.hideFlags=HideFlags.HideAndDontSave;
+            foreach(var node in localBones)if(node!=null)node.hideFlags=HideFlags.HideAndDontSave;
+        }
+#endif
         public void Dispose()
         {
             if (disposed) return;

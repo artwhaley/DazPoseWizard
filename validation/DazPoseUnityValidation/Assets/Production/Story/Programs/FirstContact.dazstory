@@ -9,6 +9,9 @@ setup FirstContact
 
 sequence Intro
 {
+    await Lara.SetOutfit(OpeningOutfit)
+    await Lara.SetHair(OpeningHair)
+
     await Lara.DissolveIn(lara_start)
 
     Camera.Track(Lara)

@@ -13,8 +13,6 @@ namespace DazPose.Performer
     /// <summary>Owns one authored performance and the exact operations it accepted.</summary>
     public sealed partial class PerformanceRun : IDisposable
     {
-        public static string CardReturnImplementationVersion => "W07-return-material-order-v2";
-
         private sealed class Operation
         {
             public string Verb;

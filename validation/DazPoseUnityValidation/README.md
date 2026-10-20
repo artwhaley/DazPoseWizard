@@ -4,9 +4,9 @@ This Unity 6 editor tooling imports canonical DAZ poses produced by DazPoseWizar
 
 ## Current authoring entry
 
-Open Assets/Production/Scenes/MainMenu.unity or Assets/Production/Scenes/FirstContact.unity. New Performance Scene copies the saved art-only Void environment. Clothing Setup is under DazPose > Wardrobe; Showcase is under Assets/Examples/Scenes. See [ownership](../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md), [story guide](../../docs/story-runtime/DAZSTORY_AUTHORING.md), and [cleanup status](../../docs/cleanup-task1/EXECUTION_REPORT.md).
+Open Assets/Production/Scenes/MainMenu.unity or Assets/Scenes/FirstContact.unity. New Performance Scene copies the saved art-only Void environment. Clothing Setup is under DazPose > Wardrobe; Showcase is under Assets/Examples/Scenes. See [ownership](../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md), [story guide](../../docs/story-runtime/DAZSTORY_AUTHORING.md), and [cleanup status](../../docs/cleanup-task1/EXECUTION_REPORT.md).
 
-The user is the tester. Do not start Play, automated scene playback, builds or players without an explicit request. The saved gameplay scenes are `Assets/Production/Scenes/FirstContact.unity` and `Assets/Production/Scenes/MainMenu.unity`; `Assets/Scenes/FirstPerformanceVoid.unity` is a frozen reference, not the production-scene template. See [scene/content ownership](../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md) for global-card publication, protected import roots and exact held draft directories.
+The user is the tester. Do not start Play, automated scene playback, builds or players without an explicit request. The saved gameplay scenes are `Assets/Scenes/FirstContact.unity` and `Assets/Production/Scenes/MainMenu.unity`; `Assets/Scenes/FirstPerformanceVoid.unity` is a frozen reference, not the production-scene template. See [scene/content ownership](../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md) for global-card publication, protected import roots and exact held draft directories.
 
 ## Importing a new production pose
 
@@ -96,3 +96,5 @@ Legacy PoseValidation and smoke overlays are historical validation fixtures. The
 ## Local validation inputs
 
 The Lara FBX, texture sidecar, and DAZ fixtures are local and intentionally not committed. To restore the local validation FBX from the repository root, copy G8F-Base/lara.fbx and G8F-Base/lara.images into validation/DazPoseUnityValidation/Assets/TestCharacter. Assign that FBX as the pipeline reference model when validating locally.
+
+Wardrobe authoring: [current First Contact directions and vocabulary](../../docs/wardrobe-directing/FIRST_CONTACT_WARDROBE.md).

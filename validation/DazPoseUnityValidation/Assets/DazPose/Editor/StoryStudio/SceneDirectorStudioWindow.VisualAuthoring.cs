@@ -24,7 +24,7 @@ namespace DazPose.Editor.Studio {
   void BeginAuthoringIndex(){
    CancelIndex();projectionQueue.Cancel();indexStale=true;if(source==null){cueIndex=null;manifest=null;return;}
    try{
-    authorCatalog=AuthoringSourceCatalog.Capture(source);var captured=authorCatalog;string chosen=sequence;indexCancellation=new CancellationTokenSource();var token=indexCancellation.Token;
+    authorCatalog=AuthoringSourceCatalog.Capture(source);var captured=authorCatalog;string chosen=nativeSequence!=null&&nativeSequence.CompiledSource==source?nativeSequence.EntrySequence:sequence;indexCancellation=new CancellationTokenSource();var token=indexCancellation.Token;
     indexTask=Task.Run(()=>{
      var manifests=new Dictionary<string,SourceBindingManifest>();var text=new Dictionary<string,string>();var nodes=new List<StoryAuthoringNode>();var issues=new List<string>(captured.Issues);bool complete=captured.Complete;
      foreach(var unit in captured.Units){token.ThrowIfCancellationRequested();var analysis=DazStoryCompiler.Analyze(unit.Text,unit.Path,new StoryAnalysisOptions{SourceGuid=unit.Owner});var m=new SourceBindingManifest{SourceGuid=unit.Owner,SourcePath=unit.Path,Analysis=analysis};manifests[unit.Path]=m;
@@ -33,7 +33,10 @@ namespace DazPose.Editor.Studio {
       void Labels(IEnumerable<StoryAuthoringNode> body){foreach(var n in body){text[n.Id]=n.Source.line>0&&n.Source.line<=lines.Length?lines[n.Source.line-1].Trim():n.Name??n.Kind;Labels(n.Body);Labels(n.Otherwise);}}
       Labels(analysis.Authoring);
      }
-     string seq=nodes.Where(n=>n.Source.unit==captured.Root&&n.Kind=="sequence").Select(n=>n.Name).FirstOrDefault(n=>n==chosen)??nodes.FirstOrDefault(n=>n.Source.unit==captured.Root&&n.Kind=="sequence")?.Name;
+     var roots=nodes.Where(n=>n.Source.unit==captured.Root&&n.Kind=="sequence").ToArray();
+     string setupName=nodes.FirstOrDefault(n=>n.Source.unit==captured.Root&&n.Kind=="setup")?.Name;
+     string seq=roots.FirstOrDefault(n=>n.Name==chosen)?.Name??roots.FirstOrDefault(n=>n.Name==setupName)?.Name??(roots.Length==1?roots[0].Name:null);
+     if(seq==null)issues.Add("No explicit root sequence is selected. Connect the saved performance sequence in Scene / script.");
      return new IndexResult{Index=new AuthoringCueIndex(nodes,captured.Root,seq,complete,token),Manifests=manifests,Text=text,Issues=issues.ToArray()};
     },token);Repaint();
    }catch(Exception e){error=e.Message;indexStale=false;}

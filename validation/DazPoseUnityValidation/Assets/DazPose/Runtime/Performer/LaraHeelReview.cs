@@ -33,6 +33,7 @@ namespace DazPose.Performer
         private float ground;
         private bool applied;
         public PerformerFootwearProfile Footwear => footwear;
+        internal float BaseRigY => baseRigY;
         public float RigHeight { get => footwear!=null?footwear.standingHeight:rigHeight;set {rigHeight=value;if(footwear!=null)footwear.standingHeight=value;Apply();} }
         public float FootShrink { get => footwear!=null?footwear.footShrink:0;set {if(footwear!=null)footwear.footShrink=Mathf.Clamp(value,0,.1f);Apply();} }
         public void SetFootwear(PerformerFootwearProfile profile)
@@ -91,23 +92,41 @@ namespace DazPose.Performer
             if(body==null || body.sharedMesh==null || rigRoot==null)return;
             UndoPrevious();
             if(bones==null)ResolveBindings();
+            var performer=GetComponent<SuccubusPerformer>();
+            float weight=bentFootPoseActive?(performer!=null?1-performer.SeatingOwnershipWeight:1):0;
+            for(int i=0;i<bones.Length;i++){
+                previousBase[i]=bones[i].localRotation;previousBasePositions[i]=bones[i].localPosition;
+                positionOwned[i]=footwear!=null&&footwear.constrainToes&&IsToe(bones[i].name);
+            }
+            ProjectEndpoint(body,rigRoot,bones,referencePositions,referenceRotations,feet,upperLeg,knee,
+                footwear,shoeSupportActive,bentFootPoseActive,floorSupport,baseRigY,referenceFootShape,
+                RigHeight,FootShrink,additionalFootPitch,additionalToePitch,weight,targets,rotations,stance,out ground);
+            for(int i=0;i<bones.Length;i++)
+            {
+                previousApplied[i]=bones[i].localRotation;
+                previousAppliedPositions[i]=bones[i].localPosition;
+            }
+            applied=true;
+        }
+        // The static Studio projection and runtime support owner use this same endpoint math.
+        static void ProjectEndpoint(SkinnedMeshRenderer body,Transform rigRoot,Transform[] bones,
+            Vector3[] referencePositions,Quaternion[] referenceRotations,Transform[] feet,Transform[] upperLeg,Transform[] knee,
+            PerformerFootwearProfile footwear,bool shoeSupportActive,bool bentFootPoseActive,bool floorSupport,
+            float baseRigY,float referenceFootShape,float height,float shrink,float additionalFootPitch,float additionalToePitch,
+            float standingWeight,Vector3[] targets,Quaternion[] rotations,float[] stance,out float ground)
+        {
+            var leftToe=bones.FirstOrDefault(b=>b.name=="lToe");var rightToe=bones.FirstOrDefault(b=>b.name=="rToe");
             int shape=body.sharedMesh.GetBlendShapeIndex("CapturedHeelFootPose");
             if(shape>=0)body.SetBlendShapeWeight(shape,bentFootPoseActive?referenceFootShape*100:0);
             int fit=body.sharedMesh.GetBlendShapeIndex("WardrobeFootFit");
-            if(fit>=0)body.SetBlendShapeWeight(fit,bentFootPoseActive?FootShrink/.05f*100:0);
-            var performer=GetComponent<SuccubusPerformer>();
-            float standingWeight=bentFootPoseActive?(performer!=null?1-performer.SeatingOwnershipWeight:1):0;
-            var position=rigRoot.localPosition;position.y=baseRigY+RigHeight*standingWeight;rigRoot.localPosition=position;
+            if(fit>=0)body.SetBlendShapeWeight(fit,bentFootPoseActive?shrink/.05f*100:0);
+            var position=rigRoot.localPosition;position.y=baseRigY+height*standingWeight;rigRoot.localPosition=position;
             for(int i=0;i<bones.Length;i++)
             {
-                previousBase[i]=bones[i].localRotation;
-                previousBasePositions[i]=bones[i].localPosition;
-                positionOwned[i]=false;
                 if(footwear!=null && footwear.constrainToes && IsToe(bones[i].name))
                 {
                     bones[i].localPosition=referencePositions[i];
                     bones[i].localRotation=referenceRotations[i];
-                    positionOwned[i]=true;
                 }
             }
             if(bentFootPoseActive)
@@ -143,12 +162,30 @@ namespace DazPose.Performer
                 if(stance[side]>0)SolveLeg(upperLeg[side],knee[side],feet[side],targets[side],rigRoot.forward);
                 feet[side].rotation=rotations[side];
             }
-            for(int i=0;i<bones.Length;i++)
-            {
-                previousApplied[i]=bones[i].localRotation;
-                previousAppliedPositions[i]=bones[i].localPosition;
+        }
+        public sealed class WardrobeEndpoint
+        {
+            readonly SkinnedMeshRenderer body;readonly Transform root;
+            readonly Transform[] bones,feet,upper,knee;readonly Vector3[] positions;readonly Quaternion[] rotations;
+            readonly PerformerFootwearProfile profile;readonly WardrobeFootwearState fit;readonly LaraHeelReview tuning;
+            readonly Vector3[] targets=new Vector3[2];readonly Quaternion[] aim=new Quaternion[2];readonly float[] stance=new float[2];readonly float baseY;Vector3[] posePositions;Quaternion[] poseRotations;
+            public WardrobeEndpoint(SkinnedMeshRenderer body,PerformerFootwearProfile profile,WardrobeFootwearState fit,LaraHeelReview tuning,float? baseHeight=null){
+                this.body=body;this.profile=profile;this.fit=fit;this.tuning=tuning;root=body.rootBone.parent;baseY=baseHeight??root.localPosition.y;
+                var lookup=body.bones.Where(b=>b!=null).ToDictionary(b=>b.name);
+                feet=new[]{lookup["lFoot"],lookup["rFoot"]};upper=new[]{lookup["lThighBend"],lookup["rThighBend"]};knee=new[]{lookup["lShin"],lookup["rShin"]};
+                bones=upper.Concat(knee).Concat(feet).Concat(body.bones.Where(b=>b!=null&&IsToe(b.name))).Distinct().ToArray();
+                positions=new Vector3[bones.Length];rotations=new Quaternion[bones.Length];
+                var indices=body.bones.Select((bone,index)=>(bone,index)).ToDictionary(x=>x.bone,x=>x.index);var bind=body.sharedMesh.bindposes;
+                for(int i=0;i<bones.Length;i++){var bone=bones[i];var local=indices.TryGetValue(bone.parent,out int parent)?bind[parent]*bind[indices[bone]].inverse:bone.localToWorldMatrix;positions[i]=local.GetColumn(3);rotations[i]=local.rotation;}
             }
-            applied=true;
+            public void CapturePose(){posePositions=bones.Select(b=>b.localPosition).ToArray();poseRotations=bones.Select(b=>b.localRotation).ToArray();}
+            public void Apply(bool seated){
+                if(posePositions==null)CapturePose();
+                for(int i=0;i<bones.Length;i++){bones[i].localPosition=posePositions[i];bones[i].localRotation=poseRotations[i];}
+                ProjectEndpoint(body,root,bones,positions,rotations,feet,upper,knee,profile,fit.FootwearActive&&profile!=null,fit.BentFootPoseActive,
+                    tuning==null||tuning.floorSupport,baseY,fit.BentFootPoseActive?1:0,fit.StandingLift,fit.FootShrink,
+                    tuning!=null?tuning.additionalFootPitch:0,tuning!=null?tuning.additionalToePitch:0,fit.BentFootPoseActive&&!seated?1:0,targets,aim,stance,out _);
+            }
         }
         private static bool IsToe(string name)=>name.Contains("Toe") || name.Contains("Metatarsals");
         private void ResolveBindings()

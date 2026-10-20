@@ -1,3 +1,7 @@
+# Latest October 20 direction - wardrobe production delivery
+
+Art superseded the remaining disposable wardrobe/protected-card gate chain: finish wardrobe in Studio and the First Contact script, then return to actual First Contact authoring. Current status: docs/wardrobe-directing/progress.json and FIRST_CONTACT_WARDROBE.md. Do not resume the retired Gate B camera matrix or create another disposable scene as a clothing blocker. Single-Lara clothing and direct visual return were accepted; remaining native results are partial/pending, never invented passes. Source/asset delivery is implemented; actual new Studio/First Contact use is Art-operated. Preserve no-Unity/no-hardware/no-subagents/no-remote boundaries. First Contact remains Assets/Scenes/FirstContact.unity.
+
 # Scene location correction - October 20
 
 User-facing performance scenes belong in `Assets/Scenes`. First Contact is `Assets/Scenes/FirstContact.unity`; preserve its contents and GUID when organizing it. New Performance Scene defaults to this folder.

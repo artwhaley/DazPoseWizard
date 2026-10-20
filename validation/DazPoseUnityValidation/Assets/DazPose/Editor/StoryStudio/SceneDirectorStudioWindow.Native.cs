@@ -16,6 +16,7 @@ namespace DazPose.Editor.Studio {
   void ResolveNativeDefaults() {
    if(host==null)SelectHost(NativeStageContext.FindHost());
    if(nativeSequence==null){var matches=host.gameObject.scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<StoryProgramSequence>(true)).Where(s=>s.Bindings==host).ToArray();if(matches.Length==1)nativeSequence=matches[0];}
+   if(nativeSequence!=null)sequence=nativeSequence.EntrySequence;
    if(source==null&&nativeSequence!=null&&nativeSequence.CompiledSource!=null)SelectSource(nativeSequence.CompiledSource);
   }
   void BuildPreview() {

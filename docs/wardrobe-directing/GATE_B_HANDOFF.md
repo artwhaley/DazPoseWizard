@@ -1,3 +1,5 @@
+> Historical fixture instructions. Gate B was retired by Art's production-delivery direction. Use [First Contact wardrobe](FIRST_CONTACT_WARDROBE.md).
+
 # Gate B - exact manual directions
 
 The source is ready. Art operates Unity; native acceptance is pending. This temporary scene is only for protected-card return, not for adding outfits/hair.

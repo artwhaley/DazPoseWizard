@@ -1,0 +1,123 @@
+{
+  "classification": "Source and managed delivery; native Studio/First Contact use not operated by executor",
+  "date": "2026-10-20",
+  "managedTests": {
+    "story": 108,
+    "rehearsal": 98,
+    "wardrobe": 25
+  },
+  "sourceAssembliesPassed": 7,
+  "production": {
+    "programStartup": "await Lara.SetOutfit(OpeningOutfit); await Lara.SetHair(OpeningHair), before first reveal in sequence Intro",
+    "catalogGeneration": "d0b34840249bc9e812337938d1214c5f5cfb79f958dbd764afe2b6bca12cce0a",
+    "openingPreset": "first-outfit",
+    "openingHair": "first-outfit/EmikoHair_59875",
+    "scene": "Assets/Scenes/FirstContact.unity",
+    "sceneUnchangedThisDelivery": true,
+    "sceneGuidPreserved": true,
+    "dialogueTranscriptsUnchanged": 19,
+    "audioUnchanged": true,
+    "onlyWardrobePrefabPropertiesChanged": true,
+    "duplicatePrefabFileIds": false,
+    "immutableReleaseFilesChanged": false
+  },
+  "retirement": {
+    "filesPreserved": 41,
+    "backup": ".dazposewizard\\wardrobe-retired\\20261020-GateB",
+    "extraUnityDiagnosticScenes": 0
+  },
+  "executorUnityOperation": false,
+  "remoteWrite": false,
+  "deferredOriginalGateB": "Seated tracking assertion was not a wardrobe failure. Native report preserved; user superseded diagnostic gate chain with direct Studio/First Contact delivery.",
+  "sourceHashes": [
+    {
+      "path": "tests/DazPose.Rehearsal.Tests/RehearsalTestSupport.cs",
+      "sha256": "5c7da4058e01464f025114f1f1356db4ada64217a05c4dc0b2adf4b33a284358"
+    },
+    {
+      "path": "tests/DazPose.Rehearsal.Tests/UnityTestShims.cs",
+      "sha256": "0bba24a883099846feebe69335ce0ab9773eb691ea7cb77b95b5fa1fd1d23c05"
+    },
+    {
+      "path": "tests/DazPose.Rehearsal.Tests/VisualAuthoringTests.cs",
+      "sha256": "2faa683c0f5df26b0670aef9500c2c69b7c43b2337082e5b73b5a3b1291b3840"
+    },
+    {
+      "path": "tests/DazPose.Story.Tests/LanguageTests.cs",
+      "sha256": "af7284d7e681b38212d825eddc18a138d8fc66dac277911fe058c32b27f13872"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/AuthoringCueIndex.cs",
+      "sha256": "6e9ba7e570189f4f9db5f3f1029f2a1530a1e4d445d15a029cdaa3fe1864de0a"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/AuthoringVisualState.cs",
+      "sha256": "993b7b9b38fe5e5099e252d9ad543d26fb54b34ed4a39fc07177a1e3bb21a1b8"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/NativePreviewLease.cs",
+      "sha256": "a8bdd5350cda395c603f92c4b5744e1a871f54ed21687200978f08198ee7ed26"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/NativeSceneStage.Authoring.cs",
+      "sha256": "2fe895f619d5e8328ed34dcd4481568f0e248b893b0327dd4c118aa53a3a0c86"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/NativeSceneStage.cs",
+      "sha256": "4f60272a74e9cfdaa4d5cfaae8fc91bf6fb0882427c320dff2ce85583388dfc8"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/RehearsalStoryHost.cs",
+      "sha256": "1735d7465aedfb349c7f4fd13349e83a6fcc27b093e364b1e595898cad2e6166"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Authoring.cs",
+      "sha256": "983b8081e1d4c590041feb73d9802c138e76e466d4ba36601a1b9239aaf84de3"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.Native.cs",
+      "sha256": "74b7bf06aaf7cbfa695b4058cfc0ef380e11096deded34efadc22df0ed87145d"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/SceneDirectorStudioWindow.VisualAuthoring.cs",
+      "sha256": "8a47d4273668e54026f8172dd4219cd92960b0658efb270be67882669572f119"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs",
+      "sha256": "e048c725b491a1f75a217831c2fda6f6c59d6fcddc6def76ca80d5280cc561b7"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformancePresentationService.Restore.cs",
+      "sha256": "58c5e049b2400935218b5a99c16ef43b7c61dfd6a0b6dcdd418774f7583d5afe"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Authoring/PerformanceRun.cs",
+      "sha256": "e22edd0604e1100e5c7b2104670240b8facfbff6d5c07e8b3541d78b7218c0fb"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraHeelReview.cs",
+      "sha256": "16bc33441e78fecaae24f2897fdd4bd69319460c19ba92fcdeaedfa08620e12f"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeAttachmentBinder.cs",
+      "sha256": "2d999486ce02b673e3aa43b6d29a44e45c9abcd3b67afc826983d0864b23d3c7"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/Wardrobe/WardrobeMaterialOpacity.cs",
+      "sha256": "7e56b8eac1ae8e9af34b9dd4e2239e9bfaa07a0a14db4f919fd950079dabc817"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Story/Runtime/StoryProgramSequence.cs",
+      "sha256": "bb459ea3caa17340efd301af79f279561a553d3492685476256441cfc6c31f38"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Player/Runtime/PlayerView.PresentationSnapshot.cs",
+      "sha256": "8198b4cd16bfdbd26bedbfca6b15739893f0c30bc525f006e1b594005a185a2f"
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/StoryStudio/NativeWardrobeProjection.cs",
+      "sha256": "b09476925488ba8c64acb89bb272f1018d18bad58932b38230a56a7c7be1308f"
+    }
+  ],
+  "newCsMetaUnique": true
+}

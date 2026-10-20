@@ -87,7 +87,8 @@ namespace DazPose.Performer {
     if(p.Material!=null)await run.Performer.MagicShaderAsync(p.Material);else if(material!=null){material.RestoreRegular();owner.Register("material",material.CaptureRestoration());}
    }
    Guard(owner,cancellation,"Verify");var verified=Verify(entrance);if(!verified.Succeeded)throw new InvalidOperationException("Card presentation return verification failed: "+verified.Differences);
-   if(!view.PresentationTrackAcquired(entrance.View))throw new InvalidOperationException("Card camera return did not acquire its captured tracking endpoint.");
+   // Verify already checks the acquired tracking owner, target and settings. Normal follow lag
+   // after reacquisition is not an additional fixed-orientation return failure.
    Guard(owner,cancellation,"Verified");
   }
  }

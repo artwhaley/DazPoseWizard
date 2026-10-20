@@ -12,6 +12,9 @@ namespace DazPose.Editor.Studio {
   public int FullProjectionCount {get;private set;}
   public int SpatialProjectionCount {get;private set;}
   public int PoseSampleCount=>lease.SampleCount;
+  public int AppearancePrepareCount=>lease.Wardrobe.PrepareCount;
+  public int AttachmentBuildCount=>lease.Wardrobe.AttachmentBuildCount;
+  public int AppearanceCommitCount=>lease.Wardrobe.CommitCount;
   public double LastProjectionMilliseconds {get;private set;}
   Vector3 authorActorPosition,authorBodyPosition,authorPlayerPosition;Quaternion authorActorRotation,authorBodyRotation,authorViewRotation;
   string authorPoseKey,authorPresentationKey,authorShotKey;Action authorSpatial;
@@ -36,6 +39,10 @@ namespace DazPose.Editor.Studio {
     if(value.Op=="initial"){var initial=c.Lara.InitialPose;Dependency(initial);return initial?.Clip;}
     var owner=content(value);Dependency(owner);var pose=owner.Pose(value.Symbol).value;Dependency(pose);return pose.Clip;
    }
+   Dependency(c.Lara.GetComponent<LaraAnatomyControls>());Dependency(c.Lara.GetComponent<PerformerWardrobe>());
+   int appearanceBefore=lease.Wardrobe.PrepareCount;bool hadAppearance=lease.Wardrobe.Active;
+   try{lease.Wardrobe.Prepare(state,content,Dependency,0);}catch(Exception e){lease.Wardrobe.Dispose();warnings.Add("Wardrobe: "+e.Message);}
+   bool appearanceChanged=appearanceBefore!=lease.Wardrobe.PrepareCount||hadAppearance!=lease.Wardrobe.Active;
    var pv=state[AuthoringField.Pose];AnimationClip finalClip=null;float finalTime=0;
    bool usableSeat=state[AuthoringField.Placement].IsKnown&&(state[AuthoringField.Placement].Op=="sit"||state[AuthoringField.Placement].Op=="seatpose");
    if(pv.IsKnown&&pv.Op!="defaultseat"){
@@ -94,29 +101,29 @@ namespace DazPose.Editor.Studio {
    // A seat height dependency requires a cached sample even if the displayed standing pose is unchanged.
    var placementValue=state[AuthoringField.Placement];bool seatGeometry=placementValue.Op=="sit"||placementValue.Op=="seatpose"||placementValue.Parent?.Op=="sit"||placementValue.Parent?.Op=="seatpose";
    if(seatGeometry)poseKey+="/"+placementValue.Key+"/"+string.Join(";",dependencies.Where(o=>o is PerformerSeat||o!=null&&o.GetType().Name.Contains("SeatingProfile")).Select(o=>o.GetEntityId()+":"+EditorUtility.GetDirtyCount(o)));
-   string presentationKey=state[AuthoringField.Hidden].Key+state[AuthoringField.BodyHidden].Key+mv.Key+"/"+(material!=null?material.GetEntityId().ToString():"")+"/"+presentationRevision;
-   bool poseChanged=poseKey!=authorPoseKey,presentationChanged=presentationKey!=authorPresentationKey;
+   string presentationKey=lease.Wardrobe.VisibilityKey+state[AuthoringField.Hidden].Key+state[AuthoringField.BodyHidden].Key+mv.Key+"/"+(material!=null?material.GetEntityId().ToString():"")+"/"+presentationRevision;
+   bool poseChanged=poseKey!=authorPoseKey||appearanceChanged,presentationChanged=presentationKey!=authorPresentationKey||appearanceChanged;
    string shotKey=state.Key+poseKey+presentationKey+string.Join(";",dependencies.Select(o=>o.GetEntityId()+":"+EditorUtility.GetDirtyCount(o)));
    AuthoringDependencies=dependencies.ToArray();AuthoringWarnings=warnings.Distinct().ToArray();
-   if(lease.IsStaged&&shotKey==authorShotKey){LastProjectionMilliseconds=watch.Elapsed.TotalMilliseconds;return;}
+   if(lease.IsStaged&&shotKey==authorShotKey&&!appearanceChanged){LastProjectionMilliseconds=watch.Elapsed.TotalMilliseconds;return;}
    // Retain prepared seat geometry when only source provenance or a mark changes.
    Action rootAction=null;
-   void Spatial(){rootAction?.Invoke();if(bodyMark!=null)c.Body.transform.SetPositionAndRotation(bodyMark.position,bodyMark.rotation);else{c.Body.transform.localPosition=authorBodyPosition;c.Body.transform.localRotation=authorBodyRotation;}
+   void Spatial(){rootAction?.Invoke();lease.Wardrobe.ApplyFootwear(usableSeat);if(bodyMark!=null)c.Body.transform.SetPositionAndRotation(bodyMark.position,bodyMark.rotation);else{c.Body.transform.localPosition=authorBodyPosition;c.Body.transform.localRotation=authorBodyRotation;}
     c.PlayerRoot.localPosition=authorPlayerPosition;c.ViewRig.localRotation=authorViewRotation;
     if(cameraMark!=null){c.PlayerRoot.position=cameraMark.position;c.ViewRig.rotation=cameraMark.rotation;}
     if(track)c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(true,c.ViewRig.rotation,c.Host.laraFocus.position,c.Camera.transform.position);
    }
    void Presentation()=>Present(Hidden(AuthoringField.Hidden),Hidden(AuthoringField.BodyHidden),material,null,false);
-   void SampleAndSpatial(){rootAction=preparePlacement(true);if(finalClip!=null)Sample(finalClip,finalTime);else lease.ResetPoseToBaseline();Spatial();}
+   void SampleAndSpatial(){rootAction=preparePlacement(true);if(finalClip!=null)Sample(finalClip,finalTime);else lease.ResetPoseToBaseline();lease.Wardrobe.CaptureFootwearPose();Spatial();}
    void Complete(){sampledClip=null;sampledTime=-1;LastSeating=null;SampleAndSpatial();Presentation();}
    // For unchanged poses retain prior root action (including sampled hip) while using current live transforms.
-   void Delta(){if(poseChanged){AuthoringPoseUpdates++;SampleAndSpatial();}else{rootAction=preparePlacement(false);Spatial();}if(presentationChanged)Presentation();}
+   void Delta(){if(poseChanged){AuthoringPoseUpdates++;SampleAndSpatial();}else{rootAction=preparePlacement(false);Spatial();}if(presentationChanged)Presentation();else lease.Wardrobe.CopyMorphs();}
    authorSpatial=Spatial;
    try{if(!lease.IsStaged){FullProjectionCount++;lease.Apply(Complete);}else lease.ApplyAuthoringDelta(Complete,Delta,poseChanged,presentationChanged);}
    finally{LastProjectionMilliseconds=watch.Elapsed.TotalMilliseconds;}
    lease.SpatialUndo=ReanchorAuthoring;authorPoseKey=poseKey;authorPresentationKey=presentationKey;authorShotKey=shotKey;
    AuthoringDependencies=dependencies.ToArray();AuthoringWarnings=warnings.Distinct().ToArray();
-   Composition="Lara: "+(placementValue.Symbol??"saved baseline")+" / "+(pv.Symbol??pv.Op??"saved pose")+" · camera: "+(cv.Symbol??"saved baseline")+(track?" / Track(Lara)":" / authored rotation");
+   Composition=lease.Wardrobe.Description+" - Lara: "+(placementValue.Symbol??"saved baseline")+" / "+(pv.Symbol??pv.Op??"saved pose")+" · camera: "+(cv.Symbol??"saved baseline")+(track?" / Track(Lara)":" / authored rotation");
   }
   public void ReanchorAuthoring(){if(authorSpatial==null)return;var watch=System.Diagnostics.Stopwatch.StartNew();lease.ApplySpatial(authorSpatial);SpatialProjectionCount++;LastProjectionMilliseconds=watch.Elapsed.TotalMilliseconds;}
  }

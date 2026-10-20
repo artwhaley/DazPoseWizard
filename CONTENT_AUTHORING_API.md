@@ -124,6 +124,9 @@ Read-only story state: `CurrentWardrobe`, `VisibilityState`, `IsSpeaking`, `IsGr
 
 ## Wardrobe and hair
 
+Current `.dazstory` commands, named slots and Studio workflow: [Wardrobe in First Contact](docs/wardrobe-directing/FIRST_CONTACT_WARDROBE.md). OpeningOutfit and OpeningHair are already assigned in First Contact.
+
+
 | Task | API on the scoped actor |
 | --- | --- |
 | Outfit | `await OutfitAsync(preset)` or `OutfitAsync(stablePresetId)`. |

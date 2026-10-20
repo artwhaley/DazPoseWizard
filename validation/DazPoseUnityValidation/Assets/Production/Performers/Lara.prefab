@@ -5868,6 +5868,7 @@ GameObject:
   - component: {fileID: 7386152105048603023}
   - component: {fileID: 2579337053614952170}
   - component: {fileID: 380572911149330604}
+  - component: {fileID: 824700000000000001}
   m_Layer: 0
   m_Name: Lara
   m_TagString: Untagged
@@ -7714,12 +7715,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baee53ed00bd2e84c8d9ac0bdc5dabb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DazPose.Performer.PerformerWardrobe
-  catalog: {fileID: 11400000, guid: f2693142368baa84f9118a4e5f1e8865, type: 2}
-  configuration: {fileID: 11400000, guid: f17333a00b4cb304f9c59052cbb789e7, type: 2}
+  catalog: {fileID: 11400000, guid: d3c56ec76b7dc1944b963ffa2cc77338, type: 2}
+  configuration: {fileID: 11400000, guid: 0680af26bb1797945b15e18f9a3f2480, type: 2}
   body: {fileID: 6155713162590348731}
   performer: {fileID: 6001443574911359252}
   rendererBinder: {fileID: 0}
   allowCandidatePreview: 0
+  rigBinding: {fileID: 824700000000000001}
 --- !u!1 &7511231498239787303
 GameObject:
   m_ObjectHideFlags: 0
@@ -8988,3 +8990,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4329640949248832242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &824700000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7510028542162113535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 235e28f1237940a99cce406a15352dd8, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Performer.WardrobeRigBinding
+  manifest: {fileID: 11400000, guid: eca1796c01f9e0d4199a89426f259e7d, type: 2}
+  clothingRoot: {fileID: 0}
+  hairRoot: {fileID: 0}

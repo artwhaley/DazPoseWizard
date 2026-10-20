@@ -56,7 +56,7 @@ namespace DazPose.Editor.Studio
         void Present(bool? hidden,bool? hideBody,PerformerMagicShaderProfile material,Transform cameraMark,bool trackLara)
         {
             var c=Context;
-            foreach(var renderer in c.Lara.GetComponentsInChildren<Renderer>(true))
+            foreach(var renderer in c.Lara.GetComponentsInChildren<Renderer>(true).Where(r=>!lease.Wardrobe.Replaces(r)&&!lease.Wardrobe.Effective.Contains(r)))
             {
                 // Endpoint dissolve requires no residual dissolve block. We never mutate or discard unknown MPB data.
                 EnsureSettledDissolve(renderer);
@@ -67,13 +67,14 @@ namespace DazPose.Editor.Studio
             {
                 material.ValidateConfiguration();
                 if(material.mode==PerformerMaterialMode.GlowyWireframe)
-                    foreach(var renderer in c.Lara.GetComponentsInChildren<Renderer>(true).Where(r=>r.enabled && r.gameObject.activeInHierarchy && (r is MeshRenderer || r is SkinnedMeshRenderer)))
+                    foreach(var renderer in c.Lara.GetComponentsInChildren<Renderer>(true).Where(r=>!lease.Wardrobe.Replaces(r)&&!lease.Wardrobe.Effective.Contains(r)&&r.enabled && r.gameObject.activeInHierarchy && (r is MeshRenderer || r is SkinnedMeshRenderer)))
                     {
                         var refs=renderer.sharedMaterials;
                         for(int i=0;i<refs.Length;i++)refs[i]=lease.MaterialFor(renderer,i,material.wireframeMaterial);
                         renderer.sharedMaterials=refs;
                     }
             }
+            lease.Wardrobe.Present(hidden,material);
             // PlayerView.ResetPerformanceView endpoint only: position lives on player, rotation on ViewRig.
             if(cameraMark!=null){c.PlayerRoot.position=cameraMark.position;c.ViewRig.rotation=cameraMark.rotation;}
             if(trackLara)c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(true,c.ViewRig.rotation,c.Host.laraFocus.position,c.Camera.transform.position);

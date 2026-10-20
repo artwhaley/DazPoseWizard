@@ -30,6 +30,9 @@ namespace DazPose.Story {
  using DazPose.Performer;
  using DazPose.Story.Language;
  public sealed class StoryContentBindings {
+  public readonly Dictionary<string,object> wardrobe=new(StringComparer.Ordinal),hair=new(StringComparer.Ordinal);
+  public object Wardrobe(string id)=>wardrobe.TryGetValue(id,out var value)?value:throw new InvalidOperationException("fixture missing outfit "+id);
+  public object Hair(string id)=>hair.TryGetValue(id,out var value)?value:throw new InvalidOperationException("fixture missing hair "+id);
   public readonly Dictionary<string,StoryPoseContent> poses=new(StringComparer.Ordinal);
   public readonly Dictionary<string,PerformerGesture> gestures=new(StringComparer.Ordinal);
   public readonly Dictionary<string,PerformerMagicShaderProfile> shaders=new(StringComparer.Ordinal);
