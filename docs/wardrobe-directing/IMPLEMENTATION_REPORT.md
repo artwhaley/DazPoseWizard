@@ -121,3 +121,8 @@ Runner now halts a suite on the first unexpected failed case and retains the fai
 Art could not see Lara in the camera during verification. Diagnostic default and ordinary suite routes now use run.Player.Track(scene.laraFocus). The body-disruption helper explicitly reinstates tracking after ResetPerformanceView, which otherwise cancels orientation tracking. Fixed-camera combinations aim once through the existing LookAtAsync owner and apply deliberate local optical-axis roll, then remain fixed for exact return verification. No per-frame camera override is added to return or production scenes.
 
 The fixture reserves the right-hand viewport for the scene and constrains controls to the left strip so the panel cannot cover the tracked subject. No saved scene rebuild is required. Source compilation: seven assemblies PASS. Native framing/visual return remains Art-operated and unaccepted.
+
+
+### Gate B controls width repair
+
+Art reported button text off the right edge after the viewport correction. The narrow IMGUI scroll view allowed unwrapped status/report/error labels to determine an oversized content width. Restored the panel's 570-pixel maximum (responsive to window width), constrained every child to the actual content width, wrapped and left-aligned labels/buttons, calculated button heights for wrapped text, removed horizontal scrolling and used one-column camera choices. Results show concise case/status labels; full failures remain in the report. Tracking and the separate camera viewport remain enabled. Seven source assemblies compile; native UI readability remains Art-operated. No scene or production asset change, no Unity operation.

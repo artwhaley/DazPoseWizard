@@ -203,6 +203,13 @@
           "reason": "Lara out of camera view during verification; fixture default used unaimed fixed camera and outgoing camera reset disabled tracking.",
           "resolution": "Track Lara default and ordinary suite cases; reinstate Track after outgoing camera move; aim fixed-mode checks once; reserve separate camera viewport beside controls.",
           "status": "RETRY_REQUIRED"
+        },
+        {
+          "revision": "778b46d",
+          "case": "Gate B control readability",
+          "reason": "Narrow panel plus unconstrained IMGUI scroll content pushed button text offscreen.",
+          "resolution": "Restore wider responsive panel; fixed child widths, wrapped left-aligned text, no horizontal scroll, one-column camera choices.",
+          "status": "RETRY_REQUIRED"
         }
       ]
     },

@@ -23,7 +23,9 @@ namespace DazPose.Validation.WardrobeProtectedCards {
   [Serializable] public sealed class Result {public string id,status,error,entry,posture,camera,stopAt,fault;public bool hidden,trailing,driverRetained,outputAuthority,interactiveStopped;public double progress;public List<string> phases=new List<string>();public List<Stamp> timings=new List<Stamp>();public List<CardPresentationObservation> observations=new List<CardPresentationObservation>();}
   [Serializable] sealed class Report {public int schemaVersion=1;public string gate="B",revision,scenePath,sceneGuid,generation,timestampUtc;public string[] requiredCases;public List<Result> cases;public bool toyOutputAllowed=false;public string nativeResult;}
   public string sceneGuid;string runningFingerprint;
-  float PanelWidth=>Mathf.Min(360,Screen.width*.34f);
+  float PanelWidth=>Mathf.Min(570,Screen.width*.45f);
+  float ContentWidth=>Mathf.Max(80,PanelWidth-38);
+  GUIStyle wrappedLabel,wrappedButton,wrappedToggle;
   void Awake(){runningFingerprint=CurrentFingerprint();}
   void ConfigureGateViewport(){var camera=performance.Player.MainCamera;float edge=(PanelWidth+24)/Mathf.Max(1,Screen.width);camera.rect=new Rect(edge,0,1-edge,1);}
   async Task AimGateCamera(PerformanceRun run,int mode){
@@ -36,15 +38,33 @@ namespace DazPose.Validation.WardrobeProtectedCards {
   void OnDisable(){StopCurrent();RestoreFaultFit();}
   void StopCurrent(){lifetime?.Cancel();active?.Stop();}
   void InteractiveStop(){if(current!=null){current.id="interactive-stop";current.interactiveStopped=true;current.stopAt="InteractiveStop";}active?.Stop();}
-  void OnGUI(){GUILayout.BeginArea(new Rect(12,12,PanelWidth,Mathf.Max(280,Screen.height-24)),GUI.skin.box);scroll=GUILayout.BeginScrollView(scroll);
-   GUILayout.Label("Card Return Gate — one Lara / original player body");GUILayout.Label(status,GUI.skin.box);
-   GUI.enabled=!busy;posture=GUILayout.SelectionGrid(posture,new[]{"Standing","Default seated","Persistent seated"},1);camera=GUILayout.SelectionGrid(camera,new[]{"Fixed (pitch + roll)","Track Lara"},2);hidden=GUILayout.Toggle(hidden,"Hidden entrance (must remain hidden on return)");
+  void OnGUI(){
+   if(wrappedLabel==null){
+    wrappedLabel=new GUIStyle(GUI.skin.label){wordWrap=true,alignment=TextAnchor.MiddleLeft};
+    wrappedButton=new GUIStyle(GUI.skin.button){wordWrap=true,alignment=TextAnchor.MiddleLeft};
+    wrappedToggle=new GUIStyle(GUI.skin.toggle){wordWrap=true,alignment=TextAnchor.MiddleLeft};
+   }
+   GUILayout.BeginArea(new Rect(12,12,PanelWidth,Mathf.Max(100,Screen.height-24)),GUI.skin.box);
+   scroll.x=0;
+   scroll=GUILayout.BeginScrollView(scroll,false,true,GUIStyle.none,GUI.skin.verticalScrollbar);
+   GUILayout.BeginVertical(GUILayout.Width(ContentWidth));
+   Label("Card Return Gate - one Lara / original player body");Label(status);
+   GUI.enabled=!busy;
+   posture=GUILayout.SelectionGrid(posture,new[]{"Standing","Default seated","Persistent seated"},1,wrappedButton,GUILayout.Width(ContentWidth));
+   camera=GUILayout.SelectionGrid(camera,new[]{"Fixed (pitch + roll)","Track Lara"},1,wrappedButton,GUILayout.Width(ContentWidth));
+   hidden=GUILayout.Toggle(hidden,"Hidden entrance (must remain hidden on return)",wrappedToggle,GUILayout.Width(ContentWidth));
    Button("Run all Gate B technical checks",AllCases);
    Button("Run direct card",()=>Case("direct","Direct",posture,camera,hidden));Button("Run explicit Director card",()=>Case("explicit","Explicit",posture,camera,hidden));Button("Run drawn card",()=>Case("draw","Draw",posture,camera,hidden));
    Button("Run nested cards",()=>Case("nested","Nested",posture,camera,hidden));Button("Run persistent sequence",()=>Case("persistent","Persistent",posture,camera,hidden));Button("Run sequence inside card",()=>Case("contained","Contained",posture,camera,hidden));Button("Run no-change card",()=>Case("unchanged","Unchanged",posture,camera,hidden));
    Button("Run parent motion ownership",()=>Case("parent-motion","Motion",0,1,false));Button("Run Stop checkpoints",StopMatrix);Button("Run fault cases",FaultMatrix);Button("Run remaining combinations",Combinations);
-   if(GUILayout.Button("Write report"))WriteReport();GUI.enabled=busy;if(GUILayout.Button("Stop current run"))InteractiveStop();GUI.enabled=true;GUILayout.Label("Report: docs/wardrobe-directing/evidence/gate-b-native.json");foreach(var result in results.TakeLast(8))GUILayout.Label(result.id+": "+result.status+(result.error==null?"":" — "+result.error));GUILayout.EndScrollView();GUILayout.EndArea();}
-  void Button(string label,Func<Task> action){if(GUILayout.Button(label))StartCase(action);}
+   if(Press("Write report"))WriteReport();GUI.enabled=busy;if(Press("Stop current run"))InteractiveStop();GUI.enabled=true;
+   Label("Report: docs/wardrobe-directing/evidence/gate-b-native.json");
+   foreach(var result in results.TakeLast(8))Label(result.id+": "+result.status);
+   GUILayout.EndVertical();GUILayout.EndScrollView();GUILayout.EndArea();
+  }
+  void Label(string text)=>GUILayout.Label(text,wrappedLabel,GUILayout.Width(ContentWidth));
+  bool Press(string text)=>GUILayout.Button(text,wrappedButton,GUILayout.Width(ContentWidth),GUILayout.Height(Mathf.Max(32,wrappedButton.CalcHeight(new GUIContent(text),ContentWidth))));
+  void Button(string label,Func<Task> action){if(Press(label))StartCase(action);}
   async void StartCase(Func<Task> action){if(busy)return;busy=true;lifetime=new CancellationTokenSource();try{await action();status="Finished. Inspect the case result, then choose the next check.";}catch(Exception error){status=error.Message+" Write report and send the failed case label; do not continue testing.";}finally{busy=false;lifetime.Dispose();lifetime=null;}}
   async Task AllCases(){await Case("direct","Direct",0,1,false);await Case("explicit","Explicit",0,1,false);await Case("draw","Draw",0,1,false);await Case("nested","Nested",0,1,false);await Case("persistent","Persistent",0,1,false);await Case("contained","Contained",0,1,false);await Case("unchanged","Unchanged",0,1,false);await Case("parent-motion","Motion",0,1,false);await Combinations();await StopMatrix();await FaultMatrix();}
   async Task Combinations(){for(int p=0;p<3;p++)for(int c=0;c<2;c++){lifetime.Token.ThrowIfCancellationRequested();await Case("combination-"+p+"-"+c,"Direct",p,c,false);}await Case("hidden-fixed","Direct",0,0,true);await Case("hidden-track","Direct",0,1,true);}
