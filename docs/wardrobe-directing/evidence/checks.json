@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "ticket": "W02/W03 SOURCE_READY",
-  "capturedUtc": "2026-10-20T16:43:05Z",
+  "capturedUtc": "2026-10-20T17:06:00Z",
   "baselineRevision": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
   "branch": "main",
   "protectedBaselineEntries": 42,
@@ -126,6 +126,15 @@
       "wardrobeTestsPassed": 15,
       "wardrobeTestsFailed": 0,
       "note": "Gate A candidate now resolves dress and panties using the W00 stable source IDs (PeekaBoo_16572 and CharlenesCloset_Panty_1981), not unverified role labels. Native Gate A must be retried by Art."
+    },
+    {
+      "id": "GateA-prefab-owner-repair",
+      "command": "python scripts/check-unity-source.py; dotnet test tests/DazPose.Wardrobe.Tests/DazPose.Wardrobe.Tests.csproj --no-restore --nologo --verbosity quiet",
+      "exitCode": 0,
+      "sourceAssemblies": 7,
+      "wardrobeTestsPassed": 15,
+      "wardrobeTestsFailed": 0,
+      "note": "Delivery window passes Lara\u2019s explicitly resolved PerformerWardrobe into the prefab generator. Generator verifies that owner.Body is exactly the selected canonical renderer; Unity hierarchy GetComponentInParent lookup is no longer used."
     }
   ],
   "omissions": [
@@ -140,7 +149,7 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs",
-      "sha256": "959180edf877afa4b0d504b17c0c03980b6b447519f3d8acbaba68e37a57add6"
+      "sha256": "50979252b2cfd19d0bac5d27882a96e2cbe65a992e893c16146f5af0700a046c"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeCorrectedCandidateBuilder.cs",
@@ -152,7 +161,7 @@
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeRigAssetBuilder.cs",
-      "sha256": "fec64d8fc30d28c7af13de225149e7b028d0d6bf6a91831f525a597705fe669c"
+      "sha256": "9b7e52920d9086bb0cdf9358a34302943459cd1d9c9853bc7e7aef89cc988be1"
     },
     {
       "path": "validation/DazPoseUnityValidation/Assets/DazPose/Runtime/Performer/LaraWardrobe.cs",
@@ -220,6 +229,16 @@
     "failure": "Prepare corrected candidate rejected first-outfit because imported role labels did not match literal dress and panties.",
     "correctedSourceRevision": "fc31fe9",
     "sourceHash": "b01d81626ee3f4cc37d46eb084714e15fac8e0d3714d2aaa2a85bd091b8032df",
+    "nativeRetryStatus": "WAITING_ON_ART"
+  },
+  "gateAPrefabRepair": {
+    "failedAttemptRevision": "fc31fe9",
+    "failure": "Generate reusable prefabs returned no root/manifest and Created 0 / reused 0 because canonical renderer ownership lookup returned no PerformerWardrobe.",
+    "correctedSourceRevision": "e703039",
+    "sourceHashes": {
+      "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeRigAssetBuilder.cs": "9b7e52920d9086bb0cdf9358a34302943459cd1d9c9853bc7e7aef89cc988be1",
+      "validation/DazPoseUnityValidation/Assets/DazPose/Editor/Wardrobe/WardrobeAppearanceDeliveryWindow.cs": "50979252b2cfd19d0bac5d27882a96e2cbe65a992e893c16146f5af0700a046c"
+    },
     "nativeRetryStatus": "WAITING_ON_ART"
   }
 }

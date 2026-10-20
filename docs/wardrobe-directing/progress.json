@@ -10,7 +10,7 @@
     "evidence": "Art said Continue after the execution packet was prepared.",
     "date": "2026-10-20"
   },
-  "currentTicket": "Gate A corrected candidate retry",
+  "currentTicket": "Gate A prefab generation retry",
   "nextTicket": "W04 after Gate A PASS",
   "tickets": [
     {
@@ -109,9 +109,9 @@
   "gates": {
     "A": {
       "status": "WAITING_ON_ART",
-      "revision": "fc31fe9",
+      "revision": "e703039",
       "nativeEvidence": null,
-      "artResponse": "FAIL at cb22e10: Prepare corrected candidate stopped because first-outfit role strings were assumed to be literal 'dress' and 'panties'. No candidate assets were created.",
+      "artResponse": "FAIL at cb22e10: candidate preparation role assumption; fixed at fc31fe9. FAIL at fc31fe9: Generate reusable prefabs rejected canonical body ownership (Root/Manifest blank; Created 0 / reused 0); explicit owner wiring fixed at e703039.",
       "acceptedCases": [],
       "notRunCases": [
         "All native prefab generation, fitting, hair/layer visualization, and second-actor ownership cases."
@@ -123,6 +123,14 @@
           "reason": "Implementation required literal role labels instead of using the source IDs and garment meanings recorded in W00.",
           "resolutionRevision": "fc31fe9",
           "status": "RETRY_REQUIRED"
+        },
+        {
+          "revision": "fc31fe9",
+          "case": "Generate reusable prefabs",
+          "reason": "Generator relied on renderer.GetComponentInParent<PerformerWardrobe>() for a body renderer loaded from a prefab asset; the lookup returned no owner.",
+          "resolutionRevision": "e703039",
+          "status": "RETRY_REQUIRED",
+          "output": "Root and Manifest were blank; Created 0 / reused 0; generation stopped before asset writes."
         }
       ]
     },
@@ -156,7 +164,7 @@
   },
   "implementationChecks": {
     "status": "PASS",
-    "reason": "Corrected Gate A source compiles and pure wardrobe checks pass; native Gate A remains Art-operated and pending retry.",
+    "reason": "Gate A prefab-owner correction source-compiles and pure wardrobe checks pass; native Gate A remains Art-operated and pending retry.",
     "evidence": [
       "evidence/checks.json"
     ]
