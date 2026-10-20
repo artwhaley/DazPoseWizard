@@ -179,6 +179,9 @@ namespace DazPose.Performer
         public Awaitable<WardrobeChangeResult> OutfitAsync(string presetId, WardrobeTransition transition = default) =>
             run.Execute("Outfit", () => actor.OutfitAsync(presetId, transition), WardrobeSucceeded,
                 result => result != null ? result.Status.ToString() : "null", WardrobeFailure, () => actor.CaptureCancellation(PerformanceCommand.Wardrobe));
+        public Awaitable<WardrobeChangeResult> SetOutfitAsync(WardrobePreset preset, WardrobeTransition transition = default) =>
+            run.Execute("SetOutfit", () => actor.SetOutfitAsync(preset, transition), WardrobeSucceeded,
+                result => result != null ? result.Status.ToString() : "null", WardrobeFailure, () => actor.CaptureCancellation(PerformanceCommand.Wardrobe));
         public Awaitable<WardrobeChangeResult> SetHairAsync(string stableHairId, WardrobeTransition transition = default) =>
             run.Execute("SetHair", () => actor.SetHairAsync(stableHairId, transition), WardrobeSucceeded,
                 result => result != null ? result.Status.ToString() : "null", WardrobeFailure, () => actor.CaptureCancellation(PerformanceCommand.Wardrobe));

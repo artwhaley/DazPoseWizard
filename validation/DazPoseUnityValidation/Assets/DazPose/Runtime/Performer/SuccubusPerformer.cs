@@ -542,6 +542,14 @@ namespace DazPose.Performer
                 WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
         }
 
+        public Awaitable<WardrobeChangeResult> SetOutfitAsync(WardrobePreset preset, WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.SetOutfitAsync(preset, transition);
+            return CompletedWardrobeResult(new WardrobeChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
         public Awaitable<WardrobeChangeResult> OutfitAsync(string presetId, WardrobeTransition transition = default)
         {
             var wardrobe = GetComponent<PerformerWardrobe>();

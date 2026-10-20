@@ -242,3 +242,8 @@ its presence is not proof that runtime capabilities or validation runners exist.
 # Launching the Unity validation editor
 
 For the Unity harness at `validation\DazPoseUnityValidation`, launch `C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Unity.exe` with `-projectPath` set to that project, using `exec_command` with `sandbox_permissions: "require_escalated"`. The default sandbox desktop is invisible to the signed-in user. Confirm the Unity process is running in the signed-in user's interactive session and has a visible main window before saying it is ready for manual testing. Unity batch mode is only for imports, diagnostics, and automated checks; it does not satisfy a request to open the editor on the user's desktop.
+# Active execution — Reusable wardrobe and protected cards (W00–W09)
+
+Art authorized execution on October 20, 2026. Follow `newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/START_HERE.md` and the ordered tickets. Current evidence/status: `docs/wardrobe-directing/IMPLEMENTATION_REPORT.md` and `progress.json`. Preserve all pre-existing instructions below.
+
+ABSOLUTE: executor must not launch or operate Unity, Hub, GUI/CLI/batch, tests in Unity, Play, builds, players, computer-use or hardware. Art operates native gates A–D. No gate bypass; source-only checks allowed. Work on main. Coherent local commits are authorized; no push, merge, PR or remote write. Preserve authored assets, GUIDs, global story index and fixture edits. No subagents without explicit authorization.

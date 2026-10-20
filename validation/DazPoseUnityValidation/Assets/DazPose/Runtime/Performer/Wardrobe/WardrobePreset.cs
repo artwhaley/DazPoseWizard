@@ -4,8 +4,6 @@ using UnityEngine;
 
 namespace DazPose.Performer
 {
-    public enum WardrobeHairAction { Keep, Set, Clear }
-
     [CreateAssetMenu(menuName = "DazPose/Wardrobe/Preset")]
     public sealed class WardrobePreset : ScriptableObject
     {

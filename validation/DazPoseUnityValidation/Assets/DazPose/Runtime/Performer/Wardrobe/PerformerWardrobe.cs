@@ -10,7 +10,7 @@ namespace DazPose.Performer
     [AddComponentMenu("Performer/Wardrobe Runtime")]
     public sealed class PerformerWardrobe : MonoBehaviour
     {
-        private enum RequestKind { Outfit, Remove, Add, Hair, SceneRecall }
+        private enum RequestKind { Outfit, SetClothing, Remove, Add, Hair, SceneRecall }
         private sealed class Request
         {
             public RequestKind kind;
@@ -67,6 +67,8 @@ namespace DazPose.Performer
         private Request _lastAcceptedRequest;
         private string _bindingError;
         private readonly Dictionary<string, WardrobeCandidateSnapshot> _resolved = new Dictionary<string, WardrobeCandidateSnapshot>(StringComparer.Ordinal);
+        private IReadOnlyList<WardrobePresetSelectionFacts> _selectionFacts = Array.Empty<WardrobePresetSelectionFacts>();
+        private string[] _hairKeys = Array.Empty<string>();
 
         public event Action<WardrobeState> WardrobeChanged;
         public WardrobeState CurrentWardrobe => BuildState(_activeRequest != null || _queue.Count > 0);
@@ -228,6 +230,8 @@ namespace DazPose.Performer
                     }
                 }
                 BuildPieceInventory();
+                _selectionFacts = BuildSelectionFacts();
+                _hairKeys = BuildHairKeys().ToArray();
                 rendererBinder ??= gameObject.AddComponent<LaraWardrobe>();
                 rendererBinder.Configure(body, _inventory.Select(p => p.inventory).ToArray());
                 _footwearDriver = GetComponent<FootwearPoseDriver>();
@@ -373,8 +377,23 @@ namespace DazPose.Performer
                     { failure = WardrobeFailureCode.ConflictingItems; message = "Shell dependency is not in the outfit: " + owner; return false; }
             }
             WardrobeLayerState.ValidateCeiling(ceiling);
-            int visible = WardrobeLayerState.VisibleMask(populated, ceiling);
-            var fit = preset.FitStates.FirstOrDefault(s => s.VisibleMask == visible);
+            var fitStates = preset.FitStates;
+            var fitFacts = fitStates.Select(s => new WardrobeFitSelectionFact(s != null ? s.VisibleMask : 0,
+                s != null && s.Status == WardrobeFitStatus.Validated,
+                s != null && s.BodyMesh != null && s.SurfaceBindings != null && s.DissolveProfile != null &&
+                    s.SurfaceBindings.SourceMesh == s.BodyMesh && s.SurfaceBindings.BindingCount == PerformerSurfaceBindingAsset.RequiredBindingCount &&
+                    s.DissolveProfile.SurfaceBindings == s.SurfaceBindings)).ToArray();
+            var prepared = WardrobeSelectionPreparer.Prepare(
+                new WardrobeSelection(SelectionGenerationId(), preset.PresetId, ceiling, hairKey),
+                SelectionGenerationId(), populated, fitFacts);
+            if (!prepared.IsValid)
+            {
+                failure = WardrobeFailureCode.FitNotAvailable;
+                message = prepared.Error;
+                return false;
+            }
+            int visible = prepared.VisibleMask;
+            var fit = fitStates[prepared.FitIndex];
             if (fit == null || fit.Status != WardrobeFitStatus.Validated)
             { failure = WardrobeFailureCode.FitNotAvailable; message = "No validated fit state for visible layer mask " + visible + "."; return false; }
             if (fit.BodyMesh == null || fit.SurfaceBindings == null || fit.DissolveProfile == null ||
@@ -391,6 +410,52 @@ namespace DazPose.Performer
             { failure = WardrobeFailureCode.MissingAsset; message = "Retained hairstyle is not bound: " + hairKey; return false; }
             selection = new Selection(preset, ceiling, populated, visible, fit, hairKey);
             return true;
+        }
+
+        private string SelectionGenerationId() => catalog == null ? string.Empty :
+            (!string.IsNullOrWhiteSpace(catalog.ReleasedGenerationId) ? catalog.ReleasedGenerationId :
+                !string.IsNullOrWhiteSpace(catalog.CompiledConfigurationHash) ? catalog.CompiledConfigurationHash : "candidate");
+
+        private WardrobeSelection CaptureSelection() => new WardrobeSelection(SelectionGenerationId(),
+            _selectedPreset == null ? string.Empty : _selectedPreset.PresetId, _layerCeiling, _currentHairKey);
+
+        private IReadOnlyList<WardrobePresetSelectionFacts> BuildSelectionFacts()
+        {
+            var result = new List<WardrobePresetSelectionFacts>();
+            foreach (var preset in catalog.Presets)
+            {
+                int validFits = 0;
+                foreach (var fit in preset.FitStates)
+                    if (fit != null && fit.VisibleMask >= 0 && fit.VisibleMask <= WardrobeLayerState.AllLayers && fit.Status == WardrobeFitStatus.Validated)
+                        validFits |= 1 << fit.VisibleMask;
+                string defaultHair = preset.HairAction == WardrobeHairAction.Set ? preset.PresetId + "/" + preset.HairId : string.Empty;
+                result.Add(new WardrobePresetSelectionFacts(preset.PresetId, preset.Aliases, PopulatedMask(preset),
+                    preset.HairAction, defaultHair, validFits));
+            }
+            return result;
+        }
+
+        private IReadOnlyCollection<string> BuildHairKeys() => _pieces.Where(pair => pair.Value.hair)
+            .Select(pair => pair.Key).ToArray();
+
+        private WardrobePreset FindPreset(string id) => string.IsNullOrEmpty(id) ? null :
+            catalog.Presets.FirstOrDefault(p => p != null && string.Equals(p.PresetId, id, StringComparison.Ordinal));
+
+        private static WardrobeFailureCode MapSelectionFailure(WardrobeSelectionFailure failure) => failure switch
+        {
+            WardrobeSelectionFailure.AmbiguousAlias => WardrobeFailureCode.AmbiguousAlias,
+            WardrobeSelectionFailure.UnknownHair => WardrobeFailureCode.MissingAsset,
+            WardrobeSelectionFailure.NoFitForTarget => WardrobeFailureCode.FitNotAvailable,
+            WardrobeSelectionFailure.WrongGeneration => WardrobeFailureCode.NotReleased,
+            _ => WardrobeFailureCode.UnknownPreset
+        };
+
+        private static WardrobeNoChangeReason ResolveNoChangeReason(RequestKind kind, WardrobeState before)
+        {
+            if (kind == RequestKind.Add && before != null && !before.CanAddLayer) return WardrobeNoChangeReason.FullyDressed;
+            if (kind == RequestKind.Remove && before != null && before.VisibleMask == 0) return WardrobeNoChangeReason.AlreadyNaked;
+            if (kind == RequestKind.Outfit && before != null && string.IsNullOrEmpty(before.OutfitId)) return WardrobeNoChangeReason.NoOutfitSelected;
+            return WardrobeNoChangeReason.None;
         }
 
         private static bool MorphsCompatible(Mesh source, Mesh target)
@@ -434,64 +499,36 @@ namespace DazPose.Performer
                     out var snapshotFailure, out string snapshotError))
                     return Failure(before, snapshotFailure, snapshotError);
             }
-            else if (request.kind == RequestKind.Outfit)
-            {
-                if (request.explicitUnclothed)
-                {
-                    nextPreset = null; nextCeiling = -1;
-                }
-                else
-                {
-                    WardrobePreset resolved = null;
-                    string resolveError = null;
-                    if (request.preset == null && !catalog.TryResolve(request.id, out resolved, out resolveError))
-                        return Failure(before, resolveError == "AmbiguousAlias" ? WardrobeFailureCode.AmbiguousAlias :
-                            resolveError == "NotReleased" ? WardrobeFailureCode.NotReleased : WardrobeFailureCode.UnknownPreset, resolveError);
-                    nextPreset = request.preset ?? resolved;
-                    if ((!catalog.IsReleased && !allowCandidatePreview) || !catalog.Presets.Contains(nextPreset))
-                        return Failure(before, WardrobeFailureCode.NotReleased, "Preset is not part of the released catalog.");
-                    if (ReferenceEquals(nextPreset, _selectedPreset) &&
-                        VisibleMask(_selectedPreset, _layerCeiling) == PopulatedMask(_selectedPreset))
-                        return new WardrobeChangeResult(WardrobeChangeStatus.AlreadyEquipped, before, before);
-                    nextCeiling = 2;
-                    if (nextPreset.HairAction == WardrobeHairAction.Set) nextHair = nextPreset.PresetId + "/" + nextPreset.HairId;
-                    else if (nextPreset.HairAction == WardrobeHairAction.Clear) nextHair = null;
-                }
-            }
-            else if (request.kind == RequestKind.Hair)
-            {
-                string requested = (request.id ?? string.Empty).Trim();
-                if (string.Equals(requested, "none", StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(requested, "clear", StringComparison.OrdinalIgnoreCase)) requested = string.Empty;
-                if (!string.IsNullOrEmpty(requested) &&
-                    (!_pieces.TryGetValue(requested, out var hairPiece) || !hairPiece.hair))
-                    return Failure(before, WardrobeFailureCode.MissingAsset, "Hair asset is not in this wardrobe inventory: " + requested);
-                nextHair = requested;
-                if (string.Equals(nextHair, _currentHairKey, StringComparison.Ordinal))
-                    return new WardrobeChangeResult(WardrobeChangeStatus.NoChange, before, before,
-                        noChangeReason: WardrobeNoChangeReason.None);
-            }
-            else if (nextPreset == null)
-            {
-                var none = new WardrobeChangeResult(WardrobeChangeStatus.NoChange, before, before,
-                    noChangeReason: WardrobeNoChangeReason.NoOutfitSelected);
-                return none;
-            }
-            else if (request.kind == RequestKind.Remove)
-            {
-                int currentVisible = VisibleMask(nextPreset, nextCeiling);
-                if (currentVisible == 0)
-                    return new WardrobeChangeResult(WardrobeChangeStatus.NoChange, before, before,
-                        noChangeReason: WardrobeNoChangeReason.AlreadyNaked);
-                nextCeiling = WardrobeLayerState.RemoveHighestCeiling(PopulatedMask(nextPreset), nextCeiling);
-            }
             else
             {
-                int currentVisible = VisibleMask(nextPreset, nextCeiling);
-                if (WardrobeLayerState.IsFullyDressed(PopulatedMask(nextPreset), nextCeiling))
-                    return new WardrobeChangeResult(WardrobeChangeStatus.NoChange, before, before,
-                        noChangeReason: WardrobeNoChangeReason.FullyDressed);
-                nextCeiling = WardrobeLayerState.AddLowestCeiling(PopulatedMask(nextPreset), nextCeiling);
+                if ((!catalog.IsReleased && !allowCandidatePreview) ||
+                    (request.preset != null && !catalog.Presets.Contains(request.preset)))
+                    return Failure(before, WardrobeFailureCode.NotReleased, "Preset is not part of the released catalog.");
+                WardrobeSelectionOperation operation = request.kind switch
+                {
+                    RequestKind.Outfit => WardrobeSelectionOperation.LegacyOutfit,
+                    RequestKind.SetClothing => WardrobeSelectionOperation.SetClothing,
+                    RequestKind.Hair => WardrobeSelectionOperation.SetHair,
+                    RequestKind.Remove => WardrobeSelectionOperation.RemoveLayer,
+                    RequestKind.Add => WardrobeSelectionOperation.AddLayer,
+                    _ => throw new InvalidOperationException("Unsupported wardrobe request kind: " + request.kind)
+                };
+                string requested = request.preset != null ? request.preset.PresetId : request.id;
+                var decision = WardrobeSelectionResolver.Resolve(CaptureSelection(), SelectionGenerationId(),
+                    _selectionFacts, _hairKeys, operation, requested);
+                if (decision.Disposition == WardrobeSelectionDisposition.Failed)
+                {
+                    if (decision.Failure == WardrobeSelectionFailure.NoOutfitSelected)
+                        return new WardrobeChangeResult(WardrobeChangeStatus.NoChange, before, before,
+                            noChangeReason: WardrobeNoChangeReason.NoOutfitSelected);
+                    return Failure(before, MapSelectionFailure(decision.Failure), decision.Message);
+                }
+                if (decision.Disposition == WardrobeSelectionDisposition.NoChange)
+                    return new WardrobeChangeResult(decision.Message == "AlreadyEquipped" ? WardrobeChangeStatus.AlreadyEquipped : WardrobeChangeStatus.NoChange,
+                        before, before, noChangeReason: ResolveNoChangeReason(request.kind, before));
+                nextPreset = FindPreset(decision.Target.PresetId);
+                nextCeiling = decision.Target.LayerCeiling;
+                nextHair = string.IsNullOrEmpty(decision.Target.HairKey) ? null : decision.Target.HairKey;
             }
 
             WardrobeFitState targetFit;
@@ -525,46 +562,54 @@ namespace DazPose.Performer
             Mesh priorMesh = body.sharedMesh;
             var weights = CaptureMorphs();
             var priorVisible = _inventory.Select(p => p.inventory.visible).ToArray();
+            int priorConfigurationRevision = _lastConfigurationRevision;
+            var anatomy = performer != null ? performer.GetComponent<LaraAnatomyControls>() : null;
             try
             {
-                body.sharedMesh = targetFit.BodyMesh;
-                RestoreMorphs(weights);
-                var anatomy = performer != null ? performer.GetComponent<LaraAnatomyControls>() : null;
-                anatomy?.RebindPreservingValues(body);
-                if (performer == null) throw new InvalidOperationException("Performer dissolve binding is unavailable.");
-                if (!performer.TrySetWardrobeEffectProfile(targetFit.DissolveProfile,
-                    targetFit.SurfaceBindings, request.transitionOwner, out string effectError))
-                    throw new InvalidOperationException(effectError ?? "Performer dissolve binding is unavailable.");
-                var sourceFootwear = target.Preset != null ? target.Preset.Footwear : null;
-                _footwearDriver ??= GetComponent<FootwearPoseDriver>() ?? gameObject.AddComponent<FootwearPoseDriver>();
-                if (!_footwearDriver.Configure(body, sourceFootwear, targetFit.Footwear, out string fitError))
-                    throw new InvalidOperationException(fitError);
-                _selectedPreset = target.Preset; _layerCeiling = target.Ceiling; _currentHairKey = target.HairKey;
-                _currentFit = targetFit;
-                ApplyRendererVisibility(target.Visible, target.Preset, target.HairKey);
-                _lastConfigurationRevision = target.Preset == null ? 0 : catalog.IsReleased ? target.Preset.ConfigurationRevision :
-                    (_resolved.TryGetValue(target.Preset.PresetId, out var snapshot) ? snapshot.ConfigurationRevision : target.Preset.ConfigurationRevision);
+                WardrobeAtomicCommit.Execute(new[]
+                {
+                    new WardrobeAtomicCommit.Step("body mesh and morphs", () => {
+                        body.sharedMesh = targetFit.BodyMesh; RestoreMorphs(weights); anatomy?.RebindPreservingValues(body);
+                    }, () => { body.sharedMesh = priorMesh; RestoreMorphs(weights); anatomy?.RebindPreservingValues(body); }),
+                    new WardrobeAtomicCommit.Step("effect profile", () => {
+                        if (performer == null) throw new InvalidOperationException("Performer dissolve binding is unavailable.");
+                        if (!performer.TrySetWardrobeEffectProfile(targetFit.DissolveProfile, targetFit.SurfaceBindings,
+                            request.transitionOwner, out string effectError))
+                            throw new InvalidOperationException(effectError ?? "Performer dissolve binding is unavailable.");
+                    }, () => {
+                        if (priorFit != null && performer != null)
+                            performer.TrySetWardrobeEffectProfile(priorFit.DissolveProfile, priorFit.SurfaceBindings, request.transitionOwner, out _);
+                    }),
+                    new WardrobeAtomicCommit.Step("footwear profile", () => {
+                        var sourceFootwear = target.Preset != null ? target.Preset.Footwear : null;
+                        _footwearDriver ??= GetComponent<FootwearPoseDriver>() ?? gameObject.AddComponent<FootwearPoseDriver>();
+                        if (!_footwearDriver.Configure(body, sourceFootwear, targetFit.Footwear, out string fitError))
+                            throw new InvalidOperationException(fitError);
+                    }, () => {
+                        if (_footwearDriver != null)
+                            _footwearDriver.Configure(body, priorPreset != null ? priorPreset.Footwear : null,
+                                priorFit != null ? priorFit.Footwear : null, out _);
+                    }),
+                    new WardrobeAtomicCommit.Step("selection and visibility", () => {
+                        _selectedPreset = target.Preset; _layerCeiling = target.Ceiling; _currentHairKey = target.HairKey;
+                        _currentFit = targetFit;
+                        ApplyRendererVisibility(target.Visible, target.Preset, target.HairKey);
+                        _lastConfigurationRevision = target.Preset == null ? 0 : catalog.IsReleased ? target.Preset.ConfigurationRevision :
+                            (_resolved.TryGetValue(target.Preset.PresetId, out var snapshot) ? snapshot.ConfigurationRevision : target.Preset.ConfigurationRevision);
+                        WardrobeChanged?.Invoke(BuildState(false));
+                    }, () => {
+                        _selectedPreset = priorPreset; _currentFit = priorFit; _layerCeiling = priorCeiling; _currentHairKey = priorHair;
+                        _lastConfigurationRevision = priorConfigurationRevision;
+                        for (int i = 0; i < _inventory.Length && i < priorVisible.Length; ++i)
+                        { var piece = _inventory[i]; piece.inventory.visible = priorVisible[i]; _inventory[i] = piece; }
+                        ApplyRendererVisibility(VisibleMask(priorPreset, priorCeiling), priorPreset, priorHair);
+                    })
+                });
                 var after = BuildState(false);
-                WardrobeChanged?.Invoke(after);
                 return new WardrobeChangeResult(WardrobeChangeStatus.Applied, before, after);
             }
             catch (Exception exception)
             {
-                body.sharedMesh = priorMesh;
-                RestoreMorphs(weights);
-                var anatomy = performer != null ? performer.GetComponent<LaraAnatomyControls>() : null;
-                anatomy?.RebindPreservingValues(body);
-                _selectedPreset = priorPreset; _currentFit = priorFit;
-                _layerCeiling = priorCeiling; _currentHairKey = priorHair;
-                for (int i = 0; i < _inventory.Length && i < priorVisible.Length; ++i)
-                { var p = _inventory[i]; p.inventory.visible = priorVisible[i]; _inventory[i] = p; }
-                ApplyRendererVisibility(VisibleMask(priorPreset, priorCeiling), priorPreset, priorHair);
-                if (priorFit != null && performer != null)
-                    performer.TrySetWardrobeEffectProfile(priorFit.DissolveProfile, priorFit.SurfaceBindings,
-                        request.transitionOwner, out _);
-                if (_footwearDriver != null)
-                    _footwearDriver.Configure(body, priorPreset != null ? priorPreset.Footwear : null,
-                        priorFit != null ? priorFit.Footwear : null, out _);
                 Debug.LogException(exception, this);
                 return Failure(before, WardrobeFailureCode.EffectRebindFailed, exception.Message);
             }
@@ -889,6 +934,13 @@ namespace DazPose.Performer
         {
             var source = new AwaitableCompletionSource<WardrobeChangeResult>();
             Enqueue(new Request { kind = RequestKind.Outfit, preset = preset, transition = transition, complete = result => source.TrySetResult(result) });
+            return source.Awaitable;
+        }
+        public Awaitable<WardrobeChangeResult> SetOutfitAsync(WardrobePreset preset, WardrobeTransition transition = default)
+        {
+            var source = new AwaitableCompletionSource<WardrobeChangeResult>();
+            Enqueue(new Request { kind = RequestKind.SetClothing, preset = preset, transition = transition,
+                complete = result => source.TrySetResult(result) });
             return source.Awaitable;
         }
         public Awaitable<WardrobeChangeResult> OutfitAsync(string presetId, WardrobeTransition transition = default)

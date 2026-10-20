@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packet": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/START_HERE.md",
+  "preparedDate": "2026-10-19",
+  "sourceBaseline": "110e2b4",
+  "branch": "main",
+  "status": "IN_PROGRESS",
+  "executionAuthorized": true,
+  "authorization": {"evidence":"Art said Continue after the execution packet was prepared.","date":"2026-10-20"},
+  "currentTicket": "W02",
+  "nextTicket": "W02",
+  "tickets": [
+    {"id":"W00","status":"COMPLETE","dependencies":[],"evidence":["evidence/baseline.json","WRITER_COVERAGE.md"]},
+    {"id":"W01","status":"COMPLETE","dependencies":["W00"],"evidence":["evidence/checks.json"]},
+    {"id":"W02","status":"IN_PROGRESS","dependencies":["W01"],"evidence":[],"nativeGate":"A"},
+    {"id":"W03","status":"NOT_STARTED","dependencies":["W02_SOURCE_READY"],"evidence":[],"nativeGate":"A"},
+    {"id":"W04","status":"NOT_STARTED","dependencies":["A_PASS"],"evidence":[]},
+    {"id":"W05","status":"NOT_STARTED","dependencies":["W04"],"evidence":[]},
+    {"id":"W06","status":"NOT_STARTED","dependencies":["W05"],"evidence":[]},
+    {"id":"W07","status":"NOT_STARTED","dependencies":["W06"],"evidence":[],"nativeGate":"B"},
+    {"id":"W08","status":"NOT_STARTED","dependencies":["B_PASS"],"evidence":[],"nativeGate":"C"},
+    {"id":"W09","status":"NOT_STARTED","dependencies":["C_PASS"],"evidence":[],"nativeGate":"D"}
+  ],
+  "gates": {
+    "A":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]},
+    "B":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]},
+    "C":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]},
+    "D":{"status":"NOT_READY","revision":null,"nativeEvidence":null,"artResponse":null,"acceptedCases":[],"notRunCases":[],"invalidations":[]}
+  },
+  "implementationChecks": {"status":"NOT_RUN","reason":"Documentation-only packet preparation; implementation not authorized or started.","evidence":[]},
+  "oldReleasedGeneration":"70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb",
+  "newReleasedGeneration":null,
+  "productionAppearanceAdvanced":false,
+  "nativeOperationByExecutor":false,
+  "remoteWrite":false,
+  "blockers":[]
+}

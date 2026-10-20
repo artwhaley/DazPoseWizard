@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "packetStatus": "PREPARED_AWAITING_EXECUTION_AUTHORIZATION",
+  "sourceRevision": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
+  "hashAlgorithm": "SHA-256",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/wardrobe-directing/IMPLEMENTATION_PLAN.md",
+      "sha256": "bc6a0a617a1556db0663740cda802e13898d7fcd2e92989b187c17416b67d260",
+      "bytes": 46019
+    },
+    {
+      "path": "docs/wardrobe-directing/IMPLEMENTATION_REPORT.md",
+      "sha256": "4b7fbe40f71a0740f74cdcf2f6f7ff6f0c8a5ab79d30dad9a595e57cfcef08c3",
+      "bytes": 2588
+    },
+    {
+      "path": "docs/wardrobe-directing/WRITER_COVERAGE.md",
+      "sha256": "4c5ced47071ebf560e7cc9446a04a0bd511b4a9b1a49fa51243e7796193888eb",
+      "bytes": 3727
+    },
+    {
+      "path": "docs/wardrobe-directing/evidence/PACKET_PREPARATION_REVIEW.md",
+      "sha256": "16e50a869dc92e4d8c65427d49a020cd55e0b472612f68895207211d49387fcd",
+      "bytes": 3819
+    },
+    {
+      "path": "docs/wardrobe-directing/evidence/README.md",
+      "sha256": "8d320d3b83e333bb04e8c6b4dc63a0385f191c27212cdda390241d8c1e81a620",
+      "bytes": 538
+    },
+    {
+      "path": "docs/wardrobe-directing/evidence/packet-preparation-integrity.json",
+      "sha256": "6394db9bb8b60aa0014ae5df52e7b1ccf324b7844462434207adea532cf6f835",
+      "bytes": 435
+    },
+    {
+      "path": "docs/wardrobe-directing/progress.json",
+      "sha256": "36d89867407fdbcb5291de182c3b9874827c2e2dc25f9a92b97c46e92908f472",
+      "bytes": 2232
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/API_AND_OWNERSHIP.md",
+      "sha256": "9a0838ad802cf5a283a84cbd26804726b45a46dd0e428bf9f25b6d299de3d9f7",
+      "bytes": 27095
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/CHECKS.md",
+      "sha256": "63b4b404941b22c7aeb392400fe2f7b1ce2bdd822bec8bd839c3ee9fd57ff0ae",
+      "bytes": 13868
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/CONTRACT.md",
+      "sha256": "b40a9bb56388b8d318eb5472947556ad116367de3da7d9d56efc6c717d02307d",
+      "bytes": 8025
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/EXECUTOR_PROMPT.md",
+      "sha256": "fd30ab66a272688225018b0bb44b459109f3d6190737bb2a66f9de7b2af228ba",
+      "bytes": 5351
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/MANUAL_GATE_PROTOCOL.md",
+      "sha256": "6a47e0a5eac81bd68c9d40bb0d99fdaea9d2ec5a00c5ccfae452837efc6b1a7a",
+      "bytes": 15135
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/ORDER.md",
+      "sha256": "12f30871d70189201fcd1f08ae2db4a25a63814a9e7b453fc1254a6c751a3bdf",
+      "bytes": 3054
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/START_HERE.md",
+      "sha256": "f21af2aa0bb468be4e80519960c0cef3cfd640588546c97e1adfc986b2416295",
+      "bytes": 4050
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/templates/GATE_HANDOFF.md",
+      "sha256": "126505e5bd25c23bc5b4959aaf5b26ee1d3388840496726562f755917be797e3",
+      "bytes": 943
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/templates/PRODUCTION_PROPERTY_DIFF.md",
+      "sha256": "501bc46ed6b37f7e59e1f8bdaf60e20a64021fd92744837a56aed3d9a568b889",
+      "bytes": 1473
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W00_BASELINE.md",
+      "sha256": "b2b97fa2c7ad9546319a33d1b35bbbfb0c562402ec64d933ed7fe698c25bb465",
+      "bytes": 2222
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W01_SHARED_SELECTION.md",
+      "sha256": "4d2fbaf09a0eb4c723af2b9e402463becdb4b7f5297f1db7bf04ec282f94b328",
+      "bytes": 2259
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W02_REUSABLE_ASSETS.md",
+      "sha256": "c67cf3088abce6eb9ea0b051f111b15af81cf3a19c4cd27a1dd31ad882dba5b6",
+      "bytes": 2761
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W03_RELEASE_AND_GATE_A.md",
+      "sha256": "be45b3d12af9805389c15d34442989a0d30518b43ea902cf5e15be5d77ac5e1b",
+      "bytes": 2609
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W04_PLAYABLE_SEQUENCES.md",
+      "sha256": "4881964ff60acdd66c92ea64f5e8765846299eeddf8faddb69035e6b6deb6882",
+      "bytes": 2032
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W05_WARDROBE_VOCABULARY.md",
+      "sha256": "ac3807b186bc21069d5152c08298f875233c3b7eae4af06546b865873a632dc1",
+      "bytes": 2060
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W06_SNAPSHOTS_AND_SCOPES.md",
+      "sha256": "72ca1b1d58d2a269738e07f5ad37cad92f2a81fe528aa9cb259474e7ca3c874f",
+      "bytes": 2787
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W07_CARD_RETURN_AND_GATE_B.md",
+      "sha256": "429d8f35da4c3cfb924484869b6c7d7d4cedd2502e9cd1a74c71ce7a9c06ead1",
+      "bytes": 2415
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W08_STUDIO_AND_GATE_C.md",
+      "sha256": "74b3879881a8ec66137cd4a22488345e2e7cf915c4490f6f41367cf5ce6810f1",
+      "bytes": 2981
+    },
+    {
+      "path": "newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/tickets/W09_FIRST_CONTACT_AND_GATE_D.md",
+      "sha256": "700fbe8f6ec97ce52489a5da9ce078518d385c9fa91228461a72271f1925267f",
+      "bytes": 2649
+    }
+  ]
+}

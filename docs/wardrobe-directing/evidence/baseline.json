@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 1,
+  "capturedUtc": "2026-10-20T08:03:19.9591581Z",
+  "branch": "main",
+  "head": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
+  "baselineGeneration": "70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb",
+  "firstOutfitBaselineMapping": {
+    "releasedPresetPath": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit/Preset.asset",
+    "releasedLayerOrder": [{"sourcePieceId":"CharlenesCloset_Panty_1981","layer":2},{"sourcePieceId":"PeekaBoo_16572","layer":1}],
+    "candidateGeneration": "b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553",
+    "candidateLayerOrderAlsoWrong": true,
+    "requiredCorrectedLayerMeaning": {"dress":{"sourcePieceId":"PeekaBoo_16572","layer":2},"panties":{"sourcePieceId":"CharlenesCloset_Panty_1981","layer":1}},
+    "fitMeaning": {"full":"both populated layers at ceiling 2","dressOnly":"dress layer 2 at ceiling 2, panties layer 1 hidden","naked":"ceiling -1 while retaining selected preset for AddLayer"},
+    "catalogReleasedGenerationIdFieldAtBaseline":"empty; runtime package generation directories are separately versioned"
+  },
+  "identities": {
+    "laraPrefabGuid": "91a9b9576df9bc249b23f61c5fa7038f",
+    "playerBodyPrefabGuid": "b7ec3b0162e17284db24a9b4ffc477d0",
+    "firstContactSceneGuid": "4fd2d2bc3572c1744a590a23e4e117c9",
+    "voidEnvironmentGuid": "be93ce3fd47309046b62e64ff4e55eee",
+    "firstContactProgramGuid": "0617ee0beddae85448f0eefd1a7e3049",
+    "firstContactBindingsGuid": "5215878eee83b3c46ae30d0690f00fdd",
+    "globalCardCatalogFingerprint": "e3ad5bcfde7d9f03e56a811a93cae7ee35cdaa59015259e7e6a2ffa58e2d4fd5",
+    "globalCardSourceCount": 1
+  },
+  "publishedSourceMembership": [
+    "Assets/Production/Story/Cards/FirstContactEngineering.dazstory"
+  ],
+  "firstContactDialogue": {
+    "count": 19,
+    "items": [
+      {
+        "id": "dialogue:eec70a38ba9e5e0539d420b21b86871ccda9083d63212e7df37796d6a4822480",
+        "index": 1,
+        "transcript": "Hi there. I was hoping you were brave enough to meet me.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_01_Intro_BraveEnough.wav",
+        "sha256": "fdea8fb1c939d396d20ef13abfd638416022cbfecc810ef80b6f70671877ad02"
+      },
+      {
+        "id": "dialogue:fa46c48a4c46fd184ce1a59a52ff0b8eced1f6f74e8068a34c5c581aa5fc4c67",
+        "index": 2,
+        "transcript": "I'm Lara. I'm a digital hallucination.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_02_Intro_DigitalHallucination.wav",
+        "sha256": "fb6c14250b07b860183118d861a40298281cd6953be4921a16a8dfc347ac713a"
+      },
+      {
+        "id": "dialogue:8903bad7f2e7f454c60ec70764a890d8820e0b56b453e653f9105c2f2fd90507",
+        "index": 3,
+        "transcript": "Well, more than a hallucination. A bit of a... projection. An intrusion? (giggles) I like that one. Intrusion.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_03_Intro_Intrusion.wav",
+        "sha256": "76d8b7ae223172257d19a3eeb7313e53839cf563f4a3ea04b1ab303ed362ee61"
+      },
+      {
+        "id": "dialogue:f8b55ddbaa527c7f4a06e5eccbcdbbbc8ae76bce5bb690d1ed0c00c33de86d84",
+        "index": 4,
+        "transcript": "I'm the most fun you've ever had. But I come with... conditions.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_04_Intro_Conditions.wav",
+        "sha256": "51759450f056bacebc7d4d57a215c26a1ef82c74449bb0fb219e40a64a9f9301"
+      },
+      {
+        "id": "dialogue:3532947e8c4c89b969bb7098d0e4ea314affc33b584eb529c99c867c020104aa",
+        "index": 5,
+        "transcript": "I can only give you pleasure if I have the power to do so. The more you give up to me, the more I can do for you. Let's see what you're giving up, tonight.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_05_Intro_ControlBargain.wav",
+        "sha256": "2a3f890df4527611bfe0b8543dab4c05c77d6e93ae54c716967683dee4bad79a"
+      },
+      {
+        "id": "dialogue:a31e67d1d242a517ea991955985c0bffc320ffb723e9993125ce4e222e8ed172",
+        "index": 6,
+        "transcript": "Not bad for a start.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_06_Setup_NotBad.wav",
+        "sha256": "386c9ece4824cd52e4f3204062aeac170dba6a5d898714bc9c0f42cb03c6ad84"
+      },
+      {
+        "id": "dialogue:9a0767c9e5e6d57eaa147f30fb0fbb7c9b9e3d7ea696a8102b1ccb7ab47f4384",
+        "index": 7,
+        "transcript": "This is your submission score. The more activities you consent to, the higher it goes, but... I don't want you bending past your real limits. Honesty is important. But...(giggles) so's letting me try new things. So next time we start a scene... look for things you're willing to try for me and let me know if you come up with any.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_07_Setup_SubmissionScore.wav",
+        "sha256": "5fe7f0bbf3b54423e231f9e10845412793cf369376df88ea86d5f7280fdc1d7e"
+      },
+      {
+        "id": "dialogue:ed13cc210d45dc15e01dc276ebe226fb63cf25e4c54c4a830fb159a8ef325df1",
+        "index": 8,
+        "transcript": "Now let's look at your equipment...(giggles) Not that equipment, yet.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_08_Setup_Equipment.wav",
+        "sha256": "caaab52f09f1c9a714b09e7d0cf06a2036da6af79545ffa4fafb823a69c20020"
+      },
+      {
+        "id": "dialogue:6b35307084bcc03453d78eca45994aa9b2ebd884af15e869a8f8965aef12ed48",
+        "index": 9,
+        "transcript": "And finally, tell me what you're wearing....",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_09_Setup_Clothing.wav",
+        "sha256": "6abc6450927c80b29606cfbeac6e09142f284bca529ed5a6ff9ca4ab8b5474a6"
+      },
+      {
+        "id": "dialogue:a2da4644f43872c42ababc3faafb00bc5f59c460d8ad619a4d4fe72dd3287af9",
+        "index": 10,
+        "transcript": "Now that's a go-getter. The less you wear to our sessions, the better.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_10_Clothing_Naked.wav",
+        "sha256": "be1c2f3000660f8e20a7f81ea9761cd2e42b992ef0fe1ed7decdabd4fb1da8e2"
+      },
+      {
+        "id": "dialogue:2d353b980d4faaba8f3a6e8544277684b00611133f8e258ed6b3005cc3a11b1a",
+        "index": 11,
+        "transcript": "I like you naked, but I can wait to get you there...",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_11_Clothing_OneOrTwo.wav",
+        "sha256": "4c631075e0e04789e3a703a86e4483beb3490831a5a3939600a1b860b1b6a008"
+      },
+      {
+        "id": "dialogue:1eff8d34806c7afa1ed18afe7d74c157bdb8ffc9d03c9583497229bc98ec5cd0",
+        "index": 12,
+        "transcript": "That's way too dressed. The fewer you wear the happier I am. In fact... take one off now.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_12_Clothing_TooDressed.wav",
+        "sha256": "8a256473a014ef70872fdd93f818318f955094281cfb89fdd3056a78d7cbb51c"
+      },
+      {
+        "id": "dialogue:5808e8bf8f569555b089c738f69a1ed115838a755273105006ad007b78614719",
+        "index": 13,
+        "transcript": "Alright, let's get you warmed up.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_13_Warmup_Start.wav",
+        "sha256": "1495fc4f2888632417eb2d3d4dcd630ed5e1760200bf3bf949272b0dafc254c5"
+      },
+      {
+        "id": "dialogue:1b4f4776f18b9dc697d55dc3b03525fc48594bc079dd1b085f98d8289bbb00a2",
+        "index": 14,
+        "transcript": "I think it's time to lose the rest of the clothes... do that and tell me when you're back.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_14_Warmup_RemoveRest.wav",
+        "sha256": "c46d3a46e435f65f3100573326104209c4ab0501dffc4581f36eeb70057e98ed"
+      },
+      {
+        "id": "dialogue:4813b6225ba5c47d9e29c552beeb572872df08a9958c17ad621093d71684ce72",
+        "index": 15,
+        "transcript": "That was all the warmup I'm going to give you. Now let's get down to business.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_15_Main_Start.wav",
+        "sha256": "1022d331c9a117e8be8b4d8e0c8243db39280f850e75b2fc2457e4255cf8b9a2"
+      },
+      {
+        "id": "dialogue:1dd1d72ffbadaa33a2ce75dfab76ce9004e379e5b48bac085c75cbda0687fa6d",
+        "index": 16,
+        "transcript": "I'm amused enough, I suppose. And since this is your first time, I'm not going to frustrate you... or even make you beg. I'm just going to make you cum.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_16_Climax_Start.wav",
+        "sha256": "bbc140ddc6cadf7aaf545d927fddbbee5bdb166a3fc95d3075e002bbc200b784"
+      },
+      {
+        "id": "dialogue:e743274fcdd56ce6aa95572b33e917f49fc42ad33a11b3d1e01866b557e2617b",
+        "index": 17,
+        "transcript": "*giggles* Well, you seem to understand the assignment. Some times you're going to have to work for it. Some times you may have to work and not even get it then. It all depends on my mood, and how much you decide to trust me.",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_17_Resolution_Assignment.wav",
+        "sha256": "b11e6ad7a35da3c442075f629e58d07167a310f27347d778821f8859d57d20ed"
+      },
+      {
+        "id": "dialogue:7b5488f0b0337a9170591f660acad8fd145ee410eeeecfeeb12d9788627463d9",
+        "index": 18,
+        "transcript": "Now, how am I going to keep you thinking about me until our next session?",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_18_Resolution_ThinkingAboutMe.wav",
+        "sha256": "cb7a08a47ce4cd275c6225306365f23255e3d071b05a34084dcb5a31faa57962"
+      },
+      {
+        "id": "dialogue:fd2d57a95269c819d7a391e54f7d9c333d8c7447e2d913f1440a87e5f99b9abf",
+        "index": 19,
+        "transcript": "Alright, that's our session for tonight. Until next time... behave. Or don't. I get off either way. *giggles* Bye!",
+        "file": "validation/DazPoseUnityValidation/Assets/Production/Story/Audio/Placeholder/FirstContact/D8_19_Resolution_Goodbye.wav",
+        "sha256": "85a6cb81ac4ffddd06ab54a49186db87b47b2a2d10b1d6d150a370693654c780"
+      }
+    ]
+  },
+  "plannedProductionExceptions": [
+    {
+      "asset": "Assets/Production/Performers/Lara.prefab",
+      "propertyPath": "WardrobeRigBinding reference / reusable rig mount",
+      "ticket": "W09",
+      "status": "PLANNED_ONLY"
+    },
+    {
+      "asset": "Assets/Production/Story/Programs/FirstContact.dazstory",
+      "propertyPath": "Intro declaration card -> sequence",
+      "ticket": "W04",
+      "status": "PLANNED_ONLY"
+    },
+    {
+      "asset": "Assets/Production/Story/Programs/FirstContact.bindings.asset",
+      "propertyPath": "wardrobe/hair source-owned binding rows",
+      "ticket": "W09",
+      "status": "PLANNED_ONLY"
+    }
+  ],
+  "protectedFileHashes": [
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Environments/VoidEnvironment.unity",
+      "sha256": "b01ce9894f508ce35e288be1730244a6fcd2d4dda1a470f657308d490072900f",
+      "bytes": 589856
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Environments/VoidEnvironment.unity.meta",
+      "sha256": "0d6ed339932f6014bbd0023f2d8d3b413618326f9f7114f8e0244368df01a8b7",
+      "bytes": 162
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Performers/Lara.prefab",
+      "sha256": "0fd83904d9b1985c40f8841f25211b88507dda83dbd0f7571ba4d2e26e49cb06",
+      "bytes": 299710
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Performers/Lara.prefab.meta",
+      "sha256": "79f6a5819aae9738414b9f693518b79312003c43317e207c16789deb5d01d3d8",
+      "bytes": 154
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Player/PlayerBody.prefab",
+      "sha256": "2c13b812b5cb3a153242083c14d9a73de19f974cda2573f9211586ba43349ff5",
+      "bytes": 13211
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Player/PlayerBody.prefab.meta",
+      "sha256": "876d2e7fc145d6c55684900e0b9c095c026ed88ef616f9091cd3a9fa0d012052",
+      "bytes": 161
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Scenes/FirstContact.unity",
+      "sha256": "3aba29a644fd0027bf4d6a58e350e61e329bf5d74c25eb6051b03c37dfa51dc0",
+      "bytes": 600631
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Scenes/FirstContact.unity.meta",
+      "sha256": "38208e8c69dfc2734f4b2e750817c5910b5f2869d4b303cc51a567aa0e3da131",
+      "bytes": 162
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/FirstContactMarks.prefab",
+      "sha256": "b7a8d7d6a095be37d43eafe7cec799283ceb36752f3de5b993c576ca2e32a27e",
+      "bytes": 6588
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/FirstContactMarks.prefab.meta",
+      "sha256": "55a093279ae14c7541005f7956371c85b0ed6346f428f0b3e513f4455f789d23",
+      "bytes": 161
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.bindings.asset",
+      "sha256": "272edbfafeb2b44c039a8e4a4500813375e84698f1f086fafa890303846b762b",
+      "bytes": 7908
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.bindings.asset.meta",
+      "sha256": "b9a00ac8c16d24563effb5559af538a89e27dd0ae0a5198cb3074e05675fb95b",
+      "bytes": 189
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory",
+      "sha256": "9a4213b08f0234e6627c40fee004a1ff98cd474cf28aae6c082c1c937985f924",
+      "bytes": 5757
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory.meta",
+      "sha256": "530b66b83c6aae4805a522a860f89a40e398b43c05405998ffae46ccb0683de5",
+      "bytes": 155
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dialogue-map.json",
+      "sha256": "768506f16081d8f60d704d63f024a235952ff38525545aaadedcf1224a391517",
+      "bytes": 5745
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dialogue-map.json.meta",
+      "sha256": "2f2d68d0f1ba5a80a45fa234076a7e4b0c86183caa3f0a27ae25dc161b0753a3",
+      "bytes": 158
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Resources/DazPose/GlobalStoryCards.asset",
+      "sha256": "e744222da6a5d98490dc4f6f808afc2efaa80b863e11103ca4afa8ff13ce8fa8",
+      "bytes": 651
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Resources/DazPose/GlobalStoryCards.asset.meta",
+      "sha256": "ecf66a0e9752cbebfc5bde24b8c3937534b99c2ddf0f6a97cefe58f650318b68",
+      "bytes": 189
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb.meta",
+      "sha256": "d5cdccccf99599fbe8a5694c93a629a68ac820a9b4e3827f132a6241f55fc126",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets.meta",
+      "sha256": "7bb0b17bd964e2e62f96d70f90757a2fc6c054e7b2833d1021e9d97b1f622528",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit.meta",
+      "sha256": "632622dfee46004457531b0e5c16454541b1abeed94b120aeeaea38287ba20e8",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit/Preset.asset",
+      "sha256": "5759694b03ffbceb658caf68b9dab3640d191057a4255e19d9f9eb5e8368e950",
+      "bytes": 1219
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/first-outfit/Preset.asset.meta",
+      "sha256": "d2e0551d6f2990b0aae18537847443757fb4c3a8c16c0a89be1fb28d7770d91f",
+      "bytes": 189
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit.meta",
+      "sha256": "b06ec7150e8b559d3a7198d37deed1659510db1f02d816d77c2e34af887ee7d0",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit/Preset.asset",
+      "sha256": "55972da5850b0fd0d4a56b398f6c9f45710dad05ea8c81c26a260c2818ad3a3d",
+      "bytes": 2430
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/second-outfit/Preset.asset.meta",
+      "sha256": "8949439510a1300341407444bb0181b20e5e266b7d656eb075be920f6e6b2a5e",
+      "bytes": 189
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit.meta",
+      "sha256": "7da45d55b368591fbd3b762bb17d93b163e178486750489c1c55c7c2f5af66ea",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit/Preset.asset",
+      "sha256": "83bafc73be7c12801e27b62244f4f7581c926573d6b34e4b7921b23cbb7b9e7f",
+      "bytes": 1316
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/70b0e228678e8bcd56e967d03d5bef45f63861ce4dabe6dd261afb48e14bbceb/Presets/third-outfit/Preset.asset.meta",
+      "sha256": "433d248ff0aafed4c1c58f73d1a65d5e4f248116dead40f170de16dcbaabf9e9",
+      "bytes": 189
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553.meta",
+      "sha256": "34d5b44b459fccd96d1d30cb2d8db569fe6fb9595a8fa0393f8728cd29811d07",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets.meta",
+      "sha256": "6ae8a6796719428a3d50606422b933f577744e68fdb732f0de410889f082c48c",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit.meta",
+      "sha256": "d327fd2bba5138d3aa70f0b1af4657fa5bee3fae6c8f1dbab252141680919cc3",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit/Preset.asset",
+      "sha256": "eeeda77f0ad2f5043416a4df3c71b8ec4f5dd84cdf57f683cde7ce83a9c27965",
+      "bytes": 1219
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/first-outfit/Preset.asset.meta",
+      "sha256": "4306bc999d307eb0f8a1f4c396dfa774bba6910898c8d5bf2b147e1fe33547e9",
+      "bytes": 189
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit.meta",
+      "sha256": "dab2c0dc874439c84205c6fde018fa2f6d8143c8daf37b8012521d5ffe23a0d9",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit/Preset.asset",
+      "sha256": "d87524619c062fcaf50b0759653f5190e5c293791b8848b4a963ea3adeafbb32",
+      "bytes": 2430
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/second-outfit/Preset.asset.meta",
+      "sha256": "baa59c4bff90348ac5cbf671b012526c6f34443f4ba19b896f2290b97defba96",
+      "bytes": 189
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit.meta",
+      "sha256": "8f1d183d28bf36a4fa576cb317d00bde996065951b38574b1a6777e60406e554",
+      "bytes": 172
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit/Preset.asset",
+      "sha256": "910dc59f84e42e704201fb9a47ba936c7c908cc285d200ed09dfb4842d306bdd",
+      "bytes": 1460
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/Releases/b5a428d8db52571f30f20a46f06460672d94b111bdfccc281e4e8100234df553/Presets/third-outfit/Preset.asset.meta",
+      "sha256": "604e4974a8ce88a5ff0b83d6b1c11d81d68ab9dc9a3e885d136df3ea180ce4f8",
+      "bytes": 189
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/WardrobeCatalog.asset",
+      "sha256": "e301c3fb8668f7e5c042e36f06eac27ffadbe8758652104476acc12042ebbe5c",
+      "bytes": 931
+    },
+    {
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe/WardrobeConfiguration.asset",
+      "sha256": "9b3fd745043d7c7ccd4334b85cc1fbaea7620c953a5b9777c9b49e3b97b7237d",
+      "bytes": 2717
+    }
+  ],
+  "unrelatedExistingChanges": [
+    "newtickets to oldtickets archival deletions and moves (pre-existing)",
+    "untracked .codex-remote-attachments directory (pre-existing)"
+  ]
+}

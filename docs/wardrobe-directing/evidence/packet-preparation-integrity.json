@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "kind": "documentation_integrity_only",
+  "checkedAtUtc": "2026-10-20T04:55:25.249752+00:00",
+  "sourceRevision": "110e2b4aef1422f0739cb8ca4d370cb4792c1ec2",
+  "markdownDocuments": 24,
+  "relativeLinksChecked": 25,
+  "tickets": 10,
+  "gates": 4,
+  "plannedCheckCases": 61,
+  "implementationChecksRun": false,
+  "nativeOperationsRun": false,
+  "implementationPathsChanged": [],
+  "errors": []
+}
