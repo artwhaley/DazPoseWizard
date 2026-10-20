@@ -147,7 +147,7 @@ namespace DazPose.UnityValidation
         {
             try
             {
-                gateScenePath = WardrobeProtectedCardsFixtureBuilder.CreateGateAScene(catalog, manifest);
+                gateScenePath = WardrobeProtectedCardsFixtureBuilder.CreateGateAScene(catalog, manifest, productionCatalog.ReleasedGenerationId);
                 report = "Gate A scene saved: " + gateScenePath + "\nClick Open Gate A scene, then enter Play yourself. The Appearance Gate panel is saved in the scene.";
             }
             catch (System.Exception error) { report = "Gate A scene creation stopped: " + error; }

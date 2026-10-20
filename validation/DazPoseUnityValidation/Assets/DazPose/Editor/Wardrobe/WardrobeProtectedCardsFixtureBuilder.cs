@@ -16,7 +16,7 @@ namespace DazPose.UnityValidation
     {
         public const string SourceScene = "Assets/Production/Scenes/FirstContact.unity";
         public const string GateAScene = "Assets/__WardrobeProtectedCards/Scenes/GateA_Appearance.unity";
-        public static string CreateGateAScene(WardrobeCatalog catalog, WardrobeRigManifest manifest)
+        public static string CreateGateAScene(WardrobeCatalog catalog, WardrobeRigManifest manifest, string previousGeneration)
         {
             if (catalog == null || !catalog.IsReleased || manifest == null)
                 throw new InvalidOperationException("Gate A requires the staged released wardrobe catalog and its generated rig manifest.");
@@ -60,7 +60,7 @@ namespace DazPose.UnityValidation
                 var rigRows = manifest.Clothing.Select(x => x.prefab).Concat(manifest.Hair.Select(x => x.prefab))
                     .Where(x => x != null).Select(x => AssetDatabase.GetAssetPath(x.gameObject) + "=" + AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(x.gameObject))).ToArray();
                 runner.Configure(actor, catalog, manifest, AssetDatabase.GetAssetPath(catalog), manifestPath,
-                    AssetDatabase.AssetPathToGUID(manifestPath), string.Join(";", rigRows),
+                    AssetDatabase.AssetPathToGUID(manifestPath), string.Join(";", rigRows), previousGeneration,
                     "first-outfit", "first-outfit/EmikoHair_59875");
                 EditorUtility.SetDirty(runner);
                 EditorSceneManager.MarkSceneDirty(scene);

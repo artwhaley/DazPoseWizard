@@ -13,14 +13,14 @@ namespace DazPose.Validation.WardrobeProtectedCards
         [SerializeField] private SuccubusPerformer actor;
         [SerializeField] private WardrobeCatalog catalog;
         [SerializeField] private WardrobeRigManifest manifest;
-        [SerializeField] private string catalogAssetPath, manifestAssetPath, manifestGuid, rigAssetList;
+        [SerializeField] private string catalogAssetPath, manifestAssetPath, manifestGuid, rigAssetList, previousGeneration;
         [SerializeField] private string outfitId = "first-outfit";
         [SerializeField] private string emikoHairKey = "first-outfit/EmikoHair_59875";
         [SerializeField] private bool visible = true;
         [Serializable] private sealed class Assertion { public string name, detail; public bool passed; }
         [Serializable] private sealed class Report
         {
-            public string gate = "A", result, generation, catalogPath, manifestPath, manifestGuid, rigAssets, error, startedUtc, completedUtc;
+            public string gate = "A", result, previousGeneration, generation, catalogPath, manifestPath, manifestGuid, rigAssets, error, startedUtc, completedUtc;
             public string actor, outfit, hair, visibleGarments, bodyMesh, visibleAttachmentMeshes, footwear;
             public int visibleAttachmentCount;
             public List<Assertion> assertions = new List<Assertion>();
@@ -30,11 +30,12 @@ namespace DazPose.Validation.WardrobeProtectedCards
         private bool busy;
         private Vector2 scroll;
         public void Configure(SuccubusPerformer performer, WardrobeCatalog source, WardrobeRigManifest sourceManifest,
-            string sourceCatalogPath, string sourceManifestPath, string sourceManifestGuid, string sourceRigAssetList,
+            string sourceCatalogPath, string sourceManifestPath, string sourceManifestGuid, string sourceRigAssetList, string oldGeneration,
             string preset, string hairKey)
         {
             actor = performer; catalog = source; manifest = sourceManifest; catalogAssetPath = sourceCatalogPath;
             manifestAssetPath = sourceManifestPath; manifestGuid = sourceManifestGuid; rigAssetList = sourceRigAssetList;
+            previousGeneration = oldGeneration;
             outfitId = preset; emikoHairKey = hairKey;
         }
 
@@ -199,7 +200,7 @@ namespace DazPose.Validation.WardrobeProtectedCards
             if (report.startedUtc == null) report.startedUtc = DateTime.UtcNow.ToString("O");
             report.completedUtc = DateTime.UtcNow.ToString("O"); report.generation = catalog != null ? catalog.ReleasedGenerationId : null;
             report.catalogPath = catalogAssetPath; report.manifestPath = manifestAssetPath; report.manifestGuid = manifestGuid;
-            report.rigAssets = rigAssetList; report.actor = actor != null ? actor.name : null;
+            report.rigAssets = rigAssetList; report.previousGeneration = previousGeneration; report.actor = actor != null ? actor.name : null;
             if (Wardrobe != null) { var state = Wardrobe.CurrentWardrobe; report.outfit = state.OutfitId; report.hair = state.EffectiveHairId; report.visibleGarments = string.Join(",", state.LayerPieceIds.SelectMany(x => x)); }
             var body = actor != null ? actor.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(x => x.sharedMesh != null && x.sharedMesh.GetBlendShapeIndex("CapturedOpening") >= 0) : null;
             report.bodyMesh = body != null && body.sharedMesh != null ? body.sharedMesh.name : null;
