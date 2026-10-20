@@ -28,3 +28,7 @@ Art authorized A00–A06 on October 19, 2026. Implementation baseline: main `e36
 Art alone imports/compiles and checks real AnimationMode/graph sampling, rendering, mark drag, sparse/nonconstant poses, seat contact, ownership callbacks, Save/Undo/Stop/close/reload, artist overrides and materials. Native performance targets are unmeasured. No source or synthetic result constitutes G4 PASS.
 
 Use `docs/native-directing/G4_ART_HANDOFF.md` for exact project, saved scene, menu, cue and action directions. No screenshots required. G4 remains **WAITING ON ART**; repair user-reported failures before A06/N11 completion. Production art/assets/index and existing fixture edits are preserved; only code is synchronized.
+
+## Code-only fixture delivery
+
+Implementation commit: `07fbeea083992b9399a0ccd3718d07aa8a603551` on main. Synchronized 1132 code/meta files to the existing independent fixture. Code SHA256: `8208f1c2901f82f51178bc6eccdc6818352294aa680264c83203dadc163d2301`. `unityLaunched: false`. No scene, binding, art or index synchronization; Art's fixture edits remain. G4 awaits Art.
