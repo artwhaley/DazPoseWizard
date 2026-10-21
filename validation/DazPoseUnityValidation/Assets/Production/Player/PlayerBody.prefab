@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &289401361677819821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7474510406302338488}
+  m_Layer: 0
+  m_Name: CameraMount_High
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7474510406302338488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289401361677819821}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0.00000049767823, z: 0.00000049767823, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 1.698411, z: 0.5802814}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2636060837093065101}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4680924649345400047
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3552760986307742615}
+  m_Layer: 0
+  m_Name: CameraMount_Low
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3552760986307742615
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4680924649345400047}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7938469, y: -0, z: -0, w: 0.6081176}
+  m_LocalPosition: {x: 0, y: 1.6984111, z: 0.18028128}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2636060837093065101}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &7412719288719467126
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54,11 +116,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7474510406302338488}
+    - targetCorrespondingSourceObject: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3552760986307742615}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6455577703204296983}
+    - targetCorrespondingSourceObject: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2725330586143102637}
     - targetCorrespondingSourceObject: {fileID: 2866636419405590249, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6079347278193328102}
@@ -151,9 +222,28 @@ MonoBehaviour:
     - {fileID: 2100000, guid: f787379a9d5b033428eeb343190fa0c6, type: 2}
     - {fileID: 2100000, guid: 20d64d32119b0454b8c57078a586b56c, type: 2}
   startHidden: 1
+--- !u!114 &2725330586143102637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033735825012727010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0f3a1c8d9e4a7fb2c15e83d47a96f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Player.PlayerCameraMounts
+  high: {fileID: 7474510406302338488}
+  low: {fileID: 3552760986307742615}
 --- !u!137 &1700192963458554101 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8162502286537374339, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+  m_PrefabInstance: {fileID: 7412719288719467126}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2636060837093065101 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
   m_PrefabInstance: {fileID: 7412719288719467126}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &4690237644105403551 stripped
