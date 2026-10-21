@@ -4,7 +4,9 @@
     "GUID:7f7d1af65c2641843945d409d28f2e20",
     "GUID:d04eb9c554ad44ceab303cecf0c0cf82",
     "GUID:e0cd26848372d4e5c891c569017e11f1",
-    "Unity.ugui"
+    "Unity.ugui",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.HighDefinition.Runtime"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

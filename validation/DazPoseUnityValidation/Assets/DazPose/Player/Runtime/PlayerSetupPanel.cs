@@ -42,6 +42,8 @@ namespace DazPose.Player {
    GUILayout.Label("Player Setup (temporary test panel)");
    if(missing.Count>0) { GUILayout.Label("Missing: "+string.Join(", ",missing)); GUILayout.EndScrollView(); GUILayout.EndArea(); return; }
    GUILayout.Label("Camera mount: "+(cameraController.CurrentHeight?.ToString() ?? "none yet")+(cameraController.IsChangingHeight ? " (changing)" : ""));
+   var fade=cameraController.GetComponentInChildren<PlayerScreenFade>(true) ?? player.MainCamera.GetComponent<PlayerScreenFade>();
+   GUILayout.Label("Fade alpha: "+(fade!=null ? fade.Alpha.ToString("F2") : "(none yet)"));
    GUILayout.Label("Tracking: "+(player.View.IsTracking ? "yes" : player.View.IsAcquiringTrack ? "acquiring" : "no")+"    Body: "+body.VisibilityState);
    GUILayout.Space(6);
    GUILayout.BeginHorizontal();
@@ -52,6 +54,7 @@ namespace DazPose.Player {
    if(GUILayout.Button("SetHeight High")) Run("SetHeight High",async () => await cameraController.SetHeightAsync(PlayerCameraHeight.High));
    if(GUILayout.Button("SetHeight Low")) Run("SetHeight Low",async () => await cameraController.SetHeightAsync(PlayerCameraHeight.Low));
    GUILayout.EndHorizontal();
+   if(GUILayout.Button("Fade test: hold black 2 s")) Run("Fade test",async () => await FadeTest());
    GUILayout.Space(6);
    GUILayout.BeginHorizontal();
    if(GUILayout.Button("Body In")) Run("Body In",async () => await body.DissolveInAsync());
@@ -75,6 +78,14 @@ namespace DazPose.Player {
    GUILayout.Label(status);
    GUILayout.EndScrollView();
    GUILayout.EndArea();
+  }
+  async Awaitable FadeTest() {
+   var fade=PlayerScreenFade.For(player.MainCamera);
+   for(float t=0f;t<0.5f;t+=Time.deltaTime){ fade.Alpha=t/0.5f; await Awaitable.NextFrameAsync(); }
+   fade.Alpha=1f;
+   await Awaitable.WaitForSecondsAsync(2f);
+   for(float t=0f;t<0.5f;t+=Time.deltaTime){ fade.Alpha=1f-t/0.5f; await Awaitable.NextFrameAsync(); }
+   fade.Alpha=0f;
   }
   static Awaitable Done() { var source=new AwaitableCompletionSource(); source.SetResult(); return source.Awaitable; }
   void OnDrawGizmos() {

@@ -81,6 +81,27 @@ namespace DazPose.Tests
         }
 
         [Test]
+        public void TheFadeDarkensThroughBothTheVolumeAndTheQuadAndClearsCompletely()
+        {
+            player = new GameObject("Player");
+            var camera = player.AddComponent<Camera>();
+            var fade = PlayerScreenFade.For(camera);
+            Assert.AreSame(fade, PlayerScreenFade.For(camera), "one fade per camera");
+            Assert.That(fade.Alpha, Is.EqualTo(0f));
+            Assert.IsFalse(fade.VolumeActive);
+            fade.Alpha = 0.5f;
+            Assert.IsTrue(fade.VolumeActive);
+            Assert.IsTrue(fade.QuadActive);
+            Assert.That(fade.FilterColor.r, Is.EqualTo(0.5f).Within(Tolerance));
+            fade.Alpha = 1f;
+            Assert.That(fade.FilterColor.r, Is.EqualTo(0f).Within(Tolerance));
+            Assert.That(fade.FilterColor.g, Is.EqualTo(0f).Within(Tolerance));
+            fade.Alpha = 0f;
+            Assert.IsFalse(fade.VolumeActive, "a clear screen leaves no volume or quad behind");
+            Assert.IsFalse(fade.QuadActive);
+        }
+
+        [Test]
         public void TheControllerDefaultsToAHalfSecondEachWayWithAShortHold()
         {
             var controller = Rig(out _, out _, out _);
