@@ -11,6 +11,14 @@ Updated October 21, 2026. Current ticket: **T01 â€” Workspace reset**. Appr
 - Historical root docs, campaign folders, ticket packets, root TestOutput evidence and native fixture script moved under docs/archive; its README identifies each group. Existing user ticket moves were preserved and reconciled into the approved archive. AGENTS rewritten as one current 68-line document; old AGENTS archived verbatim. README and current authoring/wardrobe/runtime references corrected; live Help/reference/fixture paths updated.
 - P02 source/data analysis and [main-project migration plan](P02_MAIN_PROJECT_IMPORT_PLAN.md) delivered. Its importer engine already exists in main. The real work is removing batch/scene-replacement orchestration and adding safe equipment-asset commit/new-package registration in the existing Clothing Setup. **Migration is not implemented; P02 remains temporarily**, with no code/art copied back.
 
+## Local commits and working tree
+
+- `e050848` — unchanged architecture plan.
+- `f7aa2e4` — historical archive, current guidance and P02 analysis/plan.
+- `1ba9232` — GUID-preserving Player organization and approved path retirements.
+- All commits remain local and unpushed. Only the pre-existing untracked `Assets/__WardrobeProtectedCards` scene/metas remain outside Git; they were explicitly retained. Ignored local art/recovery/P02 and rebuilt check outputs remain local.
+- Automatic approval review initially rejected staging the pre-existing ticket moves. Art then explicitly authorized the three named native/visual/wardrobe packet relocations and their 54 old-path deletions; exact-path staging succeeded. No blocked commit remains.
+
 ## Technical evidence
 
 [Approved manifest](../workspace/CLEANUP_MANIFEST.md), [decisions](../workspace/T01_DECISIONS.json), [retirements](../workspace/T01_RETIREMENTS.json), [moves](../workspace/T01_MOVES.json), [baseline](../workspace/T01_BASELINE.json), [checks](../workspace/T01_CHECKS.json), [managed results](../workspace/T01_MANAGED_RESULTS.json).
