@@ -44,7 +44,7 @@ This ticket is the one exception to the no-Unity rule, and only in this form:
 Verified from source; re-check against the working copy.
 
 - Unity version: `6000.5.9f1` (`ProjectSettings/ProjectVersion.txt`). Editor path on Art's machine, per the old `AGENTS.md`: `C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Unity.exe`.
-- **The Unity Test Framework package is not installed** (`com.unity.test-framework` is absent from `Packages/manifest.json`), and no test assemblies exist under `Assets/`. You will add both.
+- **The Unity Test Framework is present only transitively.** `com.unity.test-framework` is not declared in `Packages/manifest.json` but is pulled in as a dependency of another package (see `Packages/packages-lock.json`). No project test assemblies exist under `Assets/`. You will declare the package explicitly and add a test assembly.
 - Asset serialization is Force Text (`m_SerializationMode: 2`).
 - **Large parts of the working project are gitignored local inputs**, so a plain `git clone` or `git worktree` of the repo produces an incomplete project. Notably:
   - `Assets/Animations/` — generated pose clips **and their `PerformerPose` assets** (`poseOutputRoot` in `DazPoseWizard.project.json`).
@@ -67,8 +67,8 @@ Verified from source; re-check against the working copy.
 
 Whichever you pick, write **one** sync script (for example `scripts/sandbox-sync.ps1`) that brings tracked code from the main repo into the sandbox without touching the sandbox's `Library/`, and never writes to the main project. Retire nothing else in `scripts/` in this ticket.
 
-**3. Add the test framework and a test assembly (in main).**
-- Add `com.unity.test-framework` to the main project's `Packages/manifest.json`. Use the version the 6000.5 editor ships with by default; record which.
+**3. Declare the test framework and add a test assembly (in main).**
+- Declare `com.unity.test-framework` explicitly in the main project's `Packages/manifest.json`, at the version `packages-lock.json` currently resolves, so the tests don't silently disappear if the package that pulls it in is ever removed. Record the version and which package currently depends on it.
 - Create an EditMode test assembly under `Assets/DazPose/Tests/EditMode/` (asmdef with `includePlatforms: ["Editor"]`, referencing the test runner and the editor assembly that contains `NativeSeatingMath`).
 - Write a small, deterministic test class covering `NativeSeatingMath.BakedRoot`, `AlignLiveHip` and `NativeStandingRules.Facing` with hand-computed expected values.
 - Commit in main. Tell Art the main project will import the new package next time Unity opens it.
@@ -109,7 +109,7 @@ Do not pass `-quit` together with `-runTests`. Record wall time (this one includ
 ## Deliverables
 
 - One sandbox project at the agreed location, plus its sync script
-- `com.unity.test-framework` and `Assets/DazPose/Tests/EditMode/` in main, committed
+- `com.unity.test-framework` declared explicitly and `Assets/DazPose/Tests/EditMode/` in main, committed
 - `docs/plan/S01_UNITY_SPIKE.md`
 - `AGENTS.md` and `STATUS.md` updated only after Art decides
 
