@@ -21,14 +21,12 @@ namespace DazPose.Player {
   Material material;
   MaterialPropertyBlock block;
   float alpha;
-  bool reported;
   public float Alpha {
    get => alpha;
    set {
     alpha=Mathf.Clamp01(value);
     if(quad==null) { if(alpha<=0f) return; Build(); }
     Apply();
-    if(alpha>=1f && !reported) { reported=true; Debug.Log("Screen fade reached full black: post-process volume "+(volume!=null && volume.enabled ? "on" : "missing")+", quad "+(quad!=null && quad.enabled ? "on" : "missing")+".",this); }
    }
   }
   /// <summary>The colour filter the fade volume applies to the whole frame (white = clear, black = full fade).</summary>
