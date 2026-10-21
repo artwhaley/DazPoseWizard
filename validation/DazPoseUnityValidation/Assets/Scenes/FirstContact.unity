@@ -746,6 +746,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6455577703204296983, guid: b7ec3b0162e17284db24a9b4ffc477d0, type: 3}
+      propertyPath: startHidden
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10965,7 +10969,7 @@ MonoBehaviour:
   program: {fileID: 0}
   compiledSource: {fileID: -9164764017844610671, guid: 0617ee0beddae85448f0eefd1a7e3049, type: 3}
   sequenceName: FirstContact
-  stopBeforePhase: ''
+  stopBeforePhase: 
   useFixedSeed: 1
   sessionSeed: 82017
   pacingMultiplier: 1

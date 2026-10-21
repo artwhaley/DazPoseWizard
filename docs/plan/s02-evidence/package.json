@@ -1,0 +1,1129 @@
+{
+  "file": "UMotion Pro - Animation Editor v1.29p04.unitypackage",
+  "sha256": "7c765e0c6e6de4917db1205badc71d86a6d78d41f66400a841f3356be43c6778",
+  "bytes": 23184298,
+  "assetCount": 280,
+  "unpackedAssetBytes": 74274272,
+  "entries": [
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson8.html",
+      "bytes": 9630
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ProLesson3.html",
+      "bytes": 9672
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ClipEditor.html",
+      "bytes": 9377
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Textures/UMotionTabLogo.png",
+      "bytes": 407
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ReleaseNotes.html",
+      "bytes": 185853
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorAddEvent.png",
+      "bytes": 3602
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/UMotionManual.html",
+      "bytes": 12461
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/FKtoIKConversion.html",
+      "bytes": 12808
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/VideoTutorials.html",
+      "bytes": 13608
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Materials/HighBarMaterial.mat",
+      "bytes": 2081
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorMenuBar.png",
+      "bytes": 4013
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/UMotionLogoHeader.png",
+      "bytes": 4661
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Materials/StickMaterial.mat",
+      "bytes": 3062
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Materials/DashedLineMaterial.mat",
+      "bytes": 2821
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ProjectSettings.html",
+      "bytes": 16198
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Robot Kyle/Textures/Robot_Color.tga",
+      "bytes": 12582956
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Robot Kyle/Materials/Robot_Color.mat",
+      "bytes": 943
+    },
+    {
+      "path": "Assets/UMotionExamples/UMotion Projects/PickUpAnimation.asset",
+      "bytes": 408633
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/InPractice2.html",
+      "bytes": 10497
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Materials/BoneMaterial.mat",
+      "bytes": 3072
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/InPractice3.html",
+      "bytes": 10644
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersView.png",
+      "bytes": 11969
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/CustomProperty.html",
+      "bytes": 20208
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackNext.png",
+      "bytes": 3477
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Textures/UMotionTabLogoDark.png",
+      "bytes": 420
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson5.html",
+      "bytes": 9679
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ExportClipSize.png",
+      "bytes": 4866
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/BindShortcutDialog.png",
+      "bytes": 8405
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackPrev.png",
+      "bytes": 3457
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKConstraintSetup.png",
+      "bytes": 17023
+    },
+    {
+      "path": "Assets/UMotionEditor/Shaders/ColorUnlit.shader",
+      "bytes": 1141
+    },
+    {
+      "path": "Assets/UMotionExamples/Exported Animations/IKPullups.anim",
+      "bytes": 1881036
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Configuration.html",
+      "bytes": 20222
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorChannelsContext.png",
+      "bytes": 10373
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ConfigMode.html",
+      "bytes": 10043
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/SoxwareLogo.png",
+      "bytes": 7774
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Meshes/Transform.asset",
+      "bytes": 6667
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PreferencesWindowShortcuts.png",
+      "bytes": 17873
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/PoseMode.html",
+      "bytes": 9052
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Materials/CubeMaterial.mat",
+      "bytes": 2073
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson2.html",
+      "bytes": 9463
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/JointBoneNamingDefinition.png",
+      "bytes": 58439
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Tools.html",
+      "bytes": 15123
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Meshes/Bone.asset",
+      "bytes": 5381
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorDuplicateClipButton.png",
+      "bytes": 1090
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorTimeRuler.png",
+      "bytes": 5956
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersBlendWeightBar.png",
+      "bytes": 1624
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/CalibrateCharacterFront.png",
+      "bytes": 10906
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersDeleteAllButton.png",
+      "bytes": 3535
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/PoseDisplay.html",
+      "bytes": 11922
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKSetupWizard.png",
+      "bytes": 79322
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorSyncAnimWindow.png",
+      "bytes": 7739
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/theme_styles.css",
+      "bytes": 1770
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorInputField.png",
+      "bytes": 3478
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorMenuBarFile.png",
+      "bytes": 16669
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/UMotionSetupFinished.png",
+      "bytes": 211290
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PreferencesWindowSettings.png",
+      "bytes": 15725
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/EditInPlayMode.html",
+      "bytes": 10451
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/QuickStart.html",
+      "bytes": 9562
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorConfigurationRefPose.png",
+      "bytes": 18994
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/KnownIssue06.png",
+      "bytes": 23739
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Animation.html",
+      "bytes": 14783
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ChildOfChannelsContext.png",
+      "bytes": 9524
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorMirrorMappingEdit.png",
+      "bytes": 731
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Robot Kyle/Model/Robot Kyle.fbx",
+      "bytes": 330704
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/InPractice1.html",
+      "bytes": 10818
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/MenuBarEdit.html",
+      "bytes": 11327
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackPlayForward.png",
+      "bytes": 3367
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/AddKeysDialog.png",
+      "bytes": 27704
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKPinning2Keys.png",
+      "bytes": 33039
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorCleanup.png",
+      "bytes": 6135
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Support.html",
+      "bytes": 15374
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Constraints.html",
+      "bytes": 9284
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersEditButton.png",
+      "bytes": 3387
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/AnimatedPropertiesList.html",
+      "bytes": 12463
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/UMotionResources.asset",
+      "bytes": 3411
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/AnimationEventWarningIcon.png",
+      "bytes": 3039
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/TreeViewCollapse.png",
+      "bytes": 2823
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackSeekEnd.png",
+      "bytes": 3370
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPropertyContextMenu.png",
+      "bytes": 6068
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/AnimationControllers/RobotKyleWalkController.controller",
+      "bytes": 1986
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/UMotionFavicon.png",
+      "bytes": 782
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/UMotionLockedHierachy.png",
+      "bytes": 5833
+    },
+    {
+      "path": "Assets/UMotionEditor/Plugins/MacOS/Editor/x64/UMotionFBX_Mac_x64.bundle",
+      "bytes": 8519008
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/AnimationEventMinus.png",
+      "bytes": 3164
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersAdditiveLabel.png",
+      "bytes": 2949
+    },
+    {
+      "path": "Assets/UMotionEditor/Plugins/Editor/UMotionEditor.dll",
+      "bytes": 3123200
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Playback.html",
+      "bytes": 13847
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKPlane.png",
+      "bytes": 106322
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/TransformIcon.png",
+      "bytes": 2966
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipSettings.png",
+      "bytes": 20483
+    },
+    {
+      "path": "Assets/UMotionEditor/Shaders/CameraLit.shader",
+      "bytes": 1743
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/RotationModes.html",
+      "bytes": 13491
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorSyncTimeline.png",
+      "bytes": 85760
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackFromBeginning.png",
+      "bytes": 809
+    },
+    {
+      "path": "Assets/UMotionEditor/Scripts/Editor/EditorVersionCompatibilityUtility.cs",
+      "bytes": 2673
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ProLesson2.html",
+      "bytes": 9531
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/InPractice.html",
+      "bytes": 9185
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/MuscleGroupsUpperBody.png",
+      "bytes": 14086
+    },
+    {
+      "path": "Assets/UMotionExamples/Example Scene/UMotionExampleScene.unity",
+      "bytes": 373584
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPrevKeyFrame.png",
+      "bytes": 3484
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/NewProjectDialog.png",
+      "bytes": 30452
+    },
+    {
+      "path": "Assets/UMotionEditor/Plugins/Application/UMotionApplication.dll.mdb",
+      "bytes": 6777
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/MenuBarFile.html",
+      "bytes": 13379
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/MainNavigation.html",
+      "bytes": 12277
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/AnimatorComponent.png",
+      "bytes": 8942
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorFooter.png",
+      "bytes": 4243
+    },
+    {
+      "path": "Assets/UMotionExamples/UMotion Projects/IKPullupsAnimation.asset",
+      "bytes": 369799
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/UnityWindowUmotionEditor.png",
+      "bytes": 16941
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/RotateToolAssistantAbsolute.png",
+      "bytes": 11188
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/AnimationControllers/RobotKylePickUpController.controller",
+      "bytes": 1987
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Meshes/StickJoint.asset",
+      "bytes": 14368
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKSetupWizardGeneral.png",
+      "bytes": 6460
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/AnimationControllers/RobotKyleIdleController.controller",
+      "bytes": 2658
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/MirrorMapping.html",
+      "bytes": 11942
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/HowToCreateBetterAnimations.html",
+      "bytes": 12699
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Meshes/Joint.asset",
+      "bytes": 18043
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/CreateConfigurationDialog.png",
+      "bytes": 17440
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorDeleteAllClips.png",
+      "bytes": 1191
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ImportClipsDialog.png",
+      "bytes": 30032
+    },
+    {
+      "path": "Assets/UMotionEditor/Plugins/Windows/Editor/x64/AutodeskFbxSdkLicense.txt",
+      "bytes": 353
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Selection.html",
+      "bytes": 12222
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Curves.html",
+      "bytes": 11221
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Meshes/Stick.asset",
+      "bytes": 6700
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/MoveToolAssistant.png",
+      "bytes": 5469
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ExportFbxIssueCopyAvatar.png",
+      "bytes": 18806
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackEnd.png",
+      "bytes": 1059
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ProLesson4.html",
+      "bytes": 9559
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/GettingStarted.html",
+      "bytes": 15629
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ProLesson1.html",
+      "bytes": 9821
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ProLesson5.html",
+      "bytes": 9793
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Scripts/ResetPosition.cs",
+      "bytes": 545
+    },
+    {
+      "path": "Assets/UMotionEditor/Shaders/VertexColorUnlit.shader",
+      "bytes": 511
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKSetupWizardCustomIK.png",
+      "bytes": 58571
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorSelection.png",
+      "bytes": 11297
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersAddButton.png",
+      "bytes": 3477
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/CustomPropertyConstraintAnimatorParameterSetup.png",
+      "bytes": 7559
+    },
+    {
+      "path": "Assets/UMotionExamples/UMotion Projects/WalkRMAnimation.asset",
+      "bytes": 374687
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/BlueHeaderRight.png",
+      "bytes": 3482
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditor.png",
+      "bytes": 74286
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorRigHierarchy.png",
+      "bytes": 20958
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorAddClipButton.png",
+      "bytes": 3716
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/GeneralTutorials.html",
+      "bytes": 9191
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Dopesheet.html",
+      "bytes": 14371
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorSyncButton.png",
+      "bytes": 20640
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/InPractice4.html",
+      "bytes": 10425
+    },
+    {
+      "path": "Assets/UMotionEditor/Scripts/Application/UMotionSourceApplication.asmdef",
+      "bytes": 142
+    },
+    {
+      "path": "Assets/UMotionEditor/Scripts/Editor/AnimationCurveUtilityRecent.cs",
+      "bytes": 3208
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Layers.html",
+      "bytes": 14642
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/DopesheetCurves.html",
+      "bytes": 25275
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ChildOfSpacesCurve.png",
+      "bytes": 36486
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Meshes/CharacterDir.asset",
+      "bytes": 15344
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Jayanam.html",
+      "bytes": 9090
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackSeekStart.png",
+      "bytes": 3392
+    },
+    {
+      "path": "Assets/UMotionEditor/Scripts/Editor/GUICompatibilityUtility.cs",
+      "bytes": 4183
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/CurvesViewTangentHandle.png",
+      "bytes": 5763
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ExportClipInspector.png",
+      "bytes": 21309
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Credits.html",
+      "bytes": 12913
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Options.html",
+      "bytes": 14822
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorConfigurationProperties.png",
+      "bytes": 19432
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorSettingsButton.png",
+      "bytes": 3734
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/FkToIkConversion.png",
+      "bytes": 13590
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorMenuBarHelp.png",
+      "bytes": 13177
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Robot Kyle/Textures/Robot_Normal.tga",
+      "bytes": 12582956
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ExportingAnimationsFAQ.html",
+      "bytes": 19665
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/element_styles.css",
+      "bytes": 3691
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Meshes/Line.asset",
+      "bytes": 3316
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ConfigDisplay.html",
+      "bytes": 11275
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/CalibrateCharacterFrontSceneView.png",
+      "bytes": 67353
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Preferences.html",
+      "bytes": 13919
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKSetupWizardMenuBar.png",
+      "bytes": 3167
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorDeleteClip.png",
+      "bytes": 3789
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/KnownIssues.html",
+      "bytes": 12857
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Materials/WoodMaterial.mat",
+      "bytes": 2075
+    },
+    {
+      "path": "Assets/UMotionEditor/Plugins/Application/UMotionApplication.dll",
+      "bytes": 80896
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/CustomPropertyConstraintMassApply.png",
+      "bytes": 20062
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ImportExport.html",
+      "bytes": 22658
+    },
+    {
+      "path": "Assets/UMotionEditor/Shaders/WiresOnly.shader",
+      "bytes": 1353
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ImportSettingsRigRm.png",
+      "bytes": 8534
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/TreeViewExpand.png",
+      "bytes": 2840
+    },
+    {
+      "path": "Assets/UMotionExamples/Exported Animations/PickUp.anim",
+      "bytes": 6106204
+    },
+    {
+      "path": "Assets/UMotionEditor/Plugins/MacOS/Editor/x64/AutodeskFbxSdkLicense.txt",
+      "bytes": 353
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorCurveView.png",
+      "bytes": 95565
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/RootMotion.html",
+      "bytes": 13455
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ExportFbxIssueConfigure.png",
+      "bytes": 13460
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackSpeed.png",
+      "bytes": 3934
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ClipSettings.html",
+      "bytes": 11901
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorAnimatedPropertiesList.png",
+      "bytes": 28718
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackStart.png",
+      "bytes": 924
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Materials/WallMaterial.mat",
+      "bytes": 2048
+    },
+    {
+      "path": "Assets/UMotionEditor/Scripts/Editor/UMotionSourceEditor.asmdef",
+      "bytes": 177
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/PoseEditor.html",
+      "bytes": 13160
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorMainNavigation.png",
+      "bytes": 5615
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorExportAllClips.png",
+      "bytes": 10492
+    },
+    {
+      "path": "Assets/UMotionEditor/Shaders/UnlitLine.shader",
+      "bytes": 1209
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersUpButton.png",
+      "bytes": 3342
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/UnityTimelineIntegration.html",
+      "bytes": 15331
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackPlayBackwards.png",
+      "bytes": 824
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackStopReturnToStart.png",
+      "bytes": 636
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKSetupWizardHumanIK.png",
+      "bytes": 14665
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlayback.png",
+      "bytes": 5710
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ImportingDialog.png",
+      "bytes": 15424
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Materials/PlaneMaterial.mat",
+      "bytes": 3068
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseModeConstraints.png",
+      "bytes": 11136
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ExportFbxCommonIssue.png",
+      "bytes": 96321
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/UMotionMultipleSceneViews.png",
+      "bytes": 271708
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ProfessionalExclusive.html",
+      "bytes": 9007
+    },
+    {
+      "path": "Assets/UMotionEditor/Scripts/Application/AssetResourcesFile.cs",
+      "bytes": 5124
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/MenuBar.html",
+      "bytes": 9291
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ScaleToolAssistant.png",
+      "bytes": 4416
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorNextKeyFramey.png",
+      "bytes": 3468
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Introduction.html",
+      "bytes": 13842
+    },
+    {
+      "path": "Assets/UMotionEditor/Plugins/Windows/Editor/x64/UMotionFBX_Win_x64.dll",
+      "bytes": 8116224
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/FollowLinkArrow.png",
+      "bytes": 226
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorMenuBarEdit.png",
+      "bytes": 13250
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorMirrorMappingDelete.png",
+      "bytes": 790
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorMirrorMapping.png",
+      "bytes": 50479
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/IKNamingDefinitions.png",
+      "bytes": 93476
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/CustomPropertyConstraintComponentPropertySetup.png",
+      "bytes": 10598
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersDownButton.png",
+      "bytes": 3343
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersMuteButton.png",
+      "bytes": 3459
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorAnimation.png",
+      "bytes": 6917
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson4.html",
+      "bytes": 9670
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Materials/BoneWireMaterial.mat",
+      "bytes": 3128
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PlayModeButtons.png",
+      "bytes": 4117
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/MuscleGroupsHands.png",
+      "bytes": 13764
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson7.html",
+      "bytes": 9966
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson6.html",
+      "bytes": 9939
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackRootMotion.png",
+      "bytes": 736
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ImportSettingsAnimationsRm.png",
+      "bytes": 9734
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/RotateToolAssistantRelative.png",
+      "bytes": 9890
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorOptions.png",
+      "bytes": 11713
+    },
+    {
+      "path": "Assets/UMotionEditor/Shaders/UnlitDashedLine.shader",
+      "bytes": 1561
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/KnownIssue07.png",
+      "bytes": 227108
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPopup.png",
+      "bytes": 3952
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ClipEditorPlaybackLoop.png",
+      "bytes": 3507
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/treeview_styles.css",
+      "bytes": 1907
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/RigHierarchy.html",
+      "bytes": 13524
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/CustomPropertyConstraintControllerSetup.png",
+      "bytes": 14743
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorTools.png",
+      "bytes": 16496
+    },
+    {
+      "path": "Assets/UMotionExamples/UMotion Projects/IdleAnimation.asset",
+      "bytes": 385515
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/HumanoidIcon.png",
+      "bytes": 3085
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ChildOfConstraintSetup.png",
+      "bytes": 3066
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/BoneIcon.png",
+      "bytes": 3058
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson9.html",
+      "bytes": 9867
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorDisplay.png",
+      "bytes": 10058
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/IKSetupWizard.html",
+      "bytes": 19389
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/Materials/GroundMaterial.mat",
+      "bytes": 2075
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ChildOf.html",
+      "bytes": 15924
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ProjectSettings.png",
+      "bytes": 24126
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Jayanam1.html",
+      "bytes": 9954
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson1.html",
+      "bytes": 9912
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Lesson3.html",
+      "bytes": 9468
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/UMotionAPI.html",
+      "bytes": 28356
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditor.png",
+      "bytes": 60296
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/ExportFbxIssueAvatarConfiguration.png",
+      "bytes": 112964
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/InverseKinematics.html",
+      "bytes": 20121
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/UMotionDefaultLayout.png",
+      "bytes": 186534
+    },
+    {
+      "path": "Assets/UMotionExamples/Exported Animations/WalkRM.anim",
+      "bytes": 2516414
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Meshes/IkPlane.asset",
+      "bytes": 4786
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersDeleteButton.png",
+      "bytes": 3550
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Materials/CharacterDirMaterial.mat",
+      "bytes": 3073
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/Dopesheet.png",
+      "bytes": 15894
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/Channels.html",
+      "bytes": 12372
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/MenuBarHelp.html",
+      "bytes": 9715
+    },
+    {
+      "path": "Assets/UMotionEditor/InternalResources/Materials/LineMaterial.mat",
+      "bytes": 2908
+    },
+    {
+      "path": "Assets/UMotionExamples/Exported Animations/Idle.anim",
+      "bytes": 11801862
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/VersionDefinition.png",
+      "bytes": 11390
+    },
+    {
+      "path": "Assets/UMotionExamples/Miscellaneous/AnimationControllers/RobotKylePullupsController.controller",
+      "bytes": 1991
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/LayersButton.png",
+      "bytes": 3572
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/MissingAnimatedProperty.png",
+      "bytes": 5598
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/ToolAssistant.html",
+      "bytes": 16849
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/AnimationEventDialog.png",
+      "bytes": 12519
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorChannels.png",
+      "bytes": 10876
+    },
+    {
+      "path": "Assets/UMotionEditor/Scripts/Application/VersionCompatibilityUtility.cs",
+      "bytes": 4356
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/PoseEditorExtendingUMotion.png",
+      "bytes": 5551
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/images/MuscleGroupsLowerBody.png",
+      "bytes": 11677
+    },
+    {
+      "path": "Assets/UMotionEditor/Plugins/Editor/UMotionEditor.dll.mdb",
+      "bytes": 367411
+    },
+    {
+      "path": "Assets/UMotionEditor/Shaders/ColorUnlitTransparent.shader",
+      "bytes": 1213
+    },
+    {
+      "path": "Assets/UMotionEditor/Manual/styles/TreeViewItem.png",
+      "bytes": 2936
+    }
+  ]
+}
