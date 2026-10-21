@@ -1,0 +1,2641 @@
+{
+  "sourceHash": "865ea1e2df15fa406851a9d6d7d20d23bf43f7e1e3a3fe152b04b33f8745676d",
+  "files": 657,
+  "filesManifest": [
+    {
+      "path": "assets/daz3d/scripts/editor/dazposedtuconversionadapter.cs",
+      "sha256": "f3dd4181d23b0e822a0ac12f1bde9f718a083e5842d835d02df2719b17f951aa"
+    },
+    {
+      "path": "assets/daz3d/scripts/editor/dazposedtuconversionadapter.cs.meta",
+      "sha256": "92910d1556f7a798d8a479d31fcc87c4578792a3edc7b3483eb891941ba04d12"
+    },
+    {
+      "path": "assets/dazpose.meta",
+      "sha256": "517aa59c354776d197e32b4c533241f2c2b6829dbd865e2abef866dda9958866"
+    },
+    {
+      "path": "assets/dazpose/animationaudit.meta",
+      "sha256": "4b588173221ec0649f138063e91c8d73cb184014a594e9ee752222c5f0538c58"
+    },
+    {
+      "path": "assets/dazpose/animationaudit/simplehumanoidtest.meta",
+      "sha256": "0215fecd67af7587776a5c2db706984bc7a118bb35da36c3ef44f9dcb31a984b"
+    },
+    {
+      "path": "assets/dazpose/editor.meta",
+      "sha256": "7b4620ede826f1ae8d737801c88cc7ec89a5fcbb9917b6ef99c9cc25f5f14075"
+    },
+    {
+      "path": "assets/dazpose/editor/animationaudit.meta",
+      "sha256": "1d47eb2a8a6446f5860570754d3563e529680c933f9fb580f174cd1b58823966"
+    },
+    {
+      "path": "assets/dazpose/editor/assemblyinfo.cs",
+      "sha256": "c8303c70a599b53707fed0d0cdadae30cf62166c449a5d8ea8a1ea388fcbd202"
+    },
+    {
+      "path": "assets/dazpose/editor/assemblyinfo.cs.meta",
+      "sha256": "9607e140071c2508527210cf8e39133f4861e6e4feeacfbb1cc842653088203b"
+    },
+    {
+      "path": "assets/dazpose/editor/dazpose.editor.asmdef",
+      "sha256": "f36583e88daa4dccf85221451def1df5d33f07f99097447a7f629434f10cc800"
+    },
+    {
+      "path": "assets/dazpose/editor/dazpose.editor.asmdef.meta",
+      "sha256": "02e8b0a5bac79cfbf358791ac2e3e6b84ac245338ac18a779db728fb8008c0f2"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposealwaysexportmorphvalidator.cs",
+      "sha256": "f0890d50acad4da9ba47f65799fa5fd5a0b187af029736c03e96ec0af1884be3"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposealwaysexportmorphvalidator.cs.meta",
+      "sha256": "b40c186ee7f6919ba809aeb12ca0c0278f7ed89ad89ddbd2a3e810475fb05cb5"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeanimationclipgenerator.cs",
+      "sha256": "6b31e8b38eeaf4a3da6083bed1799d2790c70733b01eb0ebe41ef54b1b983b92"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeanimationclipgenerator.cs.meta",
+      "sha256": "af12d8bb00f85d5812325486bafd92a851df481cd287dbb6f03f19cd36731e92"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposebridgematerialcopy.cs",
+      "sha256": "7ee3caab115a21823147e9306acd8b6ff978df521d14130e6abb23fb22efbe91"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposebridgematerialcopy.cs.meta",
+      "sha256": "852075373ea4dff676b9f5ff113e8aaf0ddc722494e473f914193cfe04eafb14"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposebrowserimportprocessor.cs",
+      "sha256": "472338bc767e3559f45bd1805d16d2bcd0cbeaceefb1adaadcc4f150626e6c9a"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposebrowserimportprocessor.cs.meta",
+      "sha256": "6fc1fe36128b64e807f94b867963c940d416c27601ab2946d9bd366749f644d8"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeclipparityvalidator.cs",
+      "sha256": "d085cd2effe32639445118eaf3fb89ee5a5097859c3c06cac7861e5aab297b85"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeclipparityvalidator.cs.meta",
+      "sha256": "09628607b987d0f605e3c8464ae0799c320f7ae7e3b235339d4dcc1a8a46968f"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposedtos.cs",
+      "sha256": "b768344ab1c438df91a80f32dd3d3b623a8a469578b396163592a1647c1c1122"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposedtos.cs.meta",
+      "sha256": "c317bb6bccb39e37877dfdc7ed517f3e9c1a02384fc3289a09e25c34c8e778bf"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposedtuconversionbridge.cs",
+      "sha256": "eb518b2d75e2d40c449fdd12259957e3c6970c4710732a470178e4e24aec7ce1"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposedtuconversionbridge.cs.meta",
+      "sha256": "7d73e91bd6e08a397d625acaf81fe45efe2f28f4561b4e96ae756dd733731c97"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeeditorcommands.cs",
+      "sha256": "958e9f5c833fe0cef01cdd9b56fc962b2df824e62c3ff4d2fa8ede36ab576944"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeeditorcommands.cs.meta",
+      "sha256": "e9ee38db6ded947b124d39464272352a16349d75b89c2928e8040ce9229c2d3d"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeexpressionbonepolicy.cs",
+      "sha256": "02261ff8c1f6d8f890796d48e62d8cb8e1c99782133369c50b5b80b54953baef"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeexpressionbonepolicy.cs.meta",
+      "sha256": "d58a7781d533eaf387a91ed7b6d5652456f29c420284ea8be8cb542c2613f0e5"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposejsonloader.cs",
+      "sha256": "e965f6bbf63c06a898ff19e7a02c84796c6d445845d2af9bce930325cef2157b"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposejsonloader.cs.meta",
+      "sha256": "6716d5ebe9f59adbe591b2430ad8fe16f8acb319a72258b652ccb813f5ab7594"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposemorphresolver.cs",
+      "sha256": "34a0a77c401e0a9ec9efc4d0a500133aa03b84d3419f5dba4694e561b49001ea"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposemorphresolver.cs.meta",
+      "sha256": "06a907efceb6661eebb2b698b96e86ca50e33bb505f49b6c8b75a6ed0560f1b3"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposepipelinesettingswindow.cs",
+      "sha256": "36c9745e9d13064cbd9054904e1d6500d0f813e28197ebf98b7bc3bde0a1fe0a"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposepipelinesettingswindow.cs.meta",
+      "sha256": "4a67ecb38e4db7610a0b6ab29b771aa33219079a6640db6899058bdd4219fd17"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposerequiredmorphmanifest.cs",
+      "sha256": "4fae545a6cebbf25dbdd0d06c5e84fa72fa03c8c836bfa0f8ccacf99f21211b5"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposerequiredmorphmanifest.cs.meta",
+      "sha256": "2763340f6c6dce7e912d370a970a0887b5838072023803c3c2479be632220f2d"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposerestbasiscalibration.cs",
+      "sha256": "4a9c22a89edd0bace6a0592447b15cbb3f1bca6a1d1eca4052506cb088fd3e3f"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposerestbasiscalibration.cs.meta",
+      "sha256": "3f8dd57a753822f25aeec06d162c91af947a77300f560a22d1dd86098cf0b585"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposerestposeservice.cs",
+      "sha256": "80eea557785de28a6f02591a2df7a8a5f330e24f4329536067bb09b94c3520f8"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposerestposeservice.cs.meta",
+      "sha256": "ff825681c67cbfcd2f28c109fbcd03084879df6a5aed07cd1dc4fecdb02f3b77"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeskeletonresolver.cs",
+      "sha256": "357ded64e618eaa677e88343a929f801f7cac906357bec0face14b37f44a7a68"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeskeletonresolver.cs.meta",
+      "sha256": "4c2eb3a7eb62ce8d3a11d9786c208e87185f5bb69a418d03e0d8db854c71a30d"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeunityresolver.cs",
+      "sha256": "1ff7b4d4250fed640820baec71ed4a4d14c120f4d9c33de8bbd4aada70c7ab96"
+    },
+    {
+      "path": "assets/dazpose/editor/dazposeunityresolver.cs.meta",
+      "sha256": "88eb2a8c3398c2f816ae65ed3fc5089d66c2d498970c0b4f613894ef900f3b3e"
+    },
+    {
+      "path": "assets/dazpose/editor/handgrip.meta",
+      "sha256": "c760895920519306602767b3d95efe97bfd150fb4eef8236a40f1ee10a2249e5"
+    },
+    {
+      "path": "assets/dazpose/editor/handgrip/handgripcalibrationwindow.cs",
+      "sha256": "00e08b7d021beddf4c346d950299d77403e26ccedcc505c6b91eb2ef498c7692"
+    },
+    {
+      "path": "assets/dazpose/editor/handgrip/handgripcalibrationwindow.cs.meta",
+      "sha256": "0a83f3beff0c36cbb1d6f79304c596dfc773346f0a404dc660c6959248cc7fd6"
+    },
+    {
+      "path": "assets/dazpose/editor/laracandidatebuilder.cs",
+      "sha256": "8d9965835688d405fcd1ae46ff414a2e5432813f5019ac23a8d405709c412a45"
+    },
+    {
+      "path": "assets/dazpose/editor/laracandidatebuilder.cs.meta",
+      "sha256": "cdbc24c997a9be4558179182f1f10b24dfbe8cfba24e63ef3b012ecacf1fe579"
+    },
+    {
+      "path": "assets/dazpose/editor/laracandidateinstaller.cs",
+      "sha256": "b25c0f0942384daeb0d45a71635f4732aa0cf3955e51b82a23497fef35bfbac2"
+    },
+    {
+      "path": "assets/dazpose/editor/laracandidateinstaller.cs.meta",
+      "sha256": "6c7e243f11d64e3af197671a503451f7b8396dc3c294e889d1ddfbacbe048d9e"
+    },
+    {
+      "path": "assets/dazpose/editor/laracandidaterendervalidation.cs",
+      "sha256": "883dcf9a06b0828d5247901691da85c482b4f45d69e4dc63b3eec38052b288d1"
+    },
+    {
+      "path": "assets/dazpose/editor/laracandidaterendervalidation.cs.meta",
+      "sha256": "f25b09ccd53fb4326852fd66c8bfcda468dbdaf6f0519cb6eda3cf975a9a9011"
+    },
+    {
+      "path": "assets/dazpose/editor/larafirstoutfitbuilder.cs",
+      "sha256": "b877b54759566bf37037700dd6dde896fcf86cb6d1b487949f7693cd94df0b57"
+    },
+    {
+      "path": "assets/dazpose/editor/larafirstoutfitbuilder.cs.meta",
+      "sha256": "0d0261bbde42d47b7c89270b2375c08dc2614b98a639ce680f6663d6034e58ef"
+    },
+    {
+      "path": "assets/dazpose/editor/larasecondoutfitbuilder.cs",
+      "sha256": "1ede3bae06eff364c7744684181faf2d086edd516816066f3ee47775b944dfc0"
+    },
+    {
+      "path": "assets/dazpose/editor/larasecondoutfitbuilder.cs.meta",
+      "sha256": "bc253035658c559c98afbe078b9c4d3455457e60b4186bee9554a1e5c10301d4"
+    },
+    {
+      "path": "assets/dazpose/editor/larasecondoutfitrepair.cs",
+      "sha256": "1fbac9c50fce6ec52ad60703c03af7b94cd79a112f6479290cf40a3f06540d2c"
+    },
+    {
+      "path": "assets/dazpose/editor/larasecondoutfitrepair.cs.meta",
+      "sha256": "9fc5e628a50ec595a9c0054e2d6217d872a7387e85be5400952dbb2ed8b66ac9"
+    },
+    {
+      "path": "assets/dazpose/editor/larasecondoutfitreviewwindow.cs",
+      "sha256": "3a416c976e281ca4e90e3aa6f31faea0d84631614c385e7891240e70f0ddd413"
+    },
+    {
+      "path": "assets/dazpose/editor/larasecondoutfitreviewwindow.cs.meta",
+      "sha256": "5d1cd7124ed57f7ecf224a681bce3e8882e5dc7226a40a8f4fc55c267f032835"
+    },
+    {
+      "path": "assets/dazpose/editor/larasecondoutfitvalidation.cs",
+      "sha256": "878828352c9d1aceb27969c92267c1c420cce69ddbeeeb04cacaa76b40ecce46"
+    },
+    {
+      "path": "assets/dazpose/editor/larasecondoutfitvalidation.cs.meta",
+      "sha256": "f3002ad2bf6eebda40938830cca2c193a224c32b3d3ec663ad29d97df3ba107d"
+    },
+    {
+      "path": "assets/dazpose/editor/motion.meta",
+      "sha256": "c50806b381597f6f52c363d021c43a6b3bdf6f71b5f012993637bbd4d8e1abe9"
+    },
+    {
+      "path": "assets/dazpose/editor/motion/funscriptimporter.cs",
+      "sha256": "bd572f55b87e760fc111a155c7c5570baa44b38c6e0c54cd9b9d81a62fa011c8"
+    },
+    {
+      "path": "assets/dazpose/editor/motion/funscriptimporter.cs.meta",
+      "sha256": "1840a90f9d5b8c81d1bdcdabd05fa9a3d3f75dd09d458fe7bc7522c8a1e7f5f9"
+    },
+    {
+      "path": "assets/dazpose/editor/particlebody.meta",
+      "sha256": "2bcf008fd675b26921fad6d1efecb452a3fa9c78609779e3c81413710bcee824"
+    },
+    {
+      "path": "assets/dazpose/editor/particlebody/performersurfacebindingbaker.cs",
+      "sha256": "6f646d61e209e0dc646dd6bb969fc9aa0e124c9259171467686c29bea71fc3a9"
+    },
+    {
+      "path": "assets/dazpose/editor/particlebody/performersurfacebindingbaker.cs.meta",
+      "sha256": "70086322116075c64c57824a8e52be49fc18e7d8fca6210466ae0947ebef01bf"
+    },
+    {
+      "path": "assets/dazpose/editor/partner.meta",
+      "sha256": "bae1d35df60422d3162076674b72dce72d3607c47169460bb873ca148196164c"
+    },
+    {
+      "path": "assets/dazpose/editor/partner/partnercharacterpreparation.cs",
+      "sha256": "ab5c86014b99122c0dfac6f3cd22a27cb689373160df62834ddb28df3c890759"
+    },
+    {
+      "path": "assets/dazpose/editor/partner/partnercharacterpreparation.cs.meta",
+      "sha256": "8f84addb11ed4585eb390f77abca501437a16d4b106e4528a72bfbc175efb23c"
+    },
+    {
+      "path": "assets/dazpose/editor/partner/partnercontactprofilebuilder.cs",
+      "sha256": "24ae250095629388415fbb058572b111285e077e553e6f43c90e09661371a7be"
+    },
+    {
+      "path": "assets/dazpose/editor/partner/partnercontactprofilebuilder.cs.meta",
+      "sha256": "95279e2fa8bf7a76766fdc4cfd2fd1f8c0e3a38b49ca2bb19aa91dcaa7eaa302"
+    },
+    {
+      "path": "assets/dazpose/editor/performer.meta",
+      "sha256": "2b2627d9d9e16fcb81918f057f83455f14831559683aa3f9d85280267ce28403"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/performancescenebindingseditor.cs",
+      "sha256": "841a639d02ee6a473961c7753e4ef042aef8997985ed3ddaf12f4021940a7af5"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/performancescenebindingseditor.cs.meta",
+      "sha256": "3aa5b964cf6e32938b13b161578bff5ed44a727e07ffd254a605b8eefd8e6801"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/performerdefaultseditor.cs",
+      "sha256": "8d3b4552e3b709d79b16e4d90dd2fa07977a4a812a9fac499b7167e2f472c9ec"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/performerdefaultseditor.cs.meta",
+      "sha256": "bf3155f6f1b1b30e3afce8ed1c7ce009547a0553c0bcd459462a094e09a5da17"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/productionperformerbuilder.cs",
+      "sha256": "07c30ef307611d0e604cf55444b02f1c77d34c8665dbf92f8367548499d211cc"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/productionperformerbuilder.cs.meta",
+      "sha256": "07bd2acebb2d74c843566d8f9fcdebc8e062c9c616a54fbd5dd7354aa7392155"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/productiontestenvironmentbuilder.cs",
+      "sha256": "0a529299c15754511336634b975ea4c5cbdb2054e8abc980e02dac513a596783"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/productiontestenvironmentbuilder.cs.meta",
+      "sha256": "864a1350af1bb6f8f4dd306a9bc9431021cd0d131dbea8c8731a508c0ada9f54"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/scenebindingmigration.cs",
+      "sha256": "35762ab7dbe738a6565792b30dda2d735d0ae7123fa4e134d0448c275fd05d4a"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/scenebindingmigration.cs.meta",
+      "sha256": "d151c6ac19afa62c0995f91466e8ae28c26c0f2c2afec1c9ec1f656ed7166854"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/succubusperformereditor.cs",
+      "sha256": "6b25bfb752552f1aff8f4f417c8e8e1d6e32f8e098e0fb20421813d05450bcce"
+    },
+    {
+      "path": "assets/dazpose/editor/performer/succubusperformereditor.cs.meta",
+      "sha256": "84d16b49bb317654c2063a679930cc945e5833a631a62a2831254a2fa9e1166e"
+    },
+    {
+      "path": "assets/dazpose/editor/performeractionbaker.cs",
+      "sha256": "9f8f985a98457506122a3130559de55c7178ed79a2f4e9b508d6775196e8fdf1"
+    },
+    {
+      "path": "assets/dazpose/editor/performeractionbaker.cs.meta",
+      "sha256": "ca3ee1c21aa4ccb19d51acbb144fa0982ba392923bf993076e638ecc26bcf1bf"
+    },
+    {
+      "path": "assets/dazpose/editor/performergesturebaker.cs",
+      "sha256": "b771a3cac48911e22a00bc520bc981b413ab0031aa56966bc718613252041d81"
+    },
+    {
+      "path": "assets/dazpose/editor/performergesturebaker.cs.meta",
+      "sha256": "19be3c8307afcba2ab38f78bf455551008dc4eeacca6caf655be5a475f70b277"
+    },
+    {
+      "path": "assets/dazpose/editor/performerlipsyncaudit.cs",
+      "sha256": "c56960bf648c5778bee91cc108c2b8d44f2a9d7ab5b6b57e05475bff62119269"
+    },
+    {
+      "path": "assets/dazpose/editor/performerlipsyncaudit.cs.meta",
+      "sha256": "6204af9bd4bfb9a57cd7203743bc5a762e73de9e876d835a6d1631a6a20eed8a"
+    },
+    {
+      "path": "assets/dazpose/editor/performersalsaconfigurator.cs",
+      "sha256": "3759e58c0ce7378a691b3fe399887cb63acd3269daaae9c1309963e11ceb53b9"
+    },
+    {
+      "path": "assets/dazpose/editor/performersalsaconfigurator.cs.meta",
+      "sha256": "004c7773747fb7a0c1d8dbc66cf8cc36a323ca9865d267ac19169d15c435db9d"
+    },
+    {
+      "path": "assets/dazpose/editor/resolvedunitypose.cs",
+      "sha256": "4df42418963667ec6ab222202d977f71c47344980ad1762b61faa1b3c17a926b"
+    },
+    {
+      "path": "assets/dazpose/editor/resolvedunitypose.cs.meta",
+      "sha256": "7dcf8261984c2640ded3d27c6b9204eb9d20cbc2f1d43b028381770c50e6a1ec"
+    },
+    {
+      "path": "assets/dazpose/editor/toys.meta",
+      "sha256": "1429bfd92009d31f894a074879d0b4ae74363c8e22ed780455c30c5df6bc685c"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe.meta",
+      "sha256": "e4980b1020bd48403e244d7ebef81e6ebd47fb92512f09295dca5d2e46d8d265"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/clothingsetupbuilder.cs",
+      "sha256": "ea46765aa55bdaee2c3933387632b65e8846c1afff65e15db6d0a440bb28c3b9"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/clothingsetupbuilder.cs.meta",
+      "sha256": "22feefb31f82b0a99b1581a3c5028d3d9ba26ee161a087594efe3bf56b48e242"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/clothingsetupwindow.cs",
+      "sha256": "6b83f577ce6307a0d46656bd955814e36945198c8ce3af89f39fe3b6d2302ce2"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/clothingsetupwindow.cs.meta",
+      "sha256": "86c61548cd8625291f5578f89213c9813408e37de17a0389f424a642c077138e"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobecandidatereimport.cs",
+      "sha256": "9d221b64b0f4fd1cb10eb4de90d73725718150067dc9a7dbea7627d04a5e237d"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobecandidatereimport.cs.meta",
+      "sha256": "8fee953ac92b220f02300ad5b84f02f4fc11db9444d5252abaeb21be74ddd458"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobecandidateworkflow.cs",
+      "sha256": "439cf0f928e37e41efd37cb86186ba2b8cdf98336b1c2bfa9e137c22d495dee1"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobecandidateworkflow.cs.meta",
+      "sha256": "2efc7238031e67483fe41821d5de5f47e850fb0713ed8609b4e2b2ad5b8c3601"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobecatalogbuilder.cs",
+      "sha256": "711b329c0e66db611dbe5018eeb774613ee53be53c6d8e8324e4b271f3ecf6b0"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobecatalogbuilder.cs.meta",
+      "sha256": "8e0917d6ecef0e1d522d41bc676e81c568ae237fed610907fccc13a6c417777c"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobeeditsession.cs",
+      "sha256": "f2422e4f72f85b8f35397d88fb2c9d582785e57c5acc71db69c9b7fb84aebeb5"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobeeditsession.cs.meta",
+      "sha256": "f01823655683f387632cae1b59e57614336270ec527135306e5c81828da2940d"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobefitcompiler.cs",
+      "sha256": "dfb37235ca5850f3039bd4a69b1c8cdcd9a0fe8d8c8b38a6c474f17c756f8766"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobefitcompiler.cs.meta",
+      "sha256": "d24a6f5b66e1daa1b91c68b8d2336f47a73bb7f9e6d9737dd25417be9dfbd62f"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobegenerationpublisher.cs",
+      "sha256": "4e3494c8ce0115371bd3e406f73fc4b784a1dd1981bdfa21218f9713bb618bcb"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobe/wardrobegenerationpublisher.cs.meta",
+      "sha256": "a6d233ed8c4c3ea069158679c4aae1bfb2df95e0d0f06aeb6a75cedce0df7aa9"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobefootweargeometry.cs",
+      "sha256": "d1d79f8c88e00ca768e9020306d202032337d6abad0462a4e46bb7c72089ba7d"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobefootweargeometry.cs.meta",
+      "sha256": "ad9c5065a89043a1dc6ef16e9d4d0e6952014f7fdd8e0f9b0364d9fc482f8dd3"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobegeometry.cs",
+      "sha256": "0c4ebf45b7cd8f174431b462e87c389a12d3cac188f884ed3fbb64647cb08f64"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobegeometry.cs.meta",
+      "sha256": "1cf900020cd1a96ff6bdd06bac16791d38ca99133c1302bc6b83aee31c5cb950"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimporter.cs",
+      "sha256": "63227049c22ccac0d8f394e030dad29dae8481e6ddd9ed06df5f88c36dc8783b"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimporter.cs.meta",
+      "sha256": "2f0a89187f5b613ae126e39fcf75c72dae5f9c03024b27c18e94a8358a2b6b1b"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimportrecipe.cs",
+      "sha256": "8de7c62b3e7483d586482b633e2d052a05b136e7304d17a0eeaef863a49c718d"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimportrecipe.cs.meta",
+      "sha256": "f6d4a238406d25bfdfa31e906beb927a9358b1f4f3f23fbe310db0bf35d85604"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimportrendervalidation.cs",
+      "sha256": "8e68b8b2c622bd495882485c771f18135f96f583c236cf8e7a8d767a476eaf34"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimportrendervalidation.cs.meta",
+      "sha256": "40eb048c6ac63d7e2e92fc4ebac7e4d97f6510b2f07f91fc00bdb7b0b7f7d1b0"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimportreviewwindow.cs",
+      "sha256": "ba4b13c905bf08862cc84a15f4093d3103d9e8810240f63fc52a44b1eba74985"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimportreviewwindow.cs.meta",
+      "sha256": "ecbe435597475f94088c7313eb3feae2db425a4b78e8d70ddf11954f2902c36c"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimportvalidation.cs",
+      "sha256": "596f3d426d2e86925eaeac8aad9bd3435e9e5c974a84e0e70ecaf2c72f8e5d81"
+    },
+    {
+      "path": "assets/dazpose/editor/wardrobeimportvalidation.cs.meta",
+      "sha256": "893485f1f70691029720eb63d81bbb34b9b6af66aea1e81926a8f278bf3acaee"
+    },
+    {
+      "path": "assets/dazpose/effects.meta",
+      "sha256": "595af9e5b5d9d02e85ac6c5a39209e6c20042292e2f1001ba217cb31bcaf0660"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve.meta",
+      "sha256": "5a9df2b6c42991cf2edc711dda2221629ba3f363434a9eb86e6ae9aa75d140b4"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/lararuntimematerials.meta",
+      "sha256": "6d43045f5a50bb9a7fe9208d880880469d98a80bc3fa3f1c01e2c00388fe1a8d"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/materials.meta",
+      "sha256": "dcfa2cdc7be4cf339e2fe4732a6622861e25b5dfbc19bdb10a9af8d154c081f5"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders.meta",
+      "sha256": "aea80c80fdff3e64c81dff2922ba5c065e83ec3d60beffd61a22b5ec93b21fb7"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/performerdissolvefield.hlsl",
+      "sha256": "6f770f949e30424469a9d3c47eb6f3acb938016632adc5cec068cd86ae57e6d2"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/performerdissolvefield.hlsl.meta",
+      "sha256": "a4d6e0e74f08f7187b80cb65d9aea4c3df6416b93680ca36e5aca8d489f1be4c"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp hair dissolve.shadergraph",
+      "sha256": "60c21bef3e5f37af261b0aa3fcdd18e136726bd94f37a0520046158226d9ff10"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp hair dissolve.shadergraph.meta",
+      "sha256": "9011ea3f41fb0a2ba0d1b881a0573a82cb673f3716b2fdd8afa4c9a75c1552a8"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp metallic dissolve.shadergraph",
+      "sha256": "28fd55140ffbe19ea79ed00e81cb39cb1fb1c026e346d3a647bdd439f19ab2c0"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp metallic dissolve.shadergraph.meta",
+      "sha256": "fbd1a2a182815f3a273f14dc2bf39482d52145839a25affa758161d3ba94ebae"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp metallic transparent dissolve.shadergraph",
+      "sha256": "741a40236351cf3332c66076644d5bcca32b25f1f2ab7304e6643bdc142b8c16"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp metallic transparent dissolve.shadergraph.meta",
+      "sha256": "bd4f6fea7bb18f63dd25b5e3aafd6c64b663f39d08e1f7056f8c15e1998e28bc"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp specular dissolve.shadergraph",
+      "sha256": "c9373d12d2c39762fb7d69c8e72fbfc735823d03fcbe44141658ebdc5738c220"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp specular dissolve.shadergraph.meta",
+      "sha256": "d2254e1d5a640c6c61045c77cccdedb96bc99c74559cbfe948a9060bee7637b4"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp specular transparent dissolve.shadergraph",
+      "sha256": "01c373bfc47ac47cd45d9af2cec742850519cb024616b3317448dbad5636f629"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp specular transparent dissolve.shadergraph.meta",
+      "sha256": "7c875779a32bb501b73132e50aaa49e29121a4eec0365057e1cf05ae6d342fb1"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp sss dissolve.shadergraph",
+      "sha256": "9aa73a4ab69eaac38b03a718eae0247ce50f9d37c80e03d9e2e305c833a53aa6"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/udtu hdrp sss dissolve.shadergraph.meta",
+      "sha256": "7b9bab7ab0ee5c9980b8943f5a56e94ec9feeb83b3ec9ad6f37cafa1c3bdaf50"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/wet dissolve.shadergraph",
+      "sha256": "db52f66ef7127637e8714a7ddedb72529e29b51c97655a580b97e1039d2b9ef9"
+    },
+    {
+      "path": "assets/dazpose/effects/dissolve/shaders/wet dissolve.shadergraph.meta",
+      "sha256": "15a396e93359ccb8a3b3a1b5e72e34854ba7111228e223de75b739d38827a895"
+    },
+    {
+      "path": "assets/dazpose/effects/magic.meta",
+      "sha256": "2b7b92878fab9aae29f53a67aeae69174a36cb3ced24c50b9f58f981ab9fabe6"
+    },
+    {
+      "path": "assets/dazpose/effects/magic/arccyan.meta",
+      "sha256": "29e1ad51eaa16d24a889feafb1c234ebb77ca318e99ca4822b483cb43b1396ce"
+    },
+    {
+      "path": "assets/dazpose/effects/magic/emberfire.meta",
+      "sha256": "1e89424d2668634582c86203c5bbbca9386b411c00ec91f45e18388958e6ccc6"
+    },
+    {
+      "path": "assets/dazpose/effects/magic/riftbloom.meta",
+      "sha256": "bd39b3d75c120ef41d390954897834e42ada8885f8f5ab38c7a0cb7946fa57e9"
+    },
+    {
+      "path": "assets/dazpose/effects/magic/shared.meta",
+      "sha256": "f9cd7ca65d7b1782bc6d0ab9d65bc982e1bb394b7a35111942388a3e3c7804e4"
+    },
+    {
+      "path": "assets/dazpose/effects/magic/verdantpulse.meta",
+      "sha256": "3266123cc37138d5d2f71de70db7ecde916963d5f13bb9cf6703f7315df66b04"
+    },
+    {
+      "path": "assets/dazpose/effects/magic/violetserenity.meta",
+      "sha256": "ac2d138b7fda3b111c58676933059696861fc3921f66fa9dee6984384ad931aa"
+    },
+    {
+      "path": "assets/dazpose/effects/particlebody.meta",
+      "sha256": "3f68e09cc8a49f2669046d343cf69a57c7dbe1444c85ff085d2e795d3aa9d16f"
+    },
+    {
+      "path": "assets/dazpose/effects/teleport.meta",
+      "sha256": "983fc42664bbac7615752099fb4c53c6dadf614cefc6e29b697f747f71e0d43c"
+    },
+    {
+      "path": "assets/dazpose/generated.meta",
+      "sha256": "6fd4e1efa32e717e39e40de38fef740387fb94aa6598a17dd7d7d63931e9f24a"
+    },
+    {
+      "path": "assets/dazpose/generated/actions.meta",
+      "sha256": "22895b2766bc6bdbd72dd3d1fbf54c1fb4e720e27138ab6cfb5466a63c85cda3"
+    },
+    {
+      "path": "assets/dazpose/generated/actions/acceptance.meta",
+      "sha256": "70c456a1e5e48124eef43c6fdf1ba4017decb7480564a665267fcf67b350f3db"
+    },
+    {
+      "path": "assets/dazpose/generated/gestures.meta",
+      "sha256": "848c0fc4a2d10307852940ea113c4ae6ccfd4c353cfa6ee2c5f88cc5c3616288"
+    },
+    {
+      "path": "assets/dazpose/generated/gestures/acceptance.meta",
+      "sha256": "cd14a359eb071404f51f22232eea2127d62c2ce0dfdb7f2cac26a27b63a0d88e"
+    },
+    {
+      "path": "assets/dazpose/generated/handgrip.meta",
+      "sha256": "477a0f39e1c0f4b88e76398d4f2d99b055cd06c1b9f0ef83c0f844788f046c97"
+    },
+    {
+      "path": "assets/dazpose/generated/handgrip/profiles.meta",
+      "sha256": "ea3b1ad95b9f9d2b81dd848cb761813f99117c27d2b2f74438e5a40cb7daaddc"
+    },
+    {
+      "path": "assets/dazpose/generated/magic.meta",
+      "sha256": "7cf811c26ff336e0130c424b079794680b3a9fd0ddf69827cf9127f9ee292558"
+    },
+    {
+      "path": "assets/dazpose/generated/magic/auras.meta",
+      "sha256": "bda429e66dce59b7af7ba5a55af0fedb51f57de40f62d8bb0946cbf391bf54f3"
+    },
+    {
+      "path": "assets/dazpose/generated/magic/spells.meta",
+      "sha256": "f6c886dcb9693634bc57f7a903d240edb472249bbc3592dbad924351f33998b6"
+    },
+    {
+      "path": "assets/dazpose/generated/magic/styles.meta",
+      "sha256": "a339f029d29f304c819ec806f4732a004c81c6e681f5ada805990265d9a3d79c"
+    },
+    {
+      "path": "assets/dazpose/generated/motion.meta",
+      "sha256": "1e6bc3a9374a9aa1ef55458c98b5fe002abba21256142851bbe6735e3c3f2a19"
+    },
+    {
+      "path": "assets/dazpose/generated/motion/acceptance.meta",
+      "sha256": "e2ca15d617f5bc4dc774666266843865455a7cbdb20ae6ab815fbf14f5eb139b"
+    },
+    {
+      "path": "assets/dazpose/runtime.meta",
+      "sha256": "2207f2fe35ea378dfa829a973cb83ab6f8f49d20c478b8f55bf7a024fface745"
+    },
+    {
+      "path": "assets/dazpose/runtime/animationaudit.meta",
+      "sha256": "69ee7a9c49f72b7904c228231d86a92ed07f1317d6418b9475cd93c002dcd968"
+    },
+    {
+      "path": "assets/dazpose/runtime/assemblyinfo.cs",
+      "sha256": "37af1b8d34f9e1a8493659eeaa5e07c111b3ae69cedc2b2169bac679772137b9"
+    },
+    {
+      "path": "assets/dazpose/runtime/assemblyinfo.cs.meta",
+      "sha256": "aa96807c6bba3c1c6321c8443cfff59c775b87780ddc48d4391def6d3b7d1aa5"
+    },
+    {
+      "path": "assets/dazpose/runtime/dazpose.runtime.asmdef",
+      "sha256": "16c9562a052b69300d0f717e3f7a6fcf0dd1ec57e1ce9e11e7cae608ad05c809"
+    },
+    {
+      "path": "assets/dazpose/runtime/dazpose.runtime.asmdef.meta",
+      "sha256": "d591f58d6e4d1e662fc163a3738141b411c432c0c2b037aca2c6eefb14c96cbc"
+    },
+    {
+      "path": "assets/dazpose/runtime/dazposecharacterstate.cs",
+      "sha256": "03c0aec622534c6a9494e23187e19930a2010d1a8dd3e45d159f9521a98446f2"
+    },
+    {
+      "path": "assets/dazpose/runtime/dazposecharacterstate.cs.meta",
+      "sha256": "41a9ce7946d43c7c2df105978d832114bdb8afad4c43a30283e4b450286559fa"
+    },
+    {
+      "path": "assets/dazpose/runtime/dazposetransitionextrapolationjob.cs",
+      "sha256": "275fe34f7287c286fe360e63e7aeeb61628b3dfdc9c4869d0d7658c0478c2cf6"
+    },
+    {
+      "path": "assets/dazpose/runtime/dazposetransitionextrapolationjob.cs.meta",
+      "sha256": "9f91aa68258fe13e2295f53a83831f9cb70515407d8b981a987e98d26e694d1d"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion.meta",
+      "sha256": "1fa6a7ea6f1b059607d30e1da32b9335c334def16dd66c95acb862bea8de3127"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript.meta",
+      "sha256": "cc05d519d4e8f9ad91e093fedaf0d7420df2efcef8b40d66374099f85bf8bb91"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptaction.cs",
+      "sha256": "60918bd553209280bf8e44f700e5d17eac9ecbd4272c20df5bbf9e9f007517df"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptaction.cs.meta",
+      "sha256": "e1b01f4d40c9a339288ef178210d35848a3ad65b90368fb4a296af2a9d8d3600"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptjsonparser.cs",
+      "sha256": "4e128869947f49e0221c358d88f0f233b40c74c7d7a1ae0c18adab1646e02cfd"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptjsonparser.cs.meta",
+      "sha256": "420703df988e5b89487a243567eb16d481671b49e6765e81332785ded5854ff6"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptmotionprogram.cs",
+      "sha256": "ff16b2725e428e766dfecd21f79750ad35ff263a7a18e708d29b0d1fb49b72a6"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptmotionprogram.cs.meta",
+      "sha256": "72ccd877a5c833a10945653bdfe30227303cd8e3653db0467c7975ecc28a2131"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptplayback.cs",
+      "sha256": "372dfaffc9cbd6738f3e5ea6a99dc7574eaf430519edb2d8c5c1d31d0aecab55"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptplayback.cs.meta",
+      "sha256": "5718a325331ca097abf0924ae0146d59695ca9ebe6dfcc6154f4521a87811a35"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptsegment.cs",
+      "sha256": "6cea4346d328e566db58007f376ca022ca00c708595cf12a59944b5eaa8facb1"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/funscript/funscriptsegment.cs.meta",
+      "sha256": "96ff2d309b3022f2fafc5ea538735bea604fc8e8b5d399bed00e0bb29e04f166"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/imotionsource.cs",
+      "sha256": "7f03f6a3d15b631ff9008aab612da41511776d3c0db7a16d606d0e41e14e51b4"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/imotionsource.cs.meta",
+      "sha256": "ecc610ae68b5fbb8859a9624259eb9d4142fea651d78b78331922c80e6b7b9bb"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motiondirection.cs",
+      "sha256": "bbe5695f3957d929741c783b6447a4eb8f8423a659810a7e9d0118fe94254e71"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motiondirection.cs.meta",
+      "sha256": "3617c853178ca83e33b91f0290b6e9ae42e93dfb2c97f274f8ad15e877b6a58e"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motiondriver.cs",
+      "sha256": "73034586a409225b7b6de24242f4c6e19d88007d634a6d9eb933847c2fb54b5a"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motiondriver.cs.meta",
+      "sha256": "000addfadb1a3c10b0c2d3f834f2ef9dc188bfc592195bd067aa324caccbc3a2"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motionsample.cs",
+      "sha256": "1e7aeb219a4ce162b4e2649a01fc0bcfe15ed7adeb14da803d858c89a8ebfdf4"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motionsample.cs.meta",
+      "sha256": "97e4e56f35e2fcdaff52159f15ed22992c775583caf949027898c30d5373303d"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motionsourcemode.cs",
+      "sha256": "46f7c669bb60ecc1de6bc029cfb3e2c971f3991127be0c04780dcad24788f6d1"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motionsourcemode.cs.meta",
+      "sha256": "3ee4943104bfc54cac3cc6b7f36e28e689d7188630634fb1b9c632da6794b5e1"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motionsourcesample.cs",
+      "sha256": "a56d42acf709f5d5675ac3e3b3001abbace672b01e5dbf9d04c49b30a3b2089a"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motionsourcesample.cs.meta",
+      "sha256": "1e9b6949da80b503dd627eca83980be5657eaf3a0353da78d7551230a13d83a5"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motiontargetsegment.cs",
+      "sha256": "7f3ac528dd5b67741e08ef72d0600b381c00802b4cb1d623a2c528a6291df634"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/motiontargetsegment.cs.meta",
+      "sha256": "269597d1d3f9ef8d0cf112ecad33f31c48c1750467ecb32ab028d98099c5ea4d"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/sinemotionsource.cs",
+      "sha256": "dc48aa2687806546e8619d0b7cced6afae1cff6e4965dc88922e48aba005dee0"
+    },
+    {
+      "path": "assets/dazpose/runtime/motion/sinemotionsource.cs.meta",
+      "sha256": "2bd40e4d48c3aff0207e867833d3fba125b770ebe1bb89a880f2217f5239b64a"
+    },
+    {
+      "path": "assets/dazpose/runtime/partner.meta",
+      "sha256": "19903b76f446af6f0cac2952e9ab1bca452d202c7c01e27e3e0e785817ce0641"
+    },
+    {
+      "path": "assets/dazpose/runtime/partner/partnerbody.cs",
+      "sha256": "52b7efb5c8389d331958ced2940fe67ba9538095e5d1f040a23d8b48cd560cf7"
+    },
+    {
+      "path": "assets/dazpose/runtime/partner/partnerbody.cs.meta",
+      "sha256": "cf64a4854c8c72ee93c936bb1de4b640da5cb602e7099c52b702ee9a4b4000e1"
+    },
+    {
+      "path": "assets/dazpose/runtime/partner/partnercontactprofile.cs",
+      "sha256": "edae7180ce0502de2612214c2a823255d8624c114e52ae3f8eea1e63239b88e4"
+    },
+    {
+      "path": "assets/dazpose/runtime/partner/partnercontactprofile.cs.meta",
+      "sha256": "fd468396a1862fa6ddcc1a2813019d12b2fcec2fbbaecdf3084c1099d532cc79"
+    },
+    {
+      "path": "assets/dazpose/runtime/partner/partnercontacttarget.cs",
+      "sha256": "00d8e5704720b71e9ec64b277cb8eb6c4c07ac41ae7add04bd9100baad73aa4c"
+    },
+    {
+      "path": "assets/dazpose/runtime/partner/partnercontacttarget.cs.meta",
+      "sha256": "7bc7c817a9cf3b6c45cb2a1fd6d9e59c993ba03ee0a50d35439e7aa669966ac5"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer.meta",
+      "sha256": "d92d7d6ac32346ad6a67a1a4059be8b4923034969d28fe56e34a2a762dc62ed9"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/actioncompletion.cs",
+      "sha256": "5633089517445c02836c42f48d55e2b4ad7a0f95dbfd285f234296bb9d17fa4e"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/actioncompletion.cs.meta",
+      "sha256": "4709dea971cbd37bcda8f83c4bf76b5f5a38cea74c5bdbf8333cc77d15fb6d04"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/performancecommandexception.cs",
+      "sha256": "0d1de6c1ca97935315f40ce9ec12e8cbd38725532a6f3d1ca5be2e1d02c81230"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/performancecommandexception.cs.meta",
+      "sha256": "204599dd717a36a1c5be63347a77e75b0557062f8b8bbaca0d0527f3a863b808"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/performancerun.cs",
+      "sha256": "825a7e7e7039ae8c71a67d6d62b2b546cf0f9973159362d3ca013ad190903e39"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/performancerun.cs.meta",
+      "sha256": "5024d78efa2c2dcc665ed5088339bfff483dabbf06447295aeb653c37e1ed533"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/performancetoyresult.cs",
+      "sha256": "c88de2b3b493cf62d6bac7ad041a1438ef9c3fd28ec1b3776342c86b559d71f2"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/performancetoyresult.cs.meta",
+      "sha256": "8de1f9ab69f6359b8fdfab89832e2147a0e5078401ff005971d738c1e8b4d9f6"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/performancetuningoverride.cs",
+      "sha256": "0be7abff8a73bc378a94dc5b1b3581959df5555cb900aaba73ef30cdba6a193c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/performancetuningoverride.cs.meta",
+      "sha256": "eb9eecaebddc3fbef3de978611ff51714e56fbcc39a502ecad0a0e875e294d8d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/scopedperformer.cs",
+      "sha256": "05304d374824fe226e8cbc643561d6a884a89fe503d52785d8b47a3a76356b25"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/scopedperformer.cs.meta",
+      "sha256": "af97b44ecea6d3a7b428ab1d59de94aeb03b19f550ef21c433659051665f5b65"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/scopedplayer.cs",
+      "sha256": "39d8373beef6dad7d46ea401e94a3cfaa8a0b99c13e57a06f9a934807d4fe4b9"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/scopedplayer.cs.meta",
+      "sha256": "0fa087a91b7809a9b0b41912637d9c3f840d1d0d1aab80d6d8e6c3aca5d46fa9"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/scopedtoys.cs",
+      "sha256": "3d987b302096e870635d3d01aeda3db562d12ab84e9ac9c5e911c8a368e6af58"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/authoring/scopedtoys.cs.meta",
+      "sha256": "b9159ee5b1d1daad22bfd0d882c83a1e53ae869043e053b1d1c29a15546ab1d8"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/dissolvecompletion.cs",
+      "sha256": "baa40093641695d750ec620326b37e0a0c6560dcaebb3755f3581880f50ceeee"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/dissolvecompletion.cs.meta",
+      "sha256": "22c0d8774606d639465d53fba01bb25109dea7d6ba8619c4ccaa655b12e16d6c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/gesturecompletion.cs",
+      "sha256": "0f3b1d2427717dbf98245272f19aac78bc1f630003b4363aca8bcb66f6ca4162"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/gesturecompletion.cs.meta",
+      "sha256": "ac7193b1690a8b4fc96639ab4af9f5a9608a50e8799ab64ce07a052d1514b2ed"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip.meta",
+      "sha256": "259081e244c9b44f44b11f51145ed3034fb94d87207d511a22f4fe1dea006d3c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/gripcontactrod.cs",
+      "sha256": "79fb3bf8196a5ed7b0ed1901199e92e7403df0a70736433e8d3f9fe1b66ececf"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/gripcontactrod.cs.meta",
+      "sha256": "662f09784f7f3a1bef67d741837242e9ed575bee0948a3de439073f8fd619367"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/gripcontactsurfacedata.cs",
+      "sha256": "f00161b19124e4f901ea8e6510eabca72c27583e1229fe65c0ab3cc8fd436fa7"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/gripcontactsurfacedata.cs.meta",
+      "sha256": "6a02fa679279f5a73bf95f9120b41d43983ba1895cbb6f2a0433d5c72e51fe39"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/gripframe.cs",
+      "sha256": "74cdf1376eedff50e5f3a653a2c0892bf40bec5c6c15a2c5cf6349fafc6713e1"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/gripframe.cs.meta",
+      "sha256": "b2a541c11a5b753045381cafc111318e07faa406611b5aa69f00694b1abf403e"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/grippalmtarget.cs",
+      "sha256": "2f427d8c678a0150365814e23520cf48bc127ba043315b5f67b344a7cf7bd467"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/grippalmtarget.cs.meta",
+      "sha256": "2fbb3e85fae38d24c006b6536dce3ee513e7f7eec0ed65948286d53c3e765e35"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/gripreachplanner.cs",
+      "sha256": "5c2b771da01141651bb56dd4b0ee4e4ac61f4611e7aae308eb1d08ce559b6d5a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/gripreachplanner.cs.meta",
+      "sha256": "7b46d727500f5353c78517f84e434894dd69de775948c8f82e4e7e95a1115617"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/handgripanimationjob.cs",
+      "sha256": "f857576606661a736fed2e8ebc4dba23759866fb136e6cc8a3849bccc87ac7b2"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/handgripanimationjob.cs.meta",
+      "sha256": "67168ec8c93ada2b3b993402d35dce02acda907dda74baadf94c8a7b30534f11"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/handgripdefinitions.cs",
+      "sha256": "5f777322967469a6b036715c2b333c04e917c8cd664a5b856a9cd830821e7557"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/handgripdefinitions.cs.meta",
+      "sha256": "bd3deb41cbc1567c3194647af10d920603e8ce35d34355c6c17904233a8a88f3"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/handgriprigprofile.cs",
+      "sha256": "6faa84db3c90e93a98a21bf8e15dff91ade569a70e5a6c5cae24fd38343cebfd"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/handgriprigprofile.cs.meta",
+      "sha256": "e48c3d962323b650c9ffaa0ab1bade98c9b97fdf96e6639374386c988c7db934"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/handgripsolver.cs",
+      "sha256": "54533d16a4ba1566532667258fdd09e88b7cf8733ba9e46e882a801c263a9b44"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/handgripsolver.cs.meta",
+      "sha256": "b9c81040cb94c9c3c2fac9cc2790950f4365a9c68668eb63d0530a1992cfcb07"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/igriptarget.cs",
+      "sha256": "3945ccb7c58cc4b17a03e8826526e8ab1a8a8a42db3a6461f31e577990b51e79"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/igriptarget.cs.meta",
+      "sha256": "3b2c5ad023d40fe977066ef223498e8c5cbfee388f3837f7a28e97a48dca1992"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/performerarmiklayer.cs",
+      "sha256": "ca240e8f19f629f55106fe5e5a6d433affe498fbbaf7b9ad7ebfd8262a2266bf"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/performerarmiklayer.cs.meta",
+      "sha256": "eeddafd13ad093837fd63f60028803eb9e7e9830631052a47333657a443a611b"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/performerhandgripcontroller.cs",
+      "sha256": "5c68c1b3246c9294086b6b23b1182e827e904749a3c6f82a42bbd0b1bdbf935e"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/performerhandgripcontroller.cs.meta",
+      "sha256": "a212f0336c2e6627fee82b974a4db3f976c7e49990dff586591c26a71b79f26d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/performerhandgriplayer.cs",
+      "sha256": "8212fdabf9812a5da0aac1b1588e44af27ec2d7ef7d71774530e267f964934e1"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/handgrip/performerhandgriplayer.cs.meta",
+      "sha256": "85ac8556723fb772032f497fab1740c6554cfefa0412d9b9a04584dd533bc6c2"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/laraanatomycontrols.cs",
+      "sha256": "59ce130f0b0bbc77ccc57dba47a203f871b1085a7bf60d84c893f107fb5f1110"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/laraanatomycontrols.cs.meta",
+      "sha256": "a75007f1dfb3fdbb84d778933faa462fc7af91c12e060ab1886dbd86d533de9d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/larafirstoutfit.cs",
+      "sha256": "228d1bb6cfe74c8ed049db6d20a1f0ec6a3d3bc2a0d8a8fe8de4eb6a8b0dc08f"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/larafirstoutfit.cs.meta",
+      "sha256": "c87c1c48cd13bdce0bd9930c0ef08597326ef423fa9827366ee04f9bfd39d3b3"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/laraheelreview.cs",
+      "sha256": "660ecc4c8adc4915d139548c4c79b4c06cf895b0dc2913e6ec1c7aae492c9447"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/laraheelreview.cs.meta",
+      "sha256": "40d23fa1cbd3142f3fd57990a707841ef447e70d07db3afcdca3ff2e883f8a9a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/larawardrobe.cs",
+      "sha256": "85b051ca0e5f6b03e37cbe3a6ed601313ffd0157fd7dca5b39cea076b9f9fdab"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/larawardrobe.cs.meta",
+      "sha256": "c4fc755cae259084bf984b1a9304ec225737ae638edade3015d7b12ef27d7955"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/locomotioncompletion.cs",
+      "sha256": "bc1076ca81dd05ddc4ab75d60dce7f3f0676519f0d9fe0d7edac3e20b27a74b2"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/locomotioncompletion.cs.meta",
+      "sha256": "e53d640032ff7280739e6bf6dc8cdf7f48abc355089d2ad718fd90263dedcdab"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic.meta",
+      "sha256": "e4780f990715d71cd43299d29b1531d8fefc6263a1ae083ba71aad81f256e65d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/magiceffectinstance.cs",
+      "sha256": "96c7d8ff3793963d606c2ad9cffbf34a74b6b9983aa9c9506c60259a2a5d6823"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/magiceffectinstance.cs.meta",
+      "sha256": "7b6fe1c34f0dd384d2ef93d951c6fdd23a3a7e8b48f54654a2d2ee1af1ca50dc"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/magictargetgeometry.cs",
+      "sha256": "4b46931082a063bac5f65c2fa5c9ceade75b794e2fae09a66ce57dfe15dbebbd"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/magictargetgeometry.cs.meta",
+      "sha256": "af49b224721416535b01a2565918b84d879a7eb69510c5c0d7604bf45649c373"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performeraura.cs",
+      "sha256": "e117cba597682a5d450bb2824021f1cc527aafcc004b98f781068b844f49910f"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performeraura.cs.meta",
+      "sha256": "516c5982e45bae09f413b497a18a4b353a0585bc79618d65a2fb1083a22ca3b2"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performermagiccatalog.cs",
+      "sha256": "96506513ee40097e50fa029937a31ca25d9029985fd6a0be84a18fee526d58d7"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performermagiccatalog.cs.meta",
+      "sha256": "e8da711e00ee3dcebd3f823cfa1e64d11262316e3f219ac7ecd69b11e5d553b3"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performermagicruntime.cs",
+      "sha256": "1ba3a88482e2d1c77f4332fbb6e916ba8f181532ead0acf2e64e4d8ad64aea94"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performermagicruntime.cs.meta",
+      "sha256": "9dee76c8d6d0f50472f73df4310f1e968566a04e5f13055129ba4dc30e193130"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performermagicstyle.cs",
+      "sha256": "02b1577ec34e08c96945f24c7e0fe8fbb0b592ea82c91fa5f689f2fd72f958f3"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performermagicstyle.cs.meta",
+      "sha256": "37109b3a970cca8e9d79aac1492390820d486e385c969ff0d78e225bfe1b6576"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performerspell.cs",
+      "sha256": "0f5ccb066d0131889dd898a183ed82fb950175c03fa024b3bb77402349ba10f5"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/performerspell.cs.meta",
+      "sha256": "20fdb165671f31dec868e9c6775c602a3f8304e84700b2e988770c774015ca20"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/spellcompletion.cs",
+      "sha256": "518e5022bc11fd33b4beeb159a2fa247d14ac3ff3015b521a8d43ebe1c1a6867"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/magic/spellcompletion.cs.meta",
+      "sha256": "2de18898b2faf510dddb9b209e82356aa3ea95bb525c24c706b41d1a2a9f4cb6"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performanceexecutionscope.cs",
+      "sha256": "cf97cdb040b226fc0333d7d581166107f4506ea639fd28429390b5e44d01452d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performanceexecutionscope.cs.meta",
+      "sha256": "e7ef35351d863175626be05e802393bc73da2b35813a4393344e9dea127fa3ff"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performancescenebindings.cs",
+      "sha256": "3a1d5bb8f31f4479d1b386e044e86b8ec7c7f6b9333c6d1222f3b6901169b07d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performancescenebindings.cs.meta",
+      "sha256": "3edcb38fb25d0aa59f0d1ae9c892ee18643ee7adf4a61982fc7afe2c3ab992f2"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performeraction.cs",
+      "sha256": "d963365e77a9dee3c5ad23c6f0ed56fa5ae6a50b4c5f5fe63efc01774f107c54"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performeraction.cs.meta",
+      "sha256": "a9f7a2ef8879a1ccaacbaeb8089d819688d4edbe3df9d7cdc285c0a5c9b6915e"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performeractionlayer.cs",
+      "sha256": "4a265145c79a02a49f5fc586d748a26db2d77960ab2d7832748c011468ab10a8"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performeractionlayer.cs.meta",
+      "sha256": "c395176f5129ed9bb27ab9a8f35044c7311a9d982e070327f9a071ccd91db505"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performeractionruntime.cs",
+      "sha256": "c6ca413cef3c3bfd2818fd60937b9167f65cc4fb5807a307874fe17b3576ea9c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performeractionruntime.cs.meta",
+      "sha256": "b474527575c43687905f7c797220922cb015e32b0205d4abeafb036bfc346d1b"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performeractionstate.cs",
+      "sha256": "625ab0abeb92a2ef9419cca2c2ac7ed47544dc9778b9b4ac14f8aa95e72cbbf0"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performeractionstate.cs.meta",
+      "sha256": "4f42ee76e337c3e13f19482590334340dfc91df1f9f37d0a9bd4187dfd80867c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerattentionlife.cs",
+      "sha256": "f335bf18f4b1be605bc8240cd966d8ad69bedd32ee631b03810ca2d7ccd1751c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerattentionlife.cs.meta",
+      "sha256": "330a9e68d9e8d346a7ace658998fb8aa4e3cbf6eb4171f3859f5c9a3d3219a03"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerbasestatecapturejob.cs",
+      "sha256": "65a0bea3efd6f50ea92c87a917faa0c2af265fd26add5a005561244db41e62cc"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerbasestatecapturejob.cs.meta",
+      "sha256": "d84b08d6e9b1f3275324e1a94393e285900d34a403bec677aa1b0f4828e54945"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerblink.cs",
+      "sha256": "efb312a6eed1d01df73ff6d70c0b54ad8c9b3951d755e077a7fe95b5b5799512"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerblink.cs.meta",
+      "sha256": "8b7d86b50a68d80779b4b45a6cb402cd7967df893274292c08d65b9cb651473f"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerbodypose.cs",
+      "sha256": "c79fafa880425a1d7b2e8a8c6dff1068c3a14bd2613c0a1f2557cb2610983711"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerbodypose.cs.meta",
+      "sha256": "1f7cf2db8730d2406f1c9bf007c9b8ead3637c6bc5bef8ee84404a039272d768"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerbodysourcemixer.cs",
+      "sha256": "3a414e0b77c75ef817d7da3b73f2ecb1846ba174b65bbb09d7d4889043551f20"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerbodysourcemixer.cs.meta",
+      "sha256": "987389e2d0efa4fc2ad87db266e6c8113a684dd0930dd7b80a4ab8e9bcd1fb87"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerbreathing.cs",
+      "sha256": "5fd9bb39ec1a2b003eea6fdf286c7185732c63266c47cededc6d20d6772724a6"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerbreathing.cs.meta",
+      "sha256": "f200de4adaf40397e469e13ee2361c1393c88f318ddb4e3de81db1987745dda5"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performercontrolsurface.cs",
+      "sha256": "0348d6d7d324c4a5eb52f496fa55138547b98599495b1e703b09619b0a6ef8b1"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performercontrolsurface.cs.meta",
+      "sha256": "0fada26aa0b507da70b21511cb1256b5d9efdee5f6b9fbbcb1bbabe9d59b4eb3"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerdissolve.cs",
+      "sha256": "519a9bd501486abcbf4117b86827b52d02032145dc8ddddbe4581d032ffa2c98"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerdissolve.cs.meta",
+      "sha256": "aed2e92ad4a2c4f33830f7a91b492f9025c01ea0041ac966064047dbc80b05f1"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerdissolveprofile.cs",
+      "sha256": "923a891d478573297a828c2861d5aea9d1b8354b302507ac09201e16961be250"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerdissolveprofile.cs.meta",
+      "sha256": "0394029466ce636b14fa0d18d454f9e1cc2e7baf69d5a660e6c85b4f603703db"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerdissolverig.cs",
+      "sha256": "52321513e0e8e0cc13ed159054b98051aa605aeda65aa2eec256b0c0cc7b8d6f"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerdissolverig.cs.meta",
+      "sha256": "3db9f5d279b485d6f16ab9c835818693bb186f710c2fa9fc986d9a72c0624cfd"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerexpression.cs",
+      "sha256": "f01cdf0fc1f5fe508abece1df03fce00a49f692679fd3537d9b69784b7d69d8c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerexpression.cs.meta",
+      "sha256": "484a555b3ae08f110ad118a076cf6446f8de4716b59e99096e5e05c0a37faf71"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerexpressionlayer.cs",
+      "sha256": "1611f5356ffb5a4af618922c5bef33091e83b83943b635007275c678b7f25f5a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerexpressionlayer.cs.meta",
+      "sha256": "e6985c6365ae196fe3e8e9618706daff708406a59e195743af1fd3fb76c2d952"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerfootwearprofile.cs",
+      "sha256": "c99229b74dbad99d97b5818747b550c3e8680b8f7a3c1ab32ccec484c6b38dc8"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerfootwearprofile.cs.meta",
+      "sha256": "89fb81c0d22919be8a0353fb509123a7f4696dfe54c7944260a75863605f9d29"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performergaze.cs",
+      "sha256": "b7fe3b7f84ffd84a7983d9dade9258ece39468f3b4bb208e056e2af5ab9de965"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performergaze.cs.meta",
+      "sha256": "c353848827a021ab398fcb7f51d0161ab89483c97e38bd3c45236b3eacf8d9dd"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performergesture.cs",
+      "sha256": "05e72f11c9fd301dceb54b0db1a90282ca851eda78be3e4c7e5170e55a8c9e50"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performergesture.cs.meta",
+      "sha256": "c7ad0573c0c8091bbc14f4a29b75cf7631c1500ada1714e139b5c981a5794f77"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performergesturelayer.cs",
+      "sha256": "adf7e77ed9aedf6f7c34e140d7276e7afa2aa358453a33b1e8066bf0237fea75"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performergesturelayer.cs.meta",
+      "sha256": "96274d637481e106f17fa83ca4e7bc4ececc5b378bef2577b6b6c692c351ee73"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performergesturemaskutility.cs",
+      "sha256": "8e31be168d0fc1b1ed53b4dc328da14448704c4768cc44b48fcdfa93a640514a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performergesturemaskutility.cs.meta",
+      "sha256": "4dfba2aa7c5b6ed6016a8cab27753775010929103b8410b0660bd0911d36e42f"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerlipsyncmorphcatalog.cs",
+      "sha256": "d11bae245a22f147bffcc4419a5a76d55234946873e5196e46c01831770f87a2"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerlipsyncmorphcatalog.cs.meta",
+      "sha256": "a79004c599fbf8099180998d4ca0261e1756bb10407293d7bc905b13a481b73d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerlocomotion.cs",
+      "sha256": "3658d5be01afe76b82e056bb0bbc9151012f0aee3e41f4b0ea438168ede2f61c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerlocomotion.cs.meta",
+      "sha256": "0ac629a0387221061282e4142f5d1edd758b2a6c0fe2287eedeb8323a67f0760"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerlocomotionmotion.cs",
+      "sha256": "369e0c7f58710dd1c515cd2dd5e7c5766dcf148a44593ff0f33dbaf9eb8ac3e9"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerlocomotionmotion.cs.meta",
+      "sha256": "d2fb8cd8ff8fc926160579cc0baa46fa5259e4593a604025327a74dfc6435cad"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerlocomotionprofile.cs",
+      "sha256": "e21a0b70207455cde4eeae31cbb86709fa7128ff82efcab028dcaaaecf83a953"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerlocomotionprofile.cs.meta",
+      "sha256": "1fc830a4c6074adc408305d30b19c4ab7253686131922caa52e23a3a498a09cc"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionconsumer.cs",
+      "sha256": "cd68398e9ede23ea95fb671fa3b8c12959d3c2d32737d66cef3e56bf7a4f98d9"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionconsumer.cs.meta",
+      "sha256": "2e00db9737dadf09b1711f5cd94e483d500b30dee3499bdde189d6041856cf5a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionlayer.cs",
+      "sha256": "75dbd174752b8b770514d3fb47dc6ace79fb480c7aabeb71374bd0f4502b7261"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionlayer.cs.meta",
+      "sha256": "a8c5c8d2b8e0367a043256bf5e914733f90090d84ac8049f7b23afd0f92459ee"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionmaskutility.cs",
+      "sha256": "880da68df315fddba2aca8f23eaf5248e65e545d0052c63948138ab3e0d6244d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionmaskutility.cs.meta",
+      "sha256": "bf03b63f648f4b34e90b59f79cbab0772b146f27c9341d2c8f884272dd34637b"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionset.cs",
+      "sha256": "ee4d8f997b1aace7985901de2d1c6aafa353b83736e2a30cc2b39e9f8dec871c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionset.cs.meta",
+      "sha256": "2fc274152cf97b419f443f7260d050dd319cf82d8fdf2045ec8e8e2110e05211"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionvariant.cs",
+      "sha256": "2e73179fa803b4fbd774447d8e12945ae681c7d5f9b06aedcf19191ba0b7df4a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performermotionvariant.cs.meta",
+      "sha256": "294381378c88f3bf061fe8bc4cdbcc77b6f1006267fa1a3def6db3d4c5f36151"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerparticlebody.cs",
+      "sha256": "c537e991eb983c713a218eb2172d8d325c4b204f632681098407e9455ac6bd99"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerparticlebody.cs.meta",
+      "sha256": "c64937404358af34121d5e5563173bd2d00237952ce0ac2e11e3fb9e17547436"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerpose.cs",
+      "sha256": "b7df2bbbf44c89eec4227c2a00b16bfdd31fb6196eeaede52fec476300c0bdab"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerpose.cs.meta",
+      "sha256": "84523222aa969f971743f03b612bae11267857d853d53f84a1437a5c4aab2881"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerposeextrapolationjob.cs",
+      "sha256": "3ddaad6d51e13f750ab80db72ee042ef39d65b136548d65a3bf3167d93168c95"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerposeextrapolationjob.cs.meta",
+      "sha256": "5feafa5b4034baacbee07cf5c8b61e3d0627e20247ea14c4d4fc81cdd67421c1"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerposestatejob.cs",
+      "sha256": "df1dd646c5cabc3f12e4f23b215d742f45efc4056ff4355ec10259d88f0b58b7"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerposestatejob.cs.meta",
+      "sha256": "a74233e8b7aa3be114c5147fb851d51bc475f518426e0df27faa9115207e7730"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performersalsalipsync.cs",
+      "sha256": "d70f33a2238191f87b164f710baf48f430584b55c6862635b1eb81a0701289ab"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performersalsalipsync.cs.meta",
+      "sha256": "bc4f79338c47b8999776e5a3dcf80e2ab5e813f83047e77db89f1c139d861917"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseat.cs",
+      "sha256": "44276a6bf4d3246c3c8034e426764adb310574cc7cbe2e9e6b16276eb4ded82c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseat.cs.meta",
+      "sha256": "c3db7655d1503f9de4c4f4edc3897a312cd01a0a394cac8ee4736d2e81dd16bf"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseating.cs",
+      "sha256": "6313130f7a927752231c375ae91a13d96b4d8ac365db922db9ad4b2df09efe53"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseating.cs.meta",
+      "sha256": "cf24934d7373b0b6c4ae39adef61a97fec67967687361ee36212e043b7df76d2"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseatinglayer.cs",
+      "sha256": "bfa6779688bda8d5f910036f4f6dc673aa251fedcc0293fb760b0ee0fd3f3df8"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseatinglayer.cs.meta",
+      "sha256": "f25803f7a04d97dead55ff4a33db868f8c1c870419b018fe1b7d78cc651b01b0"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseatingmotion.cs",
+      "sha256": "5af86426baee47fd053a69d4a0cdac96f425265a34856106a4e9d3d7d05fd813"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseatingmotion.cs.meta",
+      "sha256": "8b06db6f5ad5f77f9482eb8dbcb2b39a1d3e283ff210979d1bf714ee9333101c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseatingprofile.cs",
+      "sha256": "34b6e48316bc736e20aaa7fb63569b87a2d9df37bb27c28aee1ececc12363ee7"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerseatingprofile.cs.meta",
+      "sha256": "e5d8733516c2069482cedd656c6b8913242c9f7e60021a4759cad36608fbdbc5"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerspeech.cs",
+      "sha256": "60af773e35b0fcbc3c47953743d875b0253d2dd3f11fd03a2f4b7ebf6895dd3d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerspeech.cs.meta",
+      "sha256": "83a2876540131d1caf701e3c281c5824955ea232e236cf3e9a3f27fd8a64123f"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performersurfacebindingasset.cs",
+      "sha256": "7900a4a08bc595d99f12cf709f821044369fdd752d27f177e2ad8f1850d744d0"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performersurfacebindingasset.cs.meta",
+      "sha256": "8bd9bb1d71ef5720a2a61a4a002f9e7b094a1fb7a8556c0a39379a0e24c23f34"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerteleport.cs",
+      "sha256": "e82e1de8c74621dea7ba66b9858311f604131026be99adfda73f7af855ab9fde"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerteleport.cs.meta",
+      "sha256": "8bcef180eeff75af67f1c536bdec38a7912d9fe088457461a169e668b9e2344d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerteleportprofile.cs",
+      "sha256": "694796f74f3a2de3b6871463ed56ff868990dc1201d1c173d5980e4a6dcabc07"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performerteleportprofile.cs.meta",
+      "sha256": "444bcbc232d85dfb74f64b91e13a265c7df3c51cf18d10ba42d22d0069d8f380"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performervisibilitystate.cs",
+      "sha256": "001c910d18ea718d43e12ab64b8bb7a25afd4403068d321f992046a58d55028d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/performervisibilitystate.cs.meta",
+      "sha256": "33b4da403b2a17bc5f946e3012836eeb63111ea8c6cdd5052232460ac9e51657"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/posetransition.cs",
+      "sha256": "e85e37e2eb65979af7913770bd32618b1c5f91d736d6e5443eed2d9ac8ea31be"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/posetransition.cs.meta",
+      "sha256": "68e01041f3340c30c1be43d9a7ae40109567199d7b398586bb0ebade370a0d82"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/posetransitiontrajectory.cs",
+      "sha256": "969cb7aeb1a28ab42a9daf29ae463db86bf4dc2a9e01974539d14b3a2251088e"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/posetransitiontrajectory.cs.meta",
+      "sha256": "ec0e8e5b3fcb5e175f5b889033d64989b174c5e6123514b376eb83c611dd5625"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/succubusperformer.cs",
+      "sha256": "a9fdad8f9339ad630dd7b8b3cf7cf6faba75a53e49c4f661071bfee44c08da7a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/succubusperformer.cs.meta",
+      "sha256": "aeac496634273123ade1f40349f0a799688f66c3d7cd50badae48e675c67856f"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/teleportcompletion.cs",
+      "sha256": "14a2ef8d2f609ddb6d22991bb836b4cc2b13e8fec5bae8040355d1ef19ebda30"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/teleportcompletion.cs.meta",
+      "sha256": "50da6db6370e7ef6358ee6118e98cd91a18c2e4ec66cb2aa94ca66fd7b59976b"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/visibilitycompletion.cs",
+      "sha256": "85e9f98d88376dbbd23dede236fbc2e4c6364a951ca0a71bedee17b2d8b90e8e"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/visibilitycompletion.cs.meta",
+      "sha256": "5c184c02f100ae7d4746d0af0860b39176b3faa428db573b035dc36f7b7db3cd"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe.meta",
+      "sha256": "ea199ef1feb491827335cd986edf96f852b7037c014d90c8300fa90cf8df36e4"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/clothingsetupdraftbinding.cs",
+      "sha256": "b282eedcc35dfe6e444896c80e6dd8860d46c7615733785bc70eed9b4dc77166"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/clothingsetupdraftbinding.cs.meta",
+      "sha256": "59d93b9d98e57f38d64296cc5ee0bdd92b30fc3395c88332930c95549381c78c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/footwearposedriver.cs",
+      "sha256": "4a48639536a61ce8d0066e3c39d2158d5c2d371a5f8c4f47ec4589745e3d7c0d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/footwearposedriver.cs.meta",
+      "sha256": "fc2f34affe88e36f0e4515e38073602ed1d910028d52a8d737d3689a46de6f4a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/performerwardrobe.cs",
+      "sha256": "5623cda639167dcdf574fa8db4198f048934db14a7856b26e345c1053738cbc8"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/performerwardrobe.cs.meta",
+      "sha256": "d7291d365a795bf2fa2e43e056bca210a2402c44144168d8f713a613ea377887"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/scenewardrobebinding.cs",
+      "sha256": "a8ae7405da8d8f6df7612048e952457b67c368423d05e1c3694b95eb600cd24f"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/scenewardrobebinding.cs.meta",
+      "sha256": "54e691e05fbf213eb277fb034586cf090555920be8ffc8cb4977630190dd894d"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobecandidatesnapshot.cs",
+      "sha256": "3ffbf7f5e9b8898c115f63a609598efb90309660e6324be7d43f04b89fbb2cd7"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobecandidatesnapshot.cs.meta",
+      "sha256": "a905b5473a166279640517d605d3e6962b66a7471fcdfab0ad1184e0e09dcd6c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobecatalog.cs",
+      "sha256": "6120d0106df54865acfcd2ff06992ac67ec51ca91bb3c32f2f2ac816b186c631"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobecatalog.cs.meta",
+      "sha256": "7959371120545ed8fcbe0d1bf3b1f45142763ac1dacd89e684dfd80b2aee7491"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobeconfiguration.cs",
+      "sha256": "173388ca92a8917f61806f62749cf2e43c8311bb4a1c9f44b030d82de3192d87"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobeconfiguration.cs.meta",
+      "sha256": "96c5aec5a8a105a82c685b75e0568f0904e12ab97d100c8fed1388b009cb3032"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobefitstate.cs",
+      "sha256": "7c548670e1015fdd60a4c1d09d11b0a93007b7888a9fadca39dd0cac39d5c4a6"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobefitstate.cs.meta",
+      "sha256": "111a1a88536c901f7df0f84240592dfbb7c211d6b78472c47a3b447a4e7e128c"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobelayerstate.cs",
+      "sha256": "109a5d030c5ecc10d9857c7a3b080e6f6ff28bdcfd07c21bba36ce59fc638266"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobelayerstate.cs.meta",
+      "sha256": "ffa0d826bae3445b6cefe895e9cdea45fc4b2e2c2b545aadaa1525aa5e491773"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobematerialopacity.cs",
+      "sha256": "dc24e3b0cecdf0e49b699c429561a73bb142d55c1fd701bfbda61353fed9db7b"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobematerialopacity.cs.meta",
+      "sha256": "caef37f08156dd9a739cc88f622ecb69952bcf2ff20a5001a86adf00908805b7"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobepreset.cs",
+      "sha256": "0669c1345d4f46952162aa7b1cadc126ac4baf691224b0af720f29ad2a15b42e"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobepreset.cs.meta",
+      "sha256": "26027db2a8afe25d3ffe7847be0cce89c1364503cf2ef7e092067a63e0cbe902"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardroberesults.cs",
+      "sha256": "d832c8399ad32d7f6121fadbf0e02bfb8a8784784407a9f70c8bba5bb6f782de"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardroberesults.cs.meta",
+      "sha256": "a19fa59ca67e94fb7d0c83c067c1308e910b7be9298e83f44ecd774384d0ae18"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobestate.cs",
+      "sha256": "5c6a85b1b05a0b3a3912b0ef9d683942e10b4d634d11947c950d58f134146313"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobe/wardrobestate.cs.meta",
+      "sha256": "846dbdbc5d95175636653bb8f5f330027a38d4ced68ffaa8927c8075c277ef1a"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobeoutfitdefinition.cs",
+      "sha256": "5a2d81108a75a07bd2900745e9733a042ad8b4f3c8fb66424d925549172ff090"
+    },
+    {
+      "path": "assets/dazpose/runtime/performer/wardrobeoutfitdefinition.cs.meta",
+      "sha256": "254a0e29eedf3d3f8575372c300a19aaff045a66ac82ebfb577769dbf58bcecb"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys.meta",
+      "sha256": "77d66aa3da87b5f652d4ca6e61ed41d4247a4986fced6190b2162e16461a8a87"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/buttplug.meta",
+      "sha256": "105fb58b550c1060b3766d55440ad40c376c16a4cb26a29344abec86651a2866"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/buttplug/buttplugdeviceadapter.cs",
+      "sha256": "64813cdc1b0ccfe163221547981d99a7cc3e59941638badd4f2a3d54e878612d"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/buttplug/buttplugdeviceadapter.cs.meta",
+      "sha256": "1debd165f3529d390db0ae0557c4af178020a4055e31ad2ae7fd06fcf3e165b4"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/buttplug/buttplugtoybackend.cs",
+      "sha256": "c8d1b798691d6317bb8075a98dfdca32cbbd767e5f41988659471db846597a46"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/buttplug/buttplugtoybackend.cs.meta",
+      "sha256": "e7a844ab1306c8f0fb59963a88be6bbb1229b2230fed222250af1914fb66daad"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/itoybackend.cs",
+      "sha256": "1eef6d7e5e168f104279ec65f973be4929e722aa83501da7a0e421cd63d5f79f"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/itoybackend.cs.meta",
+      "sha256": "b6d5d67f7b99d01094e9c9b2e3845e04a84ce030f5fc2dfa658c5c648036bf86"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toycommandreport.cs",
+      "sha256": "fa1b61b398ac7de356b72360ab1361334afae0442d8669d7aac9b229cfd8545c"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toycommandreport.cs.meta",
+      "sha256": "dd26b2899d25986623b5bde212856f04f6153e825ab30790b2ca29f481bad6d1"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toycontrolservice.cs",
+      "sha256": "0b110121441a3cd3e6be9f4fe11d4f3174ce02e1ebd4e6c581c71866ed709ab3"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toycontrolservice.cs.meta",
+      "sha256": "ea651bbca99e59814265b5f72123a5ae7f3805f635e04b795d026308f3619b93"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toydevice.cs",
+      "sha256": "90d522bcb719c17a389a65f1fd05f9a28a0d028678f177432fc72c5ad9ca7705"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toydevice.cs.meta",
+      "sha256": "84b3bb6bad3d1b63e85d21260aa43943ea1ca6655016994130f155d1b8c9fd05"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toydeviceregistry.cs",
+      "sha256": "b6d7d8c59bff6c976c6e7d1bab601973568d92b84668409bb489ebb9acaab118"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toydeviceregistry.cs.meta",
+      "sha256": "afbef044f28e26dbed8a05d50136468d2c18300faebcead5d8063761e33384df"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toyfeature.cs",
+      "sha256": "2971a279aadba24092fd07c2980284870c8026ec42c1f3df331ebfe192640103"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toyfeature.cs.meta",
+      "sha256": "1a7816b5ba16ab72b3de262db4c1cefa01b86f3b6038c2993fb8ef1f3ea646c8"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toymotionbinding.cs",
+      "sha256": "3af83d533eacc7a90be0281347ca6cf80194e707b021c19c7aac35736ec054b5"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toymotionbinding.cs.meta",
+      "sha256": "8dbf36664babbda33e173f66899cd28911144978c4c215afbcc2c128a74e9ef3"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toymotionfollower.cs",
+      "sha256": "bc351d06d5a75df0cb1dc8efb773867c64d52c7a2d786ca591ea3c0cd0dc3c3c"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toymotionfollower.cs.meta",
+      "sha256": "ead47e5b375309dfcdf67d26f16bb47ab466d8d9b69deda4fb112a60a40d270a"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toyoutputbinding.cs",
+      "sha256": "f88e65963273d1774f3d0b544354552925d5732df9a2ce0166b68dfd388cc20f"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toyoutputbinding.cs.meta",
+      "sha256": "ad0e6385f1ca738822763f123463d30eb48da28f72a7940769cb882e498e7b0a"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toyoutputcapability.cs",
+      "sha256": "2afa668dbf198fcac0ffca6eb421981b0f2cd1955eff74cdf00e0da456426c94"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toyoutputcapability.cs.meta",
+      "sha256": "e738d6a3dad47e45034f16e41f44ce6631cea073690e0ef1b1bc5f21042a4b21"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toyoutputrange.cs",
+      "sha256": "f7dec9ad93bef02de92fb6c8d8f335803c91bfbab9e6b6c84d444c3884064e8f"
+    },
+    {
+      "path": "assets/dazpose/runtime/toys/toyoutputrange.cs.meta",
+      "sha256": "b746042054a1104a1d0d2fe9aef9606a1a2529247c1b347f9df3790813dcacde"
+    },
+    {
+      "path": "assets/dazpose/validation.meta",
+      "sha256": "c74ad58a86de43ddc3a26d53eff9e117fd51859739254fd23f1f51e80c442ab3"
+    },
+    {
+      "path": "assets/dazpose/validation/clothingsetuppreviewrunner.cs",
+      "sha256": "3b6d5d925fe369e22e42672ed8b1ed8271da02a931e9a87901b03de447b23d8a"
+    },
+    {
+      "path": "assets/dazpose/validation/clothingsetuppreviewrunner.cs.meta",
+      "sha256": "1cb641c2a0bdf148fa7afc98665f645d660a3bb08589cd3629e110f5d99a57e5"
+    },
+    {
+      "path": "assets/dazpose/validation/day3regressionrunner.cs",
+      "sha256": "69d8cb01a847da222a33814efe805cdcc8074fae4d9a7397cbb2a92136fa530c"
+    },
+    {
+      "path": "assets/dazpose/validation/day3regressionrunner.cs.meta",
+      "sha256": "fe3112875511a4ad4ce181e5790055f3e81055a18725575e6328c7c7cc755d09"
+    },
+    {
+      "path": "assets/dazpose/validation/day4contactsurfacewitness.cs",
+      "sha256": "a17148f954680090b49d4d26e57bb3d107fc36b5da56da3e0c88c29c25cb58dd"
+    },
+    {
+      "path": "assets/dazpose/validation/day4contactsurfacewitness.cs.meta",
+      "sha256": "ff0870246e26f92a146a2e39e38c0ba9a8b698b8adbb4bf547be4d53ade62fc4"
+    },
+    {
+      "path": "assets/dazpose/validation/day4regressionrunner.cs",
+      "sha256": "2b02aa75135a45aedd4cd9d3ce175a5927b25ab0c90df551d11346c084e4cfdd"
+    },
+    {
+      "path": "assets/dazpose/validation/day4regressionrunner.cs.meta",
+      "sha256": "12990b74dd10ad8891e15e59ec612d163065fa29f90a8ae724bfbe06095bb4f8"
+    },
+    {
+      "path": "assets/dazpose/validation/day5wardroberunner.cs",
+      "sha256": "2fe99ae5f7e7811f2c1881c2fcac388301ea44143b5e7b79c95f372113c02892"
+    },
+    {
+      "path": "assets/dazpose/validation/day5wardroberunner.cs.meta",
+      "sha256": "5928491067f76c3a58d9ac56fe0435f3a81ec2bd57ccb1703acae80bbddb055f"
+    },
+    {
+      "path": "assets/dazpose/validation/dazpose.validation.asmdef",
+      "sha256": "e483d1f92131e3eb1e13dfe1d4e456e2cb90102168be71e24b2054b8bafc33b3"
+    },
+    {
+      "path": "assets/dazpose/validation/dazpose.validation.asmdef.meta",
+      "sha256": "5345a27653e116b58ad98be0f62efb3292d26df666288e8891f890704bb64197"
+    },
+    {
+      "path": "assets/dazpose/validation/editor.meta",
+      "sha256": "757525ce3c7a428f4b10398bd8a9f799c3ece52e471dbb287646460f842278b6"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/dazpose.validation.editor.asmdef",
+      "sha256": "058060b412d6626e306dcceb98b7b08eceb48890309cc4d3bb03accb29b8510c"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/dazpose.validation.editor.asmdef.meta",
+      "sha256": "efb117cc28ddf5c94108223b011311221f97b00597de8f4c43a13d22b2a984db"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy.meta",
+      "sha256": "c11cc7f623768aef996f47ff2387e3853831c9cb688c70fb2c1b7e777860a13a"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit.meta",
+      "sha256": "73fd0c4808c0341f3c14445e1322e0ded626bccaaeeee6aa13a5251c56aa0841"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/animationauditcatalogbuilder.cs",
+      "sha256": "e6e20aca3268b4a33572c2b430cb90429ee0c6de0a192f4ac25b5d9021ce5b64"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/animationauditcatalogbuilder.cs.meta",
+      "sha256": "43dade4f52b978fd79c45e788b2b532cd15ecac89e0c7126afcb175ef8569d4e"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/animationauditscenesetup.cs",
+      "sha256": "7dd52cf08f131284c4ff83097f551e82931ea969b69ecb93dc23892e4d393f10"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/animationauditscenesetup.cs.meta",
+      "sha256": "0810ab85c6ad9d414dd4bfbc3fb94f66b672992ed624a6039904e0cf2a2c4e3c"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/animationauditvalidation.cs",
+      "sha256": "7444e6e9da70e87fb600f6ca42cb4476b1570aecbae2e36edf6d7456c5067260"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/animationauditvalidation.cs.meta",
+      "sha256": "49ef4f7487474ca4d725efbbb5ed40473707d89f18d9a92a8d7b535f2390d105"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/humanoidlegsetupreport.cs",
+      "sha256": "6162cd62013b792529f385f9c932023a0fcce212ee3e767c349b096cfb583ffd"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/humanoidlegsetupreport.cs.meta",
+      "sha256": "3e8290ff6a8d8a8ae1c10cd2b9e7f2b1199d2a99dc18e13a0af9fd950bce8ead"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/larahumanoidkawaiitestsetup.cs",
+      "sha256": "069c8760fafa3b02fe736aaa6ef5680691aa6126a794708a6baae418d8e5c0b7"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/larahumanoidkawaiitestsetup.cs.meta",
+      "sha256": "b40487b2eb304fcf0304cb875e48c698746b5838fcdc249bbf2c3db21d1071ba"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/performerlocomotionbaker.cs",
+      "sha256": "f2f48129b9d09aab7034066b1040a6d1a0c4601a55d6ea5ab67b2810959130ab"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/performerlocomotionbaker.cs.meta",
+      "sha256": "4f8b57f95e1be482ac5e24e6b396406c02f01b2633e2022f79987f0918b0f9f8"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/performerseatingbaker.cs",
+      "sha256": "e1c27261b40603fd1acddc755e5303412024e2dfd035bde6799c86a7a02c7caa"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/performerseatingbaker.cs.meta",
+      "sha256": "2c4af45e5a5c1d849250c48c243347b73039122d625dcc2b823b880f0d7822fd"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/performerseatingpreviewwindow.cs",
+      "sha256": "5f974f9f29adb607953e6000295709826072c73115a3e5cb5d8efd38bf71d164"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/animationaudit/performerseatingpreviewwindow.cs.meta",
+      "sha256": "61e4366c4232c774757f51bf72dda33309c8d7beb55eac9b23b156d78ecbcb49"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/dazfbxevidenceinspector.cs",
+      "sha256": "dc8992a8cd7d4eca7381d9b78c844bdae1eb04d154b6370d481a88d692cc6fd5"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/dazfbxevidenceinspector.cs.meta",
+      "sha256": "de77bf5975a97df1f0112e92ddf26deabe8dea8df8b5fb43a0917eb196ad4a4a"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/dazgraftpairprobe.cs",
+      "sha256": "44dc004dca66da890f313e9ad89f8cf8700564766763da5a2a138469d910c9a6"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/dazgraftpairprobe.cs.meta",
+      "sha256": "cbb02ac2c6476ca50fa9ae6568354c961e734c731dd8a78affe6f3757fc30884"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/dazposeclipbindingcomparison.cs",
+      "sha256": "38b10f84a0a964b8804dcf32e41eb5fd1260abc0139b09911da51229b2ef6bbc"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/dazposeclipbindingcomparison.cs.meta",
+      "sha256": "7ffa537ac31be22cb5c2898e3f2edd0ea742dfb8fad37f9751d84b6af8a61ae6"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip.meta",
+      "sha256": "47e76a575e6d70b3c6a2ee3e521e609dbc443f2bbd3faf51282fa9005448dfee"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip/handgripacceptancesetup.cs",
+      "sha256": "65bb202d27660345d15b6cedd6f29482d669d009d69c44e8d3aca6ee597e8b12"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip/handgripacceptancesetup.cs.meta",
+      "sha256": "1b38c87c182790a78cc37d491ecd2df24ed8403439980644c737ee7e529eb29c"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip/handgripliveproof.cs",
+      "sha256": "2d3efc5ff3e74cb234452bad73228e18cd4234937b7d763c6b16615effdcfd43"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip/handgripliveproof.cs.meta",
+      "sha256": "2f666c18ffa04c2927858551b5ee7eaa8ea96d4d9ed940e7df0ac5470c23bbb5"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip/handgripvalidationrunner.cs",
+      "sha256": "c33729b7f671fdeabd70bcae6d43ab151ca0074e68e4fb9c78788dc02c02d012"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip/handgripvalidationrunner.cs.meta",
+      "sha256": "3849e7e074726b984cce503fe0756058ad764653c71ec6acf337694f9449ef10"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip/handgripvisualproof.cs",
+      "sha256": "642cb23fe78fb3b34533905c7f4cb1b505746c8ba40351433802aa6cf49a7d9e"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/handgrip/handgripvisualproof.cs.meta",
+      "sha256": "4ce62cc388ff174eb59c02698e53c2e68f2f0f75a337e913d666cabdd656cbf7"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/laracandidatelivediagnostics.cs",
+      "sha256": "e16ec57fe08cbd579618ba8059cba3b6b5bbaa603c56f3b44906026210f572c6"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/laracandidatelivediagnostics.cs.meta",
+      "sha256": "ea43ca06355dc281206d680da1253e100489d28bd26fe9426545894c11211c9d"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/larafirstoutfitvalidation.cs",
+      "sha256": "070195b4ae269f1c6e2d0db562222d8ea59d81f48c786ace0f0c2e7bd5816328"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/larafirstoutfitvalidation.cs.meta",
+      "sha256": "1bfcd4b574b2050ddb72a70dcf997971f033b32802a69c30434cf4a3410d68f0"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/larawardrobemotiondiagnostics.cs",
+      "sha256": "4bfe9a610866ec33b2f9d3b18301158ec041dd7635b047e4a93d9245d5e7fa95"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/larawardrobemotiondiagnostics.cs.meta",
+      "sha256": "74bcf8112f51dbba5107d6b5e9bda5694f91f3f70cf824de064d7ca40bd9163f"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/motion.meta",
+      "sha256": "cafe0e0dc289b820b79a00a0be36c8734fb46b8e92ff1a7462bec3f69e5185d5"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/motion/funscriptacceptancerunner.cs",
+      "sha256": "e04fe28b9c3dc58e8ef12ee440e599a53c6393000305ee727c147167585644cf"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/motion/funscriptacceptancerunner.cs.meta",
+      "sha256": "332d3d668e8ae6afa49d15fbc318ed06178a9963cd85f4944d4845a79630bbc4"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/partner.meta",
+      "sha256": "639b656ac7d89a33f7f4bd68d7af34d4bc88c1b4ed23d3402aa42a72d241c9e7"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/partner/partnerrigacceptancebuilder.cs",
+      "sha256": "8eb69608800fbb9819159a56c89b75920398990978c5a844b24d5beedbbe47a2"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/partner/partnerrigacceptancebuilder.cs.meta",
+      "sha256": "61f070e009f1e93ba4413bdc4fe08024e392f14edbf659bddff6e1e20198979a"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/remediationvalidation.cs",
+      "sha256": "1854ed9beae6053b11581b3ec51efaaae30451a41c9d2ff049d6ec5b908af1b0"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/remediationvalidation.cs.meta",
+      "sha256": "07abf325c27e44fb58012d9f17dbca4f64db485ebbfc83e5179d9d7b86ca2552"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/toys.meta",
+      "sha256": "8dabf07afcfdcee05a3eb60d32a4f7a186a925c99d4d93fb3e96cf7572aa3185"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/toys/toycontrolbt1testmenu.cs",
+      "sha256": "0f597761ac2ed1996ba757d8f4b9f410aeeca4c5ab68f42edecbe2c22169c158"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/toys/toycontrolbt1testmenu.cs.meta",
+      "sha256": "d1a44d1dce43dd78430b6b691e09f34d8395f2e62bcdc6280d10b6f939c7b5ca"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/wardrobe.meta",
+      "sha256": "255d9d0516e0a24a2fbc9f7580352e5ba2e6867240a5a4bc00f5b95d044b2717"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/wardrobe/day5wardrobevalidation.cs",
+      "sha256": "57366cf579a47d8ca95a5d7a4ad3969b5e5a6710c721ca57cd6b24ad2d953e0e"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/wardrobe/day5wardrobevalidation.cs.meta",
+      "sha256": "5242d255e7c3e9b9cb9091768634cc034d9f302d0c036e1665a6ada17e4af00d"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/wardrobe/wardrobeexecutionvalidation.cs",
+      "sha256": "e0237128de2d19d9490e3914fc9603951a0198707f9a2ec025c5af259839ea37"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/wardrobe/wardrobeexecutionvalidation.cs.meta",
+      "sha256": "11d11978bf8507c10aae1a27ff62e2f0011287050e6e48bc7a31ac615d6c2639"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/wardrobe/wardroberuntimefixturebuilder.cs",
+      "sha256": "0721451a83e9d65c0cf73f02a7d89085e7077afc95922ca167960f8e97c62e8d"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/legacy/wardrobe/wardroberuntimefixturebuilder.cs.meta",
+      "sha256": "f2ee64e3c99aadcb49935ed2ad7cead556ce95c4bdeffeab857a96088e64f8e0"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/remediationpreflightrunner.cs",
+      "sha256": "5d54e976e095121e8626a43a83a48e4d8b32f004b71780194a69bd5a77dbc151"
+    },
+    {
+      "path": "assets/dazpose/validation/editor/remediationpreflightrunner.cs.meta",
+      "sha256": "128db7d8c068d80594d336186a8d9c2bff01fdf13baf0b2b6db74f1c94b67fc5"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy.meta",
+      "sha256": "36e2831300810dd5b5c8feff0a26a2d56ee91461f68dfd9249a414c621e1ac24"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/animationaudit.meta",
+      "sha256": "b1ea5055b10eb29f06e4af929b8647637ea063ba6c29ab34b9cb4a3d190a2f0f"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/animationaudit/animationauditcatalog.cs",
+      "sha256": "3faa793cb2a562d130dbec97583e132f7824a8157d53833a70b1b9e3765e07d5"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/animationaudit/animationauditcatalog.cs.meta",
+      "sha256": "f42fcfd354c3e18dab8e4dd8fb04bd3875c16b2b4d415337edc56ae18562adbc"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/animationaudit/animationauditharness.cs",
+      "sha256": "357036706ce102fa2a0b3520dca301b890019b54992f164eb77d6c0656cb0838"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/animationaudit/animationauditharness.cs.meta",
+      "sha256": "192457c4a938d311e49a5e85a5899e00fe9a88a50d9ea384802218e79e6296a0"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/animationaudit/animationauditorbitcamera.cs",
+      "sha256": "d28f7c1db7c81c92d1f2ae7295ecf14b8d543a62eb1ad3494a4def5ee8699082"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/animationaudit/animationauditorbitcamera.cs.meta",
+      "sha256": "285f10bc27efe266f96e3501f1486b6c5af73fbbe37f4dc233000f085a7a75e9"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/firstperformancevoidcontrols.cs",
+      "sha256": "b80f6e078e6b43e21399140d8ac0e8ac3ae658584c6fd9de69ce9fa94eed70d2"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/firstperformancevoidcontrols.cs.meta",
+      "sha256": "b42c8855a931c1aaa2176f500651b7e81cee18f1582abb5cfd6d91b0e31c2d81"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/motion.meta",
+      "sha256": "fdb5e733b7f68e89df9d0596b6447131fe7f5b02b8c6f0158a71d778a7fcd064"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/motion/funscript.meta",
+      "sha256": "68d72a9c09fe0cd9dbc11930e95c1a164dde18466f0cb33494e5c53d4606c5e6"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/motion/funscript/funscriptruntimeselftests.cs",
+      "sha256": "bb6995eda545e5e50302d6d219a9c6b1e032eca8af238d08dfc6b98f5721bc75"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/motion/funscript/funscriptruntimeselftests.cs.meta",
+      "sha256": "29df01488553024f6eeee85c64641774e679ff3173cca59f50484d493dfabc3e"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/partner.meta",
+      "sha256": "dcc02c2728e6c5dd142aec8dbf40410a8fd9edacd2aaf49bfb7a68bf55f540a3"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/partner/partneranatomytestcontroller.cs",
+      "sha256": "871bd69c4e418ee95a9511f5f361917f323f96c4350fdae0f78b56adf6cb03e2"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/partner/partneranatomytestcontroller.cs.meta",
+      "sha256": "34ef8818280e2f1c41570c791e497a8f65e9c844a979b7e11b6d94c1324eb247"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer.meta",
+      "sha256": "2e10a4c9726f19d24c7f8b3b5c8cc422106bbaa45fdb3d26f1619f650fd5bac7"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/handgrip.meta",
+      "sha256": "39c4688d3cebd60a65b3da923a60eb47326821d08021ad4186161f169e768f18"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/handgrip/handgripacceptanceharness.cs",
+      "sha256": "44f4875d46c0cb4fb7fd38aa7bed774f3a300e73c1588940b1c1c63134f43fa8"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/handgrip/handgripacceptanceharness.cs.meta",
+      "sha256": "e188b16f63b199fe652879fbdb9b50fe519626469bc5f5efd97b8f7a7dbbe1d7"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/handgrip/handgripruntimeselftests.cs",
+      "sha256": "2db3b9bdaf369c7f0cbf82e58cd484bf21b5a371c21c716e758981d18619bbf0"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/handgrip/handgripruntimeselftests.cs.meta",
+      "sha256": "d395c61c3d30228796c760889db4842007c36d8698f87a97b367aac795329a82"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/handgrip/handgripspatialproof.cs",
+      "sha256": "1dac565dcb122ac8649c961b01453a35c9167b6f4032760e22dfff4d75659f1d"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/handgrip/handgripspatialproof.cs.meta",
+      "sha256": "9ea6bb5f92388bb82eac1cac3b36560159142066b1835d530dea0e62313e3f23"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/magic.meta",
+      "sha256": "c0b3caf4c1cde767d1ec6f01b383931c9cbf14f17cf238c848905e3950e6adee"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/magic/performermagicruntimeselftests.cs",
+      "sha256": "02ebf2f092d5e9839e45a5b2d39f7591c733013ba2950dbdaed58989a65cc8f0"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/magic/performermagicruntimeselftests.cs.meta",
+      "sha256": "c786bc4689ec99cd84a13f8f564e9dd7a813cbb9674b45745cf85fb33221db88"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerdissolveruntimeselftests.cs",
+      "sha256": "9562153d70d542eb31551cbe2f93e5d2b873ff030b0cbe5b9deaad9d18df7b46"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerdissolveruntimeselftests.cs.meta",
+      "sha256": "2bc160c47fa02989ad2029cbb6eb41dcd0eec7600081099a7274e0289ddcc9f0"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerexpressionruntimeselftests.cs",
+      "sha256": "168dccadaebc440be7a12762092247eeb830648b1b03007c436c059b8d1afb9a"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerexpressionruntimeselftests.cs.meta",
+      "sha256": "97e509c90471698b623f9d678da59734bc50ce1f523e24f399b01a3fa9810934"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerlocomotionruntimeselftests.cs",
+      "sha256": "6c993453c483ba57270c11be6eb86a5b29956b5041fea9f22db4f850a5f70375"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerlocomotionruntimeselftests.cs.meta",
+      "sha256": "1f1b682050b7fbb516b7868ecf03449613cdc5b34012cdc218f0653ad8580783"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performermotionruntimeselftests.cs",
+      "sha256": "6ff01d67d441251156d8a5766c176d995a442e5c4dd31307e7f74e85e544f959"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performermotionruntimeselftests.cs.meta",
+      "sha256": "38c7324c81bed83d691687d52b7ce7b84bfe7e9c87f57d8afc714fca0955f8e6"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerposeacceptanceharness.cs",
+      "sha256": "c5b72d6ffaa984645f995ec5578e84eb4ac83a1f1cd8122881d7e1fde4d95fdd"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerposeacceptanceharness.cs.meta",
+      "sha256": "cd361dda5e8a6aeeaaf204198253deb8a863a8bb680a2009ca027ab956a616f2"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerposesmokeharness.cs",
+      "sha256": "5e816900150d36d4c0fbba364e9d8ab95ee716ad8cca625ba016274b41c394ff"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerposesmokeharness.cs.meta",
+      "sha256": "d61ef71bd7e9d1e97dd56b0a99346e5e00aeeacb62d8b37691b98bd63b72a8b3"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerspeechruntimeselftests.cs",
+      "sha256": "c390b7963854426583f5d351875367c3406c5416d077a4dc01af0f292b1decce"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/performerspeechruntimeselftests.cs.meta",
+      "sha256": "73dba63a6a1ec04c91a2635aaaf9e6fd3b76d9ac8356d94c6d9f811472e36970"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/wardrobe.meta",
+      "sha256": "9c9642cfdc04c0b35f2b3fe6a7c99da26ab954a988e751a9ac82b159cb9f4a26"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/wardrobe/wardrobeplayerexecutionfixture.cs",
+      "sha256": "f589d29ced79541bcc24c712482124a0f7815b3f7d0f0caa82a2c0c82ca29f19"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/wardrobe/wardrobeplayerexecutionfixture.cs.meta",
+      "sha256": "262e322261cf64450681a4b13d07416e5e49958d5d2b73a06c5557adf514d63d"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/wardrobe/wardroberuntimeexecutionharness.cs",
+      "sha256": "0e1bd678dbe4df54b05136c0099146b0dc7a4a89e4c74ad11ae850ef7ea207c3"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/performer/wardrobe/wardroberuntimeexecutionharness.cs.meta",
+      "sha256": "421e7a977dfc780e41fb3ca9c82157e5ad589c5358373a9e800b43c7de4103fd"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/toys.meta",
+      "sha256": "cb9a8233d92912792c068261f81700f54534792494561e6edf2023a27783561a"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/toys/buttplug.meta",
+      "sha256": "a33ce2695e7eaa5fdb0fdb334277969d42b48d2575a0eb2086d01117172e4ad9"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/toys/buttplug/buttplugtransportselftests.cs",
+      "sha256": "91ddf7cb49f18df8d23722b1ab281b2a53adcef1ca8255d42a7d9ef8aa521034"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/toys/buttplug/buttplugtransportselftests.cs.meta",
+      "sha256": "ed1570c7a39916bde55853335b541160b0d50f8b4cc926026115c38c32ebef37"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/toys/toystackacceptanceselftests.cs",
+      "sha256": "04eaa004d3df029129a7402815303cb10591401142ee3ec761ecd647ba145019"
+    },
+    {
+      "path": "assets/dazpose/validation/legacy/toys/toystackacceptanceselftests.cs.meta",
+      "sha256": "d12cbc7c090f1a026df5b2c8faf48a79cb128136149c3749ae05073fe89bc039"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationauthorsurfacerunner.cs",
+      "sha256": "6bccdce09eb8dc1fc867ccce71054b87aadbbea0046da95ee02e3309b2ec0568"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationauthorsurfacerunner.cs.meta",
+      "sha256": "9fdad7ff7f5874d4f74d640d24865f8dc912f3756a9a1b63c22e5d3eb645cc95"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationcontentlocationrunner.cs",
+      "sha256": "b0bb26e816eed8c0f753e4e458379a8689d57325e328792944be3d7fa4cad8c0"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationcontentlocationrunner.cs.meta",
+      "sha256": "5f10329566f6563cd544afd17ddc03b5f3397fcc045473c56564b27070c0d21e"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationcontentpreflightrunner.cs",
+      "sha256": "0afdf0f44fc90c63dffd144936df54a4369bd5f102c143d8906eab001094fef9"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationcontentpreflightrunner.cs.meta",
+      "sha256": "eb9a3d0780a54a93049aba98261fd5d9091e21ea90bc6928c04b6c033408a465"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationpersistentownershiprunner.cs",
+      "sha256": "760c4da45a447dc8829ed6be380a4e2346e1bbe7bf0bbc02e88f5f06ea526d96"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationpersistentownershiprunner.cs.meta",
+      "sha256": "2d6e3774de5333b33400ac681c3a88e9edd2418cf9cc8ddf929c2a4f3af7e601"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationscopedcommandrunner.cs",
+      "sha256": "4af66aebe46529e464e03abdda26b7b8fe2c4c323adcbd09c9539250e45b11ea"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationscopedcommandrunner.cs.meta",
+      "sha256": "a2884eb4091fad96f2f60b505a54ef04ebce2425403ca29f5eab69492429fc28"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationtoerepairrunner.cs",
+      "sha256": "b2fcd6154109b5e836ea0853669c6146ed420e607f344a1ce33b9817d2efb9ab"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationtoerepairrunner.cs.meta",
+      "sha256": "643b3c3d1767749336411ae3b31eb4dabad53c5fc6e32d1503cf6b0863079ad2"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationtoerunner.cs",
+      "sha256": "0351ae33c57dbf1aa1ca107419dd6a67605203d734006dbb4a79cdbeab2b5bbe"
+    },
+    {
+      "path": "assets/dazpose/validation/remediationtoerunner.cs.meta",
+      "sha256": "6d0a21b5861a210791bfddff75f615a0551617a67b106af743b60b49bb0f1a6a"
+    },
+    {
+      "path": "assets/firstperformancevoid.meta",
+      "sha256": "63fa2df67ae211d9563a5d324ab543406b7ead0950d17c3931d9449e7595a8c9"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor.meta",
+      "sha256": "e4306f585bd0c29f4ead34e8e0857c82d53acc4559e21cd93321926913a87a34"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/dazpose.editor.asmref",
+      "sha256": "4046e95978e0b657f72fbefb2e829d47407112376165013dffa462c86a726d01"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/dazpose.editor.asmref.meta",
+      "sha256": "bd7e5f18f0c000e87ea91eeb1497df3b4ce059e4829ee7a44697d02dd8f1c4d6"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstcontactperformancesetup.cs",
+      "sha256": "874934b7a78375d94dad6ca95bafe54f42092f083115e9541463d771ce45ffa9"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstcontactperformancesetup.cs.meta",
+      "sha256": "7ac7187095971afe99c5c48adef82cd6c9ac0619c2f48e2e8150135b7bcfac17"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstperformancevoidbuilder.cs",
+      "sha256": "bf847d6459c800567f4bb3cf9a721f0b180778fec8afcbb56d3a745d5c63c5fc"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstperformancevoidbuilder.cs.meta",
+      "sha256": "c637580cc9abb18a5452a25a674125aa2236be60caba31ef6c863cc93f997bef"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstperformancevoidlighting.cs",
+      "sha256": "4727ba78b0c8840df430e1c3286c48288b7b3e4e991030a6d281866aad73cf7c"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstperformancevoidlighting.cs.meta",
+      "sha256": "653dbe74adb8f124bb5729f787b6c39db6ebd74beb25d0e7e163416d71a42188"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstperformancevoidplayermigration.cs",
+      "sha256": "705074c4f05424804dc813daba568ee416d63d22ca5a371afc79a63b0f70bf93"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstperformancevoidplayermigration.cs.meta",
+      "sha256": "aec494de83e73e87dc6d2019c5a53fe4edca3141df62bb973f1e457c8122301d"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstperformancevoidsmoke.cs",
+      "sha256": "9bcc3686aa42f32e94e78d93644a197a5b98ba9202f3a5e13d36a3956a8be713"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/firstperformancevoidsmoke.cs.meta",
+      "sha256": "89ef6eccd689365ac89530c7c6b8e2e80cef0d7f7029befdce3bb2b1afa9022c"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performerdissolvesetup.cs",
+      "sha256": "cd414dd4146064af8fe371df7725209798eb203ba5a5c791f7f153c4715045c5"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performerdissolvesetup.cs.meta",
+      "sha256": "31485ac0439dd7a61348c042a75f551ddf0d3203d4af34156c498918ab1c60a0"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performermagicacceptancesetup.cs",
+      "sha256": "4cb1c1ec043eaa64fbb7cf5683894863b20bbcb1dd89fc9a88e1b52b597a8300"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performermagicacceptancesetup.cs.meta",
+      "sha256": "6498f0fdb7c19160c94dd4e852b849a91915bd7a327e12d7f21095aa28443f00"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performermagictexturebuilder.cs",
+      "sha256": "539b7a60808a655ccdbb75490cd2c8c26c3e924f2f10777142d8a1a117059411"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performermagictexturebuilder.cs.meta",
+      "sha256": "b4def09a0f2c09e30e1ed78aa82cdae5cddbf0e3fd2403e0f144eab20ecf2920"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performermagicvfxgraphbuilder.cs",
+      "sha256": "3d0dae9414856ecde5a18504fc7513a3916fed1f51b19a7749687e03bcb2e5e1"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performermagicvfxgraphbuilder.cs.meta",
+      "sha256": "99dcdfb550adbd07efb06f174e4df564e69c7e6665df9d2d6defaf19c8f9bf1c"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performermotionacceptancesetup.cs",
+      "sha256": "92e0acb0d51a52567846c628d48d7d0e12567496159d70e2f002639259406ab6"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performermotionacceptancesetup.cs.meta",
+      "sha256": "1ce3cd11b70f3857025f2aac95670a3c8f465f4f3100ffde9405dc34916f3994"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performerparticlebodyacceptancesetup.cs",
+      "sha256": "a83ee095cf1d90b579ec9cfb8c199049c8171a443d86b10e1f47dda206c5ab68"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performerparticlebodyacceptancesetup.cs.meta",
+      "sha256": "7da83346114c07e85d618e04bef4849d5022837212f416290f1c1cd8a77e78fe"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performerteleportsetup.cs",
+      "sha256": "ec01acbd8aa4f2f5102dcbd95cfb3ce76d96850cad05ec4933facdaebe547569"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/performerteleportsetup.cs.meta",
+      "sha256": "1076baa52f70f4c262588d415a86eb89ae4475f01044ddf8ea324938ab73704c"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/smokefrontsettingscopy.cs",
+      "sha256": "9dd32202eb01dc1df11cf52f8f8db85f1a398c84be650fdfd13f289a3620f2b8"
+    },
+    {
+      "path": "assets/firstperformancevoid/editor/smokefrontsettingscopy.cs.meta",
+      "sha256": "2ead3b4528056653858b8cd39b06c46689c3c07ceeca2d3aa4438635d0e056e7"
+    },
+    {
+      "path": "assets/firstperformancevoid/materials.meta",
+      "sha256": "8cf552c7aaf59fa5daedbefc150ded56b26a2b262916fe237e2fa3c4e40ec874"
+    },
+    {
+      "path": "assets/firstperformancevoid/materials/laraskin.meta",
+      "sha256": "a5d266f69f74f262de256c556091bab68ec44a99b0ffe4d17d109870a3e85930"
+    },
+    {
+      "path": "assets/firstperformancevoid/meshes.meta",
+      "sha256": "21592511dc4fb89cf87d3d9aa3d2d34f6fdc4d12bf522265e611ae662d970081"
+    },
+    {
+      "path": "assets/firstperformancevoid/prefabs.meta",
+      "sha256": "16d6a4c13fbf1487fce794475c6a7aa0a641ef22b8099d889e32df88c7b27619"
+    },
+    {
+      "path": "assets/firstperformancevoid/runtime.meta",
+      "sha256": "f8491f1b2fbfbea7b7c9d9da3c5246318a584286c681a2749e48f4cf0a99ceed"
+    },
+    {
+      "path": "assets/firstperformancevoid/runtime/dazpose.examples.asmdef",
+      "sha256": "b5a5e3ba8930809b37d7c47be3ad8f12f613277f4a45cf06917f978dabc0f32e"
+    },
+    {
+      "path": "assets/firstperformancevoid/runtime/dazpose.examples.asmdef.meta",
+      "sha256": "5556383a6ba02338217bcda2be568ee1723140155e3bc3a5bb92d2a9a305a7e8"
+    },
+    {
+      "path": "assets/firstperformancevoid/runtime/firstcontactperformance.cs",
+      "sha256": "c4a8f7e013d66d9e9e7c39e636d61c9d0dcfb6e0067f2d8396f30430548bc98e"
+    },
+    {
+      "path": "assets/firstperformancevoid/runtime/firstcontactperformance.cs.meta",
+      "sha256": "ceb6e860e83da9c074498e5f3ce1c768b1f2f05a1d8acf2f744ac973741d1e2f"
+    },
+    {
+      "path": "assets/firstperformancevoid/settings.meta",
+      "sha256": "58feac880500c758d123acd50bc61c5ee7d8772a39b68d424163d9f443beefaf"
+    },
+    {
+      "path": "assets/firstperformancevoid/shaders.meta",
+      "sha256": "7351911c0fb7ba6063aea22d0a45ce616af0b7c6c6c04ff7653aa342c8a831e1"
+    },
+    {
+      "path": "assets/firstperformancevoid/textures.meta",
+      "sha256": "4ae7f1633111dbbd5e8e0691b827e9892a81f02819e305cb734c5aa5a4e2e3ac"
+    },
+    {
+      "path": "assets/player.meta",
+      "sha256": "7ca6e574a0181b5fa670aa428260ecff19202f7fbd4842837383c52ab2c6045c"
+    },
+    {
+      "path": "assets/player/editor.meta",
+      "sha256": "7dc2de47c00b6d8a4a7561ba71bfb6189f94f51d0ba2cb610e206e92849d2678"
+    },
+    {
+      "path": "assets/player/editor/dazpose.editor.asmref",
+      "sha256": "4046e95978e0b657f72fbefb2e829d47407112376165013dffa462c86a726d01"
+    },
+    {
+      "path": "assets/player/editor/dazpose.editor.asmref.meta",
+      "sha256": "1e1fca7840db5facb9432b6195d453a573b185784aa6669d8ca460496ab084c1"
+    },
+    {
+      "path": "assets/player/editor/playervieweditor.cs",
+      "sha256": "a6e68ff30cc7ead76980be57d91dd346ce4a91d608271c9585ac006a843d9d3c"
+    },
+    {
+      "path": "assets/player/editor/playervieweditor.cs.meta",
+      "sha256": "554f3075c83022cae113c07bf44fc491d4efff35b4eb23d90da43ba48ca3e7ab"
+    },
+    {
+      "path": "assets/player/runtime.meta",
+      "sha256": "96151acc19342204481741eee8c1bb60f07c5d06a870959cfc6e931b7c44fef8"
+    },
+    {
+      "path": "assets/player/runtime/dazpose.runtime.asmref",
+      "sha256": "ea6c70f685f8f73738d2a6309cadb171e487ad37dac53ec8640ca804a30bf9b7"
+    },
+    {
+      "path": "assets/player/runtime/dazpose.runtime.asmref.meta",
+      "sha256": "3fd9639228673f6303320e921bd369a79b9ec11c3914fb6090309e338ed11097"
+    },
+    {
+      "path": "assets/player/runtime/playercontroller.cs",
+      "sha256": "3fa907485d2153ecc87e7dd021293a28ea54ea3abe4c674ea28f652acbb1c1ab"
+    },
+    {
+      "path": "assets/player/runtime/playercontroller.cs.meta",
+      "sha256": "46de7dabc183e4cb45483100e6cbb2449722b1410e87e4511ae24010792ccdb9"
+    },
+    {
+      "path": "assets/player/runtime/playerview.cs",
+      "sha256": "c58a9d52c65d5a50b8cf6609da7f93a50e541d33a8af85e13e7c939dc098f6a8"
+    },
+    {
+      "path": "assets/player/runtime/playerview.cs.meta",
+      "sha256": "cac1a4ad803bc89399271f1cfeb1e6d6cfb65e2fef0726b151f88a529e4d8e87"
+    },
+    {
+      "path": "assets/player/runtime/playerviewcompletion.cs",
+      "sha256": "d78373c90090f32dddbb31f082a86c5fa38a9894361d6340767673e420e8e6a4"
+    },
+    {
+      "path": "assets/player/runtime/playerviewcompletion.cs.meta",
+      "sha256": "3508bb92c0712b96a7c9fd6afde91b0a1af091f627e3ccf4078c4f2d1126233d"
+    },
+    {
+      "path": "assets/player/runtime/viewtrackingsettings.cs",
+      "sha256": "741abf74335365e3fe6dc4a35ff28b7b1d6581a9d052a0ec51c137650c186c7c"
+    },
+    {
+      "path": "assets/player/runtime/viewtrackingsettings.cs.meta",
+      "sha256": "0452405dedadeebc70080f525933af064dee4ae113496cc29dd92e01ca9483d9"
+    },
+    {
+      "path": "assets/player/runtime/viewtransition.cs",
+      "sha256": "c285c4cfd00ac4c3cbcc9c6482983704a5d8594deb9e36b55f719d55ac2daed5"
+    },
+    {
+      "path": "assets/player/runtime/viewtransition.cs.meta",
+      "sha256": "71b639f398233c04632cd1321cf55a5324dc72bad3fe18d4f6de931f5bc0b80f"
+    }
+  ],
+  "includesAssemblies": true,
+  "manifestRoots": [
+    "Assets/DazPose",
+    "Assets/Player",
+    "Assets/FirstPerformanceVoid",
+    "Assets/Daz3D/Scripts/Editor/DazPoseDtuConversionAdapter.cs"
+  ]
+}

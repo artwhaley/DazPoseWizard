@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "third-outfit",
+  "duf": "C:/Users/artwh/OneDrive/Documents/DAZ 3D/Studio/My Library/Scenes/laramaid.duf",
+  "fbx": "Assets/TestCharacter/laramaid.fbx",
+  "destination": "Assets/TestData/Wardrobe/third-outfit",
+  "characterScene": "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+  "characterPoints": "Assets/TestData/LaraCandidate/manifest.json",
+  "referenceFbx": "Assets/TestCharacter/larafirstoutfit.fbx",
+  "poseCalibration": "configs/wardrobe/paired-tiptoe-calibration.json",
+  "contentRoots": [],
+  "include": [],
+  "ownership": [],
+  "shapeNames": [],
+  "policies": [
+    { "node": "shoe_12520", "role": "footwear", "coverage": "none", "allowLocalBones": true, "transferBodyMorphs": false },
+    { "node": "Stockings_5340", "role": "hosiery", "coverage": "none", "allowLocalBones": true, "transferBodyMorphs": true },
+    { "node": "dress_7510", "role": "dress", "coverage": "none", "allowLocalBones": true, "transferBodyMorphs": true },
+    { "node": "Apron_6708", "role": "apron", "coverage": "none", "allowLocalBones": true, "transferBodyMorphs": true }
+  ],
+  "shoes": { "node": "shoe_12520", "articulation": "rigid-pair", "capSurface": "Shoe", "defaultFootFit": 0.05 }
+}

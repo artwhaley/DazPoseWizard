@@ -1,0 +1,71 @@
+{
+    "id": "third-outfit",
+    "status": "built-awaiting-validation",
+    "recipeHash": "afdc9beb718c0f583ecaef03bd439b96b9bebf1a0de24eeab870da30311bbe74",
+    "fbxHash": "b9fdf417c6f99750032543884620b79e67d307addc97e177ce5b18a5a74bf5e7",
+    "dufHash": "1006d4d8a35529766a9ce425aba99af8287508814ee5a7f1a14448cc226d48ee",
+    "definition": "Assets/TestData/Wardrobe/third-outfit/Outfit.asset",
+    "reviewScene": "Assets/TestData/Wardrobe/third-outfit/Review.unity",
+    "characterChannels": 126,
+    "shoeHeightMeters": 0.1167096346616745,
+    "pieces": [
+        {
+            "node": "shoe_12520",
+            "role": "footwear",
+            "coverage": "none",
+            "vertices": 13567,
+            "bones": 34,
+            "localBones": 0,
+            "materials": 6,
+            "sourceMorphs": 0,
+            "channels": 0,
+            "shell": false,
+            "restErrorMeters": 5.993116758418182e-8
+        },
+        {
+            "node": "Stockings_5340",
+            "role": "hosiery",
+            "coverage": "none",
+            "vertices": 6465,
+            "bones": 34,
+            "localBones": 0,
+            "materials": 4,
+            "sourceMorphs": 0,
+            "channels": 0,
+            "shell": false,
+            "restErrorMeters": 6.705522537231445e-8
+        },
+        {
+            "node": "dress_7510",
+            "role": "dress",
+            "coverage": "none",
+            "vertices": 8043,
+            "bones": 19,
+            "localBones": 0,
+            "materials": 6,
+            "sourceMorphs": 0,
+            "channels": 4,
+            "shell": false,
+            "restErrorMeters": 2.389999451679614e-7
+        },
+        {
+            "node": "Apron_6708",
+            "role": "apron",
+            "coverage": "none",
+            "vertices": 7180,
+            "bones": 17,
+            "localBones": 0,
+            "materials": 7,
+            "sourceMorphs": 0,
+            "channels": 4,
+            "shell": false,
+            "restErrorMeters": 2.3934808268677445e-7
+        }
+    ],
+    "warnings": [
+        "Review saved opacity/layering: shoe_12520",
+        "Review saved opacity/layering: Stockings_5340",
+        "Review saved opacity/layering: dress_7510",
+        "Review saved opacity/layering: Apron_6708"
+    ]
+}

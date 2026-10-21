@@ -1,6 +1,6 @@
 # Architecture sprint status
 
-Updated October 21, 2026. Current ticket: **T01 â€” Workspace reset**. Approved local cleanup and P02 analysis are delivered; **Artâ€™s native acceptance remains pending**. This is the single active status record; archived campaign progress is historical evidence.
+Updated October 21, 2026. Current ticket: **T01 â€” Workspace reset**. Approved local cleanup and P02 retirement/source preparation are delivered; **Artâ€™s native acceptance remains pending**. This is the single active status record; archived campaign progress is historical evidence.
 
 ## Delivered
 
@@ -9,14 +9,15 @@ Updated October 21, 2026. Current ticket: **T01 â€” Workspace reset**. Appr
 - P06 main project retained. Every primary-project scene and all five third-party dependency groups retained; all other D evidence/recovery kept (D17/D21 duplicate the explicitly retired P03/P04 paths). A01 deletion superseded by Artâ€™s later keep-all-scenes instruction, so the remaining GateB scene is retained at its existing path. It is not an active acceptance requirement.
 - Player code and its root/descendant metas moved from Assets/Player to **Assets/DazPose/Player**; linked managed source and staging path consumers updated. Empty Content/meta subtree removed. No scene contents, production art, bindings, global index or released generation edited.
 - Historical root docs, campaign folders, ticket packets, root TestOutput evidence and native fixture script moved under docs/archive; its README identifies each group. Existing user ticket moves were preserved and reconciled into the approved archive. AGENTS rewritten as one current 68-line document; old AGENTS archived verbatim. README and current authoring/wardrobe/runtime references corrected; live Help/reference/fixture paths updated.
-- P02 source/data analysis and [main-project migration plan](P02_MAIN_PROJECT_IMPORT_PLAN.md) delivered. Its importer engine already exists in main. The real work is removing batch/scene-replacement orchestration and adding safe equipment-asset commit/new-package registration in the existing Clothing Setup. **Migration is not implemented; P02 remains temporarily**, with no code/art copied back.
+- **P02 retired; main-editor conversion hookup deferred.** Art authorized migration, then clarified that the temporary proof-of-concept should not be perfected and that its actual main-only conversion integration may be deferred. The existing conversion C# algorithms are untouched. The active wrapper now supports main-project Preflight/Inspect/Prepare/Status only; Import/All/Validate/Assets/Publish/ReimportTest clearly report DEFERRED, with no Unity launch or fallback clone. The old execution runner clearly reports retirement.
+- [P02 evidence/procedure archive](../archive/p02-import-evidence/README.md) preserves exact original wrappers/helpers/recipes/manuals and clone-specific source/reports. The full clone comparison checked 12,297 files, found 7,427 byte-identical at the same main paths, and retained 1,550 differing/missing-path source/data/evidence files (3,127,228,779 bytes, about 2.91 GiB) under ignored `.dazposewizard/p02-retirement-recovery/`, with verified hashes. Derived player builds and Library/cache outputs were discarded. No proprietary mesh/texture data is newly committed. No clone code/art was copied into main.
 
 ## Local commits and working tree
 
 - `e050848` — unchanged architecture plan.
 - `f7aa2e4` — historical archive, current guidance and P02 analysis/plan.
 - `1ba9232` — GUID-preserving Player organization and approved path retirements.
-- All commits remain local and unpushed. Only the pre-existing untracked `Assets/__WardrobeProtectedCards` scene/metas remain outside Git; they were explicitly retained. Ignored local art/recovery/P02 and rebuilt check outputs remain local.
+- All commits remain local and unpushed. Only the pre-existing untracked `Assets/__WardrobeProtectedCards` scene/metas remain outside Git; they were explicitly retained. Ignored local art/recovery and rebuilt check outputs remain local; the P02 project itself is retired.
 - Automatic approval review initially rejected staging the pre-existing ticket moves. Art then explicitly authorized the three named native/visual/wardrobe packet relocations and their 54 old-path deletions; exact-path staging succeeded. No blocked commit remains.
 
 ## Technical evidence
@@ -41,6 +42,10 @@ Art confirmed Unity was closed for the filesystem changes. No post-cleanup Unity
 
 Record Artâ€™s observations here. Practical earlier Studio and single-Lara wardrobe acceptance remain historical; unrun extended/native integration checks are not claimed passed by cleanup.
 
+## P02 revised-scope verification
+
+[Retirement/check record](../workspace/P02_RETIREMENT.json) and [retention index](../archive/p02-import-evidence/RETENTION.json). Ten existing Python geometry/calibration/source-contract tests pass. Both active PowerShell wrappers parse; Status resolves main with P02 absent; all six legacy conversion actions and the retired runner clearly refuse unsupported work. No active script/config references the retired clone. The 689 protected input hashes still match and tracked Unity Assets/C# has no changes in this follow-up. No Unity or asset conversion/rebake was run; prior T01 managed/source build evidence above was not rerun for this script/docs-only change.
+
 ## Next bounded work
 
-Review/execute the requested P02 migration as its own implementation follow-up before deleting that final clone. No hidden project or fallback clone should be required for routine outfit import. T02 onward and spike S01 were not executed. SuccubusPerformer/StoryRunner/binding refactors remain out of scope.
+Art checks that the main project still opens and existing First Contact/Clothing Setup/MainMenu/Studio behavior is intact. Full new-outfit import integration is deferred; the [design](P02_MAIN_PROJECT_IMPORT_PLAN.md) preserves the remaining scene-context/asset-preservation/new-package registration work for a later bounded task. Do not recreate a clone or claim preparation imported/published an outfit. T02 onward and spike S01 were not executed. SuccubusPerformer/StoryRunner/binding refactors remain out of scope.

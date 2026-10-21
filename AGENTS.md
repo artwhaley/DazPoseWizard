@@ -7,7 +7,7 @@ DazPoseWizard converts DAZ poses and supplies a Unity performance authoring/runt
 - Plan: [Architecture sprint plan](docs/plan/ARCHITECTURE_SPRINT_PLAN.md).
 - Current ticket: [T01 — Workspace reset](newtickets/T01_WORKSPACE_RESET.md), approved cleanup implemented; Art’s native checks remain pending.
 - Single active status: [STATUS](docs/plan/STATUS.md). Technical checks and Art’s visual acceptance are separate.
-- P02 importer migration is analysis/planning only: [main-project import plan](docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md). The remaining staging project is temporary, not the intended import architecture. Do not delete it before migration/retention work.
+- P02 clone is retired. [Main-project import design](docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md) remains a deferred implementation: Art explicitly limited this pass to retirement, preservation and main-only preparation. New outfit conversion/publication is not currently supported through the wrapper; existing imported outfits are unchanged.
 - Historical packets/evidence are under `docs/archive/`; their launch/gate instructions are not active authority.
 
 ## How we work
@@ -63,6 +63,6 @@ Do not substitute Unity tests or launch any program. Private fixture tests may s
 - [Story authoring](docs/story-runtime/DAZSTORY_AUTHORING.md) and [Studio guide](docs/story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md).
 - [Production scene contract](docs/story-runtime/PRODUCTION_SCENES.md) and [fixed First Contact oracle](docs/story-runtime/FIRST_CONTACT_D8_ORACLE.md).
 - [Unity pipeline guide](validation/DazPoseUnityValidation/README.md).
-- [Wardrobe quickstart](validation/DazPoseUnityValidation/docs/LaraWardrobeImportQuickStart.md), [import status](validation/DazPoseUnityValidation/docs/LaraWardrobeImportStatus.md), and detailed playbook for exceptions. Current wrapper still has P02 staging dependency; agents must not run its Unity stages.
+- [Wardrobe quickstart](validation/DazPoseUnityValidation/docs/LaraWardrobeImportQuickStart.md), [import status](validation/DazPoseUnityValidation/docs/LaraWardrobeImportStatus.md), and detailed playbook for exceptions. Current wrapper supports main-only Preflight/Inspect/Prepare/Status without Unity; conversion/validation/publication hookup is deferred. The full previous procedure is preserved under docs/archive/p02-import-evidence.
 - [PlayerView API](validation/DazPoseUnityValidation/docs/PlayerView.md), [HandGrip notes](validation/DazPoseUnityValidation/docs/HandGripImplementationNotes.md).
 - [Path safety](docs/cleanup-task1/path-consumers.md), [completed moves](docs/cleanup-task1/completed-moves.json), and [T01 decisions](docs/workspace/CLEANUP_MANIFEST.md).

@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-21",
+  "authorization": "Art authorized P02 migration and then explicitly allowed deferring the main-project conversion hookup; preserve proven knowledge and retire clone.",
+  "scope": "Retire clone, preserve unique data/known procedure, main-only Python source preparation. Functional new-outfit conversion integration deferred.",
+  "clone": ".dazposewizard/p0c-native-generation",
+  "recoveryRoot": ".dazposewizard/p02-retirement-recovery",
+  "retentionIndex": "docs/archive/p02-import-evidence/RETENTION.json",
+  "retainedFiles": 1550,
+  "retainedBytes": 3127228779,
+  "retainedHashesVerified": true,
+  "protectedHashesChecked": 689,
+  "protectedMismatches": [],
+  "unityCodeChanged": false,
+  "nativeRun": false,
+  "checks": {
+    "pythonPreparationTestsPassed": 10,
+    "powerShellParse": true,
+    "legacyActionsClearlyDeferred": 6,
+    "retiredRunnerClearlyDisabled": true
+  },
+  "conversionIntegration": "DEFERRED",
+  "cloneRetired": true,
+  "recoveryIsNotAUnityProject": true,
+  "statusCheckedAfterRetirement": true
+}

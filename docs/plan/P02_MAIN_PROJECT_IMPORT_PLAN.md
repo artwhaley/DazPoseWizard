@@ -1,6 +1,8 @@
 # P02 — remove the cloned-project requirement from wardrobe importing
 
-Analysis and proposed implementation sequence, October 21, 2026. Requested by Art during T01. **Analysis is delivered; migration is not yet implemented.** No Unity operation or asset regeneration was performed. P02 remains temporarily at `.dazposewizard/p0c-native-generation` until this replacement and its data-retention steps are implemented and Art verifies the main-project workflow. Do not create another clone.
+October 21 scope correction: Art authorized migration, then explicitly said not to perfect the temporary proof-of-concept path and allowed deferring the main-project import hookup. **Clone retirement and main-only source preparation are implemented; full conversion integration is DEFERRED.** No Unity run, asset regeneration or new import UI was performed. Art will confirm main-project integrity afterward.
+
+The original procedure/scripts/recipes, clone-specific source/reports and nonidentical local data are retained in [the evidence archive](../archive/p02-import-evidence/README.md) and its hashed local recovery index. P02 is retired; no other clone replaces it. Active Import/All/Publish/validation actions report the deferred status clearly. The implementation sequence below remains the future design, not an executed feature checklist.
 
 The importer implementation is already in the main project. Nothing in the inspected importer engine needs copying back from P02. The missing work is a safe main-project entry point, removal of scene-changing/global assumptions, transactional asset publication and registration of a newly imported package in Clothing Setup. Changing `-projectPath` alone would be unsafe.
 
@@ -34,7 +36,7 @@ Full comparison evidence: [P02_ANALYSIS.json](../workspace/P02_ANALYSIS.json). P
 
 ### 1. Retain only needed P02 history and compare identities
 
-Use the recorded full lists to archive only stage-exclusive import logs/source-hash reports and any specifically wanted review evidence under `docs/archive/p02-import-evidence/`. For missing-path candidate assets, resolve GUIDs against main before deciding whether they are already relocated. Preserve main assets; do not copy the clone’s scenes, body snapshots or old scripts back. Record the retention mapping and artifact hashes. P02 is not deleted until this step and the replacement are finished.
+Use the recorded full lists to archive only stage-exclusive import logs/source-hash reports and any specifically wanted review evidence under `docs/archive/p02-import-evidence/`. For missing-path candidate assets, resolve GUIDs against main before deciding whether they are already relocated. Preserve main assets; do not copy the clone’s scenes, body snapshots or old scripts back. Record the retention mapping and artifact hashes. Unique evidence/data is retained before retirement; the replacement hookup is deferred by the revised scope.
 
 ### 2. Separate recipe preparation from Unity orchestration
 
@@ -70,10 +72,10 @@ Pure managed checks: recipe/path validation, source/material baseline merge, GUI
 
 Art’s main-project observable: with FirstContact open and an unsaved mark edit, import one actual outfit from DUF+FBX through the new command; the original scene remains open/dirty and its file unchanged. In the existing Clothing Setup select the imported outfit, assign layers/hair, compile/publish a new generation, then select it through Studio. Reimport after an intentional material/footwear edit and verify values/GUIDs/layers survive. Cancel and force one controlled failure to verify cleanup/rollback. No extra disposable scene or clothing acceptance matrix.
 
-Record technical evidence separately from Art’s observations. When this works with P02 renamed/unavailable, remove the clone, hardcoded path, source-sync/Publish-copy branches and any staging-only callers (including the historical run-wardrobe-execution path). Update quickstart/playbook/current status. Search active code/config for P02 or fallback clone dependencies; archived evidence may name the old path. No future “missing sandbox” repair is allowed to recreate it.
+Record technical evidence separately from Art’s observations. The revised retirement pass removes the clone and active hardcoded source-sync/Publish-copy branches now; after future main-editor implementation, verify with P02 absent and any staging-only callers (including the historical run-wardrobe-execution path). Update quickstart/playbook/current status. Search active code/config for P02 or fallback clone dependencies; archived evidence may name the old path. No future “missing sandbox” repair is allowed to recreate it.
 
 ## Scope and completion
 
-This plan does not change FirstContact, clothing art, bindings/index, generations or rig calibration. It does not reopen accepted single-Lara behavior or the waived second-Lara test. It needs no extra Unity package and no new Unity project.
+This retirement/preparation change does not change Unity C# code, FirstContact, clothing art, bindings/index, generations or rig calibration. It does not reopen accepted single-Lara behavior or the waived second-Lara test. It adds no Unity package/project.
 
-Completion means a normal new outfit can be prepared, imported and reviewed/published in the main project with P02 absent, while preserving artist edits and immutable releases. Source presence alone is not that outcome. T01 delivered this analysis and retained P02 intentionally; implementing the migration is the next bounded follow-up to approve, not a claim that the dependency is already gone.
+The full main-editor conversion outcome described above remains deferred. This pass completes the revised scope: preserve knowledge and unique clone data, remove the hardcoded project/orchestration dependency, retire P02, keep useful main-only preparation and expose the unavailable conversion steps honestly. Native integrity remains Art’s check. Do not infer that source preparation has imported or published an outfit.

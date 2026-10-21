@@ -125,7 +125,7 @@ def summary(recipe_path, project):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action',choices=['prepare','preflight','inspect','summary'])
-    parser.add_argument('--recipe',type=Path,required=True);parser.add_argument('--project',type=Path,required=True)
+    parser.add_argument('--recipe',type=Path,required=True);parser.add_argument('--project',type=Path,default=ROOT/'validation/DazPoseUnityValidation',help='Main Unity project; no project clone or Unity process is needed for source preparation.')
     parser.add_argument('--force',action='store_true');options=parser.parse_args()
     if options.action=='summary': summary(options.recipe,options.project)
     else: prepare(options.recipe,options.project,options.force,options.action in ('preflight','inspect'),options.action=='inspect')

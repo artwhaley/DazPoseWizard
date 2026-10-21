@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "third-outfit",
+  "duf": "C:/Users/artwh/OneDrive/Documents/DAZ 3D/Studio/My Library/Scenes/larathirdoutfit.duf",
+  "fbx": "Assets/TestCharacter/larathirdoutfit.fbx",
+  "destination": "Assets/TestData/Wardrobe/third-outfit",
+  "characterScene": "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+  "characterPoints": "Assets/TestData/LaraCandidate/manifest.json",
+  "referenceFbx": "Assets/TestCharacter/larafirstoutfit.fbx",
+  "poseCalibration": "configs/wardrobe/paired-tiptoe-calibration.json",
+  "contentRoots": [], "include": [], "ownership": [], "shapeNames": [], "policies": [], "shoes": null
+}

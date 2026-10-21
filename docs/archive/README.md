@@ -42,3 +42,5 @@ Archived October 21, 2026 under T01, superseded by the [architecture sprint plan
 - [scripts/native-directing-fixture.py](<scripts/native-directing-fixture.py>): archived October 21; historical ticket/evidence/reference, superseded as execution authority by T01 and the architecture plan.
 
 The original AGENTS is preserved verbatim. The protected recovery snapshot stays at its existing ignored location; its historical baseline record is under production-consolidation/remediation. Current story guides/oracle and cleanup safety manifests remain outside this archive.
+
+- [P02 import proof of concept](p02-import-evidence/README.md): retired October 21 after Art allowed deferring the full main-editor hookup; known source/procedure/recipes and clone-specific evidence are retained, proprietary asset differences stay in ignored local recovery.

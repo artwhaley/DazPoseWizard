@@ -1,185 +1,30 @@
-# Lara import: operator manual
+# Lara wardrobe source preparation and existing outfit authoring
 
-## Current import limitation — October 21, 2026
+Updated October 21, 2026. The cloned import proof of concept is retired. Art explicitly deferred completing the main-editor conversion hookup; **new outfit conversion/publication is currently unavailable through the wrapper**. Existing imported outfits, Clothing Setup and published generations are unchanged. Native verification remains Art-operated.
 
-Clothing Setup, runtime layers, immutable publication and Studio/FirstContact wardrobe integration are implemented. Existing artist assets and GUIDs are authoritative; native use of the newest integration is still pending Art’s checks.
+## What works now
 
-The current PowerShell import wrapper still hardcodes `.dazposewizard/p0c-native-generation`. Art has rejected that architecture. The [main-project migration plan](../../../docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md) explains the source findings and replacement. That project is retained temporarily so migration can preserve required data/evidence; do not create another clone or treat it as the intended ongoing workflow.
-
-Agents must not run Unity stages. Commands below describe the existing legacy wrapper for Art; they are not an authorization to run batch mode, Play or a player. Importer migration and retirement are not implemented by T01.
-
-Current editor/menu and scene ownership is recorded in [current status](../../../docs/plan/STATUS.md) and [scene/content ownership](../../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md). Use **DazPose > Wardrobe > Imported Outfits**; older dated notes may show the retired `Tools > DAZ Pose` menu path. Current Unity workflows are linked from the [Unity project README](../README.md).
-
-
-Read root AGENTS.md and **Current handoff** in [status](LaraWardrobeImportStatus.md).
-This is the operating procedure for the recipe importer. The
-[detailed playbook](LaraWardrobeImportPlaybook.md) is an exception reference.
-Do not reread historical investigations or write another outfit-specific builder.
-
-The maid's visuals were approved, but its first clean-context Luna run required
-shared-tool repairs. It did **not** pass the independent-agent acceptance gate.
-The next clean-context trial must use this revised procedure without importer
-code changes or another agent taking over. Record that outcome separately from
-technical checks and artistic approval; do not call a rescued run a pipeline pass.
-
-## Inputs
-
-User saves one DUF and exports one direct FBX under `Assets/TestCharacter`, with
-the approved Lara body/graft and visible followers. A `Genesis8Female` node name
-alone does not prove inclusion: `Inspect` verifies nonzero vertices and polygons.
-Retain the supplied shoe pose
-and relevant follower morphs. The body is a geometry/pose reference; approved
-facial/anatomy channels come from the canonical character. No routine bridge
-export or additional clean-body export. Agent handles technical work; return to
-the user for necessary Daz actions or artistic decisions with a preview.
-
-Use `scripts/LaraWardrobe-MorphExportRules.csv` for wardrobe exports. It exports
-the proven nipple control (`PBMNipples`), breathing/belly breathing, the existing
-left blink and opening probe; everything else is baked. Keep Lara Breasts at the
-approved saved value. The importer supplies the approved mesh-only
-`LaraBreastsAdjustment` to clothing by body-surface transfer, rather than treating
-a raw Daz breast/ joint-ERC channel as equivalent. It also supplies missing
-nipple/breathing follower shapes, so a Daz garment exporting empty channels is
-supported but its fit must be reviewed. Original `LaraGraftProbe` CSV is the
-minimal probe, not the recommended wardrobe preset. Do not zero breast shape
-or nipple controls merely to satisfy the CSV; retain the approved source state.
-
-## Recipe: LLM judgement
-
-Copy `configs/wardrobe/template.json` to a new recipe. Set exact source paths,
-unique id and `Assets/TestData/Wardrobe/<id>` destination. Preserve canonical
-reference fields. Run Preflight below; read `source-summary.json`, not the huge
-manifest. It lists DUF node IDs, labels, visibility and surfaces.
-
-For a missing FBX owner, compare `geometry-inventory.json` with the DUF summary:
-use asset URL, label, hierarchy, surface list and visibility to establish ownership.
-Put proven `from`/`to` pairs in `ownership`. Never guess from similar names alone.
-The second recipe illustrates shell instance suffixes and a source spelling typo.
-
-`policies` entries use exact FBX node names:
-- `role`: hair, dress, underwear, footwear or another descriptive equipment role.
-- `coverage`: `none` (default), `opaque-front` (body UV3.x), or `opaque-envelope`
-  (UV3.y). These are the approved Lara projection algorithms. One owner per
-  channel. Start new garments at none; review opaque panels/openings before
-  assigning a mask. Sheer fabric needs visible skin; do not mask the whole graft.
-- `allowLocalBones`: true by default; disable when unexpected bones need review.
-- `transferBodyMorphs`: true by default, except hair. Rigid footwear mechanically
-  skips transferred body shapes even when this flag is omitted or true.
-
-Source morphs matching canonical semantic names bind mechanically. For a different
-name representing the same control, use `shapeNames` (`from` exported channel,
-`to` canonical channel) after proving equivalence. Unmatched local morphs remain
-available on the attachment and appear in the report; they are not body-driven.
-
-If shoes are present, set `shoes.node`, `articulation` (`rigid-pair` for pumps,
-`skinned` for deforming footwear), optional `capSurface` for a closed toe roof,
-and `defaultFootFit` (0.05 is the proven pump default). Decide articulation from
-construction, not the filename or the presence of toe skin weights. Pumps can
-have toe weights and still need rigid articulation. Current calibration expects one combined shoe
-pair with both foot bindings and the supported baked-pose export convention.
-Skinned shoes need visual deformation review; the rigid invariance check applies
-only to rigid pairs; floor penetration and supported contact checks run for both.
-Footwear automatically uses the shared calibration when `poseCalibration` is
-omitted; the template makes that default explicit. Its small, shared
-`paired-tiptoe-calibration.json` captures the approved lower-leg deformation per
-unit of the saved Daz tiptoe control. The helper verifies reference hash, equal
-left/right controls in 0–1, and every calibrated point within 0.002 mm before
-transferring those points as part of `CapturedHeelFootPose`. Unexplained changes
-above the feet still face the 1.5 mm guard. Unequal controls or another pose
-pattern need investigation and a shared calibration extension; do not raise the
-guard or invent a garment-specific fix. The exact internal Daz driver is not
-identified; this is an empirically verified geometry calibration, not a general
-Daz pose evaluator. Read the compact `poseCalibration` result in heel-reference
-evidence; the agent need not read the calibration's point payload during normal
-imports. Split shoes/boot segmentation require a shared capability
-extension, not another bespoke outfit builder.
-
-## Commands: mechanical execution
-
-From the repository root, in the signed-in user's shell (Codex uses escalated
-exec for Unity licensing and process checks):
+Preparation uses the authoritative `validation/DazPoseUnityValidation` directly. No separate project or Unity process is needed. Save one DUF and export one direct FBX with approved Lara/body/graft, visible followers, supplied pose and intended footwear. Preserve the original source files, material/texture paths, artist settings and GUIDs. Use the existing recipe template in `configs/wardrobe`; its id and exact `Assets/TestData/Wardrobe/<id>` destination must agree.
 
 ```powershell
+.\scripts\import-lara-outfit.ps1 -Recipe configs\wardrobe\third-outfit.json -Action Status
 .\scripts\import-lara-outfit.ps1 -Recipe configs\wardrobe\third-outfit.json -Action Preflight
 .\scripts\import-lara-outfit.ps1 -Recipe configs\wardrobe\third-outfit.json -Action Inspect
-.\scripts\import-lara-outfit.ps1 -Recipe configs\wardrobe\third-outfit.json -Action All
+.\scripts\import-lara-outfit.ps1 -Recipe configs\wardrobe\third-outfit.json -Action Prepare
 ```
 
-Preflight needs only the DUF. With an FBX available, run Inspect and read the
-compact `source-contract.json` beside `source-summary.json`: actual geometry
-counts, body inclusion, shoe node/policy, and calibration selection. Inspect does
-not launch Unity. Resolve shoe construction before All: rigid sole/heel pumps
-use `rigid-pair`; flexible footwear uses `skinned`. If construction cannot be
-established from geometry/product evidence, a provisional recipe may run All in
-the isolated project to obtain `render/heels.png` and walking captures. Inspect
-them, correct the recipe and rerun All before Publish. This is normal recipe
-iteration, not permission to change shared code or count a failed check as a pass.
-Ask the user only when the intended artistic behavior remains ambiguous after
-that evidence. Do not infer flexibility from toe weights.
-All checks body geometry and pose before expensive follower conversion.
-All stages run in
-`.dazposewizard/p0c-native-generation`; the user's active Unity project stays open.
-The isolated project must already be staged with canonical assets/packages.
-The wrapper refuses concurrent ownership, stages code and selected FBXs, caches
-preparation by hashes including texture content, then builds, checks assets,
-renders morph/dissolve states and samples 181 walking frames.
+Status is read-only. Preflight checks DUF ownership/textures and writes preparation evidence; Inspect also checks actual FBX geometry and explicit shoe policy. Prepare runs the existing Python geometry/material-manifest/heel-reference preparation against main. It creates preparation files; it does **not** convert Unity meshes/materials, register an outfit or publish a generation. Blender’s Python FBX parser remains a preparation dependency. Run preparation deliberately; it can update owned preparation manifests, so save source/artist work first.
 
-Read `TestOutput/wardrobe-import/<id>/report.md` and `report.json` in that project.
-Inspect `render/front.png`, back/side/heels and `motion/taa-walking.png`; numeric
-passes alone do not approve fit. Failures have a stage log; investigate that stage
-and relevant detailed-reference section. `Import` rebuilds without GPU checks;
-`Validate` runs checks on the current generated host.
+Import, All, Validate, Assets, Publish and ReimportTest now report that conversion integration is deferred. No fallback project is created or discovered. `run-wardrobe-execution.ps1` is retired. Agents must not launch Unity or run batch/Play/builds/players.
 
-Handle known failures directly:
-- `BODY_GEOMETRY_REQUIRED`: request one corrected direct FBX with visible/exported
-  approved body/graft, retained pose and followers. No bridge/clean-body export.
-- `SHOE_POLICY_REQUIRED`: correct the recipe's node/articulation from construction
-  evidence, then rerun Inspect. This is a recipe decision, not a new exporter.
-- Tiptoe residual/range/reference mismatch: retain evidence and report a genuinely
-  unsupported pose. Do not lower the pose or increase tolerances.
-- Changed artist assets at Publish: save edits and rerun All. An identical repeat
-  publication is allowed; differing new artist bytes are protected.
-For a new technical limitation, describe the exact missing shared capability.
-Do not count that import as a completed clean-context demonstration. Routine
-diagnostics/recipe repairs do not require user approval; user intervention is for
-necessary Daz actions or artistic decisions.
+## Existing outfits
 
-Before treating a new import as repeatable:
+In Art’s main editor, use **DazPose > Wardrobe > Open Clothing Setup** for the existing catalog, layers, hair, footwear and fit/release workflow. **Imported Outfits** still browses existing packages and their historical reviews. Reusable wardrobe assets and Studio/FirstContact integration remain implemented; source preparation alone does not add a new package to that catalog.
 
-```powershell
-.\scripts\import-lara-outfit.ps1 -Recipe configs\wardrobe\third-outfit.json -Action ReimportTest
-.\scripts\import-lara-outfit.ps1 -Recipe configs\wardrobe\third-outfit.json -Action Validate
-.\scripts\import-lara-outfit.ps1 -Recipe configs\wardrobe\third-outfit.json -Action Publish
-```
+Base/1/2 layer assignments belong to the artist. Shoes follow their layer; hair persists. Keep artist opacity/roughness/maps and footwear height/fit on future reimport. Never move the canonical source/imported material paths that feed CharacterSignature, or change immutable releases to make a trial pass.
 
-ReimportTest temporarily changes opacity/footwear settings, rebuilds, verifies
-GUIDs/settings and restores the values. Publish requires a current passed report,
-backs up owned assets and preserves existing main-project artist materials,
-footwear settings and review scenes. Concurrent override edits cause publication
-to stop; save those edits and rerun All. A new review revision preserves the
-previous scene. It does not switch the user's active scene.
-Review through **DazPose > Wardrobe > Imported Outfits**. Save material
-and footwear edits; the next import stages those authoritative overrides first.
+## Preserved knowledge and future hookup
 
-## Produced assets and handoff
+The [retired workflow archive](../../../docs/archive/p02-import-evidence/README.md) preserves the full previous procedure/scripts/recipes, acceptance evidence and clone-specific differences. The [playbook](LaraWardrobeImportPlaybook.md) links the technical decisions; [historical status](LaraWardrobeImportStatus.md) retains actual user approvals separately from technical checks. No known import procedure was discarded.
 
-`Outfit.asset` is a WardrobeOutfitDefinition: piece meshes/materials, canonical
-bone names, local bone hierarchy, roles, coverage channels and optional footwear.
-`ReviewBody.asset` retains all approved character channels plus import-specific
-coverage/foot shapes. `Footwear.asset` carries contact/height/fit and toe/body
-reference data. Particle bindings/profile are regenerated for the review body.
-`Review.unity` is a disposable test host, not a runtime outfit implementation.
-Import generates it for isolated automated checks. Scenes are not outfit identity
-or the storage for tuning: materials, meshes, recipe and footwear assets are.
-The persistent Clothing Setup scene and runtime wardrobe switcher are implemented. Use **DazPose > Wardrobe > Open Clothing Setup**; importing an outfit should add catalog assets, not another production scene. Save artistic scene arrangements separately.
-The [runtime/setup specification](WardrobeRuntimeAndSetupSpec.md) describes Base/1/2 assignments: default Base, all populated layers shown on load, TryRemoveLayer/TryAddLayer, shoes on their assigned layer and persistent hair. Preserve artist layer assignments on reimport. The current importer still produces the package format consumed by catalog/fit/release tooling; it does not yet provide the proposed main-project import workflow.
-
-Runtime materials are artist assets; regenerated source materials are the baseline.
-Reimport adopts changed source properties only where the runtime value still
-matches its previous baseline, retaining edited opacity/roughness/maps. Footwear
-height/fit are retained; measured ground, heel/toe contacts and reference geometry are regenerated.
-Keep output GUIDs. Do not wholesale replace edited assets or vendor shaders.
-
-Report passes, unresolved review items and exact Daz actions if any. Record user
-approval in status. Full graft removal leaves a hole; the clean reference lacks
-full morph compatibility. Flat-floor support is not sitting/terrain/hand IK.
+The [migration design](../../../docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md) records the remaining work: main-editor entry point with temporary actor context, preservation/rollback of only owned assets and new-package registration in existing Clothing Setup. These are deferred, not claimed implemented. [STATUS](../../../docs/plan/STATUS.md) is the single active status record.

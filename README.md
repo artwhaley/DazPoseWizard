@@ -16,7 +16,7 @@ Tools live under **DazPose**. Use **DazPose > Story > Scene Director Studio** to
 
 **New Performance Scene** copies the saved art-only `Assets/Production/Environments/VoidEnvironment.unity`. The original FirstPerformanceVoid is a frozen reference. AuthoringShowcase under `Assets/Examples/Scenes` remains an example.
 
-Start with [story authoring](docs/story-runtime/DAZSTORY_AUTHORING.md), [Studio](docs/story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md), and [the Unity guide](validation/DazPoseUnityValidation/README.md). Import instructions and the remaining staging limitation are in [wardrobe quickstart](validation/DazPoseUnityValidation/docs/LaraWardrobeImportQuickStart.md) and [the P02 migration plan](docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md). Implementation evidence is separate from Art’s visual approval.
+Start with [story authoring](docs/story-runtime/DAZSTORY_AUTHORING.md), [Studio](docs/story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md), and [the Unity guide](validation/DazPoseUnityValidation/README.md). Existing outfit authoring and main-only source preparation instructions are in [wardrobe quickstart](validation/DazPoseUnityValidation/docs/LaraWardrobeImportQuickStart.md) and [the P02 migration plan](docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md). The cloned import project is retired; completing new-outfit conversion/publication in the main editor is deferred. The full proof-of-concept procedure and unique data are preserved. Implementation evidence is separate from Art’s visual approval.
 
 ## Run the conversion app
 

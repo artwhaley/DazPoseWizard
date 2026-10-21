@@ -10,7 +10,7 @@
     {
       "id": "P02",
       "path": ".dazposewizard/p0c-native-generation",
-      "action": "keep"
+      "action": "delete"
     },
     {
       "id": "P03",
@@ -250,7 +250,7 @@
     {
       "id": "D15",
       "path": ".dazposewizard/p0c-native-generation",
-      "action": "keep"
+      "action": "delete"
     },
     {
       "id": "D16",
@@ -809,5 +809,6 @@
     }
   ],
   "duplicateRows": "D17/D21 list the exact P03/P04 paths; explicit project retirements apply, all other D evidence retained.",
-  "packetCommitAuthorization": "Art explicitly answered Yes, commit those three relocations for Native Directing, Visual Authoring, and Wardrobe Protected Cards packets, including 54 old newtickets path deletions."
+  "packetCommitAuthorization": "Art explicitly answered Yes, commit those three relocations for Native Directing, Visual Authoring, and Wardrobe Protected Cards packets, including 54 old newtickets path deletions.",
+  "P02Followup": "Art authorized retirement after retaining known workflow/data, and explicitly permitted deferring actual main-only conversion hookup."
 }

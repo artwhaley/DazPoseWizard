@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "second-outfit",
+  "duf": "C:/Users/artwh/OneDrive/Documents/DAZ 3D/Studio/My Library/Scenes/larasecondoutfit.duf",
+  "fbx": "Assets/TestCharacter/larasecondoutfit.fbx",
+  "destination": "Assets/TestData/Wardrobe/second-outfit",
+  "characterScene": "Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+  "characterPoints": "Assets/TestData/LaraCandidate/manifest.json",
+  "referenceFbx": "Assets/TestCharacter/larafirstoutfit.fbx",
+  "ownership": [
+    {"from": "Umbra Bra Top Gloss Shell", "to": "Umbra Bra Top Gloss Shell-1"},
+    {"from": "Umbra Stocking L Gloss Shell", "to": "Umbra Stocking L Gloss Shell-1"},
+    {"from": "Umbra Stocking R Gloss Shell", "to": "Umbra Stocking R Gloss Shell-1"},
+    {"from": "Umbra Sleeve L Gloss Shell", "to": "Umbra Sleeve L Gloss Shell-1"},
+    {"from": "Umbra Sleeve R Gloiss Shell", "to": "Umbra Sleeve R Gloiss Shell-1"}
+  ],
+  "shapeNames": [],
+  "policies": [
+    {"node": "shoe_6146", "role": "footwear", "coverage": "none", "allowLocalBones": true, "transferBodyMorphs": false}
+  ],
+  "shoes": {"node": "shoe_6146", "articulation": "rigid-pair", "capSurface": "Shoe", "defaultFootFit": 0.05}
+}

@@ -1,0 +1,55 @@
+{
+    "id": "first-outfit",
+    "status": "built-awaiting-validation",
+    "recipeHash": "797ccaace52d0200a1a8097aab5cafcff11bef828c1f0173197a573d54cda1b6",
+    "fbxHash": "992bcc227f7f61a29c44774a42b57d86eb3d9c1072118ee3522ea7e0a1d0b628",
+    "dufHash": "c37fec189a828ef1803e4a0fd0c325f6d4edc8c5ebcc2d361f08f66e5b16e31e",
+    "definition": "Assets/TestData/Wardrobe/first-outfit/Outfit.asset",
+    "reviewScene": "Assets/TestData/Wardrobe/first-outfit/Review.unity",
+    "characterChannels": 124,
+    "shoeHeightMeters": 0.0,
+    "pieces": [
+        {
+            "node": "EmikoHair_59875",
+            "role": "hair",
+            "coverage": "none",
+            "vertices": 61532,
+            "bones": 16,
+            "localBones": 2,
+            "materials": 14,
+            "sourceMorphs": 10,
+            "channels": 10,
+            "shell": false,
+            "restErrorMeters": 3.604302492021816e-7
+        },
+        {
+            "node": "CharlenesCloset_Panty_1981",
+            "role": "underwear",
+            "coverage": "opaque-front",
+            "vertices": 2195,
+            "bones": 7,
+            "localBones": 0,
+            "materials": 2,
+            "sourceMorphs": 3,
+            "channels": 3,
+            "shell": false,
+            "restErrorMeters": 1.2105761015845929e-7
+        },
+        {
+            "node": "PeekaBoo_16572",
+            "role": "dress",
+            "coverage": "opaque-envelope",
+            "vertices": 16854,
+            "bones": 20,
+            "localBones": 0,
+            "materials": 1,
+            "sourceMorphs": 43,
+            "channels": 44,
+            "shell": false,
+            "restErrorMeters": 2.4053377956079205e-7
+        }
+    ],
+    "warnings": [
+        "Review saved opacity/layering: EmikoHair_59875"
+    ]
+}

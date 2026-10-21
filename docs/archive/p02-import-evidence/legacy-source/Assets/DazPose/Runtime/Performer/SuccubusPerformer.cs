@@ -1,0 +1,2107 @@
+using System;
+using System.Collections.Generic;
+using DazPose.Motion;
+using DazPose.Performer.HandGrip;
+using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.Playables;
+
+namespace DazPose.Performer
+{
+    public enum PoseCompletion
+    {
+        Settled,
+        Superseded,
+        PerformerDisabled,
+        Cancelled
+    }
+
+    public enum ExpressionCompletion
+    {
+        Settled,
+        Superseded,
+        PerformerDisabled,
+        Cancelled
+    }
+
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(Animator))]
+    [AddComponentMenu("Performer/Succubus Performer")]
+    public sealed class SuccubusPerformer : MonoBehaviour
+    {
+        [SerializeField] private Animator animator;
+        [SerializeField] private PerformerPose initialPose = null;
+        [SerializeField] private PoseTransition defaultTransition = PoseTransition.Default;
+
+        [Header("Expression")]
+        [SerializeField] private PerformerExpression initialExpression = null;
+        [SerializeField, Range(0f, 1f)] private float initialExpressionIntensity = 1f;
+        [SerializeField, Min(0f)] private float defaultExpressionBlendTime = 0.25f;
+
+        [Header("Gesture")]
+        [SerializeField] private AvatarMask gestureUpperBodyMask;
+
+        [Header("Motion")]
+        [SerializeField] private MotionDriver motionDriver;
+        [SerializeField] private PerformerMotionSet motionSet;
+        [SerializeField] private AvatarMask rightArmMotionMask;
+        [SerializeField, Min(0f)] private float motionOwnershipBlendSeconds = 0.18f;
+
+        [Header("Speech")]
+        [SerializeField] private AudioSource speechAudioSource;
+
+        [Header("Locomotion")]
+        [SerializeField] private PerformerLocomotionProfile locomotionProfile;
+
+        [Header("Teleport")]
+        [SerializeField] private PerformerTeleportProfile teleportProfile;
+
+        [Header("Dissolve")]
+        [SerializeField] private PerformerDissolveProfile dissolveProfile;
+        [SerializeField] private PerformerDissolveRig dissolveRig;
+        [SerializeField] private bool startHidden = true;
+
+        [Header("Breathing")]
+        [SerializeField] private bool breathingEnabled = true;
+        [SerializeField, Range(3f, 24f)] private float breathsPerMinute = 10f;
+        [SerializeField] private AnimationCurve breathingCurve = CreateDefaultBreathingCurve();
+
+        [Header("Morph Breathing")]
+        [SerializeField] private bool morphBreathingEnabled = true;
+        [SerializeField, Range(0f, 3f)] private float morphBreathingStrength = 0.25f;
+        [SerializeField, Range(0f, 2f)] private float breatheStrength = 1f;
+        [SerializeField, Range(0f, 2f)] private float breatheBellyStrength = 0.7f;
+
+        [Header("Bone Breathing")]
+        [SerializeField] private bool boneBreathingEnabled = true;
+        [SerializeField, Range(0f, 2f)] private float boneBreathingStrength = 0.3f;
+        [SerializeField] private BreathingBoneChannel[] breathingBones = CreateDefaultBreathingBones();
+
+        [Header("Gaze")]
+        [SerializeField] private bool gazeEnabled = true;
+        [SerializeField, Range(0.1f, 10f)] private float gazeAcquireToleranceDegrees = 2f;
+        [SerializeField] private bool headGazeEnabled = true;
+        [SerializeField, Range(0f, 1f)] private float headGazeWeight = 0.7f;
+        [SerializeField, Range(0f, 20f)] private float headGazeResponse = 4f;
+        [SerializeField, Range(0f, 89f)] private float headGazeMaxYaw = 40f;
+        [SerializeField, Range(0f, 89f)] private float headGazeMaxPitch = 25f;
+        [SerializeField] private bool eyeGazeEnabled = true;
+        [SerializeField, Range(0f, 1f)] private float eyeGazeWeight = 1f;
+        [SerializeField, Range(0f, 30f)] private float eyeGazeResponse = 12f;
+        [SerializeField, Range(0f, 89f)] private float eyeGazeMaxYaw = 32f;
+        [SerializeField, Range(0f, 89f)] private float eyeGazeMaxPitch = 22f;
+        [SerializeField, Range(0f, 20f)] private float gazeReleaseResponse = 4f;
+
+        [Header("Attention Life")]
+        [SerializeField] private bool attentionLifeEnabled = true;
+        [SerializeField] private int attentionLifeSeed = 12345;
+        [SerializeField] private bool eyeFixationLifeEnabled = true;
+        [SerializeField, Range(0f, 8f)] private float eyeFixationMaxHorizontalDegrees = 0.9f;
+        [SerializeField, Range(0f, 6f)] private float eyeFixationMaxVerticalDegrees = 0.6f;
+        [SerializeField, Min(0.05f)] private float eyeFixationMinimumHoldSeconds = 2.2f;
+        [SerializeField, Min(0.05f)] private float eyeFixationMaximumHoldSeconds = 4.5f;
+        [SerializeField, Range(1f, 4f)] private float eyeFixationCenterBias = 2.4f;
+        [SerializeField] private bool headAttentionLifeEnabled = true;
+        [SerializeField, Range(0f, 15f), InspectorName("Head Attention Max Side Tilt Degrees")]
+        private float headAttentionMaxTiltDegrees = 1.25f;
+        [SerializeField, Range(0f, 12f), InspectorName("Head Attention Max Chin Nod Degrees")]
+        private float headAttentionMaxChinDegrees = 1f;
+        [SerializeField, Min(0.1f)] private float headAttentionMinimumHoldSeconds = 8f;
+        [SerializeField, Min(0.1f)] private float headAttentionMaximumHoldSeconds = 16f;
+        [SerializeField, Min(0f)] private float headAttentionTransitionResponse = 0.35f;
+
+        [Header("Autonomous Blink")]
+        [SerializeField] private bool blinkEnabled = true;
+        [SerializeField, Range(0f, 1f)] private float blinkStrength = 1f;
+        [SerializeField, Min(0.1f)] private float blinkMinimumIntervalSeconds = 3.5f;
+        [SerializeField, Min(0.1f)] private float blinkMaximumIntervalSeconds = 6.5f;
+        [SerializeField, Min(0.005f)] private float blinkCloseDurationSeconds = 0.08f;
+        [SerializeField, Min(0.005f)] private float blinkClosedDurationSeconds = 0.045f;
+        [SerializeField, Min(0.005f)] private float blinkOpenDurationSeconds = 0.13f;
+
+        private PlayableGraph _graph;
+        private PerformerBodyPose _bodyPose;
+        private PerformerBodySourceMixer _bodySourceMixer;
+        private PerformerLocomotion _locomotion;
+        private PerformerTeleport _teleport;
+        private PerformerDissolve _dissolve;
+        private PerformerSeatingLayer _seatingLayer;
+        private PerformerSeating _seating;
+        private PerformerActionLayer _actionLayer;
+        private PerformerActionRuntime _actionRuntime;
+        private PerformerGestureLayer _gestureLayer;
+        private PerformerHandGripController _handGripController;
+        private PerformerMotionLayer _motionLayer;
+        private PerformerMotionConsumer _motionConsumer;
+        private PerformerBreathing _breathing;
+        private PerformerGaze _gaze;
+        private PerformerAttentionLife _attentionLife;
+        private PerformerBlink _blink;
+        private PerformerExpressionLayer _expression;
+        private PerformerSpeech _speech;
+        private PerformerMagicRuntime _magicRuntime;
+        private PerformerAura _desiredAura;
+        private Transform _desiredAuraTarget;
+        private PerformerPose _lastDesiredPose;
+        private PerformerPose _lastSettledPose;
+        private PerformerPoseSnapshot _neutralPoseState;
+        private float _lastBreathPhase;
+        private PoseRequest _activePoseRequest;
+        private long _nextPoseRequestId;
+        private long _poseIntentGeneration;
+        private bool _hasPoseCommand;
+        private bool _isTearingDown;
+        private PerformerExpression _lastDesiredExpression;
+        private PerformerExpression _lastSettledExpression;
+        private float _lastDesiredExpressionIntensity;
+        private float _lastSettledExpressionIntensity;
+        private ExpressionRequest _activeExpressionRequest;
+        private long _expressionIntentGeneration;
+        private bool _hasExpressionCommand;
+        private bool _hasSavedApplyRootMotion;
+        private bool _savedApplyRootMotion;
+        private bool _visibilityInitialized;
+        private bool _lastStableHidden;
+        private object _wardrobeEffectTransitionOwner;
+        private bool _isDissolveShaderAcceptanceActive;
+        private PerformerDissolveProfile _runtimeWardrobeProfile;
+
+        public PerformerPose SettledPose => _bodyPose != null ? _bodyPose.SettledPose : _lastSettledPose;
+        public PerformerPose DesiredPose => _bodyPose != null ? _bodyPose.DesiredPose : _lastDesiredPose;
+        public bool IsTransitioning => _bodyPose != null && _bodyPose.IsTransitioning;
+        public bool IsRuntimeReady => Application.isPlaying && isActiveAndEnabled && !_isTearingDown
+            && _bodyPose != null && _speech != null && _graph.IsValid();
+        public bool LocomotionAvailable => _locomotion != null;
+        public bool TeleportAvailable => _teleport != null && IsRuntimeReady;
+        public bool IsTeleporting => _teleport != null && _teleport.IsTeleporting;
+        public bool DissolveAvailable => _dissolve != null && IsRuntimeReady;
+        public bool IsDissolving => _dissolve != null && _dissolve.IsDissolving;
+        internal bool IsDissolveShaderAcceptanceActive => _isDissolveShaderAcceptanceActive;
+        public PerformerVisibilityState VisibilityState => _dissolve != null
+            ? _dissolve.VisibilityState
+            : _lastStableHidden ? PerformerVisibilityState.Hidden : PerformerVisibilityState.Visible;
+        public bool IsHidden => VisibilityState == PerformerVisibilityState.Hidden;
+        public bool MagicAvailable => Application.isPlaying && isActiveAndEnabled && !_isTearingDown
+            && _magicRuntime != null;
+        public PerformerAura CurrentAura => _desiredAura;
+        public Transform AuraTarget => _desiredAura != null ? _desiredAuraTarget : null;
+        public bool HasAura => _desiredAura != null;
+        public int ActiveSpellCount => _magicRuntime != null ? _magicRuntime.ActiveSpellCount : 0;
+        public bool DissolveShaderAcceptanceAvailable => IsRuntimeReady
+            && dissolveProfile != null && dissolveRig != null
+            && dissolveProfile.IsShaderReady(out _) && dissolveRig.IsShaderReady(dissolveProfile, out _);
+        public bool IsLocomoting => _locomotion != null && _locomotion.IsLocomoting;
+        public PerformerLocomotionState LocomotionState => _locomotion == null
+            ? PerformerLocomotionState.Idle : _locomotion.State;
+        public string LocomotionCurrentMotion => _locomotion == null || _locomotion.CurrentMotion == null
+            ? "none" : _locomotion.CurrentMotion.name;
+        public float LocomotionPlaybackTime => _locomotion == null ? 0f : _locomotion.PlaybackTime;
+        public float LocomotionGaitPhase => _locomotion == null ? 0f : _locomotion.GaitPhase;
+        public float LocomotionRemainingDistance => _locomotion == null ? 0f : _locomotion.RemainingDistance;
+        public float LocomotionHeadingError => _locomotion == null ? 0f : _locomotion.HeadingError;
+        public Vector3 LocomotionCurrentTarget => _locomotion == null ? default : _locomotion.CurrentTarget;
+        public string LocomotionSelectedTurn => _locomotion == null ? "none" : _locomotion.SelectedTurn;
+        public string LocomotionSelectedStop => _locomotion == null ? "none" : _locomotion.SelectedStopVariant;
+        public float LocomotionPredictedStopDistance => _locomotion == null ? 0f : _locomotion.PredictedStopDistance;
+        public Vector3 LocomotionPredictedStopEndpoint => _locomotion == null ? default : _locomotion.PredictedStopEndpoint;
+        public Vector3 LocomotionEndpointCorrection => _locomotion == null ? default : _locomotion.EndpointCorrection;
+        public float LocomotionArrivalBlendProgress => _locomotion == null ? 0f : _locomotion.ArrivalBlendProgress;
+        public PerformerLocomotionProfile LocomotionProfile => locomotionProfile;
+        public bool SeatingAvailable => _seating != null;
+        public PerformerSeatingState SeatingState => _seating == null
+            ? PerformerSeatingState.Standing : _seating.State;
+        public PerformerSeat CurrentSeat => _seating == null ? null : _seating.CurrentSeat;
+        public PerformerSeatedStyle CurrentSeatedStyle => _seating == null
+            ? PerformerSeatedStyle.Basic : _seating.CurrentStyle;
+        public string SeatingCurrentMotion => _seating == null || _seating.CurrentMotion == null
+            ? "none" : _seating.CurrentMotion.name;
+        public float SeatingMotionTime => _seating == null ? 0f : _seating.MotionTime;
+        public float SeatingCrossLegsExitBlendProgress => _seating == null ? 0f : _seating.CrossLegsExitBlendProgress;
+        public float SeatingCrossLegsExitBlendDuration => _seating == null ? 0.5f : _seating.CrossLegsExitBlendDuration;
+        public float SeatingOwnershipWeight => _seating == null ? 0f : _seating.OwnershipWeight;
+        public Vector3 SeatingContactError => _seating == null ? default : _seating.ContactError;
+        public bool ActionAvailable => IsRuntimeReady && _actionRuntime != null;
+        public bool IsPerforming => _actionRuntime != null && _actionRuntime.IsPerforming;
+        public PerformerAction CurrentAction => _actionRuntime != null ? _actionRuntime.CurrentAction : null;
+        public PerformerActionState ActionState => _actionRuntime != null
+            ? _actionRuntime.State : PerformerActionState.Idle;
+        public float ActionProgress => _actionRuntime != null ? _actionRuntime.Progress : 0f;
+        public bool ActionHasAnchor => _actionRuntime != null && _actionRuntime.HasAnchor;
+        public Vector3 ActionAnchorPosition => _actionRuntime != null ? _actionRuntime.AnchorPosition : default;
+        public Vector3 ActionAnchorForward => _actionRuntime != null ? _actionRuntime.AnchorForward : default;
+        public float ActionPositionError => _actionRuntime != null ? _actionRuntime.PositionError : 0f;
+        public float ActionHeadingError => _actionRuntime != null ? _actionRuntime.HeadingError : 0f;
+        public bool GestureAvailable => IsRuntimeReady && _gestureLayer != null;
+        public bool IsGesturing => _gestureLayer != null && _gestureLayer.IsGesturing;
+        public PerformerGesture CurrentGesture => _gestureLayer != null ? _gestureLayer.CurrentGesture : null;
+        public float GestureProgress => _gestureLayer != null ? _gestureLayer.Progress : 0f;
+        public bool MotionAvailable => IsRuntimeReady && _motionConsumer != null && _motionConsumer.IsBound;
+        public bool MotionConsumerBound => _motionConsumer != null && _motionConsumer.IsBound;
+        public float MotionOwnershipWeight => _motionLayer != null ? _motionLayer.MotionWeight : 0f;
+        public string MotionActiveVariantName => _motionLayer != null ? _motionLayer.ActiveVariantName : "none";
+        public float MotionSampledPosition01 => _motionLayer != null ? _motionLayer.SampledPosition01 : 0f;
+        public int MotionVariantCount => motionSet != null ? motionSet.VariantCount : 0;
+        public MotionDriver MotionSource => motionDriver;
+        public float TransitionProgress => _bodyPose == null ? 0f : _bodyPose.TransitionProgress;
+        public PerformerExpression DesiredExpression => _lastDesiredExpression;
+        public PerformerExpression SettledExpression => _lastSettledExpression;
+        public float DesiredExpressionIntensity => _lastDesiredExpressionIntensity;
+        public float SettledExpressionIntensity => _lastSettledExpressionIntensity;
+        public bool IsExpressionTransitioning => _expression != null && _expression.IsTransitioning;
+        public float ExpressionTransitionProgress => _expression == null ? 0f : _expression.EvaluatedProgress;
+        public float DefaultExpressionBlendTime { get => defaultExpressionBlendTime; set => defaultExpressionBlendTime = Mathf.Max(0f, value); }
+        public AudioSource SpeechAudioSource => speechAudioSource;
+        public Animator ConfiguredAnimator => animator != null ? animator : GetComponent<Animator>();
+        public PerformerPose InitialPose => initialPose;
+        public PerformerExpression InitialExpression => initialExpression;
+        public float InitialExpressionIntensity { get => initialExpressionIntensity; set => initialExpressionIntensity = Mathf.Clamp01(value); }
+        public bool StartsHidden => startHidden;
+        public PerformerTeleportProfile TeleportProfile => teleportProfile;
+        public PerformerDissolveProfile DissolveProfile => dissolveProfile;
+        public PerformerDissolveRig DissolveRig => dissolveRig;
+        public PerformerMotionSet MotionSet => motionSet;
+        public AvatarMask RightArmMotionMask => rightArmMotionMask;
+        public float MotionOwnershipBlendSeconds { get => motionOwnershipBlendSeconds; set => motionOwnershipBlendSeconds = Mathf.Max(0f, value); }
+        public AvatarMask GestureUpperBodyMask => gestureUpperBodyMask;
+        public PoseTransition DefaultPoseTransition { get => defaultTransition; set { value.Validate(); defaultTransition = value; } }
+        /// <summary>Configure initial defaults before enabling. Use commands to change a running actor.</summary>
+        public void ConfigureInitialState(PerformerPose pose, PerformerExpression expression, float intensity = 1f, bool hidden = false)
+        {
+            if (IsRuntimeReady) throw new InvalidOperationException("Configure initial state before enabling the performer; use pose/expression/visibility commands during playback.");
+            initialPose = pose; initialExpression = expression; InitialExpressionIntensity = intensity; startHidden = hidden;
+        }
+        public void ConfigureMotionSource(MotionDriver source)
+        {
+            if (IsRuntimeReady && motionDriver != source)
+                throw new InvalidOperationException("Configure the actor's playback source before enabling it.");
+            motionDriver = source;
+        }
+        public bool IsSpeaking => _speech != null && _speech.IsSpeaking;
+        public AudioClip CurrentSpeechClip => _speech == null ? null : _speech.CurrentSpeechClip;
+        public int PendingSpeechCount => _speech == null ? 0 : _speech.PendingSpeechCount;
+        internal PerformerExpressionLayer ExpressionRuntime => _expression;
+        public float TrajectoryProgress => _bodyPose == null ? 0f : _bodyPose.TrajectoryProgress;
+        public PoseTransition ActiveTransition => _bodyPose == null ? default : _bodyPose.ActiveTransition;
+        public bool BreathingEnabled { get => breathingEnabled; set => breathingEnabled = value; }
+        public float BreathsPerMinute { get => breathsPerMinute; set => breathsPerMinute = Mathf.Max(0f, value); }
+        public AnimationCurve BreathingCurve
+        {
+            get => breathingCurve;
+            set => breathingCurve = value ?? CreateDefaultBreathingCurve();
+        }
+        public float BreathPhase => _breathing == null ? _lastBreathPhase : _breathing.BreathPhase;
+        public float BreathValue => _breathing == null ? 0f : _breathing.BreathValue;
+        public bool MorphBreathingEnabled { get => morphBreathingEnabled; set => morphBreathingEnabled = value; }
+        public float MorphBreathingStrength { get => morphBreathingStrength; set => morphBreathingStrength = Mathf.Max(0f, value); }
+        public float BreatheStrength { get => breatheStrength; set => breatheStrength = Mathf.Max(0f, value); }
+        public float BreatheBellyStrength { get => breatheBellyStrength; set => breatheBellyStrength = Mathf.Max(0f, value); }
+        public bool BoneBreathingEnabled { get => boneBreathingEnabled; set => boneBreathingEnabled = value; }
+        public float BoneBreathingStrength { get => boneBreathingStrength; set => boneBreathingStrength = Mathf.Max(0f, value); }
+        public bool GazeEnabled
+        {
+            get => gazeEnabled;
+            set
+            {
+                if (gazeEnabled == value) return;
+                gazeEnabled = value;
+                _gaze?.Configure(CreateGazeSettings());
+            }
+        }
+        public bool HeadGazeEnabled { get => headGazeEnabled; set => headGazeEnabled = value; }
+        public float HeadGazeWeight { get => headGazeWeight; set => headGazeWeight = Mathf.Clamp01(value); }
+        public float HeadGazeResponse { get => headGazeResponse; set => headGazeResponse = Mathf.Max(0f, value); }
+        public float HeadGazeMaxYaw { get => headGazeMaxYaw; set => headGazeMaxYaw = Mathf.Clamp(value, 0f, 89f); }
+        public float HeadGazeMaxPitch { get => headGazeMaxPitch; set => headGazeMaxPitch = Mathf.Clamp(value, 0f, 89f); }
+        public bool EyeGazeEnabled { get => eyeGazeEnabled; set => eyeGazeEnabled = value; }
+        public float EyeGazeWeight { get => eyeGazeWeight; set => eyeGazeWeight = Mathf.Clamp01(value); }
+        public float EyeGazeResponse { get => eyeGazeResponse; set => eyeGazeResponse = Mathf.Max(0f, value); }
+        public float EyeGazeMaxYaw { get => eyeGazeMaxYaw; set => eyeGazeMaxYaw = Mathf.Clamp(value, 0f, 89f); }
+        public float EyeGazeMaxPitch { get => eyeGazeMaxPitch; set => eyeGazeMaxPitch = Mathf.Clamp(value, 0f, 89f); }
+        public float GazeReleaseResponse { get => gazeReleaseResponse; set => gazeReleaseResponse = Mathf.Max(0f, value); }
+        public float GazeAcquireToleranceDegrees
+        {
+            get => gazeAcquireToleranceDegrees;
+            set => gazeAcquireToleranceDegrees = Mathf.Max(0.1f, value);
+        }
+        public bool AttentionLifeEnabled { get => attentionLifeEnabled; set => attentionLifeEnabled = value; }
+        public int AttentionLifeSeed { get => attentionLifeSeed; set => attentionLifeSeed = value; }
+        public bool EyeFixationLifeEnabled { get => eyeFixationLifeEnabled; set => eyeFixationLifeEnabled = value; }
+        public float EyeFixationMaxHorizontalDegrees
+        {
+            get => eyeFixationMaxHorizontalDegrees;
+            set => eyeFixationMaxHorizontalDegrees = Mathf.Clamp(value, 0f, 8f);
+        }
+        public float EyeFixationMaxVerticalDegrees
+        {
+            get => eyeFixationMaxVerticalDegrees;
+            set => eyeFixationMaxVerticalDegrees = Mathf.Clamp(value, 0f, 6f);
+        }
+        public float EyeFixationMinimumHoldSeconds
+        {
+            get => eyeFixationMinimumHoldSeconds;
+            set => eyeFixationMinimumHoldSeconds = Mathf.Max(0.05f, value);
+        }
+        public float EyeFixationMaximumHoldSeconds
+        {
+            get => eyeFixationMaximumHoldSeconds;
+            set => eyeFixationMaximumHoldSeconds = Mathf.Max(eyeFixationMinimumHoldSeconds, value);
+        }
+        public float EyeFixationCenterBias
+        {
+            get => eyeFixationCenterBias;
+            set => eyeFixationCenterBias = Mathf.Clamp(value, 1f, 4f);
+        }
+        public bool HeadAttentionLifeEnabled { get => headAttentionLifeEnabled; set => headAttentionLifeEnabled = value; }
+        public float HeadAttentionMaxTiltDegrees
+        {
+            get => headAttentionMaxTiltDegrees;
+            set => headAttentionMaxTiltDegrees = Mathf.Clamp(value, 0f, 15f);
+        }
+        public float HeadAttentionMaxChinDegrees
+        {
+            get => headAttentionMaxChinDegrees;
+            set => headAttentionMaxChinDegrees = Mathf.Clamp(value, 0f, 12f);
+        }
+        public float HeadAttentionMinimumHoldSeconds
+        {
+            get => headAttentionMinimumHoldSeconds;
+            set => headAttentionMinimumHoldSeconds = Mathf.Max(0.1f, value);
+        }
+        public float HeadAttentionMaximumHoldSeconds
+        {
+            get => headAttentionMaximumHoldSeconds;
+            set => headAttentionMaximumHoldSeconds = Mathf.Max(headAttentionMinimumHoldSeconds, value);
+        }
+        public float HeadAttentionTransitionResponse
+        {
+            get => headAttentionTransitionResponse;
+            set => headAttentionTransitionResponse = Mathf.Max(0f, value);
+        }
+        public bool BlinkEnabled { get => blinkEnabled; set => blinkEnabled = value; }
+        public float BlinkStrength { get => blinkStrength; set => blinkStrength = Mathf.Clamp01(value); }
+        public float BlinkMinimumIntervalSeconds
+        {
+            get => blinkMinimumIntervalSeconds;
+            set => blinkMinimumIntervalSeconds = Mathf.Max(0.1f, value);
+        }
+        public float BlinkMaximumIntervalSeconds
+        {
+            get => blinkMaximumIntervalSeconds;
+            set => blinkMaximumIntervalSeconds = Mathf.Max(blinkMinimumIntervalSeconds, value);
+        }
+        public float BlinkCloseDurationSeconds
+        {
+            get => blinkCloseDurationSeconds;
+            set => blinkCloseDurationSeconds = Mathf.Max(0.005f, value);
+        }
+        public float BlinkClosedDurationSeconds
+        {
+            get => blinkClosedDurationSeconds;
+            set => blinkClosedDurationSeconds = Mathf.Max(0.005f, value);
+        }
+        public float BlinkOpenDurationSeconds
+        {
+            get => blinkOpenDurationSeconds;
+            set => blinkOpenDurationSeconds = Mathf.Max(0.005f, value);
+        }
+        public float EyeFixationHorizontalOffset => _attentionLife == null
+            ? 0f : _attentionLife.CurrentOutput.EyeHorizontalOffsetDegrees;
+        public float EyeFixationVerticalOffset => _attentionLife == null
+            ? 0f : _attentionLife.CurrentOutput.EyeVerticalOffsetDegrees;
+        public float HeadAttentionTilt => _attentionLife == null ? 0f : _attentionLife.CurrentOutput.HeadTiltDegrees;
+        public float HeadAttentionChin => _attentionLife == null ? 0f : _attentionLife.CurrentOutput.HeadChinDegrees;
+        public float EyeFixationEventCountdown => _attentionLife == null ? 0f : _attentionLife.EyeEventCountdown;
+        public float HeadAttentionEventCountdown => _attentionLife == null ? 0f : _attentionLife.HeadEventCountdown;
+        public float BlinkClosure => _blink == null ? 0f : _blink.Closure;
+        public float BlinkCountdown => _blink == null ? 0f : _blink.Countdown;
+        public string BlinkState => _blink == null ? "Unavailable" : _blink.State.ToString();
+        public bool BlinkResolutionAvailable => _blink != null && _blink.IsAvailable;
+        public bool HasGazeTarget => _gaze != null && _gaze.HasGazeTarget;
+        public bool IsGazeAcquired => _gaze != null && _gaze.IsGazeAcquired;
+        public float GazeWeight => _gaze == null ? 0f : _gaze.GazeWeight;
+        public string GazeTargetDescription => _gaze == null ? "none" : _gaze.TargetDescription;
+        public Vector3 RawGazeTargetPosition => _gaze == null ? default : _gaze.RawTargetPosition;
+        internal Vector3 EffectiveHeadTargetPosition => _gaze == null ? default : _gaze.EffectiveHeadTargetPosition;
+        internal Vector3 EffectiveEyeTargetPosition => _gaze == null ? default : _gaze.EffectiveEyeTargetPosition;
+
+        internal PerformerBreathing BreathingRuntime => _breathing;
+        internal PerformerGaze GazeRuntime => _gaze;
+        internal PerformerAttentionLife AttentionLifeRuntime => _attentionLife;
+        internal PerformerBlink BlinkRuntime => _blink;
+        internal int RuntimePlayableCount => _graph.IsValid() ? _graph.GetPlayableCount() : 0;
+
+        private void OnEnable()
+        {
+            _isTearingDown = false;
+            if (!Application.isPlaying) return;
+            InitializeVisibilityIfNeeded();
+            ApplyStableVisibility(_lastStableHidden);
+            CreateRuntime();
+        }
+
+        private void Update()
+        {
+            _magicRuntime?.Advance(Time.deltaTime);
+            _speech?.Advance();
+            if (_bodyPose == null) return;
+
+            var request = _activePoseRequest;
+            _bodyPose.Advance(Time.deltaTime);
+            _locomotion?.Advance(Time.deltaTime);
+            _seating?.Advance(Time.deltaTime);
+            _actionRuntime?.Advance(Time.deltaTime);
+            _motionConsumer?.Advance(Time.deltaTime);
+            _gestureLayer?.Advance(Time.deltaTime);
+            _handGripController?.Advance(Time.deltaTime);
+            _motionLayer?.SetSpatialSuppression(_handGripController != null ? _handGripController.MotionSuppression : 0f);
+            _teleport?.Advance(Time.deltaTime);
+            _dissolve?.Advance(Time.deltaTime);
+            if (_breathing != null)
+            {
+                _breathing.Configure(CreateBreathingSettings());
+                _breathing.Advance(Time.deltaTime);
+                _lastBreathPhase = _breathing.BreathPhase;
+            }
+            if (_attentionLife != null)
+            {
+                _attentionLife.Configure(CreateAttentionLifeSettings());
+                _attentionLife.Advance(Time.deltaTime);
+            }
+            if (_gaze != null)
+            {
+                _gaze.Configure(CreateGazeSettings());
+                _gaze.Advance(Time.deltaTime);
+            }
+            var expressionRequest = _activeExpressionRequest;
+            if (_expression != null) _expression.Advance(Time.deltaTime);
+            if (_blink != null)
+            {
+                _blink.Configure(CreateBlinkSettings());
+                _blink.Advance(Time.deltaTime);
+            }
+            PublishCurrentPoseState();
+            if (expressionRequest != null && ReferenceEquals(_activeExpressionRequest, expressionRequest)
+                && !_expression.IsTransitioning)
+            {
+                _lastSettledExpression = expressionRequest.Expression;
+                _lastSettledExpressionIntensity = expressionRequest.Intensity;
+                _activeExpressionRequest = null;
+                CompleteExpressionRequest(expressionRequest, ExpressionCompletion.Settled);
+            }
+            if (request == null || !ReferenceEquals(_activePoseRequest, request)
+                || _bodyPose.IsTransitioning || _bodyPose.SettledPose != request.Pose) return;
+
+            _activePoseRequest = null;
+            CompleteRequest(request, PoseCompletion.Settled);
+        }
+
+        private void OnDisable()
+        {
+            DestroyRuntime();
+        }
+
+        private void OnDestroy()
+        {
+            DestroyRuntime();
+            if (_runtimeWardrobeProfile != null)
+            {
+                Destroy(_runtimeWardrobeProfile);
+                _runtimeWardrobeProfile = null;
+            }
+        }
+
+        public WardrobeState CurrentWardrobe => GetComponent<PerformerWardrobe>()?.CurrentWardrobe;
+
+        public void Outfit(WardrobePreset preset)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.Outfit(preset);
+        }
+
+        public void Outfit(string presetId)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.Outfit(presetId);
+        }
+
+        public void SetHair(string stableHairId)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.SetHair(stableHairId);
+        }
+
+        public Awaitable<WardrobeChangeResult> OutfitAsync(WardrobePreset preset, WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.OutfitAsync(preset, transition);
+            return CompletedWardrobeResult(new WardrobeChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        public Awaitable<WardrobeChangeResult> OutfitAsync(string presetId, WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.OutfitAsync(presetId, transition);
+            return CompletedWardrobeResult(new WardrobeChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        public Awaitable<WardrobeChangeResult> SetHairAsync(string stableHairId, WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.SetHairAsync(stableHairId, transition);
+            return CompletedWardrobeResult(new WardrobeChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        public void TryRemoveLayer()
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.TryRemoveLayer();
+        }
+
+        public void TryAddLayer()
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe == null) { Debug.LogError("This performer has no configured wardrobe runtime.", this); return; }
+            wardrobe.TryAddLayer();
+        }
+
+        public Awaitable<WardrobeLayerChangeResult> TryRemoveLayerAsync(WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.TryRemoveLayerAsync(transition);
+            return CompletedWardrobeLayerResult(new WardrobeLayerChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        public Awaitable<WardrobeLayerChangeResult> TryAddLayerAsync(WardrobeTransition transition = default)
+        {
+            var wardrobe = GetComponent<PerformerWardrobe>();
+            if (wardrobe != null) return wardrobe.TryAddLayerAsync(transition);
+            return CompletedWardrobeLayerResult(new WardrobeLayerChangeResult(WardrobeChangeStatus.Failed, null, null,
+                WardrobeFailureCode.MissingAsset, message: "This performer has no configured wardrobe runtime."));
+        }
+
+        private static Awaitable<WardrobeChangeResult> CompletedWardrobeResult(WardrobeChangeResult result)
+        { var source = new AwaitableCompletionSource<WardrobeChangeResult>(); source.TrySetResult(result); return source.Awaitable; }
+        private static Awaitable<WardrobeLayerChangeResult> CompletedWardrobeLayerResult(WardrobeLayerChangeResult result)
+        { var source = new AwaitableCompletionSource<WardrobeLayerChangeResult>(); source.TrySetResult(result); return source.Awaitable; }
+
+        internal bool TrySetWardrobeEffectProfile(PerformerDissolveProfile source,
+            PerformerSurfaceBindingAsset bindings, object transitionOwner, out string error)
+        {
+            error = null;
+            if (!Application.isPlaying) { error = "Wardrobe effect profiles can be rebound only in Play Mode."; return false; }
+            if (_wardrobeEffectTransitionOwner != null && !ReferenceEquals(_wardrobeEffectTransitionOwner, transitionOwner))
+            { error = "The wardrobe scene transition currently owns the performer's effect lifecycle."; return false; }
+            if (source == null || bindings == null || dissolveRig == null || dissolveRig.ParticleBody == null)
+            { error = "Wardrobe dissolve profile, surface bindings or rig are missing."; return false; }
+            if (_dissolve != null && _dissolve.IsDissolving)
+            { error = "The dissolve runtime currently owns the performer."; return false; }
+            var candidate = Instantiate(source);
+            candidate.name = source.name + " (Performer Wardrobe Instance)";
+            candidate.SetRuntimeSurfaceBindings(bindings);
+            if (candidate.SurfaceBindings != bindings || !dissolveRig.CanConfigureWardrobe(candidate, out error))
+            {
+                Destroy(candidate);
+                if (string.IsNullOrEmpty(error)) error = "Runtime dissolve bindings failed validation.";
+                return false;
+            }
+            try
+            {
+                _dissolve?.Dispose();
+                _dissolve = null;
+                dissolveRig.ConfigureWardrobeRuntime(candidate);
+                var previous = _runtimeWardrobeProfile;
+                _runtimeWardrobeProfile = candidate;
+                dissolveProfile = candidate;
+                if (IsRuntimeReady && isActiveAndEnabled)
+                    _dissolve = new PerformerDissolve(transform, candidate, dissolveRig,
+                        pose => Pose(pose, PoseTransition.Snap), _lastStableHidden, SetStableHidden);
+                if (previous != null) Destroy(previous);
+                error = null;
+                return true;
+            }
+            catch (Exception exception)
+            {
+                Destroy(candidate);
+                error = exception.Message;
+                return false;
+            }
+        }
+
+        internal bool TryAcquireWardrobeEffectTransition(object owner, out string error)
+        {
+            error = null;
+            if (owner == null) { error = "Wardrobe effect transition owner is required."; return false; }
+            if (!IsRuntimeReady || _dissolve == null)
+            { error = "The performer dissolve runtime is unavailable."; return false; }
+            if (_wardrobeEffectTransitionOwner != null)
+            { error = "Another wardrobe scene transition already owns the performer effect lifecycle."; return false; }
+            if (IsDissolving || IsTeleporting || IsLocomoting || IsPerforming)
+            { error = "The performer is busy with another effect, teleport, walk or action."; return false; }
+            if (VisibilityState != PerformerVisibilityState.Visible && VisibilityState != PerformerVisibilityState.Hidden)
+            { error = "The performer must have stable visibility before wardrobe recall."; return false; }
+            _wardrobeEffectTransitionOwner = owner;
+            return true;
+        }
+
+        internal void ReleaseWardrobeEffectTransition(object owner)
+        {
+            if (owner != null && ReferenceEquals(_wardrobeEffectTransitionOwner, owner))
+                _wardrobeEffectTransitionOwner = null;
+        }
+
+        internal Awaitable<VisibilityCompletion> DissolveOutForWardrobeAsync(object owner, float durationSeconds)
+        {
+            var completion = new AwaitableCompletionSource<VisibilityCompletion>();
+            RequireDissolveRuntime("DissolveOut", PerformerVisibilityState.Visible, requireStanding: false, transitionOwner: owner)
+                .DissolveOut(Mathf.Max(.001f, durationSeconds), completion);
+            return completion.Awaitable;
+        }
+
+        internal Awaitable<VisibilityCompletion> DissolveInForWardrobeAsync(object owner, float durationSeconds)
+        {
+            var completion = new AwaitableCompletionSource<VisibilityCompletion>();
+            RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false, transitionOwner: owner)
+                .DissolveIn(Mathf.Max(.001f, durationSeconds), completion);
+            return completion.Awaitable;
+        }
+
+        public void Pose(PerformerPose pose)
+        {
+            Pose(pose, defaultTransition);
+        }
+
+        public void Pose(PerformerPose pose, PoseTransition transition)
+        {
+            RequestPose(pose, transition, null);
+        }
+
+        public Awaitable<PoseCompletion> PoseAsync(PerformerPose pose)
+        {
+            return PoseAsync(pose, defaultTransition);
+        }
+
+        public Awaitable<PoseCompletion> PoseAsync(PerformerPose pose, PoseTransition transition)
+        {
+            var completion = new AwaitableCompletionSource<PoseCompletion>();
+            RequestPose(pose, transition, completion);
+            return completion.Awaitable;
+        }
+
+        public void TeleportTo(Vector3 worldPosition) => TeleportTo(worldPosition, null);
+
+        public void TeleportTo(Transform target) => TeleportTo(target, null);
+
+        public void TeleportTo(Vector3 worldPosition, PerformerPose arrivalPose) =>
+            RequireTeleportRuntime().TeleportTo(worldPosition, arrivalPose, null);
+
+        public void TeleportTo(Transform target, PerformerPose arrivalPose) =>
+            RequireTeleportRuntime().TeleportTo(target, arrivalPose, null);
+
+        public Awaitable<TeleportCompletion> TeleportToAsync(Vector3 worldPosition) =>
+            TeleportToAsync(worldPosition, null);
+
+        public Awaitable<TeleportCompletion> TeleportToAsync(Transform target) =>
+            TeleportToAsync(target, null);
+
+        public Awaitable<TeleportCompletion> TeleportToAsync(Vector3 worldPosition, PerformerPose arrivalPose)
+        {
+            var completion = new AwaitableCompletionSource<TeleportCompletion>();
+            RequireTeleportRuntime().TeleportTo(worldPosition, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<TeleportCompletion> TeleportToAsync(Transform target, PerformerPose arrivalPose)
+        {
+            var completion = new AwaitableCompletionSource<TeleportCompletion>();
+            RequireTeleportRuntime().TeleportTo(target, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public void DissolveTo(Vector3 worldPosition) => DissolveTo(worldPosition, null);
+
+        public void DissolveTo(Transform target) => DissolveTo(target, null);
+
+        public void DissolveTo(Vector3 worldPosition, PerformerPose arrivalPose) =>
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(worldPosition, arrivalPose, null);
+
+        public void DissolveTo(Transform target, PerformerPose arrivalPose) =>
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(target, arrivalPose, null);
+
+        /// <summary>Runs the complete dissolve with one total duration in seconds.</summary>
+        public void DissolveTo(Vector3 worldPosition, float durationSeconds, PerformerPose arrivalPose = null) =>
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(worldPosition, durationSeconds, arrivalPose, null);
+
+        /// <summary>Snapshots the destination position/facing and scales the whole dissolve to durationSeconds.</summary>
+        public void DissolveTo(Transform target, float durationSeconds, PerformerPose arrivalPose = null) =>
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(target, durationSeconds, arrivalPose, null);
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition, float durationSeconds,
+            PerformerPose arrivalPose = null)
+        {
+            var completion = new AwaitableCompletionSource<DissolveCompletion>();
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(worldPosition, durationSeconds, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Transform target, float durationSeconds,
+            PerformerPose arrivalPose = null)
+        {
+            var completion = new AwaitableCompletionSource<DissolveCompletion>();
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(target, durationSeconds, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition) =>
+            DissolveToAsync(worldPosition, null);
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Transform target) =>
+            DissolveToAsync(target, null);
+
+        /// <summary>Sets the shader-only acceptance state without invoking the P0.G DissolveTo sequence.</summary>
+        internal void SetDissolveShaderAcceptanceState(bool enabled, float progress)
+        {
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("Dissolve shader acceptance is available only while the performer is enabled in Play Mode.");
+            RejectWhilePerforming("Dissolve shader acceptance");
+            RequireStableVisibleForDebug("Dissolve shader acceptance");
+            if (float.IsNaN(progress) || float.IsInfinity(progress))
+                throw new ArgumentOutOfRangeException(nameof(progress), "Dissolve progress must be finite.");
+            if (dissolveRig == null)
+                throw new InvalidOperationException("The native dissolve shader rig is not assigned.");
+            if (!dissolveRig.IsShaderReady(dissolveProfile, out string reason))
+                throw new InvalidOperationException(reason);
+
+            dissolveRig.SetDissolveEnabled(enabled);
+            dissolveRig.SetDissolveProgress(Mathf.Clamp01(progress));
+            _isDissolveShaderAcceptanceActive = enabled;
+        }
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Vector3 worldPosition, PerformerPose arrivalPose)
+        {
+            var completion = new AwaitableCompletionSource<DissolveCompletion>();
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(worldPosition, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<DissolveCompletion> DissolveToAsync(Transform target, PerformerPose arrivalPose)
+        {
+            var completion = new AwaitableCompletionSource<DissolveCompletion>();
+            RequireDissolveRuntime("DissolveTo", PerformerVisibilityState.Visible, requireStanding: true)
+                .DissolveTo(target, arrivalPose, completion);
+            return completion.Awaitable;
+        }
+
+        public void DissolveOut(float durationSeconds) =>
+            RequireDissolveRuntime("DissolveOut", PerformerVisibilityState.Visible, requireStanding: false)
+                .DissolveOut(durationSeconds, null);
+
+        public Awaitable<VisibilityCompletion> DissolveOutAsync(float durationSeconds)
+        {
+            var completion = new AwaitableCompletionSource<VisibilityCompletion>();
+            RequireDissolveRuntime("DissolveOut", PerformerVisibilityState.Visible, requireStanding: false)
+                .DissolveOut(durationSeconds, completion);
+            return completion.Awaitable;
+        }
+
+        public void DissolveIn(float durationSeconds) =>
+            RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false)
+                .DissolveIn(durationSeconds, null);
+
+        public Awaitable<VisibilityCompletion> DissolveInAsync(float durationSeconds)
+        {
+            var completion = new AwaitableCompletionSource<VisibilityCompletion>();
+            RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false)
+                .DissolveIn(durationSeconds, completion);
+            return completion.Awaitable;
+        }
+
+        /// <summary>Starts a finite VFX event centered on this performer.</summary>
+        public void Cast(PerformerSpell spell) => Cast(spell, transform);
+
+        /// <summary>Starts a finite VFX event that follows the supplied Transform.</summary>
+        public void Cast(PerformerSpell spell, Transform target)
+        {
+            if (spell == null) throw new ArgumentNullException(nameof(spell));
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            RequireMagicRuntime().Cast(spell, target, null);
+        }
+
+        public Awaitable<SpellCompletion> CastAsync(PerformerSpell spell) => CastAsync(spell, transform);
+
+        public Awaitable<SpellCompletion> CastAsync(PerformerSpell spell, Transform target)
+        {
+            if (spell == null) throw new ArgumentNullException(nameof(spell));
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            var completion = new AwaitableCompletionSource<SpellCompletion>();
+            RequireMagicRuntime().Cast(spell, target, result => completion.TrySetResult(result));
+            return completion.Awaitable;
+        }
+
+        /// <summary>Sets a persistent VFX state centered on this performer.</summary>
+        public void Aura(PerformerAura aura) => Aura(aura, transform);
+
+        /// <summary>Sets a persistent VFX state that follows the supplied Transform.</summary>
+        public void Aura(PerformerAura aura, Transform target)
+        {
+            if (aura == null) throw new ArgumentNullException(nameof(aura));
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            PerformerMagicRuntime runtime = RequireMagicRuntime();
+            runtime.SetAura(aura, target);
+            _desiredAura = aura;
+            _desiredAuraTarget = target;
+        }
+
+        /// <summary>Fades out and clears this performer's one persistent Aura.</summary>
+        public void ClearAura()
+        {
+            RequireMagicRuntime().ClearAura();
+            _desiredAura = null;
+            _desiredAuraTarget = null;
+        }
+
+        public void Expression(PerformerExpression expression) => Expression(expression, 1f, defaultExpressionBlendTime);
+        public void Expression(PerformerExpression expression, float intensity) => Expression(expression, intensity, defaultExpressionBlendTime);
+        public void Expression(PerformerExpression expression, float intensity, float blendTime) =>
+            RequestExpression(expression, intensity, blendTime, null);
+
+        public Awaitable<ExpressionCompletion> ExpressionAsync(PerformerExpression expression) =>
+            ExpressionAsync(expression, 1f, defaultExpressionBlendTime);
+        public Awaitable<ExpressionCompletion> ExpressionAsync(PerformerExpression expression, float intensity) =>
+            ExpressionAsync(expression, intensity, defaultExpressionBlendTime);
+        public Awaitable<ExpressionCompletion> ExpressionAsync(PerformerExpression expression, float intensity, float blendTime)
+        {
+            var completion = new AwaitableCompletionSource<ExpressionCompletion>();
+            RequestExpression(expression, intensity, blendTime, completion);
+            return completion.Awaitable;
+        }
+
+        public void ClearExpression() => ClearExpression(defaultExpressionBlendTime);
+        public void ClearExpression(float blendTime) => RequestExpression(null, 0f, blendTime, null);
+
+        /// <summary>Plays one finite upper-body action over the current body state.</summary>
+        public void Gesture(PerformerGesture gesture) => RequireGestureRuntime(gesture).Request(gesture, null);
+
+        /// <summary>Selects a visual motion variant without changing the authoritative motion sample.</summary>
+        public void SetMotionVariant(int index, float blendSeconds = 0.2f)
+        {
+            if (_motionConsumer == null || !IsRuntimeReady)
+                throw new InvalidOperationException("Motion variants are unavailable until a ready MotionSet and right-arm mask are assigned to SuccubusPerformer.");
+            _motionConsumer.SetVariant(index, blendSeconds);
+        }
+
+        /// <summary>Plays one finite upper-body action and completes when it fades back to the base pose.</summary>
+        public Awaitable<GestureCompletion> GestureAsync(PerformerGesture gesture)
+        {
+            PerformerGestureLayer runtime = RequireGestureRuntime(gesture);
+            var completion = new AwaitableCompletionSource<GestureCompletion>();
+            runtime.Request(gesture, completion);
+            return completion.Awaitable;
+        }
+
+        public void Say(AudioClip clip)
+        {
+            if (clip == null) throw new ArgumentNullException(nameof(clip));
+            RequireSpeechRuntime().Say(clip);
+        }
+
+        public Awaitable<SpeechCompletion> SayAsync(AudioClip clip)
+        {
+            if (clip == null) throw new ArgumentNullException(nameof(clip));
+            var result = RequireSpeechRuntime().SayAsync(clip, out _lastSpeechRequestId);
+            return result;
+        }
+
+        public void StopSpeaking()
+        {
+            RequireSpeechRuntime().StopSpeaking();
+        }
+
+        private long _lastSpeechRequestId;
+        public void CancelMovement() => _locomotion?.Cancel();
+        public void CancelSeating() => _seating?.Cancel();
+        public void CancelAction() => _actionRuntime?.Cancel();
+        public void CancelGesture() => _gestureLayer?.Cancel();
+        public void CancelAppearance() { _dissolve?.Cancel(); _teleport?.Cancel(); }
+        public void CancelGrip() => _handGripController?.CancelGrip();
+
+        /// <summary>Capture immediately after submission. Handles cannot cancel replacement requests.</summary>
+        public Action CaptureCancellation(PerformanceCommand command)
+        {
+            switch (command)
+            {
+                case PerformanceCommand.Speech:
+                    long speech = _lastSpeechRequestId;
+                    return () => { if (this != null) _speech?.Cancel(speech); };
+                case PerformanceCommand.Movement: return _locomotion?.CaptureCancellation();
+                case PerformanceCommand.Seating: return _seating?.CaptureCancellation();
+                case PerformanceCommand.Action: return _actionRuntime?.CaptureCancellation();
+                case PerformanceCommand.Gesture: return _gestureLayer?.CaptureCancellation();
+                case PerformanceCommand.Visibility: return _dissolve?.CaptureCancellation();
+                case PerformanceCommand.Teleport: return _teleport?.CaptureCancellation();
+                case PerformanceCommand.Grip: return _handGripController?.CaptureCancellation();
+                case PerformanceCommand.Gaze: return _gaze?.CaptureCancellation();
+                case PerformanceCommand.Spell: return _magicRuntime?.CaptureCancellation();
+                case PerformanceCommand.Wardrobe: return GetComponent<PerformerWardrobe>()?.CaptureCancellation();
+                case PerformanceCommand.Pose:
+                    var pose = _activePoseRequest;
+                    return () => { if (pose != null && ReferenceEquals(pose, _activePoseRequest)) {
+                        _activePoseRequest = null;
+                        if (IsRuntimeReady) RequestPose(initialPose, PoseTransition.Snap, null);
+                        CompleteRequest(pose, PoseCompletion.Cancelled);
+                    } };
+                case PerformanceCommand.Expression:
+                    var expression = _activeExpressionRequest;
+                    return () => { if (expression != null && ReferenceEquals(expression, _activeExpressionRequest)) {
+                        _activeExpressionRequest = null;
+                        if (IsRuntimeReady) RequestExpression(initialExpression, initialExpressionIntensity, 0f, null);
+                        CompleteExpressionRequest(expression, ExpressionCompletion.Cancelled);
+                    } };
+                default: throw new ArgumentOutOfRangeException(nameof(command));
+            }
+        }
+
+        /// <summary>Captures persistent intent ownership after a finite command has settled.</summary>
+        internal Action CapturePersistentCancellation(PerformanceCommand command)
+        {
+            switch (command)
+            {
+                case PerformanceCommand.Pose:
+                {
+                    long generation = _poseIntentGeneration;
+                    PerformerPose captured = _lastDesiredPose;
+                    return () =>
+                    {
+                        if (generation != _poseIntentGeneration || !ReferenceEquals(captured, _lastDesiredPose)) return;
+                        if (IsRuntimeReady && initialPose != null) RequestPose(initialPose, PoseTransition.Snap, null);
+                    };
+                }
+                case PerformanceCommand.Expression:
+                {
+                    long generation = _expressionIntentGeneration;
+                    PerformerExpression captured = _lastDesiredExpression;
+                    float intensity = _lastDesiredExpressionIntensity;
+                    return () =>
+                    {
+                        if (generation != _expressionIntentGeneration
+                            || !ReferenceEquals(captured, _lastDesiredExpression)
+                            || Mathf.Abs(intensity - _lastDesiredExpressionIntensity) > 0.00001f) return;
+                        if (IsRuntimeReady) RequestExpression(initialExpression, initialExpressionIntensity, 0f, null);
+                    };
+                }
+                case PerformanceCommand.Gaze:
+                    return _gaze?.CaptureCancellation();
+                case PerformanceCommand.Movement:
+                    return _locomotion?.CaptureCancellation();
+                case PerformanceCommand.Grip:
+                    return _handGripController?.CaptureCancellation();
+                default:
+                    return CaptureCancellation(command);
+            }
+        }
+
+        internal Action CaptureAuraCancellation() => _magicRuntime?.CaptureAuraCancellation(
+            () => { _desiredAura = null; _desiredAuraTarget = null; });
+
+        private void PrepareRootMovement(string command, bool strict = false)
+        {
+            if (_handGripController == null || _handGripController.State == GripInteractionState.Idle ||
+                _handGripController.State == GripInteractionState.Failed) return;
+            if (strict) throw new PerformanceBusyException(name + "/" + command + ": contact owns the arm/root staging.");
+            _handGripController.CancelGrip();
+        }
+        public Awaitable<LocomotionCompletion> WalkToAsync(Transform target, bool strictOwnership)
+        { PrepareRootMovement("WalkTo", strictOwnership); return WalkToAsync(target); }
+        public Awaitable<LocomotionCompletion> WalkToAsync(Transform target, LocomotionArrivalBehavior arrival)
+        {
+            var runtime = RequireLocomotionRuntime();
+            runtime.SetHoldArrivalPose(arrival == LocomotionArrivalBehavior.Hold);
+            _seating?.PrepareForWalkRequest();
+            return runtime.WalkToAsync(target);
+        }
+        internal void RestoreWardrobeVisibility(object owner)
+        {
+            if (ReferenceEquals(_wardrobeEffectTransitionOwner, owner) && !IsDissolving && !IsTeleporting)
+            {
+                if (_dissolve != null) _dissolve.SetStableVisibility(false);
+                else { SetStableHidden(false); ApplyStableVisibility(false); }
+            }
+        }
+
+        /// <summary>Place while hidden, optionally set pose, then reveal through the existing visibility owner.</summary>
+        public Awaitable<VisibilityCompletion> DissolveInAtAsync(Transform target, float durationSeconds, PerformerPose pose = null)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            PerformerDissolve.ValidateDuration(durationSeconds);
+            RequireDissolveRuntime("DissolveIn", PerformerVisibilityState.Hidden, requireStanding: false);
+            if (!IsHidden || IsDissolving || IsTeleporting || IsLocomoting || IsPerforming)
+                throw new PerformanceBusyException(name + "/DissolveInAt requires a stable hidden, stationary actor.");
+            PrepareRootMovement("DissolveInAt");
+            transform.SetPositionAndRotation(target.position, target.rotation);
+            if (pose != null) Pose(pose, PoseTransition.Snap);
+            return DissolveInAsync(durationSeconds);
+        }
+
+        public void ResetPerformance(Vector3 position, Quaternion rotation)
+        {
+            if (!IsRuntimeReady) throw new InvalidOperationException(name + " runtime is unavailable for reset.");
+            CancelGrip(); CancelMovement(); CancelSeating(); CancelAction(); CancelGesture(); CancelAppearance();
+            StopSpeaking(); ClearGaze(); _magicRuntime?.Reset();
+            transform.SetPositionAndRotation(position, rotation);
+            Pose(initialPose, PoseTransition.Snap);
+            Expression(initialExpression, initialExpressionIntensity, 0f);
+            if (_dissolve != null) _dissolve.SetStableVisibility(startHidden);
+            else { SetStableHidden(startHidden); ApplyStableVisibility(startHidden); }
+        }
+
+        /// <summary>Temporarily performs a full-body Action, then returns to its captured world anchor.</summary>
+        public void Perform(PerformerAction action)
+        {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            RequirePerformRuntime(action).Request(action, null);
+        }
+
+        /// <summary>Completes after the finite Action and any physical return-to-anchor recovery.</summary>
+        public Awaitable<ActionCompletion> PerformAsync(PerformerAction action)
+        {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            PerformerActionRuntime runtime = RequirePerformRuntime(action);
+            var completion = new AwaitableCompletionSource<ActionCompletion>();
+            runtime.Request(action, completion);
+            return completion.Awaitable;
+        }
+
+        public void LookAt(Transform target)
+        {
+            RequestGaze(target, null);
+        }
+
+        public void LookAt(Vector3 worldPosition)
+        {
+            RequestGaze(worldPosition, null);
+        }
+
+        public Awaitable<GazeCompletion> LookAtAsync(Transform target)
+        {
+            var completion = new AwaitableCompletionSource<GazeCompletion>();
+            RequestGaze(target, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<GazeCompletion> LookAtAsync(Vector3 worldPosition)
+        {
+            var completion = new AwaitableCompletionSource<GazeCompletion>();
+            RequestGaze(worldPosition, completion);
+            return completion.Awaitable;
+        }
+
+        public void ClearGaze()
+        {
+            _gaze?.ClearGaze();
+        }
+
+        public void WalkTo(Vector3 worldPosition)
+        {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
+            _seating?.PrepareForWalkRequest();
+            runtime.WalkTo(worldPosition);
+        }
+
+        /// <summary>Retain the arrived body pose across an authored movement chain until released.</summary>
+        public void SetHoldLocomotionArrivalPose(bool hold) => RequireLocomotionRuntime().SetHoldArrivalPose(hold);
+
+        public void WalkTo(Transform target)
+        {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
+            _seating?.PrepareForWalkRequest();
+            runtime.WalkTo(target);
+        }
+
+        public GripInteractionState GripState => _handGripController != null ? _handGripController.State : GripInteractionState.Idle;
+        public bool IsGripping => _handGripController != null && _handGripController.IsGripping;
+        public IGripTarget GripTarget => _handGripController != null ? _handGripController.Target : null;
+        public float GripPosition01 => _handGripController != null ? _handGripController.Position01 : 0f;
+        public bool GripRequiredLocomotion => _handGripController != null && _handGripController.RequiredLocomotion;
+        public float GripPositionError => _handGripController != null ? _handGripController.AlignmentDiagnostics.PositionErrorMeters : 0f;
+        public float GripRotationError => _handGripController != null ? _handGripController.AlignmentDiagnostics.OrientationErrorDegrees : 0f;
+        public float GripReachFraction => _handGripController != null ? _handGripController.ReachFraction : 0f;
+        public GripFailureReason GripFailureReason => _handGripController != null ? _handGripController.FailureReason : DazPose.Performer.HandGrip.GripFailureReason.InvalidProfile;
+        public Awaitable<GripCompletion> GripAsync(IGripTarget target)
+        {
+            if (_handGripController == null) throw new InvalidOperationException("No grip runtime configured.");
+            return _handGripController.GripAsync(target);
+        }
+        public void Grip(IGripTarget target) { ObserveGrip(GripAsync(target)); }
+        private async void ObserveGrip(Awaitable<GripCompletion> operation)
+        {
+            try { if (await operation == GripCompletion.Failed && this != null)
+                Debug.LogWarning(name + "/Grip failed: " + GripFailureReason, this); }
+            catch (Exception ex) { if (this != null) Debug.LogException(ex, this); }
+        }
+        public void ReleaseGrip() => _handGripController?.ReleaseGrip();
+        public Awaitable<GripCompletion> ReleaseGripAsync()
+        {
+            if (_handGripController == null) throw new InvalidOperationException("No grip runtime configured.");
+            return _handGripController.ReleaseGripAsync();
+        }
+        /// <summary>Holds a normalized contact position without changing the shared playback clock.</summary>
+        public void HoldGrip(float position01 = .5f)
+        {
+            if (!IsRuntimeReady || _handGripController == null) throw new InvalidOperationException("Grip runtime is unavailable.");
+            _handGripController.Hold(position01);
+        }
+        /// <summary>Consumes the bound motion clock; does not start, seek or restart it.</summary>
+        public void FollowGripMotion()
+        {
+            if (!IsRuntimeReady || _handGripController == null) throw new InvalidOperationException("Grip runtime is unavailable.");
+            _handGripController.FollowMotion();
+        }
+        public bool GripFollowsMotion => _handGripController != null && _handGripController.FollowsMotion;
+        internal Awaitable<LocomotionCompletion> WalkToGripAsync(Vector3 position, Vector3 facing)
+        {
+            PerformerLocomotion runtime = RequireLocomotionRuntime(gripStaging: true);
+            _seating?.PrepareForWalkRequest();
+            return runtime.WalkToAsync(position, facing);
+        }
+
+        public Awaitable<LocomotionCompletion> WalkToAsync(Vector3 worldPosition)
+        {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
+            _seating?.PrepareForWalkRequest();
+            return runtime.WalkToAsync(worldPosition);
+        }
+
+        public Awaitable<LocomotionCompletion> WalkToAsync(Transform target)
+        {
+            PerformerLocomotion runtime = RequireLocomotionRuntime();
+            _seating?.PrepareForWalkRequest();
+            return runtime.WalkToAsync(target);
+        }
+
+        /// <summary>Turn the performer's body in place toward a world-space point.</summary>
+        public void TurnTo(Transform target)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            RequireTurnRuntime().TurnTo(target);
+        }
+
+        /// <summary>Turn the performer's body in place toward a world-space point.</summary>
+        public void TurnTo(Vector3 worldPosition) => RequireTurnRuntime().TurnTo(worldPosition);
+
+        /// <summary>Turn the performer's body in place toward a snapshot of the target position.</summary>
+        public Awaitable<LocomotionCompletion> TurnToAsync(Transform target)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            return RequireTurnRuntime().TurnToAsync(target);
+        }
+
+        /// <summary>Turn the performer's body in place toward a world-space point.</summary>
+        public Awaitable<LocomotionCompletion> TurnToAsync(Vector3 worldPosition) =>
+            RequireTurnRuntime().TurnToAsync(worldPosition);
+
+        public void SitAt(PerformerSeat seat) => RequireSeatingRuntime().SitAt(seat, null, null);
+
+        public void SitAt(PerformerSeat seat, PerformerSeatedStyle style) =>
+            RequireSeatingRuntime().SitAt(seat, style, null);
+
+        public Awaitable<SeatingCompletion> SitAtAsync(PerformerSeat seat)
+        {
+            var completion = new AwaitableCompletionSource<SeatingCompletion>();
+            RequireSeatingRuntime().SitAt(seat, null, completion);
+            return completion.Awaitable;
+        }
+
+        public Awaitable<SeatingCompletion> SitAtAsync(PerformerSeat seat, PerformerSeatedStyle style)
+        {
+            var completion = new AwaitableCompletionSource<SeatingCompletion>();
+            RequireSeatingRuntime().SitAt(seat, style, completion);
+            return completion.Awaitable;
+        }
+
+        public void StandUp() => RequireSeatingRuntime().StandUp(null);
+
+        public Awaitable<SeatingCompletion> StandUpAsync()
+        {
+            var completion = new AwaitableCompletionSource<SeatingCompletion>();
+            RequireSeatingRuntime().StandUp(completion);
+            return completion.Awaitable;
+        }
+
+        internal void SetBasicIdleLoopCandidateForAcceptance(bool enabled) =>
+            RequireSeatingRuntime().SetBasicIdleLoopCandidate(enabled);
+
+        internal PerformerPoseSnapshot CaptureEvaluatedBasePoseState()
+        {
+            if (_bodyPose == null) throw new InvalidOperationException("The performer runtime is not active.");
+            return _bodyPose.CaptureEvaluatedBaseState();
+        }
+
+        internal PerformerPoseSnapshot CaptureTransitionSourcePoseState()
+        {
+            if (_bodyPose == null) throw new InvalidOperationException("The performer runtime is not active.");
+            return _bodyPose.CaptureTransitionSourceState();
+        }
+
+        internal void SetBreathPhaseForAcceptance(float phase)
+        {
+            if (_breathing == null) throw new InvalidOperationException("The performer breathing runtime is not active.");
+            _breathing.Configure(CreateBreathingSettings());
+            _breathing.SetPhaseForAcceptance(phase);
+            _lastBreathPhase = _breathing.BreathPhase;
+            if (_graph.IsValid()) _graph.Evaluate(0f);
+        }
+
+        private void RequestPose(PerformerPose pose, PoseTransition transition,
+            AwaitableCompletionSource<PoseCompletion> completion)
+        {
+            if (_bodyPose == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive pose commands only while enabled in Play Mode.");
+            if (pose == null) throw new ArgumentNullException(nameof(pose));
+            _poseIntentGeneration++;
+
+            var previousDesired = _bodyPose.DesiredPose;
+            if (pose == previousDesired)
+            {
+                _bodyPose.SetPose(pose, transition);
+                PublishCurrentPoseState();
+                _hasPoseCommand = true;
+                if (_bodyPose.IsTransitioning)
+                {
+                    if (_activePoseRequest == null || _activePoseRequest.Pose != pose)
+                        _activePoseRequest = new PoseRequest(++_nextPoseRequestId, pose);
+                    if (completion != null) _activePoseRequest.Waiters.Add(completion);
+                    return;
+                }
+
+                var settledRequest = _activePoseRequest != null && _activePoseRequest.Pose == pose
+                    ? _activePoseRequest
+                    : null;
+                _activePoseRequest = null;
+                if (completion != null)
+                {
+                    if (settledRequest != null) settledRequest.Waiters.Add(completion);
+                    else completion.TrySetResult(PoseCompletion.Settled);
+                }
+                if (settledRequest != null) CompleteRequest(settledRequest, PoseCompletion.Settled);
+                return;
+            }
+
+            var supersededRequest = _activePoseRequest;
+            var newRequest = new PoseRequest(++_nextPoseRequestId, pose);
+            if (completion != null) newRequest.Waiters.Add(completion);
+
+            _bodyPose.SetPose(pose, transition);
+            PublishCurrentPoseState();
+            _hasPoseCommand = true;
+            _activePoseRequest = _bodyPose.IsTransitioning ? newRequest : null;
+
+            if (!_bodyPose.IsTransitioning)
+                CompleteRequest(newRequest, PoseCompletion.Settled);
+
+            // Completing a Unity Awaitable can resume its caller inline. All pose state,
+            // the new generation, and the published facade values are coherent first.
+            if (supersededRequest != null)
+                CompleteRequest(supersededRequest, PoseCompletion.Superseded);
+        }
+
+        private void RequestGaze(Transform target, AwaitableCompletionSource<GazeCompletion> completion)
+        {
+            if (_gaze == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive gaze commands only while enabled in Play Mode.");
+            _gaze.LookAt(target, completion);
+        }
+
+        private void RequestExpression(PerformerExpression expression, float intensity, float blendTime,
+            AwaitableCompletionSource<ExpressionCompletion> completion)
+        {
+            if (_expression == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive Expression commands only while enabled in Play Mode.");
+            if (!IsFinite(blendTime))
+                throw new ArgumentOutOfRangeException(nameof(blendTime), "Expression blend time must be finite.");
+            if (expression != null && !IsFinite(intensity))
+                throw new ArgumentOutOfRangeException(nameof(intensity), "Expression intensity must be finite.");
+            _expressionIntentGeneration++;
+            intensity = Mathf.Clamp01(intensity);
+            blendTime = Mathf.Max(0f, blendTime);
+            var sameDesired = expression == _lastDesiredExpression && Mathf.Abs(intensity - _lastDesiredExpressionIntensity) <= 0.00001f;
+            if (sameDesired)
+            {
+                if (_expression.IsTransitioning)
+                {
+                    if (completion != null && _activeExpressionRequest != null) _activeExpressionRequest.Waiters.Add(completion);
+                }
+                else if (completion != null) completion.TrySetResult(ExpressionCompletion.Settled);
+                return;
+            }
+
+            var previous = _activeExpressionRequest;
+            if (expression == null) _expression.Clear(blendTime);
+            else _expression.SetExpression(expression, intensity, blendTime);
+            _lastDesiredExpression = expression;
+            _lastDesiredExpressionIntensity = expression == null ? 0f : intensity;
+            _hasExpressionCommand = true;
+            var request = new ExpressionRequest(expression, _lastDesiredExpressionIntensity);
+            if (completion != null) request.Waiters.Add(completion);
+            _activeExpressionRequest = _expression.IsTransitioning ? request : null;
+            if (!_expression.IsTransitioning)
+            {
+                _lastSettledExpression = expression;
+                _lastSettledExpressionIntensity = _lastDesiredExpressionIntensity;
+                CompleteExpressionRequest(request, ExpressionCompletion.Settled);
+            }
+            if (previous != null) CompleteExpressionRequest(previous, ExpressionCompletion.Superseded);
+        }
+
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+
+        private static void CompleteExpressionRequest(ExpressionRequest request, ExpressionCompletion result)
+        {
+            var waiters = request.Waiters.ToArray(); request.Waiters.Clear();
+            foreach (var waiter in waiters) waiter.TrySetResult(result);
+        }
+
+        private sealed class ExpressionRequest
+        {
+            public ExpressionRequest(PerformerExpression expression, float intensity) { Expression = expression; Intensity = intensity; }
+            public PerformerExpression Expression { get; }
+            public float Intensity { get; }
+            public List<AwaitableCompletionSource<ExpressionCompletion>> Waiters { get; } = new List<AwaitableCompletionSource<ExpressionCompletion>>();
+        }
+
+        private void RequestGaze(Vector3 worldPosition, AwaitableCompletionSource<GazeCompletion> completion)
+        {
+            if (_gaze == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive gaze commands only while enabled in Play Mode.");
+            _gaze.LookAt(worldPosition, completion);
+        }
+
+        private void PublishCurrentPoseState()
+        {
+            if (_bodyPose == null) return;
+            _lastDesiredPose = _bodyPose.DesiredPose;
+            _lastSettledPose = _bodyPose.SettledPose;
+        }
+
+        private static void CompleteRequest(PoseRequest request, PoseCompletion result)
+        {
+            var waiters = request.Waiters.ToArray();
+            request.Waiters.Clear();
+            foreach (var waiter in waiters) waiter.TrySetResult(result);
+        }
+
+        private sealed class PoseRequest
+        {
+            public PoseRequest(long id, PerformerPose pose)
+            {
+                Id = id;
+                Pose = pose;
+            }
+
+            public long Id { get; }
+            public PerformerPose Pose { get; }
+            public List<AwaitableCompletionSource<PoseCompletion>> Waiters { get; } = new List<AwaitableCompletionSource<PoseCompletion>>();
+        }
+
+        private void CreateRuntime()
+        {
+            DestroyRuntime();
+            _isTearingDown = false;
+            InitializeVisibilityIfNeeded();
+            ApplyStableVisibility(_lastStableHidden);
+            if (animator == null) animator = GetComponent<Animator>();
+            if (animator == null)
+                throw new InvalidOperationException("SuccubusPerformer needs an Animator on this GameObject or assigned in its Inspector.");
+            if (locomotionProfile != null && animator.transform != transform)
+                throw new InvalidOperationException("The baked KAWAII Generic locomotion profile expects the SuccubusPerformer and Animator on the same model root.");
+
+            try
+            {
+                if (locomotionProfile != null)
+                {
+                    _savedApplyRootMotion = animator.applyRootMotion;
+                    _hasSavedApplyRootMotion = true;
+                    animator.applyRootMotion = false;
+                }
+                speechAudioSource = ResolveSpeechAudioSource();
+                _speech = new PerformerSpeech(speechAudioSource);
+                _magicRuntime = new PerformerMagicRuntime(transform, OnMagicAuraTargetLost);
+
+                _graph = PlayableGraph.Create("Succubus Performer - " + name);
+                _graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
+                _bodyPose = new PerformerBodyPose(animator, _graph, _neutralPoseState,
+                    animateActorRoot: locomotionProfile == null);
+                _neutralPoseState = _bodyPose.NeutralState;
+                Playable bodySource = _bodyPose.OutputPlayable;
+                if (locomotionProfile != null)
+                {
+                    _bodySourceMixer = new PerformerBodySourceMixer(animator, _graph, bodySource, locomotionProfile);
+                    _locomotion = new PerformerLocomotion(transform, locomotionProfile, _bodySourceMixer);
+                    bodySource = _bodySourceMixer.Output;
+                }
+                _seatingLayer = new PerformerSeatingLayer(_graph, bodySource);
+                _seating = new PerformerSeating(transform, _locomotion, _seatingLayer);
+                bodySource = _seatingLayer.Output;
+                _actionLayer = new PerformerActionLayer(_graph, bodySource);
+                bodySource = _actionLayer.OutputPlayable;
+                if (_locomotion != null && locomotionProfile != null
+                    && locomotionProfile.IsReady(out _))
+                    _actionRuntime = new PerformerActionRuntime(transform, _actionLayer, _locomotion, locomotionProfile);
+                if (motionDriver != null && motionSet != null && rightArmMotionMask != null)
+                {
+                    string motionReason;
+                    if (!motionSet.IsReady(out motionReason)
+                        || !PerformerMotionMaskUtility.IsValidMask(animator, rightArmMotionMask, out motionReason))
+                    {
+                        Debug.LogWarning("Motion is unavailable: " + motionReason, this);
+                    }
+                    else
+                    {
+                        _motionLayer = new PerformerMotionLayer(_graph, bodySource, animator,
+                            motionSet, rightArmMotionMask, motionOwnershipBlendSeconds);
+                        _motionConsumer = new PerformerMotionConsumer(motionDriver, _motionLayer);
+                        bodySource = _motionLayer.OutputPlayable;
+                    }
+                }
+                if (gestureUpperBodyMask != null)
+                {
+                    if (PerformerGestureMaskUtility.IsValidMask(animator, gestureUpperBodyMask, out string gestureMaskReason))
+                    {
+                        _gestureLayer = new PerformerGestureLayer(_graph, bodySource, animator, gestureUpperBodyMask);
+                        bodySource = _gestureLayer.OutputPlayable;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Gesture is unavailable: " + gestureMaskReason, this);
+                    }
+                }
+                _breathing = new PerformerBreathing(animator, _graph, bodySource,
+                    _bodyPose, breathingBones, _lastBreathPhase);
+                _breathing.Configure(CreateBreathingSettings());
+                _breathing.Advance(0f);
+
+                bodySource = _breathing.OutputPlayable;
+                _handGripController = GetComponent<PerformerHandGripController>();
+                if (_handGripController != null)
+                    bodySource = _handGripController.AttachToGraph(_graph, bodySource, animator, motionDriver);
+                _gaze = new PerformerGaze(animator, _graph, bodySource);
+                _attentionLife = new PerformerAttentionLife(_gaze.HeadCalibration.LocalAim,
+                    _gaze.HeadCalibration.LocalRight, CreateAttentionLifeSettings());
+                _gaze.AttachAttentionLife(_attentionLife);
+                _gaze.Configure(CreateGazeSettings());
+                _attentionLife.Advance(0f);
+                _gaze.Advance(0f);
+
+                _expression = new PerformerExpressionLayer(animator, _graph, _gaze.OutputPlayable);
+                var expressionToRestore = _hasExpressionCommand ? _lastDesiredExpression : initialExpression;
+                var intensityToRestore = _hasExpressionCommand ? _lastDesiredExpressionIntensity : initialExpressionIntensity;
+                if (expressionToRestore != null)
+                {
+                    _expression.SetExpression(expressionToRestore, intensityToRestore, 0f);
+                    _lastDesiredExpression = _lastSettledExpression = expressionToRestore;
+                    _lastDesiredExpressionIntensity = _lastSettledExpressionIntensity = intensityToRestore;
+                }
+                else if (_hasExpressionCommand)
+                {
+                    _lastSettledExpression = null;
+                    _lastSettledExpressionIntensity = 0f;
+                }
+
+                _blink = new PerformerBlink(animator, _graph, _expression.OutputPlayable,
+                    _bodyPose, CreateBlinkSettings());
+                _blink.Advance(0f);
+
+                var output = AnimationPlayableOutput.Create(_graph, "Performer Animation", animator);
+                output.SetSourcePlayable(_blink.OutputPlayable);
+                _graph.Play();
+
+                var poseToRestore = _hasPoseCommand ? _lastDesiredPose : initialPose;
+                if (poseToRestore != null)
+                    _bodyPose.SetPose(poseToRestore, PoseTransition.Snap);
+                _graph.Evaluate(0f);
+                if (teleportProfile != null)
+                    _teleport = new PerformerTeleport(transform, teleportProfile,
+                        pose => Pose(pose, PoseTransition.Snap));
+
+                if (dissolveProfile != null && dissolveRig != null)
+                {
+                    if (dissolveProfile.IsReady(out string dissolveReason)
+                        && dissolveRig.IsReady(dissolveProfile, out dissolveReason))
+                    {
+                        _dissolve = new PerformerDissolve(transform, dissolveProfile, dissolveRig,
+                            pose => Pose(pose, PoseTransition.Snap), _lastStableHidden, SetStableHidden);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("DissolveTo is unavailable: " + dissolveReason, this);
+                    }
+                }
+
+                RestoreDesiredAura();
+            }
+            catch
+            {
+                DestroyRuntime();
+                throw;
+            }
+        }
+
+        private AudioSource ResolveSpeechAudioSource()
+        {
+            if (speechAudioSource == null)
+            {
+                var skeleton = FindUniqueChildTransform(transform, "Genesis8Female");
+                var head = FindUniqueChildTransform(skeleton, "head");
+                speechAudioSource = FindHeadSpeechAudioSource(head);
+            }
+
+            if (speechAudioSource == null)
+                throw new InvalidOperationException("actor/speechAudioSource: Assign the actor's existing production speech AudioSource reference beneath the performer's head.");
+            if (speechAudioSource.transform == transform || !speechAudioSource.transform.IsChildOf(transform))
+                throw new InvalidOperationException("The dedicated speech AudioSource must be a child of SuccubusPerformer so it follows the performer.");
+
+            var underHead = false;
+            for (var current = speechAudioSource.transform.parent; current != null && current != transform; current = current.parent)
+                if (current.name == "head") { underHead = true; break; }
+            if (!underHead)
+                throw new InvalidOperationException("The dedicated speech AudioSource must be on a child transform beneath the performer's head bone so spatial audio follows the mouth.");
+            return speechAudioSource;
+        }
+
+        private static AudioSource FindHeadSpeechAudioSource(Transform head)
+        {
+            AudioSource match = null;
+            foreach (var child in head.GetComponentsInChildren<Transform>(true))
+            {
+                if (child == head || (child.name != "SpeechAudio" && child.name != "VoiceAudio"
+                    && child.name != "VoiceAnchor" && child.name != "Voice" && child.name != "MouthAudio")) continue;
+                var candidate = child.GetComponent<AudioSource>();
+                if (candidate == null) continue;
+                if (match != null)
+                    throw new InvalidOperationException("SuccubusPerformer found multiple dedicated AudioSources beneath the head. Assign the intended SpeechAudioSource explicitly.");
+                match = candidate;
+            }
+            return match;
+        }
+
+        private static Transform FindUniqueChildTransform(Transform root, string exactName)
+        {
+            Transform match = null;
+            foreach (var child in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name != exactName) continue;
+                if (match != null)
+                    throw new InvalidOperationException("SuccubusPerformer needs one unique '" + exactName
+                        + "' transform beneath '" + root.name + "' to place its speech AudioSource.");
+                match = child;
+            }
+            if (match == null)
+                throw new InvalidOperationException("SuccubusPerformer could not find '" + exactName
+                    + "' beneath '" + root.name + "' to place its speech AudioSource.");
+            return match;
+        }
+
+        private PerformerSpeech RequireSpeechRuntime()
+        {
+            if (_speech == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive speech commands only while enabled in Play Mode.");
+            return _speech;
+        }
+
+        private PerformerGestureLayer RequireGestureRuntime(PerformerGesture gesture)
+        {
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("SuccubusPerformer can receive Gesture commands only while enabled in Play Mode.");
+            if (gesture == null) throw new ArgumentNullException(nameof(gesture));
+            if (!gesture.IsReady(out string reason)) throw new InvalidOperationException(reason);
+            if (_gestureLayer == null)
+                throw new InvalidOperationException("actor/gestureUpperBodyMask: Assign the actor's existing production Gesture mask, or repair the actor's configured Animator and body skeleton.");
+            if (VisibilityState != PerformerVisibilityState.Visible)
+                throw new InvalidOperationException("A new Gesture can start only while Lara is stably Visible. Current visibility state is "
+                    + VisibilityState + ". Existing gestures continue through dissolve transitions.");
+            return _gestureLayer;
+        }
+
+        private PerformerActionRuntime RequirePerformRuntime(PerformerAction action)
+        {
+            PrepareRootMovement("Perform");
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("SuccubusPerformer can receive Perform commands only while enabled in Play Mode.");
+            if (_actionRuntime == null)
+                throw new InvalidOperationException("Perform is unavailable because a ready Locomotion Profile is required for return-home recovery. Bake and assign the KAWAII Walk01 locomotion profile first.");
+            if (_actionRuntime.IsPerforming)
+                throw new InvalidOperationException("A PerformerAction is already active, including its recovery phase. Wait for it to return home before starting another.");
+            if (!action.IsReady(out string reason)) throw new InvalidOperationException(reason);
+            if (VisibilityState != PerformerVisibilityState.Visible)
+                throw new InvalidOperationException("Perform requires Lara to be stably Visible. Current visibility state is " + VisibilityState + ".");
+            if (SeatingState != PerformerSeatingState.Standing || IsSeatingTransitionActive())
+                throw new InvalidOperationException("Perform is available only while Lara is stably Standing; it does not interrupt seating or stand Lara up.");
+            if (_locomotion == null)
+                throw new InvalidOperationException("Perform requires the locomotion runtime for physical return-home recovery.");
+            if (_locomotion.IsLocomoting)
+                throw new InvalidOperationException("Perform requires locomotion to be idle; wait for WalkTo or TurnTo to finish.");
+            if (IsTeleporting)
+                throw new InvalidOperationException("Perform is unavailable while a teleport is in progress.");
+            if (IsDissolving)
+                throw new InvalidOperationException("Perform is unavailable while a dissolve or visibility transition is in progress.");
+            if (_isDissolveShaderAcceptanceActive)
+                throw new InvalidOperationException("Perform is unavailable while shader-only dissolve acceptance is active.");
+            return _actionRuntime;
+        }
+
+        private void RejectWhilePerforming(string command)
+        {
+            if (IsPerforming)
+                throw new InvalidOperationException(command + " is unavailable while Perform owns Lara, including the return-home recovery phase.");
+        }
+
+        private PerformerLocomotion RequireLocomotionRuntime(bool gripStaging = false)
+        {
+            if (!gripStaging) PrepareRootMovement("WalkTo");
+            RejectWhilePerforming("WalkTo");
+            RequireVisibleForWorldCommands("WalkTo");
+            if (IsTeleporting)
+                throw new InvalidOperationException("WalkTo is unavailable while a teleport is in progress.");
+            if (IsDissolving)
+                throw new InvalidOperationException("WalkTo is unavailable while a dissolve is in progress.");
+            if (_locomotion == null || _isTearingDown || !isActiveAndEnabled)
+            {
+                string setup = locomotionProfile == null
+                    ? "Assign the generated KawaiiWalk01Profile in the Locomotion section after running Tools > DAZ Pose > Locomotion > Bake KAWAII Walk01 for Generic Lara."
+                    : "SuccubusPerformer locomotion is available only while enabled in Play Mode and after its profile has initialized.";
+                throw new InvalidOperationException("SuccubusPerformer cannot receive WalkTo commands. " + setup);
+            }
+            return _locomotion;
+        }
+
+        private PerformerLocomotion RequireTurnRuntime()
+        {
+            PrepareRootMovement("TurnTo");
+            RejectWhilePerforming("TurnTo");
+            RequireVisibleForWorldCommands("TurnTo");
+            if (!IsRuntimeReady || _locomotion == null)
+                throw new InvalidOperationException("SuccubusPerformer can receive TurnTo commands only while its locomotion runtime is ready in Play Mode.");
+            if (IsTeleporting)
+                throw new InvalidOperationException("TurnTo is unavailable while a teleport is in progress.");
+            if (IsDissolving)
+                throw new InvalidOperationException("TurnTo is unavailable while a dissolve is in progress.");
+            if (_isDissolveShaderAcceptanceActive)
+                throw new InvalidOperationException("TurnTo is unavailable while shader-only dissolve acceptance is active.");
+            if (SeatingState != PerformerSeatingState.Standing)
+                throw new InvalidOperationException("TurnTo is available only while Lara is standing; it does not interrupt seating or stand Lara up.");
+            if (_locomotion.IsLocomoting)
+                throw new InvalidOperationException("TurnTo requires locomotion to be idle; wait for the current locomotion request to finish.");
+            return _locomotion;
+        }
+
+        private PerformerSeating RequireSeatingRuntime()
+        {
+            PrepareRootMovement("SitAt");
+            _locomotion?.SetHoldArrivalPose(false);
+            RejectWhilePerforming("SitAt/StandUp");
+            RequireVisibleForWorldCommands("SitAt/StandUp");
+            if (IsTeleporting)
+                throw new InvalidOperationException("SitAt/StandUp is unavailable while a teleport is in progress.");
+            if (IsDissolving)
+                throw new InvalidOperationException("SitAt/StandUp is unavailable while a dissolve is in progress.");
+            if (_seating == null || _isTearingDown || !isActiveAndEnabled)
+                throw new InvalidOperationException("SuccubusPerformer can receive SitAt/StandUp commands only while enabled in Play Mode.");
+            return _seating;
+        }
+
+        private PerformerTeleport RequireTeleportRuntime()
+        {
+            PrepareRootMovement("TeleportTo");
+            RejectWhilePerforming("TeleportTo");
+            RequireVisibleForWorldCommands("TeleportTo");
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("SuccubusPerformer can teleport only while its runtime is ready in Play Mode.");
+            if (IsDissolving)
+                throw new InvalidOperationException("TeleportTo is unavailable while a dissolve is in progress.");
+            if (_teleport == null)
+                throw new InvalidOperationException("actor/teleportProfile: Assign the actor's existing production PerformerTeleportProfile reference.");
+            if (IsLocomoting)
+                throw new InvalidOperationException("Teleport requires Lara to finish locomoting first.");
+            if (SeatingState != PerformerSeatingState.Standing)
+                throw new InvalidOperationException("Teleport is available only while Lara is standing.");
+            if (_teleport.IsTeleporting)
+                throw new InvalidOperationException("A teleport is already in progress; wait for it to arrive before requesting another.");
+            return _teleport;
+        }
+
+        private PerformerDissolve RequireDissolveRuntime(string command,
+            PerformerVisibilityState requiredState, bool requireStanding, object transitionOwner = null)
+        {
+            if (command == "DissolveTo") PrepareRootMovement(command);
+            if (_wardrobeEffectTransitionOwner != null && !ReferenceEquals(_wardrobeEffectTransitionOwner, transitionOwner))
+                throw new InvalidOperationException(command + " is unavailable while a wardrobe scene transition owns the effect lifecycle.");
+            RejectWhilePerforming(command);
+            if (!IsRuntimeReady)
+                throw new InvalidOperationException("SuccubusPerformer can dissolve only while its runtime is ready in Play Mode.");
+            if (_dissolve == null)
+                throw new InvalidOperationException(command + " is unavailable. Assign the actor's existing production "
+                    + (dissolveProfile == null ? "PerformerDissolveProfile reference to actor/dissolveProfile." : "PerformerDissolveRig reference to actor/dissolveRig."));
+            if (VisibilityState != requiredState)
+                throw new InvalidOperationException(command + " requires Lara to be in stable " + requiredState
+                    + " visibility state; current state is " + VisibilityState + ".");
+            if (_isDissolveShaderAcceptanceActive)
+                throw new InvalidOperationException(command + " is unavailable while shader-only dissolve acceptance is active. Reset the shader acceptance controls first.");
+            if (IsTeleporting)
+                throw new InvalidOperationException(command + " is unavailable while a teleport is in progress.");
+            if (IsLocomoting)
+                throw new InvalidOperationException(command + " requires Lara to finish locomoting first.");
+            if (requireStanding && SeatingState != PerformerSeatingState.Standing)
+                throw new InvalidOperationException(command + " is available only while Lara is standing.");
+            if (!requireStanding && IsSeatingTransitionActive())
+                throw new InvalidOperationException(command + " is unavailable while a seating transition is in progress.");
+            if (_dissolve.IsDissolving)
+                throw new InvalidOperationException("A dissolve/visibility transition is already in progress; wait for it to finish before requesting " + command + ".");
+            return _dissolve;
+        }
+
+        private bool IsSeatingTransitionActive()
+        {
+            switch (SeatingState)
+            {
+                case PerformerSeatingState.Approaching:
+                case PerformerSeatingState.Aligning:
+                case PerformerSeatingState.SittingDown:
+                case PerformerSeatingState.CrossingLegs:
+                case PerformerSeatingState.PreparingUncross:
+                case PerformerSeatingState.UncrossingLegs:
+                case PerformerSeatingState.StandingUp:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private void RequireVisibleForWorldCommands(string command)
+        {
+            PerformerVisibilityState state = VisibilityState;
+            if (state == PerformerVisibilityState.Hidden)
+                throw new InvalidOperationException(command + " is unavailable while Lara is persistently hidden.");
+            if (state == PerformerVisibilityState.DissolvingOut || state == PerformerVisibilityState.DissolvingIn)
+                throw new InvalidOperationException(command + " is unavailable while Lara is changing visibility.");
+        }
+
+        private void RequireStableVisibleForDebug(string command)
+        {
+            if (VisibilityState != PerformerVisibilityState.Visible || IsDissolving)
+                throw new InvalidOperationException(command + " requires stable Visible state and no active dissolve.");
+        }
+
+        private void InitializeVisibilityIfNeeded()
+        {
+            if (_visibilityInitialized) return;
+            _lastStableHidden = startHidden;
+            _visibilityInitialized = true;
+        }
+
+        private void SetStableHidden(bool hidden)
+        {
+            _lastStableHidden = hidden;
+            _visibilityInitialized = true;
+        }
+
+        private void ApplyStableVisibility(bool hidden)
+        {
+            if (dissolveRig != null && dissolveRig.TargetRenderer != null)
+            {
+                dissolveRig.ApplyStableVisibility(hidden);
+                return;
+            }
+
+            if (dissolveRig != null) dissolveRig.ApplyStableVisibility(hidden);
+            SkinnedMeshRenderer[] renderers = GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            foreach (SkinnedMeshRenderer renderer in renderers)
+                if (renderer != null) renderer.forceRenderingOff = hidden;
+        }
+
+        private void DestroyRuntime()
+        {
+            if (_breathing != null) _lastBreathPhase = _breathing.BreathPhase;
+            if (_bodyPose != null)
+            {
+                if (_bodyPose.DesiredPose != null) _lastDesiredPose = _bodyPose.DesiredPose;
+                if (_bodyPose.SettledPose != null) _lastSettledPose = _bodyPose.SettledPose;
+            }
+
+            _isTearingDown = true;
+            _magicRuntime?.Dispose();
+            _magicRuntime = null;
+            _dissolve?.Dispose();
+            _dissolve = null;
+            _isDissolveShaderAcceptanceActive = false;
+            _teleport?.Dispose();
+            _teleport = null;
+            var speech = _speech;
+            _speech = null;
+            speech?.Dispose();
+
+            var request = _activePoseRequest;
+            _activePoseRequest = null;
+            if (request != null) CompleteRequest(request, PoseCompletion.PerformerDisabled);
+            var expressionRequest = _activeExpressionRequest;
+            _activeExpressionRequest = null;
+            if (expressionRequest != null) CompleteExpressionRequest(expressionRequest, ExpressionCompletion.PerformerDisabled);
+
+            _actionRuntime?.Dispose();
+            _actionRuntime = null;
+
+            _locomotion?.Dispose();
+            _locomotion = null;
+
+            _seating?.Dispose();
+            _seating = null;
+
+            _blink?.Dispose();
+            _blink = null;
+            _gaze?.Dispose();
+            _gaze = null;
+            _attentionLife = null;
+            _expression?.Dispose();
+            _expression = null;
+
+            _gestureLayer?.Dispose();
+            _gestureLayer = null;
+
+            _handGripController?.Detach();
+            _handGripController = null;
+
+            _motionConsumer?.Dispose();
+            _motionConsumer = null;
+            _motionLayer?.Dispose();
+            _motionLayer = null;
+
+            _actionLayer?.Dispose();
+            _actionLayer = null;
+
+            _seatingLayer?.Dispose();
+            _seatingLayer = null;
+
+            _bodySourceMixer?.Dispose();
+            _bodySourceMixer = null;
+
+            if (_graph.IsValid()) _graph.Destroy();
+            _breathing?.Dispose();
+            _breathing = null;
+            _bodyPose?.Dispose();
+            _bodyPose = null;
+            _graph = default;
+            if (_hasSavedApplyRootMotion && animator != null)
+            {
+                animator.applyRootMotion = _savedApplyRootMotion;
+                _hasSavedApplyRootMotion = false;
+            }
+        }
+
+        private PerformerMagicRuntime RequireMagicRuntime()
+        {
+            if (!Application.isPlaying || !isActiveAndEnabled || _isTearingDown || _magicRuntime == null)
+                throw new InvalidOperationException("SuccubusPerformer can receive Cast/Aura commands only while enabled in Play Mode.");
+            return _magicRuntime;
+        }
+
+        private void RestoreDesiredAura()
+        {
+            if (_desiredAura == null) return;
+            if (_desiredAuraTarget == null)
+            {
+                _desiredAura = null;
+                _desiredAuraTarget = null;
+                return;
+            }
+            if (!_desiredAura.IsReady(out string reason))
+            {
+                Debug.LogWarning("Persistent Aura was not restored: " + reason, this);
+                _desiredAura = null;
+                _desiredAuraTarget = null;
+                return;
+            }
+            try
+            {
+                _magicRuntime.SetAura(_desiredAura, _desiredAuraTarget);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning("Persistent Aura was not restored: " + exception.Message, this);
+                _desiredAura = null;
+                _desiredAuraTarget = null;
+            }
+        }
+
+        private void OnMagicAuraTargetLost(PerformerAura aura, Transform target)
+        {
+            if (!ReferenceEquals(_desiredAura, aura) || !ReferenceEquals(_desiredAuraTarget, target)) return;
+            _desiredAura = null;
+            _desiredAuraTarget = null;
+        }
+
+        private void OnValidate()
+        {
+            breathsPerMinute = Mathf.Max(0f, breathsPerMinute);
+            morphBreathingStrength = Mathf.Max(0f, morphBreathingStrength);
+            breatheStrength = Mathf.Max(0f, breatheStrength);
+            breatheBellyStrength = Mathf.Max(0f, breatheBellyStrength);
+            boneBreathingStrength = Mathf.Max(0f, boneBreathingStrength);
+            if (breathingCurve == null) breathingCurve = CreateDefaultBreathingCurve();
+            if (breathingBones == null) breathingBones = CreateDefaultBreathingBones();
+            gazeAcquireToleranceDegrees = Mathf.Max(0.1f, gazeAcquireToleranceDegrees);
+            headGazeWeight = Mathf.Clamp01(headGazeWeight);
+            headGazeResponse = Mathf.Max(0f, headGazeResponse);
+            headGazeMaxYaw = Mathf.Clamp(headGazeMaxYaw, 0f, 89f);
+            headGazeMaxPitch = Mathf.Clamp(headGazeMaxPitch, 0f, 89f);
+            eyeGazeWeight = Mathf.Clamp01(eyeGazeWeight);
+            eyeGazeResponse = Mathf.Max(0f, eyeGazeResponse);
+            eyeGazeMaxYaw = Mathf.Clamp(eyeGazeMaxYaw, 0f, 89f);
+            eyeGazeMaxPitch = Mathf.Clamp(eyeGazeMaxPitch, 0f, 89f);
+            gazeReleaseResponse = Mathf.Max(0f, gazeReleaseResponse);
+            eyeFixationMaxHorizontalDegrees = Mathf.Clamp(eyeFixationMaxHorizontalDegrees, 0f, 8f);
+            eyeFixationMaxVerticalDegrees = Mathf.Clamp(eyeFixationMaxVerticalDegrees, 0f, 6f);
+            eyeFixationMinimumHoldSeconds = Mathf.Max(0.05f, eyeFixationMinimumHoldSeconds);
+            eyeFixationMaximumHoldSeconds = Mathf.Max(eyeFixationMinimumHoldSeconds,
+                eyeFixationMaximumHoldSeconds);
+            eyeFixationCenterBias = Mathf.Clamp(eyeFixationCenterBias, 1f, 4f);
+            headAttentionMaxTiltDegrees = Mathf.Clamp(headAttentionMaxTiltDegrees, 0f, 15f);
+            headAttentionMaxChinDegrees = Mathf.Clamp(headAttentionMaxChinDegrees, 0f, 12f);
+            headAttentionMinimumHoldSeconds = Mathf.Max(0.1f, headAttentionMinimumHoldSeconds);
+            headAttentionMaximumHoldSeconds = Mathf.Max(headAttentionMinimumHoldSeconds,
+                headAttentionMaximumHoldSeconds);
+            headAttentionTransitionResponse = Mathf.Max(0f, headAttentionTransitionResponse);
+            blinkStrength = Mathf.Clamp01(blinkStrength);
+            blinkMinimumIntervalSeconds = Mathf.Max(0.1f, blinkMinimumIntervalSeconds);
+            blinkMaximumIntervalSeconds = Mathf.Max(blinkMinimumIntervalSeconds,
+                blinkMaximumIntervalSeconds);
+            blinkCloseDurationSeconds = Mathf.Max(0.005f, blinkCloseDurationSeconds);
+            blinkClosedDurationSeconds = Mathf.Max(0.005f, blinkClosedDurationSeconds);
+            blinkOpenDurationSeconds = Mathf.Max(0.005f, blinkOpenDurationSeconds);
+            initialExpressionIntensity = Mathf.Clamp01(initialExpressionIntensity);
+            defaultExpressionBlendTime = Mathf.Max(0f, defaultExpressionBlendTime);
+        }
+
+        private PerformerBreathingSettings CreateBreathingSettings()
+        {
+            return new PerformerBreathingSettings
+            {
+                BreathingEnabled = breathingEnabled,
+                BreathsPerMinute = breathsPerMinute,
+                BreathingCurve = breathingCurve,
+                MorphBreathingEnabled = morphBreathingEnabled,
+                MorphBreathingStrength = morphBreathingStrength,
+                BreatheStrength = breatheStrength,
+                BreatheBellyStrength = breatheBellyStrength,
+                BoneBreathingEnabled = boneBreathingEnabled,
+                BoneBreathingStrength = boneBreathingStrength
+            };
+        }
+
+        private PerformerGazeSettings CreateGazeSettings()
+        {
+            return new PerformerGazeSettings
+            {
+                GazeEnabled = gazeEnabled,
+                AcquireToleranceDegrees = gazeAcquireToleranceDegrees,
+                HeadEnabled = headGazeEnabled,
+                HeadWeight = headGazeWeight,
+                HeadResponse = headGazeResponse,
+                HeadMaxYaw = headGazeMaxYaw,
+                HeadMaxPitch = headGazeMaxPitch,
+                EyesEnabled = eyeGazeEnabled,
+                EyeWeight = eyeGazeWeight,
+                EyeResponse = eyeGazeResponse,
+                EyeMaxYaw = eyeGazeMaxYaw,
+                EyeMaxPitch = eyeGazeMaxPitch,
+                ReleaseResponse = gazeReleaseResponse
+            };
+        }
+
+        private PerformerAttentionLifeSettings CreateAttentionLifeSettings()
+        {
+            return new PerformerAttentionLifeSettings
+            {
+                Enabled = attentionLifeEnabled,
+                Seed = attentionLifeSeed,
+                EyeFixationEnabled = eyeFixationLifeEnabled,
+                EyeMaxHorizontalDegrees = eyeFixationMaxHorizontalDegrees,
+                EyeMaxVerticalDegrees = eyeFixationMaxVerticalDegrees,
+                EyeMinimumHoldSeconds = eyeFixationMinimumHoldSeconds,
+                EyeMaximumHoldSeconds = eyeFixationMaximumHoldSeconds,
+                EyeCenterBias = eyeFixationCenterBias,
+                HeadEnabled = headAttentionLifeEnabled,
+                HeadMaxTiltDegrees = headAttentionMaxTiltDegrees,
+                HeadMaxChinDegrees = headAttentionMaxChinDegrees,
+                HeadMinimumHoldSeconds = headAttentionMinimumHoldSeconds,
+                HeadMaximumHoldSeconds = headAttentionMaximumHoldSeconds,
+                HeadTransitionResponse = headAttentionTransitionResponse
+            };
+        }
+
+        private PerformerBlinkSettings CreateBlinkSettings()
+        {
+            return new PerformerBlinkSettings
+            {
+                Enabled = blinkEnabled,
+                Seed = attentionLifeSeed,
+                Strength = blinkStrength,
+                MinimumIntervalSeconds = blinkMinimumIntervalSeconds,
+                MaximumIntervalSeconds = blinkMaximumIntervalSeconds,
+                CloseDurationSeconds = blinkCloseDurationSeconds,
+                ClosedDurationSeconds = blinkClosedDurationSeconds,
+                OpenDurationSeconds = blinkOpenDurationSeconds
+            };
+        }
+
+        private static AnimationCurve CreateDefaultBreathingCurve()
+        {
+            return new AnimationCurve(
+                new Keyframe(0f, 0f, 0f, 0f),
+                new Keyframe(0.32f, 1f, 0f, 0f),
+                new Keyframe(0.44f, 1f, 0f, 0f),
+                new Keyframe(1f, 0f, 0f, 0f));
+        }
+
+        private static BreathingBoneChannel[] CreateDefaultBreathingBones()
+        {
+            return new[]
+            {
+                new BreathingBoneChannel
+                {
+                    boneName = "abdomenLower",
+                    fullInhaleLocalRotationDelta = new Vector3(-0.20f, 0f, 0f)
+                },
+                new BreathingBoneChannel
+                {
+                    boneName = "abdomenUpper",
+                    fullInhaleLocalRotationDelta = new Vector3(-0.30f, 0f, 0f),
+                    fullInhaleLocalPositionDelta = new Vector3(0f, 0.0003f, 0f)
+                },
+                new BreathingBoneChannel
+                {
+                    boneName = "chestLower",
+                    fullInhaleLocalRotationDelta = new Vector3(-0.40f, 0f, 0f),
+                    fullInhaleLocalPositionDelta = new Vector3(0f, 0.0005f, 0f)
+                },
+                new BreathingBoneChannel
+                {
+                    boneName = "chestUpper",
+                    fullInhaleLocalRotationDelta = new Vector3(-0.25f, 0f, 0f),
+                    fullInhaleLocalPositionDelta = new Vector3(0f, 0.0003f, 0f)
+                }
+            };
+        }
+    }
+}
