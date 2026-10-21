@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DazPose.Performer;
+using DazPose.Player;
 using DazPose.Story.Language;
 using UnityEngine;
 namespace DazPose.Story {
@@ -103,6 +104,7 @@ namespace DazPose.Story {
    var run=context.Run; var scene=context.Bindings; var world=context.Session.world;
    string Arg(string name)=>command.Require(name).String;
    StoryLocationBinding Location()=>scene.RequireLocation(Arg("location"));
+   PlayerCameraHeight Height(string name)=>PlayerCameraMounts.TryParse(name,out var height) ? height : throw new InvalidOperationException("Camera.StartAt expects High or Low, not '"+name+"'.");
    switch(command.Verb) {
     case "Lara.SetOutfit":
      content.ValidateAppearance(new StoryBindingUse {kind=StoryBindingKind.WardrobePreset,symbol=Arg("outfit"),source=command.Source},scene);
@@ -115,7 +117,7 @@ namespace DazPose.Story {
     case "Lara.Outfit.AddOneLayer":await run.Performer.TryAddLayerAsync(AppearanceTransition(scene));break;
     case "Lara.StartHiddenAt":run.Performer.StartHiddenAt(Location().placement);break;
     case "PlayerBody.StartHiddenAt":run.Player.StartBodyHiddenAt(Location().placement);break;
-    case "Camera.StartAt":run.Player.StartAt(Location().placement);break;
+    case "Camera.StartAt":run.Player.StartAt(Height(Arg("height")));break;
     case "Lara.StartIdle":run.Performer.StartConfiguredIdle();world.posture=PlayerPosture.Standing;break;
     case "Lara.DissolveIn":await run.Performer.DissolveInAtAsync(Location().placement,(float)command.Number("seconds",scene.lara.DissolveProfile.DefaultDuration));break;
     case "Camera.Track":if(Arg("performer")!="Lara" || scene.laraFocus==null) throw new InvalidOperationException("Assign Lara's authored focus target.");run.Player.Track(scene.laraFocus);break;

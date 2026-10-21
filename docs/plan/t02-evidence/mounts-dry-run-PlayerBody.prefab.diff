@@ -1,0 +1,98 @@
+2a3,64
+> --- !u!1 &1830295282392610082
+> GameObject:
+>   m_ObjectHideFlags: 0
+>   m_CorrespondingSourceObject: {fileID: 0}
+>   m_PrefabInstance: {fileID: 0}
+>   m_PrefabAsset: {fileID: 0}
+>   serializedVersion: 6
+>   m_Component:
+>   - component: {fileID: 5338496527502275516}
+>   m_Layer: 0
+>   m_Name: CameraMount_Low
+>   m_TagString: Untagged
+>   m_Icon: {fileID: 0}
+>   m_NavMeshLayer: 0
+>   m_StaticEditorFlags: 0
+>   m_IsActive: 1
+> --- !u!4 &5338496527502275516
+> Transform:
+>   m_ObjectHideFlags: 0
+>   m_CorrespondingSourceObject: {fileID: 0}
+>   m_PrefabInstance: {fileID: 0}
+>   m_PrefabAsset: {fileID: 0}
+>   m_GameObject: {fileID: 1830295282392610082}
+>   serializedVersion: 2
+>   m_LocalRotation: {x: 0.7938469, y: -0, z: -0, w: 0.6081176}
+>   m_LocalPosition: {x: 0, y: 1.6984111, z: 0.18028128}
+>   m_LocalScale: {x: 1, y: 1, z: 1}
+>   m_ConstrainProportionsScale: 0
+>   m_Children: []
+>   m_Father: {fileID: 2636060837093065101}
+>   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+> --- !u!1 &9200742558602818080
+> GameObject:
+>   m_ObjectHideFlags: 0
+>   m_CorrespondingSourceObject: {fileID: 0}
+>   m_PrefabInstance: {fileID: 0}
+>   m_PrefabAsset: {fileID: 0}
+>   serializedVersion: 6
+>   m_Component:
+>   - component: {fileID: 5437395253203997033}
+>   m_Layer: 0
+>   m_Name: CameraMount_High
+>   m_TagString: Untagged
+>   m_Icon: {fileID: 0}
+>   m_NavMeshLayer: 0
+>   m_StaticEditorFlags: 0
+>   m_IsActive: 1
+> --- !u!4 &5437395253203997033
+> Transform:
+>   m_ObjectHideFlags: 0
+>   m_CorrespondingSourceObject: {fileID: 0}
+>   m_PrefabInstance: {fileID: 0}
+>   m_PrefabAsset: {fileID: 0}
+>   m_GameObject: {fileID: 9200742558602818080}
+>   serializedVersion: 2
+>   m_LocalRotation: {x: 0.7071068, y: 0.00000049767823, z: 0.00000049767823, w: 0.7071068}
+>   m_LocalPosition: {x: 0, y: 1.698411, z: 0.7802814}
+>   m_LocalScale: {x: 1, y: 1, z: 1}
+>   m_ConstrainProportionsScale: 0
+>   m_Children: []
+>   m_Father: {fileID: 2636060837093065101}
+>   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+57c119,125
+<     m_AddedGameObjects: []
+---
+>     m_AddedGameObjects:
+>     - targetCorrespondingSourceObject: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+>       insertIndex: -1
+>       addedObject: {fileID: 5437395253203997033}
+>     - targetCorrespondingSourceObject: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+>       insertIndex: -1
+>       addedObject: {fileID: 5338496527502275516}
+61a130,132
+>     - targetCorrespondingSourceObject: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+>       insertIndex: -1
+>       addedObject: {fileID: 7742941192555227291}
+153a225,238
+> --- !u!114 &7742941192555227291
+> MonoBehaviour:
+>   m_ObjectHideFlags: 0
+>   m_CorrespondingSourceObject: {fileID: 0}
+>   m_PrefabInstance: {fileID: 0}
+>   m_PrefabAsset: {fileID: 0}
+>   m_GameObject: {fileID: 1033735825012727010}
+>   m_Enabled: 1
+>   m_EditorHideFlags: 0
+>   m_Script: {fileID: 11500000, guid: 6b0f3a1c8d9e4a7fb2c15e83d47a96f0, type: 3}
+>   m_Name: 
+>   m_EditorClassIdentifier: DazPose.Runtime::DazPose.Player.PlayerCameraMounts
+>   high: {fileID: 5437395253203997033}
+>   low: {fileID: 5338496527502275516}
+156a242,246
+>   m_PrefabInstance: {fileID: 7412719288719467126}
+>   m_PrefabAsset: {fileID: 0}
+> --- !u!4 &2636060837093065101 stripped
+> Transform:
+>   m_CorrespondingSourceObject: {fileID: 4776753183841002491, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}

@@ -32,6 +32,12 @@ namespace DazPose.Editor.Studio {
    var warnings=new List<string>(state.Diagnostics);var dependencies=new HashSet<UnityEngine.Object>();
    void Dependency(UnityEngine.Object obj){if(obj!=null)dependencies.Add(obj);}
    Transform Mark(AuthoringValue v){var mark=c.Host.RequireLocation(v.Symbol).placement;RequireAnchor(mark,v.Symbol);Dependency(mark);return mark;}
+   Transform Mount(AuthoringValue v){
+    var mounts=c.Body.GetComponent<PlayerCameraMounts>();
+    if(mounts==null)throw new InvalidOperationException("The player body has no camera mounts. Run DazPose > Player > Add Camera Mounts to PlayerBody");
+    if(!PlayerCameraMounts.TryParse(v.Symbol,out var height))throw new InvalidOperationException("Camera.StartAt expects High or Low");
+    var mount=mounts.Mount(height);Dependency(mounts);Dependency(mount);return mount;
+   }
    void Error(AuthoringField field,Exception e){warnings.Add(field+": "+e.Message+". Saved baseline shown.");}
    T Resolve<T>(AuthoringField field,Func<T> resolve,T fallback=default){try{return resolve();}catch(Exception e){Error(field,e);return fallback;}}
    AnimationClip PoseClip(AuthoringValue value,out float time){
@@ -87,7 +93,7 @@ namespace DazPose.Editor.Studio {
    if(usableSeat&&pv.IsKnown&&pv.Op!="defaultseat"&&finalClip==null){preparePlacement=null;warnings.Add("Seated placement depends on the unresolved pose; saved position shown.");}
    if(preparePlacement==null){validPlacement=false;preparePlacement=Placement(AuthoringValue.Baseline());}
    var bv=state[AuthoringField.BodyPlacement];var bodyMark=bv.IsKnown?Resolve(AuthoringField.BodyPlacement,()=>Mark(bv)):null;
-   var cv=state[AuthoringField.Camera];var cameraMark=cv.IsKnown?Resolve(AuthoringField.Camera,()=>Mark(cv)):null;
+   var cv=state[AuthoringField.Camera];var cameraMount=cv.IsKnown&&cv.Op=="mount"?Resolve(AuthoringField.Camera,()=>Mount(cv)):null;
    bool track=state[AuthoringField.Tracking].Op=="true";
    if(track&&(!validPlacement||state[AuthoringField.Placement].Knowledge==AuthoringKnowledge.Unknown||state[AuthoringField.Pose].Knowledge==AuthoringKnowledge.Unknown||pv.IsKnown&&finalClip==null)){
     track=false;warnings.Add("Camera tracking unresolved because Lara's position/pose is unresolved; authored camera rotation shown.");
@@ -110,7 +116,7 @@ namespace DazPose.Editor.Studio {
    Action rootAction=null;
    void Spatial(){rootAction?.Invoke();lease.Wardrobe.ApplyFootwear(usableSeat);if(bodyMark!=null)c.Body.transform.SetPositionAndRotation(bodyMark.position,bodyMark.rotation);else{c.Body.transform.localPosition=authorBodyPosition;c.Body.transform.localRotation=authorBodyRotation;}
     c.PlayerRoot.localPosition=authorPlayerPosition;c.ViewRig.localRotation=authorViewRotation;
-    if(cameraMark!=null){c.PlayerRoot.position=cameraMark.position;c.ViewRig.rotation=cameraMark.rotation;}
+    if(cameraMount!=null){c.PlayerRoot.position=cameraMount.position;c.ViewRig.rotation=cameraMount.rotation;}
     if(track)c.ViewRig.rotation=PlayerViewEndpoint.ProjectionRotation(true,c.ViewRig.rotation,c.Host.laraFocus.position,c.Camera.transform.position);
    }
    void Presentation()=>Present(Hidden(AuthoringField.Hidden),Hidden(AuthoringField.BodyHidden),material,null,false);

@@ -14,6 +14,23 @@ if ($sandboxTarget -eq $sandboxRepo -or $sandboxTarget.StartsWith($sandboxRepo +
     throw 'Sandbox must be separate from the repository, never inside it or its parent.'
 }
 $sandboxMarkerPath = Join-Path $sandboxTarget '.dazposewizard-sandbox.json'
+function ConvertTo-PlainHashtable($Value) {
+    # Windows PowerShell 5.1 has no ConvertFrom-Json -AsHashtable; PowerShell 7 works either way.
+    if ($null -eq $Value) { return $null }
+    if ($Value -is [System.Management.Automation.PSCustomObject]) {
+        $table = @{}
+        foreach ($property in $Value.PSObject.Properties) { $table[$property.Name] = ConvertTo-PlainHashtable $property.Value }
+        return $table
+    }
+    if ($Value -is [System.Collections.IEnumerable] -and $Value -isnot [string]) {
+        $items = @(); foreach ($item in $Value) { $items += ,(ConvertTo-PlainHashtable $item) }
+        return ,$items
+    }
+    return $Value
+}
+function Write-Utf8NoBomJson($Value, [string]$Path) {
+    [IO.File]::WriteAllText($Path, (($Value | ConvertTo-Json -Depth 6) + [Environment]::NewLine), (New-Object Text.UTF8Encoding($false)))
+}
 function Get-SandboxFiles([string]$Folder) {
     if (!(Test-Path -LiteralPath $Folder)) { return }
     Get-ChildItem -LiteralPath $Folder -Force -Recurse -File | ForEach-Object {
@@ -53,7 +70,7 @@ if ($Initialize) {
     New-Item -ItemType Directory -Path $sandboxTarget | Out-Null
     $sandboxMarker = [ordered]@{ schemaVersion=1; sourceProject=$sandboxSource; sandboxProject=$sandboxTarget; budgetBytes=$sandboxCap; createdUtc=[DateTime]::UtcNow.ToString('o'); initialInputBytes=$sandboxInputBytes; initialFiles=$sandboxInputs.Count; managedCode=@(); packageHashes=@{} }
     # Identity is written before copying, allowing inspection/repair of this one path after failure.
-    $sandboxMarker | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $sandboxMarkerPath -Encoding utf8NoBOM
+    Write-Utf8NoBomJson $sandboxMarker $sandboxMarkerPath
     foreach ($sandboxInput in $sandboxInputs) {
         $sandboxRelative = $sandboxInput.FullName.Substring($sandboxSource.Length+1)
         $sandboxDestination = Join-Path $sandboxTarget $sandboxRelative
@@ -63,7 +80,7 @@ if ($Initialize) {
     Write-Output "INITIALIZED $($sandboxInputs.Count) input files / $sandboxInputBytes bytes; Library, Temp, Logs, UserSettings, Build* and TestOutput were not copied."
 } else {
     if (!(Test-Path -LiteralPath $sandboxMarkerPath)) { throw 'No sandbox identity marker; do not use an unrelated project. Initialize the agreed path first.' }
-    $sandboxMarker = Get-Content -LiteralPath $sandboxMarkerPath -Raw | ConvertFrom-Json -AsHashtable
+    $sandboxMarker = ConvertTo-PlainHashtable (Get-Content -LiteralPath $sandboxMarkerPath -Raw | ConvertFrom-Json)
     if ($sandboxMarker.sourceProject -ne $sandboxSource -or $sandboxMarker.sandboxProject -ne $sandboxTarget -or $sandboxMarker.budgetBytes -ne $sandboxCap) { throw 'Sandbox identity/budget differs from the approved configuration.' }
 }
 $sandboxBeforeBytes = Get-SandboxBytes
@@ -113,7 +130,7 @@ foreach ($sandboxPackage in @('Packages/manifest.json','Packages/packages-lock.j
 $sandboxMarker.managedCode = @($sandboxPlanned | Select-Object path,sha256)
 $sandboxMarker.syncedUtc = [DateTime]::UtcNow.ToString('o')
 $sandboxMarker.sourceRevision = (& git -C $sandboxRepo rev-parse HEAD)
-$sandboxMarker | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $sandboxMarkerPath -Encoding utf8NoBOM
+Write-Utf8NoBomJson $sandboxMarker $sandboxMarkerPath
 $sandboxAfterBytes = Get-SandboxBytes
 if ($sandboxAfterBytes -gt $sandboxCap) { throw "Sandbox exceeds approved cap after sync: $sandboxAfterBytes > $sandboxCap" }
 Write-Output "SYNCED $($sandboxCode.Count) tracked code/meta inputs; $(@($sandboxPlanned | Where-Object changed).Count) changed; $($sandboxRemoved.Count) removed; total $sandboxAfterBytes / $sandboxCap bytes. No Library write."

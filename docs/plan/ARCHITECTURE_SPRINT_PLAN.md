@@ -42,6 +42,14 @@ All decided October 20, 2026 unless noted.
 | D12 | The rule that agents must never run Unity is **up for revision** after spike S01. Codex was poor at running Unity. If agent-run Unity doesn't work reliably, Art does the testing. |
 | D13 | Final IK is not bought now. Decide after the support-hand and contact-bench tickets show whether authored lean plus in-graph IK is enough. |
 | D14 | Agents may run headless EditMode tests and read-only probes in the single sandbox (S01, accepted October 21). |
+| D15 | **No new player poses (October 21).** The player keeps the one proven lying-down body. Seated, standing and kneeling player poses are deferred. The body has no Animator; its anatomy shell, contact profile and dissolve parts were prepared against this one mesh. This narrows the original T02. |
+| D16 | **Two camera mounts live in the player body prefab (October 21)** so they go wherever the body is placed. **High:** about 0.8 m above the head, looking level toward the feet. **Low:** about 0.2 m above the head, angled down the body toward the feet. Both stay vertically aligned with the head. |
+| D17 | **First vs third person is body visibility (October 21),** using the existing body dissolve (`PlayerBody.DissolveIn/Out`). No new verb. |
+| D18 | **Camera moves are fade to black, move, fade in (October 21).** No glide: the VR-friendly pattern. Only the story changes camera height for now. |
+| D19 | **Track from a mount (October 21)** keeps the mount position and rotates the view; `Camera.Release()` returns the view to the mount's authored orientation. Release is not used in First Contact; it is tested in the Player Setup scene. |
+| D20 | **Verb shape (October 21):** `Camera.StartAt(High)` / `Camera.StartAt(Low)` and `Camera.SetHeight(High)` / `Camera.SetHeight(Low)`, with an explicit argument. The old scene-mark form of `Camera.StartAt` is gone; `camera_start` stays in the scene unused (marks are never removed). |
+| D21 | **Breathing (October 21)** is included for the player body: programmatic only, no DAZ export, never touching the pelvis, hip or shaft bones. |
+| D22 | **The Player Setup scene is temporary (October 21).** It exists to tune the mounts (which end up in the prefab) and to test. Art decides at acceptance whether to keep or retire it. |
 
 ---
 
@@ -188,7 +196,7 @@ Tickets in intended order. **Needs** lists hard dependencies. Spikes S01 and S02
 | **T01** | **Workspace reset.** Inventory and clean the repo and Unity project: cloned projects, retired scenes, unused packs, stray folders, stacked docs. Rewrite `AGENTS.md` as one current block; fix README; commit this plan into the repo. Approval stop before anything is deleted. | — | Unity opens FirstContact with no new missing references, Play runs as before; a fresh agent reading only `AGENTS.md` states the scene path, folder rules and boundaries. |
 | **S01** | **Spike: can a local agent run Unity usefully?** Headless EditMode tests on one persistent sandbox project (not many 30 GB clones). Measure reliability, import time and disk. Outcome: keep or rewrite the no-Unity rule. Must conclude before T03. | T01 | A placement-math EditMode test run by the agent, with the result Art can see; written verdict. |
 | **S02** | **Spike: UMotion Pro on 6000.5.9 with Generic Lara.** Install in a sandbox project; open, edit and save a Lara pose clip; check it coexists with the bench preview approach. The store page lists Unity 2019.4 only, so this is a real go/no-go. Fallback if it fails: a per-bone delta asset stored beside the pose. Runs in S01's sandbox; must conclude before T04. | S01 | Art sees an edited Lara pose clip play correctly. |
-| **T02** | **Player setup.** Four player states: the existing recline; sitting (third-person); standing and kneeling (first-person) with camera height per perspective. Clean fade in/out across positions. Camera angle per position. Player position marks. Split `Lara.Posture` / `Player.Posture`. Check the contact target in all postures. Follows the VR-forward rules. Story verb names: decided in the ticket. | T01 | Press Play: the player moves through all four states with the body fading cleanly and the camera at the right height and angle for each. |
+| **T02** | **Player camera mounts, fade, release and breathing** ([ticket](../../newtickets/T02_PLAYER_CAMERA_MOUNTS.md); narrowed October 21, D15–D22). High and Low camera mounts in the player body prefab; `Camera.StartAt(High\|Low)`; `Camera.SetHeight` with a camera-drawn fade to black; `Camera.Release()`; cheap programmatic breathing on the body; `World.Posture` split into `Lara.Posture` and `Player.Posture`; a temporary Player Setup scene to tune and test. Follows the VR-forward rules. | T01, S01 | Player Setup (Play): fades and height changes between mounts, body in/out from either mount, Track and Release, visible breathing with a toggle. First Contact: the intro starts from the High mount above the player and tracks Lara. Studio previews `Camera.StartAt(High)` at the mount. |
 | **T03** | **One placement resolver** (5.1). Studio preview and runtime call the same function. No behaviour change. | T01 | Studio preview and Play land Lara on the same spot for every existing cue. |
 | **T04** | **Pose metadata.** Add frame type, offset (translation + full rotation) and provenance to `PerformerPose`. Confirm it survives regeneration. | T03 | A hand-set offset value is still present after regenerating that pose. |
 | **T05** | **Standing offset at runtime.** `LocomoteTo` walks to the resolved spot, not the raw mark. | T04 | A hardcoded offset on SexyVamp visibly moves her at `stepforward` in Play and in the Studio. |
@@ -224,9 +232,9 @@ Tickets in intended order. **Needs** lists hard dependencies. Spikes S01 and S02
 - An interaction-definition framework. Build two interactions by hand first; extract the shared asset from what repeats.
 - Final IK (decided at T22).
 - Cleanup of the 2,119-line `SuccubusPerformer.cs` facade, unless a ticket is blocked by it.
+- Player poses other than the lying body: seated, standing and kneeling (D15), with their camera heights, player position marks and per-posture contact checks.
 
 **Open (Art decides when the ticket is next)**
-- Story verb names for player posture and player positions (T02).
 - Whether `Track`/`LookAt` becomes whole-body yaw or is disabled in VR (V01; T02 must not depend on it).
 - Exact transition policy (T06).
 
@@ -270,7 +278,7 @@ Tickets in intended order. **Needs** lists hard dependencies. Spikes S01 and S02
 | UMotion doesn't work on 6000.5.9 or fights the bench preview | T14 | S02 early; per-bone delta fallback |
 | Offsets cause visible skating in blends | T06 | Blend first; threshold-step fallback |
 | Hip-pin rule changes how existing sits look | T07 | Compare Lounger before/after in the bench |
-| Contact target deforms badly in non-recline postures | T02, T17 | Visual check in all four postures in T02 |
+| Contact target deforms badly in non-recline postures | T17 and any later player-pose ticket | T02 keeps the single lying body (D15); check each new posture when it is added |
 | Cleanup moves break string paths or the wardrobe character signature | T01 | Path-consumer search; protected list; approval stop |
 | Agent-run Unity unreliable | S01 | Art tests; rule stays |
 | Studio's ~20 unrun native cases hide save/undo bugs | T15–T16 | Run the relevant ones when those tickets touch the Studio |

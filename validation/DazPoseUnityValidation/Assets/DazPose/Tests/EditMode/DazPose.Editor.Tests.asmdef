@@ -1,6 +1,6 @@
 {
   "name": "DazPose.Editor.Tests",
-  "references": ["DazPose.Editor", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+  "references": ["DazPose.Editor", "DazPose.Runtime", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

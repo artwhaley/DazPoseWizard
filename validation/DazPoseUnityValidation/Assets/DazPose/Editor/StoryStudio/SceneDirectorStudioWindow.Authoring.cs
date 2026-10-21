@@ -87,7 +87,7 @@ namespace DazPose.Editor.Studio {
     void Inherited(AuthoringValue v,StoryBindingKind kind,string label,bool seat=false){if(v?.IsKnown!=true||v.Symbol==null)return;var r=ManifestFor(v.Source)?.Requirements.FirstOrDefault(x=>x.Kind==kind&&x.Alias==v.Symbol);if(r!=null)DrawCueBinding(r,v.Source,label,shown,seat);}
     var placement=state[AuthoringField.Placement];Inherited(placement,StoryBindingKind.Location,"Performer position · carried into this cue",placement.Op=="sit"||placement.Op=="seatpose");
     Inherited(placement.Parent,StoryBindingKind.Location,"Position height inherited from this mark",placement.Parent?.Op=="sit"||placement.Parent?.Op=="seatpose");
-    Inherited(state[AuthoringField.Pose],StoryBindingKind.Pose,"Pose · carried into this cue");Inherited(state[AuthoringField.Camera],StoryBindingKind.Location,"Camera position · carried into this cue");Inherited(state[AuthoringField.BodyPlacement],StoryBindingKind.Location,"Player body position");
+    Inherited(state[AuthoringField.Pose],StoryBindingKind.Pose,"Pose · carried into this cue");Inherited(state[AuthoringField.BodyPlacement],StoryBindingKind.Location,"Player body position");
     Inherited(state[AuthoringField.Outfit],StoryBindingKind.WardrobePreset,"Outfit - carried into this cue");
     Inherited(state[AuthoringField.Hair],StoryBindingKind.Hair,"Hair - carried into this cue");
     if(selectedCue.Node.Name=="Lara.Outfit.RemoveOneLayer"||selectedCue.Node.Name=="Lara.Outfit.AddOneLayer")

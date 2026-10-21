@@ -7,7 +7,7 @@ namespace DazPose.Story.Language {
    switch(command.Verb) {
     case "Lara.StartHiddenAt":return "Place Lara hidden at "+Arg("location");
     case "PlayerBody.StartHiddenAt":return "Place the prepared male player body hidden at "+Arg("location");
-    case "Camera.StartAt":return "Place the camera at "+Arg("location");
+    case "Camera.StartAt":return "Place the camera at the "+Arg("height")+" mount";
     case "Lara.SetOutfit":return "Dress Lara in "+Arg("outfit")+" while keeping her hair";
     case "Lara.SetHair":return "Set Lara's hair to "+Arg("hair");
     case "Lara.ClearHair":return "Remove Lara's hair";

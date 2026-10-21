@@ -50,6 +50,19 @@ public sealed class LanguageTests {
  }
  [Theory] [InlineData("await Lara.Unknown()")][InlineData("Lara.Say(\"hello\")")][InlineData("await Lara.PersistentPose()")][InlineData("await Lara.PersistentPose(SexyVamp, surprise: true)")]
  public void InvalidCallsFailAtCompileTime(string call)=>Assert.Throws<StorySourceException>(()=>Compile("sequence Test {\n"+call+"\n}\n"));
+ [Theory] [InlineData("High")][InlineData("Low")]
+ public async Task CameraStartAtAcceptsPlayerMountHeights(string height) {
+  var program=Compile("setup Test {\nCamera.StartAt("+height+")\n}\nsequence Test {\n}\n");
+  Assert.Empty(program.bindings); // a mount height is not a scene location binding
+  var host=new Host();StoryCommand seen=null;host.Handler=(command,token)=>{seen=command;return Task.FromResult(default(StoryData));};
+  await new StoryMachine(program,host).RunAsync("Test");
+  Assert.Equal("Camera.StartAt",seen.Verb);Assert.Equal(height,seen.Require("height").String);
+ }
+ [Theory] [InlineData("Camera.StartAt(Medium)")][InlineData("Camera.StartAt(camera_start)")][InlineData("Camera.StartAt(high)")][InlineData("Camera.StartAt(\"High\")")][InlineData("Camera.StartAt()")][InlineData("Camera.StartAt(location: High)")]
+ public void CameraStartAtRejectsAnythingButHighOrLow(string call) {
+  var error=Assert.Throws<StorySourceException>(()=>Compile("setup Test {\n"+call+"\n}\n"));
+  if(!call.EndsWith("()") && !call.Contains("location:"))Assert.Contains("High or Low",error.Message);
+ }
  [Fact] public void DialogueIdentityDependsOnExactTranscript() {
   var first=Compile("sequence Test {\nawait Lara.Say(\"Hello. (giggles)\")\n}\n");var second=Compile("sequence Test {\nawait Lara.Say(\"Hello.\")\n}\n");
   Assert.Equal(StoryDialogue.IdFor("Hello. (giggles)"),first.dialogue[0].id); Assert.NotEqual(first.dialogue[0].id,second.dialogue[0].id);
@@ -112,6 +125,7 @@ public sealed class LanguageTests {
   Assert.Equal(equipment,host.Calls.Contains("Popup.ShowNeededEquipment"));
   Assert.Equal(10,commands.Count(c=>c.Verb=="Lara.Say"));
   Assert.Equal(new[]{"Lara.StartHiddenAt","PlayerBody.StartHiddenAt","Camera.StartAt","Lara.StartIdle","Lara.SetOutfit","Lara.SetHair","Lara.DissolveIn","Camera.Track"},host.Calls.Take(8));
+  Assert.Equal("High",commands.First(c=>c.Verb=="Camera.StartAt").Require("height").String);
   Assert.DoesNotContain("Lara.SitAt",host.Calls);Assert.DoesNotContain("Camera.MoveTo",host.Calls);
   if(disapproval)Assert.Equal("shoes",commands.Single(c=>c.Verb=="Popup.RemoveClothingItem").Require("item").String);
  } [Fact] public void PreviewValidationIncludesAllSetupBranchesAndExcludesLaterContent() {

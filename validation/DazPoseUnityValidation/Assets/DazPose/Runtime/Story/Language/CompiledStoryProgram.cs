@@ -117,7 +117,7 @@ namespace DazPose.Story.Language {
    foreach(string name in new[]{"Lara.SetOutfit","Lara.SetHair","Lara.ClearHair","Lara.Outfit.RemoveOneLayer","Lara.Outfit.AddOneLayer"})result[name].requiredChannels=new[]{"Body","Visual","Wardrobe"};
    add("Lara.StartHiddenAt","location",1,true,true,null,true); bind("Lara.StartHiddenAt","location",StoryBindingKind.Location);
    add("PlayerBody.StartHiddenAt","location",1,true,true,null,true); bind("PlayerBody.StartHiddenAt","location",StoryBindingKind.Location);
-   add("Camera.StartAt","location",1,true,true,null,true); bind("Camera.StartAt","location",StoryBindingKind.Location);
+   add("Camera.StartAt","height",1,true,true,null,true);
    add("Lara.StartIdle","",0,true,true,null,true);
    add("Lara.DissolveIn","location,seconds",1,false,false,"Body",false); bind("Lara.DissolveIn","location",StoryBindingKind.Location);
    add("Lara.DissolveTo","location,seated,seconds",1,false,false,"Body",false); bind("Lara.DissolveTo","location",StoryBindingKind.Location); bind("Lara.DissolveTo","seated",StoryBindingKind.Pose);

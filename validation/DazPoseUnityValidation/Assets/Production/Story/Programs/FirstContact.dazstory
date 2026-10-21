@@ -2,7 +2,7 @@ setup FirstContact
 {
     Lara.StartHiddenAt(lara_start)
     PlayerBody.StartHiddenAt(player_start)
-    Camera.StartAt(camera_start)
+    Camera.StartAt(High)
     Lara.StartIdle()
 }
 

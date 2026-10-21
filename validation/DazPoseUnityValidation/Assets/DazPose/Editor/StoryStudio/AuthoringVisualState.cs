@@ -96,7 +96,7 @@ namespace DazPose.Editor.Studio {
      else Set(AuthoringField.Placement,AuthoringValue.Unknown(n.Source,"Seated pose needs an explicit known seat"));break;
     case "PlayerBody.StartHiddenAt":Set(AuthoringField.BodyPlacement,V("full",Arg("location")));Set(AuthoringField.BodyHidden,V("true"));break;
     case "PlayerBody.DissolveIn":case "PlayerBody.DissolveOut":Set(AuthoringField.BodyHidden,V(n.Name.EndsWith("Out",StringComparison.Ordinal)?"true":"false"));break;
-    case "Camera.StartAt":Set(AuthoringField.Camera,V("full",Arg("location")));Set(AuthoringField.Tracking,V("false"));break;
+    case "Camera.StartAt":Set(AuthoringField.Camera,V("mount",Arg("height")));Set(AuthoringField.Tracking,V("false"));break;
     case "Camera.Track":Set(AuthoringField.Tracking,V(Arg("performer")=="Lara"?"true":"unsupported"));break;
     case "Lara.MagicShader":Set(AuthoringField.Material,V("material",Arg("profile")));break;
     case "Lara.SetOutfit":Set(AuthoringField.Outfit,V("outfit",Arg("outfit")));Set(AuthoringField.Layers,V("full"));break;

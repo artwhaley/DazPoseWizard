@@ -127,6 +127,7 @@ namespace DazPose.Story.Language {
       bindings.Add(new StoryBindingUse {instruction=instructions.Count,symbol=symbol,kind=kind,source=At(argument.expression.token)});
      }
      if(node.name=="Popup.Show" && (argument.expression.op!="name" || !new[]{"Kinks","Equipment","Clothing"}.Contains(argument.expression.token.text))) throw Error(argument.expression.token,"Popup.Show expects Kinks, Equipment or Clothing.");
+     if(node.name=="Camera.StartAt" && (argument.expression.op!="name" || !StoryCameraHeights.IsValid(argument.expression.token.text))) throw Error(argument.expression.token,"Camera.StartAt expects High or Low.");
      if(node.name=="Lara.Say") {
       if(argument.expression.op!="string") throw Error(argument.expression.token,"Lara.Say requires a readable literal transcript.");
       string transcript=argument.expression.token.text,id=StoryDialogue.IdFor(transcript);

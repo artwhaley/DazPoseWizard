@@ -34,7 +34,7 @@ namespace DazPose.Editor {
     if(compiled==null || !compiled.IsCompiled)throw new InvalidOperationException("Fix .dazstory compilation before repairing the saved scene.");
     var content=compiled.content ?? throw new InvalidOperationException("Create/select the source companion bindings in the compiled asset Inspector.");
     var marks=scene.GetRootGameObjects().FirstOrDefault(r=>r.name=="Authoring Marks")?.transform;
-    foreach(string id in new[]{"lara_start","player_start","camera_start","stepforward","Lounger","MainPosition1","Bedside"}) {
+    foreach(string id in new[]{"lara_start","player_start","stepforward","Lounger","MainPosition1","Bedside"}) {
      var row=bindings.locations.FirstOrDefault(l=>l.id==id);
      if(row!=null && row.placement!=null)continue;
      var seat=id=="Lounger" ? GameSessionSceneSetup.InScene<PerformerSeat>(scene).SingleOrDefault() : null;

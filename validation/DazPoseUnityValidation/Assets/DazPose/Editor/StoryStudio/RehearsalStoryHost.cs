@@ -202,7 +202,8 @@ namespace DazPose.Editor {
    if(spec.setupOnly&&command.Verb.StartsWith("Lara.",StringComparison.Ordinal)&&command.Verb!="Lara.StartIdle"){} // the canonical compiler/runtime own setup semantics.
    string Arg(string name)=>command.Require(name).String;
    switch(command.Verb) {
-    case "Lara.StartHiddenAt":case "PlayerBody.StartHiddenAt":case "Camera.StartAt":case "Camera.Track":case "Lara.DissolveIn":case "Lara.DissolveTo":case "Lara.LocomoteTo":case "Lara.SitAt":case "Lara.Grip": {
+    case "Camera.StartAt":if(!StoryCameraHeights.IsValid(Arg("height")))throw new StorySourceException(command.Source,"Camera.StartAt expects High or Low.");await Stage(command);break;
+    case "Lara.StartHiddenAt":case "PlayerBody.StartHiddenAt":case "Camera.Track":case "Lara.DissolveIn":case "Lara.DissolveTo":case "Lara.LocomoteTo":case "Lara.SitAt":case "Lara.Grip": {
      StoryBindingKind kind=command.Verb=="PlayerBody.StartHiddenAt"?StoryBindingKind.Location:command.Verb=="Camera.Track"?StoryBindingKind.Performer:command.Verb=="Lara.Grip"?StoryBindingKind.ContactTarget:StoryBindingKind.Location;
      string alias=command.Verb=="Camera.Track"?Arg("performer"):command.Verb=="Lara.Grip"?Arg("target"):Arg("location");RequireReady(command.Source,kind,alias);
      if(command.Verb=="Lara.DissolveTo"&&command.Arguments.TryGetValue("seated",out var seated)){var pose=RequireBinding(command.Source,StoryBindingKind.Pose,seated.String);RequireReady(command.Source,StoryBindingKind.Pose,seated.String);Session.world.posture=pose.posture;}else if(command.Verb=="Lara.DissolveIn"||command.Verb=="Lara.DissolveTo")Session.world.posture=PlayerPosture.Standing;

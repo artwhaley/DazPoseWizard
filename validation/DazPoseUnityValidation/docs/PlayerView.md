@@ -28,6 +28,10 @@ Move defaults to 2 seconds; finite LookAt and track acquisition default to 0.75 
 
 While a channel is active, its next command replaces it from the current transform state; the previous asynchronous command completes as `Superseded`. Position and orientation can run together. Finite commands complete as `Completed`, `Superseded`, `PlayerDisabled`, or `TargetLost`. Disabling the controller or view cancels active finite commands. Destroying a finite LookAt target holds the view and completes with `TargetLost`; a destroyed Track target holds the view and emits one warning.
 
+## Camera mounts
+
+A player body prefab can carry `PlayerCameraMounts`: two child transforms, High and Low, above the head. `Camera.StartAt(High|Low)` calls `PlayerCameraMounts.PlaceView`, which uses `PlayerView.ResetPerformanceView` to put the `Player` root and `ViewRig` on the mount pose and cancel any move or tracking. `HeadPose` is untouched. The mounts follow the body, so place the body first. Create them once with **DazPose > Player > Add Camera Mounts to PlayerBody**.
+
 ## Historical migration and validation
 
 The one-use lounge migration and old Tools menu/Play-panel recipes are retired. The runtime API above remains the reference; do not recreate a fixture or rerun migration. Art checks the retained scenes and current Studio manually. The implementation now lives under `Assets/DazPose/Player/Runtime/PlayerView.cs`.

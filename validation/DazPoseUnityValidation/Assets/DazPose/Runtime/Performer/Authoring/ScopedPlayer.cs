@@ -67,6 +67,15 @@ namespace DazPose.Performer
             if(location==null) throw new ArgumentNullException(nameof(location));
             player.View.ResetPerformanceView(location.position,location.rotation);
         }
+        /// <summary>Instantly places the view on the player body's High or Low camera mount (setup only).</summary>
+        public void StartAt(PlayerCameraHeight height) {
+            run.ThrowIfActive();
+            RequireMounts().PlaceView(player.View,height);
+        }
+        private PlayerCameraMounts RequireMounts() {
+            var mounts = RequireBody().GetComponent<PlayerCameraMounts>();
+            return mounts != null ? mounts : throw new InvalidOperationException("Add the camera mounts to the player body (DazPose > Player > Add Camera Mounts to PlayerBody).");
+        }
         public void StartBodyHiddenAt(Transform location) { run.ThrowIfActive(); RequireBody().StartHiddenAt(location); }
         private PlayerBodyPresence RequireBody() => player.BodyPresence != null ? player.BodyPresence
             : throw new InvalidOperationException("Assign PlayerController.bodyPresence for player body commands.");

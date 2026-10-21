@@ -12,7 +12,7 @@ public sealed class RuntimeRehearsalIntegrationTests {
   Assert.Equal(new[]{"Lara.SitAt"},effects);Assert.Equal(0,draws);Assert.Null(session.CompletedSnapshot);
  }
  [Fact] public async Task VisualAcknowledgementIsAwaitedAndSurvivesSessionReset() {
-  var program=DazStoryCompiler.Compile("setup FirstContact {\nCamera.StartAt(Mark)\n}\nsequence FirstContact {\nSession.Mood += 1\n}","Ack.dazstory");var fixture=RehearsalTestSupport.Bindings(program);int calls=0;
+  var program=DazStoryCompiler.Compile("setup FirstContact {\nCamera.StartAt(High)\n}\nsequence FirstContact {\nSession.Mood += 1\n}","Ack.dazstory");var fixture=RehearsalTestSupport.Bindings(program);int calls=0;
   var ack=new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
   using var session=new RehearsalSession(program,"FirstContact",RehearsalTestSupport.Profile(),RehearsalTestSupport.Kinks,RehearsalTestSupport.Equipment,fixture.Content,null,fixture.Scene,asyncVisualEffect:_=>{calls++;return ack.Task;});
   var step=session.StepAsync();await Task.Delay(30);Assert.False(step.IsCompleted);Assert.Equal(50,session.Host.Session.mood);ack.SetResult(true);await step;Assert.Equal(1,calls);

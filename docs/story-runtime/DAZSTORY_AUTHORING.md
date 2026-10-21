@@ -26,7 +26,7 @@ setup FirstContact
 
     PlayerBody.StartHiddenAt(player_start)
 
-    Camera.StartAt(camera_start)
+    Camera.StartAt(High)
 
     Lara.StartIdle()
 
@@ -74,7 +74,15 @@ Dialogue audio is selected beneath the transcript. All 19 supplied WAVs are boun
 
 Scene locations and roles are on the saved `StorySceneBindings` component. A location supplies a placement and optional seat/focus. `Lounger` therefore works as the same symbol for a standing dissolve destination and a seat request. The current standing placement is its existing authored ApproachAnchor. The user authorized movable placeholder transforms for MainPosition1 and Bedside. Full-session setup creates them under Authoring Marks, using stepforward and the accepted contact staging as starting placements. Move them in the scene as needed; refresh preserves existing transforms and positions.
 
-The saved source and bindings are authoritative; there is no scene-generation or full-session setup command. If a saved assignment needs repair, use the explicit **DazPose > Content > Advanced > Repair First Contact Bindings** command in Edit Mode. It only repairs missing bindings in the existing saved scene and preserves authored marks, poses, audio, wardrobe, identities and artwork. The original four setup marks are `lara_start`, `player_start`, `camera_start` and `stepforward`; inherited test markers and earlier representative camera-move marks are absent.
+The saved source and bindings are authoritative; there is no scene-generation or full-session setup command. If a saved assignment needs repair, use the explicit **DazPose > Content > Advanced > Repair First Contact Bindings** command in Edit Mode. It only repairs missing bindings in the existing saved scene and preserves authored marks, poses, audio, wardrobe, identities and artwork. The original four setup marks are `lara_start`, `player_start`, `camera_start` and `stepforward` (`camera_start` stays in the scene unused: the camera now starts on a player-body mount, and marks are never removed); inherited test markers and earlier representative camera-move marks are absent.
+
+## Camera mounts
+
+`Camera.StartAt(High)` and `Camera.StartAt(Low)` place the view on one of two mounts inside the player body prefab (`CameraMount_High` about 0.8 m above the head, level toward the feet; `CameraMount_Low` about 0.2 m above the head, angled down the body). The argument is a fixed word, not a scene mark; anything else is a compile error ("Camera.StartAt expects High or Low"). The cue is instant and setup-only, and it clears any earlier `Camera.Track`.
+
+Because the mounts travel with the body, `PlayerBody.StartHiddenAt(...)` must come **before** `Camera.StartAt(...)` in `setup`; otherwise the camera lands where the body was before it was placed. `Camera.Track(Lara)` keeps the mount position and rotates the view. First or third person is just the body's visibility (`PlayerBody.DissolveIn/Out`).
+
+To create the mounts once, run **DazPose > Player > Add Camera Mounts to PlayerBody**. It is idempotent and never moves mounts that already exist: tune them by moving the two child transforms in `PlayerBody.prefab`.
 
 ## Visual mode and diagnostics
 

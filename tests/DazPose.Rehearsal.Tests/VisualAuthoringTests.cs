@@ -11,7 +11,7 @@ public class VisualAuthoringTests {
  static AuthoringCueIndex Index(string text,string global=null,bool complete=true)=>new AuthoringCueIndex(Parse(text).Authoring.Concat(global==null?Array.Empty<StoryAuthoringNode>():Parse(global,"global").Authoring),"root","Test",complete);
  static AuthoringCueState Cue(AuthoringCueIndex i,string name,int occurrence=0)=>i.Cues.Where(c=>c.Node.Name==name).ElementAt(occurrence);
  [Fact] public void ExplicitIntroInheritsSetupAndResolvesOwner(){
-  var i=Index("setup Test { Lara.StartHiddenAt(Start); Camera.StartAt(Camera); Lara.StartIdle() }\nsequence Intro { await Lara.LocomoteTo(Step); await Lara.PersistentPose(Vamp); Camera.Track(Lara) }\nsequence Test { play Intro; await Lara.Say(\"Hi\") }");
+  var i=Index("setup Test { Lara.StartHiddenAt(Start); Camera.StartAt(High); Lara.StartIdle() }\nsequence Intro { await Lara.LocomoteTo(Step); await Lara.PersistentPose(Vamp); Camera.Track(Lara) }\nsequence Test { play Intro; await Lara.Say(\"Hi\") }");
   var pose=Cue(i,"Lara.PersistentPose").After;
   Assert.Equal("Step",pose[AuthoringField.Placement].Symbol);Assert.Equal("root",pose[AuthoringField.Pose].Source.unit);
   var speech=Cue(i,"Lara.Say").After;Assert.Equal("true",speech[AuthoringField.Tracking].Op);Assert.Equal("Vamp",speech[AuthoringField.Pose].Symbol);
@@ -90,8 +90,9 @@ public class VisualAuthoringTests {
   var call=Cue(index,"Director.DrawAndExecute");Assert.False(call.Node.Literals.ContainsKey("tags"));Assert.Equal(AuthoringKnowledge.Baseline,call.After[AuthoringField.Pose].Knowledge);
  }
  [Fact] public void ExplicitCameraStartCancelsTrackingAndStandingDissolveResetsPose(){
-  var index=Index("setup Test { Lara.StartHiddenAt(Start); Camera.StartAt(Camera); Lara.StartIdle() }\nsequence Test { Camera.Track(Lara); await Lara.PersistentPose(A); await Lara.DissolveTo(End) }");
+  var index=Index("setup Test { Lara.StartHiddenAt(Start); Camera.StartAt(High); Lara.StartIdle() }\nsequence Test { Camera.Track(Lara); await Lara.PersistentPose(A); await Lara.DissolveTo(End) }");
   var setup=Cue(index,"Camera.StartAt");Assert.Equal("false",setup.After[AuthoringField.Tracking].Op);
+  Assert.Equal("mount",setup.After[AuthoringField.Camera].Op);Assert.Equal("High",setup.After[AuthoringField.Camera].Symbol);
   var end=Cue(index,"Lara.DissolveTo").After;Assert.Equal("initial",end[AuthoringField.Pose].Op);Assert.Equal("yaw",end[AuthoringField.Placement].Op);Assert.Equal("true",end[AuthoringField.Tracking].Op);
  }
 
