@@ -37,10 +37,13 @@ Art owns product decisions and performs Unity/visual tests. Work interactively, 
 
 ## Boundaries and protected content
 
-- **No Unity operation, pending spike S01.** Never launch/operate Editor, Hub, GUI, CLI/batch, executeMethod, Unity tests, Play, builds or players; no computer-use or hardware output. Pure managed builds/tests and source checks are allowed. Art operates native checks.
+- **Sandbox-only headless Unity, accepted October 21, 2026 (S01).** Agents may run Unity 6000.5.9f1 only with `-batchmode -nographics` against the single persistent sandbox at `C:\Users\artwh\DazPoseWizard-Sandbox`, within its approved **50 GiB** disk cap. Allowed operations are EditMode tests and reviewed read-only `-executeMethod` probes. Use `scripts/sandbox-sync.ps1` to synchronize tracked code and deliberate package changes from main without writing the sandbox Library or main project.
+- **Sandbox editor-command dry runs are allowed headlessly.** After each dry run, show Art a text diff of **every asset file the command changed**, including added/deleted files and `.meta` files. Then restore the sandbox assets to match the main working copy and confirm they match before the next dry run or handoff. Never use Unity to change main-project assets; Art runs editor commands in main. Debug code iteratively in main and provide clean handoff instructions for Art to reproduce the result in main.
+- **Never** open or operate the main project `validation/DazPoseUnityValidation` in Unity in any mode; launch the Editor GUI or Hub; enter Play mode; build or launch players; create a second sandbox; use computer-use or touch hardware. Nothing flows from the sandbox back into the main repository. Code changes must be made in main and committed there; sandbox-generated assets are never copied back. Pure managed builds/tests and source checks remain allowed.
+- Use unique result/log paths, record process exit and actual test XML, impose a timeout, monitor disk usage, and stop on the cap or blocking licensing failure. On completion or abort, kill any Unity process the agent started that remains running; never kill a process the agent did not start. Sandbox results are evidence for **logic and wiring only**; visual acceptance stays with Art. See [S01 report](docs/plan/S01_UNITY_SPIKE.md).
 - Work on `main`; coherent local commits are authorized. No push, PR, merge or remote write without explicit separate authorization.
 - No subagents unless Art explicitly authorizes them.
-- Moves carry file/folder `.meta` files and preserve GUIDs. Confirm Unity closed before filesystem changes under Assets. Do not regenerate, reimport or rebake assets without asking.
+- Moves carry file/folder `.meta` files and preserve GUIDs. Confirm Unity closed before filesystem changes under Assets. Outside the authorized sandbox dry runs above, do not regenerate, reimport or rebake assets without asking.
 - Preserve Lara imported/source materials, textures, manifests and their AssetDatabase paths: WardrobeCatalogBuilder includes material paths in CharacterSignature.
 - Preserve immutable wardrobe releases and rig generations under Production/Wardrobe and existing legacy Wardrobe roots; artist-edited materials, footwear and layers remain authoritative.
 - Preserve second-outfit toe fixtures, production art, bound `.dazstory`/`.bindings.asset` companions, story global index, and every entry in [protected manifest](docs/cleanup-task1/protected-manifest.json), accounting for already-completed historical moves.
@@ -56,7 +59,7 @@ From repository root, `dotnet build .\DazPoseTool.sln -c Release` builds the con
 Get-ChildItem tests -Recurse -Filter *.csproj | ForEach-Object { dotnet test $_.FullName -c Release }
 ```
 
-Do not substitute Unity tests or launch any program. Private fixture tests may skip when licensed local inputs are absent; report skips separately. Rebuilt bin/obj/TestResults remain ignored outputs. If sandbox profile config is unreadable, use temporary APPDATA/DOTNET_CLI_HOME plus the existing offline NuGet package cache; keep temporary config out of Git.
+Run managed checks independently of the permitted sandbox Unity checks above; do not substitute Unity tests for the managed suites or launch other programs. Private fixture tests may skip when licensed local inputs are absent; report skips separately. Rebuilt bin/obj/TestResults remain ignored outputs. If sandbox profile config is unreadable, use temporary APPDATA/DOTNET_CLI_HOME plus the existing offline NuGet package cache; keep temporary config out of Git.
 
 ## Current references
 

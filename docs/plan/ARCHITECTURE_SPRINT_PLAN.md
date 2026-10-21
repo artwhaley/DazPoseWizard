@@ -41,6 +41,7 @@ All decided October 20, 2026 unless noted.
 | D11 | Voice: Art records the VO in his own voice and converts it to a female voice with ElevenLabs. Claude does not generate placeholder voice. |
 | D12 | The rule that agents must never run Unity is **up for revision** after spike S01. Codex was poor at running Unity. If agent-run Unity doesn't work reliably, Art does the testing. |
 | D13 | Final IK is not bought now. Decide after the support-hand and contact-bench tickets show whether authored lean plus in-graph IK is enough. |
+| D14 | Agents may run headless EditMode tests and read-only probes in the single sandbox (S01, accepted October 21). |
 
 ---
 
@@ -253,7 +254,7 @@ Tickets in intended order. **Needs** lists hard dependencies. Spikes S01 and S02
 
 - Art is the tester and is present. Work in small steps with an observable at the end of each.
 - One ticket written ahead. The next ticket is revised by what the current one taught.
-- Until S01 concludes, agents do not operate Unity. After S01, `AGENTS.md` states the new rule.
+- S01 accepted October 21: agents may run headless (`-batchmode -nographics`) EditMode tests and read-only `-executeMethod` probes in the single sandbox at `C:\Users\artwh\DazPoseWizard-Sandbox`, using `scripts/sandbox-sync.ps1`. Headless sandbox editor-command dry runs require a text diff of every changed asset, followed by restoration and confirmed parity with main. Never operate main in Unity, launch GUI/Hub/Play/builds/players, or create a second sandbox; no sandbox assets flow back to main. `AGENTS.md` states the full boundary; Art owns visual acceptance.
 - Disk: at most **one** persistent sandbox Unity project for agent checks. Never clone the 30 GB project repeatedly.
 - Local commits are fine; no push without Art's say-so.
 - Preserve GUIDs. Move assets with their `.meta` files, with Unity closed, or inside the Unity editor.
