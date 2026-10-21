@@ -1,0 +1,17 @@
+{
+  "measuredUtc": "2026-10-21T06:19:52.6954905Z",
+  "sandboxBytes": 16486663506,
+  "sandboxGiB": 15.354,
+  "budgetBytes": 53687091200,
+  "folders": {
+    "Library": 6785351896,
+    "TestOutput": 100782,
+    "Assets": 9201823035,
+    "Logs": 5555557,
+    "ProjectSettings": 64260,
+    "Packages": 493475557
+  },
+  "ownedUnityStillRunning": [],
+  "driveFreeBytes": 576870293504,
+  "mainSceneSha256": "3ABA29A644FD0027BF4D6A58E350E61E329BF5D74C25EB6051B03C37DFA51DC0"
+}

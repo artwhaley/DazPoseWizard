@@ -1,0 +1,25 @@
+{
+  "label": "10-scene-probe",
+  "startedUtc": "2026-10-21T06:18:50.1324732Z",
+  "wallSeconds": 29.614,
+  "exitCode": 0,
+  "ownedPid": 53404,
+  "stillRunning": false,
+  "stoppedReason": null,
+  "result": null,
+  "xmlPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\TestOutput\\S01\\10-scene-probe.xml",
+  "logPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\Logs\\s01-10-scene-probe.log",
+  "sandboxBytes": 16486662792,
+  "observedPeakBytes": 16487706734,
+  "existingUnityProcesses": [
+    {
+      "ProcessId": 46220
+    },
+    {
+      "ProcessId": 55112
+    },
+    {
+      "ProcessId": 23792
+    }
+  ]
+}

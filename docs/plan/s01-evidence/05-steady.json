@@ -1,0 +1,32 @@
+{
+  "label": "05-steady",
+  "startedUtc": "2026-10-21T06:16:07.7038205Z",
+  "wallSeconds": 11.816,
+  "exitCode": 0,
+  "ownedPid": 55488,
+  "stillRunning": false,
+  "stoppedReason": null,
+  "result": {
+    "result": "Passed",
+    "total": "9",
+    "passed": "9",
+    "failed": "0",
+    "skipped": "0",
+    "testcasecount": "9"
+  },
+  "xmlPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\TestOutput\\S01\\05-steady.xml",
+  "logPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\Logs\\s01-05-steady.log",
+  "sandboxBytes": 16487302214,
+  "observedPeakBytes": 16487302214,
+  "existingUnityProcesses": [
+    {
+      "ProcessId": 46220
+    },
+    {
+      "ProcessId": 55112
+    },
+    {
+      "ProcessId": 23792
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "label": "09-restored",
+  "startedUtc": "2026-10-21T06:18:12.6041831Z",
+  "wallSeconds": 13.128,
+  "exitCode": 0,
+  "ownedPid": 51624,
+  "stillRunning": false,
+  "stoppedReason": null,
+  "result": {
+    "result": "Passed",
+    "total": "9",
+    "passed": "9",
+    "failed": "0",
+    "skipped": "0",
+    "testcasecount": "9"
+  },
+  "xmlPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\TestOutput\\S01\\09-restored.xml",
+  "logPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\Logs\\s01-09-restored.log",
+  "sandboxBytes": 16487701977,
+  "observedPeakBytes": 16487701977,
+  "existingUnityProcesses": [
+    {
+      "ProcessId": 46220
+    },
+    {
+      "ProcessId": 55112
+    },
+    {
+      "ProcessId": 23792
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-21",
+  "sourceRevisionBeforePreparation": "34659b7839c3f1ee1d85222513c2e35e2d1aab5d",
+  "preparationCommit": "9051088",
+  "sourceProject": "validation/DazPoseUnityValidation",
+  "approvedSandbox": "C:\\Users\\artwh\\DazPoseWizard-Sandbox",
+  "approvedBudgetBytes": 53687091200,
+  "baselineBytes": {
+    "assets": 9201640300,
+    "library": 8156850911,
+    "animations": 22652477,
+    "poseInputs": 10729219,
+    "expressionInputs": 0,
+    "generated": 4600180,
+    "testData": 3078358559,
+    "fbxFiles": 2325155056,
+    "driveFree": 593873768448
+  },
+  "fbxCount": 467,
+  "initialFiles": 9272,
+  "initialInputBytes": 9695184839,
+  "createdUtc": "2026-10-21T06:05:17.6598932Z",
+  "initialSyncUtc": "2026-10-21T06:05:42.2394101Z"
+}

@@ -1,0 +1,32 @@
+{
+  "label": "08-deliberate-failure",
+  "startedUtc": "2026-10-21T06:17:42.1141218Z",
+  "wallSeconds": 13.128,
+  "exitCode": 2,
+  "ownedPid": 25964,
+  "stillRunning": false,
+  "stoppedReason": null,
+  "result": {
+    "result": "Failed(Child)",
+    "total": "9",
+    "passed": "8",
+    "failed": "1",
+    "skipped": "0",
+    "testcasecount": "9"
+  },
+  "xmlPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\TestOutput\\S01\\08-deliberate-failure.xml",
+  "logPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\Logs\\s01-08-deliberate-failure.log",
+  "sandboxBytes": 16487568967,
+  "observedPeakBytes": 16487613970,
+  "existingUnityProcesses": [
+    {
+      "ProcessId": 46220
+    },
+    {
+      "ProcessId": 55112
+    },
+    {
+      "ProcessId": 23792
+    }
+  ]
+}

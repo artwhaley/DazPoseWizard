@@ -1,0 +1,21 @@
+{
+  "pid": 42492,
+  "executable": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.5.9f1\\Editor\\Unity.exe",
+  "project": "C:\\Users\\artwh\\DazPoseWizard-Sandbox",
+  "startedUtc": "2026-10-21T06:16:21.1998134Z",
+  "arguments": [
+    "-batchmode",
+    "-nographics",
+    "-projectPath",
+    "\"C:\\Users\\artwh\\DazPoseWizard-Sandbox\"",
+    "-runTests",
+    "-testPlatform",
+    "EditMode",
+    "-assemblyNames",
+    "DazPose.Editor.Tests",
+    "-testResults",
+    "\"C:\\Users\\artwh\\DazPoseWizard-Sandbox\\TestOutput\\S01\\06-steady.xml\"",
+    "-logFile",
+    "\"C:\\Users\\artwh\\DazPoseWizard-Sandbox\\Logs\\s01-06-steady.log\""
+  ]
+}

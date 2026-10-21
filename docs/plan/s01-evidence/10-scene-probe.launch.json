@@ -1,0 +1,17 @@
+{
+  "pid": 53404,
+  "executable": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.5.9f1\\Editor\\Unity.exe",
+  "project": "C:\\Users\\artwh\\DazPoseWizard-Sandbox",
+  "startedUtc": "2026-10-21T06:18:50.1324732Z",
+  "arguments": [
+    "-batchmode",
+    "-nographics",
+    "-projectPath",
+    "\"C:\\Users\\artwh\\DazPoseWizard-Sandbox\"",
+    "-executeMethod",
+    "DazPose.Editor.Studio.S01SceneProbe.Run",
+    "-quit",
+    "-logFile",
+    "\"C:\\Users\\artwh\\DazPoseWizard-Sandbox\\Logs\\s01-10-scene-probe.log\""
+  ]
+}

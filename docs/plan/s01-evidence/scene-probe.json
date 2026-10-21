@@ -1,0 +1,16 @@
+{
+    "scene": "Assets/Scenes/FirstContact.unity",
+    "locations": [
+        "lara_start: resolved to lara_start",
+        "player_start: resolved to player_start",
+        "camera_start: resolved to camera_start",
+        "stepforward: resolved to stepforward",
+        "Lounger: resolved to ApproachAnchor",
+        "MainPosition1: resolved to MainPosition1",
+        "Bedside: resolved to Bedside"
+    ],
+    "contentDiagnostics": [],
+    "performanceDiagnostics": [],
+    "compiled": true,
+    "sceneDirtyAfterDiagnostics": false
+}

@@ -1,0 +1,17 @@
+{
+  "label": "01-first-import",
+  "startedUtc": "2026-10-21T06:06:49.873612Z",
+  "wallSeconds": 463.062,
+  "timingSource": "Approximate: log last-write UTC minus launch UTC; harness summary lost to transient shutdown file-enumeration race.",
+  "exitCode": 0,
+  "exitCodeSource": "Unity log: Test run completed. Exiting with code 0 (Ok). Run completed.",
+  "ownedPid": 7788,
+  "stillRunning": false,
+  "result": {
+    "result": "Passed",
+    "failed": 0,
+    "total": 9,
+    "passed": 9
+  },
+  "logPath": "C:\\Users\\artwh\\DazPoseWizard-Sandbox\\Logs\\s01-01-first-import.log"
+}

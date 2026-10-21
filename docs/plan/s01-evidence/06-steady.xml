@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="9" result="Passed" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.0326406">
+  <test-suite type="TestSuite" id="1000" name="DazPoseUnityValidation" fullname="DazPoseUnityValidation" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.032641" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1013" name="DazPose.Editor.Tests.dll" fullname="C:/Users/artwh/DazPoseWizard-Sandbox/Library/ScriptAssemblies/DazPose.Editor.Tests.dll" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.027297" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="42492" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1014" name="DazPose" fullname="DazPose" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.027087" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1015" name="Tests" fullname="DazPose.Tests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.026987" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1003" name="PlacementMathTests" fullname="DazPose.Tests.PlacementMathTests" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.026241" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1008" name="AlignLiveHip_AlreadyAtSeatDoesNotMoveRoot" fullname="DazPose.Tests.PlacementMathTests.AlignLiveHip_AlreadyAtSeatDoesNotMoveRoot" methodname="AlignLiveHip_AlreadyAtSeatDoesNotMoveRoot" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="886002207" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.011203" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="AlignLiveHip_AppliesWorldContactDelta" fullname="DazPose.Tests.PlacementMathTests.AlignLiveHip_AppliesWorldContactDelta" methodname="AlignLiveHip_AppliesWorldContactDelta" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="763716217" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.000204" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1005" name="BakedRoot_RotatesScaledPelvisBySeatYaw" fullname="DazPose.Tests.PlacementMathTests.BakedRoot_RotatesScaledPelvisBySeatYaw" methodname="BakedRoot_RotatesScaledPelvisBySeatYaw" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="2102067356" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.000388" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="BakedRoot_UsesEachScaleAxis" fullname="DazPose.Tests.PlacementMathTests.BakedRoot_UsesEachScaleAxis" methodname="BakedRoot_UsesEachScaleAxis" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="454875753" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.002097" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="BakedRoot_ZeroPelvisLeavesSeatPosition" fullname="DazPose.Tests.PlacementMathTests.BakedRoot_ZeroPelvisLeavesSeatPosition" methodname="BakedRoot_ZeroPelvisLeavesSeatPosition" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="237762545" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.000156" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="Facing_FullMarkRetainsPitchAndRoll" fullname="DazPose.Tests.PlacementMathTests.Facing_FullMarkRetainsPitchAndRoll" methodname="Facing_FullMarkRetainsPitchAndRoll" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="1155898983" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.000920" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="Facing_YawOnlyProjectsElevatedForwardOntoFloor" fullname="DazPose.Tests.PlacementMathTests.Facing_YawOnlyProjectsElevatedForwardOntoFloor" methodname="Facing_YawOnlyProjectsElevatedForwardOntoFloor" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="1525264566" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.000174" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1011" name="Facing_YawOnlyRejectsVerticalForward" fullname="DazPose.Tests.PlacementMathTests.Facing_YawOnlyRejectsVerticalForward" methodname="Facing_YawOnlyRejectsVerticalForward" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="1561950256" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.000879" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1012" name="Facing_YawOnlyRejectsZeroForward" fullname="DazPose.Tests.PlacementMathTests.Facing_YawOnlyRejectsZeroForward" methodname="Facing_YawOnlyRejectsZeroForward" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="2060871761" result="Passed" start-time="2026-10-21 06:16:30Z" end-time="2026-10-21 06:16:30Z" duration="0.000162" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/artwh/AppData/LocalLow/DefaultCompany/DazPoseUnityValidation\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
