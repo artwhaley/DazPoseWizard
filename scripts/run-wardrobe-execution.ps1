@@ -101,7 +101,7 @@ function Run-EditorMethod([string]$Method, [string]$RunStage, [string]$SourceHas
 try {
     $sourceRoots = @(
         (Join-Path $mainProject 'Assets\DazPose'),
-        (Join-Path $mainProject 'Assets\Player'),
+        (Join-Path $mainProject 'Assets\DazPose\Player'),
         (Join-Path $mainProject 'Assets\FirstPerformanceVoid')
     )
     Remove-StaleRemediationSourceCopies -RepositoryRoot $taskRoot -StagingProjectRoot $isolatedProject | Out-Null

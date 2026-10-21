@@ -41,7 +41,7 @@ try {
     if($taskActive){throw 'Another Unity process owns the isolated project. Wait for it to finish.'}
     if($Action -ne 'Publish'){
         # Sync code/graphs, not the user's scene or generated wardrobe assets.
-        $taskCodeRoots=@('Assets\DazPose','Assets\Player','Assets\FirstPerformanceVoid') | ForEach-Object {Join-Path $taskMain $_}
+        $taskCodeRoots=@('Assets\DazPose','Assets\DazPose\Player','Assets\FirstPerformanceVoid') | ForEach-Object {Join-Path $taskMain $_}
         Remove-StaleRemediationSourceCopies -RepositoryRoot $taskRoot -StagingProjectRoot $taskProject | Out-Null
         $taskCodeFiles = @(
             Get-ChildItem -LiteralPath $taskCodeRoots -Recurse -File | Where-Object {
@@ -67,7 +67,7 @@ try {
         $taskSourceBytes=[Text.Encoding]::UTF8.GetBytes($taskSourceCanonical)
         $taskSourceHasher=[Security.Cryptography.SHA256]::Create()
         try{$taskSourceHash=[BitConverter]::ToString($taskSourceHasher.ComputeHash($taskSourceBytes)).Replace('-','').ToLowerInvariant()}finally{$taskSourceHasher.Dispose()}
-        [pscustomobject]@{sourceHash=$taskSourceHash;files=$taskSourceRows.Count;filesManifest=$taskSourceRows;includesAssemblies=$true;manifestRoots=@('Assets/DazPose','Assets/Player','Assets/FirstPerformanceVoid','Assets/Daz3D/Scripts/Editor/DazPoseDtuConversionAdapter.cs')} | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $taskOutput 'source-input-hashes.json') -Encoding utf8NoBOM
+        [pscustomobject]@{sourceHash=$taskSourceHash;files=$taskSourceRows.Count;filesManifest=$taskSourceRows;includesAssemblies=$true;manifestRoots=@('Assets/DazPose','Assets/DazPose/Player','Assets/FirstPerformanceVoid','Assets/Daz3D/Scripts/Editor/DazPoseDtuConversionAdapter.cs')} | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $taskOutput 'source-input-hashes.json') -Encoding utf8NoBOM
         foreach($taskAsset in @($taskConfig.fbx,$taskConfig.referenceFbx)){
             if($taskAsset -notmatch '^Assets/TestCharacter/[^/\\]+\.fbx$'){throw 'FBX inputs must be under Assets/TestCharacter.'}
             if($Action -eq 'Preflight'){continue}
