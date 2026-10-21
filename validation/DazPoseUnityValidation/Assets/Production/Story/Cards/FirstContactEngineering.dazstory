@@ -4,7 +4,7 @@ progress 20
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 {
     let breaths = round(3 * Card.Intensity)
     repeat breaths {
@@ -19,7 +19,7 @@ progress 20
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 {
     let beats = random(3..5)
     repeat beats {
@@ -34,7 +34,7 @@ progress 25
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 {
     await Popup.Ready("Engineering warmup: take a comfortable breath, then continue.")
     wait 500ms
@@ -46,7 +46,7 @@ progress 20
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Standing
+requires Lara.Posture == Standing
 requires World.Ankles == Free
 {
     wait 1s
@@ -58,7 +58,7 @@ progress 20
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Standing
+requires Lara.Posture == Standing
 {
     await Lara.PersistentPose(Main1)
     wait 1s
@@ -71,7 +71,7 @@ progress 15
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Standing
+requires Lara.Posture == Standing
 {
     await Lara.PersistentPose(SexyVamp)
     let beats = round(2 * Card.Intensity)
@@ -86,7 +86,7 @@ progress 20
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Standing
+requires Lara.Posture == Standing
 {
     await Lara.PersistentPose(CrossedArmsAmused)
     await Popup.Ready("Engineering standing beat: confirm that you are comfortable.")
@@ -98,7 +98,7 @@ progress 20
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 {
     await Lara.PersistentSitPose(Lounging)
     let beats = round(3 * Card.Intensity)
@@ -113,7 +113,7 @@ progress 15
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 {
     let pause = random(1..2)
     wait pause
@@ -126,7 +126,7 @@ progress 25
 weight 1
 repeat unlimited
 cooldown 1
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 {
     await Popup.Ready("Engineering seated beat: take a slow breath, then continue.")
     wait 500ms
@@ -138,7 +138,7 @@ progress 0
 weight 1
 repeat once
 cooldown 0
-requires World.Posture == Standing
+requires Lara.Posture == Standing
 {
     await Popup.Ready("Engineering resolution: finish with three comfortable breaths.")
     repeat 3 {
@@ -152,7 +152,7 @@ progress 0
 weight 1
 repeat once
 cooldown 0
-requires World.Posture == Standing
+requires Lara.Posture == Standing
 {
     await Lara.PersistentPose(Sassy)
     await Popup.Ready("Engineering resolution: take a moment to reflect, then finish.")
@@ -165,7 +165,7 @@ progress 10
 weight 1
 repeat once
 cooldown 0
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 requires Equipment.IsPrepared("butt-plug")
 {
     await Popup.Ready("Engineering equipment beat: confirm butt-plug is prepared and ready.")
@@ -180,7 +180,7 @@ progress 10
 weight 1
 repeat once
 cooldown 0
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 requires Equipment.IsPrepared("rope")
 {
     await Popup.Ready("Engineering equipment beat: confirm rope is prepared and ready.")
@@ -195,7 +195,7 @@ progress 10
 weight 1
 repeat once
 cooldown 0
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 requires Equipment.IsPrepared("dildo-anal")
 {
     await Popup.Ready("Engineering equipment beat: confirm dildo-anal is prepared and ready.")
@@ -210,7 +210,7 @@ progress 10
 weight 1
 repeat once
 cooldown 0
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 requires Equipment.IsPrepared("dildo-oral")
 {
     await Popup.Ready("Engineering equipment beat: confirm dildo-oral is prepared and ready.")
@@ -225,7 +225,7 @@ progress 10
 weight 1
 repeat once
 cooldown 0
-requires World.Posture == Sitting
+requires Lara.Posture == Sitting
 requires Equipment.IsPrepared("ice")
 {
     await Popup.Ready("Engineering equipment beat: confirm ice is prepared and ready.")

@@ -65,6 +65,7 @@ namespace DazPose.UnityValidation.Partner
         public SkinnedMeshRenderer ShellRenderer => shellRenderer;
         public Transform MainPelvis => mainPelvis;
         public Transform DonorPelvis => donorPelvis;
+        public System.Collections.Generic.IReadOnlyList<Transform> ShaftBones => shaftBones;
         public Vector3 ContactTargetRoot => contactTargetRoot;
         public Vector3[] FlaccidCenterlineRoot => (Vector3[])flaccidCenterlineRoot.Clone();
         public Vector3[] ErectCenterlineRoot => (Vector3[])erectCenterlineRoot.Clone();

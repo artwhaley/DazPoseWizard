@@ -14,6 +14,11 @@
         "MainPosition1 (resolves)",
         "Bedside (resolves)"
     ],
+    "cardCount": 17,
+    "cardRequirementCount": 23,
+    "requirementsUsingLaraPosture": 17,
+    "requirementsUsingWorldPosture": 0,
+    "playerPostureOnBody": "Lying",
     "mounts": [
         {
             "height": "High",
@@ -21,14 +26,14 @@
             "localPositionInBody": {
                 "x": 0.0,
                 "y": 1.698410987854004,
-                "z": 0.7802814245223999
+                "z": 0.5802813768386841
             },
             "worldOffsetFromHeadAtPlayerStart": {
                 "x": 0.0,
-                "y": 0.800000786781311,
+                "y": 0.6000006198883057,
                 "z": -4.76837158203125e-7
             },
-            "metersAboveHeadAtPlayerStart": 0.800000786781311,
+            "metersAboveHeadAtPlayerStart": 0.6000006198883057,
             "lookDownDegreesAtPlayerStart": 0.0
         },
         {

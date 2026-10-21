@@ -67,7 +67,8 @@ namespace DazPose.Editor.Studio {
     case "PlayerBody.StartHiddenAt":return Bit(AuthoringField.BodyPlacement)|Bit(AuthoringField.BodyHidden);
     case "PlayerBody.DissolveIn":case "PlayerBody.DissolveOut":return Bit(AuthoringField.BodyHidden);
     case "Camera.StartAt":return Bit(AuthoringField.Camera)|Bit(AuthoringField.Tracking);
-    case "Camera.Track":return Bit(AuthoringField.Tracking);
+    case "Camera.Track":case "Camera.Release":return Bit(AuthoringField.Tracking);
+    case "Camera.SetHeight":return Bit(AuthoringField.Camera);
     case "Lara.MagicShader":return Bit(AuthoringField.Material);
     case "Lara.SetOutfit":return Bit(AuthoringField.Outfit)|Bit(AuthoringField.Layers);
     case "Lara.SetHair":case "Lara.ClearHair":return Bit(AuthoringField.Hair);
@@ -98,6 +99,8 @@ namespace DazPose.Editor.Studio {
     case "PlayerBody.DissolveIn":case "PlayerBody.DissolveOut":Set(AuthoringField.BodyHidden,V(n.Name.EndsWith("Out",StringComparison.Ordinal)?"true":"false"));break;
     case "Camera.StartAt":Set(AuthoringField.Camera,V("mount",Arg("height")));Set(AuthoringField.Tracking,V("false"));break;
     case "Camera.Track":Set(AuthoringField.Tracking,V(Arg("performer")=="Lara"?"true":"unsupported"));break;
+    case "Camera.SetHeight":Set(AuthoringField.Camera,V("mount",Arg("height")));break;
+    case "Camera.Release":Set(AuthoringField.Tracking,V("false"));break;
     case "Lara.MagicShader":Set(AuthoringField.Material,V("material",Arg("profile")));break;
     case "Lara.SetOutfit":Set(AuthoringField.Outfit,V("outfit",Arg("outfit")));Set(AuthoringField.Layers,V("full"));break;
     case "Lara.SetHair":Set(AuthoringField.Hair,V("hair",Arg("hair")));break;

@@ -76,6 +76,23 @@ namespace DazPose.Performer
             var mounts = RequireBody().GetComponent<PlayerCameraMounts>();
             return mounts != null ? mounts : throw new InvalidOperationException("Add the camera mounts to the player body (DazPose > Player > Add Camera Mounts to PlayerBody).");
         }
+        private PlayerCameraController CameraController() {
+            var controller = player.GetComponent<PlayerCameraController>();
+            return controller != null ? controller : player.gameObject.AddComponent<PlayerCameraController>();
+        }
+        /// <summary>Fade to black, move to the High or Low mount, fade in. Completes at once when already there.</summary>
+        public async Awaitable SetHeightAsync(PlayerCameraHeight height) {
+            var controller = CameraController();
+            await run.Execute("Camera.SetHeight", () => controller.SetHeightAsync(height),
+                result => result == PlayerCameraHeightResult.Completed, result => result.ToString(),
+                captureCancellation: () => controller.CaptureCancellation());
+        }
+        /// <summary>Stops tracking and turns the view back to the current mount's authored direction.</summary>
+        public async Awaitable ReleaseAsync() {
+            var controller = CameraController();
+            await run.Execute("Camera.Release", () => controller.ReleaseAsync(), result => result == PlayerViewCompletion.Completed,
+                result => result.ToString(), captureCancellation: () => player.View.CaptureOrientationCancellation());
+        }
         public void StartBodyHiddenAt(Transform location) { run.ThrowIfActive(); RequireBody().StartHiddenAt(location); }
         private PlayerBodyPresence RequireBody() => player.BodyPresence != null ? player.BodyPresence
             : throw new InvalidOperationException("Assign PlayerController.bodyPresence for player body commands.");

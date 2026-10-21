@@ -43,13 +43,15 @@ All decided October 20, 2026 unless noted.
 | D13 | Final IK is not bought now. Decide after the support-hand and contact-bench tickets show whether authored lean plus in-graph IK is enough. |
 | D14 | Agents may run headless EditMode tests and read-only probes in the single sandbox (S01, accepted October 21). |
 | D15 | **No new player poses (October 21).** The player keeps the one proven lying-down body. Seated, standing and kneeling player poses are deferred. The body has no Animator; its anatomy shell, contact profile and dissolve parts were prepared against this one mesh. This narrows the original T02. |
-| D16 | **Two camera mounts live in the player body prefab (October 21)** so they go wherever the body is placed. **High:** about 0.8 m above the head, looking level toward the feet. **Low:** about 0.2 m above the head, angled down the body toward the feet. Both stay vertically aligned with the head. |
+| D16 | **Two camera mounts live in the player body prefab (October 21)** so they go wherever the body is placed. **High:** about 0.8 m above the head (tuned to 0.6 m, D24), looking level toward the feet. **Low:** about 0.2 m above the head, angled down the body toward the feet. Both stay vertically aligned with the head. |
 | D17 | **First vs third person is body visibility (October 21),** using the existing body dissolve (`PlayerBody.DissolveIn/Out`). No new verb. |
 | D18 | **Camera moves are fade to black, move, fade in (October 21).** No glide: the VR-friendly pattern. Only the story changes camera height for now. |
 | D19 | **Track from a mount (October 21)** keeps the mount position and rotates the view; `Camera.Release()` returns the view to the mount's authored orientation. Release is not used in First Contact; it is tested in the Player Setup scene. |
 | D20 | **Verb shape (October 21):** `Camera.StartAt(High)` / `Camera.StartAt(Low)` and `Camera.SetHeight(High)` / `Camera.SetHeight(Low)`, with an explicit argument. The old scene-mark form of `Camera.StartAt` is gone; `camera_start` stays in the scene unused (marks are never removed). |
 | D21 | **Breathing (October 21)** is included for the player body: programmatic only, no DAZ export, never touching the pelvis, hip or shaft bones. |
 | D22 | **The Player Setup scene is temporary (October 21).** It exists to tune the mounts (which end up in the prefab) and to test. Art decides at acceptance whether to keep or retire it. |
+| D23 | **Fade implementation (October 21):** a camera-parented quad with a small HDRP shader, not a fullscreen custom pass, so no scene has to be edited. Whether it covers the dissolve particles is checked by Art on screen. |
+| D24 | **High mount tuned (October 21, Art):** 0.6 m above the head instead of 0.8 m. |
 
 ---
 

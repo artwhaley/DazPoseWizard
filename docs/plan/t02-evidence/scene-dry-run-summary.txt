@@ -1,0 +1,22 @@
+# New objects in PlayerSetup.unity relative to VoidEnvironment.unity (m_Name lines; the scene is a 575 KB copy of the template, so a full diff is the whole file)
+15a16,20
+>   m_Name: 
+>   m_Name: 
+>   m_Name: 
+>   m_Name: 
+>   m_Name: Authoring Marks
+38a44
+>   m_Name: Player Setup Panel
+48a55
+>   m_Name: Track Target
+50a58
+>   m_Name: player_start
+
+# PlayerSetup.unity.meta
+fileFormatVersion: 2
+guid: 30fc058099cc8da4481440d406b13230
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,5 +1,6 @@
 using System;
 using DazPose.Performer;
+using DazPose.Story;
 using UnityEngine;
 namespace DazPose.Player {
  [Serializable] public sealed class PlayerBodyDissolvePart {
@@ -27,10 +28,13 @@ namespace DazPose.Player {
  public sealed partial class PlayerBodyPresence : MonoBehaviour {
   [SerializeField] PlayerBodyDissolvePart[] parts=Array.Empty<PlayerBodyDissolvePart>();
   [SerializeField] bool startHidden=true;
+  [SerializeField] PlayerPosture posture=PlayerPosture.Lying;
   PerformerDissolve driver;
   bool stableHidden;
   public int SurfaceCount => parts.Length;
   public bool StartsHidden => startHidden;
+  /// <summary>How the player body is posed. Read by stories as Player.Posture. The prefab has the one lying pose.</summary>
+  public PlayerPosture Posture => posture;
   public PlayerBodyVisibilityState VisibilityState => driver==null
    ? (startHidden ? PlayerBodyVisibilityState.Hidden : PlayerBodyVisibilityState.Visible)
    : (PlayerBodyVisibilityState)(int)driver.VisibilityState;

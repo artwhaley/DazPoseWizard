@@ -37,11 +37,33 @@ namespace DazPose.Player {
    if(float.IsNaN(forward.x) || float.IsNaN(forward.y) || float.IsNaN(forward.z) || Mathf.Abs(forward.y)>MaxAbsoluteForwardY)
     throw new InvalidOperationException("The "+height+" camera mount '"+mount.name+"' looks straight up or down; rotate it toward the body so the view has a heading.");
   }
+  /// <summary>The mount the view was last placed on, if any. Runtime state only.</summary>
+  public PlayerCameraHeight? CurrentHeight { get; private set; }
   /// <summary>Instantly puts the Player root and view rig on the mount and cancels move and tracking.</summary>
   public void PlaceView(PlayerView view,PlayerCameraHeight height) {
    if(view==null) throw new ArgumentNullException(nameof(view));
    var mount=Mount(height);
    view.ResetPerformanceView(mount.position,mount.rotation);
+   CurrentHeight=height;
+  }
+  /// <summary>
+  /// Like PlaceView, but a view that was tracking a target keeps tracking from the new mount (snapping to it);
+  /// otherwise the view takes the mount's authored orientation.
+  /// </summary>
+  public void MoveView(PlayerView view,PlayerCameraHeight height) {
+   if(view==null) throw new ArgumentNullException(nameof(view));
+   var target=view.CurrentTrackTarget;
+   bool tracking=(view.IsTracking || view.IsAcquiringTrack) && target!=null;
+   var settings=view.ActiveTrackingSettings ?? view.DefaultTrackingSettings;
+   PlaceView(view,height);
+   if(!tracking) return;
+   settings.Acquire=ViewTransition.Snap;
+   view.Track(target,settings);
+  }
+  /// <summary>A world point straight ahead of the current mount, for turning the view back to its authored direction.</summary>
+  public Vector3 AuthoredLookPoint(Vector3 origin) {
+   if(CurrentHeight==null) throw new InvalidOperationException("The camera is not on a mount yet; use Camera.StartAt(High) or Camera.StartAt(Low) first.");
+   return origin+Mount(CurrentHeight.Value).forward*10f;
   }
  }
 }

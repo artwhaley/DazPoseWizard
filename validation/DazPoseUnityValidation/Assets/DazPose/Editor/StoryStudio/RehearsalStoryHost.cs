@@ -158,7 +158,9 @@ namespace DazPose.Editor {
     case "Contract.Favor":case "Profile.Favor":return new StoryData((double)Contract.favor);
     case "Card.Intensity":throw new InvalidOperationException("Card.Intensity is read by the canonical StoryMachine only inside a card.");
     case "Card.Invocation":case "Card.Id":throw new InvalidOperationException(key+" is read by the canonical StoryMachine only inside a card.");
-    case "World.Posture":return new StoryData(Session.world.posture.ToString());case "World.Hands":return new StoryData(Session.world.hands.ToString());
+    case "Lara.Posture":return new StoryData(Session.world.posture.ToString());
+    case "Player.Posture":return new StoryData(PlayerPosture.Lying.ToString()); // the player has one pose (T02, D15); the rehearsal is a detached simulation
+    case "World.Hands":return new StoryData(Session.world.hands.ToString());
     case "World.Ankles":return new StoryData(Session.world.ankles.ToString());case "World.Oral":return new StoryData(Session.world.oral.ToString());case "World.Anal":return new StoryData(Session.world.anal.ToString());case "World.Genital":return new StoryData(Session.world.genital.ToString());
     case "World.Clothing.Count":return new StoryData((double)Session.world.ClothingCount);
    }
@@ -172,7 +174,7 @@ namespace DazPose.Editor {
     case "Session.PhaseCompletion":Session.phaseCompletion=(float)value.Numeric;return;
     case "Session.Mood":Session.mood=(float)value.Numeric;return;
     case "Session.IntensityMultiplier":if(value.Numeric<=0)throw new ArgumentOutOfRangeException(nameof(value));Session.intensityMultiplier=(float)value.Numeric;return;
-    case "World.Posture":Session.world.posture=EnumValue<PlayerPosture>(value.String);return;
+    case "Lara.Posture":Session.world.posture=EnumValue<PlayerPosture>(value.String);return;
     case "World.Hands":Session.world.hands=EnumValue<PlayerHands>(value.String);return;
     case "World.Ankles":Session.world.ankles=EnumValue<PlayerAnkles>(value.String);return;
     case "World.Oral":Session.world.oral=EnumValue<PlayerOccupancy>(value.String);return;
@@ -202,7 +204,8 @@ namespace DazPose.Editor {
    if(spec.setupOnly&&command.Verb.StartsWith("Lara.",StringComparison.Ordinal)&&command.Verb!="Lara.StartIdle"){} // the canonical compiler/runtime own setup semantics.
    string Arg(string name)=>command.Require(name).String;
    switch(command.Verb) {
-    case "Camera.StartAt":if(!StoryCameraHeights.IsValid(Arg("height")))throw new StorySourceException(command.Source,"Camera.StartAt expects High or Low.");await Stage(command);break;
+    case "Camera.StartAt":case "Camera.SetHeight":if(!StoryCameraHeights.IsValid(Arg("height")))throw new StorySourceException(command.Source,command.Verb+" expects High or Low.");await Stage(command);break;
+    case "Camera.Release":await Stage(command);break;
     case "Lara.StartHiddenAt":case "PlayerBody.StartHiddenAt":case "Camera.Track":case "Lara.DissolveIn":case "Lara.DissolveTo":case "Lara.LocomoteTo":case "Lara.SitAt":case "Lara.Grip": {
      StoryBindingKind kind=command.Verb=="PlayerBody.StartHiddenAt"?StoryBindingKind.Location:command.Verb=="Camera.Track"?StoryBindingKind.Performer:command.Verb=="Lara.Grip"?StoryBindingKind.ContactTarget:StoryBindingKind.Location;
      string alias=command.Verb=="Camera.Track"?Arg("performer"):command.Verb=="Lara.Grip"?Arg("target"):Arg("location");RequireReady(command.Source,kind,alias);
@@ -303,7 +306,7 @@ namespace DazPose.Editor {
   Dictionary<string,StoryData> stateSnapshot()=>new Dictionary<string,StoryData>(StringComparer.Ordinal) {
    ["Session.Phase"]=new StoryData(Session.phase),["Session.PhaseCompletion"]=new StoryData((double)Session.phaseCompletion),["Session.Mood"]=new StoryData((double)Session.mood),["Session.IntensityMultiplier"]=new StoryData((double)Session.intensityMultiplier),
    ["Session.PreparedEquipment"]=new StoryData(Contract.preparedEquipmentIds),["Session.PreparedEquipment.Count"]=new StoryData((double)Contract.preparedEquipmentIds.Length),["Session.ActiveEquipment"]=new StoryData(Session.activeEquipmentIds),["Contract.PacingMultiplier"]=new StoryData((double)Contract.pacingMultiplier),
-   ["Profile.SubmissionScore"]=new StoryData((double)Contract.submissionScore),["Profile.Favor"]=new StoryData((double)Contract.favor),["World.Posture"]=new StoryData(Session.world.posture.ToString()),["World.Hands"]=new StoryData(Session.world.hands.ToString()),["World.Ankles"]=new StoryData(Session.world.ankles.ToString()),["World.Oral"]=new StoryData(Session.world.oral.ToString()),["World.Anal"]=new StoryData(Session.world.anal.ToString()),["World.Genital"]=new StoryData(Session.world.genital.ToString()),["World.Clothing.Count"]=new StoryData((double)Session.world.ClothingCount)
+   ["Profile.SubmissionScore"]=new StoryData((double)Contract.submissionScore),["Profile.Favor"]=new StoryData((double)Contract.favor),["Lara.Posture"]=new StoryData(Session.world.posture.ToString()),["Player.Posture"]=new StoryData(PlayerPosture.Lying.ToString()),["World.Hands"]=new StoryData(Session.world.hands.ToString()),["World.Ankles"]=new StoryData(Session.world.ankles.ToString()),["World.Oral"]=new StoryData(Session.world.oral.ToString()),["World.Anal"]=new StoryData(Session.world.anal.ToString()),["World.Genital"]=new StoryData(Session.world.genital.ToString()),["World.Clothing.Count"]=new StoryData((double)Session.world.ClothingCount)
   };
   public void ObserveDirector(DirectorSnapshot snapshot,CardExecutionContext context) {
    LastDirectorSnapshot=snapshot==null?null:new DirectorSnapshot{Query=snapshot.Query,Selected=snapshot.Selected,Outcome=snapshot.Outcome,Candidates=snapshot.Candidates.Select(c=>new CardCandidate{Id=c.Id,Reason=c.Reason,Eligible=c.Eligible,FinalWeight=c.FinalWeight}).ToArray(),Recent=snapshot.Recent.ToArray()};

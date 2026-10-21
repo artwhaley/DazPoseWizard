@@ -128,7 +128,7 @@ namespace DazPose.Editor {
     bool branches=scenario=="A" ? !trace.Any(t=>t.Contains("Marked shoes as removed.")) : trace.Any(t=>t.Contains("all clothing") || t.Contains("all recorded clothing"));
     if(scenario=="C")branches &= trace.Any(t=>t.Contains("Disapproval")) && trace.Any(t=>t.Contains("Marked shoes as removed."));
     bool loopPath=scenario=="B" ? trace.Any(t=>t.Contains("Start motion program FinishLoop")) && trace.Count(t=>t.Contains("Motion program reached its natural end."))==1 : !trace.Any(t=>t.Contains("Start motion program FinishLoop"));
-    bool illegal=trace.Any(t=>t.Contains("WarmupStandingOnly: rejected; Required World.Posture == Standing"));
+    bool illegal=trace.Any(t=>t.Contains("WarmupStandingOnly: rejected; Required Lara.Posture == Standing"));
     bool resolution=trace.Any(t=>t.Contains("Director selected Resolution"));
     bool once=trace.Count(t=>t.Contains("You pressed ICame."))==1 && !prompts.HasAction("ICame");
     bool passed=entered && allPhases && reached && equipment && branches && loopPath && illegal && resolution && once && pressed && sawSeatedPose && sawHiddenSeatedArrival && !playback.IsRunning && errors.Count==0;

@@ -8,7 +8,7 @@ public sealed class DirectorTests {
   public Task<IStoryCardPresentationScope> EnterCardAsync(CardPresentationRequest request,CancellationToken cancellation)=>Presentation.EnterAsync(request,cancellation);
   public readonly Dictionary<string,StoryData> State=new() {
    ["Session.Mood"]=new(50d),["Session.Phase"]=new("Setup"),["Session.PhaseCompletion"]=new(0d),["Session.IntensityMultiplier"]=new(1d),["Contract.PacingMultiplier"]=new(1d),
-   ["World.Posture"]=new("Standing"),["World.Hands"]=new("Free"),["World.Ankles"]=new("Free"),["World.Oral"]=new("Free"),["World.Anal"]=new("Free"),["World.Genital"]=new("Free"),
+   ["Lara.Posture"]=new("Standing"),["Player.Posture"]=new("Lying"),["World.Hands"]=new("Free"),["World.Ankles"]=new("Free"),["World.Oral"]=new("Free"),["World.Anal"]=new("Free"),["World.Genital"]=new("Free"),
    ["Session.PreparedEquipment"]=new(Array.Empty<string>()),["Session.PreparedEquipment.Count"]=new(0d),["Session.ActiveEquipment"]=new(Array.Empty<string>())
   };
   public readonly HashSet<string> Clothing=new(),Active=new();
@@ -29,10 +29,10 @@ public sealed class DirectorTests {
    if(Handler!=null)return Handler(c,token);
    switch(c.Verb) {
     case "Session.SelectPreparedEquipment":State["Session.PreparedEquipment"]=new(Equipment==null ? Array.Empty<string>() : new[]{Equipment});State["Session.PreparedEquipment.Count"]=new(Equipment==null ? 0d : 1d);break;
-    case "Lara.SitAt":MoodAtWarmup=Read("Session.Mood").Numeric;State["World.Posture"]=new("Sitting");break;
-    case "Lara.PersistentPose":State["World.Posture"]=new("Standing");break;
-    case "Lara.PersistentSitPose":State["World.Posture"]=new("Sitting");break;
-    case "Lara.DissolveTo":State["World.Posture"]=new(c.Arguments.ContainsKey("seated") ? "Sitting" : "Standing");break;
+    case "Lara.SitAt":MoodAtWarmup=Read("Session.Mood").Numeric;State["Lara.Posture"]=new("Sitting");break;
+    case "Lara.PersistentPose":State["Lara.Posture"]=new("Standing");break;
+    case "Lara.PersistentSitPose":State["Lara.Posture"]=new("Sitting");break;
+    case "Lara.DissolveTo":State["Lara.Posture"]=new(c.Arguments.ContainsKey("seated") ? "Sitting" : "Standing");break;
     case "World.Clothing.MarkRemoved":Clothing.Remove(c.Require("item").String);break;
     case "World.Clothing.Clear":Clothing.Clear();break;
     case "Equipment.Activate":Active.Add(c.Require("equipment").String);State["Session.ActiveEquipment"]=new(Active.ToArray());break;
@@ -72,7 +72,7 @@ public sealed class DirectorTests {
   Assert.Equal(clothing>0,host.Commands.Any(c=>c.Verb=="World.Clothing.Clear"));
   Assert.Equal(!early,host.Commands.Any(c=>c.Verb=="MotionDriver.PlayFunscript" && c.Require("program").String=="FinishLoop"));
   Assert.Equal(equipment!=null,host.Active.Count>0);
-  Assert.Contains(host.Rejected,r=>r.StartsWith("WarmupStandingOnly: Required World.Posture == Standing"));
+  Assert.Contains(host.Rejected,r=>r.StartsWith("WarmupStandingOnly: Required Lara.Posture == Standing"));
   Assert.DoesNotContain(host.Commands,c=>c.Source.declaration=="card WarmupStandingOnly");
   Assert.Contains(host.Selected,id=>id.StartsWith("Resolution"));
   Assert.Equal(1.4,host.State["Session.IntensityMultiplier"].Numeric,6);

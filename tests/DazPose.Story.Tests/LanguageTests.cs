@@ -6,7 +6,7 @@ public sealed class LanguageTests {
  sealed class Host : IStoryCardPresentationHost,IStoryExecutionHost {
   public readonly DazPose.Tests.RecordingCardPresentation Presentation=new();
   public Task<IStoryCardPresentationScope> EnterCardAsync(CardPresentationRequest request,CancellationToken cancellation)=>Presentation.EnterAsync(request,cancellation);
-  public readonly Dictionary<string,StoryData> State=new() { ["Session.Mood"]=new StoryData(50d),["World.Posture"]=new StoryData("Standing"),["World.Ankles"]=new StoryData("Free") };
+  public readonly Dictionary<string,StoryData> State=new() { ["Session.Mood"]=new StoryData(50d),["Lara.Posture"]=new StoryData("Standing"),["Player.Posture"]=new StoryData("Lying"),["World.Ankles"]=new StoryData("Free") };
   public readonly List<string> Calls=new(),TraceLines=new();
   public readonly Random Random=new(42);
   public Func<StoryCommand,CancellationToken,Task<StoryData>> Handler;
@@ -33,7 +33,7 @@ public sealed class LanguageTests {
   Assert.All(program.instructions,i=>Assert.NotNull(i.source));
  }
  [Fact] public async Task VariablesDurationsRepeatAndCompoundPredicates() {
-  var program=Compile("sequence Test {\nlet repetitions = random(11..22)\nif World.Posture == Standing && (World.Ankles == Free || !true)\n{\nrepeat repetitions {\nwait 500ms\nSession.Mood += 1\n}\n}\n}\n");
+  var program=Compile("sequence Test {\nlet repetitions = random(11..22)\nif Lara.Posture == Standing && (World.Ankles == Free || !true)\n{\nrepeat repetitions {\nwait 500ms\nSession.Mood += 1\n}\n}\n}\n");
   var host=new Host();await new StoryMachine(program,host).RunAsync("Test");
   Assert.InRange(host.Calls.Count,11,22);Assert.Equal(50+host.Calls.Count,host.State["Session.Mood"].Numeric);
   Assert.Contains(program.expressions,e=>e.atoms.Any(a=>a.code==StoryAtomCode.Number && a.number==.5));
@@ -62,6 +62,53 @@ public sealed class LanguageTests {
  public void CameraStartAtRejectsAnythingButHighOrLow(string call) {
   var error=Assert.Throws<StorySourceException>(()=>Compile("setup Test {\n"+call+"\n}\n"));
   if(!call.EndsWith("()") && !call.Contains("location:"))Assert.Contains("High or Low",error.Message);
+ }
+ [Theory] [InlineData("High")][InlineData("Low")]
+ public async Task CameraSetHeightAndReleaseCompileAndRun(string height) {
+  var program=Compile("sequence Test {\nawait Camera.SetHeight("+height+")\nCamera.Track(Lara)\nCamera.Release()\nawait Camera.Release()\n}\n");
+  Assert.DoesNotContain(program.bindings,b=>b.symbol==height);
+  var host=new Host();var commands=new List<StoryCommand>();host.Handler=(command,token)=>{commands.Add(command);return Task.FromResult(default(StoryData));};
+  await new StoryMachine(program,host).RunAsync("Test");
+  Assert.Equal(new[]{"Camera.SetHeight","Camera.Track","Camera.Release","Camera.Release"},commands.Select(c=>c.Verb));
+  Assert.Equal(height,commands[0].Require("height").String);
+ }
+ [Theory] [InlineData("await Camera.SetHeight(Medium)")][InlineData("await Camera.SetHeight(camera_start)")][InlineData("await Camera.SetHeight(\"High\")")][InlineData("await Camera.SetHeight()")][InlineData("Camera.SetHeight(High)")]
+ public void CameraSetHeightRejectsBadCalls(string call)=>Assert.Throws<StorySourceException>(()=>Compile("sequence Test {\n"+call+"\n}\n"));
+ [Fact] public void CameraReleaseTakesNoArguments()=>Assert.Throws<StorySourceException>(()=>Compile("sequence Test {\nawait Camera.Release(High)\n}\n"));
+ [Fact] public async Task OverlappingCameraMovesAreReportedAsAChannelConflict() {
+  var program=Compile("sequence Test {\nCamera.Release()\nawait Camera.SetHeight(Low)\n}\n");
+  var host=new Host();var release=new TaskCompletionSource<StoryData>();
+  host.Handler=(command,token)=>command.Verb=="Camera.Release"?release.Task:Task.FromResult(default(StoryData));
+  _=Task.Delay(100).ContinueWith(_=>release.TrySetResult(default)); // the machine waits for running commands while unwinding
+  var error=await Assert.ThrowsAsync<StorySourceException>(()=>new StoryMachine(program,host).RunAsync("Test"));
+  Assert.Contains("Camera",error.Message);
+ }
+ [Fact] public async Task LaraPostureIsReadableAndAssignableAndPlayerPostureReadsLying() {
+  var program=Compile("sequence Test {\nif Player.Posture == Lying && Lara.Posture == Standing {\nLara.Posture = Sitting\n}\n}\n");
+  var host=new Host();await new StoryMachine(program,host).RunAsync("Test");
+  Assert.Equal("Sitting",host.State["Lara.Posture"].String);Assert.Equal("Lying",host.State["Player.Posture"].String);
+ }
+ [Theory] [InlineData("if World.Posture == Standing {\nwait 1s\n}")][InlineData("World.Posture = Sitting")][InlineData("let x = World.Posture")]
+ public void WorldPostureIsRejectedAndNamesTheReplacements(string body) {
+  var error=Assert.Throws<StorySourceException>(()=>Compile("sequence Test {\n"+body+"\n}\n"));
+  Assert.Contains("Lara.Posture",error.Message);Assert.Contains("Player.Posture",error.Message);
+ }
+ [Fact] public void PlayerPostureCannotBeAssigned() {
+  var error=Assert.Throws<StorySourceException>(()=>Compile("sequence Test {\nPlayer.Posture = Sitting\n}\n"));
+  Assert.Contains("read-only",error.Message);
+ }
+ [Fact] public void UnknownLaraOrPlayerStateIsRejected() {
+  Assert.Throws<StorySourceException>(()=>Compile("sequence Test {\nif Lara.Mood == Happy {\nwait 1s\n}\n}\n"));
+  Assert.Throws<StorySourceException>(()=>Compile("sequence Test {\nif Player.Height == Tall {\nwait 1s\n}\n}\n"));
+ }
+ [Fact] public void EveryFirstContactCardRequirementResolvesUnderLaraPosture() {
+  var program=AuthoredStoryTestContent.Compile();
+  Assert.NotEmpty(program.cards);
+  Assert.DoesNotContain(program.expressions,e=>e.atoms.Any(a=>a.text=="World.Posture"));
+  var requirements=program.cards.SelectMany(c=>c.Requirements).ToArray();
+  Assert.NotEmpty(requirements);
+  Assert.Contains(requirements,r=>r.Description.Contains("Lara.Posture"));
+  Assert.DoesNotContain(requirements,r=>r.Description.Contains("World.Posture"));
  }
  [Fact] public void DialogueIdentityDependsOnExactTranscript() {
   var first=Compile("sequence Test {\nawait Lara.Say(\"Hello. (giggles)\")\n}\n");var second=Compile("sequence Test {\nawait Lara.Say(\"Hello.\")\n}\n");

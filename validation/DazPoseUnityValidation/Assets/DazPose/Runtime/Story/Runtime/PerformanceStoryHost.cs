@@ -36,6 +36,8 @@ namespace DazPose.Story {
    context.Bindings.prompts.BeginActionScope(++phaseInvocation);playbackGeneration=-1;
   }
   public StoryData Read(string key) {
+   if(key=="Lara.Posture") key="World.Posture"; // the accessor still stores it with the other world facts
+   if(key=="Player.Posture") return new StoryData((context.Bindings.playerBody!=null ? context.Bindings.playerBody.Posture : throw new InvalidOperationException("Assign the prepared male player body to read Player.Posture.")).ToString());
    if(key=="Session.PreparedEquipment") return new StoryData(context.Contract.preparedEquipmentIds);
    if(key=="Session.PreparedEquipment.Count") return new StoryData((double)context.Contract.preparedEquipmentIds.Length);
    if(key=="Session.ActiveEquipment")return new StoryData(context.Session.activeEquipmentIds);
@@ -61,7 +63,7 @@ namespace DazPose.Story {
     case "Session.PhaseCompletion":session.phaseCompletion=Finite(value);return;
     case "Session.Mood":session.mood=Finite(value);return;
     case "Session.IntensityMultiplier":if(value.Numeric<=0) throw new ArgumentException("Intensity multiplier must be positive.");session.intensityMultiplier=Finite(value);return;
-    case "World.Posture":world.posture=StateEnum<PlayerPosture>(value.String);return;
+    case "Lara.Posture":world.posture=StateEnum<PlayerPosture>(value.String);return;
     case "World.Hands":world.hands=StateEnum<PlayerHands>(value.String);return;
     case "World.Ankles":world.ankles=StateEnum<PlayerAnkles>(value.String);return;
     case "World.Oral":world.oral=StateEnum<PlayerOccupancy>(value.String);return;
@@ -118,6 +120,8 @@ namespace DazPose.Story {
     case "Lara.StartHiddenAt":run.Performer.StartHiddenAt(Location().placement);break;
     case "PlayerBody.StartHiddenAt":run.Player.StartBodyHiddenAt(Location().placement);break;
     case "Camera.StartAt":run.Player.StartAt(Height(Arg("height")));break;
+    case "Camera.SetHeight":await run.Player.SetHeightAsync(Height(Arg("height")));break;
+    case "Camera.Release":await run.Player.ReleaseAsync();break;
     case "Lara.StartIdle":run.Performer.StartConfiguredIdle();world.posture=PlayerPosture.Standing;break;
     case "Lara.DissolveIn":await run.Performer.DissolveInAtAsync(Location().placement,(float)command.Number("seconds",scene.lara.DissolveProfile.DefaultDuration));break;
     case "Camera.Track":if(Arg("performer")!="Lara" || scene.laraFocus==null) throw new InvalidOperationException("Assign Lara's authored focus target.");run.Player.Track(scene.laraFocus);break;

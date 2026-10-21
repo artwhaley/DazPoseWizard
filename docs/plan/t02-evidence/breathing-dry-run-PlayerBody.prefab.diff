@@ -1,0 +1,32 @@
+132a133,135
+>     - targetCorrespondingSourceObject: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+>       insertIndex: -1
+>       addedObject: {fileID: 2075470983705045824}
+238a242,268
+> --- !u!114 &2075470983705045824
+> MonoBehaviour:
+>   m_ObjectHideFlags: 0
+>   m_CorrespondingSourceObject: {fileID: 0}
+>   m_PrefabInstance: {fileID: 0}
+>   m_PrefabAsset: {fileID: 0}
+>   m_GameObject: {fileID: 1033735825012727010}
+>   m_Enabled: 1
+>   m_EditorHideFlags: 0
+>   m_Script: {fileID: 11500000, guid: 15a857c086e04b0fa160d73780c03b05, type: 3}
+>   m_Name: 
+>   m_EditorClassIdentifier: DazPose.Runtime::DazPose.Player.PlayerBreathing
+>   breathsPerMinute: 10
+>   strength: 0.3
+>   channels:
+>   - boneName: abdomenLower
+>     fullInhaleLocalRotationDelta: {x: -0.2, y: 0, z: 0}
+>     fullInhaleLocalPositionDelta: {x: 0, y: 0, z: 0}
+>   - boneName: abdomenUpper
+>     fullInhaleLocalRotationDelta: {x: -0.3, y: 0, z: 0}
+>     fullInhaleLocalPositionDelta: {x: 0, y: 0.0003, z: 0}
+>   - boneName: chestLower
+>     fullInhaleLocalRotationDelta: {x: -0.4, y: 0, z: 0}
+>     fullInhaleLocalPositionDelta: {x: 0, y: 0.0005, z: 0}
+>   - boneName: chestUpper
+>     fullInhaleLocalRotationDelta: {x: -0.25, y: 0, z: 0}
+>     fullInhaleLocalPositionDelta: {x: 0, y: 0.0003, z: 0}

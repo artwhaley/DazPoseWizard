@@ -112,7 +112,7 @@ namespace DazPose.Editor.Studio {
    fixture=NativeDirectingFixture.Require();if(baseline==null)throw new InvalidOperationException("Begin G4 first.");
    if(File.Exists(Scratch))throw new InvalidOperationException("Scratch already exists; inspect/remove that fixture card first.");
    Stop();indexBefore=NativeDirectingFixture.HashFile(Index);
-   File.WriteAllText(Scratch,"card NativeG4Scratch\ntags [Warmup]\nprogress 20\nweight 1\nrepeat unlimited\ncooldown 1\nrequires World.Posture == Sitting\n{\n await Lara.SitAt(Lounger)\n await Lara.PersistentSitPose(G4ScratchPose)\n if Session.Mood > 0 { await Lara.PersistentSitPose(G4ScratchPose) }\n wait 1s\n await Lara.SitAt(Lounger)\n await Lara.PersistentSitPose(G4ScratchPose)\n}\n");
+   File.WriteAllText(Scratch,"card NativeG4Scratch\ntags [Warmup]\nprogress 20\nweight 1\nrepeat unlimited\ncooldown 1\nrequires Lara.Posture == Sitting\n{\n await Lara.SitAt(Lounger)\n await Lara.PersistentSitPose(G4ScratchPose)\n if Session.Mood > 0 { await Lara.PersistentSitPose(G4ScratchPose) }\n wait 1s\n await Lara.SitAt(Lounger)\n await Lara.PersistentSitPose(G4ScratchPose)\n}\n");
    AssetDatabase.ImportAsset(Scratch,ImportAssetOptions.ForceSynchronousImport);
    var bindings=SourceBindingReconciler.ReconcileAsset(Scratch,AssetDatabase.AssetPathToGUID(Scratch));
    var sequence=context.Scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<StoryProgramSequence>(true)).Single(s=>s.Bindings==context.Host);

@@ -129,6 +129,8 @@ namespace DazPose.Story.Language {
    add("Lara.MagicShader","profile",1,false,false,"Visual",false); bind("Lara.MagicShader","profile",StoryBindingKind.MagicShaderProfile);
    add("Lara.PlayOneShotGesture","gesture",1,false,true,"Gesture",false); bind("Lara.PlayOneShotGesture","gesture",StoryBindingKind.Gesture);
    add("Camera.Track","performer",1,true,true,null,false); bind("Camera.Track","performer",StoryBindingKind.Performer);
+   add("Camera.SetHeight","height",1,false,false,"Camera",false);
+   add("Camera.Release","",0,false,true,"Camera",false);
    add("Popup.Show","panel",1,false,false,"Popup",false);
    add("Popup.ShowNeededEquipment","items",1,false,false,"Popup",false);
    add("Popup.RemoveClothingItem","item",1,false,false,"Popup",false);

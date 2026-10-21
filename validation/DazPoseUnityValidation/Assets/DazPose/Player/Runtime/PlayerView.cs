@@ -50,6 +50,8 @@ namespace DazPose.Player
         public bool IsMoving => activeMove != null;
         public bool IsLooking => activeOrientation != null && activeOrientation.Mode == OrientationMode.FiniteLook;
         public bool IsAcquiringTrack => activeOrientation != null && activeOrientation.Mode == OrientationMode.TrackAcquire;
+        public ViewTrackingSettings? ActiveTrackingSettings => activeOrientation != null
+            && activeOrientation.Mode != OrientationMode.FiniteLook ? activeOrientation.TrackingSettings : (ViewTrackingSettings?)null;
         public bool IsTracking => activeOrientation != null && activeOrientation.Mode == OrientationMode.Tracking;
         public float MoveProgress => activeMove == null ? 1f : Progress(activeMove.Elapsed, activeMove.Transition.Duration);
         public float LookProgress => activeOrientation == null ? 1f

@@ -82,7 +82,13 @@ The saved source and bindings are authoritative; there is no scene-generation or
 
 Because the mounts travel with the body, `PlayerBody.StartHiddenAt(...)` must come **before** `Camera.StartAt(...)` in `setup`; otherwise the camera lands where the body was before it was placed. `Camera.Track(Lara)` keeps the mount position and rotates the view. First or third person is just the body's visibility (`PlayerBody.DissolveIn/Out`).
 
+`await Camera.SetHeight(High)` / `await Camera.SetHeight(Low)` change mounts during the story: the screen fades to black, the camera moves to the mount, and the screen fades back in (the fade is drawn by the camera, about 0.35 s each way; tune it on the player's `PlayerCameraController`). Asking for the height the camera is already at completes at once with no fade. If the camera is tracking Lara it keeps tracking from the new mount; otherwise it takes the new mount's direction. Only the story changes camera height. `Camera.Release()` stops tracking and turns the view smoothly back to the current mount's authored direction; like `Camera.Track` it may run without `await`. Both use the `Camera` channel, so two camera moves cannot overlap.
+
 To create the mounts once, run **DazPose > Player > Add Camera Mounts to PlayerBody**. It is idempotent and never moves mounts that already exist: tune them by moving the two child transforms in `PlayerBody.prefab`.
+
+## Postures
+
+`Lara.Posture` is what `World.Posture` used to be: Lara's posture, written by her commands (`Lara.StartIdle`, `Lara.PersistentPose`, `Lara.PersistentSitPose`, `Lara.DissolveTo`, `Lara.SitAt`) and still assignable. `Player.Posture` is the player body's posture, read-only, taken from a setting on the player body (`Lying` for the one body there is today). `World.Posture` no longer exists and fails to compile with a message naming both. Cards use `requires Lara.Posture == Sitting` or `Standing`.
 
 ## Visual mode and diagnostics
 
@@ -106,7 +112,7 @@ Cards are declarations in the same source and compile to the same flat program:
     weight 1
     repeat unlimited
     cooldown 1
-    requires World.Posture == Sitting
+    requires Lara.Posture == Sitting
     {
         let beats = round(3 * Card.Intensity)
         repeat beats {

@@ -16,10 +16,11 @@ namespace DazPose.Story.Language {
    StoryAstDeclaration current;
    int loopId;
    readonly bool allowExternalCards;
+   const string SplitPostureMessage="World.Posture was split into Lara.Posture (Lara's posture, which her commands write) and Player.Posture (the player body's posture, read-only). Use one of those.";
    static readonly HashSet<string> readable=new HashSet<string>(new[]{
     "Completion","Session.Phase","Session.PhaseCompletion","Session.Mood","Session.IntensityMultiplier",
     "Session.PreparedEquipment","Session.PreparedEquipment.Count","Contract.PacingMultiplier","Profile.SubmissionScore","Profile.Favor",
-    "World.Posture","World.Hands","World.Ankles","World.Oral","World.Anal","World.Genital","World.Clothing.Count",
+    "Lara.Posture","Player.Posture","World.Hands","World.Ankles","World.Oral","World.Anal","World.Genital","World.Clothing.Count",
     "World.Clothing.Shoes","World.Clothing.Socks","World.Clothing.Shirt","World.Clothing.Pants","World.Clothing.Bra","World.Clothing.Underwear",
     "Card.Intensity","Card.Invocation","Card.Id","Session.ActiveEquipment","Session.ActiveEquipmentTags","Contract.SubmissionScore","Contract.Favor" },StringComparer.Ordinal);
    static readonly HashSet<string> functions=new HashSet<string>(new[]{"random","round","World.Clothing.LeastRisqueWorn","UI.Pressed","Equipment.ActiveHasTag","Equipment.PreparedHasTag","Equipment.IsPrepared","Contract.KinkEnabled"},StringComparer.Ordinal);
@@ -60,7 +61,7 @@ namespace DazPose.Story.Language {
     switch(node.kind) {
      case "call":Call(node);break;
      case "let":case "set": {
-      if(node.kind=="set" && !locals.Contains(node.name) && !Writable(node.name)) throw Error(node.token,"Unknown or read-only state '"+node.name+"'.");
+      if(node.kind=="set" && !locals.Contains(node.name) && !Writable(node.name)) throw Error(node.token,node.name=="World.Posture" ? SplitPostureMessage : node.name=="Player.Posture" ? "Player.Posture is read-only: it comes from the player body." : "Unknown or read-only state '"+node.name+"'.");
       if(node.kind=="let" && readable.Contains(node.name)) throw Error(node.token,"A local cannot replace state '"+node.name+"'.");
       var expression=node.expression;
       if(node.add) {
@@ -105,7 +106,7 @@ namespace DazPose.Story.Language {
     if(node.args.Count==2)return Describe(node.args[0])+" "+node.op+" "+Describe(node.args[1]);
     if(node.args.Count==1)return node.op+" "+Describe(node.args[0]);return node.token.text;
    }
-   static bool Writable(string name) => new[]{"Session.Mood","Session.IntensityMultiplier","Session.PhaseCompletion","World.Posture","World.Hands","World.Ankles","World.Oral","World.Anal","World.Genital"}.Contains(name) || readable.Contains(name) && name.StartsWith("World.Clothing.",StringComparison.Ordinal) && name!="World.Clothing.Count";
+   static bool Writable(string name) => new[]{"Session.Mood","Session.IntensityMultiplier","Session.PhaseCompletion","Lara.Posture","World.Hands","World.Ankles","World.Oral","World.Anal","World.Genital"}.Contains(name) || readable.Contains(name) && name.StartsWith("World.Clothing.",StringComparison.Ordinal) && name!="World.Clothing.Count";
    void Call(StoryAstNode node) {
     var spec=StoryVocabulary.Require(node.name,At(node.token));
     if(spec.setupOnly && current.kind!="setup") throw Error(node.token,node.name+" belongs in the setup block.");
@@ -127,7 +128,7 @@ namespace DazPose.Story.Language {
       bindings.Add(new StoryBindingUse {instruction=instructions.Count,symbol=symbol,kind=kind,source=At(argument.expression.token)});
      }
      if(node.name=="Popup.Show" && (argument.expression.op!="name" || !new[]{"Kinks","Equipment","Clothing"}.Contains(argument.expression.token.text))) throw Error(argument.expression.token,"Popup.Show expects Kinks, Equipment or Clothing.");
-     if(node.name=="Camera.StartAt" && (argument.expression.op!="name" || !StoryCameraHeights.IsValid(argument.expression.token.text))) throw Error(argument.expression.token,"Camera.StartAt expects High or Low.");
+     if((node.name=="Camera.StartAt" || node.name=="Camera.SetHeight") && (argument.expression.op!="name" || !StoryCameraHeights.IsValid(argument.expression.token.text))) throw Error(argument.expression.token,node.name+" expects High or Low.");
      if(node.name=="Lara.Say") {
       if(argument.expression.op!="string") throw Error(argument.expression.token,"Lara.Say requires a readable literal transcript.");
       string transcript=argument.expression.token.text,id=StoryDialogue.IdFor(transcript);
@@ -151,7 +152,8 @@ namespace DazPose.Story.Language {
      case "number":code=StoryAtomCode.Number;break; case "string":code=StoryAtomCode.String;break; case "bool":code=StoryAtomCode.Bool;break;
      case "name":
       string name=node.token.text;
-      if((name.StartsWith("World.",StringComparison.Ordinal) || name.StartsWith("Session.",StringComparison.Ordinal) || name.StartsWith("Contract.",StringComparison.Ordinal) || name.StartsWith("Profile.",StringComparison.Ordinal) || name.StartsWith("Card.",StringComparison.Ordinal)) && !readable.Contains(name)) throw Error(node.token,"Unknown state value '"+name+"'.");
+      if(name=="World.Posture") throw Error(node.token,SplitPostureMessage);
+      if((name.StartsWith("Lara.",StringComparison.Ordinal) || name.StartsWith("Player.",StringComparison.Ordinal) || name.StartsWith("World.",StringComparison.Ordinal) || name.StartsWith("Session.",StringComparison.Ordinal) || name.StartsWith("Contract.",StringComparison.Ordinal) || name.StartsWith("Profile.",StringComparison.Ordinal) || name.StartsWith("Card.",StringComparison.Ordinal)) && !readable.Contains(name)) throw Error(node.token,"Unknown state value '"+name+"'.");
       code=readable.Contains(name) || locals.Contains(name) ? StoryAtomCode.Read : StoryAtomCode.Symbol; break;
      case "function":
       if(!functions.Contains(node.token.text))throw Error(node.token,"Unknown value function '"+node.token.text+"'.");

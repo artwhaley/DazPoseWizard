@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="48" result="Passed" total="48" passed="48" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.1360895">
+  <test-suite type="TestSuite" id="1000" name="DazPoseUnityValidation" fullname="DazPoseUnityValidation" runstate="Runnable" testcasecount="48" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.136090" total="48" passed="48" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1056" name="DazPose.Editor.Tests.dll" fullname="C:/Users/artwh/DazPoseWizard-Sandbox/Library/ScriptAssemblies/DazPose.Editor.Tests.dll" runstate="Runnable" testcasecount="48" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.130671" total="48" passed="48" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="26408" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1057" name="DazPose" fullname="DazPose" runstate="Runnable" testcasecount="48" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.130403" total="48" passed="48" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1058" name="Tests" fullname="DazPose.Tests" runstate="Runnable" testcasecount="48" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.130013" total="48" passed="48" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1003" name="PlacementMathTests" fullname="DazPose.Tests.PlacementMathTests" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.029320" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1008" name="AlignLiveHip_AlreadyAtSeatDoesNotMoveRoot" fullname="DazPose.Tests.PlacementMathTests.AlignLiveHip_AlreadyAtSeatDoesNotMoveRoot" methodname="AlignLiveHip_AlreadyAtSeatDoesNotMoveRoot" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="712025855" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.014069" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="AlignLiveHip_AppliesWorldContactDelta" fullname="DazPose.Tests.PlacementMathTests.AlignLiveHip_AppliesWorldContactDelta" methodname="AlignLiveHip_AppliesWorldContactDelta" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="808916174" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000193" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1005" name="BakedRoot_RotatesScaledPelvisBySeatYaw" fullname="DazPose.Tests.PlacementMathTests.BakedRoot_RotatesScaledPelvisBySeatYaw" methodname="BakedRoot_RotatesScaledPelvisBySeatYaw" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="1088088413" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000431" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="BakedRoot_UsesEachScaleAxis" fullname="DazPose.Tests.PlacementMathTests.BakedRoot_UsesEachScaleAxis" methodname="BakedRoot_UsesEachScaleAxis" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="26639653" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.002179" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="BakedRoot_ZeroPelvisLeavesSeatPosition" fullname="DazPose.Tests.PlacementMathTests.BakedRoot_ZeroPelvisLeavesSeatPosition" methodname="BakedRoot_ZeroPelvisLeavesSeatPosition" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="1945992555" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000193" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="Facing_FullMarkRetainsPitchAndRoll" fullname="DazPose.Tests.PlacementMathTests.Facing_FullMarkRetainsPitchAndRoll" methodname="Facing_FullMarkRetainsPitchAndRoll" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="225286806" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000893" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="Facing_YawOnlyProjectsElevatedForwardOntoFloor" fullname="DazPose.Tests.PlacementMathTests.Facing_YawOnlyProjectsElevatedForwardOntoFloor" methodname="Facing_YawOnlyProjectsElevatedForwardOntoFloor" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="1714880479" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000190" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1011" name="Facing_YawOnlyRejectsVerticalForward" fullname="DazPose.Tests.PlacementMathTests.Facing_YawOnlyRejectsVerticalForward" methodname="Facing_YawOnlyRejectsVerticalForward" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="837241843" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000905" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1012" name="Facing_YawOnlyRejectsZeroForward" fullname="DazPose.Tests.PlacementMathTests.Facing_YawOnlyRejectsZeroForward" methodname="Facing_YawOnlyRejectsZeroForward" classname="DazPose.Tests.PlacementMathTests" runstate="Runnable" seed="1905972785" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000276" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1013" name="PlayerBreathingTests" fullname="DazPose.Tests.PlayerBreathingTests" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.034589" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1023" name="AMissingBoneFailsNamingIt" fullname="DazPose.Tests.PlayerBreathingTests.AMissingBoneFailsNamingIt" methodname="AMissingBoneFailsNamingIt" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="1865575531" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.007102" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1022" name="AnAncestorOfThePelvisIsRejectedEvenWithAnInnocentName" fullname="DazPose.Tests.PlayerBreathingTests.AnAncestorOfThePelvisIsRejectedEvenWithAnInnocentName" methodname="AnAncestorOfThePelvisIsRejectedEvenWithAnInnocentName" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="1410603217" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000783" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1017" name="AStablyHiddenBodyDoesNotBreatheAndIsLeftAtRest" fullname="DazPose.Tests.PlayerBreathingTests.AStablyHiddenBodyDoesNotBreatheAndIsLeftAtRest" methodname="AStablyHiddenBodyDoesNotBreatheAndIsLeftAtRest" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="128596247" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.001921" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="FullInhaleMovesBonesByTheScaledDeltasOnTopOfRest" fullname="DazPose.Tests.PlayerBreathingTests.FullInhaleMovesBonesByTheScaledDeltasOnTopOfRest" methodname="FullInhaleMovesBonesByTheScaledDeltasOnTopOfRest" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="1282762233" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000806" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1015" name="NoDriftAfterManyCycles" fullname="DazPose.Tests.PlayerBreathingTests.NoDriftAfterManyCycles" methodname="NoDriftAfterManyCycles" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="1022097047" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.010999" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1021" name="PelvisHipAndShaftBonesAreRejectedByName" fullname="DazPose.Tests.PlayerBreathingTests.PelvisHipAndShaftBonesAreRejectedByName" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.006062" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1018" name="PelvisHipAndShaftBonesAreRejectedByName(&quot;pelvis&quot;)" fullname="DazPose.Tests.PlayerBreathingTests.PelvisHipAndShaftBonesAreRejectedByName(&quot;pelvis&quot;)" methodname="PelvisHipAndShaftBonesAreRejectedByName" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="487985449" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000834" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1019" name="PelvisHipAndShaftBonesAreRejectedByName(&quot;hip&quot;)" fullname="DazPose.Tests.PlayerBreathingTests.PelvisHipAndShaftBonesAreRejectedByName(&quot;hip&quot;)" methodname="PelvisHipAndShaftBonesAreRejectedByName" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="1036726601" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000363" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1020" name="PelvisHipAndShaftBonesAreRejectedByName(&quot;Penis1&quot;)" fullname="DazPose.Tests.PlayerBreathingTests.PelvisHipAndShaftBonesAreRejectedByName(&quot;Penis1&quot;)" methodname="PelvisHipAndShaftBonesAreRejectedByName" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="235426996" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000212" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1025" name="TheDefaultChannelsAreLarasChestAndAbdomenValuesAndAreAccepted" fullname="DazPose.Tests.PlayerBreathingTests.TheDefaultChannelsAreLarasChestAndAbdomenValuesAndAreAccepted" methodname="TheDefaultChannelsAreLarasChestAndAbdomenValuesAndAreAccepted" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="40772293" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.001981" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1024" name="ThePlayerBodyPostureDefaultsToLying" fullname="DazPose.Tests.PlayerBreathingTests.ThePlayerBodyPostureDefaultsToLying" methodname="ThePlayerBodyPostureDefaultsToLying" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="1251954963" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.001041" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1016" name="TickAdvancesTheCycleAndRestoresRestWhenDisabled" fullname="DazPose.Tests.PlayerBreathingTests.TickAdvancesTheCycleAndRestoresRestWhenDisabled" methodname="TickAdvancesTheCycleAndRestoresRestWhenDisabled" classname="DazPose.Tests.PlayerBreathingTests" runstate="Runnable" seed="1589791758" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000703" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1026" name="PlayerCameraHeightTests" fullname="DazPose.Tests.PlayerCameraHeightTests" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" testcasecount="17" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.047170" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1034" name="AFailingMoveLeavesTheScreenClearAndReportsTheError" fullname="DazPose.Tests.PlayerCameraHeightTests.AFailingMoveLeavesTheScreenClearAndReportsTheError" methodname="AFailingMoveLeavesTheScreenClearAndReportsTheError" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="1863753222" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.001318" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1033" name="CancelAfterCompletionChangesNothing" fullname="DazPose.Tests.PlayerCameraHeightTests.CancelAfterCompletionChangesNothing" methodname="CancelAfterCompletionChangesNothing" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="570827613" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000527" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1030" name="CancelBeforeAnyTimePassesLeavesTheFadeClear" fullname="DazPose.Tests.PlayerCameraHeightTests.CancelBeforeAnyTimePassesLeavesTheFadeClear" methodname="CancelBeforeAnyTimePassesLeavesTheFadeClear" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="408834810" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000441" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1032" name="CancelWhileFadingInClearsTheFadeAfterTheMove" fullname="DazPose.Tests.PlayerCameraHeightTests.CancelWhileFadingInClearsTheFadeAfterTheMove" methodname="CancelWhileFadingInClearsTheFadeAfterTheMove" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="2069851646" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000557" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1031" name="CancelWhileFadingOutClearsTheFadeWithoutMoving" fullname="DazPose.Tests.PlayerCameraHeightTests.CancelWhileFadingOutClearsTheFadeWithoutMoving" methodname="CancelWhileFadingOutClearsTheFadeWithoutMoving" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="951081867" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000405" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1038" name="ControllerCancellationClearsTheFade" fullname="DazPose.Tests.PlayerCameraHeightTests.ControllerCancellationClearsTheFade" methodname="ControllerCancellationClearsTheFade" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="1699053170" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.021028" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1035" name="NegativeOrNonFiniteDurationsAreRejected" fullname="DazPose.Tests.PlayerCameraHeightTests.NegativeOrNonFiniteDurationsAreRejected" methodname="NegativeOrNonFiniteDurationsAreRejected" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="1020726457" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000449" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1028" name="OneLargeStepStillRunsEveryStageInOrder" fullname="DazPose.Tests.PlayerCameraHeightTests.OneLargeStepStillRunsEveryStageInOrder" methodname="OneLargeStepStillRunsEveryStageInOrder" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="228308363" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000490" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1027" name="OrderIsFadeOutThenMoveThenFadeIn" fullname="DazPose.Tests.PlayerCameraHeightTests.OrderIsFadeOutThenMoveThenFadeIn" methodname="OrderIsFadeOutThenMoveThenFadeIn" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="224886068" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.001921" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1042" name="ReleaseBeforeAnyMountFailsClearly" fullname="DazPose.Tests.PlayerCameraHeightTests.ReleaseBeforeAnyMountFailsClearly" methodname="ReleaseBeforeAnyMountFailsClearly" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="1473111555" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000667" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1041" name="ReleaseStopsTrackingAndEndsAtTheMountsAuthoredOrientation" fullname="DazPose.Tests.PlayerCameraHeightTests.ReleaseStopsTrackingAndEndsAtTheMountsAuthoredOrientation" methodname="ReleaseStopsTrackingAndEndsAtTheMountsAuthoredOrientation" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="2044092105" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.002724" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1037" name="SetHeightFadesMovesAndFadesBackIn" fullname="DazPose.Tests.PlayerCameraHeightTests.SetHeightFadesMovesAndFadesBackIn" methodname="SetHeightFadesMovesAndFadesBackIn" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="1971900628" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.001824" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1036" name="SetHeightToTheCurrentHeightCompletesAtOnceWithoutAFade" fullname="DazPose.Tests.PlayerCameraHeightTests.SetHeightToTheCurrentHeightCompletesAtOnceWithoutAFade" methodname="SetHeightToTheCurrentHeightCompletesAtOnceWithoutAFade" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="93371153" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000764" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1043" name="StartAtCancelsAHeightChangeInProgress" fullname="DazPose.Tests.PlayerCameraHeightTests.StartAtCancelsAHeightChangeInProgress" methodname="StartAtCancelsAHeightChangeInProgress" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="1213227085" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000691" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1039" name="TrackingSurvivesSetHeight" fullname="DazPose.Tests.PlayerCameraHeightTests.TrackingSurvivesSetHeight" methodname="TrackingSurvivesSetHeight" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="177355954" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.001146" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1040" name="WithoutTrackingTheViewTakesTheNewMountsOrientation" fullname="DazPose.Tests.PlayerCameraHeightTests.WithoutTrackingTheViewTakesTheNewMountsOrientation" methodname="WithoutTrackingTheViewTakesTheNewMountsOrientation" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="1184732424" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000725" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1029" name="ZeroLengthFadesStillMoveOnceAndFinishClear" fullname="DazPose.Tests.PlayerCameraHeightTests.ZeroLengthFadesStillMoveOnceAndFinishClear" methodname="ZeroLengthFadesStillMoveOnceAndFinishClear" classname="DazPose.Tests.PlayerCameraHeightTests" runstate="Runnable" seed="1517214054" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000444" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1044" name="PlayerCameraMountsTests" fullname="DazPose.Tests.PlayerCameraMountsTests" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.015486" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1045" name="MissingMountFailsAndNamesIt" fullname="DazPose.Tests.PlayerCameraMountsTests.MissingMountFailsAndNamesIt" methodname="MissingMountFailsAndNamesIt" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="2100803373" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000687" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1046" name="MountOutsideTheBodyRootFails" fullname="DazPose.Tests.PlayerCameraMountsTests.MountOutsideTheBodyRootFails" methodname="MountOutsideTheBodyRootFails" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="220100533" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000699" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1054" name="MountPlanIgnoresFootHeightWhenFindingTheLevelDirection" fullname="DazPose.Tests.PlayerCameraMountsTests.MountPlanIgnoresFootHeightWhenFindingTheLevelDirection" methodname="MountPlanIgnoresFootHeightWhenFindingTheLevelDirection" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="1613076467" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000725" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1053" name="MountPlanIsAboveTheHeadLevelAndAngledDown" fullname="DazPose.Tests.PlayerCameraMountsTests.MountPlanIsAboveTheHeadLevelAndAngledDown" methodname="MountPlanIsAboveTheHeadLevelAndAngledDown" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="1649891955" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000528" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1055" name="MountPlanRejectsAStandingBody" fullname="DazPose.Tests.PlayerCameraMountsTests.MountPlanRejectsAStandingBody" methodname="MountPlanRejectsAStandingBody" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="1608107651" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000385" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1047" name="MountThatIsTheBodyRootItselfFails" fullname="DazPose.Tests.PlayerCameraMountsTests.MountThatIsTheBodyRootItselfFails" methodname="MountThatIsTheBodyRootItselfFails" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="307557120" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000420" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1052" name="PlaceViewFollowsTheBodyWhenItMoves" fullname="DazPose.Tests.PlayerCameraMountsTests.PlaceViewFollowsTheBodyWhenItMoves" methodname="PlaceViewFollowsTheBodyWhenItMoves" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="1918561915" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000725" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1051" name="PlaceViewMovesPlayerRootAndRigToTheMountAndClearsTracking" fullname="DazPose.Tests.PlayerCameraMountsTests.PlaceViewMovesPlayerRootAndRigToTheMountAndClearsTracking" methodname="PlaceViewMovesPlayerRootAndRigToTheMountAndClearsTracking" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="152815680" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.001232" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1049" name="SameTransformForBothMountsFails" fullname="DazPose.Tests.PlayerCameraMountsTests.SameTransformForBothMountsFails" methodname="SameTransformForBothMountsFails" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="270743947" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000387" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1050" name="TryParseAcceptsOnlyTheTwoStoryNames" fullname="DazPose.Tests.PlayerCameraMountsTests.TryParseAcceptsOnlyTheTwoStoryNames" methodname="TryParseAcceptsOnlyTheTwoStoryNames" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="238801785" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000291" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1048" name="VerticalForwardFailsClearly" fullname="DazPose.Tests.PlayerCameraMountsTests.VerticalForwardFailsClearly" methodname="VerticalForwardFailsClearly" classname="DazPose.Tests.PlayerCameraMountsTests" runstate="Runnable" seed="1415720488" result="Passed" start-time="2026-10-21 07:20:45Z" end-time="2026-10-21 07:20:45Z" duration="0.000719" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/artwh/AppData/LocalLow/DefaultCompany/DazPoseUnityValidation\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

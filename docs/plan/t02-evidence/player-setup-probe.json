@@ -1,0 +1,10 @@
+{
+    "scene": "Assets/Scenes/PlayerSetup.unity",
+    "missingReferences": [],
+    "problems": [],
+    "hasBreathing": true,
+    "breathingPrepares": true,
+    "hasCameraController": true,
+    "sceneDirtyAfterProbe": false,
+    "bodyHeightAboveFloor": 1.172132968902588
+}

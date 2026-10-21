@@ -5,7 +5,7 @@ DazPoseWizard converts DAZ poses and supplies a Unity performance authoring/runt
 ## Current work and status
 
 - Plan: [Architecture sprint plan](docs/plan/ARCHITECTURE_SPRINT_PLAN.md).
-- Current ticket: [T02 — Player camera mounts, fade, release and breathing](newtickets/T02_PLAYER_CAMERA_MOUNTS.md), three sessions. Session 1 (mounts and `Camera.StartAt(High|Low)`) is implemented and waiting for Art’s check; Sessions 2–3 have not started. T01 cleanup is implemented; Art’s native checks for it remain pending.
+- Current ticket: [T02 — Player camera mounts, fade, release and breathing](newtickets/T02_PLAYER_CAMERA_MOUNTS.md), three sessions. Session 1 (mounts and `Camera.StartAt(High|Low)`) is accepted; Sessions 2–3 (fade, `SetHeight`, `Release`, Player Setup scene, breathing, `Lara.Posture`/`Player.Posture`) are implemented and waiting for Art’s check. T01 cleanup is implemented; Art’s native checks for it remain pending.
 - Single active status: [STATUS](docs/plan/STATUS.md). Technical checks and Art’s visual acceptance are separate.
 - P02 clone is retired. [Main-project import design](docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md) remains a deferred implementation: Art explicitly limited this pass to retirement, preservation and main-only preparation. New outfit conversion/publication is not currently supported through the wrapper; existing imported outfits are unchanged.
 - Historical packets/evidence are under `docs/archive/`; their launch/gate instructions are not active authority.

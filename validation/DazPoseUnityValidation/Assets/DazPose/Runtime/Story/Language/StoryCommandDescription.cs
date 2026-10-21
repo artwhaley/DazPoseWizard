@@ -17,6 +17,8 @@ namespace DazPose.Story.Language {
     case "Lara.DissolveIn":return "Reveal Lara at "+Arg("location");
     case "Lara.DissolveTo":return "Dissolve Lara to "+Arg("location");
     case "Camera.Track":return "Keep the camera following "+Arg("performer");
+    case "Camera.SetHeight":return "Fade out, move the camera to the "+Arg("height")+" mount, fade in";
+    case "Camera.Release":return "Turn the camera back to its mount direction";
     case "Lara.LocomoteTo":return "Lara walks to "+Arg("location");
     case "Lara.PersistentPose":return "Blend Lara into the "+Arg("pose")+" pose";
     case "Director.DrawAndExecute":return "Ask the Director to choose and execute a matching card";

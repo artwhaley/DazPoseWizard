@@ -19,7 +19,7 @@ Click a row. Its inspector appears on the right, and its resolved pose/placement
 
 For the first pass, search **SexyVamp** and select **await Lara.PersistentPose(SexyVamp)** under **card Intro**. Use **After this cue**:
 
-- Drop a generated **PerformerPose** asset from Project into the **SexyVamp** slot. Raw .anim clips are not that slot's asset type. Keep appropriate World posture metadata. This edits a shared named binding: other uses in the same source use it too.
+- Drop a generated **PerformerPose** asset from Project into the **SexyVamp** slot. Raw .anim clips are not that slot's asset type. Keep appropriate Lara posture metadata. This edits a shared named binding: other uses in the same source use it too.
 - Under the inherited performer position, click **Select stepforward**. In Scene view, **W** moves and **E** rotates the actual mark. **Frame** locates it. With **Live drag off**, preview updates on release; optionally enable Live drag for continuous placement updates.
 - The camera starts on a player-body mount (setup **Camera.StartAt(High)** or **Low**), so there is no camera mark to move. To reframe, tune the `CameraMount_High` / `CameraMount_Low` child transforms in `PlayerBody.prefab` (run **DazPose > Player > Add Camera Mounts to PlayerBody** once to create them). At this cue the script tracks Lara's actual head target; the contextual **tracking target offset** control edits Lara's actual authored focus offset.
 - Dialogue cues retain their inherited shot and expose their audio assignment. Use Unity's audio preview controls deliberately; selecting a cue does not run timed speech.
