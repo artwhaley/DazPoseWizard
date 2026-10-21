@@ -1,6 +1,6 @@
 # Follow-up status — 18 October
 
-The new user-authorized F00–F04/U01–U07/S01–S11 packet supersedes this initial partial cleanup state. All eleven obsolete scene/meta pairs are now retired after scene-free caller/test extraction. No relocation into a lab was performed. [Current follow-up report](../p2-p3/PHASE1_RETIREMENT_REPORT.md) records actual results and current native checks NOT RUN; [active progress](../p2-p3/PROGRESS.md) remains authoritative. The initial report below is preserved as historical evidence, not rewritten as an earlier success.
+The new user-authorized F00–F04/U01–U07/S01–S11 packet supersedes this initial partial cleanup state. All eleven obsolete scene/meta pairs are now retired after scene-free caller/test extraction. No relocation into a lab was performed. [Current follow-up report](../archive/docs/p2-p3/PHASE1_RETIREMENT_REPORT.md) records actual results and current native checks NOT RUN; [active progress](../archive/docs/p2-p3/PROGRESS.md) remains authoritative. The initial report below is preserved as historical evidence, not rewritten as an earlier success.
 
 # Task 1 cleanup — execution report
 

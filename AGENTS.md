@@ -1,267 +1,68 @@
-# Latest October 20 direction - wardrobe production delivery
-
-Art superseded the remaining disposable wardrobe/protected-card gate chain: finish wardrobe in Studio and the First Contact script, then return to actual First Contact authoring. Current status: docs/wardrobe-directing/progress.json and FIRST_CONTACT_WARDROBE.md. Do not resume the retired Gate B camera matrix or create another disposable scene as a clothing blocker. Single-Lara clothing and direct visual return were accepted; remaining native results are partial/pending, never invented passes. Source/asset delivery is implemented; actual new Studio/First Contact use is Art-operated. Preserve no-Unity/no-hardware/no-subagents/no-remote boundaries. First Contact remains Assets/Scenes/FirstContact.unity.
-
-# Scene location correction - October 20
-
-User-facing performance scenes belong in `Assets/Scenes`. First Contact is `Assets/Scenes/FirstContact.unity`; preserve its contents and GUID when organizing it. New Performance Scene defaults to this folder.
-
-# Latest October 20 direction — Gate A accepted; single Lara; retire fixtures
-
-Art accepted Gate A's first-Lara clothing/hair/layer behavior and explicitly waived the second-Lara test. Do not recreate or require that test. Continue the wardrobe/protected-cards stack from W04. Keep the existing wardrobe command/controller/catalog/import pipeline; fixture setup is not part of adding outfits or hair. Retire each accepted gate's disposable scene and one-use setup code; preserve reusable production assets and their GUIDs. Keep at most the currently needed native gate composition, then remove it after acceptance. No Unity operation, hardware, subagents or remote writes; the existing absolute boundaries remain in force. Status: `docs/wardrobe-directing/progress.json`.
-
-# Active wardrobe and protected cards execution — W00–W09
-
-The user authorized execution of `newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/START_HERE.md` on October 20. Follow its ticket order and native gates. Current status and evidence: `docs/wardrobe-directing/IMPLEMENTATION_REPORT.md` and `progress.json`.
-
-ABSOLUTE: never launch or operate Unity, Hub, GUI/CLI/batch, Play, builds, players, computer-use or hardware. Art performs Gates A–D. Source compilation and pure managed checks are allowed. Local implementation commits are authorized; no push, PR, merge or remote write. Preserve production assets, GUIDs, released generations, global index and unrelated fixture edits. Do not stage pre-existing unrelated ticket archive moves/deletions or `.codex-remote-attachments`. No subagents without explicit authority.
-
-# Active execution — Responsive visual authoring (A00–A06)
-
-Execute `newtickets/DazPoseWizard_Visual_Authoring_Execution_Packet/START_HERE.md`, `BUILD_PLAN.md`, and `CHECKS_AND_ACCEPTANCE.md` on main. Art authorized execution October 19. Studio authoring uses static visual cue state, skips story logic and reports ambiguity; canonical rehearsal navigation requirements below are superseded for this editor. Play runtime is unchanged. Status: `docs/visual-authoring/IMPLEMENTATION_REPORT.md`.
-
-ABSOLUTE: never launch or operate Unity/Hub/GUI/CLI/batch/tests/Play/builds/players/computer-use or hardware. Art performs native G4; no gate bypass or screenshots required. Pure managed/source checks allowed. Coherent local commits authorized; no push/remote writes. Preserve production assets, GUIDs, global index and fixture edits; code-only fixture synchronization. No subagents without explicit authorization.
-
-# Active execution — Native Directing correction (N00–N11)
-
-The current corrective execution is `newtickets/DazPoseWizard_Native_Directing_Execution_Packet/START_HERE.md` and `EXECUTOR_PROMPT.md`, with mandatory `MANUAL_GATE_PROTOCOL.md`. Work on main. Earlier Studio corrective packet references are historical, not the active implementation. Status/evidence: `docs/native-directing/IMPLEMENTATION_REPORT.md`.
-
-ABSOLUTE: EXECUTOR MUST NOT RUN OR OPERATE UNITY, including Editor GUI, Unity Hub, CLI/batch/EditMode tests, `-executeMethod`, Play, builds, players, or computer-use. The executor implements and asks Art to open Unity/click diagnostic menus/compile/inspect at gates G1–G4. No automatic gate bypass. Source-only .NET tests/static checks remain allowed. No application launch or hardware output.
-
-Local implementation commits are authorized by execution of this packet. No push, merge, PR, or other remote write without separate explicit authorization. Preserve production art, bound source assets and global index. A copied scene alone does not protect shared assets.
-
-# Active execution — Phase 1 completion, Phase 2 UI, Phase 3 Studio
-
-The October 18 user-authorized packet at `newtickets/DazPoseWizard_Execution_Packet/START_HERE.md` supersedes the prior incomplete C00–C10/lab disposition. Execute F00–F04, U01–U07, S01–S11 in dependency order on main; commit coherent changes locally, no push without fresh authority. Current status: `docs/p2-p3/PROGRESS.md`. Extract useful diagnostics and retire obsolete scaffolding; do not merely relocate eleven scenes into a lab. Preserve protected authored/release/toe data. Latest user boundary: no running the program and no computer-use Unity; no launch, Play, builds, players or hardware. Source compilation and pure managed checks may run. Previous technical evidence remains historical.
-
-# Current cleanup execution — October 18
-
-Task 1 C00–C10 is the active cleanup queue on main. Use [the execution report](docs/cleanup-task1/EXECUTION_REPORT.md) and [current ownership map](docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md) before following older plan links below. The October 7 authoring-readiness plan remains preserved historical/product context; it does not supersede the active cleanup gates. The moved D1–D5 ticket packet is under [oldtickets/D1-D5](oldtickets/D1-D5/README_FIRST.md).
-
-The user authorized the reviewed Task 1 stack in `newtickets/DazPoseWizard_Task1_Cleanup_Execution_Packet/START_HERE.md`. Execute C00–C10 on main; no new branch or push. See `docs/cleanup-task1/EXECUTION_REPORT.md` for verified state and outstanding gates. The manual-testing boundary below remains authoritative. Historical D1-D5 tickets are under oldtickets.
-
-# Manual testing boundary - latest October 17 user instruction
-
-The user is the tester. Prepare code and the saved scene for manual Play IN UNITY.
-Do not start Unity Play, automated scene playback, standalone builds, or standalone
-players without a new explicit user request. No more standalone builds or launches
-are authorized this turn. The user intentionally closed the previous player.
-This correction overrides older instructions to build or execute delivered scenes.
-Technical evidence already recorded remains historical; visual approval is pending.
-
-# Current story work - D6-D8 execution
-
-The user explicitly authorized complete D6-D8 execution on October 17. Work on main;
-do not create a branch or stop at the former Intro/setup checkpoint. The revised
-execution stack at docs/story-runtime/d5_5-d8/REVISED_EXECUTION_STACK.md and complete
-FIRST_CONTACT_D8_ORACLE.md govern. Preserve the exact original sequence and all 19
-fixed dialogue transcripts. Card choreography belongs in .dazstory and executes via
-the same flat interpreter. General binding UX redesign remains deferred.
-
-The six existing random imported stand/sit assignments are authorized. MainPosition1
-and Bedside may be created as ordinary movable scene transforms; the user will tune
-them. Explicitly labelled engineering funscripts are authorized through the normal
-importer. No additional user asset work is required. Complete and validate the full
-saved scene, clear its preview cutoff, and distinguish technical playback from user
-visual approval. See docs/story-runtime/D6_D8_HANDOFF.md for current status.
-
-# Authoring-readiness plan reference (after active cleanup gates)
-
-The October 7 authoring-readiness revision remains the reference for that separate product plan after active Task 1 cleanup gates; it is not the current C00–C10 execution queue.
-
-Start at [AUTHORING_READINESS_BUILD_PLAN.md](AUTHORING_READINESS_BUILD_PLAN.md)
-
-and execute B01–B08 in dependency order when implementation is requested.
-
-[CONTENT_AUTHORING_API.md](CONTENT_AUTHORING_API.md) is the author-facing guide;
-
-it explicitly distinguishes current source from planned APIs. The October 8 review reconciliation is recorded in docs/production-consolidation/AUTHORING_PLAN_REVIEW_RESOLUTION.md; use the reviewed dependency order and runner dispositions. B05a and B05b are separately recorded parts of B05.
-
-The user authorized implementation on October 8, 2026. Execute the reviewed
-
-plan in order, including its bounded checks and delivered-scene/player playback.
-
-Fixed user decisions: toy output is fire and forget and all toy errors are silent
-
-successful no-ops to the app; explicit session Stop cancels all local work and toy
-
-output; Intiface connection/settings belong to the application; production editor
-
-commands belong under top-level DazPose; pose commands use configured smooth
-
-defaults; tuning is never restored/reset by lifecycle cleanup; Lara is the speaking
-
-performer; the player body uses the prepared male model and its measured contact-column
-
-setup; actual saved-scene Play is the authoring acceptance path. Do not reintroduce
-
-toy acknowledgement failures, temporary tuning restoration or generalized
-
-capability/preflight gates from older packets.
-
-Days 1–5 of docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md remain accepted.
-
-The completed R01–R13 remediation stack and its evidence are historical context,
-
-not the next implementation queue. The second-outfit toe appearance observation
-
-remains unapproved until the user observes it. Do not turn that observation into a
-
-new generalized validation or import campaign. Preserve historical import evidence
-
-without claiming independent clean-context acceptance.
-
-Read and update docs/production-consolidation/progress.json and HANDOFF.md for
-
-implementation status. Record technical results, actual delivered-scene/player
-
-playback and user visual approval separately. Do not mark execution complete from
-
-source inspection. The new plan governs wherever an older packet conflicts.
-
-Preserve Lara rig conventions, artistic settings, source/metas/GUIDs, user-edited
-
-wardrobe layers and immutable releases. Preserve the authorized recovery baseline
-
-commit 18b268afe4df1ce11046a760b757002571a104c6 and its ignored-input snapshot
-
-recorded in docs/production-consolidation/remediation/baseline.json. No push or
-
-external publication is implied.
-
-# Production scene shape — October 17 correction
-
-Production scenes contain production content. New Performance Scene copies the saved
-
-`Assets/Production/Environments/VoidEnvironment.unity` art-only composition, never the
-
-old test scene and its marker/controller hierarchy. Preserve the original Void art.
-
-Keep only authored semantic marks actually used by the scene. Use the reusable
-
-`Assets/Production/Player/PlayerBody.prefab` variant of the prepared male Partner,
-
-including its original measured contact profile/surface and penis rig; do not use a
-
-Lara visual copy as player body. This supersedes the older all-actors-Lara wording
-
-for the player body. Story program flow must be visible in clear English in Console,
-
-without per-frame spam or toy error output. See docs/story-runtime/PRODUCTION_SCENES.md.
-
-# Authored performance test environment
-
-Future delivered test scenes must contain their saved test runner. Pressing Play
-
-must start the intended test without an editor helper injecting the runner or
-
-using a separate disposable-only scene. Validate the exact delivered scene and
-
-build that scene when claiming its playback works. The user accepted Day 2's
-
-known missing-runner omission after investigation; this does not waive the
-
-requirement for future tests.
-
-The user's authored `validation/DazPoseUnityValidation/Assets/Scenes/FirstPerformanceVoid.unity`
-
-is the environment authority for future performance tests: retain its glowing
-
-floor, smoke, lighting, camera and volume settings. Reuse its saved scene data;
-
-do not replace it with a generic stage or regenerate/retune it from builder defaults.
-
-Keep the original scene untouched when making test compositions. Lara's
-
-`Character Visibility Lights` belong to the reusable Lara prefab, with their
-
-authored settings and Lara rendering-layer restriction preserved. Functional
-
-validation passing does not mean the user approved replacement lighting.
-
-# Running DazPoseTool for manual testing
-
-For Lara character/wardrobe import work, first read
-
-`validation/DazPoseUnityValidation/docs/LaraWardrobeImportQuickStart.md` and the
-
-Current handoff in `validation/DazPoseUnityValidation/docs/LaraWardrobeImportStatus.md`.
-
-Use `LaraWardrobeImportPlaybook.md` only for the relevant detailed operation or exception. These carry
-
-the verified procedure, accepted artistic choices and active import state for
-
-fresh-context agents. Update them with verified lessons and handoff state;
-
-reuse the shared tools instead of rediscovering the import pipeline.
-
-For a requested clean-context import trial, use shared tools with recipe/data
-
-changes only. Record independent-agent completion separately from technical
-
-checks and user visual approval. A run requiring shared-code repairs or another
-
-agent takeover does not pass that trial; preserve the specific missing capability.
-
-On this Windows machine, the default sandbox PowerShell runs as `CodexSandboxOffline`. Starting the GUI from that shell can put the window on an invisible desktop, so a running process alone does not mean the user can test it.
-
-Before each manual run, publish the current source with `.\scripts\publish-win-x64.ps1` from the repository root. Do not launch an old `artifacts\win-x64` build after source changes. If the sandbox cannot read the signed-in user's NuGet config, use a temporary offline NuGet config backed by the already populated package cache; set `AVALONIA_TELEMETRY_OPTOUT=1` for the publish command so Avalonia does not try writing its build log under the protected user profile. Keep the temporary config out of Git.
-
-Launch `artifacts\win-x64\DazPose.App.exe` with `Start-Process` through `exec_command` using `sandbox_permissions: "require_escalated"`. State in the justification that the sandbox account cannot show the GUI and the app needs to run in the signed-in user's desktop. For example:
+# DazPoseWizard
+
+DazPoseWizard converts DAZ poses and supplies a Unity performance authoring/runtime system. Lara is the speaking performer; the reusable player body is the prepared male Partner variant. Choreography is authored in `.dazstory` and previewed through Scene Director Studio.
+
+## Current work and status
+
+- Plan: [Architecture sprint plan](docs/plan/ARCHITECTURE_SPRINT_PLAN.md).
+- Current ticket: [T01 — Workspace reset](newtickets/T01_WORKSPACE_RESET.md), approved cleanup implemented; Art’s native checks remain pending.
+- Single active status: [STATUS](docs/plan/STATUS.md). Technical checks and Art’s visual acceptance are separate.
+- P02 importer migration is analysis/planning only: [main-project import plan](docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md). The remaining staging project is temporary, not the intended import architecture. Do not delete it before migration/retention work.
+- Historical packets/evidence are under `docs/archive/`; their launch/gate instructions are not active authority.
+
+## How we work
+
+Art owns product decisions and performs Unity/visual tests. Work interactively, finish each session with a concrete observable, and write one ticket ahead. Follow the current ticket’s scope; do not resume retired native/wardrobe gate chains. Single-Lara wardrobe behavior was accepted and the second-Lara trial waived; new Studio/FirstContact wardrobe native use remains unverified.
+
+## Repository
+
+- `src/`: live Avalonia converter and managed core.
+- `tests/`: five managed test projects; the solution includes only the converter test project, so run all five explicitly.
+- `validation/DazPoseUnityValidation/`: authoritative Unity project, Unity 6000.5.9f1.
+- `docs/`: current plan/status, author guides and cleanup safety references; `docs/archive/` holds history.
+- `scripts/`: shared preparation, import and source-check helpers; their presence is not authorization to launch Unity.
+
+## Unity folder rule and scenes
+
+- `Assets/DazPose/`: first-party runtime/editor/validation code, including `DazPose/Player`.
+- `Assets/Production/`: production art/content, performers, player, wardrobe, story, environments and motions.
+- `Assets/Scenes/`: new user-facing scenes.
+- Vendor packs remain at vendor paths. Keep Unity special `Resources`, `Plugins`, `Gizmos`, render `Settings` and TMP conventions.
+- Protected/importer-controlled legacy roots (`TestCharacter`, `TestData`, `Generated`, `Animations`, `Wardrobe`) and mixed `FirstPerformanceVoid` remain explicit exceptions. Their names do not make them disposable.
+- First Contact: **`Assets/Scenes/FirstContact.unity`**. Preserve contents and GUID.
+- Clothing Setup: **`Assets/Scenes/ClothingSetup.unity`**.
+- Main Menu: **`Assets/Production/Scenes/MainMenu.unity`**; protected existing folder exception.
+- New Performance Scene copies **`Assets/Production/Environments/VoidEnvironment.unity`**, the saved art-only template. Preserve original `Assets/Scenes/FirstPerformanceVoid.unity`.
+- Keep all existing primary-project scenes, including the remaining retired Gate B scene. Do not use it as a new clothing blocker.
+
+## Boundaries and protected content
+
+- **No Unity operation, pending spike S01.** Never launch/operate Editor, Hub, GUI, CLI/batch, executeMethod, Unity tests, Play, builds or players; no computer-use or hardware output. Pure managed builds/tests and source checks are allowed. Art operates native checks.
+- Work on `main`; coherent local commits are authorized. No push, PR, merge or remote write without explicit separate authorization.
+- No subagents unless Art explicitly authorizes them.
+- Moves carry file/folder `.meta` files and preserve GUIDs. Confirm Unity closed before filesystem changes under Assets. Do not regenerate, reimport or rebake assets without asking.
+- Preserve Lara imported/source materials, textures, manifests and their AssetDatabase paths: WardrobeCatalogBuilder includes material paths in CharacterSignature.
+- Preserve immutable wardrobe releases and rig generations under Production/Wardrobe and existing legacy Wardrobe roots; artist-edited materials, footwear and layers remain authoritative.
+- Preserve second-outfit toe fixtures, production art, bound `.dazstory`/`.bindings.asset` companions, story global index, and every entry in [protected manifest](docs/cleanup-task1/protected-manifest.json), accounting for already-completed historical moves.
+- Preserve recovery baseline `18b268afe4df1ce11046a760b757002571a104c6` and its ignored-input snapshot. Historical record: [baseline](docs/archive/docs/production-consolidation/remediation/baseline.json).
+- Toy output remains fire-and-forget; backend errors are silent successful no-ops. Explicit session Stop cancels local work/output. Do not restore/reset artist tuning on lifecycle cleanup.
+- Respect the plan’s **section 5.8 VR-forward rules** on every change: player root/HeadPose ownership, replaceable forced view direction, posture eye heights, gaze to HeadPose, world-space-capable prompts and frame budget.
+
+## Managed checks
+
+From repository root, `dotnet build .\DazPoseTool.sln -c Release` builds the converter and its tests without opening the app. Run every managed suite:
 
 ```powershell
-
-$app = Join-Path (Get-Location) 'artifacts\win-x64\DazPose.App.exe'
-
-$proc = Start-Process -FilePath $app -PassThru
-
-Start-Sleep -Seconds 3
-
-$proc.Refresh()
-
-$identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-
-[pscustomobject]@{
-
-    User = $identity.Name
-
-    Session = [Diagnostics.Process]::GetCurrentProcess().SessionId
-
-    AppSession = $proc.SessionId
-
-    WindowHandle = $proc.MainWindowHandle
-
-    WindowTitle = $proc.MainWindowTitle
-
-    Responding = $proc.Responding
-
-}
-
+Get-ChildItem tests -Recurse -Filter *.csproj | ForEach-Object { dotnet test $_.FullName -c Release }
 ```
 
-Confirm the launcher identity is the signed-in Windows user (currently `DESKTOP-MQUSNML\artwh`), the app and launcher session IDs match, and `WindowHandle` is nonzero with title `DazPoseTool V0` and `Responding = True`. If those checks fail, do not tell the user the app is open for testing.
+Do not substitute Unity tests or launch any program. Private fixture tests may skip when licensed local inputs are absent; report skips separately. Rebuilt bin/obj/TestResults remain ignored outputs. If sandbox profile config is unreadable, use temporary APPDATA/DOTNET_CLI_HOME plus the existing offline NuGet package cache; keep temporary config out of Git.
 
-# Wardrobe runtime and setup work
+## Current references
 
-For runtime outfit/layer vocabulary, scene wardrobe recall or the persistent
-
-Clothing Setup scene, start with
-
-`validation/DazPoseUnityValidation/docs/wardrobe-execution/START.md` and its
-
-`progress.json`. Follow its ordered stages and fixed contract. The broader
-
-`validation/DazPoseUnityValidation/docs/WardrobeRuntimeAndSetupSpec.md` is the
-
-product/rationale reference. The execution package describes work to implement;
-
-its presence is not proof that runtime capabilities or validation runners exist.
-
-# Launching the Unity validation editor
-
-For the Unity harness at `validation\DazPoseUnityValidation`, launch `C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Unity.exe` with `-projectPath` set to that project, using `exec_command` with `sandbox_permissions: "require_escalated"`. The default sandbox desktop is invisible to the signed-in user. Confirm the Unity process is running in the signed-in user's interactive session and has a visible main window before saying it is ready for manual testing. Unity batch mode is only for imports, diagnostics, and automated checks; it does not satisfy a request to open the editor on the user's desktop.
-# Active execution — Reusable wardrobe and protected cards (W00–W09)
-
-Art authorized execution on October 20, 2026. Follow `newtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet/START_HERE.md` and the ordered tickets. Current evidence/status: `docs/wardrobe-directing/IMPLEMENTATION_REPORT.md` and `progress.json`. Preserve all pre-existing instructions below.
-
-ABSOLUTE: executor must not launch or operate Unity, Hub, GUI/CLI/batch, tests in Unity, Play, builds, players, computer-use or hardware. Art operates native gates A–D. No gate bypass; source-only checks allowed. Work on main. Coherent local commits are authorized; no push, merge, PR or remote write. Preserve authored assets, GUIDs, global story index and fixture edits. No subagents without explicit authorization.
+- [Story authoring](docs/story-runtime/DAZSTORY_AUTHORING.md) and [Studio guide](docs/story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md).
+- [Production scene contract](docs/story-runtime/PRODUCTION_SCENES.md) and [fixed First Contact oracle](docs/story-runtime/FIRST_CONTACT_D8_ORACLE.md).
+- [Unity pipeline guide](validation/DazPoseUnityValidation/README.md).
+- [Wardrobe quickstart](validation/DazPoseUnityValidation/docs/LaraWardrobeImportQuickStart.md), [import status](validation/DazPoseUnityValidation/docs/LaraWardrobeImportStatus.md), and detailed playbook for exceptions. Current wrapper still has P02 staging dependency; agents must not run its Unity stages.
+- [PlayerView API](validation/DazPoseUnityValidation/docs/PlayerView.md), [HandGrip notes](validation/DazPoseUnityValidation/docs/HandGripImplementationNotes.md).
+- [Path safety](docs/cleanup-task1/path-consumers.md), [completed moves](docs/cleanup-task1/completed-moves.json), and [T01 decisions](docs/workspace/CLEANUP_MANIFEST.md).

@@ -107,7 +107,7 @@ def main():
     assert not sources['issues'] and not sources['missingTextures'], sources['issues'] + sources['missingTextures']
     # The body is a welded host/graft mesh; source ownership follows the
     # characterized material regions, not the renderer's host name.
-    source_map = json.loads((ROOT / 'TestOutput/playernude-characterization/renderer-material-map.json').read_text())
+    source_map = json.loads((ROOT / 'docs/archive/TestOutput/playernude-characterization/renderer-material-map.json').read_text())
     materials, bindings = [], []
     for mesh in ('Genesis8Male', 'Genesis8MaleEyelashes', 'Dicktator Shell'):
         entries = sorted((m for m in source_map if m['mesh'] == mesh and m['polygonCount'] > 0),

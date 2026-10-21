@@ -1,0 +1,162 @@
+[
+  {
+    "source": "TestOutput",
+    "destination": "docs/archive/TestOutput"
+  },
+  {
+    "source": "AGENTS.md",
+    "destination": "docs/archive/AGENTS_2026-10-20.md"
+  },
+  {
+    "source": "AUTHORING_READINESS_BUILD_PLAN.md",
+    "destination": "docs/archive/root/AUTHORING_READINESS_BUILD_PLAN.md"
+  },
+  {
+    "source": "CONTENT_AUTHORING_API.md",
+    "destination": "docs/archive/root/CONTENT_AUTHORING_API.md"
+  },
+  {
+    "source": "CONTENT_AUTHORING_WALKTHROUGH.md",
+    "destination": "docs/archive/root/CONTENT_AUTHORING_WALKTHROUGH.md"
+  },
+  {
+    "source": "DazPoseWizard_Deferred_Work.md",
+    "destination": "docs/archive/root/DazPoseWizard_Deferred_Work.md"
+  },
+  {
+    "source": "UNITY_PROJECT_CLEANUP_PLAN.md",
+    "destination": "docs/archive/root/UNITY_PROJECT_CLEANUP_PLAN.md"
+  },
+  {
+    "source": "docs/HISTORICAL_HANDOFF_2026-10-01_FIRST_CONTACT_TO_VOCAB_SPRINT.md",
+    "destination": "docs/archive/docs/HISTORICAL_HANDOFF_2026-10-01_FIRST_CONTACT_TO_VOCAB_SPRINT.md"
+  },
+  {
+    "source": "docs/native-directing",
+    "destination": "docs/archive/docs/native-directing"
+  },
+  {
+    "source": "docs/P0.8.1_FACIAL_BONE_EXPRESSION_PATCH.md",
+    "destination": "docs/archive/docs/P0.8.1_FACIAL_BONE_EXPRESSION_PATCH.md"
+  },
+  {
+    "source": "docs/P0.8_TYPED_POSE_EXPRESSION_PIPELINE.md",
+    "destination": "docs/archive/docs/P0.8_TYPED_POSE_EXPRESSION_PIPELINE.md"
+  },
+  {
+    "source": "docs/P0.9B_SALSA_REALTIME_LIP_SYNC_INTEGRATION.md",
+    "destination": "docs/archive/docs/P0.9B_SALSA_REALTIME_LIP_SYNC_INTEGRATION.md"
+  },
+  {
+    "source": "docs/p2-p3",
+    "destination": "docs/archive/docs/p2-p3"
+  },
+  {
+    "source": "docs/preauthoring patch review",
+    "destination": "docs/archive/docs/preauthoring patch review"
+  },
+  {
+    "source": "docs/production-consolidation",
+    "destination": "docs/archive/docs/production-consolidation"
+  },
+  {
+    "source": "docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md",
+    "destination": "docs/archive/docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md"
+  },
+  {
+    "source": "docs/sprint1 wrapup reviews",
+    "destination": "docs/archive/docs/sprint1 wrapup reviews"
+  },
+  {
+    "source": "docs/studio-corrective",
+    "destination": "docs/archive/docs/studio-corrective"
+  },
+  {
+    "source": "docs/VALIDATION.md",
+    "destination": "docs/archive/docs/VALIDATION.md"
+  },
+  {
+    "source": "docs/visual-authoring",
+    "destination": "docs/archive/docs/visual-authoring"
+  },
+  {
+    "source": "docs/VOCABULARY_SPRINT_DIRECTION_2026-10-01.md",
+    "destination": "docs/archive/docs/VOCABULARY_SPRINT_DIRECTION_2026-10-01.md"
+  },
+  {
+    "source": "docs/wardrobe-directing",
+    "destination": "docs/archive/docs/wardrobe-directing"
+  },
+  {
+    "source": "oldtickets/D1-D5",
+    "destination": "docs/archive/oldtickets/D1-D5"
+  },
+  {
+    "source": "oldtickets/DazPoseWizard_Execution_Packet",
+    "destination": "docs/archive/oldtickets/DazPoseWizard_Execution_Packet"
+  },
+  {
+    "source": "oldtickets/DazPoseWizard_Native_Directing_Execution_Packet",
+    "destination": "docs/archive/oldtickets/DazPoseWizard_Native_Directing_Execution_Packet"
+  },
+  {
+    "source": "oldtickets/DazPoseWizard_Studio_UI_Corrective_Execution_Packet",
+    "destination": "docs/archive/oldtickets/DazPoseWizard_Studio_UI_Corrective_Execution_Packet"
+  },
+  {
+    "source": "oldtickets/DazPoseWizard_Task1_Cleanup_Execution_Packet",
+    "destination": "docs/archive/oldtickets/DazPoseWizard_Task1_Cleanup_Execution_Packet"
+  },
+  {
+    "source": "oldtickets/DazPoseWizard_Visual_Authoring_Execution_Packet",
+    "destination": "docs/archive/oldtickets/DazPoseWizard_Visual_Authoring_Execution_Packet"
+  },
+  {
+    "source": "oldtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet",
+    "destination": "docs/archive/oldtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet"
+  },
+  {
+    "source": "docs/story-runtime/D1_D5_FILES.md",
+    "destination": "docs/archive/docs/story-runtime/D1_D5_FILES.md"
+  },
+  {
+    "source": "docs/story-runtime/D1_D5_HANDOFF.md",
+    "destination": "docs/archive/docs/story-runtime/D1_D5_HANDOFF.md"
+  },
+  {
+    "source": "docs/story-runtime/d5_5-d8",
+    "destination": "docs/archive/docs/story-runtime/d5_5-d8"
+  },
+  {
+    "source": "docs/story-runtime/D5_5_HANDOFF.md",
+    "destination": "docs/archive/docs/story-runtime/D5_5_HANDOFF.md"
+  },
+  {
+    "source": "docs/story-runtime/D6_D8_HANDOFF.md",
+    "destination": "docs/archive/docs/story-runtime/D6_D8_HANDOFF.md"
+  },
+  {
+    "source": "docs/story-runtime/history",
+    "destination": "docs/archive/docs/story-runtime/history"
+  },
+  {
+    "source": "docs/story-runtime/MANUAL_TEST_CHECKLIST.md",
+    "destination": "docs/archive/docs/story-runtime/MANUAL_TEST_CHECKLIST.md"
+  },
+  {
+    "source": "docs/story-runtime/SCHEMA_V1.md",
+    "destination": "docs/archive/docs/story-runtime/SCHEMA_V1.md"
+  },
+  {
+    "source": "scripts/native-directing-fixture.py",
+    "destination": "docs/archive/scripts/native-directing-fixture.py"
+  },
+  {
+    "source": "validation/DazPoseUnityValidation/Assets/Player",
+    "destination": "validation/DazPoseUnityValidation/Assets/DazPose/Player"
+  },
+  {
+    "source": "validation/DazPoseUnityValidation/Assets/Player.meta",
+    "destination": "validation/DazPoseUnityValidation/Assets/DazPose/Player.meta"
+  }
+]

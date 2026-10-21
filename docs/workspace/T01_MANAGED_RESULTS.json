@@ -1,0 +1,49 @@
+{
+  "solutionBuild": {
+    "passed": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  "tests": [
+    {
+      "project": "DazPose.Player.Tests",
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "project": "DazPose.Rehearsal.Tests",
+      "total": 98,
+      "passed": 98,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "project": "DazPose.Story.Tests",
+      "total": 108,
+      "passed": 108,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "project": "DazPose.Tests",
+      "total": 69,
+      "passed": 68,
+      "failed": 0,
+      "skipped": 1
+    },
+    {
+      "project": "DazPose.Wardrobe.Tests",
+      "total": 25,
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "passed": 323,
+  "skipped": 1,
+  "failed": 0,
+  "sourceAssembliesPassed": 7,
+  "retiredLogicalBytesFromInventory": 75298171867
+}

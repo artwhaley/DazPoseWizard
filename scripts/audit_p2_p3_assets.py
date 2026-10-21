@@ -22,7 +22,7 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--project",type=Path,default=Path(__file__).resolve().parents[1]/"validation/DazPoseUnityValidation")
     ap.add_argument("--repo",type=Path,default=Path(__file__).resolve().parents[1])
-    a=ap.parse_args(); project=a.project.resolve(); repo=a.repo.resolve(); assets=project/"Assets"; docs=repo/"docs/p2-p3"
+    a=ap.parse_args(); project=a.project.resolve(); repo=a.repo.resolve(); assets=project/"Assets"; docs=repo/"docs/archive/docs/p2-p3"
     pb=load(docs/"PROTECTED_BASELINE.json")
     f00,f03,f04=[load(docs/x) for x in ("F00_SCENE_INVENTORY.json","F03_SCENE_RETIREMENT_PLAN.json","F04_SOURCE_AUDIT.json")]
     missing_allowed={}

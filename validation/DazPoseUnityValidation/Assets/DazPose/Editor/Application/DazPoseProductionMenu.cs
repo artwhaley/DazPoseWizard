@@ -45,7 +45,7 @@ namespace DazPose.Editor {
    EditorUtility.SetDirty(b); EditorUtility.SetDirty(catalog); AssetDatabase.SaveAssets(); EditorSceneManager.SaveScene(scene);
   }
   [MenuItem("DazPose/Game/Build Windows Player...")] static void BuildPlayer()=>GamePlayerBuild.BuildInteractive();
-  [MenuItem("DazPose/Help/Content Authoring API")] static void Api()=>OpenRoot("CONTENT_AUTHORING_API.md");
+  [MenuItem("DazPose/Help/Content Authoring API")] static void Api()=>OpenRoot("docs/story-runtime/DAZSTORY_AUTHORING.md");
   [MenuItem("DazPose/Help/Story Authoring Guide")] static void StoryGuide()=>OpenRoot("docs/story-runtime/DAZSTORY_AUTHORING.md");
   static void OpenRoot(string file) => EditorUtility.OpenWithDefaultApp(Path.GetFullPath(Path.Combine(Application.dataPath,"../../..",file)));
  }

@@ -1,0 +1,98 @@
+[
+  {
+    "path": ".dazposewizard/native-directing/G1Project",
+    "retired": true
+  },
+  {
+    "path": ".dazposewizard/production-consolidation",
+    "retired": true
+  },
+  {
+    "path": ".dazposewizard/remediation-validation",
+    "retired": true
+  },
+  {
+    "path": "artifacts/win-x64",
+    "retired": true
+  },
+  {
+    "path": "output",
+    "retired": true
+  },
+  {
+    "path": "src/DazPose.App/bin",
+    "retired": true
+  },
+  {
+    "path": "src/DazPose.App/obj",
+    "retired": true
+  },
+  {
+    "path": "src/DazPose.Core/bin",
+    "retired": true
+  },
+  {
+    "path": "src/DazPose.Core/obj",
+    "retired": true
+  },
+  {
+    "path": "stack3 poses",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Player.Tests/bin",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Player.Tests/obj",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Rehearsal.Tests/bin",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Rehearsal.Tests/obj",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Story.Tests/bin",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Story.Tests/obj",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Story.Tests/TestResults",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Tests/bin",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Tests/obj",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Tests/TestResults",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Wardrobe.Tests/bin",
+    "retired": true
+  },
+  {
+    "path": "tests/DazPose.Wardrobe.Tests/obj",
+    "retired": true
+  },
+  {
+    "path": "unity/SubtranceB",
+    "retired": true
+  },
+  {
+    "path": "unity",
+    "retired": true
+  }
+]

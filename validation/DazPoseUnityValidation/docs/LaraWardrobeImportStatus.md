@@ -1,5 +1,18 @@
 # Lara wardrobe import status
 
+## Current import limitation — October 21, 2026
+
+Clothing Setup, runtime layers, immutable publication and Studio/FirstContact wardrobe integration are implemented. Existing artist assets and GUIDs are authoritative; native use of the newest integration is still pending Art’s checks.
+
+The current PowerShell import wrapper still hardcodes `.dazposewizard/p0c-native-generation`. Art has rejected that architecture. The [main-project migration plan](../../../docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md) explains the source findings and replacement. That project is retained temporarily so migration can preserve required data/evidence; do not create another clone or treat it as the intended ongoing workflow.
+
+Agents must not run Unity stages. Commands below describe the existing legacy wrapper for Art; they are not an authorization to run batch mode, Play or a player. Importer migration and retirement are not implemented by T01.
+
+## Historical import evidence
+
+The dated notes below preserve earlier results, approvals and limitations. Claims that runtime layers or persistent Clothing Setup were not implemented describe their original date, not current source. Active status is [STATUS](../../../docs/plan/STATUS.md).
+
+
 Updated 2026-10-18. Current operator procedure: [LaraWardrobeImportQuickStart.md](LaraWardrobeImportQuickStart.md). Current scene/menu ownership and protected roots: [cleanup ownership](../../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md) and [execution status](../../../docs/cleanup-task1/EXECUTION_REPORT.md). The dated reports below are historical evidence. Older `Tools > DAZ Pose` and one-off test-scene links describe retired navigation; use **DazPose > Wardrobe > Imported Outfits** and the current saved Clothing Setup scene for present workflows.
 
 

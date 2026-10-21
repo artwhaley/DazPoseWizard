@@ -12,7 +12,7 @@ The released `com.unity.animation.rigging` **1.4.1** job is invoked from a wrapp
 
 ## Palm geometry
 
-Profile: `Assets/DazPose/Generated/HandGrip/Profiles/LaraRightHandGrip.asset`.
+Profile: `Assets/Production/Performers/Lara/Contact/LaraRightHandGrip.asset`.
 
 The calibrated PalmAnchor is a contact-face pose relative to rHand, not a cylinder-axis point:
 
@@ -38,17 +38,9 @@ All five digits use three controlled joints and four virtual probes. First-joint
 
 Finite probes and finite bracketing are an approximation of skin geometry and a continuous curl path, not mesh collision certification. Visual mesh inspection remains required.
 
-## Acceptance
+## Historical acceptance evidence
 
-Open `Assets/Scenes/HandGripAcceptance.unity`. The existing panel hosts raw digit sliders, grip/release, radius, tilt, near/far/impossible target placement, normalized-position controls and wrist twist. Source scene FirstPerformanceVoid is not edited by this stack. The acceptance setup no longer derives rod placement from a Motion clip.
-
-Automated isolated-project entry points:
-
-- `DazPose.Editor.HandGrip.HandGripValidationRunner.BatchCalibration`: 52 geometry/palm/reach/contact assertions, actual Lara graph/contact proof, tilt/twist and existing expression regression checks.
-- `DazPose.Editor.HandGrip.HandGripLiveProof.Run`: public API Play Mode near/far/replan/release/impossible, sine, Funscript seek/continuous/stop/resume.
-- `DazPose.Editor.HandGrip.HandGripVisualProof.Run`: isolated open/closed/per-digit render evidence.
-
-These batch entry points refuse to take over the interactive project. See TargetDrivenGripExecution.md for baseline, ticket caveats and current verification status.
+The former HandGripAcceptance scene and one-use calibration/live/visual proof runners are retired. Their old entry-point recipes are not current tools to run or recreate. The runtime grip implementation and calibrated production profile remain. See [historical execution](TargetDrivenGripExecution.md) for the original bounded results; no new native pass is claimed. Art operates current visual checks; agents do not operate Unity.
 
 ## Future backend seam
 

@@ -1,0 +1,812 @@
+{
+  "date": "2026-10-21",
+  "unityClosedConfirmed": true,
+  "decisions": [
+    {
+      "id": "P01",
+      "path": ".dazposewizard/native-directing/G1Project",
+      "action": "delete"
+    },
+    {
+      "id": "P02",
+      "path": ".dazposewizard/p0c-native-generation",
+      "action": "keep"
+    },
+    {
+      "id": "P03",
+      "path": ".dazposewizard/production-consolidation",
+      "action": "delete"
+    },
+    {
+      "id": "P04",
+      "path": ".dazposewizard/remediation-validation",
+      "action": "delete"
+    },
+    {
+      "id": "P05",
+      "path": "unity/SubtranceB",
+      "action": "delete"
+    },
+    {
+      "id": "P06",
+      "path": "validation/DazPoseUnityValidation",
+      "action": "keep"
+    },
+    {
+      "id": "L01",
+      "path": ".dazposewizard",
+      "action": "keep"
+    },
+    {
+      "id": "L02",
+      "path": "unity",
+      "action": "delete"
+    },
+    {
+      "id": "L03",
+      "path": "G8F-Base",
+      "action": "keep"
+    },
+    {
+      "id": "L04",
+      "path": "G8F-inCherishReferencePose",
+      "action": "keep"
+    },
+    {
+      "id": "L05",
+      "path": "fixtures",
+      "action": "keep"
+    },
+    {
+      "id": "L06",
+      "path": "stack3 poses",
+      "action": "delete"
+    },
+    {
+      "id": "L07",
+      "path": "output",
+      "action": "delete"
+    },
+    {
+      "id": "L08",
+      "path": "artifacts/win-x64",
+      "action": "delete"
+    },
+    {
+      "id": "L09",
+      "path": "TestOutput",
+      "action": "archive to `docs/archive/TestOutput`"
+    },
+    {
+      "id": "L10",
+      "path": ".codex-remote-attachments",
+      "action": "keep"
+    },
+    {
+      "id": "L11",
+      "path": ".freebuff",
+      "action": "keep"
+    },
+    {
+      "id": "L12",
+      "path": "src",
+      "action": "keep"
+    },
+    {
+      "id": "L13",
+      "path": "tests",
+      "action": "keep"
+    },
+    {
+      "id": "B01",
+      "path": "src/DazPose.App/bin",
+      "action": "delete"
+    },
+    {
+      "id": "B02",
+      "path": "src/DazPose.App/obj",
+      "action": "delete"
+    },
+    {
+      "id": "B03",
+      "path": "src/DazPose.Core/bin",
+      "action": "delete"
+    },
+    {
+      "id": "B04",
+      "path": "src/DazPose.Core/obj",
+      "action": "delete"
+    },
+    {
+      "id": "B05",
+      "path": "tests/DazPose.Player.Tests/bin",
+      "action": "delete"
+    },
+    {
+      "id": "B06",
+      "path": "tests/DazPose.Player.Tests/obj",
+      "action": "delete"
+    },
+    {
+      "id": "B07",
+      "path": "tests/DazPose.Rehearsal.Tests/bin",
+      "action": "delete"
+    },
+    {
+      "id": "B08",
+      "path": "tests/DazPose.Rehearsal.Tests/obj",
+      "action": "delete"
+    },
+    {
+      "id": "B09",
+      "path": "tests/DazPose.Story.Tests/TestResults",
+      "action": "delete"
+    },
+    {
+      "id": "B10",
+      "path": "tests/DazPose.Story.Tests/bin",
+      "action": "delete"
+    },
+    {
+      "id": "B11",
+      "path": "tests/DazPose.Story.Tests/obj",
+      "action": "delete"
+    },
+    {
+      "id": "B12",
+      "path": "tests/DazPose.Tests/TestResults",
+      "action": "delete"
+    },
+    {
+      "id": "B13",
+      "path": "tests/DazPose.Tests/bin",
+      "action": "delete"
+    },
+    {
+      "id": "B14",
+      "path": "tests/DazPose.Tests/obj",
+      "action": "delete"
+    },
+    {
+      "id": "B15",
+      "path": "tests/DazPose.Wardrobe.Tests/bin",
+      "action": "delete"
+    },
+    {
+      "id": "B16",
+      "path": "tests/DazPose.Wardrobe.Tests/obj",
+      "action": "delete"
+    },
+    {
+      "id": "D01",
+      "path": ".dazposewizard/appdata",
+      "action": "keep"
+    },
+    {
+      "id": "D02",
+      "path": ".dazposewizard/authoring-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D03",
+      "path": ".dazposewizard/cleanup-task1",
+      "action": "keep"
+    },
+    {
+      "id": "D04",
+      "path": ".dazposewizard/d1-d5-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D05",
+      "path": ".dazposewizard/d5_5-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D06",
+      "path": ".dazposewizard/d5_5-pose-test",
+      "action": "keep"
+    },
+    {
+      "id": "D07",
+      "path": ".dazposewizard/d6-d8",
+      "action": "keep"
+    },
+    {
+      "id": "D08",
+      "path": ".dazposewizard/day1-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D09",
+      "path": ".dazposewizard/day2-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D10",
+      "path": ".dazposewizard/day3-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D11",
+      "path": ".dazposewizard/day4-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D12",
+      "path": ".dazposewizard/day5-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D13",
+      "path": ".dazposewizard/import-archive-fix",
+      "action": "keep"
+    },
+    {
+      "id": "D14",
+      "path": ".dazposewizard/native-directing",
+      "action": "keep"
+    },
+    {
+      "id": "D15",
+      "path": ".dazposewizard/p0c-native-generation",
+      "action": "keep"
+    },
+    {
+      "id": "D16",
+      "path": ".dazposewizard/p2-p3",
+      "action": "keep"
+    },
+    {
+      "id": "D17",
+      "path": ".dazposewizard/production-consolidation",
+      "action": "delete"
+    },
+    {
+      "id": "D18",
+      "path": ".dazposewizard/recovery",
+      "action": "keep"
+    },
+    {
+      "id": "D19",
+      "path": ".dazposewizard/remediation-evidence",
+      "action": "keep"
+    },
+    {
+      "id": "D20",
+      "path": ".dazposewizard/remediation-planning",
+      "action": "keep"
+    },
+    {
+      "id": "D21",
+      "path": ".dazposewizard/remediation-validation",
+      "action": "delete"
+    },
+    {
+      "id": "D22",
+      "path": ".dazposewizard/unity-diagnostics-cleanup",
+      "action": "keep"
+    },
+    {
+      "id": "D23",
+      "path": ".dazposewizard/wardrobe-gate-recovery",
+      "action": "keep"
+    },
+    {
+      "id": "D24",
+      "path": ".dazposewizard/wardrobe-production-before",
+      "action": "keep"
+    },
+    {
+      "id": "D25",
+      "path": ".dazposewizard/wardrobe-retired",
+      "action": "keep"
+    },
+    {
+      "id": "D90",
+      "path": ".dazposewizard/<immediate files>",
+      "action": "keep"
+    },
+    {
+      "id": "A01",
+      "path": "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards",
+      "action": "keep"
+    },
+    {
+      "id": "A02",
+      "path": "validation/DazPoseUnityValidation/Assets/Animations",
+      "action": "keep"
+    },
+    {
+      "id": "A03",
+      "path": "validation/DazPoseUnityValidation/Assets/Content",
+      "action": "delete"
+    },
+    {
+      "id": "A04",
+      "path": "validation/DazPoseUnityValidation/Assets/Crazy Minnow Studio",
+      "action": "keep"
+    },
+    {
+      "id": "A05",
+      "path": "validation/DazPoseUnityValidation/Assets/Daz3D",
+      "action": "keep"
+    },
+    {
+      "id": "A06",
+      "path": "validation/DazPoseUnityValidation/Assets/DazExpressionImports",
+      "action": "keep"
+    },
+    {
+      "id": "A07",
+      "path": "validation/DazPoseUnityValidation/Assets/DazPose",
+      "action": "keep"
+    },
+    {
+      "id": "A08",
+      "path": "validation/DazPoseUnityValidation/Assets/DazPoseImports",
+      "action": "keep"
+    },
+    {
+      "id": "A09",
+      "path": "validation/DazPoseUnityValidation/Assets/Examples",
+      "action": "keep"
+    },
+    {
+      "id": "A10",
+      "path": "validation/DazPoseUnityValidation/Assets/FemaleMovementAnimsetPro",
+      "action": "keep"
+    },
+    {
+      "id": "A11",
+      "path": "validation/DazPoseUnityValidation/Assets/FirstPerformanceVoid",
+      "action": "keep"
+    },
+    {
+      "id": "A12",
+      "path": "validation/DazPoseUnityValidation/Assets/Generated",
+      "action": "keep"
+    },
+    {
+      "id": "A13",
+      "path": "validation/DazPoseUnityValidation/Assets/Gizmos",
+      "action": "keep"
+    },
+    {
+      "id": "A14",
+      "path": "validation/DazPoseUnityValidation/Assets/INab Studio",
+      "action": "keep"
+    },
+    {
+      "id": "A15",
+      "path": "validation/DazPoseUnityValidation/Assets/KAWAII_ANIMATIOMS_100",
+      "action": "keep"
+    },
+    {
+      "id": "A16",
+      "path": "validation/DazPoseUnityValidation/Assets/PartnerProof",
+      "action": "keep"
+    },
+    {
+      "id": "A17",
+      "path": "validation/DazPoseUnityValidation/Assets/Player",
+      "action": "move to `validation/DazPoseUnityValidation/Assets/DazPose/Player`"
+    },
+    {
+      "id": "A18",
+      "path": "validation/DazPoseUnityValidation/Assets/Plugins",
+      "action": "keep"
+    },
+    {
+      "id": "A19",
+      "path": "validation/DazPoseUnityValidation/Assets/Production",
+      "action": "keep"
+    },
+    {
+      "id": "A20",
+      "path": "validation/DazPoseUnityValidation/Assets/Resources",
+      "action": "keep"
+    },
+    {
+      "id": "A21",
+      "path": "validation/DazPoseUnityValidation/Assets/Scenes",
+      "action": "keep"
+    },
+    {
+      "id": "A22",
+      "path": "validation/DazPoseUnityValidation/Assets/Settings",
+      "action": "keep"
+    },
+    {
+      "id": "A23",
+      "path": "validation/DazPoseUnityValidation/Assets/TestCharacter",
+      "action": "keep"
+    },
+    {
+      "id": "A24",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData",
+      "action": "keep"
+    },
+    {
+      "id": "A25",
+      "path": "validation/DazPoseUnityValidation/Assets/TextMesh Pro",
+      "action": "keep"
+    },
+    {
+      "id": "A26",
+      "path": "validation/DazPoseUnityValidation/Assets/Wardrobe",
+      "action": "keep"
+    },
+    {
+      "id": "S01",
+      "path": "validation/DazPoseUnityValidation/Assets/Examples/Scenes/AuthoringShowcase.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S02",
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Environments/VoidEnvironment.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S03",
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Scenes/MainMenu.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S04",
+      "path": "validation/DazPoseUnityValidation/Assets/Production/Scenes/RemediationToeValidation.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S05",
+      "path": "validation/DazPoseUnityValidation/Assets/Scenes/ClothingSetup.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S06",
+      "path": "validation/DazPoseUnityValidation/Assets/Scenes/FirstContact.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S07",
+      "path": "validation/DazPoseUnityValidation/Assets/Scenes/FirstPerformanceVoid.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S08",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/FirstPerformanceVoidLaraCandidate.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S09",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/FirstOutfit/FirstPerformanceVoidLaraFirstOutfit.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S10",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/LaraCandidate/SecondOutfit/FirstPerformanceVoidLaraSecondOutfit.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S11",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/first-outfit/Review.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S12",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/second-outfit/Review-20261004-155507.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S13",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/second-outfit/Review.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S14",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/third-outfit/Review-20261004-165635.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S15",
+      "path": "validation/DazPoseUnityValidation/Assets/TestData/Wardrobe/third-outfit/Review.unity",
+      "action": "keep"
+    },
+    {
+      "id": "S16",
+      "path": "validation/DazPoseUnityValidation/Assets/__WardrobeProtectedCards/Scenes/GateB_ProtectedCards.unity",
+      "action": "keep"
+    },
+    {
+      "id": "R01",
+      "path": "AGENTS.md",
+      "action": "archive to `docs/archive/AGENTS_2026-10-20.md`"
+    },
+    {
+      "id": "R02",
+      "path": "README.md",
+      "action": "keep"
+    },
+    {
+      "id": "R03",
+      "path": "AUTHORING_READINESS_BUILD_PLAN.md",
+      "action": "archive to `docs/archive/root/AUTHORING_READINESS_BUILD_PLAN.md`"
+    },
+    {
+      "id": "R04",
+      "path": "CONTENT_AUTHORING_API.md",
+      "action": "archive to `docs/archive/root/CONTENT_AUTHORING_API.md`"
+    },
+    {
+      "id": "R05",
+      "path": "CONTENT_AUTHORING_WALKTHROUGH.md",
+      "action": "archive to `docs/archive/root/CONTENT_AUTHORING_WALKTHROUGH.md`"
+    },
+    {
+      "id": "R06",
+      "path": "DazPoseWizard_Deferred_Work.md",
+      "action": "archive to `docs/archive/root/DazPoseWizard_Deferred_Work.md`"
+    },
+    {
+      "id": "R07",
+      "path": "UNITY_PROJECT_CLEANUP_PLAN.md",
+      "action": "archive to `docs/archive/root/UNITY_PROJECT_CLEANUP_PLAN.md`"
+    },
+    {
+      "id": "F01",
+      "path": "docs/ARCHITECTURE.md",
+      "action": "keep"
+    },
+    {
+      "id": "F02",
+      "path": "docs/cleanup-task1",
+      "action": "keep"
+    },
+    {
+      "id": "F03",
+      "path": "docs/HISTORICAL_HANDOFF_2026-10-01_FIRST_CONTACT_TO_VOCAB_SPRINT.md",
+      "action": "archive to `docs/archive/docs/HISTORICAL_HANDOFF_2026-10-01_FIRST_CONTACT_TO_VOCAB_SPRINT.md`"
+    },
+    {
+      "id": "F04",
+      "path": "docs/IMPORT_FAILURE_CLEANUP.md",
+      "action": "keep"
+    },
+    {
+      "id": "F05",
+      "path": "docs/native-directing",
+      "action": "archive to `docs/archive/docs/native-directing`"
+    },
+    {
+      "id": "F06",
+      "path": "docs/P0.8.1_FACIAL_BONE_EXPRESSION_PATCH.md",
+      "action": "archive to `docs/archive/docs/P0.8.1_FACIAL_BONE_EXPRESSION_PATCH.md`"
+    },
+    {
+      "id": "F07",
+      "path": "docs/P0.8_TYPED_POSE_EXPRESSION_PIPELINE.md",
+      "action": "archive to `docs/archive/docs/P0.8_TYPED_POSE_EXPRESSION_PIPELINE.md`"
+    },
+    {
+      "id": "F08",
+      "path": "docs/P0.9B_SALSA_REALTIME_LIP_SYNC_INTEGRATION.md",
+      "action": "archive to `docs/archive/docs/P0.9B_SALSA_REALTIME_LIP_SYNC_INTEGRATION.md`"
+    },
+    {
+      "id": "F09",
+      "path": "docs/p2-p3",
+      "action": "archive to `docs/archive/docs/p2-p3`"
+    },
+    {
+      "id": "F10",
+      "path": "docs/preauthoring patch review",
+      "action": "archive to `docs/archive/docs/preauthoring patch review`"
+    },
+    {
+      "id": "F11",
+      "path": "docs/production-consolidation",
+      "action": "archive to `docs/archive/docs/production-consolidation`"
+    },
+    {
+      "id": "F12",
+      "path": "docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md",
+      "action": "archive to `docs/archive/docs/SEVEN_DAY_PRODUCTION_CONSOLIDATION_PLAN.md`"
+    },
+    {
+      "id": "F13",
+      "path": "docs/sprint1 wrapup reviews",
+      "action": "archive to `docs/archive/docs/sprint1 wrapup reviews`"
+    },
+    {
+      "id": "F14",
+      "path": "docs/story-runtime",
+      "action": "keep"
+    },
+    {
+      "id": "F15",
+      "path": "docs/studio-corrective",
+      "action": "archive to `docs/archive/docs/studio-corrective`"
+    },
+    {
+      "id": "F16",
+      "path": "docs/VALIDATION.md",
+      "action": "archive to `docs/archive/docs/VALIDATION.md`"
+    },
+    {
+      "id": "F17",
+      "path": "docs/visual-authoring",
+      "action": "archive to `docs/archive/docs/visual-authoring`"
+    },
+    {
+      "id": "F18",
+      "path": "docs/VOCABULARY_SPRINT_DIRECTION_2026-10-01.md",
+      "action": "archive to `docs/archive/docs/VOCABULARY_SPRINT_DIRECTION_2026-10-01.md`"
+    },
+    {
+      "id": "F19",
+      "path": "docs/wardrobe-directing",
+      "action": "archive to `docs/archive/docs/wardrobe-directing`"
+    },
+    {
+      "id": "T01",
+      "path": "oldtickets/D1-D5",
+      "action": "archive to `docs/archive/oldtickets/D1-D5`"
+    },
+    {
+      "id": "T02",
+      "path": "oldtickets/DazPoseWizard_Execution_Packet",
+      "action": "archive to `docs/archive/oldtickets/DazPoseWizard_Execution_Packet`"
+    },
+    {
+      "id": "T03",
+      "path": "oldtickets/DazPoseWizard_Native_Directing_Execution_Packet",
+      "action": "archive to `docs/archive/oldtickets/DazPoseWizard_Native_Directing_Execution_Packet`"
+    },
+    {
+      "id": "T04",
+      "path": "oldtickets/DazPoseWizard_Studio_UI_Corrective_Execution_Packet",
+      "action": "archive to `docs/archive/oldtickets/DazPoseWizard_Studio_UI_Corrective_Execution_Packet`"
+    },
+    {
+      "id": "T05",
+      "path": "oldtickets/DazPoseWizard_Task1_Cleanup_Execution_Packet",
+      "action": "archive to `docs/archive/oldtickets/DazPoseWizard_Task1_Cleanup_Execution_Packet`"
+    },
+    {
+      "id": "T06",
+      "path": "oldtickets/DazPoseWizard_Visual_Authoring_Execution_Packet",
+      "action": "archive to `docs/archive/oldtickets/DazPoseWizard_Visual_Authoring_Execution_Packet`"
+    },
+    {
+      "id": "T07",
+      "path": "oldtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet",
+      "action": "archive to `docs/archive/oldtickets/DazPoseWizard_Wardrobe_Protected_Cards_Execution_Packet`"
+    },
+    {
+      "id": "T20",
+      "path": "newtickets/ARCHITECTURE_SPRINT_PLAN.md",
+      "action": "move to `docs/plan/ARCHITECTURE_SPRINT_PLAN.md`"
+    },
+    {
+      "id": "T21",
+      "path": "newtickets/T01_WORKSPACE_RESET.md",
+      "action": "keep"
+    },
+    {
+      "id": "C01",
+      "path": "docs/story-runtime/DAZSTORY_AUTHORING.md",
+      "action": "keep"
+    },
+    {
+      "id": "C02",
+      "path": "docs/story-runtime/SCENE_DIRECTOR_STUDIO_GUIDE.md",
+      "action": "keep"
+    },
+    {
+      "id": "C03",
+      "path": "validation/DazPoseUnityValidation/README.md",
+      "action": "keep"
+    },
+    {
+      "id": "C04",
+      "path": "validation/DazPoseUnityValidation/docs/LaraWardrobeImportQuickStart.md",
+      "action": "keep"
+    },
+    {
+      "id": "C05",
+      "path": "validation/DazPoseUnityValidation/docs/LaraWardrobeImportStatus.md",
+      "action": "keep"
+    },
+    {
+      "id": "C06",
+      "path": "validation/DazPoseUnityValidation/docs/LaraWardrobeImportPlaybook.md",
+      "action": "keep"
+    },
+    {
+      "id": "C07",
+      "path": "validation/DazPoseUnityValidation/docs/PlayerView.md",
+      "action": "keep"
+    },
+    {
+      "id": "C08",
+      "path": "validation/DazPoseUnityValidation/docs/HandGripImplementationNotes.md",
+      "action": "keep"
+    },
+    {
+      "id": "Y01",
+      "path": "docs/story-runtime/D1_D5_FILES.md",
+      "action": "archive to `docs/archive/docs/story-runtime/D1_D5_FILES.md`"
+    },
+    {
+      "id": "Y02",
+      "path": "docs/story-runtime/D1_D5_HANDOFF.md",
+      "action": "archive to `docs/archive/docs/story-runtime/D1_D5_HANDOFF.md`"
+    },
+    {
+      "id": "Y03",
+      "path": "docs/story-runtime/d5_5-d8",
+      "action": "archive to `docs/archive/docs/story-runtime/d5_5-d8`"
+    },
+    {
+      "id": "Y04",
+      "path": "docs/story-runtime/D5_5_HANDOFF.md",
+      "action": "archive to `docs/archive/docs/story-runtime/D5_5_HANDOFF.md`"
+    },
+    {
+      "id": "Y05",
+      "path": "docs/story-runtime/D6_D8_HANDOFF.md",
+      "action": "archive to `docs/archive/docs/story-runtime/D6_D8_HANDOFF.md`"
+    },
+    {
+      "id": "Y07",
+      "path": "docs/story-runtime/FIRST_CONTACT_D8_ORACLE.md",
+      "action": "keep"
+    },
+    {
+      "id": "Y08",
+      "path": "docs/story-runtime/history",
+      "action": "archive to `docs/archive/docs/story-runtime/history`"
+    },
+    {
+      "id": "Y09",
+      "path": "docs/story-runtime/MANUAL_TEST_CHECKLIST.md",
+      "action": "archive to `docs/archive/docs/story-runtime/MANUAL_TEST_CHECKLIST.md`"
+    },
+    {
+      "id": "Y10",
+      "path": "docs/story-runtime/PRODUCTION_SCENES.md",
+      "action": "keep"
+    },
+    {
+      "id": "Y12",
+      "path": "docs/story-runtime/SCHEMA_V1.md",
+      "action": "archive to `docs/archive/docs/story-runtime/SCHEMA_V1.md`"
+    },
+    {
+      "id": "X01",
+      "path": "scripts/native-directing-fixture.py",
+      "action": "archive to `docs/archive/scripts/native-directing-fixture.py`"
+    },
+    {
+      "id": "X02",
+      "path": "scripts/RemediationSourceMoveSync.ps1",
+      "action": "keep"
+    },
+    {
+      "id": "X03",
+      "path": "scripts/import-lara-outfit.ps1",
+      "action": "keep"
+    },
+    {
+      "id": "X04",
+      "path": "scripts/run-wardrobe-execution.ps1",
+      "action": "keep"
+    },
+    {
+      "id": "X05",
+      "path": "scripts/check-unity-source.py",
+      "action": "keep"
+    }
+  ],
+  "duplicateRows": "D17/D21 list the exact P03/P04 paths; explicit project retirements apply, all other D evidence retained."
+}

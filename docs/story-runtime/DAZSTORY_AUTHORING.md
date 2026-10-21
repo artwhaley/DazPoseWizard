@@ -1,12 +1,10 @@
 # Authoring with .dazstory
 
-Current generic authoring workflow: [Scene Director Studio guide](SCENE_DIRECTOR_STUDIO_GUIDE.md). Source-first import derives typed binding rows automatically; use Studio asset fields and visual marks. Manual serialized arrays/GUID entry and mandatory dialogue refresh are superseded. Native Studio/visual acceptance is pending; see [current execution](../p2-p3/PROGRESS.md).
+Use the [Studio guide](SCENE_DIRECTOR_STUDIO_GUIDE.md) for current static visual authoring. First Contact is `Assets/Scenes/FirstContact.unity`; setup/Intro/sequence source and typed companions remain under `Assets/Production/Story/Programs/`. Cards publish globally from `Assets/Production/Story/Cards/`.
 
-The revised D5.5–D8 stack is the current story plan. The complete user oracle is [FIRST_CONTACT_D8_ORACLE.md](FIRST_CONTACT_D8_ORACLE.md); the complete execution packet is [REVISED_EXECUTION_STACK.md](d5_5-d8/REVISED_EXECUTION_STACK.md).
+The [architecture plan](../plan/ARCHITECTURE_SPRINT_PLAN.md) and [STATUS](../plan/STATUS.md) govern current work. D6–D8 execution is historical; preserve the [fixed oracle](FIRST_CONTACT_D8_ORACLE.md). Six imported pose wrappers, engineering placeholder audio and production wardrobe integration are delivered. Practical Studio authoring was accepted; new wardrobe native use and extended cases remain pending Art’s checks.
 
-## Current full-session work
-
-D6-D8 remains implemented. The October 18 cleanup/UI/Studio packet is the active delivery; see [current status](../p2-p3/PROGRESS.md). The user controls testing; do not start Play or build/launch a standalone player without a new explicit request. Six imported pose wrappers and an animated engineering Disapproval gesture are assigned. MainPosition1 and Bedside are ordinary movable scene marks. The full-session setup clears the former Warmup preview cutoff. See [the current handoff](D6_D8_HANDOFF.md) for the verified playback/build results and user visual approval status.
+Source-first import derives typed binding rows; use Studio fields/visual marks. Manual serialized GUID arrays are not the authoring workflow. Art operates Play/native tests; agents do not launch Unity or hardware.
 
 ## Global cards and explicit local beats
 

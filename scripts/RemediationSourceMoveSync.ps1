@@ -8,7 +8,7 @@ function Remove-StaleRemediationSourceCopies {
     $repo = (Resolve-Path -LiteralPath $RepositoryRoot).Path
     $staging = (Resolve-Path -LiteralPath $StagingProjectRoot).Path
     $stagingAssets = (Resolve-Path -LiteralPath (Join-Path $staging 'Assets')).Path.TrimEnd('\')
-    $manifestPath = Join-Path $repo 'docs\production-consolidation\remediation\SOURCE_MOVE_MANIFEST.json'
+    $manifestPath = Join-Path $repo 'docs\archive\docs\production-consolidation\remediation\SOURCE_MOVE_MANIFEST.json'
     if (!(Test-Path -LiteralPath $manifestPath)) { throw "R10 source-move manifest is missing: $manifestPath" }
     $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
     $removed = [System.Collections.Generic.List[string]]::new()

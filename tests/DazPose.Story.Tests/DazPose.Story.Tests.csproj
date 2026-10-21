@@ -15,6 +15,6 @@
     <Content Include="../../validation/DazPoseUnityValidation/Assets/Production/Story/Programs/FirstContact.dazstory" Link="FirstContact.dazstory" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../../validation/DazPoseUnityValidation/Assets/Production/Story/Cards/**/*.dazstory" Link="Cards/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="../Support/RecordingCardPresentation.cs" Link="RecordingCardPresentation.cs" />
-    <Content Include="../../docs/wardrobe-directing/fixtures/*.dazstory" Link="GateB/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../docs/archive/docs/wardrobe-directing/fixtures/*.dazstory" Link="GateB/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

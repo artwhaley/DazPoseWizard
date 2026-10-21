@@ -1,15 +1,15 @@
 # Scene Director Studio — FirstContact authoring
 
-The Studio edits the script's asset bindings, poses and scene transforms in Edit Mode. Art accepted the practical authoring check on October 19. Detailed edge-case evidence remains limited; see `docs/visual-authoring/IMPLEMENTATION_REPORT.md`.
+The Studio edits the script's asset bindings, poses and scene transforms in Edit Mode. Art accepted the practical authoring check on October 19. Detailed edge-case evidence remains limited; see [historical acceptance evidence](../archive/docs/visual-authoring/IMPLEMENTATION_REPORT.md).
 
 ## Open the real scene
 
 1. Open Unity 6000.5.9f1 with project `C:/Users/artwh/OneDrive/Documents/DazPoseWizard/validation/DazPoseUnityValidation` (the main project, not the independent G1Project).
-2. In Project, open **Assets/Production/Scenes/FirstContact.unity**.
+2. In Project, open **Assets/Scenes/FirstContact.unity**.
 3. Keep the normal **Scene** and **Game** tabs visible. Remain in Edit Mode.
 4. Open **DazPose > Story > Scene Director Studio**. It finds the scene and source automatically. If needed, expand **Scene / script** and click **Find open scene**.
 
-The code is already in this project. Fixture scene/art changes are separate; see `docs/visual-authoring/PRODUCTION_HANDOFF.md`.
+The code is already in this project. Fixture scene/art changes are separate; see [historical production handoff](../archive/docs/visual-authoring/PRODUCTION_HANDOFF.md).
 
 ## Select and edit a cue
 

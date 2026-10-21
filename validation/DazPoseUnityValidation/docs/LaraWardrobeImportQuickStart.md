@@ -1,6 +1,14 @@
 # Lara import: operator manual
 
-Current editor/menu and scene ownership is recorded in [cleanup status](../../../docs/cleanup-task1/EXECUTION_REPORT.md) and [scene/content ownership](../../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md). Use **DazPose > Wardrobe > Imported Outfits**; older dated notes may show the retired `Tools > DAZ Pose` menu path. Current Unity workflows are linked from the [Unity project README](../README.md).
+## Current import limitation — October 21, 2026
+
+Clothing Setup, runtime layers, immutable publication and Studio/FirstContact wardrobe integration are implemented. Existing artist assets and GUIDs are authoritative; native use of the newest integration is still pending Art’s checks.
+
+The current PowerShell import wrapper still hardcodes `.dazposewizard/p0c-native-generation`. Art has rejected that architecture. The [main-project migration plan](../../../docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md) explains the source findings and replacement. That project is retained temporarily so migration can preserve required data/evidence; do not create another clone or treat it as the intended ongoing workflow.
+
+Agents must not run Unity stages. Commands below describe the existing legacy wrapper for Art; they are not an authorization to run batch mode, Play or a player. Importer migration and retirement are not implemented by T01.
+
+Current editor/menu and scene ownership is recorded in [current status](../../../docs/plan/STATUS.md) and [scene/content ownership](../../../docs/cleanup-task1/SCENE_AND_CONTENT_OWNERSHIP.md). Use **DazPose > Wardrobe > Imported Outfits**; older dated notes may show the retired `Tools > DAZ Pose` menu path. Current Unity workflows are linked from the [Unity project README](../README.md).
 
 
 Read root AGENTS.md and **Current handoff** in [status](LaraWardrobeImportStatus.md).
@@ -163,17 +171,8 @@ reference data. Particle bindings/profile are regenerated for the review body.
 `Review.unity` is a disposable test host, not a runtime outfit implementation.
 Import generates it for isolated automated checks. Scenes are not outfit identity
 or the storage for tuning: materials, meshes, recipe and footwear assets are.
-The planned persistent clothing setup scene will browse all configured outfits
-through the same runtime switcher as the game. Importing an outfit should add
-assets to that catalog without adding an outfit-specific production scene.
-Save artistic scene arrangements separately. See the pipeline plan for the
-next shared switcher/setup-scene contract; it is not implemented yet.
-The authoritative [runtime/setup specification](WardrobeRuntimeAndSetupSpec.md)
-uses Base/1/2 mesh assignments, default Base, all populated layers shown on load,
-and TryRemoveLayer/TryAddLayer commands. The artist assigns the layers in Setup;
-import does not infer them. Shoes follow their assigned layer; hair persists.
-Existing layer assignments must survive reimport when that runtime milestone is
-implemented. Current import tools still produce the existing package format.
+The persistent Clothing Setup scene and runtime wardrobe switcher are implemented. Use **DazPose > Wardrobe > Open Clothing Setup**; importing an outfit should add catalog assets, not another production scene. Save artistic scene arrangements separately.
+The [runtime/setup specification](WardrobeRuntimeAndSetupSpec.md) describes Base/1/2 assignments: default Base, all populated layers shown on load, TryRemoveLayer/TryAddLayer, shoes on their assigned layer and persistent hair. Preserve artist layer assignments on reimport. The current importer still produces the package format consumed by catalog/fit/release tooling; it does not yet provide the proposed main-project import workflow.
 
 Runtime materials are artist assets; regenerated source materials are the baseline.
 Reimport adopts changed source properties only where the runtime value still

@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $project = Join-Path $repo 'validation\DazPoseUnityValidation'
 $assets = (Resolve-Path -LiteralPath (Join-Path $project 'Assets')).Path.TrimEnd('\')
-$remediationRoot = Join-Path $repo 'docs\production-consolidation\remediation'
+$remediationRoot = Join-Path $repo 'docs\archive\docs\production-consolidation\remediation'
 $manifestPath = Join-Path $remediationRoot 'SOURCE_MOVE_MANIFEST.json'
 $progressPath = Join-Path $remediationRoot 'progress.json'
 

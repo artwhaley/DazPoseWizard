@@ -1,5 +1,7 @@
 # Lara wardrobe import playbook
 
+Reference only. The [current quickstart](LaraWardrobeImportQuickStart.md), root AGENTS and [P02 migration plan](../../../docs/plan/P02_MAIN_PROJECT_IMPORT_PLAN.md) supersede old GUI-launch/batch/fixture instructions. Agents do not operate Unity. P02 is retained temporarily, not an ongoing import architecture.
+
 Current import procedure is [LaraWardrobeImportQuickStart.md](LaraWardrobeImportQuickStart.md). The dated fixture-builder and one-off review-scene steps below are historical exceptions: their `Tools > DAZ Pose` menus/scenes were retired during cleanup. Use them only as technical provenance for the described old assets, not as current navigation instructions.
 
 For the short operating procedure, start with

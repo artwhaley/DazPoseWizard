@@ -1,6 +1,6 @@
 # Superseded — actual scene retirement follow-up
 
-The new user-authorized packet replaces the lab move proposal below. All eleven target scene/meta pairs were retired after caller extraction and recovery/reference guards. See [follow-up report](../p2-p3/PHASE1_RETIREMENT_REPORT.md) and [active progress](../p2-p3/PROGRESS.md). No lab move was retried. Original rejected proposal remains historical below.
+The new user-authorized packet replaces the lab move proposal below. All eleven target scene/meta pairs were retired after caller extraction and recovery/reference guards. See [follow-up report](../archive/docs/p2-p3/PHASE1_RETIREMENT_REPORT.md) and [active progress](../archive/docs/p2-p3/PROGRESS.md). No lab move was retried. Original rejected proposal remains historical below.
 
 # Pending approval: consolidate retained diagnostic scenes
 

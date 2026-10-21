@@ -1,0 +1,21 @@
+{
+  "protectedHashesChecked": 689,
+  "protectedMismatches": [],
+  "allScenesKeptUnchanged": true,
+  "sceneCount": 16,
+  "guidCount": 4740,
+  "duplicateGuids": {},
+  "changedGuids": [],
+  "removedMetas": {
+    "validation/DazPoseUnityValidation/Assets/Content.meta": "5084d3d945c2e0c4ca93a2fb84189c2a",
+    "validation/DazPoseUnityValidation/Assets/Content/Remediation.meta": "0f948570770d7974fa7699b8191cb319",
+    "validation/DazPoseUnityValidation/Assets/Content/Remediation/Folder With Spaces.meta": "613256f540bddd340b3258a80ac9d062",
+    "validation/DazPoseUnityValidation/Assets/Content/Remediation/Folder With Spaces/20261006-125650-623.meta": "187ffa24986f0ea42b6e92146b1f99a3"
+  },
+  "missingAssetForMeta": [],
+  "missingMetaForAssetOrFolder": [],
+  "newOrphanMetas": [],
+  "planSha256": "6c448dbc7d82ca58a7fbf5f394ee23d146e9f2f3df04fc3966e1212a05a2dc8b",
+  "archivedAgentsSha256": "6cad49efb39ed3b80f33d97dea92c8da889a1c858c7d8963ecc234b9c0ec75f4",
+  "archivedAgentsMatchesGitContent": true
+}
