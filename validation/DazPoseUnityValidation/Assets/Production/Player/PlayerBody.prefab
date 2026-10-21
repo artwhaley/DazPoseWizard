@@ -130,6 +130,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2725330586143102637}
+    - targetCorrespondingSourceObject: {fileID: 7532223830986981012, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6355816254181931468}
     - targetCorrespondingSourceObject: {fileID: 2866636419405590249, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6079347278193328102}
@@ -222,6 +225,7 @@ MonoBehaviour:
     - {fileID: 2100000, guid: f787379a9d5b033428eeb343190fa0c6, type: 2}
     - {fileID: 2100000, guid: 20d64d32119b0454b8c57078a586b56c, type: 2}
   startHidden: 1
+  posture: 3
 --- !u!114 &2725330586143102637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,6 +240,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: DazPose.Runtime::DazPose.Player.PlayerCameraMounts
   high: {fileID: 7474510406302338488}
   low: {fileID: 3552760986307742615}
+--- !u!114 &6355816254181931468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033735825012727010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a857c086e04b0fa160d73780c03b05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DazPose.Runtime::DazPose.Player.PlayerBreathing
+  breathsPerMinute: 12
+  strength: 2
+  channels:
+  - boneName: abdomenLower
+    fullInhaleLocalRotationDelta: {x: -0.2, y: 0, z: 0}
+    fullInhaleLocalPositionDelta: {x: 0, y: 0, z: 0}
+  - boneName: abdomenUpper
+    fullInhaleLocalRotationDelta: {x: -0.3, y: 0, z: 0}
+    fullInhaleLocalPositionDelta: {x: 0, y: 0.0003, z: 0}
+  - boneName: chestLower
+    fullInhaleLocalRotationDelta: {x: -0.4, y: 0, z: 0}
+    fullInhaleLocalPositionDelta: {x: 0, y: 0.0005, z: 0}
+  - boneName: chestUpper
+    fullInhaleLocalRotationDelta: {x: -0.25, y: 0, z: 0}
+    fullInhaleLocalPositionDelta: {x: 0, y: 0.0003, z: 0}
 --- !u!137 &1700192963458554101 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8162502286537374339, guid: e1364b4d7a60f7a4a94bfb3c13a971b9, type: 3}

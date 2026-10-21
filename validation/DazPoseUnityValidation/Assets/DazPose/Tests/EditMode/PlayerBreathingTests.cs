@@ -144,6 +144,38 @@ namespace DazPose.Tests
         }
 
         [Test]
+        public void WhenTwoSkeletonsShareNamesTheOneSkinningTheBodyMoves()
+        {
+            // The real player prefab carries a second, smaller skeleton for the eyelashes.
+            var breathing = Body();
+            var bodyHip = Find("hip");
+            var lashes = new GameObject("Lashes").transform;
+            lashes.SetParent(root.transform, false);
+            var lashHip = Child(lashes, "hip", new Vector3(0, 1, 0));
+            var lashLower = Child(lashHip, "abdomenLower", new Vector3(0, 0.1f, 0));
+            var lashUpper = Child(lashLower, "abdomenUpper", new Vector3(0, 0.1f, 0));
+            var lashChest = Child(lashUpper, "chestLower", new Vector3(0, 0.1f, 0));
+            var lashChestUpper = Child(lashChest, "chestUpper", new Vector3(0, 0.1f, 0));
+            var bodyRenderer = new GameObject("Body.Shape").AddComponent<SkinnedMeshRenderer>();
+            bodyRenderer.transform.SetParent(root.transform, false);
+            bodyRenderer.rootBone = bodyHip;
+            bodyRenderer.bones = root.GetComponentsInChildren<Transform>(true).Where(t => t.IsChildOf(bodyHip)).ToArray();
+            var lashRenderer = new GameObject("Lashes.Shape").AddComponent<SkinnedMeshRenderer>();
+            lashRenderer.transform.SetParent(lashes, false);
+            lashRenderer.rootBone = lashHip;
+            lashRenderer.bones = new[] { lashHip, lashLower, lashUpper, lashChest, lashChestUpper };
+
+            var bodyChest = bodyHip.GetComponentsInChildren<Transform>(true).First(t => t.name == "chestLower");
+            var bodyRest = bodyChest.localRotation;
+            var lashRest = lashChest.localRotation;
+            breathing.Strength = 10f;
+            breathing.Prepare();
+            breathing.ApplyAtCycles(0.5f);
+            Assert.That(Quaternion.Angle(bodyRest, bodyChest.localRotation), Is.GreaterThan(3f), "the body skeleton heaves");
+            Assert.That(Quaternion.Angle(lashRest, lashChest.localRotation), Is.LessThan(0.0001f), "the lash copy is left alone");
+        }
+
+        [Test]
         public void ThePlayerBodyPostureDefaultsToLying()
         {
             root = new GameObject("Body");

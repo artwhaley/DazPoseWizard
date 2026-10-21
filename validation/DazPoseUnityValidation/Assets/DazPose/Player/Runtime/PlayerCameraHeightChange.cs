@@ -9,16 +9,16 @@ namespace DazPose.Player {
  /// The fade is always left clear when the change ends for any reason.
  /// </summary>
  public sealed class PlayerCameraHeightChange {
-  public enum Stage { FadingOut, FadingIn, Done }
+  public enum Stage { FadingOut, Holding, FadingIn, Done }
   readonly IScreenFade fade;
   readonly Action move;
-  readonly float fadeOutSeconds,fadeInSeconds;
+  readonly float fadeOutSeconds,fadeInSeconds,holdSeconds;
   float elapsed;
-  public PlayerCameraHeightChange(IScreenFade screenFade,Action moveWhileBlack,float fadeOut,float fadeIn) {
+  public PlayerCameraHeightChange(IScreenFade screenFade,Action moveWhileBlack,float fadeOut,float fadeIn,float hold=0f) {
    fade=screenFade ?? throw new ArgumentNullException(nameof(screenFade));
    move=moveWhileBlack ?? throw new ArgumentNullException(nameof(moveWhileBlack));
-   if(!(fadeOut>=0f) || float.IsInfinity(fadeOut) || !(fadeIn>=0f) || float.IsInfinity(fadeIn)) throw new ArgumentOutOfRangeException(nameof(fadeOut),"Fade durations must be finite and non-negative.");
-   fadeOutSeconds=fadeOut; fadeInSeconds=fadeIn;
+   if(!(fadeOut>=0f) || float.IsInfinity(fadeOut) || !(fadeIn>=0f) || float.IsInfinity(fadeIn) || !(hold>=0f) || float.IsInfinity(hold)) throw new ArgumentOutOfRangeException(nameof(fadeOut),"Fade and hold durations must be finite and non-negative.");
+   fadeOutSeconds=fadeOut; fadeInSeconds=fadeIn; holdSeconds=hold;
   }
   public Stage Current { get; private set; } = Stage.FadingOut;
   public bool IsDone => Current==Stage.Done;
@@ -37,6 +37,11 @@ namespace DazPose.Player {
      fade.Alpha=1f;
      try { move(); Moved=true; }
      catch(Exception error) { Error=error; End(PlayerCameraHeightResult.Cancelled); return; }
+     Current=Stage.Holding;
+    } else if(Current==Stage.Holding) {
+     // A short beat of full black after the move, so the cut is never seen.
+     if(holdSeconds>0f && elapsed<holdSeconds) return;
+     elapsed=holdSeconds>0f ? elapsed-holdSeconds : elapsed;
      Current=Stage.FadingIn;
     } else {
      if(fadeInSeconds>0f && elapsed<fadeInSeconds) { fade.Alpha=1f-Smooth(elapsed/fadeInSeconds); return; }
@@ -50,6 +55,7 @@ namespace DazPose.Player {
    Current=Stage.Done; Result=result; fade.Alpha=0f;
    Finished?.Invoke(this);
   }
-  static float Smooth(float t) { t=Mathf.Clamp01(t); return t*t*(3f-2f*t); }
+  /// <summary>Smootherstep: gentler at both ends than smoothstep, so the fade eases in and out softly.</summary>
+  static float Smooth(float t) { t=Mathf.Clamp01(t); return t*t*t*(t*(t*6f-15f)+10f); }
  }
 }

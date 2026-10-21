@@ -44,10 +44,13 @@ namespace DazPose.Player {
    if(prepared) return;
    var all=GetComponentsInChildren<Transform>(true);
    var forbidden=ForbiddenTransforms(all);
+   // The player prefab holds more than one skeleton (the eyelashes carry a copy). Breathing must move the
+   // skeleton that skins the body, so bones are looked up under the biggest skinned mesh's root bone.
+   var skeleton=SkeletonRoot().GetComponentsInChildren<Transform>(true);
    var found=new List<Transform>();
    foreach(var channel in channels) {
-    var bone=all.FirstOrDefault(t=>t.name==channel.boneName);
-    if(bone==null) throw new InvalidOperationException("Breathing bone '"+channel.boneName+"' does not exist on "+name+".");
+    var bone=skeleton.FirstOrDefault(t=>t.name==channel.boneName);
+    if(bone==null) throw new InvalidOperationException("Breathing bone '"+channel.boneName+"' does not exist on the body skeleton of "+name+".");
     string reason=ForbiddenReason(bone,forbidden);
     if(reason!=null) throw new InvalidOperationException("Breathing bone '"+channel.boneName+"' "+reason+"; breathing must not move it.");
     if(found.Contains(bone)) throw new InvalidOperationException("Breathing bone '"+channel.boneName+"' is listed twice.");
@@ -57,6 +60,11 @@ namespace DazPose.Player {
    restPositions=bones.Select(b=>b.localPosition).ToArray();
    restRotations=bones.Select(b=>b.localRotation).ToArray();
    prepared=true;
+  }
+  Transform SkeletonRoot() {
+   var main=GetComponentsInChildren<SkinnedMeshRenderer>(true).Where(r=>r.rootBone!=null)
+    .OrderByDescending(r=>r.bones!=null ? r.bones.Length : 0).FirstOrDefault();
+   return main!=null ? main.rootBone : transform;
   }
   List<Transform> ForbiddenTransforms(Transform[] all) {
    var list=new List<Transform>();

@@ -49,6 +49,67 @@ namespace DazPose.Tests
         }
 
         [Test]
+        public void AShortBeatOfBlackFollowsTheMoveBeforeTheFadeIn()
+        {
+            var fade = new RecordingFade(new List<string>());
+            var change = new PlayerCameraHeightChange(fade, () => { }, 0.5f, 0.5f, 0.2f);
+            change.Advance(0.5f);
+            Assert.AreEqual(PlayerCameraHeightChange.Stage.Holding, change.Current);
+            Assert.That(fade.Alpha, Is.EqualTo(1f));
+            change.Advance(0.1f);
+            Assert.AreEqual(PlayerCameraHeightChange.Stage.Holding, change.Current);
+            Assert.That(fade.Alpha, Is.EqualTo(1f), "still fully black half way through the hold");
+            change.Advance(0.1f);
+            Assert.AreEqual(PlayerCameraHeightChange.Stage.FadingIn, change.Current);
+            change.Advance(0.25f);
+            Assert.That(fade.Alpha, Is.EqualTo(0.5f).Within(Tolerance));
+            change.Advance(0.25f);
+            Assert.IsTrue(change.IsDone);
+            Assert.That(fade.Alpha, Is.EqualTo(0f));
+        }
+
+        [Test]
+        public void TheFadeEasesGentlyAtBothEnds()
+        {
+            var fade = new RecordingFade(new List<string>());
+            var change = new PlayerCameraHeightChange(fade, () => { }, 1f, 1f);
+            change.Advance(0.1f);
+            // Smootherstep at 0.1 is 0.00856; plain linear would be 0.1.
+            Assert.That(fade.Alpha, Is.EqualTo(0.00856f).Within(0.0001f));
+            change.Advance(0.8f);
+            Assert.That(fade.Alpha, Is.EqualTo(0.99144f).Within(0.0001f));
+        }
+
+        [Test]
+        public void TheControllerDefaultsToAHalfSecondEachWayWithAShortHold()
+        {
+            var controller = Rig(out _, out _, out _);
+            Assert.That(controller.FadeOutSeconds, Is.EqualTo(0.5f));
+            Assert.That(controller.FadeInSeconds, Is.EqualTo(0.5f));
+            Assert.That(controller.BlackHoldSeconds, Is.EqualTo(0.15f).Within(Tolerance));
+        }
+
+        [Test]
+        public void TheWindSwellIsBoundedSilentAtBothEndsAndNotSilentInTheMiddle()
+        {
+            var samples = PlayerTransitionWind.Samples(1.15f);
+            Assert.AreEqual(Mathf.RoundToInt(1.15f * PlayerTransitionWind.SampleRate), samples.Length);
+            Assert.That(samples[0], Is.EqualTo(0f));
+            Assert.That(samples[samples.Length - 1], Is.EqualTo(0f));
+            float peak = 0f, energyMiddle = 0f, energyEdge = 0f;
+            for (int i = 0; i < samples.Length; i++)
+            {
+                peak = Mathf.Max(peak, Mathf.Abs(samples[i]));
+                if (i > samples.Length * 0.4f && i < samples.Length * 0.6f) energyMiddle += samples[i] * samples[i];
+                if (i < samples.Length * 0.05f) energyEdge += samples[i] * samples[i];
+            }
+            Assert.That(peak, Is.LessThanOrEqualTo(0.9001f).And.GreaterThan(0.5f));
+            Assert.That(energyMiddle, Is.GreaterThan(energyEdge * 20f), "swells in and out");
+            CollectionAssert.AreEqual(samples, PlayerTransitionWind.Samples(1.15f), "deterministic");
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => PlayerTransitionWind.Samples(0f));
+        }
+
+        [Test]
         public void OneLargeStepStillRunsEveryStageInOrder()
         {
             var log = new List<string>();
@@ -209,7 +270,7 @@ namespace DazPose.Tests
         public void SetHeightFadesMovesAndFadesBackIn()
         {
             var controller = Rig(out var view, out var mounts, out _);
-            controller.FadeOutSeconds = 1f; controller.FadeInSeconds = 1f;
+            controller.FadeOutSeconds = 1f; controller.FadeInSeconds = 1f; controller.BlackHoldSeconds = 0f;
             controller.StartAt(PlayerCameraHeight.High);
             var result = controller.SetHeightAsync(PlayerCameraHeight.Low);
             var fade = player.GetComponentInChildren<PlayerScreenFade>();
@@ -249,7 +310,7 @@ namespace DazPose.Tests
         public void TrackingSurvivesSetHeight()
         {
             var controller = Rig(out var view, out var mounts, out var rig);
-            controller.FadeOutSeconds = 0f; controller.FadeInSeconds = 0f;
+            controller.FadeOutSeconds = 0f; controller.FadeInSeconds = 0f; controller.BlackHoldSeconds = 0f;
             controller.StartAt(PlayerCameraHeight.High);
             target = new GameObject("Target");
             target.transform.position = new Vector3(2f, 1f, 4f);
@@ -269,7 +330,7 @@ namespace DazPose.Tests
         public void WithoutTrackingTheViewTakesTheNewMountsOrientation()
         {
             var controller = Rig(out var view, out var mounts, out var rig);
-            controller.FadeOutSeconds = 0f; controller.FadeInSeconds = 0f;
+            controller.FadeOutSeconds = 0f; controller.FadeInSeconds = 0f; controller.BlackHoldSeconds = 0f;
             controller.StartAt(PlayerCameraHeight.High);
             Assert.IsFalse(view.IsTracking);
             var result = controller.SetHeightAsync(PlayerCameraHeight.Low);

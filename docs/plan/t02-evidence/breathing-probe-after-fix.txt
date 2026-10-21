@@ -1,0 +1,29 @@
+Renderers:
+  PlayerBody/Genesis8Male/Dicktator Shell/Dicktator Shell.Shape active=True enabled=True bones=185 rootBone=PlayerBody/Genesis8Male/hip
+  PlayerBody/Genesis8Male/Genesis8Male.Shape active=True enabled=True bones=185 rootBone=PlayerBody/Genesis8Male/hip
+  PlayerBody/Genesis8Male/Genesis8MaleEyelashes/Genesis8MaleEyelashes.Shape active=True enabled=True bones=25 rootBone=PlayerBody/Genesis8Male/Genesis8MaleEyelashes/hip
+hip:
+  PlayerBody/Genesis8Male/Dicktator_Genitalia_G8M/hip skinnedBy=[]
+  PlayerBody/Genesis8Male/Genesis8MaleEyelashes/hip skinnedBy=[Genesis8MaleEyelashes.Shape]
+  PlayerBody/Genesis8Male/hip skinnedBy=[Dicktator Shell.Shape, Genesis8Male.Shape]
+pelvis:
+  PlayerBody/Genesis8Male/Dicktator_Genitalia_G8M/hip/pelvis skinnedBy=[]
+  PlayerBody/Genesis8Male/Genesis8MaleEyelashes/hip/pelvis skinnedBy=[]
+  PlayerBody/Genesis8Male/hip/pelvis skinnedBy=[Dicktator Shell.Shape, Genesis8Male.Shape]
+abdomenLower:
+  PlayerBody/Genesis8Male/Genesis8MaleEyelashes/hip/abdomenLower skinnedBy=[Genesis8MaleEyelashes.Shape]
+  PlayerBody/Genesis8Male/hip/abdomenLower skinnedBy=[Dicktator Shell.Shape, Genesis8Male.Shape]
+abdomenUpper:
+  PlayerBody/Genesis8Male/Genesis8MaleEyelashes/hip/abdomenLower/abdomenUpper skinnedBy=[Genesis8MaleEyelashes.Shape]
+  PlayerBody/Genesis8Male/hip/abdomenLower/abdomenUpper skinnedBy=[Dicktator Shell.Shape, Genesis8Male.Shape]
+chestLower:
+  PlayerBody/Genesis8Male/Genesis8MaleEyelashes/hip/abdomenLower/abdomenUpper/chestLower skinnedBy=[Genesis8MaleEyelashes.Shape]
+  PlayerBody/Genesis8Male/hip/abdomenLower/abdomenUpper/chestLower skinnedBy=[Dicktator Shell.Shape, Genesis8Male.Shape]
+chestUpper:
+  PlayerBody/Genesis8Male/Genesis8MaleEyelashes/hip/abdomenLower/abdomenUpper/chestLower/chestUpper skinnedBy=[Genesis8MaleEyelashes.Shape]
+  PlayerBody/Genesis8Male/hip/abdomenLower/abdomenUpper/chestLower/chestUpper skinnedBy=[Dicktator Shell.Shape, Genesis8Male.Shape]
+PlayerBreathing present=True bpm=10 strength=0.3
+Presence startsHidden=True stablyHidden=True
+  skin response at strength 10, full inhale: Dicktator Shell.Shape max vertex move 0.00000 m over 2389 verts
+  skin response at strength 10, full inhale: Genesis8Male.Shape max vertex move 0.12902 m over 20355 verts
+  skin response at strength 10, full inhale: Genesis8MaleEyelashes.Shape max vertex move 0.00000 m over 490 verts

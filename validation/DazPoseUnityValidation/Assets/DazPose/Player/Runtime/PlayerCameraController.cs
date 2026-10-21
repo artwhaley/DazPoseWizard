@@ -8,12 +8,20 @@ namespace DazPose.Player {
  [DisallowMultipleComponent]
  [RequireComponent(typeof(PlayerController))]
  public sealed class PlayerCameraController : MonoBehaviour {
-  [SerializeField,Min(0f)] float fadeOutSeconds=0.35f;
-  [SerializeField,Min(0f)] float fadeInSeconds=0.35f;
+  // Production fade through black: half a second each way, eased, with a short beat of black between.
+  [SerializeField,Min(0f)] float fadeOutDuration=0.5f;
+  [SerializeField,Min(0f)] float fadeInDuration=0.5f;
+  [SerializeField,Min(0f)] float blackHoldDuration=0.15f;
+  [SerializeField,Range(0f,1f)] float windVolume=0.25f;
   PlayerController player;
   PlayerCameraHeightChange active;
-  public float FadeOutSeconds { get => fadeOutSeconds; set => fadeOutSeconds=Mathf.Max(0f,value); }
-  public float FadeInSeconds { get => fadeInSeconds; set => fadeInSeconds=Mathf.Max(0f,value); }
+  public float FadeOutSeconds { get => fadeOutDuration; set => fadeOutDuration=Mathf.Max(0f,value); }
+  public float FadeInSeconds { get => fadeInDuration; set => fadeInDuration=Mathf.Max(0f,value); }
+  public float BlackHoldSeconds { get => blackHoldDuration; set => blackHoldDuration=Mathf.Max(0f,value); }
+  public float WindVolume { get => windVolume; set => windVolume=Mathf.Clamp01(value); }
+  AudioSource wind;
+  AudioClip windClip;
+  float windClipSeconds;
   public bool IsChangingHeight => active!=null;
   public PlayerCameraHeight? CurrentHeight => TryMounts(out var mounts) ? mounts.CurrentHeight : null;
   PlayerController Player => player!=null ? player : (player=GetComponent<PlayerController>());
@@ -42,13 +50,15 @@ namespace DazPose.Player {
    var view=Player.View;
    var fade=PlayerScreenFade.For(Player.MainCamera);
    var source=new AwaitableCompletionSource<PlayerCameraHeightResult>();
-   var change=new PlayerCameraHeightChange(fade,()=>mounts.MoveView(view,height),fadeOutSeconds,fadeInSeconds);
+   var change=new PlayerCameraHeightChange(fade,()=>mounts.MoveView(view,height),fadeOutDuration,fadeInDuration,blackHoldDuration);
    change.Finished+=done => {
     if(ReferenceEquals(active,done)) active=null;
+    if(done.Result!=PlayerCameraHeightResult.Completed && wind!=null) wind.Stop();
     if(done.Error!=null) { Debug.LogException(done.Error,this); source.TrySetException(done.Error); }
     else source.TrySetResult(done.Result);
    };
    active=change;
+   PlayWind(fadeOutDuration+blackHoldDuration+fadeInDuration);
    change.Advance(0f); // a zero-length fade completes immediately
    return source.Awaitable;
   }
@@ -57,6 +67,18 @@ namespace DazPose.Player {
    var mounts=RequireMounts();
    var origin=Player.MainCamera.transform.position;
    return Player.LookAtAsync(mounts.AuthoredLookPoint(origin));
+  }
+  void PlayWind(float seconds) {
+   if(!Application.isPlaying || windVolume<=0f || seconds<=0.05f) return;
+   if(wind==null) {
+    wind=gameObject.AddComponent<AudioSource>();
+    wind.playOnAwake=false; wind.loop=false; wind.spatialBlend=0f;
+   }
+   if(windClip==null || Mathf.Abs(windClipSeconds-seconds)>0.01f) {
+    if(windClip!=null) Destroy(windClip);
+    windClip=PlayerTransitionWind.Create(seconds); windClipSeconds=seconds;
+   }
+   wind.clip=windClip; wind.volume=windVolume; wind.Play();
   }
   /// <summary>Returns an action that cancels the height change in progress now, if any, clearing the fade.</summary>
   public Action CaptureCancellation() {
@@ -73,6 +95,6 @@ namespace DazPose.Player {
   /// <summary>Advances a height change in progress; called every frame, and directly by tests.</summary>
   public void Tick(float deltaTime) => active?.Advance(deltaTime);
   void OnDisable() => CancelHeightChange();
-  void OnDestroy() => CancelHeightChange();
+  void OnDestroy() { CancelHeightChange(); if(windClip!=null) Destroy(windClip); }
  }
 }
